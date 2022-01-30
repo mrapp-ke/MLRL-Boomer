@@ -361,7 +361,8 @@ namespace seco {
      *                  configuration that should be used by the rule learner.
      * @return          An unique pointer to an object of type `ISeCoRuleLearner` that has been created
      */
-    MLRLSECO_API std::unique_ptr<ISeCoRuleLearner> createSeCoRuleLearner(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr);
+    MLRLSECO_API std::unique_ptr<ISeCoRuleLearner> createSeCoRuleLearner(
+        std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr);
 
 }
 
