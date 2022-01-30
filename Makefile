@@ -30,7 +30,7 @@ MESON_COMPILE = meson compile
 MESON_INSTALL = meson install
 WHEEL_BUILD = python -m build --wheel
 WHEEL_INSTALL = python -m pip install --force-reinstall --no-deps
-DOXYGEN = doxygen
+DOXYGEN = $(if ${IS_WIN},\for /f %%i in (.\..\VERSION) do set PROJECT_NUMBER=%%i && doxygen,PROJECT_NUMBER=${file < VERSION} doxygen)
 SPHINX_APIDOC = sphinx-apidoc --tocfile index -f
 SPHINX_BUILD = sphinx-build -M html
 
@@ -56,6 +56,12 @@ define install_wheels
 	$(if ${IS_WIN},\
 	${PS} "foreach ($$wheel in ls -Path ${1}\* -Include *.whl) {${WHEEL_INSTALL} $$wheel}",\
 	${WHEEL_INSTALL} ${1}/*.whl)
+endef
+
+define create_dir
+	$(if ${IS_WIN},\
+	${PS} "New-Item -Path ${1} -ItemType "directory" -Force",\
+	mkdir -p ${1})
 endef
 
 clean_venv:
@@ -152,20 +158,20 @@ install: wheel
 doc: install
 	@echo Installing documentation dependencies into virtual environment...
 	${VENV_ACTIVATE} \
-	    && ${PIP_INSTALL} -r ${DOC_DIR}/requirements.txt \
+	    && ${PIP_INSTALL} -r ${DOC_DIR}${SEP}requirements.txt \
 	    && ${VENV_DEACTIVATE}
 	@echo Generating C++ API documentation via Doxygen...
-	mkdir -p ${DOC_API_DIR}/api/cpp/common
-	cd ${DOC_DIR} && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_common
-	mkdir -p ${DOC_API_DIR}/api/cpp/boosting
-	cd ${DOC_DIR} && PROJECT_NUMBER="${file < VERSION}" ${DOXYGEN} Doxyfile_boosting
+	$(call create_dir,${DOC_API_DIR}${SEP}api${SEP}cpp${SEP}common)
+	cd ${DOC_DIR} && ${DOXYGEN} Doxyfile_common
+	$(call create_dir,${DOC_API_DIR}${SEP}api${SEP}cpp${SEP}boosting)
+	cd ${DOC_DIR} && ${DOXYGEN} Doxyfile_boosting
 	@echo Generating Sphinx documentation...
 	${VENV_ACTIVATE} \
-	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/common ${PYTHON_PACKAGE_DIR}/common/mlrl **/cython \
-	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}/common ${DOC_API_DIR}/api/python/common \
-	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/boosting ${PYTHON_PACKAGE_DIR}/boosting/mlrl **/cython \
-	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}/boosting ${DOC_API_DIR}/api/python/boosting \
-	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/testbed ${PYTHON_PACKAGE_DIR}/testbed/mlrl \
-	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}/testbed ${DOC_API_DIR}/api/python/testbed \
+	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}${SEP}common ${PYTHON_PACKAGE_DIR}${SEP}common${SEP}mlrl **${SEP}cython \
+	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}${SEP}common ${DOC_API_DIR}${SEP}api${SEP}python${SEP}common \
+	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}${SEP}boosting ${PYTHON_PACKAGE_DIR}${SEP}boosting${SEP}mlrl **${SEP}cython \
+	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}${SEP}boosting ${DOC_API_DIR}${SEP}api${SEP}python${SEP}boosting \
+	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}${SEP}testbed ${PYTHON_PACKAGE_DIR}${SEP}testbed${SEP}mlrl \
+	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}${SEP}testbed ${DOC_API_DIR}${SEP}api${SEP}python${SEP}testbed \
 	    && ${SPHINX_BUILD} ${DOC_DIR} ${DOC_BUILD_DIR} \
 	    && ${VENV_DEACTIVATE}
