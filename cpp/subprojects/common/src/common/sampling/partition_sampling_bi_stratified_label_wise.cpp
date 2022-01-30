@@ -86,7 +86,7 @@ class LabelWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSam
 
 
 LabelWiseStratifiedBiPartitionSamplingConfig::LabelWiseStratifiedBiPartitionSamplingConfig()
-    : holdoutSetSize_(0.33) {
+    : holdoutSetSize_(0.33f) {
 
 }
 
