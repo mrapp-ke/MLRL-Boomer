@@ -5,10 +5,6 @@
 
 namespace boosting {
 
-    static inline bool isCompleteHeadTypePreferred(const ILossConfig* lossConfig) {
-        return dynamic_cast<const IExampleWiseLossConfig*>(lossConfig) != nullptr;
-    }
-
     AutomaticHeadConfig::AutomaticHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
                                              const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
                                              const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
