@@ -83,7 +83,9 @@ setup(
         'separate-and-conquer'
     ],
     platforms=[
-        'Linux'
+        'Linux',
+        'MacOS',
+        'Windows'
     ],
     python_requires='>=3.7',
     install_requires=[
