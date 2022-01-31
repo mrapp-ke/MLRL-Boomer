@@ -15,7 +15,7 @@ namespace boosting {
      * of sparse data structures. To meet this requirement, the gradients and Hessians that are computed by the loss
      * function should be zero, if the prediction for a label is correct.
      */
-    class ISparseLabelWiseLoss : public ILabelWiseLoss, public ISparseEvaluationMeasure {
+    class ISparseLabelWiseLoss : virtual public ILabelWiseLoss, public ISparseEvaluationMeasure {
 
         public:
 
@@ -116,6 +116,13 @@ namespace boosting {
              * @return An unique pointer to an object of type `ISparseLabelWiseLoss` that has been created
              */
             virtual std::unique_ptr<ISparseLabelWiseLoss> createSparseLabelWiseLoss() const = 0;
+
+            /**
+             * @see `ILabelWiseLossFactory::createLabelWiseLoss`
+             */
+            std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override final {
+                return this->createSparseLabelWiseLoss();
+            }
 
             /**
              * @see `ISparseEvaluationMeasureFactory::createSparseEvaluationMeasure`

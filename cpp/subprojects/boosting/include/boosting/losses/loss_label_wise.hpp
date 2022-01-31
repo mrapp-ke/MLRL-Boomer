@@ -14,7 +14,7 @@ namespace boosting {
     /**
      * Defines an interface for all (decomposable) loss functions that are applied label-wise.
      */
-    class ILabelWiseLoss : public ILoss {
+    class ILabelWiseLoss : virtual public ILoss {
 
         public:
 
