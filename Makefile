@@ -5,24 +5,23 @@ default_target: install
 UNAME = $(if $(filter Windows_NT,${OS}),Windows,$(shell uname))
 IS_WIN = $(filter Windows,${UNAME})
 
-SEP = $(if ${IS_WIN},\,/)
 VENV_DIR = venv
 CPP_SRC_DIR = cpp
-CPP_BUILD_DIR = ${CPP_SRC_DIR}${SEP}build
+CPP_BUILD_DIR = ${CPP_SRC_DIR}/build
 PYTHON_SRC_DIR = python
-PYTHON_BUILD_DIR = ${PYTHON_SRC_DIR}${SEP}build
-PYTHON_PACKAGE_DIR = ${PYTHON_SRC_DIR}${SEP}subprojects
+PYTHON_BUILD_DIR = ${PYTHON_SRC_DIR}/build
+PYTHON_PACKAGE_DIR = ${PYTHON_SRC_DIR}/subprojects
 DIST_DIR = dist
 DOC_DIR = doc
-DOC_API_DIR = ${DOC_DIR}${SEP}apidoc
-DOC_TMP_DIR = ${DOC_DIR}${SEP}python
-DOC_BUILD_DIR = ${DOC_DIR}${SEP}_build
+DOC_API_DIR = ${DOC_DIR}/apidoc
+DOC_TMP_DIR = ${DOC_DIR}/python
+DOC_BUILD_DIR = ${DOC_DIR}/_build
 
 PS = powershell -Command
 PYTHON = $(if ${IS_WIN},python,python3)
 VENV_CREATE = ${PYTHON} -m venv ${VENV_DIR}
-VENV_ACTIVATE = $(if ${IS_WIN},${VENV_DIR}\Scripts\activate.bat,. ${VENV_DIR}/bin/activate)
-VENV_DEACTIVATE = deactivate
+VENV_ACTIVATE = $(if ${IS_WIN},${PS} ${VENV_DIR}/Scripts/activate.bat,. ${VENV_DIR}/bin/activate)
+VENV_DEACTIVATE = $(if ${IS_WIN},${PS} ${VENV_DIR}/Scripts/deactivate.bat,deactivate)
 PIP_INSTALL = python -m pip install --prefer-binary
 PIP_UPGRADE = ${PIP_INSTALL} --upgrade
 MESON_SETUP = meson setup
@@ -30,7 +29,7 @@ MESON_COMPILE = meson compile
 MESON_INSTALL = meson install
 WHEEL_BUILD = python -m build --wheel
 WHEEL_INSTALL = python -m pip install --force-reinstall --no-deps
-DOXYGEN = $(if ${IS_WIN},\for /f %%i in (.\..\VERSION) do set PROJECT_NUMBER=%%i && doxygen,PROJECT_NUMBER=${file < VERSION} doxygen)
+DOXYGEN = $(if ${IS_WIN},\for /f %%i in (./../VERSION) do set PROJECT_NUMBER=%%i && doxygen,PROJECT_NUMBER=${file < VERSION} doxygen)
 SPHINX_APIDOC = sphinx-apidoc --tocfile index -f
 SPHINX_BUILD = sphinx-build -M html
 
@@ -54,7 +53,7 @@ endef
 
 define install_wheels
 	$(if ${IS_WIN},\
-	${PS} "foreach ($$wheel in ls -Path ${1}\* -Include *.whl) {${WHEEL_INSTALL} $$wheel}",\
+	${PS} "foreach ($$wheel in ls -Path ${1}/* -Include *.whl) {${WHEEL_INSTALL} $$wheel}",\
 	${WHEEL_INSTALL} ${1}/*.whl)
 endef
 
@@ -106,7 +105,7 @@ venv:
 	${VENV_ACTIVATE} \
 	    && ${PIP_UPGRADE} pip \
 	    && ${PIP_UPGRADE} setuptools \
-	    && ${PIP_INSTALL} -r ${PYTHON_SRC_DIR}${SEP}requirements.txt \
+	    && ${PIP_INSTALL} -r ${PYTHON_SRC_DIR}/requirements.txt \
 	    && ${VENV_DEACTIVATE}
 
 compile_cpp: venv
@@ -140,38 +139,38 @@ install_cython: compile_cython
 wheel: install_cpp install_cython
 	@echo Building wheel packages...
 	${VENV_ACTIVATE} \
-	    && ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}${SEP}common \
-	    && ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}${SEP}boosting \
-	    && ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}${SEP}seco \
-	    && ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}${SEP}testbed \
+	    && ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}/common \
+	    && ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}/boosting \
+	    && ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}/seco \
+	    && ${WHEEL_BUILD} ${PYTHON_PACKAGE_DIR}/testbed \
 	    && ${VENV_DEACTIVATE}
 
 install: wheel
 	@echo Installing wheel packages into virtual environment...
 	${VENV_ACTIVATE} \
-	    && $(call install_wheels,${PYTHON_PACKAGE_DIR}${SEP}common${SEP}${DIST_DIR}) \
-	    && $(call install_wheels,${PYTHON_PACKAGE_DIR}${SEP}boosting${SEP}${DIST_DIR}) \
-	    && $(call install_wheels,${PYTHON_PACKAGE_DIR}${SEP}seco${SEP}${DIST_DIR}) \
-	    && $(call install_wheels,${PYTHON_PACKAGE_DIR}${SEP}testbed${SEP}${DIST_DIR}) \
+	    && $(call install_wheels,${PYTHON_PACKAGE_DIR}/common/${DIST_DIR}) \
+	    && $(call install_wheels,${PYTHON_PACKAGE_DIR}/boosting/${DIST_DIR}) \
+	    && $(call install_wheels,${PYTHON_PACKAGE_DIR}/seco/${DIST_DIR}) \
+	    && $(call install_wheels,${PYTHON_PACKAGE_DIR}/testbed/${DIST_DIR}) \
 	    && ${VENV_DEACTIVATE}
 
 doc: install
 	@echo Installing documentation dependencies into virtual environment...
 	${VENV_ACTIVATE} \
-	    && ${PIP_INSTALL} -r ${DOC_DIR}${SEP}requirements.txt \
+	    && ${PIP_INSTALL} -r ${DOC_DIR}/requirements.txt \
 	    && ${VENV_DEACTIVATE}
 	@echo Generating C++ API documentation via Doxygen...
-	$(call create_dir,${DOC_API_DIR}${SEP}api${SEP}cpp${SEP}common)
+	$(call create_dir,${DOC_API_DIR}/api/cpp/common)
 	cd ${DOC_DIR} && ${DOXYGEN} Doxyfile_common
-	$(call create_dir,${DOC_API_DIR}${SEP}api${SEP}cpp${SEP}boosting)
+	$(call create_dir,${DOC_API_DIR}/api/cpp/boosting)
 	cd ${DOC_DIR} && ${DOXYGEN} Doxyfile_boosting
 	@echo Generating Sphinx documentation...
 	${VENV_ACTIVATE} \
-	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}${SEP}common ${PYTHON_PACKAGE_DIR}${SEP}common${SEP}mlrl **${SEP}cython \
-	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}${SEP}common ${DOC_API_DIR}${SEP}api${SEP}python${SEP}common \
-	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}${SEP}boosting ${PYTHON_PACKAGE_DIR}${SEP}boosting${SEP}mlrl **${SEP}cython \
-	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}${SEP}boosting ${DOC_API_DIR}${SEP}api${SEP}python${SEP}boosting \
-	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}${SEP}testbed ${PYTHON_PACKAGE_DIR}${SEP}testbed${SEP}mlrl \
-	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}${SEP}testbed ${DOC_API_DIR}${SEP}api${SEP}python${SEP}testbed \
+	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/common ${PYTHON_PACKAGE_DIR}/common/mlrl **/cython \
+	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}/common ${DOC_API_DIR}/api/python/common \
+	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/boosting ${PYTHON_PACKAGE_DIR}/boosting/mlrl **/cython \
+	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}/boosting ${DOC_API_DIR}/api/python/boosting \
+	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/testbed ${PYTHON_PACKAGE_DIR}/testbed/mlrl \
+	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}/testbed ${DOC_API_DIR}/api/python/testbed \
 	    && ${SPHINX_BUILD} ${DOC_DIR} ${DOC_BUILD_DIR} \
 	    && ${VENV_DEACTIVATE}
