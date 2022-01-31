@@ -126,4 +126,24 @@ namespace boosting {
 
     };
 
+    /**
+     * Defines an interface for all classes that allow to configure a (decomposable) loss function that is applied
+     * label-wise and is suited for the use of sparse data structures.
+     */
+    class ISparseLabelWiseLossConfig : public ILabelWiseLossConfig {
+
+        public:
+
+            virtual ~ISparseLabelWiseLossConfig() override { };
+
+            /**
+             * Creates and returns a new object of type `ISparseLabelWiseLossFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `ISparseLabelWiseLossFactory` that has been created
+             */
+            virtual std::unique_ptr<ISparseLabelWiseLossFactory> createSparseLabelWiseLossFactory() const = 0;
+
+    };
+
 }
