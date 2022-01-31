@@ -93,7 +93,7 @@ namespace boosting {
              * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                                   const CContiguousConstView<float64> scoreMatrix,
+                                                   const CContiguousConstView<float64>& scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const = 0;
