@@ -101,4 +101,29 @@ namespace boosting {
 
     };
 
+    /**
+     * Defines an interface for all factories that allow to create instances of the type `ISparseLabelWiseLoss`.
+     */
+    class ISparseLabelWiseLossFactory : public ILabelWiseLossFactory, public ISparseEvaluationMeasureFactory {
+
+        public:
+
+            virtual ~ISparseLabelWiseLossFactory() override { };
+
+            /**
+             * Creates and returns a new object of type `ISparseLabelWiseLoss`.
+             *
+             * @return An unique pointer to an object of type `ISparseLabelWiseLoss` that has been created
+             */
+            virtual std::unique_ptr<ISparseLabelWiseLoss> createSparseLabelWiseLoss() const = 0;
+
+            /**
+             * @see `ISparseEvaluationMeasureFactory::createSparseEvaluationMeasure`
+             */
+            std::unique_ptr<ISparseEvaluationMeasure> createSparseEvaluationMeasure() const override final {
+                return this->createSparseLabelWiseLoss();
+            }
+
+    };
+
 }
