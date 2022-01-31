@@ -9,7 +9,6 @@
 #include <memory>
 
 
-
 namespace boosting {
 
     /**
