@@ -1,6 +1,6 @@
 # Changelog
 
-### Version 0.8.0 (to be released)
+### Version 0.8.0 (Jan. 31, 2022)
 
 ***This release comes with changes to the command line API. For an updated overview of the available parameters, please refer to the documentation.***
 
