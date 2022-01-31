@@ -5,6 +5,7 @@
 
 #include "boosting/losses/loss_label_wise.hpp"
 #include "boosting/data/statistic_view_label_wise_sparse.hpp"
+#include "common/measures/measure_evaluation_sparse.hpp"
 
 
 namespace boosting {
@@ -14,7 +15,7 @@ namespace boosting {
      * of sparse data structures. To meet this requirement, the gradients and Hessians that are computed by the loss
      * function should be zero, if the prediction for a label is correct.
      */
-    class ISparseLabelWiseLoss : public ILabelWiseLoss {
+    class ISparseLabelWiseLoss : public ILabelWiseLoss, public ISparseEvaluationMeasure {
 
         public:
 
