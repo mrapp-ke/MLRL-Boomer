@@ -71,6 +71,8 @@ setup(
         'Programming Language :: Cython',
         'Programming Language :: Python :: 3',
         'Operating System :: POSIX :: Linux',
+        'Operating System :: MacOS',
+        'Operating System :: Microsoft :: Windows',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
