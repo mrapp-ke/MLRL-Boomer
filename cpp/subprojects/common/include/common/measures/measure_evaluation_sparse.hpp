@@ -62,6 +62,6 @@ class ISparseEvaluationMeasureFactory {
          *
          * @return An unique pointer to an object of type `ISparseEvaluationMeasure` that has been created
          */
-        virtual std::unique_ptr<IEvaluationMeasure> createSparseEvaluationMeasure() const = 0;
+        virtual std::unique_ptr<ISparseEvaluationMeasure> createSparseEvaluationMeasure() const = 0;
 
 };
