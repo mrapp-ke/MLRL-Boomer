@@ -1,5 +1,5 @@
 #include "boosting/losses/loss_label_wise_squared_hinge.hpp"
-#include "loss_label_wise_common.hpp"
+#include "loss_label_wise_sparse_common.hpp"
 
 
 namespace boosting {
@@ -43,12 +43,12 @@ namespace boosting {
      * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the squared hinge
      * loss that is applied label-wise.
      */
-    class LabelWiseSquaredHingeLossFactory final : public ILabelWiseLossFactory {
+    class LabelWiseSquaredHingeLossFactory final : public ISparseLabelWiseLossFactory {
 
         public:
 
-            std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override {
-                return std::make_unique<LabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
+            std::unique_ptr<ISparseLabelWiseLoss> createSparseLabelWiseLoss() const override {
+                return std::make_unique<SparseLabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
             }
 
     };
@@ -81,6 +81,10 @@ namespace boosting {
     }
 
     std::unique_ptr<ILabelWiseLossFactory> LabelWiseSquaredHingeLossConfig::createLabelWiseLossFactory() const {
+        return std::make_unique<LabelWiseSquaredHingeLossFactory>();
+    }
+
+    std::unique_ptr<ISparseLabelWiseLossFactory> LabelWiseSquaredHingeLossConfig::createSparseLabelWiseLossFactory() const {
         return std::make_unique<LabelWiseSquaredHingeLossFactory>();
     }
 
