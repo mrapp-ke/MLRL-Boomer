@@ -60,8 +60,13 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> LabelWiseSquaredHingeLossConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix, const Blas& blas,
-            const Lapack& lapack) const {
-        return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
+            const Lapack& lapack, bool preferSparseStatistics) const {
+        if (preferSparseStatistics) {
+            return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
+        } else {
+            return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix,
+                                                                   static_cast<const ILabelWiseLossConfig&>(*this));
+        }
     }
 
     std::unique_ptr<IProbabilityFunctionFactory> LabelWiseSquaredHingeLossConfig::createProbabilityFunctionFactory() const {

@@ -28,7 +28,7 @@ namespace boosting {
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix, const Blas& blas,
-                const Lapack& lapack) const override;
+                const Lapack& lapack, bool preferSparseStatistics) const override;
 
             std::unique_ptr<IProbabilityFunctionFactory> createProbabilityFunctionFactory() const override;
 

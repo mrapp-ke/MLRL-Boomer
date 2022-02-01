@@ -107,7 +107,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> LabelWiseLogisticLossConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix, const Blas& blas,
-            const Lapack& lapack) const {
+            const Lapack& lapack, bool preferSparseStatistics) const {
         return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
     }
 
