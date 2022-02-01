@@ -18,6 +18,8 @@
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
+#include "boosting/statistics/statistics_auto.hpp"
+#include "boosting/statistics/statistics_dense.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
 
 
@@ -31,6 +33,7 @@ namespace boosting {
         this->useAutomaticParallelRuleRefinement();
         this->useAutomaticParallelStatisticUpdate();
         this->useAutomaticHeads();
+        this->useAutomaticStatistics();
         this->useNoL1Regularization();
         this->useL2Regularization();
         this->useLabelWiseLogisticLoss();
@@ -42,6 +45,10 @@ namespace boosting {
 
     const IHeadConfig& BoostingRuleLearner::Config::getHeadConfig() const {
         return *headConfigPtr_;
+    }
+
+    const IStatisticsConfig& BoostingRuleLearner::Config::getStatisticsConfig() const {
+        return *statisticsConfigPtr_;
     }
 
     const IRegularizationConfig& BoostingRuleLearner::Config::getL1RegularizationConfig() const {
@@ -114,6 +121,14 @@ namespace boosting {
         headConfigPtr_ = std::make_unique<CompleteHeadConfig>(
             labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
             l2RegularizationConfigPtr_);
+    }
+
+    void BoostingRuleLearner::Config::useAutomaticStatistics() {
+        statisticsConfigPtr_ = std::make_unique<AutomaticStatisticsConfig>(lossConfigPtr_);
+    }
+
+    void BoostingRuleLearner::Config::useDenseStatistics() {
+        statisticsConfigPtr_ = std::make_unique<DenseStatisticsConfig>(lossConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useNoL1Regularization() {
@@ -207,8 +222,8 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
-        return configPtr_->getLossConfig()
-            .createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_, lapack_, false);
+        return configPtr_->getStatisticsConfig().
+            createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_, lapack_);
     }
 
     std::unique_ptr<IModelBuilder> BoostingRuleLearner::createModelBuilder() const {
