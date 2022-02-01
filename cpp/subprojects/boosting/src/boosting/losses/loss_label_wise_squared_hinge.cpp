@@ -72,10 +72,6 @@ namespace boosting {
         return 0.5;
     }
 
-    std::unique_ptr<ILabelWiseLossFactory> LabelWiseSquaredHingeLossConfig::createLabelWiseLossFactory() const {
-        return std::make_unique<LabelWiseSquaredHingeLossFactory>();
-    }
-
     std::unique_ptr<ISparseLabelWiseLossFactory> LabelWiseSquaredHingeLossConfig::createSparseLabelWiseLossFactory() const {
         return std::make_unique<LabelWiseSquaredHingeLossFactory>();
     }

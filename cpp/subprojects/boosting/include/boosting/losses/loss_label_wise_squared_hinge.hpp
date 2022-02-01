@@ -31,8 +31,6 @@ namespace boosting {
 
             float64 getDefaultPrediction() const override;
 
-            std::unique_ptr<ILabelWiseLossFactory> createLabelWiseLossFactory() const override;
-
             std::unique_ptr<ISparseLabelWiseLossFactory> createSparseLabelWiseLossFactory() const override;
 
     };
