@@ -37,6 +37,13 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
+                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
+                const ISparseLabelWiseLossConfig& lossConfig) const {
+        return this->createStatisticsProviderFactory(featureMatrix, labelMatrix,
+                                                     static_cast<const ILabelWiseLossConfig&>(lossConfig));
+    }
+
+    std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
             const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());

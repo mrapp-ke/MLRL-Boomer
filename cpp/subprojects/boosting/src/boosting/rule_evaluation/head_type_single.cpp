@@ -2,6 +2,7 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_single.hpp"
 #include "boosting/statistics/statistics_provider_example_wise_dense.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
+#include "boosting/statistics/statistics_provider_label_wise_sparse.hpp"
 
 
 namespace boosting {
@@ -35,6 +36,24 @@ namespace boosting {
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
             std::move(pruningRuleEvaluationFactoryPtr), numThreads);
+    }
+
+    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
+                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
+                const ISparseLabelWiseLossConfig& lossConfig) const {
+        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
+        std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr = lossConfig.createSparseLabelWiseLossFactory();
+        std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+            lossConfig.createSparseEvaluationMeasureFactory();
+        std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+            std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
+        std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+            std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
+        return std::make_unique<SparseLabelWiseStatisticsProviderFactory>(
+            std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+            std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
     std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
