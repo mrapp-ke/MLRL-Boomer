@@ -1,6 +1,6 @@
 #include "boosting/losses/loss_label_wise_logistic.hpp"
 #include "boosting/math/math.hpp"
-#include "loss_label_wise_sparse_common.hpp"
+#include "loss_label_wise_common.hpp"
 
 
 namespace boosting {
@@ -62,12 +62,12 @@ namespace boosting {
      * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the logistic loss
      * that is applied label-wise.
      */
-    class LabelWiseLogisticLossFactory final : public ISparseLabelWiseLossFactory {
+    class LabelWiseLogisticLossFactory final : public ILabelWiseLossFactory {
 
         public:
 
-            std::unique_ptr<ISparseLabelWiseLoss> createSparseLabelWiseLoss() const override {
-                return std::make_unique<SparseLabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
+            std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override {
+                return std::make_unique<LabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
             }
 
     };
@@ -128,10 +128,6 @@ namespace boosting {
     }
 
     std::unique_ptr<ILabelWiseLossFactory> LabelWiseLogisticLossConfig::createLabelWiseLossFactory() const {
-        return std::make_unique<LabelWiseLogisticLossFactory>();
-    }
-
-    std::unique_ptr<ISparseLabelWiseLossFactory> LabelWiseLogisticLossConfig::createSparseLabelWiseLossFactory() const {
         return std::make_unique<LabelWiseLogisticLossFactory>();
     }
 
