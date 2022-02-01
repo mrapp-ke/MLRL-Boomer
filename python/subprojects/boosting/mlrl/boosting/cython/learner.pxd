@@ -33,6 +33,10 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useCompleteHeads()
 
+        void useAutomaticStatistics()
+
+        void useDenseStatistics()
+
         void useNoL1Regularization()
 
         IManualRegularizationConfig& useL1Regularization()

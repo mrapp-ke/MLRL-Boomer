@@ -81,6 +81,21 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useCompleteHeads()
 
+    def use_automatic_statistics(self):
+        """
+        Configures the rule learner to automatically decide whether a dense or sparse representation of gradients and
+        Hessians should be used.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAutomaticStatistics()
+
+    def use_dense_statistics(self):
+        """
+        Configures the rule learner to use a dense representation of gradients and Hessians.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useDenseStatistics()
+
     def use_no_l1_regularization(self):
         """
         Configures the rule learner to not use L1 regularization.
