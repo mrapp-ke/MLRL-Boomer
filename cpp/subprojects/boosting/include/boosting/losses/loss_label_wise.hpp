@@ -150,6 +150,14 @@ namespace boosting {
              */
             virtual std::unique_ptr<ILabelWiseLossFactory> createLabelWiseLossFactory() const = 0;
 
+            std::unique_ptr<IEvaluationMeasureFactory> createEvaluationMeasureFactory() const override final {
+                return this->createLabelWiseLossFactory();
+            }
+
+            std::unique_ptr<ISimilarityMeasureFactory> createSimilarityMeasureFactory() const override final {
+                return this->createLabelWiseLossFactory();
+            }
+
     };
 
 }

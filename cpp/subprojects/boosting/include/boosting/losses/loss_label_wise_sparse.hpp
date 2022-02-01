@@ -151,6 +151,10 @@ namespace boosting {
              */
             virtual std::unique_ptr<ISparseLabelWiseLossFactory> createSparseLabelWiseLossFactory() const = 0;
 
+            std::unique_ptr<ILabelWiseLossFactory> createLabelWiseLossFactory() const override {
+                return this->createSparseLabelWiseLossFactory();
+            }
+
     };
 
 }
