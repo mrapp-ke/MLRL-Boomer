@@ -11,8 +11,10 @@ from mlrl.testbed.args import add_rule_learner_arguments, PARAM_HEAD_TYPE, PARAM
     PARAM_PARALLEL_STATISTIC_UPDATE
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
-from mlrl.boosting.boosting_learners import Boomer, HEAD_TYPE_VALUES, EARLY_STOPPING_VALUES, LABEL_BINNING_VALUES, \
-    LOSS_VALUES, PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
+from mlrl.boosting.boosting_learners import Boomer, STATISTIC_FORMAT_VALUES, HEAD_TYPE_VALUES, EARLY_STOPPING_VALUES, \
+    LABEL_BINNING_VALUES, LOSS_VALUES, PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
+
+PARAM_STATISTIC_FORMAT = '--statistic-format'
 
 PARAM_RULE_MODEL_ASSEMBLAGE = '--rule-model-assemblage'
 
@@ -40,6 +42,7 @@ class BoomerRunnable(RuleLearnerRunnable):
                       feature_format=args.feature_format,
                       label_format=args.label_format,
                       prediction_format=args.prediction_format,
+                      statistic_format=args.statistic_format,
                       rule_model_assemblage=args.rule_model_assemblage,
                       rule_induction=args.rule_induction,
                       max_rules=args.max_rules,
@@ -65,6 +68,11 @@ class BoomerRunnable(RuleLearnerRunnable):
 
 def __add_arguments(parser: ArgumentParser):
     add_rule_learner_arguments(parser)
+    parser.add_argument(PARAM_STATISTIC_FORMAT, type=str,
+                        help='The format to be used for the representation of gradients and Hessians. Must be one of '
+                             + format_string_set(STATISTIC_FORMAT_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
+                             + 'suitable format is chosen automatically based on the parameters ' + PARAM_LOSS + ', '
+                             + PARAM_HEAD_TYPE + ' and ' + PARAM_RULE_MODEL_ASSEMBLAGE + '.')
     parser.add_argument(PARAM_RULE_MODEL_ASSEMBLAGE, type=str,
                         help='The name of the algorithm to be used for the induction of several rule. Must be one of '
                              + format_string_set(RULE_MODEL_ASSEMBLAGE_VALUES) + '. For additional options refer to '

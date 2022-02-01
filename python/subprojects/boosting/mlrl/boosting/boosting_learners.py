@@ -46,6 +46,8 @@ ARGUMENT_FORCE_STOP = 'force_stop'
 
 ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
+STATISTIC_FORMAT_DENSE = 'dense'
+
 HEAD_TYPE_SINGLE = 'single-label'
 
 HEAD_TYPE_COMPLETE = 'complete'
@@ -63,6 +65,11 @@ NON_DECOMPOSABLE_LOSSES = {LOSS_LOGISTIC_EXAMPLE_WISE}
 PREDICTOR_LABEL_WISE = 'label-wise'
 
 PREDICTOR_EXAMPLE_WISE = 'example-wise'
+
+STATISTIC_FORMAT_VALUES: Set[str] = {
+    STATISTIC_FORMAT_DENSE,
+    AUTOMATIC
+}
 
 HEAD_TYPE_VALUES: Set[str] = {
     HEAD_TYPE_SINGLE,
@@ -121,6 +128,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value,
                  prediction_format: str = SparsePolicy.AUTO.value,
+                 statistic_format: Optional[str] = None,
                  rule_model_assemblage: Optional[str] = None,
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
@@ -143,6 +151,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
+        :param statistic_format:            The format to be used for representation of gradients and Hessians. Must be
+                                            'dense' or 'auto', if the most suitable format should be chosen
+                                            automatically
         :param rule_model_assemblage:       The algorithm that should be used for the induction of several rules. Must
                                             be 'sequential'. For additional options refer to the documentation
         :param rule_induction:              The algorithm that should be used for the induction of individual rules.
@@ -209,6 +220,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             documentation
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
+        self.statistic_format = statistic_format
         self.rule_model_assemblage = rule_model_assemblage
         self.rule_induction = rule_induction
         self.max_rules = max_rules
@@ -241,6 +253,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_label-format=' + str(self.label_format)
         if self.prediction_format != SparsePolicy.AUTO.value:
             name += '_prediction-format=' + str(self.prediction_format)
+        if self.statistic_format is not None:
+            name += '_statistic-format=' + str(self.statistic_format)
         if self.rule_model_assemblage is not None:
             name += '_rule-model-assemblage=' + str(self.rule_model_assemblage)
         if self.rule_induction is not None:
@@ -303,6 +317,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.__configure_measure_stopping_criterion(config)
         self.__configure_post_processor(config)
         self.__configure_head_type(config)
+        self.__configure_statistics(config)
         self.__configure_l1_regularization(config)
         self.__configure_l2_regularization(config)
         self.__configure_loss(config)
@@ -374,7 +389,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def __configure_post_processor(self, config: BoostingRuleLearnerConfig):
         shrinkage = self.shrinkage
 
-        if self.shrinkage is not None:
+        if shrinkage is not None:
             if shrinkage == 1:
                 config.use_no_post_processor()
             else:
@@ -383,7 +398,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def __configure_head_type(self, config: BoostingRuleLearnerConfig):
         head_type = self.head_type
 
-        if self.head_type is not None:
+        if head_type is not None:
             value = parse_param("head_type", head_type, HEAD_TYPE_VALUES)
 
             if value == AUTOMATIC:
@@ -392,6 +407,17 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_single_label_heads()
             elif value == HEAD_TYPE_COMPLETE:
                 config.use_complete_heads()
+
+    def __configure_statistics(self, config: BoostingRuleLearnerConfig):
+        statistic_format = self.statistic_format
+
+        if statistic_format is not None:
+            value = parse_param("statistic_format", statistic_format, STATISTIC_FORMAT_VALUES)
+
+            if value == AUTOMATIC:
+                config.use_automatic_statistics()
+            elif value == STATISTIC_FORMAT_DENSE:
+                config.use_dense_statistics()
 
     def __configure_l1_regularization(self, config: BoostingRuleLearnerConfig):
         l1_regularization_weight = self.l1_regularization_weight

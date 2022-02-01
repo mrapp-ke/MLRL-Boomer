@@ -169,6 +169,11 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'single-label'`` If all rules should predict for a single label.
   * ``'complete'`` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
 
+* ``statistic_format`` (Default value ``'auto'``)
+
+  * ``'auto'`` A sparse format is used for the representation of gradients and Hessians if supported by the loss function and if no rule predicts for all labels.
+  * ``'dense'`` A dense format is used for the representation of gradients and Hessians
+
 * ``shrinkage`` (Default value = ``0.3``)
 
   * The shrinkage parameter, a.k.a. the "learning rate", that is used to shrink the weight of individual rules. Must be in (0, 1].
