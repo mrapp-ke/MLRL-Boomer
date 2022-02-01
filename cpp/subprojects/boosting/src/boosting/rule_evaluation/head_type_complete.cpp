@@ -15,6 +15,10 @@ namespace boosting {
 
     }
 
+    bool CompleteHeadConfig::isPartial() const {
+        return false;
+    }
+
     std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
             const ILabelWiseLossConfig& lossConfig) const {

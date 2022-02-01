@@ -5,13 +5,19 @@
 
 namespace boosting {
 
-    AutomaticHeadConfig::AutomaticHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
+    AutomaticHeadConfig::AutomaticHeadConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
+                                             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
                                              const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
                                              const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
                                              const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
-        : labelBinningConfigPtr_(labelBinningConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr),
-          l1RegularizationConfigPtr_(l1RegularizationConfigPtr), l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
+        : lossConfigPtr_(lossConfigPtr), labelBinningConfigPtr_(labelBinningConfigPtr),
+          multiThreadingConfigPtr_(multiThreadingConfigPtr), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
+          l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
 
+    }
+
+    bool AutomaticHeadConfig::isPartial() const {
+        return dynamic_cast<const IExampleWiseLossConfig*>(lossConfigPtr_.get()) == nullptr;
     }
 
     std::unique_ptr<IStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(

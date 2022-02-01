@@ -44,6 +44,8 @@ namespace boosting {
                                   const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
                                   const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
 
+            bool isPartial() const override;
+
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
                 const ILabelWiseLossConfig& lossConfig) const override;

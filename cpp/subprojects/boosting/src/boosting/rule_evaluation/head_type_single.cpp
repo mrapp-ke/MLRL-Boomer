@@ -17,6 +17,10 @@ namespace boosting {
 
     }
 
+    bool SingleLabelHeadConfig::isPartial() const {
+        return true;
+    }
+
     std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
             const ILabelWiseLossConfig& lossConfig) const {

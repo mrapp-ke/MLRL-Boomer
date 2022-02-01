@@ -24,6 +24,14 @@ namespace boosting {
             virtual ~IHeadConfig() { };
 
             /**
+             * Returns, whether the heads of rules are partial, i.e., they predict for a subset of the available labels,
+             * or not.
+             *
+             * @return True, if the heads of rules are partial, false otherwise
+             */
+            virtual bool isPartial() const = 0;
+
+            /**
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
              * configuration.
              *

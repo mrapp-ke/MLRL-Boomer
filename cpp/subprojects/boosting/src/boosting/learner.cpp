@@ -107,7 +107,7 @@ namespace boosting {
 
     void BoostingRuleLearner::Config::useAutomaticHeads() {
         headConfigPtr_ = std::make_unique<AutomaticHeadConfig>(
-            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
+            lossConfigPtr_, labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
             l2RegularizationConfigPtr_);
     }
 
