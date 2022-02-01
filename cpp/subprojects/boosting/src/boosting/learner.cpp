@@ -18,8 +18,8 @@
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
-#include "boosting/statistics/statistics_auto.hpp"
-#include "boosting/statistics/statistics_dense.hpp"
+#include "boosting/statistics/statistic_format_auto.hpp"
+#include "boosting/statistics/statistic_format_dense.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
 
 

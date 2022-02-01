@@ -16,7 +16,7 @@
 #include "boosting/post_processing/shrinkage_constant.hpp"
 #include "boosting/rule_evaluation/head_type.hpp"
 #include "boosting/rule_evaluation/regularization_manual.hpp"
-#include "boosting/statistics/statistics.hpp"
+#include "boosting/statistics/statistic_format.hpp"
 
 
 namespace boosting {

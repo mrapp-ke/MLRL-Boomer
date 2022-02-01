@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "boosting/statistics/statistics.hpp"
+#include "boosting/statistics/statistic_format.hpp"
 #include "boosting/losses/loss.hpp"
 
 

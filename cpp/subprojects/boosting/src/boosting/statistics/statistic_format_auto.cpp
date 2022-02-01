@@ -1,4 +1,4 @@
-#include "boosting/statistics/statistics_auto.hpp"
+#include "boosting/statistics/statistic_format_auto.hpp"
 
 
 namespace boosting {
