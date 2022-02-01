@@ -151,6 +151,16 @@ namespace boosting {
              */
             virtual std::unique_ptr<ISparseLabelWiseLossFactory> createSparseLabelWiseLossFactory() const = 0;
 
+            /**
+             * Creates and returns a new object of type `ISparseEvaluationMeasureFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `ISparseEvaluationMeasureFactory` that has been created
+             */
+            std::unique_ptr<ISparseEvaluationMeasureFactory> createSparseEvaluationMeasureFactory() const {
+                return this->createSparseLabelWiseLossFactory();
+            }
+
             std::unique_ptr<ILabelWiseLossFactory> createLabelWiseLossFactory() const override final {
                 return this->createSparseLabelWiseLossFactory();
             }
