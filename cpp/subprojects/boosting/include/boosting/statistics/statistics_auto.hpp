@@ -1,0 +1,31 @@
+/*
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
+ */
+#pragma once
+
+#include "boosting/statistics/statistics.hpp"
+#include "boosting/losses/loss.hpp"
+
+
+namespace boosting {
+
+    class AutomaticStatisticsConfig : public IStatisticsConfig {
+
+        private:
+
+            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+
+        public:
+
+            /**
+             * @param lossConfigPtr A reference to an unique pointer that stores the configuration of the loss function
+             */
+            AutomaticStatisticsConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
+
+            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix, const Blas& blas,
+                const Lapack& lapack) const override;
+
+    };
+
+};

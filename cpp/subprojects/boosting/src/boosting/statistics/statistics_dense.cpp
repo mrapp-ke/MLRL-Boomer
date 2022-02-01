@@ -1,0 +1,17 @@
+#include "boosting/statistics/statistics_dense.hpp"
+
+
+namespace boosting {
+
+    DenseStatisticsConfig::DenseStatisticsConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr)
+        : lossConfigPtr_(lossConfigPtr) {
+
+    }
+
+    std::unique_ptr<IStatisticsProviderFactory> DenseStatisticsConfig::createStatisticsProviderFactory(
+                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix, const Blas& blas,
+                const Lapack& lapack) const {
+        return lossConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack, false);
+    }
+
+}
