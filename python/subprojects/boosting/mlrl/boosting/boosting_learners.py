@@ -48,6 +48,8 @@ ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
 STATISTIC_FORMAT_DENSE = 'dense'
 
+STATISTIC_FORMAT_SPARSE = 'sparse'
+
 HEAD_TYPE_SINGLE = 'single-label'
 
 HEAD_TYPE_COMPLETE = 'complete'
@@ -68,6 +70,7 @@ PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
 STATISTIC_FORMAT_VALUES: Set[str] = {
     STATISTIC_FORMAT_DENSE,
+    STATISTIC_FORMAT_SPARSE,
     AUTOMATIC
 }
 
@@ -152,7 +155,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  parallel_prediction: Optional[str] = None):
         """
         :param statistic_format:            The format to be used for representation of gradients and Hessians. Must be
-                                            'dense' or 'auto', if the most suitable format should be chosen
+                                            'dense', 'sparse' or 'auto', if the most suitable format should be chosen
                                             automatically
         :param rule_model_assemblage:       The algorithm that should be used for the induction of several rules. Must
                                             be 'sequential'. For additional options refer to the documentation
@@ -418,6 +421,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_automatic_statistics()
             elif value == STATISTIC_FORMAT_DENSE:
                 config.use_dense_statistics()
+            elif value == STATISTIC_FORMAT_SPARSE:
+                config.use_sparse_statistics()
 
     def __configure_l1_regularization(self, config: BoostingRuleLearnerConfig):
         l1_regularization_weight = self.l1_regularization_weight
