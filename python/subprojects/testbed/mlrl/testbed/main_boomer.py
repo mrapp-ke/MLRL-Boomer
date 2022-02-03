@@ -72,7 +72,8 @@ def __add_arguments(parser: ArgumentParser):
                         help='The format to be used for the representation of gradients and Hessians. Must be one of '
                              + format_string_set(STATISTIC_FORMAT_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
                              + 'suitable format is chosen automatically based on the parameters ' + PARAM_LOSS + ', '
-                             + PARAM_HEAD_TYPE + ' and ' + PARAM_RULE_MODEL_ASSEMBLAGE + '.')
+                             + PARAM_HEAD_TYPE + ', ' + PARAM_RULE_MODEL_ASSEMBLAGE + ' and the characteristics of the '
+                             + 'label matrix.')
     parser.add_argument(PARAM_RULE_MODEL_ASSEMBLAGE, type=str,
                         help='The name of the algorithm to be used for the induction of several rule. Must be one of '
                              + format_string_set(RULE_MODEL_ASSEMBLAGE_VALUES) + '. For additional options refer to '
