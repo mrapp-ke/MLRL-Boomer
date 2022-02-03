@@ -29,15 +29,15 @@ using SparseListVector = std::forward_list<IndexedValue<T>>;
 template<typename T>
 static inline typename SparseListVector<T>::iterator insertNext(SparseListVector<T>& vector, uint32 index, T& value) {
     while (!vector.empty()) {
-        typename SparseListVector<T>::iterator begin = vector.begin();
-        IndexedValue<T>& firstEntry = *begin;
+        typename SparseListVector<T>::iterator first = vector.begin();
+        IndexedValue<T>& firstEntry = *first;
         uint32 firstIndex = firstEntry.index;
 
         if (firstIndex < index) {
             vector.pop_front();
         } else if (firstIndex == index) {
             firstEntry.value = value;
-            return begin;
+            return first;
         } else {
             break;
         }
