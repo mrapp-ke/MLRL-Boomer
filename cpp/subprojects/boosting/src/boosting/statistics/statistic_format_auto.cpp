@@ -14,8 +14,8 @@ namespace boosting {
     std::unique_ptr<IStatisticsProviderFactory> AutomaticStatisticsConfig::createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix, const Blas& blas,
                 const Lapack& lapack) const {
-        bool preferSparseStatistics =
-            !ruleModelAssemblageConfigPtr_->isDefaultRuleUsed() && headConfigPtr_->isPartial();
+        bool preferSparseStatistics = labelMatrix.isSparse() && !ruleModelAssemblageConfigPtr_->isDefaultRuleUsed()
+                                      && headConfigPtr_->isPartial();
         return lossConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack,
                                                                preferSparseStatistics);
     }
