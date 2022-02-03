@@ -405,7 +405,7 @@ namespace boosting {
              * @see `IStatistics::updateCoveredStatistic`
              */
             void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override final {
-                float64 signedWeight = remove ? -((float64) weight) : weight;
+                float64 signedWeight = remove ? -weight : weight;
                 totalSumVectorPtr_->add(this->statisticViewPtr_->row_cbegin(statisticIndex),
                                         this->statisticViewPtr_->row_cend(statisticIndex), signedWeight);
             }
