@@ -174,6 +174,12 @@ namespace boosting {
                     virtual void useDenseStatistics() = 0;
 
                     /**
+                     * Configures the rule learner to use a sparse representation of gradients and Hessians, if
+                     * possible.
+                     */
+                    virtual void useSparseStatistics() = 0;
+
+                    /**
                      * Configures the rule learner to not use L1 regularization.
                      */
                     virtual void useNoL1Regularization() = 0;
@@ -364,6 +370,8 @@ namespace boosting {
                     void useAutomaticStatistics() override;
 
                     void useDenseStatistics() override;
+
+                    void useSparseStatistics() override;
 
                     void useNoL1Regularization() override;
 

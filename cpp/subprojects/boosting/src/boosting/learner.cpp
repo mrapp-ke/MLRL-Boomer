@@ -20,6 +20,7 @@
 #include "boosting/rule_evaluation/regularization_no.hpp"
 #include "boosting/statistics/statistic_format_auto.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
+#include "boosting/statistics/statistic_format_sparse.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
 
 
@@ -130,6 +131,10 @@ namespace boosting {
 
     void BoostingRuleLearner::Config::useDenseStatistics() {
         statisticsConfigPtr_ = std::make_unique<DenseStatisticsConfig>(lossConfigPtr_);
+    }
+
+    void BoostingRuleLearner::Config::useSparseStatistics() {
+        statisticsConfigPtr_ = std::make_unique<SparseStatisticsConfig>(lossConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useNoL1Regularization() {
