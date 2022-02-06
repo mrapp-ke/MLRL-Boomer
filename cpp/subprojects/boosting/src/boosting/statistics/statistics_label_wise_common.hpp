@@ -134,7 +134,7 @@ namespace boosting {
 
                         // Reset the sums of gradients and Hessians to zero and add it to the accumulated sums of
                         // gradients and Hessians...
-                        accumulatedSumVector_->add(sumVector_.cbegin(), sumVector_.cend());
+                        accumulatedSumVector_->add(sumVector_);
                         sumVector_.clear();
                     }
 
