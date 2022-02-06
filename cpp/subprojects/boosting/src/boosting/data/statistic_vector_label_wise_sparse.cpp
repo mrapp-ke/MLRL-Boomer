@@ -34,7 +34,7 @@ namespace boosting {
         vector_.clear();
     }
 
-    void SparseLabelWiseStatisticVector::add(const_iterator begin, const_iterator end) {
+    void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticVector& vector) {
         // TODO Implement
     }
 
@@ -64,15 +64,15 @@ namespace boosting {
         // TODO Implement
     }
 
-    void SparseLabelWiseStatisticVector::difference(const_iterator firstBegin, const_iterator firstEnd,
-                                                    const CompleteIndexVector& firstIndices, const_iterator secondBegin,
-                                                    const_iterator secondEnd) {
+    void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
+                                                    const CompleteIndexVector& firstIndices,
+                                                    const SparseLabelWiseStatisticVector& second) {
         // TODO Implement
     }
 
-    void SparseLabelWiseStatisticVector::difference(const_iterator firstBegin, const_iterator firstEnd,
-                                                    const PartialIndexVector& firstIndices, const_iterator secondBegin,
-                                                    const_iterator secondEnd) {
+    void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
+                                                    const PartialIndexVector& firstIndices,
+                                                    const SparseLabelWiseStatisticVector& second) {
         // TODO Implement
     }
 

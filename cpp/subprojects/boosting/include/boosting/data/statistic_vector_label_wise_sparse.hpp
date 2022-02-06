@@ -98,10 +98,10 @@ namespace boosting {
             /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
-             * @param begin A `const_iterator` to the beginning of the vector
-             * @param end   A `const_iterator` to the end of the vector
+             * @param vector A reference to an object of type `SparseLabelWiseStatisticVector` that stores the gradients
+             *               and Hessians to be added to this vector
              */
-            void add(const_iterator begin, const_iterator end);
+            void add(const SparseLabelWiseStatisticVector& vector);
 
             /**
              * Adds all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` to this vector.
@@ -156,30 +156,30 @@ namespace boosting {
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `CompleteIndexVector`.
              *
-             * @param firstBegin    A `const_iterator` to the beginning of the first vector
-             * @param firstEnd      A `const_iterator` to the end of the first vector
+             * @param first         A reference to an object of type `SparseLabelWiseStatisticVector` that stores the
+             *                      gradients and Hessians in the first vector
              * @param firstIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices
-             * @param secondBegin  A `const_iterator` to the beginning of the second vector
-             * @param secondEnd    A `const_iterator` to the end of the second vector
+             * @param second        A reference to an object of type `SparseLabelWiseStatisticVector` that stores the
+             *                      gradients and Hessians in the second vector
              */
-            void difference(const_iterator firstBegin, const_iterator firstEnd, const CompleteIndexVector& firstIndices,
-                            const_iterator secondBegin, const_iterator secondEnd);
+            void difference(const SparseLabelWiseStatisticVector& first, const CompleteIndexVector& firstIndices,
+                            const SparseLabelWiseStatisticVector& second);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `PartialIndexVector`.
              *
-             * @param firstBegin    A `const_iterator` to the beginning of the first vector
-             * @param firstEnd      A `const_iterator` to the end of the first vector
+             * @param first         A reference to an object of type `SparseLabelWiseStatisticVector` that stores the
+             *                      gradients and Hessians in the first vector
              * @param firstIndices  A reference to an object of type `PartialIndexVector` that provides access to the
              *                      indices
-             * @param secondBegin   A `const_iterator` to the beginning of the second vector
-             * @param secondEnd     A `const_iterator` to the end of the second vector
+             * @param second        A reference to an object of type `SparseLabelWiseStatisticVector` that stores the
+             *                      gradients and Hessians in the second vector
              */
-            void difference(const_iterator firstBegin, const_iterator firstEnd, const PartialIndexVector& firstIndices,
-                            const_iterator secondBegin, const_iterator secondEnd);
+            void difference(const SparseLabelWiseStatisticVector& first, const PartialIndexVector& firstIndices,
+                            const SparseLabelWiseStatisticVector& second);
 
     };
 
