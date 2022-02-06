@@ -7,6 +7,7 @@
 #include "common/data/vector_sparse_list.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
+#include "boosting/data/statistic_view_label_wise_sparse.hpp"
 #include <memory>
 
 
@@ -95,47 +96,51 @@ namespace boosting {
             void clear();
 
             /**
-             * Adds all gradients and Hessians in another vector to this vector.
+             * Adds all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` to this vector.
              *
-             * @param begin A `const_iterator` to the beginning of the vector
-             * @param end   A `const_iterator` to the end of the vector
+             * @param begin A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the vector
+             * @param end   A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the vector
              */
-            void add(const_iterator begin, const_iterator end);
+            void add(SparseLabelWiseStatisticConstView::const_iterator begin,
+                     SparseLabelWiseStatisticConstView::const_iterator end);
 
             /**
-             * Adds all gradients and Hessians in another vector to this vector. The gradients and Hessians to be added
-             * are multiplied by a specific weight.
+             * Adds all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` to this vector.
+             * The gradients and Hessians to be added are multiplied by a specific weight.
              *
-             * @param begin     A `const_iterator` to the beginning of the vector
-             * @param end       A `const_iterator` to the end of the vector
+             * @param begin     A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the vector
+             * @param end       A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const_iterator begin, const_iterator end, float64 weight);
+            void add(SparseLabelWiseStatisticConstView::const_iterator begin,
+                     SparseLabelWiseStatisticConstView::const_iterator end, float64 weight);
 
             /**
-             * Adds certain gradients and Hessians in another vector, whose positions are given as a
-             * `CompleteIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a
-             * specific weight.
+             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView`, whose
+             * positions are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added
+             * are multiplied by a specific weight.
              *
-             * @param begin     A `const_iterator` to the beginning of the vector
-             * @param end       A `const_iterator` to the end of the vector
+             * @param begin     A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the vector
+             * @param end       A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the vector
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const_iterator begin, const_iterator end, const CompleteIndexVector& indices,
+            void addToSubset(SparseLabelWiseStatisticConstView::const_iterator begin,
+                             SparseLabelWiseStatisticConstView::const_iterator end, const CompleteIndexVector& indices,
                              float64 weight);
 
             /**
-             * Adds certain gradients and Hessians in another vector, whose positions are given as a
-             * `PartialIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a specific
-             * weight.
+             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView`, whose
+             * positions are given as a `PartialIndexVector`, to this vector. The gradients and Hessians to be added are
+             * multiplied by a specific weight.
              *
-             * @param begin     A `const_iterator` to the beginning of the vector
-             * @param end       A `const_iterator` to the end of the vector
+             * @param begin     A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the vector
+             * @param end       A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the vector
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const_iterator begin, const_iterator end, const PartialIndexVector& indices,
+            void addToSubset(SparseLabelWiseStatisticConstView::const_iterator begin,
+                             SparseLabelWiseStatisticConstView::const_iterator end, const PartialIndexVector& indices,
                              float64 weight);
 
             /**

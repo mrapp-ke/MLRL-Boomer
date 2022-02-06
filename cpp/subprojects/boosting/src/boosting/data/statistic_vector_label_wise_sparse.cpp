@@ -34,24 +34,28 @@ namespace boosting {
         vector_.clear();
     }
 
-    void SparseLabelWiseStatisticVector::add(const_iterator begin, const_iterator end) {
+    void SparseLabelWiseStatisticVector::add(SparseLabelWiseStatisticConstView::const_iterator begin,
+                                             SparseLabelWiseStatisticConstView::const_iterator end) {
         // TODO Implement
         numAggregatedStatistics_++;
     }
 
-    void SparseLabelWiseStatisticVector::add(const_iterator begin, const_iterator end, float64 weight) {
+    void SparseLabelWiseStatisticVector::add(SparseLabelWiseStatisticConstView::const_iterator begin,
+                                             SparseLabelWiseStatisticConstView::const_iterator end, float64 weight) {
         if (weight != 0) {
             // TODO Implement
             numAggregatedStatistics_++;
         }
     }
 
-    void SparseLabelWiseStatisticVector::addToSubset(const_iterator begin, const_iterator end,
+    void SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseStatisticConstView::const_iterator begin,
+                                                     SparseLabelWiseStatisticConstView::const_iterator end,
                                                      const CompleteIndexVector& indices, float64 weight) {
         // TODO Implement
     }
 
-    void SparseLabelWiseStatisticVector::addToSubset(const_iterator begin, const_iterator end,
+    void SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseStatisticConstView::const_iterator begin,
+                                                     SparseLabelWiseStatisticConstView::const_iterator end,
                                                      const PartialIndexVector& indices, float64 weight) {
         // TODO Implement
     }
