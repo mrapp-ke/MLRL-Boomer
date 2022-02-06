@@ -137,7 +137,11 @@ namespace boosting {
     void SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseStatisticConstView::const_iterator begin,
                                                      SparseLabelWiseStatisticConstView::const_iterator end,
                                                      const CompleteIndexVector& indices, float64 weight) {
-        // TODO Implement
+        if (weight != 0) {
+            sumOfWeights_ += weight;
+            addInternally<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(
+                vector_, begin, end, weight);
+        }
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseStatisticConstView::const_iterator begin,
