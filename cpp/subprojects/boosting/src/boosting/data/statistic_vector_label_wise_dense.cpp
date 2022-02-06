@@ -79,18 +79,17 @@ namespace boosting {
         addToArray(statistics_, begin, indexIterator, numElements_, weight);
     }
 
-    void DenseLabelWiseStatisticVector::difference(DenseLabelWiseStatisticConstView::const_iterator firstBegin,
-                                                   DenseLabelWiseStatisticConstView::const_iterator firstEnd,
-                                                   const CompleteIndexVector& firstIndices, const_iterator secondBegin,
-                                                   const_iterator secondEnd) {
-        setArrayToDifference(statistics_, firstBegin, secondBegin, numElements_);
+    void DenseLabelWiseStatisticVector::difference(const DenseLabelWiseStatisticVector& first,
+                                                   const CompleteIndexVector& firstIndices,
+                                                   const DenseLabelWiseStatisticVector& second) {
+        setArrayToDifference(statistics_, first.cbegin(), second.cbegin(), numElements_);
     }
 
-    void DenseLabelWiseStatisticVector::difference(const_iterator firstBegin, const_iterator firstEnd,
-                                                   const PartialIndexVector& firstIndices, const_iterator secondBegin,
-                                                   const_iterator secondEnd) {
+    void DenseLabelWiseStatisticVector::difference(const DenseLabelWiseStatisticVector& first,
+                                                   const PartialIndexVector& firstIndices,
+                                                   const DenseLabelWiseStatisticVector& second) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        setArrayToDifference(statistics_, firstBegin, secondBegin, indexIterator, numElements_);
+        setArrayToDifference(statistics_, first.cbegin(), second.cbegin(), indexIterator, numElements_);
     }
 
 }
