@@ -14,19 +14,23 @@
 namespace boosting {
 
     /**
-     * Stores aggregated statistics that results from summing up gradients and Hessians. It stores the sum of gradients
-     * and Hessians, as well as the number of statistics that have been aggregated.
+     * Stores aggregated statistics that result from summing up gradients and Hessians. It stores the sum of gradients
+     * and Hessians, as well as the sum of the weights of all aggregated statistics.
      */
     struct AggregatedStatistics {
 
-        AggregatedStatistics();
+        /**
+         * @param aggregatedStatistics  A reference to an object of type `AggregatedStatistics` that stores gradients
+         *                              and Hessians
+         * @param weight                The weight of the gradients and Hessians
+         */
+        AggregatedStatistics(const AggregatedStatistics& aggregatedStatistics, float64 weight);
 
         /**
-         * @param g The sum of gradients
-         * @param h The sum of Hessians
-         * @param n THe number of aggregated statistics
+         * @param tuple     A reference to an object of type `Tuple` that stores a gradient and a Hessian
+         * @param weight    The weight of the gradient and Hessian
          */
-        AggregatedStatistics(float64 g, float64 h, uint32 n);
+        AggregatedStatistics(const Tuple<float64>& tuple, float64 weight);
 
         /**
          * The sum of gradients.
@@ -39,9 +43,19 @@ namespace boosting {
         float64 sumOfHessians;
 
         /**
-         * The number of aggregated statistics.
+         * The sum of the weights of all aggregated statistics.
          */
-        uint32 numAggregatedStatistics;
+        float64 sumOfWeights;
+
+        /**
+         * Adds the gradients and Hessians that are stored by an object of type `AggregatedStatistics` to the aggregated
+         * statistics
+         *
+         * @param rhs   A reference to an object of type `AggregatedStatistics` that stores the gradients and Hessians
+         *              to be added to the aggregated statistics
+         * @return      A reference to the aggregated statistics
+         */
+        AggregatedStatistics& operator+=(const AggregatedStatistics& rhs);
 
     };
 
@@ -55,7 +69,7 @@ namespace boosting {
 
             SparseListVector<AggregatedStatistics> vector_;
 
-            uint32 numAggregatedStatistics_;
+            float64 sumOfWeights_;
 
         public:
 
@@ -180,6 +194,13 @@ namespace boosting {
              */
             void difference(const SparseLabelWiseStatisticVector& first, const PartialIndexVector& firstIndices,
                             const SparseLabelWiseStatisticVector& second);
+
+            /**
+             * Returns the sum of the weights of all statistics that have been added to the vector.
+             *
+             * @return The sum of the weights of all statistics that have been added to the vector
+             */
+            float64 getSumOfWeights() const;
 
     };
 
