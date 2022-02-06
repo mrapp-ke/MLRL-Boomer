@@ -74,22 +74,67 @@ namespace boosting {
         }
     }
 
-    AggregatedStatistics::AggregatedStatistics(const AggregatedStatistics& aggregatedStatistics, float64 weight)
-        : sumOfGradients(aggregatedStatistics.sumOfGradients * weight),
-          sumOfHessians(aggregatedStatistics.sumOfHessians * weight), sumOfWeights(weight) {
+    static inline uint32 fetchNextDifference(SparseLabelWiseStatisticVector::const_iterator& firstIterator,
+                                             SparseLabelWiseStatisticVector::const_iterator firstEnd,
+                                             SparseLabelWiseStatisticVector::const_iterator& secondIterator,
+                                             SparseLabelWiseStatisticVector::const_iterator secondEnd,
+                                             AggregatedStatistics& statistics, uint32 limit) {
+        uint32 firstIndex = firstIterator == firstEnd ? limit : (*firstIterator).index;
+        uint32 secondIndex = secondIterator == secondEnd ? limit : (*secondIterator).index;
 
+        if (firstIndex < secondIndex) {
+            statistics = (*firstIterator).value;
+            firstIterator++;
+            return firstIndex;
+        } else if (secondIndex < firstIndex) {
+            statistics = (*secondIterator).value;
+            secondIterator++;
+            return secondIndex;
+        } else if (firstIndex < limit) {
+            statistics = (*firstIterator).value - (*secondIterator).value;
+            firstIterator++;
+            secondIterator++;
+            return firstIndex;
+        }
+
+        return limit;
     }
 
-    AggregatedStatistics::AggregatedStatistics(const Tuple<float64>& tuple, float64 weight)
-        : sumOfGradients(tuple.first * weight), sumOfHessians(tuple.second * weight), sumOfWeights(weight) {
+    static inline uint32 fetchNextNonZeroDifference(SparseLabelWiseStatisticVector::const_iterator& firstIterator,
+                                                    SparseLabelWiseStatisticVector::const_iterator firstEnd,
+                                                    SparseLabelWiseStatisticVector::const_iterator& secondIterator,
+                                                    SparseLabelWiseStatisticVector::const_iterator secondEnd,
+                                                    AggregatedStatistics& statistics, uint32 limit) {
+        uint32 index = fetchNextDifference(firstIterator, firstEnd, secondIterator, secondEnd, statistics, limit);
 
+        while (statistics.sumOfGradients == 0 && index < limit) {
+            index = fetchNextDifference(firstIterator, firstEnd, secondIterator, secondEnd, statistics, limit);
+        }
+
+        return index;
     }
 
-    AggregatedStatistics& AggregatedStatistics::operator+=(const AggregatedStatistics& rhs) {
-        sumOfGradients += rhs.sumOfGradients;
-        sumOfHessians += rhs.sumOfHessians;
-        sumOfWeights += rhs.sumOfWeights;
-        return *this;
+    static inline void differenceInternally(SparseListVector<AggregatedStatistics>& vector,
+                                            SparseLabelWiseStatisticVector::const_iterator firstBegin,
+                                            SparseLabelWiseStatisticVector::const_iterator firstEnd,
+                                            SparseLabelWiseStatisticVector::const_iterator secondBegin,
+                                            SparseLabelWiseStatisticVector::const_iterator secondEnd, uint32 limit) {
+        AggregatedStatistics statistics;
+        uint32 index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, statistics, limit);
+
+        if (index < limit) {
+            insertNext(vector, index, statistics);
+            SparseListVector<AggregatedStatistics>::iterator previous = vector.begin();
+
+            while ((index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, statistics, limit))
+                   < limit) {
+                previous = insertNext(vector, index, statistics, previous);
+            }
+
+            vector.erase_after(previous, vector.end());
+        } else {
+            vector.clear();
+        }
     }
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements)
@@ -153,7 +198,9 @@ namespace boosting {
     void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
                                                     const CompleteIndexVector& firstIndices,
                                                     const SparseLabelWiseStatisticVector& second) {
-        // TODO Implement
+        sumOfWeights_ = first.sumOfWeights_ - second.sumOfWeights_;
+        differenceInternally(
+            vector_, first.cbegin(), first.cend(), second.cbegin(), second.cend(), firstIndices.getNumElements());
     }
 
     void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,

@@ -19,18 +19,29 @@ namespace boosting {
      */
     struct AggregatedStatistics {
 
+        AggregatedStatistics() {
+
+        }
+
         /**
          * @param aggregatedStatistics  A reference to an object of type `AggregatedStatistics` that stores gradients
          *                              and Hessians
          * @param weight                The weight of the gradients and Hessians
          */
-        AggregatedStatistics(const AggregatedStatistics& aggregatedStatistics, float64 weight);
+        AggregatedStatistics(const AggregatedStatistics& aggregatedStatistics, float64 weight)
+            : sumOfGradients(aggregatedStatistics.sumOfGradients * weight),
+              sumOfHessians(aggregatedStatistics.sumOfHessians * weight), sumOfWeights(weight) {
+
+        }
 
         /**
          * @param tuple     A reference to an object of type `Tuple` that stores a gradient and a Hessian
          * @param weight    The weight of the gradient and Hessian
          */
-        AggregatedStatistics(const Tuple<float64>& tuple, float64 weight);
+        AggregatedStatistics(const Tuple<float64>& tuple, float64 weight)
+            : sumOfGradients(tuple.first * weight), sumOfHessians(tuple.second * weight), sumOfWeights(weight) {
+
+        }
 
         /**
          * The sum of gradients.
@@ -49,13 +60,34 @@ namespace boosting {
 
         /**
          * Adds the gradients and Hessians that are stored by an object of type `AggregatedStatistics` to the aggregated
-         * statistics
+         * statistics.
          *
          * @param rhs   A reference to an object of type `AggregatedStatistics` that stores the gradients and Hessians
          *              to be added to the aggregated statistics
          * @return      A reference to the aggregated statistics
          */
-        AggregatedStatistics& operator+=(const AggregatedStatistics& rhs);
+        AggregatedStatistics& operator+=(const AggregatedStatistics& rhs) {
+            sumOfGradients += rhs.sumOfGradients;
+            sumOfHessians += rhs.sumOfHessians;
+            sumOfWeights += rhs.sumOfWeights;
+            return *this;
+        }
+
+        /**
+         * Creates and returns new aggregated statistics that result from subtracting the gradients and Hessians that
+         * are stored by a specific object of type `AggregatedStatistics` from existing statistics.
+         *
+         * @param lhs   A reference to an object of type `AggregatedStatistics` that stores the existing statistics
+         * @param rhs   A reference to an object of type `AggregatedStatistics` that stores the gradients and Hessians
+         *              to be subtracted from the existing statistics
+         * @return      The aggregated statistics that have been created
+         */
+        friend AggregatedStatistics operator-(AggregatedStatistics lhs, const AggregatedStatistics& rhs) {
+            lhs.sumOfGradients -= rhs.sumOfGradients;
+            lhs.sumOfHessians -= rhs.sumOfHessians;
+            lhs.sumOfWeights -= rhs.sumOfWeights;
+            return lhs;
+        }
 
     };
 
