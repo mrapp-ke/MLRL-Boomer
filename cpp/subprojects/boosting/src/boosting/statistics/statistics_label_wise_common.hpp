@@ -134,7 +134,7 @@ namespace boosting {
 
                         // Reset the sums of gradients and Hessians to zero and add it to the accumulated sums of
                         // gradients and Hessians...
-                        accumulatedSumVector_->add(sumVector_.cbegin(), sumVector_.cend());
+                        accumulatedSumVector_->add(sumVector_);
                         sumVector_.clear();
                     }
 
@@ -145,8 +145,7 @@ namespace boosting {
                         StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                         if (uncovered) {
-                            tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
-                                                  sumsOfStatistics.cbegin(), sumsOfStatistics.cend());
+                            tmpVector_.difference(*totalSumVector_, labelIndices_, sumsOfStatistics);
                             return ruleEvaluationPtr_->calculatePrediction(tmpVector_);
                         }
 
