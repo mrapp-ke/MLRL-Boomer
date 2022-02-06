@@ -34,6 +34,10 @@ namespace boosting {
         vector_.clear();
     }
 
+    void SparseLabelWiseStatisticVector::add(const_iterator begin, const_iterator end) {
+        // TODO Implement
+    }
+
     void SparseLabelWiseStatisticVector::add(SparseLabelWiseStatisticConstView::const_iterator begin,
                                              SparseLabelWiseStatisticConstView::const_iterator end) {
         // TODO Implement

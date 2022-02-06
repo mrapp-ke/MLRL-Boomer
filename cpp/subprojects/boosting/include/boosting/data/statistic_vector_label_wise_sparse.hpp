@@ -53,7 +53,7 @@ namespace boosting {
 
         private:
 
-            SparseListVector<Tuple<float64>> vector_;
+            SparseListVector<AggregatedStatistics> vector_;
 
             uint32 numAggregatedStatistics_;
 
@@ -74,7 +74,7 @@ namespace boosting {
             /**
              * An iterator that provides read-only access to the elements in the vector.
              */
-            typedef SparseListVector<Tuple<float64>>::const_iterator const_iterator;
+            typedef SparseListVector<AggregatedStatistics>::const_iterator const_iterator;
 
             /**
              * Returns a `const_iterator` to the beginning of the vector.
@@ -94,6 +94,14 @@ namespace boosting {
              * Sets all gradients and Hessians in the vector to zero.
              */
             void clear();
+
+            /**
+             * Adds all gradients and Hessians in another vector to this vector.
+             *
+             * @param begin A `const_iterator` to the beginning of the vector
+             * @param end   A `const_iterator` to the end of the vector
+             */
+            void add(const_iterator begin, const_iterator end);
 
             /**
              * Adds all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` to this vector.
