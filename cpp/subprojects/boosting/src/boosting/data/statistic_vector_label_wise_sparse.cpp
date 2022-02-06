@@ -129,8 +129,8 @@ namespace boosting {
                                              SparseLabelWiseStatisticConstView::const_iterator end, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
-            addInternally<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(vector_, begin, end,
-                                                                                             weight);
+            addInternally<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(
+                vector_, begin, end, weight);
         }
     }
 
