@@ -106,8 +106,8 @@ namespace boosting {
             /**
              * Adds all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` to this vector.
              *
-             * @param begin A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the vector
-             * @param end   A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the vector
+             * @param begin A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the row
+             * @param end   A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the row
              */
             void add(SparseLabelWiseStatisticConstView::const_iterator begin,
                      SparseLabelWiseStatisticConstView::const_iterator end);
@@ -116,8 +116,8 @@ namespace boosting {
              * Adds all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` to this vector.
              * The gradients and Hessians to be added are multiplied by a specific weight.
              *
-             * @param begin     A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the vector
-             * @param end       A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the vector
+             * @param begin     A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the row
+             * @param end       A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the row
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void add(SparseLabelWiseStatisticConstView::const_iterator begin,
@@ -128,8 +128,8 @@ namespace boosting {
              * positions are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added
              * are multiplied by a specific weight.
              *
-             * @param begin     A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the vector
-             * @param end       A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the vector
+             * @param begin     A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the row
+             * @param end       A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the row
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
@@ -142,8 +142,8 @@ namespace boosting {
              * positions are given as a `PartialIndexVector`, to this vector. The gradients and Hessians to be added are
              * multiplied by a specific weight.
              *
-             * @param begin     A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the vector
-             * @param end       A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the vector
+             * @param begin     A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the row
+             * @param end       A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the row
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
