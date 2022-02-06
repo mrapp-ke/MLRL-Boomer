@@ -126,7 +126,50 @@ namespace boosting {
             }
 
             const IScoreVector& calculatePrediction(SparseLabelWiseStatisticVector& statisticVector) override {
-                // TODO Implement
+                float64 sumOfWeights = statisticVector.getSumOfWeights();
+                SparseLabelWiseStatisticVector::const_iterator iterator = statisticVector.cbegin();
+                SparseLabelWiseStatisticVector::const_iterator end = statisticVector.cend();
+                DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                PartialIndexVector::iterator indexIterator = indexVector_.begin();
+
+                if (iterator != end) {
+                    const IndexedValue<AggregatedStatistics>& firstEntry = *iterator;
+                    const AggregatedStatistics& firstStatistics = firstEntry.value;
+                    float64 bestGradient = firstStatistics.sumOfGradients;
+                    float64 bestHessian = firstStatistics.sumOfHessians + (sumOfWeights - firstStatistics.sumOfWeights);
+                    float64 bestQualityScore = calculateLabelWiseQualityScore(bestGradient, bestHessian,
+                                                                              l1RegularizationWeight_,
+                                                                              l2RegularizationWeight_);
+                    uint32 bestIndex = firstEntry.index;
+                    iterator++;
+
+                    for (; iterator != end; iterator++) {
+                        const IndexedValue<AggregatedStatistics>& entry = *iterator;
+                        const AggregatedStatistics& statistics = entry.value;
+                        float64 gradient = statistics.sumOfGradients;
+                        float64 hessian = statistics.sumOfHessians + (sumOfWeights - statistics.sumOfWeights);
+                        float64 qualityScore = calculateLabelWiseQualityScore(gradient, hessian,
+                                                                              l1RegularizationWeight_,
+                                                                              l2RegularizationWeight_);
+
+                        if (qualityScore < bestQualityScore) {
+                            bestGradient = gradient;
+                            bestHessian = hessian;
+                            bestIndex = entry.index;
+                            bestQualityScore = qualityScore;
+                        }
+                    }
+
+                    scoreIterator[0] = calculateLabelWiseScore(bestGradient, bestHessian, l1RegularizationWeight_,
+                                                               l2RegularizationWeight_);
+                    indexIterator[0] = bestIndex;
+                    scoreVector_.overallQualityScore = bestQualityScore;
+                } else {
+                    scoreIterator[0] = 0;
+                    indexIterator[0] = labelIndices_.cbegin()[0];
+                    scoreVector_.overallQualityScore = 0;
+                }
+
                 return scoreVector_;
             }
 
