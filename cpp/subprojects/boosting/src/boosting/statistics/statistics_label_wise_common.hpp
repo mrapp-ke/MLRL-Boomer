@@ -145,8 +145,7 @@ namespace boosting {
                         StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
 
                         if (uncovered) {
-                            tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
-                                                  sumsOfStatistics.cbegin(), sumsOfStatistics.cend());
+                            tmpVector_.difference(*totalSumVector_, labelIndices_, sumsOfStatistics);
                             return ruleEvaluationPtr_->calculatePrediction(tmpVector_);
                         }
 
