@@ -51,6 +51,11 @@ namespace boosting {
         setArrayToZeros(statistics_, numElements_);
     }
 
+
+    void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticVector& vector) {
+        addToArray(statistics_, vector.statistics_, numElements_);
+    }
+
     void DenseLabelWiseStatisticVector::add(DenseLabelWiseStatisticConstView::const_iterator begin,
                                             DenseLabelWiseStatisticConstView::const_iterator end) {
         addToArray(statistics_, begin, numElements_);
