@@ -6,6 +6,7 @@
 #include "common/data/tuple.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
+#include "boosting/data/statistic_view_label_wise_dense.hpp"
 #include <memory>
 
 
@@ -96,47 +97,51 @@ namespace boosting {
             void clear();
 
             /**
-             * Adds all gradients and Hessians in another vector to this vector.
+             * Adds all gradients and Hessians in a single row of a `DenseLabelWiseStatisticConstView` to this vector.
              *
-             * @param begin A `const_iterator` to the beginning of the vector
-             * @param end   A `const_iterator` to the end of the vector
+             * @param begin A `DenseLabelWiseStatisticConstView::const_iterator` to the beginning of the row
+             * @param end   A `DenseLabelWiseStatisticConstView::const_iterator` to the end of the row
              */
-            void add(const_iterator begin, const_iterator end);
+            void add(DenseLabelWiseStatisticConstView::const_iterator begin,
+                     DenseLabelWiseStatisticConstView::const_iterator end);
 
             /**
-             * Adds all gradients and Hessians in another vector to this vector. The gradients and Hessians to be added
-             * are multiplied by a specific weight.
+             * Adds all gradients and Hessians in a single row of a `DenseLabelWiseStatisticConstView` to this vector.
+             * The gradients and Hessians to be added are multiplied by a specific weight.
              *
-             * @param begin     A `const_iterator` to the beginning of the vector
-             * @param end       A `const_iterator` to the end of the vector
+             * @param begin     A `DenseLabelWiseStatisticConstView::const_iterator` to the beginning of the row
+             * @param end       A `DenseLabelWiseStatisticConstView::const_iterator` to the end of the row
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const_iterator begin, const_iterator end, float64 weight);
+            void add(DenseLabelWiseStatisticConstView::const_iterator begin,
+                     DenseLabelWiseStatisticConstView::const_iterator end, float64 weight);
 
             /**
-             * Adds certain gradients and Hessians in another vector, whose positions are given as a
-             * `CompleteIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a
-             * specific weight.
+             * Adds certain gradients and Hessians in a single row of a `DenseLabelWiseStatisticConstView`, whose
+             * positions are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added
+             * are multiplied by a specific weight.
              *
-             * @param begin     A `const_iterator` to the beginning of the vector
-             * @param end       A `const_iterator` to the end of the vector
+             * @param begin     A `DenseLabelWiseStatisticConstView::const_iterator` to the beginning of the row
+             * @param end       A `DenseLabelWiseStatisticConstView::const_iterator` to the end of the row
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const_iterator begin, const_iterator end, const CompleteIndexVector& indices,
+            void addToSubset(DenseLabelWiseStatisticConstView::const_iterator begin,
+                             DenseLabelWiseStatisticConstView::const_iterator end, const CompleteIndexVector& indices,
                              float64 weight);
 
             /**
-             * Adds certain gradients and Hessians in another vector, whose positions are given as a
-             * `PartialIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a specific
-             * weight.
+             * Adds certain gradients and Hessians in single row of a `DenseLabelWiseStatisticConstView`, whose
+             * positions are given as a `PartialIndexVector`, to this vector. The gradients and Hessians to be added are
+             * multiplied by a specific weight.
              *
-             * @param begin     A `const_iterator` to the beginning of the vector
-             * @param end       A `const_iterator` to the end of the vector
+             * @param begin     A `DenseLabelWiseStatisticConstView::const_iterator` to the beginning of the row
+             * @param end       A `DenseLabelWiseStatisticConstView::const_iterator` to the end of the row
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const_iterator begin, const_iterator end, const PartialIndexVector& indices,
+            void addToSubset(DenseLabelWiseStatisticConstView::const_iterator begin,
+                             DenseLabelWiseStatisticConstView::const_iterator end, const PartialIndexVector& indices,
                              float64 weight);
 
             /**
