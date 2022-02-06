@@ -3,11 +3,13 @@
 
 namespace boosting {
 
-    SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements) {
+    SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements)
+        : SparseLabelWiseStatisticVector(numElements, false) {
 
     }
 
-    SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements, bool init) {
+    SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements, bool init)
+        : numAggregatedStatistics_(0) {
 
     }
 
@@ -25,10 +27,14 @@ namespace boosting {
 
     void SparseLabelWiseStatisticVector::add(const_iterator begin, const_iterator end) {
         // TODO Implement
+        numAggregatedStatistics_++;
     }
 
     void SparseLabelWiseStatisticVector::add(const_iterator begin, const_iterator end, float64 weight) {
-        // TODO Implement
+        if (weight != 0) {
+            // TODO Implement
+            numAggregatedStatistics_++;
+        }
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(const_iterator begin, const_iterator end,

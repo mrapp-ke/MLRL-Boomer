@@ -22,6 +22,8 @@ namespace boosting {
 
             SparseListVector<Tuple<float64>> vector_;
 
+            uint32 numAggregatedStatistics_;
+
         public:
 
             /**
