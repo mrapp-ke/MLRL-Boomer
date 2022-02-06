@@ -99,8 +99,8 @@ namespace boosting {
             /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
-             * @param vector A reference to an object of type `DenseLabelWiseStatisticVector`, whose gradients and
-             *               Hessians should be added to this vector
+             * @param vector A reference to an object of type `DenseLabelWiseStatisticVector` that stores the gradients
+             *               and Hessians to be added to this vector
              */
             void add(const DenseLabelWiseStatisticVector& vector);
 
