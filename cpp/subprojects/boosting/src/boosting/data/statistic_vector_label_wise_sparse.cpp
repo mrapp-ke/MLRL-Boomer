@@ -156,6 +156,7 @@ namespace boosting {
     }
 
     void SparseLabelWiseStatisticVector::clear() {
+        sumOfWeights_ = 0;
         vector_.clear();
     }
 
