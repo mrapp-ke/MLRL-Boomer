@@ -13,6 +13,38 @@
 namespace boosting {
 
     /**
+     * Stores aggregated statistics that results from summing up gradients and Hessians. It stores the sum of gradients
+     * and Hessians, as well as the number of statistics that have been aggregated.
+     */
+    struct AggregatedStatistics {
+
+        AggregatedStatistics();
+
+        /**
+         * @param g The sum of gradients
+         * @param h The sum of Hessians
+         * @param n THe number of aggregated statistics
+         */
+        AggregatedStatistics(float64 g, float64 h, uint32 n);
+
+        /**
+         * The sum of gradients.
+         */
+        float64 sumOfGradients;
+
+        /**
+         * The sum of Hessians.
+         */
+        float64 sumOfHessians;
+
+        /**
+         * The number of aggregated statistics.
+         */
+        uint32 numAggregatedStatistics;
+
+    };
+
+    /**
      * An one-dimensional sparse vector that stores gradients and Hessians that have been calculated using a label-wise
      * decomposable loss function. For each element in the vector a single gradient and Hessian is stored.
      */

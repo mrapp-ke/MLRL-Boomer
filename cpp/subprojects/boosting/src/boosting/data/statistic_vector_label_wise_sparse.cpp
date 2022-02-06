@@ -3,6 +3,15 @@
 
 namespace boosting {
 
+    AggregatedStatistics::AggregatedStatistics() {
+
+    }
+
+    AggregatedStatistics::AggregatedStatistics(float64 g, float64 h, uint32 n)
+        : sumOfGradients(g), sumOfHessians(h), numAggregatedStatistics(n) {
+
+    }
+
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements)
         : SparseLabelWiseStatisticVector(numElements, false) {
 
