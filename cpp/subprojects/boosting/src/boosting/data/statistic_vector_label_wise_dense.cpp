@@ -51,26 +51,31 @@ namespace boosting {
         setArrayToZeros(statistics_, numElements_);
     }
 
-    void DenseLabelWiseStatisticVector::add(const_iterator begin, const_iterator end) {
+    void DenseLabelWiseStatisticVector::add(DenseLabelWiseStatisticConstView::const_iterator begin,
+                                            DenseLabelWiseStatisticConstView::const_iterator end) {
         addToArray(statistics_, begin, numElements_);
     }
 
-    void DenseLabelWiseStatisticVector::add(const_iterator begin, const_iterator end, float64 weight) {
+    void DenseLabelWiseStatisticVector::add(DenseLabelWiseStatisticConstView::const_iterator begin,
+                                            DenseLabelWiseStatisticConstView::const_iterator end, float64 weight) {
         addToArray(statistics_, begin, numElements_, weight);
     }
 
-    void DenseLabelWiseStatisticVector::addToSubset(const_iterator begin, const_iterator end,
+    void DenseLabelWiseStatisticVector::addToSubset(DenseLabelWiseStatisticConstView::const_iterator begin,
+                                                    DenseLabelWiseStatisticConstView::const_iterator end,
                                                     const CompleteIndexVector& indices, float64 weight) {
         addToArray(statistics_, begin, numElements_, weight);
     }
 
-    void DenseLabelWiseStatisticVector::addToSubset(const_iterator begin, const_iterator end,
+    void DenseLabelWiseStatisticVector::addToSubset(DenseLabelWiseStatisticConstView::const_iterator begin,
+                                                    DenseLabelWiseStatisticConstView::const_iterator end,
                                                     const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         addToArray(statistics_, begin, indexIterator, numElements_, weight);
     }
 
-    void DenseLabelWiseStatisticVector::difference(const_iterator firstBegin, const_iterator firstEnd,
+    void DenseLabelWiseStatisticVector::difference(DenseLabelWiseStatisticConstView::const_iterator firstBegin,
+                                                   DenseLabelWiseStatisticConstView::const_iterator firstEnd,
                                                    const CompleteIndexVector& firstIndices, const_iterator secondBegin,
                                                    const_iterator secondEnd) {
         setArrayToDifference(statistics_, firstBegin, secondBegin, numElements_);
