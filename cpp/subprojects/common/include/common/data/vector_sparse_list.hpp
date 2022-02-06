@@ -82,3 +82,49 @@ static inline typename SparseListVector<T>::iterator insertNext(SparseListVector
 
     return vector.emplace_after(begin, index, value);
 }
+
+/**
+ * Advances two iterators of a `SparseListVector`, whose elements are sorted in increasing order by their indices, such
+ * that one of them, referred to as `current`, points to the first element whose index is smaller or equal to a given
+ * index and the other one, referred to as `previous`, points to the element's predecessor.
+ *
+ * @param previous  A reference to the first iterator to be advanced. It must point to the predecessor of `current`
+ * @param current   A reference to the second iterator to be advanced. It must point to the successor of `previous`
+ * @param end       An iterator to the end of the `SparseListVector`
+ * @param index     The index until which the given iterators should be advanced
+ * @param limit     The index that should be returned to indicate that `current` has reached the end of the
+ *                  `SparseListVector`
+ * @return          The index of the element, the iterator "current" points to after advancing
+ */
+template<typename T>
+static inline uint32 advance(typename SparseListVector<T>::iterator& previous,
+                             typename SparseListVector<T>::iterator& current,
+                             typename SparseListVector<T>::iterator end, uint32 index) {
+    uint32 currentIndex = (*current).index;
+
+    if (index > currentIndex) {
+        typename SparseListVector<T>::iterator next = current;
+        next++;
+
+        while (next != end) {
+            uint32 nextIndex = (*next).index;
+
+            if (index > nextIndex) {
+                previous = current;
+                current = next;
+                next++;
+                currentIndex = nextIndex;
+            } else if (index == nextIndex) {
+                previous = current;
+                current = next;
+                next++;
+                currentIndex = nextIndex;
+                break;
+            } else {
+                break;
+            }
+        }
+    }
+
+    return currentIndex;
+}
