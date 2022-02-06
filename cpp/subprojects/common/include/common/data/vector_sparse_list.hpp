@@ -15,6 +15,8 @@
 template<typename T>
 using SparseListVector = std::forward_list<IndexedValue<T>>;
 
+// TODO Check if the following functions are used multiple times, or if they should be moved to the files that use them
+
 /**
  * Inserts a new element, consisting of an index and value, into a `SparseListVector`, whose elements are sorted in
  * increasing order by their indices. The search for the correct position starts at the beginning of the vector. All
