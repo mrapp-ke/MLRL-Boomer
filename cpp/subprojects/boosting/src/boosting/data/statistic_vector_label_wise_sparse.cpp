@@ -193,7 +193,10 @@ namespace boosting {
     void SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseStatisticConstView::const_iterator begin,
                                                      SparseLabelWiseStatisticConstView::const_iterator end,
                                                      const PartialIndexVector& indices, float64 weight) {
-        // TODO Implement
+        if (weight != 0) {
+            sumOfWeights_ += weight;
+            // TODO Implement
+        }
     }
 
     void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
@@ -207,6 +210,7 @@ namespace boosting {
     void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
                                                     const PartialIndexVector& firstIndices,
                                                     const SparseLabelWiseStatisticVector& second) {
+        sumOfWeights_ = first.sumOfWeights_ - second.sumOfWeights_;
         // TODO Implement
     }
 
