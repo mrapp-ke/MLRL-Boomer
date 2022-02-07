@@ -51,24 +51,24 @@ namespace boosting {
     }
 
     template<typename ValueType, typename Iterator>
-    static inline void addInternally(SparseListVector<AggregatedStatistics>& vector, Iterator begin, Iterator end,
+    static inline void addInternally(SparseListVector<AggregatedStatistics>& vector, Iterator iterator, Iterator end,
                                      float64 weight) {
-        if (begin != end) {
+        if (iterator != end) {
             SparseListVector<AggregatedStatistics>::iterator previous = vector.begin();
             SparseListVector<AggregatedStatistics>::iterator last = vector.end();
 
-            const IndexedValue<ValueType>& firstEntry = *begin;
+            const IndexedValue<ValueType>& firstEntry = *iterator;
             SparseListVector<AggregatedStatistics>::iterator current =
                 addFirst(vector, previous, last, firstEntry.index, AggregatedStatistics(firstEntry.value, weight));
-            begin++;
+            iterator++;
 
-            for (; begin != end && current != last; begin++) {
-                const IndexedValue<ValueType>& entry = *begin;
+            for (; iterator != end && current != last; iterator++) {
+                const IndexedValue<ValueType>& entry = *iterator;
                 add(vector, previous, current, last, entry.index, AggregatedStatistics(entry.value, weight));
             }
 
-            for (; begin != end; begin++) {
-                const IndexedValue<ValueType>& entry = *begin;
+            for (; iterator != end; iterator++) {
+                const IndexedValue<ValueType>& entry = *iterator;
                 previous = vector.emplace_after(previous, entry.index, AggregatedStatistics(entry.value, weight));
             }
         }
