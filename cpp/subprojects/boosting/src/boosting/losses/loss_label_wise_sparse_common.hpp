@@ -1,17 +1,19 @@
 #include "boosting/losses/loss_label_wise_sparse.hpp"
 #include "common/iterator/non_zero_index_forward_iterator.hpp"
 #include "loss_label_wise_common.hpp"
+#include <limits>
 
 
 namespace boosting {
 
+    static const uint32 LIMIT = std::numeric_limits<uint32>::max();
+
     template<typename ScoreIterator, typename IndexIterator>
     static inline uint32 fetchNextStatistic(ScoreIterator& scoreIterator, ScoreIterator scoresEnd,
                                             IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                            Tuple<float64>& tuple, uint32 limit,
-                                            LabelWiseLoss::UpdateFunction updateFunction) {
-        uint32 labelIndex = indexIterator == indicesEnd ? limit : *indexIterator;
-        uint32 scoreIndex = scoreIterator == scoresEnd ? limit : (*scoreIterator).index;
+                                            Tuple<float64>& tuple, LabelWiseLoss::UpdateFunction updateFunction) {
+        uint32 labelIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
+        uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
         if (scoreIndex < labelIndex) {
             (*updateFunction)(false, (*scoreIterator).value, &tuple.first, &tuple.second);
@@ -21,27 +23,25 @@ namespace boosting {
             (*updateFunction)(true, 0, &tuple.first, &tuple.second);
             indexIterator++;
             return labelIndex;
-        } else if (labelIndex < limit) {
+        } else if (labelIndex < LIMIT) {
             (*updateFunction)(true, (*scoreIterator).value, &tuple.first, &tuple.second);
             scoreIterator++;
             indexIterator++;
             return labelIndex;
         }
 
-        return limit;
+        return LIMIT;
     }
 
     template<typename ScoreIterator, typename IndexIterator>
     static inline uint32 fetchNextNonZeroStatistic(ScoreIterator& scoreIterator, ScoreIterator scoresEnd,
                                                    IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                                   Tuple<float64>& tuple, uint32 limit,
+                                                   Tuple<float64>& tuple,
                                                    LabelWiseLoss::UpdateFunction updateFunction) {
-        uint32 index = fetchNextStatistic(scoreIterator, scoresEnd, indexIterator, indicesEnd, tuple, limit,
-                                          updateFunction);
+        uint32 index = fetchNextStatistic(scoreIterator, scoresEnd, indexIterator, indicesEnd, tuple, updateFunction);
 
-        while (tuple.first == 0 && index < limit) {
-            index = fetchNextStatistic(scoreIterator, scoresEnd, indexIterator, indicesEnd, tuple, limit,
-                                       updateFunction);
+        while (tuple.first == 0 && index < LIMIT) {
+            index = fetchNextStatistic(scoreIterator, scoresEnd, indexIterator, indicesEnd, tuple, updateFunction);
         }
 
         return index;
@@ -50,17 +50,17 @@ namespace boosting {
     template<typename IndexIterator, typename ScoreIterator>
     static inline void updateLabelWiseStatisticsInternally(IndexIterator indicesBegin, IndexIterator indicesEnd,
                                                            ScoreIterator scoresBegin, ScoreIterator scoresEnd,
-                                                           SparseLabelWiseStatisticView::Row& row, uint32 limit,
+                                                           SparseLabelWiseStatisticView::Row& row,
                                                            LabelWiseLoss::UpdateFunction updateFunction) {
         Tuple<float64> tuple;
-        uint32 index = fetchNextNonZeroStatistic(scoresBegin, scoresEnd, indicesBegin, indicesEnd, tuple, limit,
-                                                 updateFunction);
+        uint32 index =
+            fetchNextNonZeroStatistic(scoresBegin, scoresEnd, indicesBegin, indicesEnd, tuple, updateFunction);
 
-        if (index < limit) {
+        if (index < LIMIT) {
             SparseLabelWiseStatisticView::Row::iterator previous = insertNext(row, index, tuple);
 
             while ((index = fetchNextNonZeroStatistic(scoresBegin, scoresEnd, indicesBegin, indicesEnd, tuple,
-                                                      limit, updateFunction)) < limit) {
+                                                      updateFunction)) < LIMIT) {
                 previous = insertNext(row, index, tuple, previous);
             }
 
@@ -99,7 +99,7 @@ namespace boosting {
                     labelMatrix.row_values_cend(exampleIndex), labelMatrix.row_values_cend(exampleIndex));
                 updateLabelWiseStatisticsInternally(
                     indicesBegin, indicesEnd, scoreMatrix.row_cbegin(exampleIndex), scoreMatrix.row_cend(exampleIndex),
-                    statisticView.getRow(exampleIndex), labelMatrix.getNumCols(), LabelWiseLoss::updateFunction_);
+                    statisticView.getRow(exampleIndex), LabelWiseLoss::updateFunction_);
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
@@ -118,7 +118,7 @@ namespace boosting {
                 updateLabelWiseStatisticsInternally(
                     labelMatrix.row_indices_cbegin(exampleIndex), labelMatrix.row_indices_cend(exampleIndex),
                     scoreMatrix.row_cbegin(exampleIndex), scoreMatrix.row_cend(exampleIndex),
-                    statisticView.getRow(exampleIndex), labelMatrix.getNumCols(), LabelWiseLoss::updateFunction_);
+                    statisticView.getRow(exampleIndex), LabelWiseLoss::updateFunction_);
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
