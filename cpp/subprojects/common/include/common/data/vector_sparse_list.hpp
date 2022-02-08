@@ -94,8 +94,6 @@ static inline typename SparseListVector<T>::iterator insertNext(SparseListVector
  * @param current   A reference to the second iterator to be advanced. It must point to the successor of `previous`
  * @param end       An iterator to the end of the `SparseListVector`
  * @param index     The index until which the given iterators should be advanced
- * @param limit     The index that should be returned to indicate that `current` has reached the end of the
- *                  `SparseListVector`
  * @return          The index of the element, the iterator "current" points to after advancing
  */
 template<typename T>
