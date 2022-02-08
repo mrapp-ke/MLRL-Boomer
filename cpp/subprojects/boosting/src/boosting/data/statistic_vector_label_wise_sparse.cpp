@@ -78,8 +78,8 @@ namespace boosting {
         }
     }
 
-    static inline uint32 fetchNextDifference(SparseLabelWiseStatisticVector::const_iterator& firstIterator,
-                                             SparseLabelWiseStatisticVector::const_iterator firstEnd,
+    template<typename Iterator>
+    static inline uint32 fetchNextDifference(Iterator& firstIterator, Iterator firstEnd,
                                              SparseLabelWiseStatisticVector::const_iterator& secondIterator,
                                              SparseLabelWiseStatisticVector::const_iterator secondEnd,
                                              AggregatedStatistics& statistics) {
@@ -104,8 +104,8 @@ namespace boosting {
         return LIMIT;
     }
 
-    static inline uint32 fetchNextNonZeroDifference(SparseLabelWiseStatisticVector::const_iterator& firstIterator,
-                                                    SparseLabelWiseStatisticVector::const_iterator firstEnd,
+    template<typename Iterator>
+    static inline uint32 fetchNextNonZeroDifference(Iterator& firstIterator, Iterator firstEnd,
                                                     SparseLabelWiseStatisticVector::const_iterator& secondIterator,
                                                     SparseLabelWiseStatisticVector::const_iterator secondEnd,
                                                     AggregatedStatistics& statistics) {
@@ -118,9 +118,9 @@ namespace boosting {
         return index;
     }
 
-    static inline void differenceInternally(SparseListVector<AggregatedStatistics>& vector,
-                                            SparseLabelWiseStatisticVector::const_iterator firstBegin,
-                                            SparseLabelWiseStatisticVector::const_iterator firstEnd,
+    template<typename Iterator>
+    static inline void differenceInternally(SparseListVector<AggregatedStatistics>& vector, Iterator firstBegin,
+                                            Iterator firstEnd,
                                             SparseLabelWiseStatisticVector::const_iterator secondBegin,
                                             SparseLabelWiseStatisticVector::const_iterator secondEnd) {
         AggregatedStatistics statistics;
@@ -226,7 +226,17 @@ namespace boosting {
                                                     const PartialIndexVector& firstIndices,
                                                     const SparseLabelWiseStatisticVector& second) {
         sumOfWeights_ = first.sumOfWeights_ - second.sumOfWeights_;
-        // TODO Implement
+        SparseLabelWiseStatisticVector::const_iterator firstBegin = first.cbegin();
+        SparseLabelWiseStatisticVector::const_iterator firstEnd = first.cend();
+        PartialIndexVector::const_iterator indicesBegin = firstIndices.cbegin();
+        PartialIndexVector::const_iterator indicesEnd = firstIndices.cend();
+        auto subsetBegin =
+            make_subset_forward_iterator<const_iterator, AggregatedStatistics, PartialIndexVector::const_iterator>(
+                firstBegin, firstEnd, indicesBegin, indicesEnd);
+        auto subsetEnd =
+            make_subset_forward_iterator<const_iterator, AggregatedStatistics, PartialIndexVector::const_iterator>(
+                firstBegin, firstEnd, indicesEnd, indicesEnd);
+        differenceInternally(vector_, subsetBegin, subsetEnd, second.cbegin(), second.cend());
     }
 
     float64 SparseLabelWiseStatisticVector::getSumOfWeights() const {
