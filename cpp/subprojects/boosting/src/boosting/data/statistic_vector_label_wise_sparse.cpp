@@ -1,4 +1,5 @@
 #include "boosting/data/statistic_vector_label_wise_sparse.hpp"
+#include "common/iterator/subset_forward_iterator.hpp"
 #include <limits>
 
 
@@ -198,7 +199,18 @@ namespace boosting {
                                                      const PartialIndexVector& indices, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
-            // TODO Implement
+            PartialIndexVector::const_iterator indicesBegin = indices.cbegin();
+            PartialIndexVector::const_iterator indicesEnd = indices.cend();
+            auto subsetBegin =
+                make_subset_forward_iterator<SparseLabelWiseStatisticConstView::const_iterator, Tuple<float64>,
+                                             PartialIndexVector::const_iterator>(begin, end, indicesBegin, indicesEnd);
+            auto subsetEnd =
+                make_subset_forward_iterator<SparseLabelWiseStatisticConstView::const_iterator, Tuple<float64>,
+                                             PartialIndexVector::const_iterator>(begin, end, indicesEnd, indicesEnd);
+            addInternally<Tuple<float64>,
+                          SparseSubsetForwardIterator<SparseLabelWiseStatisticConstView::const_iterator, Tuple<float64>,
+                                                      PartialIndexVector::const_iterator>>(vector_, subsetBegin,
+                                                                                           subsetEnd, weight);
         }
     }
 
