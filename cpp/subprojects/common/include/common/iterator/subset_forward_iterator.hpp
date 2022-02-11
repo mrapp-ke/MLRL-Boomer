@@ -14,7 +14,7 @@
  *
  * @tparam Iterator         The type of the iterator that provides access to the elements of a sparse vector
  * @tparam ValueType        The type of the values that are stored by the sparse vector
- * @tparam IndexIterator    The type of the iterator that provides access to the indices
+ * @tparam IndexIterator    The type of the iterator that provides access to the subset of indices
  */
 template<typename Iterator, typename ValueType, typename IndexIterator>
 class SparseSubsetForwardIterator {
@@ -34,8 +34,8 @@ class SparseSubsetForwardIterator {
         /**
          * @param begin         An iterator to the beginning of the sparse vector
          * @param end           An iterator to the end of the sparse vector
-         * @param indicesBegin  An iterator to the beginning of the indices
-         * @param indicesEnd    An iterator to the end of the indices
+         * @param indicesBegin  An iterator to the beginning of the subset of indices
+         * @param indicesEnd    An iterator to the end of the subset of indices
          */
         SparseSubsetForwardIterator(Iterator begin, Iterator end, IndexIterator indicesBegin, IndexIterator indicesEnd)
             : iterator_(begin), end_(end), indexIterator_(indicesBegin), indicesEnd_(indicesEnd) {
@@ -208,11 +208,11 @@ class SparseSubsetForwardIterator {
  *
  * @tparam Iterator         The type of the iterator that provides access to the elements of a sparse vector
  * @tparam ValueType        The type of the values that are stored by the sparse vector
- * @tparam IndexIterator    The type of the iterator that provides access to the indices
+ * @tparam IndexIterator    The type of the iterator that provides access to the subset of indices
  * @param begin             An iterator to the beginning of the sparse vector
  * @param end               An iterator to the end of the sparse vector
- * @param indicesBegin      An iterator to the beginning of the indices
- * @param indicesEnd        An iterator to the end of the indices
+ * @param indicesBegin      An iterator to the beginning of the subset of indices
+ * @param indicesEnd        An iterator to the end of the subset of indices
  * @return                  The `SparseSubsetForwardIterator` that has been created
  */
 template<typename Iterator, typename ValueType, typename IndexIterator>
