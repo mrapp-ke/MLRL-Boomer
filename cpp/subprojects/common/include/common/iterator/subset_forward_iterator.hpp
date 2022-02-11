@@ -10,7 +10,7 @@
 /**
  * An iterator adaptor that adapts an iterator, which provides access to the elements of a sparse vector, consisting of
  * an index and a value that are stored by an `IndexedValue`, such that it acts as a forward iterator that returns only
- * those elements whose indices are provided by a second iterator.
+ * those elements whose indices that are provided by a second iterator.
  *
  * @tparam Iterator         The type of the iterator that provides access to the elements of a sparse vector
  * @tparam ValueType        The type of the values that are stored by the sparse vector
