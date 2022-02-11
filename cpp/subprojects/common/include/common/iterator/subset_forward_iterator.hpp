@@ -12,18 +12,18 @@
  * an index and a value that are stored by an `IndexedValue`, such that it acts as a forward iterator that returns only
  * those elements whose indices are provided by a second iterator.
  *
- * @tparam SparseIterator   The type of the iterator that provides access to the elements of a sparse vector
+ * @tparam Iterator         The type of the iterator that provides access to the elements of a sparse vector
  * @tparam ValueType        The type of the values that are stored by the sparse vector
  * @tparam IndexIterator    The type of the iterator that provides access to the indices
  */
-template<typename SparseIterator, typename ValueType, typename IndexIterator>
+template<typename Iterator, typename ValueType, typename IndexIterator>
 class SparseSubsetForwardIterator {
 
     private:
 
-        SparseIterator iterator_;
+        Iterator iterator_;
 
-        SparseIterator end_;
+        Iterator end_;
 
         IndexIterator indexIterator_;
 
@@ -37,8 +37,7 @@ class SparseSubsetForwardIterator {
          * @param indicesBegin  An iterator to the beginning of the indices
          * @param indicesEnd    An iterator to the end of the indices
          */
-        SparseSubsetForwardIterator(SparseIterator begin, SparseIterator end, IndexIterator indicesBegin,
-                                    IndexIterator indicesEnd)
+        SparseSubsetForwardIterator(Iterator begin, Iterator end, IndexIterator indicesBegin, IndexIterator indicesEnd)
             : iterator_(begin), end_(end), indexIterator_(indicesBegin), indicesEnd_(indicesEnd) {
             if (indexIterator_ != indicesEnd_) {
                 if (iterator_ != end_) {
@@ -107,7 +106,7 @@ class SparseSubsetForwardIterator {
          *
          * @return A reference to an iterator that refers to the next element
          */
-        SparseSubsetForwardIterator<SparseIterator, ValueType, IndexIterator>& operator++() {
+        SparseSubsetForwardIterator<Iterator, ValueType, IndexIterator>& operator++() {
             indexIterator_++;
 
             if (indexIterator_ != indicesEnd_) {
@@ -147,7 +146,7 @@ class SparseSubsetForwardIterator {
          *
          * @return A reference to an iterator that refers to the next element
          */
-        SparseSubsetForwardIterator<SparseIterator, ValueType, IndexIterator>& operator++(int n) {
+        SparseSubsetForwardIterator<Iterator, ValueType, IndexIterator>& operator++(int n) {
             indexIterator_++;
 
             if (indexIterator_ != indicesEnd_) {
@@ -188,7 +187,7 @@ class SparseSubsetForwardIterator {
          * @param rhs   A reference to another iterator
          * @return      True, if the iterators do not refer to the same element, false otherwise
          */
-        bool operator!=(const SparseSubsetForwardIterator<SparseIterator, ValueType, IndexIterator>& rhs) const {
+        bool operator!=(const SparseSubsetForwardIterator<Iterator, ValueType, IndexIterator>& rhs) const {
             return indexIterator_ != rhs.indexIterator_;
         }
 
@@ -198,7 +197,7 @@ class SparseSubsetForwardIterator {
          * @param rhs   A reference to another iterator
          * @return      True, if the iterators refer to the same element, false otherwise
          */
-        bool operator==(const SparseSubsetForwardIterator<SparseIterator, ValueType, IndexIterator>& rhs) const {
+        bool operator==(const SparseSubsetForwardIterator<Iterator, ValueType, IndexIterator>& rhs) const {
             return indexIterator_ == rhs.indexIterator_;
         }
 
@@ -207,16 +206,17 @@ class SparseSubsetForwardIterator {
 /**
  * Creates and returns a new `SparseSubsetForwardIterator`.
  *
- * @tparam SparseIterator   The type of the iterator that provides access to the elements of a sparse vector
+ * @tparam Iterator         The type of the iterator that provides access to the elements of a sparse vector
  * @tparam ValueType        The type of the values that are stored by the sparse vector
  * @tparam IndexIterator    The type of the iterator that provides access to the indices
  * @param begin             An iterator to the beginning of the sparse vector
  * @param end               An iterator to the end of the sparse vector
  * @param indicesBegin      An iterator to the beginning of the indices
  * @param indicesEnd        An iterator to the end of the indices
+ * @return                  The `SparseSubsetForwardIterator` that has been created
  */
-template<typename SparseIterator, typename ValueType, typename IndexIterator>
-static inline SparseSubsetForwardIterator<SparseIterator, ValueType, IndexIterator> make_subset_forward_iterator(
-        SparseIterator begin, SparseIterator end, IndexIterator indicesBegin, IndexIterator indicesEnd) {
-    return SparseSubsetForwardIterator<SparseIterator, ValueType, IndexIterator>(begin, end, indicesBegin, indicesEnd);
+template<typename Iterator, typename ValueType, typename IndexIterator>
+static inline SparseSubsetForwardIterator<Iterator, ValueType, IndexIterator> make_subset_forward_iterator(
+        Iterator begin, Iterator end, IndexIterator indicesBegin, IndexIterator indicesEnd) {
+    return SparseSubsetForwardIterator<Iterator, ValueType, IndexIterator>(begin, end, indicesBegin, indicesEnd);
 }
