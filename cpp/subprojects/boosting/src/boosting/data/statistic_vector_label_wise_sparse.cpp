@@ -7,53 +7,6 @@ namespace boosting {
 
     static const uint32 LIMIT = std::numeric_limits<uint32>::max();
 
-    static inline void add(SparseListVector<AggregatedStatistics>& vector,
-                           SparseListVector<AggregatedStatistics>::iterator& previous,
-                           SparseListVector<AggregatedStatistics>::iterator& current,
-                           SparseListVector<AggregatedStatistics>::iterator end, uint32 index,
-                           const AggregatedStatistics& value) {
-        uint32 currentIndex = advance<AggregatedStatistics>(previous, current, end, index);
-
-        if (index == currentIndex) {
-            (*current).value += value;
-        } else if (index > currentIndex) {
-            current = vector.emplace_after(current, index, value);
-        } else {
-            current = vector.emplace_after(previous, index, value);
-        }
-
-        previous = current;
-        current++;
-    }
-
-    static inline SparseListVector<AggregatedStatistics>::iterator addFirst(
-            SparseListVector<AggregatedStatistics>& vector, SparseListVector<AggregatedStatistics>::iterator& begin,
-            SparseListVector<AggregatedStatistics>::iterator end, uint32 index, const AggregatedStatistics& value) {
-        if (begin == end) {
-            vector.emplace_front(index, value);
-            begin = vector.begin();
-        } else {
-            IndexedValue<AggregatedStatistics>& entry = *begin;
-            uint32 firstIndex = entry.index;
-
-            if (index == firstIndex) {
-                entry.value += value;
-            } else if (index < firstIndex) {
-                vector.emplace_front(index, value);
-                begin = vector.begin();
-            } else {
-                SparseListVector<AggregatedStatistics>::iterator current = begin;
-                current++;
-                add(vector, begin, current, end, index, value);
-                return current;
-            }
-        }
-
-        SparseListVector<AggregatedStatistics>::iterator current = begin;
-        current++;
-        return current;
-    }
-
     template<typename ValueType, typename Iterator>
     static inline void addInternally(SparseListVector<AggregatedStatistics>& vector, Iterator iterator, Iterator end,
                                      float64 weight) {
@@ -62,13 +15,14 @@ namespace boosting {
             SparseListVector<AggregatedStatistics>::iterator last = vector.end();
 
             const IndexedValue<ValueType>& firstEntry = *iterator;
-            SparseListVector<AggregatedStatistics>::iterator current =
-                addFirst(vector, previous, last, firstEntry.index, AggregatedStatistics(firstEntry.value, weight));
+            SparseListVector<AggregatedStatistics>::iterator current = addFirst<AggregatedStatistics>(
+                vector, previous, last, firstEntry.index, AggregatedStatistics(firstEntry.value, weight));
             iterator++;
 
             for (; iterator != end && current != last; iterator++) {
                 const IndexedValue<ValueType>& entry = *iterator;
-                add(vector, previous, current, last, entry.index, AggregatedStatistics(entry.value, weight));
+                add<AggregatedStatistics>(vector, previous, current, last, entry.index,
+                                          AggregatedStatistics(entry.value, weight));
             }
 
             for (; iterator != end; iterator++) {

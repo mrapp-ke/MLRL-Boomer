@@ -15,8 +15,6 @@
 template<typename T>
 using SparseListVector = std::forward_list<IndexedValue<T>>;
 
-// TODO Check if the following functions are used multiple times, or if they should be moved to the files that use them
-
 /**
  * Inserts a new element, consisting of an index and value, into a `SparseListVector`, whose elements are sorted in
  * increasing order by their indices. The search for the correct position starts at the beginning of the vector. All
@@ -127,4 +125,78 @@ static inline uint32 advance(typename SparseListVector<T>::iterator& previous,
     }
 
     return currentIndex;
+}
+
+/**
+ * Adds an element, consisting of an index and a value, to the corresponding element in a `SparseListVector`, whose
+ * elements are sorted in increasing order by their indices. The search for the correct position starts at the element
+ * that is pointed to by a given iterator.
+ *
+ * @tparam T        The type of the values that are stored by the `SparseListVector`
+ * @param vector    A reference to an object of type `SparseListVector`, the element should be added to
+ * @param previous  A reference to an iterator that points to the predecessor of `current`
+ * @param current   A reference to an iterator that points to the element to start at
+ * @param end       An iterator to the end of the `SparseListVector`
+ * @param index     The index of the element to be added
+ * @param value     The value of the element to be added
+ */
+template<typename T>
+static inline void add(SparseListVector<T>& vector, typename SparseListVector<T>::iterator& previous,
+                       typename SparseListVector<T>::iterator& current, typename SparseListVector<T>::iterator end,
+                       uint32 index, const T& value) {
+    uint32 currentIndex = advance<T>(previous, current, end, index);
+
+    if (index == currentIndex) {
+        (*current).value += value;
+    } else if (index > currentIndex) {
+        current = vector.emplace_after(current, index, value);
+    } else {
+        current = vector.emplace_after(previous, index, value);
+    }
+
+    previous = current;
+    current++;
+}
+
+/**
+ * Adds an element, consisting of an index and a value, to the corresponding element in a `SparseListVector`, whose
+ * elements are sorted in increasing order by their indices. The search for the correct position starts at the beginning
+ * of the vector.
+ *
+ * @tparam T        The type of the values that are stored by the `SparseListVector`
+ * @param vector    A reference to an object of type `SparseListVector`, the element should be added to
+ * @param begin     A reference to an iterator that points to the beginning of the `SparseListVector`
+ * @param end       An iterator to the end of the `SparseListVector`
+ * @param index     The index of the element to be added
+ * @param value     The value of the element to be added
+ * @return          An iterator to the modified element
+ */
+template<typename T>
+static inline typename SparseListVector<T>::iterator addFirst(SparseListVector<T>& vector,
+                                                              typename SparseListVector<T>::iterator& begin,
+                                                              typename SparseListVector<T>::iterator end, uint32 index,
+                                                              const T& value) {
+    if (begin == end) {
+        vector.emplace_front(index, value);
+        begin = vector.begin();
+    } else {
+        IndexedValue<T>& entry = *begin;
+        uint32 firstIndex = entry.index;
+
+        if (index == firstIndex) {
+            entry.value += value;
+        } else if (index < firstIndex) {
+            vector.emplace_front(index, value);
+            begin = vector.begin();
+        } else {
+            typename SparseListVector<T>::iterator current = begin;
+            current++;
+            add<T>(vector, begin, current, end, index, value);
+            return current;
+        }
+    }
+
+    typename SparseListVector<T>::iterator current = begin;
+    current++;
+    return current;
 }
