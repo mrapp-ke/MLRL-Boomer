@@ -3,6 +3,36 @@
 
 namespace boosting {
 
+    template<typename T, typename IndexIterator>
+    static inline void addInternally(typename NumericLilMatrix<T>::Row& row,
+                                     typename VectorConstView<T>::const_iterator iterator,
+                                     typename VectorConstView<T>::const_iterator end, IndexIterator indexIterator,
+                                     IndexIterator indicesEnd) {
+        uint32 numElements = indicesEnd - indexIterator;
+
+        if (numElements > 0) {
+            typename NumericLilMatrix<T>::Row::iterator previous = row.begin();
+            typename NumericLilMatrix<T>::Row::iterator last = row.end();
+
+            uint32 index = indexIterator[0];
+            T value = iterator[0];
+            typename NumericLilMatrix<T>::Row::iterator current = addFirst<T>(row, previous, last, index, value);
+            uint32 i;
+
+            for (i = 1; i < numElements; i++) {
+                index = indexIterator[i];
+                value = iterator[i];
+                add<T>(row, previous, current, last, index, value);
+            }
+
+            for (; i < numElements; i++) {
+                index = indexIterator[i];
+                value = iterator[i];
+                previous = row.emplace_after(previous, index, value);
+            }
+        }
+    }
+
     template<typename T>
     NumericLilMatrix<T>::NumericLilMatrix(uint32 numRows)
         : LilMatrix<T>(numRows) {
@@ -14,7 +44,7 @@ namespace boosting {
                                                  typename VectorConstView<T>::const_iterator end,
                                                  CompleteIndexVector::const_iterator indicesBegin,
                                                  CompleteIndexVector::const_iterator indicesEnd) {
-        // TODO Implement
+        addInternally<T, CompleteIndexVector::const_iterator>(this->getRow(row), begin, end, indicesBegin, indicesEnd);
     }
 
     template<typename T>
@@ -22,7 +52,7 @@ namespace boosting {
                                                  typename VectorConstView<T>::const_iterator end,
                                                  PartialIndexVector::const_iterator indicesBegin,
                                                  PartialIndexVector::const_iterator indicesEnd) {
-        // TODO Implement
+        addInternally<T, PartialIndexVector::const_iterator>(this->getRow(row), begin, end, indicesBegin, indicesEnd);
     }
 
     template class NumericLilMatrix<uint8>;
