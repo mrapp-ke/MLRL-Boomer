@@ -89,7 +89,7 @@ setup(
     python_requires='>=3.7',
     install_requires=[
         'numpy>=1.22.0',
-        'scipy>=1.7.0',
+        'scipy>=1.8.0',
         'scikit-learn>=1.0.0'
     ],
     packages=find_packages(),
