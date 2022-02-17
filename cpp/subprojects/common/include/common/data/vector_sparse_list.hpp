@@ -33,9 +33,9 @@ static inline typename SparseListVector<T>::iterator insertNext(SparseListVector
         IndexedValue<T>& firstEntry = *first;
         uint32 firstIndex = firstEntry.index;
 
-        if (firstIndex < index) {
+        if (index > firstIndex) {
             vector.pop_front();
-        } else if (firstIndex == index) {
+        } else if (index == firstIndex) {
             firstEntry.value = value;
             return first;
         } else {
@@ -70,9 +70,9 @@ static inline typename SparseListVector<T>::iterator insertNext(SparseListVector
         IndexedValue<T>& nextEntry = *next;
         uint32 nextIndex = nextEntry.index;
 
-        if (nextIndex < index) {
+        if (index > nextIndex) {
             next = vector.erase_after(begin);
-        } else if (nextIndex == index) {
+        } else if (index == nextIndex) {
             nextEntry.value = value;
             return next;
         } else {
