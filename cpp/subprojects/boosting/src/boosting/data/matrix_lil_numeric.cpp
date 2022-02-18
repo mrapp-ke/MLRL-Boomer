@@ -17,12 +17,17 @@ namespace boosting {
             uint32 index = indexIterator[0];
             T value = iterator[0];
             typename NumericLilMatrix<T>::Row::iterator current = addFirst<T>(row, previous, last, index, value);
-            uint32 i;
+            uint32 i = 1;
 
-            for (i = 1; i < numElements; i++) {
-                index = indexIterator[i];
-                value = iterator[i];
-                add<T>(row, previous, current, last, index, value);
+            while (current != last) {
+                if (i < numElements) {
+                    index = indexIterator[i];
+                    value = iterator[i];
+                    add<T>(row, previous, current, last, index, value);
+                    i++;
+                } else {
+                    return;
+                }
             }
 
             for (; i < numElements; i++) {
