@@ -13,17 +13,13 @@ namespace boosting {
         if (numElements > 0) {
             typename NumericLilMatrix<T>::Row::iterator previous = row.begin();
             typename NumericLilMatrix<T>::Row::iterator last = row.end();
-
-            uint32 index = indexIterator[0];
-            T value = iterator[0];
-            typename NumericLilMatrix<T>::Row::iterator current = addFirst<T>(row, previous, last, index, value);
+            typename NumericLilMatrix<T>::Row::iterator current = addFirst<T>(row, previous, last, indexIterator[0],
+                                                                              iterator[0]);
             uint32 i = 1;
 
             while (current != last) {
                 if (i < numElements) {
-                    index = indexIterator[i];
-                    value = iterator[i];
-                    add<T>(row, previous, current, last, index, value);
+                    add<T>(row, previous, current, last, indexIterator[i], iterator[i]);
                     i++;
                 } else {
                     return;
@@ -31,9 +27,7 @@ namespace boosting {
             }
 
             for (; i < numElements; i++) {
-                index = indexIterator[i];
-                value = iterator[i];
-                previous = row.emplace_after(previous, index, value);
+                previous = row.emplace_after(previous, indexIterator[i], iterator[i]);
             }
         }
     }
