@@ -180,11 +180,11 @@ static inline typename SparseListVector<T>::iterator addFirst(SparseListVector<T
         vector.emplace_front(index, value);
         begin = vector.begin();
     } else {
-        IndexedValue<T>& entry = *begin;
-        uint32 firstIndex = entry.index;
+        IndexedValue<T>& firstEntry = *begin;
+        uint32 firstIndex = firstEntry.index;
 
         if (index == firstIndex) {
-            entry.value += value;
+            firstEntry.value += value;
         } else if (index < firstIndex) {
             vector.emplace_front(index, value);
             begin = vector.begin();
