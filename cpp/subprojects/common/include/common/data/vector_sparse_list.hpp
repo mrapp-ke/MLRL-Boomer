@@ -169,7 +169,7 @@ static inline void add(SparseListVector<T>& vector, typename SparseListVector<T>
  * @param end       An iterator to the end of the `SparseListVector`
  * @param index     The index of the element to be added
  * @param value     The value of the element to be added
- * @return          An iterator to the modified element
+ * @return          An iterator that points to the successor of the modified element
  */
 template<typename T>
 static inline typename SparseListVector<T>::iterator addFirst(SparseListVector<T>& vector,
