@@ -60,7 +60,7 @@ static inline typename SparseListVector<T>::iterator insertNext(SparseListVector
  * @return          An iterator to the element that has been inserted
  */
 template<typename T>
-static inline typename SparseListVector<T>::iterator insertNext(SparseListVector<T>& vector, uint32 index,  T& value,
+static inline typename SparseListVector<T>::iterator insertNext(SparseListVector<T>& vector, uint32 index, T& value,
                                                                 typename SparseListVector<T>::iterator begin) {
     typename SparseListVector<T>::iterator end = vector.end();
     typename SparseListVector<T>::iterator next = begin;
