@@ -115,7 +115,6 @@ static inline uint32 advance(typename SparseListVector<T>::iterator& previous,
             } else if (index == nextIndex) {
                 previous = current;
                 current = next;
-                next++;
                 currentIndex = nextIndex;
                 break;
             } else {
