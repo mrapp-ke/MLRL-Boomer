@@ -19,10 +19,15 @@ namespace boosting {
                 vector, previous, last, firstEntry.index, AggregatedStatistics(firstEntry.value, weight));
             iterator++;
 
-            for (; iterator != end && current != last; iterator++) {
-                const IndexedValue<ValueType>& entry = *iterator;
-                add<AggregatedStatistics>(vector, previous, current, last, entry.index,
-                                          AggregatedStatistics(entry.value, weight));
+            while (current != last) {
+                if (iterator != end) {
+                    const IndexedValue<ValueType>& entry = *iterator;
+                    add<AggregatedStatistics>(vector, previous, current, last, entry.index,
+                                              AggregatedStatistics(entry.value, weight));
+                    iterator++;
+                } else {
+                    return;
+                }
             }
 
             for (; iterator != end; iterator++) {
