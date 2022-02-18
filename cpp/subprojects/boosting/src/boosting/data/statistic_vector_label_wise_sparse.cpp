@@ -81,7 +81,6 @@ namespace boosting {
         uint32 index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, statistics);
 
         if (index < LIMIT) {
-
             SparseListVector<AggregatedStatistics>::iterator previous = insertNext(vector, index, statistics);
 
             while ((index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, statistics))
