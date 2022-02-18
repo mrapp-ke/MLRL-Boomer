@@ -85,14 +85,14 @@ static inline typename SparseListVector<T>::iterator insertNext(SparseListVector
 
 /**
  * Advances two iterators of a `SparseListVector`, whose elements are sorted in increasing order by their indices, such
- * that one of them, referred to as `current`, points to the first element whose index is smaller or equal to a given
+ * that one of them, referred to as `current`, points to the last element whose index is smaller or equal to a given
  * index and the other one, referred to as `previous`, points to the element's predecessor.
  *
  * @param previous  A reference to the first iterator to be advanced. It must point to the predecessor of `current`
  * @param current   A reference to the second iterator to be advanced. It must point to the successor of `previous`
  * @param end       An iterator to the end of the `SparseListVector`
  * @param index     The index until which the given iterators should be advanced
- * @return          The index of the element, the iterator "current" points to after advancing
+ * @return          The index of the element, the iterator `current` points to after advancing
  */
 template<typename T>
 static inline uint32 advance(typename SparseListVector<T>::iterator& previous,
