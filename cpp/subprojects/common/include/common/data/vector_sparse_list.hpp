@@ -190,7 +190,13 @@ static inline typename SparseListVector<T>::iterator addFirst(SparseListVector<T
         } else {
             typename SparseListVector<T>::iterator current = begin;
             current++;
-            add<T>(vector, begin, current, end, index, value);
+
+            if (current != end) {
+                add<T>(vector, begin, current, end, index, value);
+            } else {
+                begin = vector.emplace_after(begin, index, value);
+            }
+
             return current;
         }
     }
