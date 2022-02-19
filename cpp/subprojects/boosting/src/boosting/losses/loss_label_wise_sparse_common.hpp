@@ -53,8 +53,8 @@ namespace boosting {
                                                            SparseLabelWiseStatisticView::Row& row,
                                                            LabelWiseLoss::UpdateFunction updateFunction) {
         Tuple<float64> tuple;
-        uint32 index =
-            fetchNextNonZeroStatistic(scoresBegin, scoresEnd, indicesBegin, indicesEnd, tuple, updateFunction);
+        uint32 index = fetchNextNonZeroStatistic(scoresBegin, scoresEnd, indicesBegin, indicesEnd, tuple,
+                                                 updateFunction);
 
         if (index < LIMIT) {
             SparseLabelWiseStatisticView::Row::iterator previous = insertNext(row, index, tuple);
