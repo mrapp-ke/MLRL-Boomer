@@ -58,11 +58,13 @@ namespace boosting {
                                                  updateFunction);
 
         if (index < LIMIT) {
-            SparseLabelWiseStatisticView::Row::iterator previous = insertNext(row, index, tuple);
+            SparseLabelWiseStatisticView::Row::iterator previous = row.begin();
+            SparseLabelWiseStatisticView::Row::iterator end = row.end();
+            SparseLabelWiseStatisticView::Row::iterator current = insertNext(row, previous, end, index, tuple);
 
             while ((index = fetchNextNonZeroStatistic(scoresBegin, scoresEnd, indicesBegin, indicesEnd, tuple,
                                                       updateFunction)) < LIMIT) {
-                previous = insertNext(row, index, tuple, previous);
+                insertNext(row, previous, current, end, index, tuple);
             }
 
             row.erase_after(previous, row.end());

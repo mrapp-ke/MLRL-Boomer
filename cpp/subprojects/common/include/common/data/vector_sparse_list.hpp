@@ -22,65 +22,78 @@ using SparseListVector = std::forward_list<IndexedValue<T>>;
  *
  * @tparam T        The type of the values that are stored by the `SparseListVector`
  * @param vector    A reference to an object of type `SparseListVector`, the new element should be inserted into
+ * @param begin     A reference to an iterator that points to the beginning of the `SparseListVector`
+ * @param end       An iterator to the end of the `SparseListVector`
  * @param index     The index of the element to be inserted
  * @param value     The value of the element to be inserted
- * @return          An iterator to the element that has been inserted
+ * @return          An iterator that points to the successor of the element that has been inserted
  */
 template<typename T>
-static inline typename SparseListVector<T>::iterator insertNext(SparseListVector<T>& vector, uint32 index, T& value) {
-    while (!vector.empty()) {
-        typename SparseListVector<T>::iterator first = vector.begin();
-        IndexedValue<T>& firstEntry = *first;
+static inline typename SparseListVector<T>::iterator insertNext(SparseListVector<T>& vector,
+                                                                typename SparseListVector<T>::iterator& begin,
+                                                                typename SparseListVector<T>::iterator end,
+                                                                uint32 index, const T& value) {
+    while (begin != end) {
+        IndexedValue<T>& firstEntry = *begin;
         uint32 firstIndex = firstEntry.index;
 
         if (index > firstIndex) {
             vector.pop_front();
+            begin = vector.begin();
         } else if (index == firstIndex) {
             firstEntry.value = value;
-            return first;
+            typename SparseListVector<T>::iterator current = begin;
+            current++;
+            return current;
         } else {
             break;
         }
     }
 
     vector.emplace_front(index, value);
-    return vector.begin();
+    begin = vector.begin();
+    typename SparseListVector<T>::iterator current = begin;
+    current++;
+    return current;
 }
 
 /**
  * Inserts a new element, consisting of an index and a value, into a `SparseListVector`, whose elements are sorted in
- * increasing order by their indices. The search for the correct position starts at the element after a given iterator.
- * All elements that are located between the given iterator and the element to be inserted are removed from the vector.
+ * increasing order by their indices. The search for the correct position starts at the element that is pointed to by a
+ * given iterator. All elements that are located between the given iterator and the element to be inserted are removed
+ * from the vector.
  *
  * @tparam T        The type of the values that are stored by the `SparseListVector`
  * @param vector    A reference to an object of type `SparseListVector`, the new element should be inserted into
+ * @param previous  A reference to an iterator that points to the predecessor of `current`
+ * @param current   A reference to an iterator that points to the element to start at
+ * @param end       An iterator to the end of the `SparseListVector`
  * @param index     The index of the element to be inserted
  * @param value     The value of the element to be inserted
- * @param begin     An iterator to the element after which the search for the correct position should start
- * @return          An iterator to the element that has been inserted
  */
-template<typename T>
-static inline typename SparseListVector<T>::iterator insertNext(SparseListVector<T>& vector, uint32 index, T& value,
-                                                                typename SparseListVector<T>::iterator begin) {
-    typename SparseListVector<T>::iterator end = vector.end();
-    typename SparseListVector<T>::iterator next = begin;
-    next++;
+template <typename T>
+static inline void insertNext(SparseListVector<T>& vector, typename SparseListVector<T>::iterator& previous,
+                              typename SparseListVector<T>::iterator& current,
+                              typename SparseListVector<T>::iterator end, uint32 index, const T& value) {
+    while (current != end) {
+        IndexedValue<T>& entry = *current;
+        uint32 currentIndex = entry.index;
 
-    while (next != end) {
-        IndexedValue<T>& nextEntry = *next;
-        uint32 nextIndex = nextEntry.index;
-
-        if (index > nextIndex) {
-            next = vector.erase_after(begin);
-        } else if (index == nextIndex) {
-            nextEntry.value = value;
-            return next;
+        if (index > currentIndex) {
+            current = vector.erase_after(previous);
+        } else if (index == currentIndex) {
+            entry.value = value;
+            previous = current;
+            current++;
+            return;
         } else {
             break;
         }
     }
 
-    return vector.emplace_after(begin, index, value);
+    current = vector.emplace_after(previous, index, value);
+    previous = current;
+    current++;
 }
 
 /**
