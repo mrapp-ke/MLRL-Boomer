@@ -49,6 +49,21 @@ namespace boosting {
     }
 
     template<typename IndexIterator, typename ScoreIterator>
+    static inline void appendRemainingStatistics(IndexIterator indicesBegin, IndexIterator indicesEnd,
+                                                 ScoreIterator scoresBegin, ScoreIterator scoresEnd,
+                                                 SparseLabelWiseStatisticView::Row& row,
+                                                 SparseLabelWiseStatisticView::Row::iterator& previous,
+                                                 LabelWiseLoss::UpdateFunction updateFunction) {
+        Tuple<float64> tuple;
+        uint32 index;
+
+        while ((index = fetchNextNonZeroStatistic(scoresBegin, scoresEnd, indicesBegin, indicesEnd, tuple,
+                                                  updateFunction)) < LIMIT) {
+            previous = row.emplace_after(previous, index, tuple);
+        }
+    }
+
+    template<typename IndexIterator, typename ScoreIterator>
     static inline void updateLabelWiseStatisticsInternally(IndexIterator indicesBegin, IndexIterator indicesEnd,
                                                            ScoreIterator scoresBegin, ScoreIterator scoresEnd,
                                                            SparseLabelWiseStatisticView::Row& row,
@@ -74,10 +89,7 @@ namespace boosting {
                 }
             }
 
-            while ((index = fetchNextNonZeroStatistic(scoresBegin, scoresEnd, indicesBegin, indicesEnd, tuple,
-                                                      updateFunction)) < LIMIT) {
-                previous = row.emplace_after(previous, index, tuple);
-            }
+            appendRemainingStatistics(indicesBegin, indicesEnd, scoresBegin, scoresEnd, row, previous, updateFunction);
         } else {
             row.clear();
         }
@@ -157,11 +169,7 @@ namespace boosting {
         if (index < LIMIT) {
             row.emplace_front(index, tuple);
             SparseLabelWiseStatisticView::Row::iterator previous = row.begin();
-
-            while ((index = fetchNextNonZeroStatistic(scoresBegin, scoresEnd, indicesBegin, indicesEnd, tuple,
-                                                      updateFunction)) < LIMIT) {
-                previous = row.emplace_after(previous, index, tuple);
-            }
+            appendRemainingStatistics(indicesBegin, indicesEnd, scoresBegin, scoresEnd, row, previous, updateFunction);
         }
     }
 
@@ -190,10 +198,7 @@ namespace boosting {
             }
         }
 
-        while ((index = fetchNextNonZeroStatistic(scoresBegin, scoresEnd, indicesBegin, indicesEnd, tuple,
-                                                  updateFunction)) < LIMIT) {
-            previous = row.emplace_after(previous, index, tuple);
-        }
+        appendRemainingStatistics(indicesBegin, indicesEnd, scoresBegin, scoresEnd, row, previous, updateFunction);
     }
 
     template<typename IndexIterator, typename ScoreIterator>
