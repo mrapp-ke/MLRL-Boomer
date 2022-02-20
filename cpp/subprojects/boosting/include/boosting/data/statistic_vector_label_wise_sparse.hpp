@@ -96,7 +96,6 @@ namespace boosting {
      * An one-dimensional sparse vector that stores gradients and Hessians that have been calculated using a label-wise
      * decomposable loss function. For each element in the vector a single gradient and Hessian is stored.
      */
-    // TODO Add copy constructor
     class SparseLabelWiseStatisticVector final {
 
         private:
@@ -118,6 +117,11 @@ namespace boosting {
              *                      false otherwise
              */
             SparseLabelWiseStatisticVector(uint32 numElements, bool init);
+
+            /**
+             * @param vector A reference to an object of type `SparseLabelWiseStatisticVector` to be copied
+             */
+            SparseLabelWiseStatisticVector(const SparseLabelWiseStatisticVector& vector);
 
             /**
              * An iterator that provides read-only access to the elements in the vector.

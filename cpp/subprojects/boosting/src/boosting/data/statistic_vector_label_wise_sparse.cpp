@@ -121,6 +121,11 @@ namespace boosting {
 
     }
 
+    SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(const SparseLabelWiseStatisticVector& vector)
+        : sumOfWeights_(vector.sumOfWeights_) {
+        addInternally<AggregatedStatistics, const_iterator>(vector_, vector.cbegin(), vector.cend(), 1);
+    }
+
     SparseLabelWiseStatisticVector::const_iterator SparseLabelWiseStatisticVector::cbegin() const {
         return vector_.cbegin();
     }
