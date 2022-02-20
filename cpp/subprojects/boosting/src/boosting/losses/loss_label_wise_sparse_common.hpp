@@ -205,10 +205,11 @@ namespace boosting {
     static inline void updateLabelWiseStatisticsPartially(IndexIterator indicesBegin, IndexIterator indicesEnd,
                                                           ScoreIterator scoresBegin, ScoreIterator scoresEnd,
                                                           SparseLabelWiseStatisticView::Row& row,
-                                                          SparseLabelWiseStatisticView::Row::iterator begin,
-                                                          SparseLabelWiseStatisticView::Row::iterator end,
                                                           LabelWiseLoss::UpdateFunction updateFunction) {
-        if (begin == end) {
+        SparseLabelWiseStatisticView::Row::iterator begin = row.begin();
+        SparseLabelWiseStatisticView::Row::iterator end = row.end();
+
+        CHECK: if (begin == end) {
             updateEmptyStatisticsPartially(indicesBegin, indicesEnd, scoresBegin, scoresEnd, row, updateFunction);
         } else {
             Tuple<float64> tuple;
@@ -227,8 +228,8 @@ namespace boosting {
 
                     if (index == firstIndex) {
                         row.pop_front();
-                        updateLabelWiseStatisticsPartially(indicesBegin, indicesEnd, scoresBegin, scoresEnd, row,
-                                                           row.begin(), end, updateFunction);
+                        begin = row.begin();
+                        goto CHECK;
                     } else if (index < firstIndex) {
                         goto FETCH_NEXT;
                     } else {
@@ -300,11 +301,11 @@ namespace boosting {
                 auto scoresSubsetEnd = make_subset_forward_iterator<LilMatrix<float64>::const_iterator, float64,
                                                                     PartialIndexVector::const_iterator>(
                     scoresBegin, scoresEnd, labelIndicesEnd, labelIndicesEnd);
-                SparseLabelWiseStatisticView::Row& row = statisticView.getRow(exampleIndex);
                 updateLabelWiseStatisticsPartially(
                     make_subset_forward_iterator(indicesBegin, indicesEnd, labelIndicesBegin, labelIndicesEnd),
                     make_subset_forward_iterator(indicesBegin, indicesEnd, labelIndicesEnd, labelIndicesEnd),
-                    scoresSubsetBegin, scoresSubsetEnd, row, row.begin(), row.end(), LabelWiseLoss::updateFunction_);
+                    scoresSubsetBegin, scoresSubsetEnd, statisticView.getRow(exampleIndex),
+                    LabelWiseLoss::updateFunction_);
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
@@ -333,11 +334,11 @@ namespace boosting {
                 auto scoresSubsetEnd = make_subset_forward_iterator<LilMatrix<float64>::const_iterator, float64,
                                                                     PartialIndexVector::const_iterator>(
                     scoresBegin, scoresEnd, labelIndicesEnd, labelIndicesEnd);
-                SparseLabelWiseStatisticView::Row& row = statisticView.getRow(exampleIndex);
                 updateLabelWiseStatisticsPartially(
                     make_subset_forward_iterator(indicesBegin, indicesEnd, labelIndicesBegin, labelIndicesEnd),
                     make_subset_forward_iterator(indicesBegin, indicesEnd, labelIndicesEnd, labelIndicesEnd),
-                    scoresSubsetBegin, scoresSubsetEnd, row, row.begin(), row.end(), LabelWiseLoss::updateFunction_);
+                    scoresSubsetBegin, scoresSubsetEnd, statisticView.getRow(exampleIndex),
+                    LabelWiseLoss::updateFunction_);
             }
 
             float64 evaluate(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
