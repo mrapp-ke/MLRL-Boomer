@@ -118,15 +118,15 @@ namespace seco {
                      * @see `IStatisticsSubset::resetSubset`
                      */
                     void resetSubset() override {
-                        // Allocate a vector for storing the accumulated confusion matrices, if necessary...
                         if (!accumulatedSumVector_) {
-                            uint32 numPredictions = labelIndices_.getNumElements();
-                            accumulatedSumVector_ = new ConfusionMatrixVector(numPredictions, true);
+                            // Allocate a vector for storing the accumulated confusion matrices, if necessary...
+                            accumulatedSumVector_ = new ConfusionMatrixVector(sumVector_);
+                        } else {
+                            // Add the confusion matrix for each label to the accumulated confusion matrix...
+                            accumulatedSumVector_->add(sumVector_.cbegin(), sumVector_.cend());
                         }
 
-                        // Reset the confusion matrix for each label to zero and add its elements to the accumulated
-                        // confusion matrix...
-                        accumulatedSumVector_->add(sumVector_.cbegin(), sumVector_.cend());
+                        // Reset the confusion matrix for each label to zero...
                         sumVector_.clear();
                     }
 
