@@ -33,25 +33,25 @@ static inline typename SparseListVector<T>::iterator insertNext(SparseListVector
                                                                 typename SparseListVector<T>::iterator& begin,
                                                                 typename SparseListVector<T>::iterator end,
                                                                 uint32 index, const T& value) {
-    while (begin != end) {
-        IndexedValue<T>& firstEntry = *begin;
+    if (begin == end) {
+        vector.emplace_front(index, value);
+        begin = vector.begin();
+    } else {
+        CHECK: IndexedValue<T>& firstEntry = *begin;
         uint32 firstIndex = firstEntry.index;
 
         if (index > firstIndex) {
             vector.pop_front();
             begin = vector.begin();
+            goto CHECK;
         } else if (index == firstIndex) {
             firstEntry.value = value;
-            typename SparseListVector<T>::iterator current = begin;
-            current++;
-            return current;
         } else {
-            break;
+            vector.emplace_front(index, value);
+            begin = vector.begin();
         }
     }
 
-    vector.emplace_front(index, value);
-    begin = vector.begin();
     typename SparseListVector<T>::iterator current = begin;
     current++;
     return current;
@@ -75,15 +75,13 @@ template <typename T>
 static inline void insertNext(SparseListVector<T>& vector, typename SparseListVector<T>::iterator& previous,
                               typename SparseListVector<T>::iterator& current,
                               typename SparseListVector<T>::iterator end, uint32 index, const T& value) {
-    IndexedValue<T>& entry = *current;
+    CHECK: IndexedValue<T>& entry = *current;
     uint32 currentIndex = entry.index;
 
-    CHECK: if (index > currentIndex) {
+    if (index > currentIndex) {
         current = vector.erase_after(previous);
 
         if (current != end) {
-            entry = *current;
-            currentIndex = entry.index;
             goto CHECK;
         } else {
             current = vector.emplace_after(previous, index, value);
