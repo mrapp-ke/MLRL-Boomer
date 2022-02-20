@@ -91,12 +91,21 @@ namespace boosting {
             SparseListVector<AggregatedStatistics>::iterator current = insertNext(vector, previous, end, index,
                                                                                   statistics);
 
-            while ((index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, statistics))
-                   < LIMIT) {
-                insertNext(vector, previous, current, end, index, statistics);
+            while (current != end) {
+                index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, statistics);
+
+                if (index < LIMIT) {
+                    insertNext(vector, previous, current, end, index, statistics);
+                } else {
+                    vector.erase_after(previous, end);
+                    return;
+                }
             }
 
-            vector.erase_after(previous, vector.end());
+            while ((index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, statistics))
+                   < LIMIT) {
+                previous = vector.emplace_after(previous, index, statistics);
+            }
         } else {
             vector.clear();
         }

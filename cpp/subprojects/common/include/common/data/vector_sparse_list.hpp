@@ -75,23 +75,25 @@ template <typename T>
 static inline void insertNext(SparseListVector<T>& vector, typename SparseListVector<T>::iterator& previous,
                               typename SparseListVector<T>::iterator& current,
                               typename SparseListVector<T>::iterator end, uint32 index, const T& value) {
-    while (current != end) {
-        IndexedValue<T>& entry = *current;
-        uint32 currentIndex = entry.index;
+    IndexedValue<T>& entry = *current;
+    uint32 currentIndex = entry.index;
 
-        if (index > currentIndex) {
-            current = vector.erase_after(previous);
-        } else if (index == currentIndex) {
-            entry.value = value;
-            previous = current;
-            current++;
-            return;
+    CHECK: if (index > currentIndex) {
+        current = vector.erase_after(previous);
+
+        if (current != end) {
+            entry = *current;
+            currentIndex = entry.index;
+            goto CHECK;
         } else {
-            break;
+            current = vector.emplace_after(previous, index, value);
         }
+    } else if (index == currentIndex) {
+        entry.value = value;
+    } else {
+        current = vector.emplace_after(previous, index, value);
     }
 
-    current = vector.emplace_after(previous, index, value);
     previous = current;
     current++;
 }
