@@ -30,7 +30,8 @@ namespace boosting {
          */
         AggregatedStatistics(const AggregatedStatistics& aggregatedStatistics, float64 weight)
             : sumOfGradients(aggregatedStatistics.sumOfGradients * weight),
-              sumOfHessians(aggregatedStatistics.sumOfHessians * weight), sumOfWeights(weight) {
+              sumOfHessians(aggregatedStatistics.sumOfHessians * weight),
+              sumOfWeights(aggregatedStatistics.sumOfWeights * weight) {
 
         }
 
