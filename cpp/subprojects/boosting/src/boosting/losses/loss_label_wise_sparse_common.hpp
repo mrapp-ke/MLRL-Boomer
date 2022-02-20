@@ -234,9 +234,15 @@ namespace boosting {
                     } else {
                         SparseLabelWiseStatisticView::Row::iterator current = begin;
                         current++;
-                        remove(row, begin, current, end, index);
-                        updateRemainingStatisticsPartially(indicesBegin, indicesEnd, scoresBegin, scoresEnd, row, begin,
-                                                           current, end, updateFunction);
+
+                        if (current != end) {
+                            remove(row, begin, current, end, index);
+                            updateRemainingStatisticsPartially(indicesBegin, indicesEnd, scoresBegin, scoresEnd, row,
+                                                               begin, current, end, updateFunction);
+                        } else {
+                            appendRemainingStatistics(indicesBegin, indicesEnd, scoresBegin, scoresEnd, row, begin,
+                                                      updateFunction);
+                        }
                     }
                 }
             }
