@@ -131,16 +131,18 @@ namespace boosting {
                      * @see `IStatisticsSubset::resetSubset`
                      */
                     void resetSubset() override {
-                        // Create a vector for storing the accumulated sums of gradients and Hessians, if necessary...
                         if (!accumulatedSumVector_) {
-                            uint32 numPredictions = labelIndices_.getNumElements();
-                            accumulatedSumVector_ = new StatisticVector(numPredictions, true);
+                            // Create a vector for storing the accumulated sums of gradients and Hessians, if
+                            // necessary...
+                            accumulatedSumVector_ = new StatisticVector(sumVector_);
+                        } else {
+                            // Add the sum of gradients and Hessians to the accumulated sums of gradients and
+                            // Hessians...
+                            accumulatedSumVector_->add(sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
+                                                       sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
                         }
 
-                        // Reset the sum of gradients and Hessians to zero and add it to the accumulated sums of
-                        // gradients and Hessians...
-                        accumulatedSumVector_->add(sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
-                                                   sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
+                        // Reset the sum of gradients and Hessians to zero...
                         sumVector_.clear();
                     }
 
