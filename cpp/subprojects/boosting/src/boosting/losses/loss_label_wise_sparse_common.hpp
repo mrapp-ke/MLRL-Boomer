@@ -10,6 +10,44 @@ namespace boosting {
     static const uint32 LIMIT = std::numeric_limits<uint32>::max();
 
     template<typename ScoreIterator, typename IndexIterator>
+    static inline uint32 fetchNextEvaluation(ScoreIterator& scoreIterator, ScoreIterator scoresEnd,
+                                             IndexIterator& indexIterator, IndexIterator indicesEnd,
+                                             float64& score, LabelWiseLoss::EvaluateFunction evaluateFunction) {
+        uint32 labelIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
+        uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
+
+        if (scoreIndex < labelIndex) {
+            score = (*evaluateFunction)(false, (*scoreIterator).value);
+            scoreIterator++;
+            return scoreIndex;
+        } else if (labelIndex < scoreIndex) {
+            score = (*evaluateFunction)(true, 0);
+            indexIterator++;
+            return labelIndex;
+        } else if (labelIndex < LIMIT) {
+            scoreIterator++;
+            indexIterator++;
+            return labelIndex;
+        }
+
+        return LIMIT;
+    }
+
+    template<typename ScoreIterator, typename IndexIterator>
+    static inline uint32 fetchNextNonZeroEvaluation(ScoreIterator& scoreIterator, ScoreIterator scoresEnd,
+                                                    IndexIterator& indexIterator, IndexIterator indicesEnd,
+                                                    float64& score, LabelWiseLoss::EvaluateFunction evaluateFunction) {
+        uint32 index = fetchNextEvaluation(scoreIterator, scoresEnd, indexIterator, indicesEnd, score,
+                                           evaluateFunction);
+
+        while (score == 0 && index < LIMIT) {
+            index = fetchNextEvaluation(scoreIterator, scoresEnd, indexIterator, indicesEnd, score, evaluateFunction);
+        }
+
+        return index;
+    }
+
+    template<typename ScoreIterator, typename IndexIterator>
     static inline uint32 fetchNextStatistic(ScoreIterator& scoreIterator, ScoreIterator scoresEnd,
                                             IndexIterator& indexIterator, IndexIterator indicesEnd,
                                             Tuple<float64>& tuple, LabelWiseLoss::UpdateFunction updateFunction) {
@@ -250,6 +288,24 @@ namespace boosting {
         }
     }
 
+    template<typename IndexIterator>
+    static inline float64 evaluateInternally(IndexIterator indexIterator, IndexIterator indicesEnd,
+                                             LilMatrix<float64>::const_iterator scoreIterator,
+                                             LilMatrix<float64>::const_iterator scoresEnd, uint32 numLabels,
+                                             LabelWiseLoss::EvaluateFunction evaluateFunction) {
+        float64 mean = 0;
+        float64 score = 0;
+        uint32 i = 0;
+
+        while (fetchNextNonZeroEvaluation(scoreIterator, scoresEnd, indexIterator, indicesEnd, score,
+                                          evaluateFunction) < LIMIT) {
+            mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
+            i++;
+        }
+
+        return mean * ((float64) i / (float64) numLabels);
+    }
+
     /**
      * An implementation of the type `ISparseLabelWiseLoss` that relies on an "update function" and an
      * "evaluation function" for updating the gradients and Hessians and evaluation the predictions for an individual
@@ -343,14 +399,21 @@ namespace boosting {
 
             float64 evaluate(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                              const LilMatrix<float64>& scoreMatrix) const override {
-                // TODO Implement
-                return 0;
+                auto indexIterator = make_non_zero_index_forward_iterator(
+                    labelMatrix.row_values_cbegin(exampleIndex), labelMatrix.row_values_cend(exampleIndex));
+                auto indicesEnd = make_non_zero_index_forward_iterator(
+                    labelMatrix.row_values_cend(exampleIndex), labelMatrix.row_values_cend(exampleIndex));
+                return evaluateInternally(indexIterator, indicesEnd, scoreMatrix.row_cbegin(exampleIndex),
+                                          scoreMatrix.row_cend(exampleIndex), labelMatrix.getNumCols(),
+                                          LabelWiseLoss::evaluateFunction_);
             }
 
             float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                              const LilMatrix<float64>& scoreMatrix) const override {
-                // TODO Implement
-                return 0;
+                return evaluateInternally(labelMatrix.row_indices_cbegin(exampleIndex),
+                                          labelMatrix.row_indices_cend(exampleIndex),
+                                          scoreMatrix.row_cbegin(exampleIndex), scoreMatrix.row_cend(exampleIndex),
+                                          labelMatrix.getNumCols(), LabelWiseLoss::evaluateFunction_);
             }
 
     };
