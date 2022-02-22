@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "common/data/tuple.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "boosting/data/statistic_view_label_wise_dense.hpp"
