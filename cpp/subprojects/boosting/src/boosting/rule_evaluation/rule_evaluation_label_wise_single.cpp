@@ -133,10 +133,10 @@ namespace boosting {
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
 
                 if (iterator != end) {
-                    const IndexedValue<AggregatedStatistics>& firstEntry = *iterator;
-                    const AggregatedStatistics& firstStatistics = firstEntry.value;
-                    float64 bestGradient = firstStatistics.sumOfGradients;
-                    float64 bestHessian = firstStatistics.sumOfHessians + (sumOfWeights - firstStatistics.sumOfWeights);
+                    const IndexedValue<Triple<float64>>& firstEntry = *iterator;
+                    const Triple<float64>& firstTriple = firstEntry.value;
+                    float64 bestGradient = firstTriple.first;
+                    float64 bestHessian = firstTriple.second + (sumOfWeights - firstTriple.third);
                     float64 bestQualityScore = calculateLabelWiseQualityScore(bestGradient, bestHessian,
                                                                               l1RegularizationWeight_,
                                                                               l2RegularizationWeight_);
@@ -144,10 +144,10 @@ namespace boosting {
                     iterator++;
 
                     for (; iterator != end; iterator++) {
-                        const IndexedValue<AggregatedStatistics>& entry = *iterator;
-                        const AggregatedStatistics& statistics = entry.value;
-                        float64 gradient = statistics.sumOfGradients;
-                        float64 hessian = statistics.sumOfHessians + (sumOfWeights - statistics.sumOfWeights);
+                        const IndexedValue<Triple<float64>>& entry = *iterator;
+                        const Triple<float64>& triple = entry.value;
+                        float64 gradient = triple.first;
+                        float64 hessian = triple.second + (sumOfWeights - triple.third);
                         float64 qualityScore = calculateLabelWiseQualityScore(gradient, hessian,
                                                                               l1RegularizationWeight_,
                                                                               l2RegularizationWeight_);

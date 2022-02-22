@@ -7,23 +7,31 @@ namespace boosting {
 
     static const uint32 LIMIT = std::numeric_limits<uint32>::max();
 
+    static inline Triple<float64> createTriple(const Triple<float64>& triple, float64 weight) {
+        return Triple<float64>(triple.first * weight, triple.second * weight, triple.third * weight);
+    }
+
+    static inline Triple<float64> createTriple(const Tuple<float64>& tuple, float64 weight) {
+        return Triple<float64>(tuple.first * weight, tuple.second * weight, weight);
+    }
+
     template<typename ValueType, typename Iterator>
-    static inline void addInternally(SparseListVector<AggregatedStatistics>& vector, Iterator iterator, Iterator end,
+    static inline void addInternally(SparseListVector<Triple<float64>>& vector, Iterator iterator, Iterator end,
                                      float64 weight) {
         if (iterator != end) {
-            SparseListVector<AggregatedStatistics>::iterator previous = vector.begin();
-            SparseListVector<AggregatedStatistics>::iterator last = vector.end();
+            SparseListVector<Triple<float64>>::iterator previous = vector.begin();
+            SparseListVector<Triple<float64>>::iterator last = vector.end();
 
             const IndexedValue<ValueType>& firstEntry = *iterator;
-            SparseListVector<AggregatedStatistics>::iterator current = addFirst<AggregatedStatistics>(
-                vector, previous, last, firstEntry.index, AggregatedStatistics(firstEntry.value, weight));
+            SparseListVector<Triple<float64>>::iterator current = addFirst<Triple<float64>>(
+                vector, previous, last, firstEntry.index, createTriple(firstEntry.value, weight));
             iterator++;
 
             while (current != last) {
                 if (iterator != end) {
                     const IndexedValue<ValueType>& entry = *iterator;
-                    add<AggregatedStatistics>(vector, previous, current, last, entry.index,
-                                              AggregatedStatistics(entry.value, weight));
+                    add<Triple<float64>>(vector, previous, current, last, entry.index,
+                                         createTriple(entry.value, weight));
                     iterator++;
                 } else {
                     return;
@@ -32,7 +40,7 @@ namespace boosting {
 
             for (; iterator != end; iterator++) {
                 const IndexedValue<ValueType>& entry = *iterator;
-                previous = vector.emplace_after(previous, entry.index, AggregatedStatistics(entry.value, weight));
+                previous = vector.emplace_after(previous, entry.index, createTriple(entry.value, weight));
             }
         }
     }
@@ -41,20 +49,20 @@ namespace boosting {
     static inline uint32 fetchNextDifference(Iterator& firstIterator, Iterator firstEnd,
                                              SparseLabelWiseStatisticVector::const_iterator& secondIterator,
                                              SparseLabelWiseStatisticVector::const_iterator secondEnd,
-                                             AggregatedStatistics& statistics) {
+                                             Triple<float64>& triple) {
         uint32 firstIndex = firstIterator == firstEnd ? LIMIT : (*firstIterator).index;
         uint32 secondIndex = secondIterator == secondEnd ? LIMIT : (*secondIterator).index;
 
         if (firstIndex < secondIndex) {
-            statistics = (*firstIterator).value;
+            triple = (*firstIterator).value;
             firstIterator++;
             return firstIndex;
         } else if (secondIndex < firstIndex) {
-            statistics = (*secondIterator).value;
+            triple = (*secondIterator).value;
             secondIterator++;
             return secondIndex;
         } else if (firstIndex < LIMIT) {
-            statistics = (*firstIterator).value - (*secondIterator).value;
+            triple = (*firstIterator).value - (*secondIterator).value;
             firstIterator++;
             secondIterator++;
             return firstIndex;
@@ -67,44 +75,42 @@ namespace boosting {
     static inline uint32 fetchNextNonZeroDifference(Iterator& firstIterator, Iterator firstEnd,
                                                     SparseLabelWiseStatisticVector::const_iterator& secondIterator,
                                                     SparseLabelWiseStatisticVector::const_iterator secondEnd,
-                                                    AggregatedStatistics& statistics) {
-        uint32 index = fetchNextDifference(firstIterator, firstEnd, secondIterator, secondEnd, statistics);
+                                                    Triple<float64>& triple) {
+        uint32 index = fetchNextDifference(firstIterator, firstEnd, secondIterator, secondEnd, triple);
 
-        while (statistics.sumOfGradients == 0 && index < LIMIT) {
-            index = fetchNextDifference(firstIterator, firstEnd, secondIterator, secondEnd, statistics);
+        while (triple.first == 0 && index < LIMIT) {
+            index = fetchNextDifference(firstIterator, firstEnd, secondIterator, secondEnd, triple);
         }
 
         return index;
     }
 
     template<typename Iterator>
-    static inline void differenceInternally(SparseListVector<AggregatedStatistics>& vector, Iterator firstBegin,
+    static inline void differenceInternally(SparseListVector<Triple<float64>>& vector, Iterator firstBegin,
                                             Iterator firstEnd,
                                             SparseLabelWiseStatisticVector::const_iterator secondBegin,
                                             SparseLabelWiseStatisticVector::const_iterator secondEnd) {
-        AggregatedStatistics statistics;
-        uint32 index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, statistics);
+        Triple<float64> triple;
+        uint32 index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, triple);
 
         if (index < LIMIT) {
-            SparseListVector<AggregatedStatistics>::iterator previous = vector.begin();
-            SparseListVector<AggregatedStatistics>::iterator end = vector.end();
-            SparseListVector<AggregatedStatistics>::iterator current = insertNext(vector, previous, end, index,
-                                                                                  statistics);
+            SparseListVector<Triple<float64>>::iterator previous = vector.begin();
+            SparseListVector<Triple<float64>>::iterator end = vector.end();
+            SparseListVector<Triple<float64>>::iterator current = insertNext(vector, previous, end, index, triple);
 
             while (current != end) {
-                index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, statistics);
+                index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, triple);
 
                 if (index < LIMIT) {
-                    insertNext(vector, previous, current, end, index, statistics);
+                    insertNext(vector, previous, current, end, index, triple);
                 } else {
                     vector.erase_after(previous, end);
                     return;
                 }
             }
 
-            while ((index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, statistics))
-                   < LIMIT) {
-                previous = vector.emplace_after(previous, index, statistics);
+            while ((index = fetchNextNonZeroDifference(firstBegin, firstEnd, secondBegin, secondEnd, triple)) < LIMIT) {
+                previous = vector.emplace_after(previous, index, triple);
             }
         } else {
             vector.clear();
@@ -123,7 +129,7 @@ namespace boosting {
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(const SparseLabelWiseStatisticVector& vector)
         : sumOfWeights_(vector.sumOfWeights_) {
-        addInternally<AggregatedStatistics, const_iterator>(vector_, vector.cbegin(), vector.cend(), 1);
+        addInternally<Triple<float64>, const_iterator>(vector_, vector.cbegin(), vector.cend(), 1);
     }
 
     SparseLabelWiseStatisticVector::const_iterator SparseLabelWiseStatisticVector::cbegin() const {
@@ -141,7 +147,7 @@ namespace boosting {
 
     void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticVector& vector) {
         sumOfWeights_ += vector.sumOfWeights_;
-        addInternally<AggregatedStatistics, const_iterator>(vector_, vector.cbegin(), vector.cend(), 1);
+        addInternally<Triple<float64>, const_iterator>(vector_, vector.cbegin(), vector.cend(), 1);
     }
 
     void SparseLabelWiseStatisticVector::add(SparseLabelWiseStatisticConstView::const_iterator begin,
@@ -206,10 +212,10 @@ namespace boosting {
         PartialIndexVector::const_iterator indicesBegin = firstIndices.cbegin();
         PartialIndexVector::const_iterator indicesEnd = firstIndices.cend();
         auto subsetBegin =
-            make_subset_forward_iterator<const_iterator, AggregatedStatistics, PartialIndexVector::const_iterator>(
+            make_subset_forward_iterator<const_iterator, Triple<float64>, PartialIndexVector::const_iterator>(
                 firstBegin, firstEnd, indicesBegin, indicesEnd);
         auto subsetEnd =
-            make_subset_forward_iterator<const_iterator, AggregatedStatistics, PartialIndexVector::const_iterator>(
+            make_subset_forward_iterator<const_iterator, Triple<float64>, PartialIndexVector::const_iterator>(
                 firstBegin, firstEnd, indicesEnd, indicesEnd);
         differenceInternally(vector_, subsetBegin, subsetEnd, second.cbegin(), second.cend());
     }
