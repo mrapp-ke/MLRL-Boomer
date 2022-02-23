@@ -28,13 +28,11 @@ namespace boosting {
      *
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
-     * @tparam StatisticMatrix          The type of the matrix that is used to store gradients and Hessians
      * @tparam ScoreMatrix              The type of the matrices that are used to store predicted scores
      * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
      *                                  well as corresponding quality scores, of rules
      */
-    template<typename StatisticVector, typename StatisticView, typename StatisticMatrix, typename ScoreMatrix,
-             typename RuleEvaluationFactory>
+    template<typename StatisticVector, typename StatisticView, typename ScoreMatrix, typename RuleEvaluationFactory>
     class AbstractLabelWiseImmutableStatistics : virtual public IImmutableStatistics {
 
         protected:
@@ -231,8 +229,7 @@ namespace boosting {
     template<typename StatisticVector, typename StatisticView, typename StatisticMatrix, typename ScoreMatrix,
              typename RuleEvaluationFactory>
     class LabelWiseHistogram final : public AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView,
-                                                                                 StatisticMatrix, ScoreMatrix,
-                                                                                 RuleEvaluationFactory>,
+                                                                                 ScoreMatrix, RuleEvaluationFactory>,
                                      virtual public IHistogram {
 
         private:
@@ -256,7 +253,7 @@ namespace boosting {
              */
             LabelWiseHistogram(const StatisticView& originalStatisticView, const StatisticVector* totalSumVector,
                                const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins)
-                : AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView, StatisticMatrix, ScoreMatrix,
+                : AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix,
                                                        RuleEvaluationFactory>(
                       std::make_unique<StatisticMatrix>(numBins, originalStatisticView.getNumCols()),
                       ruleEvaluationFactory),
@@ -323,8 +320,7 @@ namespace boosting {
     template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename StatisticMatrix,
              typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
     class AbstractLabelWiseStatistics : public AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView,
-                                                                                    StatisticMatrix, ScoreMatrix,
-                                                                                    RuleEvaluationFactory>,
+                                                                                    ScoreMatrix, RuleEvaluationFactory>,
                                         virtual public ILabelWiseStatistics<RuleEvaluationFactory> {
 
         private:
@@ -363,7 +359,7 @@ namespace boosting {
                                         const RuleEvaluationFactory& ruleEvaluationFactory,
                                         const LabelMatrix& labelMatrix, std::unique_ptr<StatisticView> statisticViewPtr,
                                         std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView, StatisticMatrix, ScoreMatrix,
+                : AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix,
                                                        RuleEvaluationFactory>(
                       std::move(statisticViewPtr), ruleEvaluationFactory),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(this->statisticViewPtr_->getNumCols())),
