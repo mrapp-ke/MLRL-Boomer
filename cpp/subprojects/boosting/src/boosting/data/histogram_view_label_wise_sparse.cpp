@@ -45,8 +45,10 @@ namespace boosting {
 
     void SparseLabelWiseHistogramView::addToRow(uint32 row, SparseLabelWiseStatisticConstView::const_iterator begin,
                                                 SparseLabelWiseStatisticConstView::const_iterator end, float64 weight) {
-        addToSparseLabelWiseStatisticVector<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(
-            histogram_->getRow(row), begin, end, weight);
+        if (weight != 0) {
+            addToSparseLabelWiseStatisticVector<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(
+                histogram_->getRow(row), begin, end, weight);
+        }
     }
 
 }
