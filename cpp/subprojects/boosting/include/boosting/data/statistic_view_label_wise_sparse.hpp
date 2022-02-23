@@ -112,17 +112,6 @@ namespace boosting {
              */
             void clear();
 
-            /**
-             * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
-             * to be added are multiplied by a specific weight.
-             *
-             * @param row       The row
-             * @param begin     A `const_iterator` to the beginning of the vector
-             * @param end       A `const_iterator` to the end of the vector
-             * @param weight    The weight, the gradients and Hessians should be multiplied by
-             */
-            void addToRow(uint32 row, const_iterator begin, const_iterator end, float64 weight);
-
     };
 
 }
