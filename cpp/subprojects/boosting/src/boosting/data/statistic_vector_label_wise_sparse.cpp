@@ -167,7 +167,11 @@ namespace boosting {
 
     void SparseLabelWiseStatisticVector::add(SparseLabelWiseHistogramConstView::const_iterator begin,
                                              SparseLabelWiseHistogramConstView::const_iterator end, float64 weight) {
-        // TODO Implement
+        if (weight != 0) {
+            sumOfWeights_ += weight;
+            addInternally<Triple<float64>, SparseLabelWiseHistogramConstView::const_iterator>(
+                vector_, begin, end, weight);
+        }
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseStatisticConstView::const_iterator begin,
@@ -203,13 +207,33 @@ namespace boosting {
     void SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseHistogramConstView::const_iterator begin,
                                                      SparseLabelWiseHistogramConstView::const_iterator end,
                                                      const CompleteIndexVector& indices, float64 weight) {
-        // TODO Implement
+        if (weight != 0) {
+            sumOfWeights_ += weight;
+            addInternally<Triple<float64>, SparseLabelWiseHistogramConstView::const_iterator>(
+                vector_, begin, end, weight);
+        }
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseHistogramConstView::const_iterator begin,
                                                      SparseLabelWiseHistogramConstView::const_iterator end,
                                                      const PartialIndexVector& indices, float64 weight) {
-        // TODO Implement
+        if (weight != 0) {
+            sumOfWeights_ += weight;
+            PartialIndexVector::const_iterator indicesBegin = indices.cbegin();
+            PartialIndexVector::const_iterator indicesEnd = indices.cend();
+            auto subsetBegin =
+                make_subset_forward_iterator<SparseLabelWiseHistogramConstView::const_iterator, Triple<float64>,
+                                             PartialIndexVector::const_iterator>(begin, end, indicesBegin, indicesEnd);
+            auto subsetEnd =
+                make_subset_forward_iterator<SparseLabelWiseHistogramConstView::const_iterator, Triple<float64>,
+                                             PartialIndexVector::const_iterator>(begin, end, indicesEnd, indicesEnd);
+            addInternally<Triple<float64>,
+                          SparseSubsetForwardIterator<SparseLabelWiseHistogramConstView::const_iterator,
+                                                      Triple<float64>, PartialIndexVector::const_iterator>>(vector_,
+                                                                                                            subsetBegin,
+                                                                                                            subsetEnd,
+                                                                                                            weight);
+        }
     }
 
     void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
