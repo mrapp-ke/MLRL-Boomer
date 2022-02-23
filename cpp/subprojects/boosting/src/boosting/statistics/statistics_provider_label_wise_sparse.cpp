@@ -1,4 +1,5 @@
 #include "boosting/statistics/statistics_provider_label_wise_sparse.hpp"
+1#include "boosting/data/histogram_view_label_wise_sparse.hpp"
 #include "boosting/data/matrix_lil_numeric.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "statistics_provider_label_wise.hpp"
@@ -26,6 +27,29 @@ namespace boosting {
 
             ~SparseLabelWiseStatisticMatrix() {
                 delete statistics_;
+            }
+
+    };
+
+    /**
+     * A histogram that stores gradients and Hessians that have been calculated using a label-wise decomposable loss
+     * function in the list of lists (LIL) format.
+     */
+    class SparseLabelWiseHistogram final : public SparseLabelWiseHistogramView {
+
+        public:
+
+            /**
+             * @param numBins   The number of bins in the histogram
+             * @param numCols   The number of columns in the histogram
+             */
+            SparseLabelWiseHistogram(uint32 numBins, uint32 numCols)
+                : SparseLabelWiseHistogramView(numCols, new LilMatrix<Triple<float64>>(numBins)) {
+
+            }
+
+            ~SparseLabelWiseHistogram() {
+                delete histogram_;
             }
 
     };
