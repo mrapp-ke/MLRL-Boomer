@@ -165,6 +165,11 @@ namespace boosting {
         }
     }
 
+    void SparseLabelWiseStatisticVector::add(SparseLabelWiseHistogramConstView::const_iterator begin,
+                                             SparseLabelWiseHistogramConstView::const_iterator end, float64 weight) {
+        // TODO Implement
+    }
+
     void SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseStatisticConstView::const_iterator begin,
                                                      SparseLabelWiseStatisticConstView::const_iterator end,
                                                      const CompleteIndexVector& indices, float64 weight) {
@@ -193,6 +198,18 @@ namespace boosting {
                                                       PartialIndexVector::const_iterator>>(vector_, subsetBegin,
                                                                                            subsetEnd, weight);
         }
+    }
+
+    void SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseHistogramConstView::const_iterator begin,
+                                                     SparseLabelWiseHistogramConstView::const_iterator end,
+                                                     const CompleteIndexVector& indices, float64 weight) {
+        // TODO Implement
+    }
+
+    void SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseHistogramConstView::const_iterator begin,
+                                                     SparseLabelWiseHistogramConstView::const_iterator end,
+                                                     const PartialIndexVector& indices, float64 weight) {
+        // TODO Implement
     }
 
     void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
