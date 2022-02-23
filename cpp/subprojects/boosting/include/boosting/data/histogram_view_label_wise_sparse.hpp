@@ -118,8 +118,8 @@ namespace boosting {
              * Hessians to be added are multiplied by a specific weight.
              *
              * @param row       The row
-             * @param begin     An iterator to the beginning of the vector
-             * @param end       An iterator to the end of the vector
+             * @param begin     A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the vector
+             * @param end       A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToRow(uint32 row, SparseLabelWiseStatisticConstView::const_iterator begin,
