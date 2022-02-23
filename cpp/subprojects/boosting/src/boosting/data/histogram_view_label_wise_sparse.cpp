@@ -1,4 +1,5 @@
 #include "boosting/data/histogram_view_label_wise_sparse.hpp"
+#include "statistic_vector_label_wise_sparse_common.hpp"
 
 
 namespace boosting {
@@ -44,7 +45,8 @@ namespace boosting {
 
     void SparseLabelWiseHistogramView::addToRow(uint32 row, SparseLabelWiseStatisticConstView::const_iterator begin,
                                                 SparseLabelWiseStatisticConstView::const_iterator end, float64 weight) {
-        // TODO Implement
+        addToSparseLabelWiseStatisticVector<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(
+            histogram_->getRow(row), begin, end, weight);
     }
 
 }
