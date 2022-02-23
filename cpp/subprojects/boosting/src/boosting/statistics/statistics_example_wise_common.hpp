@@ -239,7 +239,7 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename ScoreMatrix,
              typename RuleEvaluationFactory>
-    class ExampleWiseHistogram final : public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
+    class ExampleWiseHistogram final : public AbstractExampleWiseImmutableStatistics<StatisticVector, Histogram,
                                                                                      ScoreMatrix,
                                                                                      RuleEvaluationFactory>,
                                        virtual public IHistogram {
@@ -265,7 +265,7 @@ namespace boosting {
              */
             ExampleWiseHistogram(const StatisticView& originalStatisticView, const StatisticVector* totalSumVector,
                                  const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins)
-                : AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix,
+                : AbstractExampleWiseImmutableStatistics<StatisticVector, Histogram, ScoreMatrix,
                                                          RuleEvaluationFactory>(
                       std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols()), ruleEvaluationFactory),
                   originalStatisticView_(originalStatisticView), totalSumVector_(totalSumVector) {

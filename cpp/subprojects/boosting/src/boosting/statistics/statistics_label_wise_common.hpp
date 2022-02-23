@@ -228,7 +228,7 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename ScoreMatrix,
              typename RuleEvaluationFactory>
-    class LabelWiseHistogram final : public AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView,
+    class LabelWiseHistogram final : public AbstractLabelWiseImmutableStatistics<StatisticVector, Histogram,
                                                                                  ScoreMatrix, RuleEvaluationFactory>,
                                      virtual public IHistogram {
 
@@ -253,8 +253,7 @@ namespace boosting {
              */
             LabelWiseHistogram(const StatisticView& originalStatisticView, const StatisticVector* totalSumVector,
                                const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins)
-                : AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix,
-                                                       RuleEvaluationFactory>(
+                : AbstractLabelWiseImmutableStatistics<StatisticVector, Histogram, ScoreMatrix, RuleEvaluationFactory>(
                       std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols()), ruleEvaluationFactory),
                   originalStatisticView_(originalStatisticView), totalSumVector_(totalSumVector) {
 
