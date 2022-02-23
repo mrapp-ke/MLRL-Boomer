@@ -314,6 +314,8 @@ namespace boosting {
      *                                  examples
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
+     * @tparam HistogramView            The type of the view that provides access to the gradients and Hessians in
+     *                                  histogram
      * @tparam StatisticMatrix          The type of the matrix that is used to store gradients and Hessians
      * @tparam ScoreMatrix              The type of the matrices that are used to store predicted scores
      * @tparam LossFunction             The type of the loss function that is used to calculate gradients and Hessians
@@ -322,8 +324,9 @@ namespace boosting {
      * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
      *                                  well as corresponding quality scores, of rules
      */
-    template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename StatisticMatrix,
-             typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
+    template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename HistogramView,
+             typename StatisticMatrix, typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure,
+             typename RuleEvaluationFactory>
     class AbstractLabelWiseStatistics : public AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView,
                                                                                     StatisticMatrix, ScoreMatrix,
                                                                                     RuleEvaluationFactory>,
