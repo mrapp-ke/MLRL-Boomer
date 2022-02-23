@@ -64,7 +64,7 @@ namespace boosting {
     class SparseLabelWiseStatistics final : public AbstractLabelWiseStatistics<LabelMatrix,
                                                                                SparseLabelWiseStatisticVector,
                                                                                SparseLabelWiseStatisticView,
-                                                                               SparseLabelWiseStatisticMatrix,
+                                                                               SparseLabelWiseHistogram,
                                                                                NumericLilMatrix<float64>,
                                                                                ISparseLabelWiseLoss,
                                                                                ISparseEvaluationMeasure,
@@ -96,9 +96,8 @@ namespace boosting {
                                       std::unique_ptr<SparseLabelWiseStatisticView> statisticViewPtr,
                                       std::unique_ptr<NumericLilMatrix<float64>> scoreMatrixPtr)
                 : AbstractLabelWiseStatistics<LabelMatrix, SparseLabelWiseStatisticVector, SparseLabelWiseStatisticView,
-                                              SparseLabelWiseStatisticMatrix, NumericLilMatrix<float64>,
-                                              ISparseLabelWiseLoss, ISparseEvaluationMeasure,
-                                              ISparseLabelWiseRuleEvaluationFactory>(
+                                              SparseLabelWiseHistogram, NumericLilMatrix<float64>, ISparseLabelWiseLoss,
+                                              ISparseEvaluationMeasure, ISparseLabelWiseRuleEvaluationFactory>(
                       std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                       std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {
 
