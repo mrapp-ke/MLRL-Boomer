@@ -231,13 +231,13 @@ namespace boosting {
      * applied example-wise and are organized as a histogram.
      *
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
-     * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
-     * @tparam StatisticMatrix          The type of the matrix that stores the gradients and Hessians
+     * @tparam StatisticView            The type of the view that provides access to the original gradients and Hessians
+     * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
      * @tparam ScoreMatrix              The type of the matrices that are used to store predicted scores
      * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
      *                                  well as corresponding quality scores, of rules
      */
-    template<typename StatisticVector, typename StatisticView, typename StatisticMatrix, typename ScoreMatrix,
+    template<typename StatisticVector, typename StatisticView, typename Histogram, typename ScoreMatrix,
              typename RuleEvaluationFactory>
     class ExampleWiseHistogram final : public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
                                                                                      ScoreMatrix,
@@ -267,8 +267,7 @@ namespace boosting {
                                  const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins)
                 : AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix,
                                                          RuleEvaluationFactory>(
-                      std::make_unique<StatisticMatrix>(numBins, originalStatisticView.getNumCols()),
-                      ruleEvaluationFactory),
+                      std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols()), ruleEvaluationFactory),
                   originalStatisticView_(originalStatisticView), totalSumVector_(totalSumVector) {
 
             }
@@ -324,7 +323,7 @@ namespace boosting {
      *                                          training examples
      * @tparam StatisticVector                  The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView                    The type of the view that provides access to the gradients and Hessians
-     * @tparam StatisticMatrix                  The type of the matrix that stores the gradients and Hessians
+     * @tparam Histogram                        The type of a histogram that stores aggregated gradients and Hessians
      * @tparam ScoreMatrix                      The type of the matrices that are used to store predicted scores
      * @tparam LossFunction                     The type of the loss function that is used to calculate gradients and Hessians
      * @tparam EvaluationMeasure                The type of the evaluation measure that is used to assess the quality of
@@ -335,7 +334,7 @@ namespace boosting {
      *                                          example-wise predictions, as well as corresponding quality scores, of
      *                                          rules
      */
-    template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename StatisticMatrix,
+    template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename Histogram,
              typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure,
              typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
     class AbstractExampleWiseStatistics : public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
@@ -475,8 +474,8 @@ namespace boosting {
              * @see `IStatistics::createHistogram`
              */
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override final {
-                return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, StatisticMatrix,
-                                                             ScoreMatrix, ExampleWiseRuleEvaluationFactory>>(
+                return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, Histogram, ScoreMatrix,
+                                                             ExampleWiseRuleEvaluationFactory>>(
                     *this->statisticViewPtr_, totalSumVectorPtr_.get(), *this->ruleEvaluationFactoryPtr_, numBins);
             }
 
