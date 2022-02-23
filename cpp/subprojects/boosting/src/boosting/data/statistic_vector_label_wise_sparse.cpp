@@ -1,49 +1,12 @@
 #include "boosting/data/statistic_vector_label_wise_sparse.hpp"
 #include "common/iterator/subset_forward_iterator.hpp"
+#include "statistic_vector_label_wise_sparse_common.hpp"
 #include <limits>
 
 
 namespace boosting {
 
     static const uint32 LIMIT = std::numeric_limits<uint32>::max();
-
-    static inline Triple<float64> createTriple(const Triple<float64>& triple, float64 weight) {
-        return Triple<float64>(triple.first * weight, triple.second * weight, triple.third * weight);
-    }
-
-    static inline Triple<float64> createTriple(const Tuple<float64>& tuple, float64 weight) {
-        return Triple<float64>(tuple.first * weight, tuple.second * weight, weight);
-    }
-
-    template<typename ValueType, typename Iterator>
-    static inline void addInternally(SparseListVector<Triple<float64>>& vector, Iterator iterator, Iterator end,
-                                     float64 weight) {
-        if (iterator != end) {
-            SparseListVector<Triple<float64>>::iterator previous = vector.begin();
-            SparseListVector<Triple<float64>>::iterator last = vector.end();
-
-            const IndexedValue<ValueType>& firstEntry = *iterator;
-            SparseListVector<Triple<float64>>::iterator current = addFirst<Triple<float64>>(
-                vector, previous, last, firstEntry.index, createTriple(firstEntry.value, weight));
-            iterator++;
-
-            while (current != last) {
-                if (iterator != end) {
-                    const IndexedValue<ValueType>& entry = *iterator;
-                    add<Triple<float64>>(vector, previous, current, last, entry.index,
-                                         createTriple(entry.value, weight));
-                    iterator++;
-                } else {
-                    return;
-                }
-            }
-
-            for (; iterator != end; iterator++) {
-                const IndexedValue<ValueType>& entry = *iterator;
-                previous = vector.emplace_after(previous, entry.index, createTriple(entry.value, weight));
-            }
-        }
-    }
 
     template<typename Iterator>
     static inline uint32 fetchNextDifference(Iterator& firstIterator, Iterator firstEnd,
@@ -129,7 +92,8 @@ namespace boosting {
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(const SparseLabelWiseStatisticVector& vector)
         : sumOfWeights_(vector.sumOfWeights_) {
-        addInternally<Triple<float64>, const_iterator>(vector_, vector.cbegin(), vector.cend(), 1);
+        addToSparseLabelWiseStatisticVector<Triple<float64>, const_iterator>(
+            vector_, vector.cbegin(), vector.cend(), 1);
     }
 
     SparseLabelWiseStatisticVector::const_iterator SparseLabelWiseStatisticVector::cbegin() const {
@@ -147,20 +111,22 @@ namespace boosting {
 
     void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticVector& vector) {
         sumOfWeights_ += vector.sumOfWeights_;
-        addInternally<Triple<float64>, const_iterator>(vector_, vector.cbegin(), vector.cend(), 1);
+        addToSparseLabelWiseStatisticVector<Triple<float64>, const_iterator>(
+            vector_, vector.cbegin(), vector.cend(), 1);
     }
 
     void SparseLabelWiseStatisticVector::add(SparseLabelWiseStatisticConstView::const_iterator begin,
                                              SparseLabelWiseStatisticConstView::const_iterator end) {
         sumOfWeights_++;
-        addInternally<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(vector_, begin, end, 1);
+        addToSparseLabelWiseStatisticVector<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(
+            vector_, begin, end, 1);
     }
 
     void SparseLabelWiseStatisticVector::add(SparseLabelWiseStatisticConstView::const_iterator begin,
                                              SparseLabelWiseStatisticConstView::const_iterator end, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
-            addInternally<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(
+            addToSparseLabelWiseStatisticVector<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(
                 vector_, begin, end, weight);
         }
     }
@@ -169,7 +135,7 @@ namespace boosting {
                                              SparseLabelWiseHistogramConstView::const_iterator end, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
-            addInternally<Triple<float64>, SparseLabelWiseHistogramConstView::const_iterator>(
+            addToSparseLabelWiseStatisticVector<Triple<float64>, SparseLabelWiseHistogramConstView::const_iterator>(
                 vector_, begin, end, weight);
         }
     }
@@ -179,7 +145,7 @@ namespace boosting {
                                                      const CompleteIndexVector& indices, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
-            addInternally<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(
+            addToSparseLabelWiseStatisticVector<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(
                 vector_, begin, end, weight);
         }
     }
@@ -197,7 +163,7 @@ namespace boosting {
             auto subsetEnd =
                 make_subset_forward_iterator<SparseLabelWiseStatisticConstView::const_iterator, Tuple<float64>,
                                              PartialIndexVector::const_iterator>(begin, end, indicesEnd, indicesEnd);
-            addInternally<Tuple<float64>,
+            addToSparseLabelWiseStatisticVector<Tuple<float64>,
                           SparseSubsetForwardIterator<SparseLabelWiseStatisticConstView::const_iterator, Tuple<float64>,
                                                       PartialIndexVector::const_iterator>>(vector_, subsetBegin,
                                                                                            subsetEnd, weight);
@@ -209,7 +175,7 @@ namespace boosting {
                                                      const CompleteIndexVector& indices, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
-            addInternally<Triple<float64>, SparseLabelWiseHistogramConstView::const_iterator>(
+            addToSparseLabelWiseStatisticVector<Triple<float64>, SparseLabelWiseHistogramConstView::const_iterator>(
                 vector_, begin, end, weight);
         }
     }
@@ -227,7 +193,7 @@ namespace boosting {
             auto subsetEnd =
                 make_subset_forward_iterator<SparseLabelWiseHistogramConstView::const_iterator, Triple<float64>,
                                              PartialIndexVector::const_iterator>(begin, end, indicesEnd, indicesEnd);
-            addInternally<Triple<float64>,
+            addToSparseLabelWiseStatisticVector<Triple<float64>,
                           SparseSubsetForwardIterator<SparseLabelWiseHistogramConstView::const_iterator,
                                                       Triple<float64>, PartialIndexVector::const_iterator>>(vector_,
                                                                                                             subsetBegin,
