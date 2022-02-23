@@ -42,8 +42,4 @@ namespace boosting {
         statistics_->clear();
     }
 
-    void SparseLabelWiseStatisticView::addToRow(uint32 row, const_iterator begin, const_iterator end, float64 weight) {
-        // TODO Implement
-    }
-
 }
