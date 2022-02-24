@@ -243,14 +243,15 @@ namespace boosting {
 
                 private:
 
+                    const ExampleWiseHistogram& histogram_;
+
                     StatisticVector* totalCoverableSumVector_;
 
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type
-                     *                          `AbstractExampleWiseImmutableStatistics` that stores the gradients and
-                     *                          Hessians
+                     * @param histogram         A reference to an object of type `ExampleWiseHistogram` that stores the
+                     *                          gradients and Hessians
                      * @param totalSumVector    A pointer to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
                      * @param ruleEvaluationPtr An unique pointer to an object of type `IRuleEvaluation` that should be
@@ -259,13 +260,13 @@ namespace boosting {
                      * @param labelIndices      A reference to an object of template type `T` that provides access to
                      *                          the indices of the labels that are included in the subset
                      */
-                    StatisticsSubset(const ExampleWiseHistogram& statistics, const StatisticVector* totalSumVector,
+                    StatisticsSubset(const ExampleWiseHistogram& histogram, const StatisticVector* totalSumVector,
                                      std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
                                      const T& labelIndices)
                         : AbstractExampleWiseImmutableStatistics<StatisticVector, Histogram, ScoreMatrix,
                                                                  RuleEvaluationFactory>::AbstractStatisticsSubset<T>(
-                              statistics, totalSumVector, std::move(ruleEvaluationPtr), labelIndices),
-                          totalCoverableSumVector_(nullptr) {
+                              histogram, totalSumVector, std::move(ruleEvaluationPtr), labelIndices),
+                          histogram_(histogram), totalCoverableSumVector_(nullptr) {
 
                     }
 
@@ -285,11 +286,11 @@ namespace boosting {
 
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
-                        const StatisticView& statisticView = this->getStatisticView();
-                        totalCoverableSumVector_->add(statisticView.gradients_row_cbegin(statisticIndex),
-                                                      statisticView.gradients_row_cend(statisticIndex),
-                                                      statisticView.hessians_row_cbegin(statisticIndex),
-                                                      statisticView.hessians_row_cend(statisticIndex), -weight);
+                        const StatisticView& originalStatisticView = histogram_.originalStatisticView_;
+                        totalCoverableSumVector_->add(originalStatisticView.gradients_row_cbegin(statisticIndex),
+                                                      originalStatisticView.gradients_row_cend(statisticIndex),
+                                                      originalStatisticView.hessians_row_cbegin(statisticIndex),
+                                                      originalStatisticView.hessians_row_cend(statisticIndex), -weight);
                     }
 
             };
