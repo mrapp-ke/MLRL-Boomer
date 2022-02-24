@@ -4,7 +4,8 @@
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
-* No changes yet.
+* Missing feature values are now dealt with correctly when using feature binning.
+* A rare issue that may cause segmentation faults when using instance sampling has been fixed.
 
 ### Version 0.8.0 (Jan. 31, 2022)
 
