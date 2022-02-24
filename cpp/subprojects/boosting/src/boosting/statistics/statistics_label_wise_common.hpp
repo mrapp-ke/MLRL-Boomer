@@ -239,8 +239,8 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `AbstractLabelWiseImmutableStatistics`
-                     *                          that stores the gradients and Hessians
+                     * @param statistics        A reference to an object of type `LabelWiseHistogram` that stores the
+                     *                          gradients and Hessians
                      * @param totalSumVector    A pointer to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
                      * @param ruleEvaluationPtr An unique pointer to an object of type `IRuleEvaluation` that should be
@@ -249,10 +249,7 @@ namespace boosting {
                      * @param labelIndices      A reference to an object of template type `T` that provides access to
                      *                          the indices of the labels that are included in the subset
                      */
-                    StatisticsSubset(
-                            const AbstractLabelWiseImmutableStatistics<StatisticVector, Histogram, ScoreMatrix,
-                                                                       RuleEvaluationFactory>& statistics,
-                            const StatisticVector* totalSumVector,
+                    StatisticsSubset(const LabelWiseHistogram& statistics, const StatisticVector* totalSumVector,
                             std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr, const T& labelIndices)
                         : AbstractLabelWiseImmutableStatistics<StatisticVector, Histogram, ScoreMatrix,
                                                                RuleEvaluationFactory>::AbstractStatisticsSubset<T>(
@@ -392,8 +389,8 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `AbstractLabelWiseImmutableStatistics`
-                     *                          that stores the gradients and Hessians
+                     * @param statistics        A reference to an object of type `AbstractLabelWiseStatistics` that
+                     *                          stores the gradients and Hessians
                      * @param totalSumVector    A pointer to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
                      * @param ruleEvaluationPtr An unique pointer to an object of type `IRuleEvaluation` that should be
@@ -402,11 +399,10 @@ namespace boosting {
                      * @param labelIndices      A reference to an object of template type `T` that provides access to
                      *                          the indices of the labels that are included in the subset
                      */
-                    StatisticsSubset(
-                            const AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix,
-                                                                       RuleEvaluationFactory>& statistics,
-                            const StatisticVector* totalSumVector,
-                            std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr, const T& labelIndices)
+                    StatisticsSubset(const AbstractLabelWiseStatistics& statistics,
+                                     const StatisticVector* totalSumVector,
+                                     std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
+                                     const T& labelIndices)
                         : AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix,
                                                                RuleEvaluationFactory>::AbstractStatisticsSubset<T>(
                               statistics, totalSumVector, std::move(ruleEvaluationPtr), labelIndices),
