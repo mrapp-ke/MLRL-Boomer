@@ -234,12 +234,14 @@ namespace boosting {
 
                 private:
 
+                    const LabelWiseHistogram& histogram_;
+
                     StatisticVector* totalCoverableSumVector_;
 
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `LabelWiseHistogram` that stores the
+                     * @param histogram         A reference to an object of type `LabelWiseHistogram` that stores the
                      *                          gradients and Hessians
                      * @param totalSumVector    A pointer to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
@@ -249,12 +251,12 @@ namespace boosting {
                      * @param labelIndices      A reference to an object of template type `T` that provides access to
                      *                          the indices of the labels that are included in the subset
                      */
-                    StatisticsSubset(const LabelWiseHistogram& statistics, const StatisticVector* totalSumVector,
+                    StatisticsSubset(const LabelWiseHistogram& histogram, const StatisticVector* totalSumVector,
                             std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr, const T& labelIndices)
                         : AbstractLabelWiseImmutableStatistics<StatisticVector, Histogram, ScoreMatrix,
                                                                RuleEvaluationFactory>::AbstractStatisticsSubset<T>(
-                              statistics, totalSumVector, std::move(ruleEvaluationPtr), labelIndices),
-                          totalCoverableSumVector_(nullptr) {
+                              histogram, totalSumVector, std::move(ruleEvaluationPtr), labelIndices),
+                          histogram_(histogram), totalCoverableSumVector_(nullptr) {
 
                     }
 
@@ -274,9 +276,9 @@ namespace boosting {
 
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
-                        const StatisticView& statisticView = this->getStatisticView();
-                        totalCoverableSumVector_->add(statisticView.row_cbegin(statisticIndex),
-                                                      statisticView.row_cend(statisticIndex), -weight);
+                        const StatisticView& originalStatisticView = histogram_.originalStatisticView_;
+                        totalCoverableSumVector_->add(originalStatisticView.row_cbegin(statisticIndex),
+                                                      originalStatisticView.row_cend(statisticIndex), -weight);
                     }
 
             };
