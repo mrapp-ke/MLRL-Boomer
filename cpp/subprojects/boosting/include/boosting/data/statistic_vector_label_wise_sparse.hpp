@@ -99,17 +99,6 @@ namespace boosting {
                      SparseLabelWiseStatisticConstView::const_iterator end, float64 weight);
 
             /**
-             * Adds all gradients and Hessians in a single row of a `SparseLabelWiseHistogramConstView` to this vector.
-             * The gradients and Hessians to be added are multiplied by a specific weight.
-             *
-             * @param begin     A `SparseLabelWiseHistogramConstView::const_iterator` to the beginning of the row
-             * @param end       A `SparseLabelWiseHistogramConstView::const_iterator` to the end of the row
-             * @param weight    The weight, the gradients and Hessians should be multiplied by
-             */
-            void add(SparseLabelWiseHistogramConstView::const_iterator begin,
-                     SparseLabelWiseHistogramConstView::const_iterator end, float64 weight);
-
-            /**
              * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView`, whose
              * positions are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added
              * are multiplied by a specific weight.

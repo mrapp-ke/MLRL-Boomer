@@ -131,15 +131,6 @@ namespace boosting {
         }
     }
 
-    void SparseLabelWiseStatisticVector::add(SparseLabelWiseHistogramConstView::const_iterator begin,
-                                             SparseLabelWiseHistogramConstView::const_iterator end, float64 weight) {
-        if (weight != 0) {
-            sumOfWeights_ += weight;
-            addToSparseLabelWiseStatisticVector<Triple<float64>, SparseLabelWiseHistogramConstView::const_iterator>(
-                vector_, begin, end, weight);
-        }
-    }
-
     void SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseStatisticConstView::const_iterator begin,
                                                      SparseLabelWiseStatisticConstView::const_iterator end,
                                                      const CompleteIndexVector& indices, float64 weight) {
