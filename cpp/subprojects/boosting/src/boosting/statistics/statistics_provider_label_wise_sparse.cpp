@@ -44,12 +44,14 @@ namespace boosting {
              * @param numCols   The number of columns in the histogram
              */
             SparseLabelWiseHistogram(uint32 numBins, uint32 numCols)
-                : SparseLabelWiseHistogramView(numCols, new LilMatrix<Triple<float64>>(numBins)) {
+                : SparseLabelWiseHistogramView(numCols, new LilMatrix<Triple<float64>>(numBins),
+                  new DenseVector<float64>(numBins, true)) {
 
             }
 
             ~SparseLabelWiseHistogram() {
                 delete histogram_;
+                delete weights_;
             }
 
     };

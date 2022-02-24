@@ -5,8 +5,9 @@
 namespace boosting {
 
     SparseLabelWiseHistogramConstView::SparseLabelWiseHistogramConstView(uint32 numCols,
-                                                                         LilMatrix<Triple<float64>>* histogram)
-        : numCols_(numCols), histogram_(histogram) {
+                                                                         LilMatrix<Triple<float64>>* histogram,
+                                                                         DenseVector<float64>* weights)
+        : numCols_(numCols), histogram_(histogram), weights_(weights) {
 
     }
 
@@ -22,6 +23,10 @@ namespace boosting {
         return histogram_->getRow(row);
     }
 
+    const float64 SparseLabelWiseHistogramConstView::getWeight(uint32 row) const {
+        return (*weights_)[row];
+    }
+
     uint32 SparseLabelWiseHistogramConstView::getNumRows() const {
         return histogram_->getNumRows();
     }
@@ -30,8 +35,9 @@ namespace boosting {
         return numCols_;
     }
 
-    SparseLabelWiseHistogramView::SparseLabelWiseHistogramView(uint32 numCols, LilMatrix<Triple<float64>>* histogram)
-        : SparseLabelWiseHistogramConstView(numCols, histogram) {
+    SparseLabelWiseHistogramView::SparseLabelWiseHistogramView(uint32 numCols, LilMatrix<Triple<float64>>* histogram,
+                                                               DenseVector<float64>* weights)
+        : SparseLabelWiseHistogramConstView(numCols, histogram, weights) {
 
     }
 
@@ -40,12 +46,14 @@ namespace boosting {
     }
 
     void SparseLabelWiseHistogramView::clear() {
+        setArrayToZeros(weights_->begin(), weights_->getNumElements());
         histogram_->clear();
     }
 
     void SparseLabelWiseHistogramView::addToRow(uint32 row, SparseLabelWiseStatisticConstView::const_iterator begin,
                                                 SparseLabelWiseStatisticConstView::const_iterator end, float64 weight) {
         if (weight != 0) {
+            (*weights_)[row] += weight;
             addToSparseLabelWiseStatisticVector<Tuple<float64>, SparseLabelWiseStatisticConstView::const_iterator>(
                 histogram_->getRow(row), begin, end, weight);
         }

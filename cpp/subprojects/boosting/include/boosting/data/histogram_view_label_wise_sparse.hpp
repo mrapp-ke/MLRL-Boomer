@@ -4,6 +4,8 @@
 #pragma once
 
 #include "common/data/triple.hpp"
+#include "common/data/vector_dense.hpp"
+#include "common/data/arrays.hpp"
 #include "boosting/data/statistic_view_label_wise_sparse.hpp"
 
 
@@ -27,13 +29,20 @@ namespace boosting {
              */
             LilMatrix<Triple<float64>>* histogram_;
 
+            /**
+             * A pointer to an object of type `DenseVector` that stores the weight of each bin.
+             */
+            DenseVector<float64>* weights_;
+
         public:
 
             /**
              * @param numCols   The number of columns in the view
              * @param histogram A pointer to an object of type `LilMatrix` that stores the gradients and Hessians
+             * @param weights   A pointer to an object of type `DenseVector` that stores the weight of each bin
              */
-            SparseLabelWiseHistogramConstView(uint32 numCols, LilMatrix<Triple<float64>>* histogram);
+            SparseLabelWiseHistogramConstView(uint32 numCols, LilMatrix<Triple<float64>>* histogram,
+                                              DenseVector<float64>* weights);
 
             /**
              * The type of a row.
@@ -70,6 +79,14 @@ namespace boosting {
             const Row& getRow(uint32 row) const;
 
             /**
+             * Returns the weight of a specific row.
+             *
+             * @param row   The row
+             * @return      The weight of the row
+             */
+            const float64 getWeight(uint32 row) const;
+
+            /**
              * Returns the number of rows in the view.
              *
              * @return The number of rows
@@ -97,8 +114,10 @@ namespace boosting {
             /**
              * @param numCols   The number of columns in the view
              * @param histogram A pointer to an object of type `LilMatrix` that stores the gradients and Hessians
+             * @param weights   A pointer to an object of type `DenseVector` that stores the weight of each bin
              */
-            SparseLabelWiseHistogramView(uint32 numCols, LilMatrix<Triple<float64>>* histogram);
+            SparseLabelWiseHistogramView(uint32 numCols, LilMatrix<Triple<float64>>* histogram,
+                                         DenseVector<float64>* weights);
 
             /**
              * Returns a reference to a specific row.
