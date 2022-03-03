@@ -84,8 +84,7 @@ namespace boosting {
              * @param begin A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the row
              * @param end   A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the row
              */
-            void add(SparseLabelWiseStatisticConstView::const_iterator begin,
-                     SparseLabelWiseStatisticConstView::const_iterator end);
+            void add(const SparseLabelWiseStatisticConstView& view, uint32 row);
 
             /**
              * Adds all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` to this vector.
@@ -95,8 +94,7 @@ namespace boosting {
              * @param end       A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the row
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(SparseLabelWiseStatisticConstView::const_iterator begin,
-                     SparseLabelWiseStatisticConstView::const_iterator end, float64 weight);
+            void add(const SparseLabelWiseStatisticConstView& view, uint32 row, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView`, whose
@@ -108,9 +106,8 @@ namespace boosting {
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(SparseLabelWiseStatisticConstView::const_iterator begin,
-                             SparseLabelWiseStatisticConstView::const_iterator end, const CompleteIndexVector& indices,
-                             float64 weight);
+            void addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
+                             const CompleteIndexVector& indices, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView`, whose
@@ -122,9 +119,8 @@ namespace boosting {
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(SparseLabelWiseStatisticConstView::const_iterator begin,
-                             SparseLabelWiseStatisticConstView::const_iterator end, const PartialIndexVector& indices,
-                             float64 weight);
+            void addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
+                             const PartialIndexVector& indices, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramConstView`, whose
@@ -136,9 +132,8 @@ namespace boosting {
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(SparseLabelWiseHistogramConstView::const_iterator begin,
-                             SparseLabelWiseHistogramConstView::const_iterator end, const CompleteIndexVector& indices,
-                             float64 weight);
+            void addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
+                             const CompleteIndexVector& indices, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramConstView`, whose
@@ -150,9 +145,8 @@ namespace boosting {
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(SparseLabelWiseHistogramConstView::const_iterator begin,
-                             SparseLabelWiseHistogramConstView::const_iterator end, const PartialIndexVector& indices,
-                             float64 weight);
+            void addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
+                             const PartialIndexVector& indices, float64 weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
