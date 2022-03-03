@@ -1,8 +1,8 @@
 # Changelog
 
-### Version 0.9.0 (to be released)
+### Version 0.8.1 (to be released)
 
-A major update to the BOOMER algorithm that introduces the following changes:
+A bugfix release that solves the following issues:
 
 * Missing feature values are now dealt with correctly when using feature binning.
 * A rare issue that may cause segmentation faults when using instance sampling has been fixed.
