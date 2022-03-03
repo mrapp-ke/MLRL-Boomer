@@ -1,6 +1,6 @@
 # Changelog
 
-### Version 0.8.1 (to be released)
+### Version 0.8.1 (Mar. 4th, 2022)
 
 A bugfix release that solves the following issues:
 
