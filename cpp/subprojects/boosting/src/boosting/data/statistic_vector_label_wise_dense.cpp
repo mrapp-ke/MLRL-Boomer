@@ -56,27 +56,23 @@ namespace boosting {
         addToArray(statistics_, vector.statistics_, numElements_);
     }
 
-    void DenseLabelWiseStatisticVector::add(DenseLabelWiseStatisticConstView::const_iterator begin,
-                                            DenseLabelWiseStatisticConstView::const_iterator end) {
-        addToArray(statistics_, begin, numElements_);
+    void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticConstView& view, uint32 row) {
+        addToArray(statistics_, view.row_cbegin(row), numElements_);
     }
 
-    void DenseLabelWiseStatisticVector::add(DenseLabelWiseStatisticConstView::const_iterator begin,
-                                            DenseLabelWiseStatisticConstView::const_iterator end, float64 weight) {
-        addToArray(statistics_, begin, numElements_, weight);
+    void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticConstView& view, uint32 row, float64 weight) {
+        addToArray(statistics_, view.row_cbegin(row), numElements_, weight);
     }
 
-    void DenseLabelWiseStatisticVector::addToSubset(DenseLabelWiseStatisticConstView::const_iterator begin,
-                                                    DenseLabelWiseStatisticConstView::const_iterator end,
+    void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
                                                     const CompleteIndexVector& indices, float64 weight) {
-        addToArray(statistics_, begin, numElements_, weight);
+        addToArray(statistics_, view.row_cbegin(row), numElements_, weight);
     }
 
-    void DenseLabelWiseStatisticVector::addToSubset(DenseLabelWiseStatisticConstView::const_iterator begin,
-                                                    DenseLabelWiseStatisticConstView::const_iterator end,
+    void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
                                                     const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        addToArray(statistics_, begin, indexIterator, numElements_, weight);
+        addToArray(statistics_, view.row_cbegin(row), indexIterator, numElements_, weight);
     }
 
     void DenseLabelWiseStatisticVector::difference(const DenseLabelWiseStatisticVector& first,

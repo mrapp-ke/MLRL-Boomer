@@ -111,9 +111,7 @@ namespace boosting {
                      * @see `IStatisticsSubset::addToSubset`
                      */
                     void addToSubset(uint32 statisticIndex, float64 weight) override final {
-                        sumVector_.addToSubset(statistics_.statisticViewPtr_->row_cbegin(statisticIndex),
-                                               statistics_.statisticViewPtr_->row_cend(statisticIndex), labelIndices_,
-                                               weight);
+                        sumVector_.addToSubset(*statistics_.statisticViewPtr_, statisticIndex, labelIndices_, weight);
                     }
 
                     /**
@@ -277,8 +275,7 @@ namespace boosting {
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
                         const StatisticView& originalStatisticView = histogram_.originalStatisticView_;
-                        totalCoverableSumVector_->add(originalStatisticView.row_cbegin(statisticIndex),
-                                                      originalStatisticView.row_cend(statisticIndex), -weight);
+                        totalCoverableSumVector_->add(originalStatisticView, statisticIndex, -weight);
                     }
 
             };
@@ -429,8 +426,7 @@ namespace boosting {
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
                         const StatisticView& statisticView = this->getStatisticView();
-                        totalCoverableSumVector_->add(statisticView.row_cbegin(statisticIndex),
-                                                      statisticView.row_cend(statisticIndex), -weight);
+                        totalCoverableSumVector_->add(statisticView, statisticIndex, -weight);
                     }
 
             };
@@ -513,8 +509,7 @@ namespace boosting {
              */
             void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override final {
                 float64 signedWeight = remove ? -weight : weight;
-                totalSumVectorPtr_->add(this->statisticViewPtr_->row_cbegin(statisticIndex),
-                                        this->statisticViewPtr_->row_cend(statisticIndex), signedWeight);
+                totalSumVectorPtr_->add(*this->statisticViewPtr_, statisticIndex, signedWeight);
             }
 
             /**
