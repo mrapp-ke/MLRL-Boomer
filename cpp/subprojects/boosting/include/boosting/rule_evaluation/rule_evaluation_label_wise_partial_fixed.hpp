@@ -12,7 +12,7 @@ namespace boosting {
      * Allows to create instances of the class `ILabelWiseRuleEvaluationFactory` that allow to calculate the predictions
      * of partial rules, which predict for a predefined number of labels.
      */
-    class LabelWiseFixedRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
+    class LabelWiseFixedPartialRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
 
         private:
 
@@ -28,7 +28,7 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            LabelWiseFixedRuleEvaluationFactory(float64 l1RegularizationWeight, float64 l2RegularizationWeight);
+            LabelWiseFixedPartialRuleEvaluationFactory(float64 l1RegularizationWeight, float64 l2RegularizationWeight);
 
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
                 const DenseLabelWiseStatisticVector& statisticVector,

@@ -1,5 +1,5 @@
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
-#include "boosting/rule_evaluation/rule_evaluation_label_wise_fixed.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_label_wise_partial_fixed.hpp"
 #include "boosting/statistics/statistics_provider_example_wise_dense.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
 
@@ -28,9 +28,11 @@ namespace boosting {
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
             labelBinningConfigPtr_->createLabelWiseRuleEvaluationFactory();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-            std::make_unique<LabelWiseFixedRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
+            std::make_unique<LabelWiseFixedPartialRuleEvaluationFactory>(l1RegularizationWeight,
+                                                                         l2RegularizationWeight);
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-            std::make_unique<LabelWiseFixedRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
+            std::make_unique<LabelWiseFixedPartialRuleEvaluationFactory>(l1RegularizationWeight,
+                                                                         l2RegularizationWeight);
         return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
