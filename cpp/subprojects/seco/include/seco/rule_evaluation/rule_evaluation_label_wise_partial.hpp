@@ -12,7 +12,8 @@
 namespace seco {
 
     /**
-     * Allows to create instances of the class `LabelWisePartialRuleEvaluation`.
+     * Allows to create instances of the class `ILabelWiseRuleEvaluationFactory` that allow to calculate the predictions
+     * of partial rules, which predict for a subset of the available labels.
      */
     class LabelWisePartialRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
 

@@ -12,7 +12,8 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the class `ExampleWiseCompleteBinnedRuleEvaluationFactory`.
+     * Allows to create instances of the class `IExampleWiseRuleEvaluationFactory` that allow to calculate the
+     * predictions of complete rules, which predict for all available labels, using gradient-based label binning.
      */
     class ExampleWiseCompleteBinnedRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
 

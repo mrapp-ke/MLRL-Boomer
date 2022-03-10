@@ -9,7 +9,8 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the class `LabelWiseCompleteRuleEvaluationFactory`.
+     * Allows to create instances of the class `ILabelWiseRuleEvaluationFactory` that allow to calculate the predictions
+     * of complete rules, which predict for all available labels.
      */
     class LabelWiseCompleteRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
 
