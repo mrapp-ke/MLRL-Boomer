@@ -99,7 +99,8 @@ def __add_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_HEAD_TYPE, type=str,
                         help='The type of the rule heads that should be used. Must be one of '
                              + format_string_set(HEAD_TYPE_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
-                             + 'suitable type is chosen automatically based on the parameter ' + PARAM_LOSS + '.')
+                             + 'suitable type is chosen automatically based on the parameter ' + PARAM_LOSS + '. For '
+                             + 'additional options refer to the documentation.')
     parser.add_argument(PARAM_PARALLEL_RULE_REFINEMENT, type=str,
                         help='Whether potential refinements of rules should be searched for in parallel or not. Must '
                              + 'be one of ' + format_dict_keys(PARALLEL_VALUES) + '. If set to "' + AUTOMATIC

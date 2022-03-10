@@ -48,6 +48,8 @@ ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
 HEAD_TYPE_SINGLE = 'single-label'
 
+HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
+
 HEAD_TYPE_COMPLETE = 'complete'
 
 LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
@@ -66,6 +68,7 @@ PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
 HEAD_TYPE_VALUES: Set[str] = {
     HEAD_TYPE_SINGLE,
+    HEAD_TYPE_PARTIAL_FIXED,
     HEAD_TYPE_COMPLETE,
     AUTOMATIC
 }
@@ -390,6 +393,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_automatic_heads()
             elif value == HEAD_TYPE_SINGLE:
                 config.use_single_label_heads()
+            elif value == HEAD_TYPE_PARTIAL_FIXED:
+                config.use_fixed_partial_heads()
             elif value == HEAD_TYPE_COMPLETE:
                 config.use_complete_heads()
 
