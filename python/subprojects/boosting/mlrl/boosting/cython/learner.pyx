@@ -74,6 +74,13 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useSingleLabelHeads()
 
+    def use_fixed_partial_heads(self):
+        """
+        Configures the rule learner to induce rules with partial heads that predict for predefined number of labels.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useFixedPartialHeads()
+
     def use_complete_heads(self):
         """
         Configures the rule learner to induce rules with complete heads that predict for all available labels.

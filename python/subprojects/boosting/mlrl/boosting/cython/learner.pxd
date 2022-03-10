@@ -31,6 +31,8 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useSingleLabelHeads()
 
+        void useFixedPartialHeads()
+
         void useCompleteHeads()
 
         void useNoL1Regularization()
