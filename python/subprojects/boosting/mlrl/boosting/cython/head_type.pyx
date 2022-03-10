@@ -24,8 +24,7 @@ cdef class FixedPartialHeadConfig:
         :param label_ratio: A percentage that specifies for how many labels the rule heads should predict, e.g., if 100
                             labels are available, a percentage of 0.5 means that the rule heads predict for a subset of
                             `ceil(0.5 * 100) = 50` labels. Must be in (0, 1)
-        :return:            An object of type `FixedPartialHeadConfig` that allows further configuration of the rule
-                            heads
+        :return:            A `FixedPartialHeadConfig` that allows further configuration of the rule heads
         """
         assert_greater('label_ratio', label_ratio, 0)
         assert_less('label_ratio', label_ratio, 1)
@@ -45,8 +44,7 @@ cdef class FixedPartialHeadConfig:
         Sets the minimum number of labels for which the rule heads should predict.
 
         :param min_labels:  The minimum number of labels for which the rule heads should predict. Must be at least 2
-        :return:            An object of type `FixedPartialHeadConfig` that allows further configuration of the rule
-                            heads
+        :return:            A `FixedPartialHeadConfig` that allows further configuration of the rule heads
         """
         assert_greater_or_equal('min_labels', min_labels, 1)
         self.config_ptr.setMinLabels(min_labels)
@@ -66,8 +64,7 @@ cdef class FixedPartialHeadConfig:
 
         :param max_labels:  The maximum number of labels for which the rule heads should predict. Must be at least the
                             minimum number of labels or 0, if the maximum number of labels should not be restricted
-        :return:            An object of type `FixedPartialHeadConfig` that allows further configuration of the rule
-                            heads
+        :return:            A `FixedPartialHeadConfig` that allows further configuration of the rule heads
         """
         if max_labels != 0:
             assert_greater_or_equal('max_labels', max_labels, self.config_ptr.getMinLabels())
