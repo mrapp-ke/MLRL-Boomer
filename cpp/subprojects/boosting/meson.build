@@ -29,7 +29,7 @@ source_files = [
     'src/boosting/post_processing/shrinkage_constant.cpp',
     'src/boosting/rule_evaluation/head_type_auto.cpp',
     'src/boosting/rule_evaluation/head_type_complete.cpp',
-    'src/boosting/rule_evaluation/head_type_fixed.cpp',
+    'src/boosting/rule_evaluation/head_type_partial_fixed.cpp',
     'src/boosting/rule_evaluation/head_type_single.cpp',
     'src/boosting/rule_evaluation/regularization_manual.cpp',
     'src/boosting/rule_evaluation/regularization_no.cpp',

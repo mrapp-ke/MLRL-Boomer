@@ -1,4 +1,4 @@
-#include "boosting/rule_evaluation/head_type_fixed.hpp"
+#include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_fixed.hpp"
 #include "boosting/statistics/statistics_provider_example_wise_dense.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
@@ -6,16 +6,17 @@
 
 namespace boosting {
 
-    FixedHeadConfig::FixedHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-                                     const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
-                                     const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-                                     const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
+    FixedPartialHeadConfig::FixedPartialHeadConfig(
+            const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
+            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
+            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
         : labelBinningConfigPtr_(labelBinningConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr),
           l1RegularizationConfigPtr_(l1RegularizationConfigPtr), l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
 
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> FixedHeadConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
             const ILabelWiseLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
@@ -36,7 +37,7 @@ namespace boosting {
             std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> FixedHeadConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
             const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
