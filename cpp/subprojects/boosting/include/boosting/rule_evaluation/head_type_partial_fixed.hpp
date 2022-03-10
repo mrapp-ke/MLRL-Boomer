@@ -25,7 +25,7 @@ namespace boosting {
             /**
              * Returns the percentage that specifies for how many labels the rule heads predict.
              *
-             * @param The percentage that specifies for how labels the rule heads predict
+             * @return The percentage that specifies for how labels the rule heads predict
              */
             virtual float32 getLabelRatio() const = 0;
 
