@@ -30,7 +30,7 @@ namespace boosting {
             /**
              * Sets the percentage that specifies how many should be used.
              *
-             * @param binRatio  A percentage that specifies how many bins should be used, e.g., if 100 labels are a
+             * @param binRatio  A percentage that specifies how many bins should be used, e.g., if 100 labels are
              *                  available, a percentage of 0.5 means that `ceil(0.5 * 100) = 50` bins should be used.
              *                  Must be in (0, 1)
              * @return          A reference to an object of type `EqualWidthLabelBinningConfig` that allows further
@@ -48,7 +48,7 @@ namespace boosting {
             /**
              * Sets the minimum number of bins that should be used.
              *
-             * @param minBins   The minimum number of bins that should be used. Must be at least 2
+             * @param minBins   The minimum number of bins that should be used. Must be at least 1
              * @return          A reference to an object of type `EqualWidthLabelBinningConfig` that allows further
              *                  configuration of the method that assigns labels to bins
              */
