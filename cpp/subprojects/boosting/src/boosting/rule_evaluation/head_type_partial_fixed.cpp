@@ -2,6 +2,7 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_partial_fixed.hpp"
 #include "boosting/statistics/statistics_provider_example_wise_dense.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
+#include "common/util/validation.hpp"
 
 
 namespace boosting {
@@ -11,9 +12,41 @@ namespace boosting {
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
             const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
             const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
-        : labelBinningConfigPtr_(labelBinningConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr),
-          l1RegularizationConfigPtr_(l1RegularizationConfigPtr), l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
+        : labelRatio_(0.05f), minLabels_(2), maxLabels_(0), labelBinningConfigPtr_(labelBinningConfigPtr),
+          multiThreadingConfigPtr_(multiThreadingConfigPtr), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
+          l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
 
+    }
+
+    float32 FixedPartialHeadConfig::getLabelRatio() const {
+        return labelRatio_;
+    }
+
+    IFixedPartialHeadConfig& FixedPartialHeadConfig::setLabelRatio(float32 labelRatio) {
+        assertGreater<float32>("labelRatio", labelRatio, 0);
+        assertLess<float32>("labelRatio", labelRatio, 1);
+        labelRatio_ = labelRatio;
+        return *this;
+    }
+
+    uint32 FixedPartialHeadConfig::getMinLabels() const {
+        return minLabels_;
+    }
+
+    IFixedPartialHeadConfig& FixedPartialHeadConfig::setMinLabels(uint32 minLabels) {
+        assertGreaterOrEqual<uint32>("minLabels", minLabels, 2);
+        minLabels_ = minLabels;
+        return *this;
+    }
+
+    uint32 FixedPartialHeadConfig::getMaxLabels() const {
+        return maxLabels_;
+    }
+
+    IFixedPartialHeadConfig& FixedPartialHeadConfig::setMaxLabels(uint32 maxLabels) {
+        if (maxLabels != 0) { assertGreaterOrEqual<uint32>("maxLabels", maxLabels, minLabels_); }
+        maxLabels_ = maxLabels;
+        return *this;
     }
 
     std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
