@@ -14,7 +14,7 @@ namespace boosting {
     /**
      * Allows to configure partial rule heads that predict for a predefined number of labels.
      */
-    class FixedHeadConfig final : public IHeadConfig {
+    class FixedPartialHeadConfig final : public IHeadConfig {
 
         private:
 
@@ -39,10 +39,10 @@ namespace boosting {
              * @param l2RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L2
              *                                  regularization
              */
-            FixedHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-                            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
-                            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-                            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
+            FixedPartialHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
+                                   const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
+                                   const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
+                                   const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
