@@ -1,7 +1,6 @@
 #include "common/binning/feature_binning_equal_frequency.hpp"
 #include "common/binning/bin_index_vector_dense.hpp"
 #include "common/binning/bin_index_vector_dok.hpp"
-#include "common/binning/binning.hpp"
 #include "common/math/math.hpp"
 #include "common/thresholds/thresholds_approximate.hpp"
 #include "common/util/validation.hpp"
@@ -36,7 +35,7 @@ static inline uint32 getNumBins(FeatureVector& featureVector, bool sparse, float
             }
         }
 
-        return numDistinctValues > 1 ? calculateNumBins(numDistinctValues, binRatio, minBins, maxBins) : 0;
+        return numDistinctValues > 1 ? calculateBoundedFraction(numDistinctValues, binRatio, minBins, maxBins) : 0;
     }
 
     return 0;

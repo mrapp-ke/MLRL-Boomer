@@ -1,8 +1,8 @@
 #include "common/binning/feature_binning_equal_width.hpp"
 #include "common/binning/bin_index_vector_dense.hpp"
 #include "common/binning/bin_index_vector_dok.hpp"
-#include "common/binning/binning.hpp"
 #include "common/thresholds/thresholds_approximate.hpp"
+#include "common/math/math.hpp"
 #include "common/util/validation.hpp"
 #include "feature_binning_nominal.hpp"
 #include <unordered_set>
@@ -49,7 +49,7 @@ static inline std::tuple<uint32, float32, float32> preprocess(const FeatureVecto
         }
 
         std::get<0>(result) =
-            numDistinctValues > 1 ? calculateNumBins(numDistinctValues, binRatio, minBins, maxBins) : 0;
+            numDistinctValues > 1 ? calculateBoundedFraction(numDistinctValues, binRatio, minBins, maxBins) : 0;
         std::get<1>(result) = minValue;
         std::get<2>(result) = maxValue;
     } else {
