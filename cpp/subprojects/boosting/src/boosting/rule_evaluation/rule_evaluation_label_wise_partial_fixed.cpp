@@ -4,8 +4,10 @@
 namespace boosting {
 
     LabelWiseFixedPartialRuleEvaluationFactory::LabelWiseFixedPartialRuleEvaluationFactory(
-            float64 l1RegularizationWeight, float64 l2RegularizationWeight)
-        : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
+            float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
+            float64 l2RegularizationWeight)
+        : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
+          l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
 
     }
 
