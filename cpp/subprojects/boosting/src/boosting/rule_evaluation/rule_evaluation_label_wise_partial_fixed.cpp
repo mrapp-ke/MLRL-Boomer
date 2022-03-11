@@ -1,6 +1,9 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_partial_fixed.hpp"
+#include "common/data/indexed_value.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "common/math/math.hpp"
+#include "rule_evaluation_label_wise_common.hpp"
+#include <queue>
 
 
 namespace boosting {
@@ -58,7 +61,43 @@ namespace boosting {
             }
 
             const IScoreVector& calculatePrediction(DenseLabelWiseStatisticVector& statisticVector) override {
-                // TODO
+                uint32 numElements = statisticVector.getNumElements();
+                DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
+                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                uint32 limit = indexVector_.getNumElements();
+                std::priority_queue<IndexedValue<float64>, std::vector<IndexedValue<float64>>,
+                                    IndexedValue<float64>::Compare> priorityQueue;
+
+                for (uint32 i = 0; i < numElements; i++) {
+                    const Tuple<float64>& tuple = statisticIterator[i];
+                    float64 qualityScore = calculateLabelWiseQualityScore(tuple.first, tuple.second,
+                                                                          l1RegularizationWeight_,
+                                                                          l2RegularizationWeight_);
+
+                    if (priorityQueue.size() < limit) {
+                        priorityQueue.emplace(labelIndexIterator[i], qualityScore);
+                    } else if (priorityQueue.top().value > qualityScore) {
+                        priorityQueue.pop();
+                        priorityQueue.emplace(labelIndexIterator[i], qualityScore);
+                    }
+                }
+
+                PartialIndexVector::iterator indexIterator = indexVector_.begin();
+                DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                float64 overallQualityScore = 0;
+
+                for (uint32 i = 0; i < limit; i++) {
+                    const IndexedValue<float64> entry = priorityQueue.top();
+                    priorityQueue.pop();
+                    uint32 index = entry.index;
+                    indexIterator[i] = index;
+                    const Tuple<float64>& tuple = statisticIterator[index];
+                    scoreIterator[i] = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
+                                                               l2RegularizationWeight_);
+                    overallQualityScore += entry.value;
+                }
+
+                scoreVector_.overallQualityScore = overallQualityScore;
                 return scoreVector_;
             }
 
