@@ -61,11 +61,11 @@ namespace boosting {
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
             labelBinningConfigPtr_->createLabelWiseRuleEvaluationFactory();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-            std::make_unique<LabelWiseFixedPartialRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                         l2RegularizationWeight);
+            std::make_unique<LabelWiseFixedPartialRuleEvaluationFactory>(
+                labelRatio_, minLabels_, maxLabels_, l1RegularizationWeight, l2RegularizationWeight);
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-            std::make_unique<LabelWiseFixedPartialRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                         l2RegularizationWeight);
+            std::make_unique<LabelWiseFixedPartialRuleEvaluationFactory>(
+                labelRatio_, minLabels_, maxLabels_, l1RegularizationWeight, l2RegularizationWeight);
         return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),

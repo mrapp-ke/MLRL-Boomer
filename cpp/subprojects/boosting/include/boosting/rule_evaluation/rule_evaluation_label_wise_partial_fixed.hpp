@@ -16,6 +16,12 @@ namespace boosting {
 
         private:
 
+            float32 labelRatio_;
+
+            uint32 minLabels_;
+
+            uint32 maxLabels_;
+
             float64 l1RegularizationWeight_;
 
             float64 l2RegularizationWeight_;
@@ -23,12 +29,22 @@ namespace boosting {
         public:
 
             /**
+             * @param labelRatio                A percentage that specifies for how many labels the rule heads should
+             *                                  predict, e.g., if 100 labels are available, a percentage of 0.5 means
+             *                                  that the rule heads predict for a subset of `ceil(0.5 * 100) = 50`
+             *                                  labels. Must be in (0, 1)
+             * @param minLabels                 The minimum number of labels for which the rule heads should predict.
+             *                                  Must be at least 2
+             * @param maxLabels                 The maximum number of labels for which the rule heads should predict.
+             *                                  Must be at least `minLabels` or 0, if the maximum number of labels
+             *                                  should not be restricted
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            LabelWiseFixedPartialRuleEvaluationFactory(float64 l1RegularizationWeight, float64 l2RegularizationWeight);
+            LabelWiseFixedPartialRuleEvaluationFactory(float32 labelRatio, uint32 minLabels, uint32 maxLabels,
+                                                       float64 l1RegularizationWeight, float64 l2RegularizationWeight);
 
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
                 const DenseLabelWiseStatisticVector& statisticVector,
