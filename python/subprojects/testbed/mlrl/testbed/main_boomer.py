@@ -98,7 +98,7 @@ def __add_arguments(parser: ArgumentParser):
                         help='The weight of the L2 regularization. Must be at least 0.')
     parser.add_argument(PARAM_HEAD_TYPE, type=str,
                         help='The type of the rule heads that should be used. Must be one of '
-                             + format_string_set(HEAD_TYPE_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
+                             + format_dict_keys(HEAD_TYPE_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
                              + 'suitable type is chosen automatically based on the parameter ' + PARAM_LOSS + '. For '
                              + 'additional options refer to the documentation.')
     parser.add_argument(PARAM_PARALLEL_RULE_REFINEMENT, type=str,
