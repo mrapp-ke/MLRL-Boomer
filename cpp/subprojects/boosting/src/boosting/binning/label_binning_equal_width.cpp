@@ -1,7 +1,7 @@
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_complete_binned.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_complete_binned.hpp"
-#include "common/binning/binning.hpp"
+#include "common/math/math.hpp"
 #include "common/util/validation.hpp"
 #include <limits>
 
@@ -38,7 +38,7 @@ namespace boosting {
             }
 
             uint32 getMaxBins(uint32 numLabels) const override {
-                return calculateNumBins(numLabels, binRatio_, minBins_, maxBins_) + 1;
+                return calculateBoundedFraction(numLabels, binRatio_, minBins_, maxBins_) + 1;
             }
 
             LabelInfo getLabelInfo(const float64* criteria, uint32 numElements) const override {
@@ -79,13 +79,13 @@ namespace boosting {
                     }
 
                     if (labelInfo.numNegativeBins > 0) {
-                        labelInfo.numNegativeBins = calculateNumBins(labelInfo.numNegativeBins, binRatio_, minBins_,
-                                                                     maxBins_);
+                        labelInfo.numNegativeBins = calculateBoundedFraction(labelInfo.numNegativeBins, binRatio_,
+                                                                             minBins_, maxBins_);
                     }
 
                     if (labelInfo.numPositiveBins > 0) {
-                        labelInfo.numPositiveBins = calculateNumBins(labelInfo.numPositiveBins, binRatio_, minBins_,
-                                                                     maxBins_);
+                        labelInfo.numPositiveBins = calculateBoundedFraction(labelInfo.numPositiveBins, binRatio_,
+                                                                             minBins_, maxBins_);
                     }
                 }
 
