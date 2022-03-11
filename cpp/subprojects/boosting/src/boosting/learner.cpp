@@ -111,10 +111,13 @@ namespace boosting {
             l2RegularizationConfigPtr_);
     }
 
-    void BoostingRuleLearner::Config::useFixedPartialHeads() {
-        headConfigPtr_ = std::make_unique<FixedPartialHeadConfig>(
+    IFixedPartialHeadConfig& BoostingRuleLearner::Config::useFixedPartialHeads() {
+        std::unique_ptr<FixedPartialHeadConfig> ptr = std::make_unique<FixedPartialHeadConfig>(
             labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
             l2RegularizationConfigPtr_);
+        IFixedPartialHeadConfig& ref = *ptr;
+        headConfigPtr_ = std::move(ptr);
+        return ref;
     }
 
     void BoostingRuleLearner::Config::useCompleteHeads() {
