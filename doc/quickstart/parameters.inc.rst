@@ -167,6 +167,12 @@ The following parameters allow to control the behavior of the algorithm:
 
   * ``'auto'`` The most suitable type of rule heads is chosen automatically, depending on the loss function.
   * ``'single-label'`` If all rules should predict for a single label.
+  * ``'partial-fixed'`` If all rules should predict for a predefined number of labels. The following options may be provided using the bracket notation:
+
+    * ``label_ratio`` (Default value = ``0.05``) A percentage that specifies for how many labels the rules should predict. For example, a value of 0.05 means that the rules should predict for 5% of the number of labels.
+    * ``min_labels`` (Default value = ``2``) The minimum number of labels for which the rules should predict. Must be at least 2.
+    * ``max_labels`` (Default value = ``0``) The maximum number of labels for which the rules should predict or 0, if the number of predictions should not be restricted.
+
   * ``'complete'`` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
 
 * ``shrinkage`` (Default value = ``0.3``)
