@@ -1,6 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+from mlrl.boosting.cython.head_type cimport FixedPartialHeadConfig
 from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfig
 from mlrl.boosting.cython.regularization cimport ManualRegularizationConfig
@@ -74,12 +75,17 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useSingleLabelHeads()
 
-    def use_fixed_partial_heads(self):
+    def use_fixed_partial_heads(self) -> FixedPartialHeadConfig:
         """
         Configures the rule learner to induce rules with partial heads that predict for predefined number of labels.
+
+        :return: A `FixedPartialHeadConfig` that allows further configuration of the rule heads
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useFixedPartialHeads()
+        cdef IFixedPartialHeadConfig* config_ptr = &rule_learner_config_ptr.useFixedPartialHeads()
+        cdef FixedPartialHeadConfig config = FixedPartialHeadConfig.__new__(FixedPartialHeadConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_complete_heads(self):
         """
