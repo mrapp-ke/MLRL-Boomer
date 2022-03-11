@@ -5,16 +5,6 @@
 
 namespace boosting {
 
-    static inline constexpr float64 calculateLabelWiseQualityScore(float64 gradient, float64 hessian,
-                                                                   float64 l1RegularizationWeight,
-                                                                   float64 l2RegularizationWeight) {
-        float64 l1Weight = getL1RegularizationWeight(gradient, l1RegularizationWeight);
-        float64 l1Term = l1Weight != 0
-                            ? ((2 * gradient * l1Weight) - (3 * l1RegularizationWeight * l1RegularizationWeight))
-                            : (-gradient * l1RegularizationWeight);
-        return divideOrZero(-0.5 * (gradient * gradient + l1Term), hessian + l2RegularizationWeight);
-    }
-
     /**
      * Allows to calculate the predictions of single-label rules, as well as an overall quality score, based on the
      * gradients and Hessians that are stored by a `DenseLabelWiseStatisticVector` using L1 and L2 regularization.
