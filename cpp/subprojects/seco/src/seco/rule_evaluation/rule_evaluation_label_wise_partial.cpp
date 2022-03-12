@@ -159,7 +159,7 @@ namespace seco {
                     }
 
                     if (qualityScore * maxLift < bestQualityScore) {
-                        // Prunable by decomposition...
+                        // Prunable by decomposability...
                         break;
                     }
                 }
