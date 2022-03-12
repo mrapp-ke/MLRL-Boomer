@@ -5,8 +5,8 @@
 
 
 template<typename T>
-const AbstractEvaluatedPrediction* processCompleteScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,
-                                                         const T& scoreVector) {
+static inline const AbstractEvaluatedPrediction* processCompleteScores(
+        std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {
     uint32 numElements = scoreVector.getNumElements();
 
     if (!existingHeadPtr) {
@@ -20,8 +20,8 @@ const AbstractEvaluatedPrediction* processCompleteScores(std::unique_ptr<Abstrac
 }
 
 template<typename T>
-const AbstractEvaluatedPrediction* processPartialScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,
-                                                        const T& scoreVector) {
+static inline const AbstractEvaluatedPrediction* processPartialScores(
+        std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {
     PartialPrediction* existingHead = (PartialPrediction*) existingHeadPtr.get();
     uint32 numElements = scoreVector.getNumElements();
 
