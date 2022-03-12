@@ -72,10 +72,10 @@ class ScoreProcessor {
         const AbstractEvaluatedPrediction* processScores(const IScoreVector& scoreVector);
 
         /**
-         * Returns the best head that has been found by the function `findHead.
+         * Returns the rule head that has been created by the processor.
          *
-         * @return An unique pointer to an object of type `AbstractEvaluatedPrediction`, representing the best head that
-         *         has been found
+         * @return An unique pointer to an object of type `AbstractEvaluatedPrediction` that has been created by the
+         *         processor
          */
         std::unique_ptr<AbstractEvaluatedPrediction> pollHead();
 
