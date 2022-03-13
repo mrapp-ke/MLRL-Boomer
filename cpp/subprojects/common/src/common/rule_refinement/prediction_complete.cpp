@@ -18,11 +18,6 @@ CompletePrediction::index_const_iterator CompletePrediction::indices_cend() cons
     return indexVector_.cend();
 }
 
-void CompletePrediction::setNumElements(uint32 numElements, bool freeMemory) {
-    AbstractPrediction::setNumElements(numElements, freeMemory);
-    indexVector_.setNumElements(numElements, freeMemory);
-}
-
 bool CompletePrediction::isPartial() const {
     return false;
 }

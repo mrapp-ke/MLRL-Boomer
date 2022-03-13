@@ -64,7 +64,13 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
          */
         index_const_iterator indices_cend() const;
 
-        void setNumElements(uint32 numElements, bool freeMemory) override;
+        /**
+         * Sets the number of labels for which the rule predicts.
+         *
+         * @param numElements   The number of labels to be set
+         * @param freeMemory    True, if unused memory should be freed if possible, false otherwise
+         */
+        void setNumElements(uint32 numElements, bool freeMemory);
 
         bool isPartial() const override;
 

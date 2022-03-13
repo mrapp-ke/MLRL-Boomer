@@ -45,8 +45,6 @@ class CompletePrediction final : public AbstractEvaluatedPrediction {
          */
         index_const_iterator indices_cend() const;
 
-        void setNumElements(uint32 numElements, bool freeMemory) override;
-
         bool isPartial() const override;
 
         uint32 getIndex(uint32 pos) const override;
