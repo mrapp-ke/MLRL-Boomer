@@ -97,8 +97,8 @@ void DenseBinnedScoreVector<T>::updatePrediction(AbstractPrediction& prediction)
 }
 
 template<typename T>
-const AbstractEvaluatedPrediction* DenseBinnedScoreVector<T>::processScores(ScoreProcessor& scoreProcessor) const {
-    return scoreProcessor.processScores(*this);
+void DenseBinnedScoreVector<T>::processScores(ScoreProcessor& scoreProcessor) const {
+    scoreProcessor.processScores(*this);
 }
 
 template class DenseBinnedScoreVector<PartialIndexVector>;

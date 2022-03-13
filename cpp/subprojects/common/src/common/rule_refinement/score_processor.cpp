@@ -5,8 +5,8 @@
 
 
 template<typename T>
-static inline const AbstractEvaluatedPrediction* processCompleteScores(
-        std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {
+static inline void processCompleteScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,
+                                         const T& scoreVector) {
     uint32 numElements = scoreVector.getNumElements();
 
     if (!existingHeadPtr) {
@@ -16,12 +16,11 @@ static inline const AbstractEvaluatedPrediction* processCompleteScores(
 
     copyArray(scoreVector.scores_cbegin(), existingHeadPtr->scores_begin(), numElements);
     existingHeadPtr->overallQualityScore = scoreVector.overallQualityScore;
-    return existingHeadPtr.get();
 }
 
 template<typename T>
-static inline const AbstractEvaluatedPrediction* processPartialScores(
-        std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {
+static inline void processPartialScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,
+                                        const T& scoreVector) {
     PartialPrediction* existingHead = (PartialPrediction*) existingHeadPtr.get();
     uint32 numElements = scoreVector.getNumElements();
 
@@ -37,31 +36,26 @@ static inline const AbstractEvaluatedPrediction* processPartialScores(
     copyArray(scoreVector.scores_cbegin(), existingHead->scores_begin(), numElements);
     copyArray(scoreVector.indices_cbegin(), existingHead->indices_begin(), numElements);
     existingHead->overallQualityScore = scoreVector.overallQualityScore;
-    return existingHead;
 }
 
-const AbstractEvaluatedPrediction* ScoreProcessor::processScores(
-        const DenseScoreVector<CompleteIndexVector>& scoreVector) {
-    return processCompleteScores(headPtr_, scoreVector);
+void ScoreProcessor::processScores(const DenseScoreVector<CompleteIndexVector>& scoreVector) {
+    processCompleteScores(headPtr_, scoreVector);
 }
 
-const AbstractEvaluatedPrediction* ScoreProcessor::processScores(
-        const DenseScoreVector<PartialIndexVector>& scoreVector) {
-    return processPartialScores(headPtr_, scoreVector);
+void ScoreProcessor::processScores(const DenseScoreVector<PartialIndexVector>& scoreVector) {
+    processPartialScores(headPtr_, scoreVector);
 }
 
-const AbstractEvaluatedPrediction* ScoreProcessor::processScores(
-        const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) {
-    return processCompleteScores(headPtr_, scoreVector);
+void ScoreProcessor::processScores(const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) {
+    processCompleteScores(headPtr_, scoreVector);
 }
 
-const AbstractEvaluatedPrediction* ScoreProcessor::processScores(
-        const DenseBinnedScoreVector<PartialIndexVector>& scoreVector) {
-    return processPartialScores(headPtr_, scoreVector);
+void ScoreProcessor::processScores(const DenseBinnedScoreVector<PartialIndexVector>& scoreVector) {
+    processPartialScores(headPtr_, scoreVector);
 }
 
-const AbstractEvaluatedPrediction* ScoreProcessor::processScores(const IScoreVector& scoreVector) {
-    return scoreVector.processScores(*this);
+void ScoreProcessor::processScores(const IScoreVector& scoreVector) {
+    scoreVector.processScores(*this);
 }
 
 std::unique_ptr<AbstractEvaluatedPrediction> ScoreProcessor::pollHead() {
