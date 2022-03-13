@@ -27,7 +27,7 @@ namespace boosting {
 
             DenseLabelWiseSubsetRuleEvaluation(const PartialIndexVector& labelIndices, float64 l1RegularizationWeight,
                                                float64 l2RegularizationWeight)
-                : scoreVector_(DenseScoreVector<PartialIndexVector>(labelIndices)),
+                : scoreVector_(DenseScoreVector<PartialIndexVector>(labelIndices, true)),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
 
             }
@@ -104,7 +104,7 @@ namespace boosting {
                 : labelIndices_(labelIndices),
                   indexVector_(PartialIndexVector(calculateBoundedFraction(labelIndices.getNumElements(), labelRatio,
                                                                            minLabels, maxLabels))),
-                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_)),
+                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
 
             }
