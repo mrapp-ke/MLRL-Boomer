@@ -279,20 +279,6 @@ typename SparseArrayVector<T>::value_const_iterator SparseArrayVector<T>::values
     return ValueConstIterator(this->cend());
 }
 
-template<typename T>
-void SparseArrayVector<T>::sortByIndices() {
-    std::sort(this->begin(), this->end(), [=](const IndexedValue<T>& a, const IndexedValue<T>& b) {
-        return a.index < b.index;
-    });
-}
-
-template<typename T>
-void SparseArrayVector<T>::sortByValues() {
-    std::sort(this->begin(), this->end(), [=](const IndexedValue<T>& a, const IndexedValue<T>& b) {
-        return a.value < b.value;
-    });
-}
-
 template class SparseArrayVector<uint8>;
 template class SparseArrayVector<uint32>;
 template class SparseArrayVector<float32>;
