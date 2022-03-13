@@ -113,7 +113,7 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
-                uint32 limit = indexVector_.getNumElements();
+                uint32 maxElements = indexVector_.getNumElements();
                 std::priority_queue<IndexedValue<float64>, std::vector<IndexedValue<float64>>,
                                     IndexedValue<float64>::Compare> priorityQueue;
 
@@ -123,7 +123,7 @@ namespace boosting {
                                                                           l1RegularizationWeight_,
                                                                           l2RegularizationWeight_);
 
-                    if (priorityQueue.size() < limit) {
+                    if (priorityQueue.size() < maxElements) {
                         priorityQueue.emplace(labelIndexIterator[i], qualityScore);
                     } else if (priorityQueue.top().value > qualityScore) {
                         priorityQueue.pop();
@@ -135,7 +135,7 @@ namespace boosting {
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 float64 overallQualityScore = 0;
 
-                for (uint32 i = 0; i < limit; i++) {
+                for (uint32 i = 0; i < maxElements; i++) {
                     const IndexedValue<float64> entry = priorityQueue.top();
                     priorityQueue.pop();
                     uint32 index = entry.index;
