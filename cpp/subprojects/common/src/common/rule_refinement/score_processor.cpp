@@ -5,8 +5,8 @@
 
 
 template<typename T>
-static inline const AbstractEvaluatedPrediction* processCompleteScores(
-        std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {
+static inline void processCompleteScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,
+                                         const T& scoreVector) {
     uint32 numElements = scoreVector.getNumElements();
 
     if (!existingHeadPtr) {
@@ -16,52 +16,50 @@ static inline const AbstractEvaluatedPrediction* processCompleteScores(
 
     copyArray(scoreVector.scores_cbegin(), existingHeadPtr->scores_begin(), numElements);
     existingHeadPtr->overallQualityScore = scoreVector.overallQualityScore;
-    return existingHeadPtr.get();
 }
 
 template<typename T>
-static inline const AbstractEvaluatedPrediction* processPartialScores(
-        std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {
+static inline void processPartialScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,
+                                        const T& scoreVector) {
     PartialPrediction* existingHead = (PartialPrediction*) existingHeadPtr.get();
     uint32 numElements = scoreVector.getNumElements();
 
     if (!existingHead) {
         // Create a new head, if necessary...
-        existingHeadPtr = std::make_unique<PartialPrediction>(numElements);
+        existingHeadPtr = std::make_unique<PartialPrediction>(numElements, scoreVector.isSorted());
         existingHead = (PartialPrediction*) existingHeadPtr.get();
-    } else if (existingHead->getNumElements() != numElements) {
+    } else {
         // Adjust the size of the existing head, if necessary...
-        existingHead->setNumElements(numElements, false);
+        if (existingHead->getNumElements() != numElements) {
+            existingHead->setNumElements(numElements, false);
+        }
+
+        existingHead->setSorted(scoreVector.isSorted());
     }
 
     copyArray(scoreVector.scores_cbegin(), existingHead->scores_begin(), numElements);
     copyArray(scoreVector.indices_cbegin(), existingHead->indices_begin(), numElements);
     existingHead->overallQualityScore = scoreVector.overallQualityScore;
-    return existingHead;
 }
 
-const AbstractEvaluatedPrediction* ScoreProcessor::processScores(
-        const DenseScoreVector<CompleteIndexVector>& scoreVector) {
-    return processCompleteScores(headPtr_, scoreVector);
+void ScoreProcessor::processScores(const DenseScoreVector<CompleteIndexVector>& scoreVector) {
+    processCompleteScores(headPtr_, scoreVector);
 }
 
-const AbstractEvaluatedPrediction* ScoreProcessor::processScores(
-        const DenseScoreVector<PartialIndexVector>& scoreVector) {
-    return processPartialScores(headPtr_, scoreVector);
+void ScoreProcessor::processScores(const DenseScoreVector<PartialIndexVector>& scoreVector) {
+    processPartialScores(headPtr_, scoreVector);
 }
 
-const AbstractEvaluatedPrediction* ScoreProcessor::processScores(
-        const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) {
-    return processCompleteScores(headPtr_, scoreVector);
+void ScoreProcessor::processScores(const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) {
+    processCompleteScores(headPtr_, scoreVector);
 }
 
-const AbstractEvaluatedPrediction* ScoreProcessor::processScores(
-        const DenseBinnedScoreVector<PartialIndexVector>& scoreVector) {
-    return processPartialScores(headPtr_, scoreVector);
+void ScoreProcessor::processScores(const DenseBinnedScoreVector<PartialIndexVector>& scoreVector) {
+    processPartialScores(headPtr_, scoreVector);
 }
 
-const AbstractEvaluatedPrediction* ScoreProcessor::processScores(const IScoreVector& scoreVector) {
-    return scoreVector.processScores(*this);
+void ScoreProcessor::processScores(const IScoreVector& scoreVector) {
+    scoreVector.processScores(*this);
 }
 
 std::unique_ptr<AbstractEvaluatedPrediction> ScoreProcessor::pollHead() {

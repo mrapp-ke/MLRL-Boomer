@@ -1,5 +1,5 @@
 #include "common/data/vector_sparse_array.hpp"
-#include <algorithm>
+#include "common/data/tuple.hpp"
 
 
 template<typename T>
@@ -279,14 +279,11 @@ typename SparseArrayVector<T>::value_const_iterator SparseArrayVector<T>::values
     return ValueConstIterator(this->cend());
 }
 
-template<typename T>
-void SparseArrayVector<T>::sortByValues() {
-    std::sort(this->begin(), this->end(), [=](const IndexedValue<T>& a, const IndexedValue<T>& b) {
-        return a.value < b.value;
-    });
-}
-
 template class SparseArrayVector<uint8>;
 template class SparseArrayVector<uint32>;
 template class SparseArrayVector<float32>;
 template class SparseArrayVector<float64>;
+template class SparseArrayVector<Tuple<uint8>>;
+template class SparseArrayVector<Tuple<uint32>>;
+template class SparseArrayVector<Tuple<float32>>;
+template class SparseArrayVector<Tuple<float64>>;

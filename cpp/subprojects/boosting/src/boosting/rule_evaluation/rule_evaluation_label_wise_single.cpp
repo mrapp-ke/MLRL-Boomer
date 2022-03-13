@@ -39,7 +39,7 @@ namespace boosting {
             DenseLabelWiseSingleLabelRuleEvaluation(const T& labelIndices, float64 l1RegularizationWeight,
                                                     float64 l2RegularizationWeight)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(1)),
-                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_)),
+                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, true)),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
 
             }

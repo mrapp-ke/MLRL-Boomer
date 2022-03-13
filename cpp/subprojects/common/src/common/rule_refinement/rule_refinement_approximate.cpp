@@ -1,6 +1,6 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
 #include "common/rule_refinement/score_processor.hpp"
-#include "rule_refinement_common.hpp"
+#include <limits>
 
 
 template<typename T>
@@ -16,7 +16,8 @@ template<typename T>
 void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* currentHead) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
-    const AbstractEvaluatedPrediction* bestHead = currentHead;
+    float64 bestQualityScore =
+        currentHead != nullptr ? currentHead->overallQualityScore : std::numeric_limits<float64>::infinity();
     ScoreProcessor scoreProcessor;
 
     // Invoke the callback...
@@ -62,10 +63,12 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 // Find and evaluate the best head for the current refinement, if a condition that uses the <= operator
                 // (or the == operator in case of a nominal feature) is used...
                 const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+                float64 qualityScore = scoreVector.overallQualityScore;
 
                 // If the refinement is better than the current rule...
-                if (isBetterThanBestHead(scoreVector, bestHead)) {
-                    bestHead = scoreProcessor.processScores(scoreVector);
+                if (qualityScore < bestQualityScore) {
+                    bestQualityScore = qualityScore;
+                    scoreProcessor.processScores(scoreVector);
                     refinementPtr->start = firstR;
                     refinementPtr->end = r;
                     refinementPtr->covered = true;
@@ -76,10 +79,12 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 // Find and evaluate the best head for the current refinement, if a condition that uses the > operator
                 // (or the != operator in case of a nominal feature) is used...
                 const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, false);
+                qualityScore = scoreVector2.overallQualityScore;
 
                 // If the refinement is better than the current rule...
-                if (isBetterThanBestHead(scoreVector2, bestHead)) {
-                    bestHead = scoreProcessor.processScores(scoreVector2);
+                if (qualityScore < bestQualityScore) {
+                    bestQualityScore = qualityScore;
+                    scoreProcessor.processScores(scoreVector2);
                     refinementPtr->start = firstR;
                     refinementPtr->end = r;
                     refinementPtr->covered = false;
@@ -105,10 +110,12 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             // Find and evaluate the best head for the current refinement, if a condition that uses the <= operator (or
             // the == operator in case of nominal feature) is used...
             const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+            float64 qualityScore = scoreVector.overallQualityScore;
 
             // If the refinement is better than the current rule...
-            if (isBetterThanBestHead(scoreVector, bestHead)) {
-                bestHead = scoreProcessor.processScores(scoreVector);
+            if (qualityScore < bestQualityScore) {
+                bestQualityScore = qualityScore;
+                scoreProcessor.processScores(scoreVector);
                 refinementPtr->start = firstR;
                 refinementPtr->end = sparseBinIndex;
                 refinementPtr->covered = true;
@@ -119,10 +126,12 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
             // Find and evaluate the best head for the current refinement, if a condition that uses the > operator (or
             // the != operator in case of a nominal feature) is used...
             const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, false);
+            qualityScore = scoreVector2.overallQualityScore;
 
             // If the refinement is better than the current rule...
-            if (isBetterThanBestHead(scoreVector2, bestHead)) {
-                bestHead = scoreProcessor.processScores(scoreVector2);
+            if (qualityScore < bestQualityScore) {
+                bestQualityScore = qualityScore;
+                scoreProcessor.processScores(scoreVector2);
                 refinementPtr->start = firstR;
                 refinementPtr->end = sparseBinIndex;
                 refinementPtr->covered = false;
@@ -159,10 +168,12 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 // Find and evaluate the best head for the current refinement, if a condition that uses the > operator
                 // (or the == operator in case of a nominal feature) is used..
                 const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+                float64 qualityScore = scoreVector.overallQualityScore;
 
                 // If the refinement is better than the current rule...
-                if (isBetterThanBestHead(scoreVector, bestHead)) {
-                    bestHead = scoreProcessor.processScores(scoreVector);
+                if (qualityScore < bestQualityScore) {
+                    bestQualityScore = qualityScore;
+                    scoreProcessor.processScores(scoreVector);
                     refinementPtr->start = firstR;
                     refinementPtr->end = r;
                     refinementPtr->covered = true;
@@ -179,10 +190,12 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 // Find and evaluate the best head for the current refinement, if a condition that uses the <= operator
                 // (or the != operator in case of a nominal feature) is used...
                 const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, false);
+                qualityScore = scoreVector2.overallQualityScore;
 
                 // If the refinement is better than the current rule...
-                if (isBetterThanBestHead(scoreVector2, bestHead)) {
-                    bestHead = scoreProcessor.processScores(scoreVector2);
+                if (qualityScore < bestQualityScore) {
+                    bestQualityScore = qualityScore;
+                    scoreProcessor.processScores(scoreVector2);
                     refinementPtr->start = firstR;
                     refinementPtr->end = r;
                     refinementPtr->covered = false;
@@ -214,10 +227,12 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         if (sparse) {
             // Find and evaluate the best head for the current refinement, if
             const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+            float64 qualityScore = scoreVector.overallQualityScore;
 
             // If the refinement is better than the current rule...
-            if (isBetterThanBestHead(scoreVector, bestHead)) {
-                bestHead = scoreProcessor.processScores(scoreVector);
+            if (qualityScore < bestQualityScore) {
+                bestQualityScore = qualityScore;
+                scoreProcessor.processScores(scoreVector);
                 refinementPtr->start = firstR;
                 refinementPtr->end = sparseBinIndex;
                 refinementPtr->covered = true;
@@ -233,10 +248,12 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
             // Find and evaluate the best head for the current refinement, if
             const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, false);
+            qualityScore = scoreVector2.overallQualityScore;
 
             // If the refinement is better than the current rule...
-            if (isBetterThanBestHead(scoreVector2, bestHead)) {
-                bestHead = scoreProcessor.processScores(scoreVector2);
+            if (qualityScore < bestQualityScore) {
+                bestQualityScore = qualityScore;
+                scoreProcessor.processScores(scoreVector2);
                 refinementPtr->start = firstR;
                 refinementPtr->end = sparseBinIndex;
                 refinementPtr->covered = false;
@@ -260,10 +277,12 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 // Find and evaluate the best head for the current refinement, if the condition
                 // `f != thresholdIterator[sparseBinIndex]` is used...
                 const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, true);
+                float64 qualityScore = scoreVector.overallQualityScore;
 
                 // If the refinement is better than the current rule...
-                if (isBetterThanBestHead(scoreVector, bestHead)) {
-                    bestHead = scoreProcessor.processScores(scoreVector);
+                if (qualityScore < bestQualityScore) {
+                    bestQualityScore = qualityScore;
+                    scoreProcessor.processScores(scoreVector);
                     refinementPtr->start = sparseBinIndex;
                     refinementPtr->end = sparseBinIndex + 1;
                     refinementPtr->covered = false;
@@ -274,10 +293,12 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 // Find and evaluate the best head for the current refinement, if the condition
                 // `f == thresholdIterator[sparseBinIndex]` is used...
                 const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, true);
+                qualityScore = scoreVector2.overallQualityScore;
 
                 // If the refinement is better than the current rule...
-                if (isBetterThanBestHead(scoreVector2, bestHead)) {
-                    bestHead = scoreProcessor.processScores(scoreVector2);
+                if (qualityScore < bestQualityScore) {
+                    bestQualityScore = qualityScore;
+                    scoreProcessor.processScores(scoreVector2);
                     refinementPtr->start = sparseBinIndex;
                     refinementPtr->end = sparseBinIndex + 1;
                     refinementPtr->covered = true;

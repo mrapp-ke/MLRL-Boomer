@@ -1,5 +1,6 @@
 #include "common/data/view_vector.hpp"
 #include "common/data/indexed_value.hpp"
+#include "common/data/tuple.hpp"
 
 
 template<typename T>
@@ -40,6 +41,10 @@ template class VectorConstView<IndexedValue<uint8>>;
 template class VectorConstView<IndexedValue<uint32>>;
 template class VectorConstView<IndexedValue<float32>>;
 template class VectorConstView<IndexedValue<float64>>;
+template class VectorConstView<IndexedValue<Tuple<uint8>>>;
+template class VectorConstView<IndexedValue<Tuple<uint32>>>;
+template class VectorConstView<IndexedValue<Tuple<float32>>>;
+template class VectorConstView<IndexedValue<Tuple<float64>>>;
 
 template<typename T>
 VectorView<T>::VectorView(uint32 numElements, T* array)
@@ -75,3 +80,7 @@ template class VectorView<IndexedValue<uint8>>;
 template class VectorView<IndexedValue<uint32>>;
 template class VectorView<IndexedValue<float32>>;
 template class VectorView<IndexedValue<float64>>;
+template class VectorView<IndexedValue<Tuple<uint8>>>;
+template class VectorView<IndexedValue<Tuple<uint32>>>;
+template class VectorView<IndexedValue<Tuple<float32>>>;
+template class VectorView<IndexedValue<Tuple<float64>>>;

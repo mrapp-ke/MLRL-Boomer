@@ -1,4 +1,5 @@
 #include "seco/rule_evaluation/rule_evaluation_label_wise_partial.hpp"
+#include "common/data/tuple.hpp"
 #include "common/data/vector_sparse_array.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
@@ -42,7 +43,7 @@ namespace seco {
             LabelWiseSubsetRuleEvaluation(const PartialIndexVector& labelIndices,
                                           std::unique_ptr<IHeuristic> heuristicPtr,
                                           std::unique_ptr<ILiftFunction> liftFunctionPtr)
-                : scoreVector_(DenseScoreVector<PartialIndexVector>(labelIndices)),
+                : scoreVector_(DenseScoreVector<PartialIndexVector>(labelIndices, true)),
                   heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {
 
             }
@@ -96,7 +97,7 @@ namespace seco {
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
 
-            SparseArrayVector<float64> sortedVector_;
+            SparseArrayVector<Tuple<float64>> sortedVector_;
 
             std::unique_ptr<IHeuristic> heuristicPtr_;
 
@@ -115,8 +116,8 @@ namespace seco {
             LabelWisePartialRuleEvaluation(const T& labelIndices, std::unique_ptr<IHeuristic> heuristicPtr,
                                            std::unique_ptr<ILiftFunction> liftFunctionPtr)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
-                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_)),
-                  sortedVector_(SparseArrayVector<float64>(labelIndices.getNumElements())),
+                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
+                  sortedVector_(SparseArrayVector<Tuple<float64>>(labelIndices.getNumElements())),
                   heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {
 
             }
@@ -131,26 +132,34 @@ namespace seco {
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
                 auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
                                                                   majorityLabelIndices.cend());
-                DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                PartialIndexVector::iterator predictedIndexIterator = indexVector_.begin();
-                SparseArrayVector<float64>::iterator sortedIterator = sortedVector_.begin();
+                SparseArrayVector<Tuple<float64>>::iterator sortedIterator = sortedVector_.begin();
+                uint32 previousIndex = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     uint32 index = indexIterator[i];
-                    sortedIterator[i].index = index;
-                    sortedIterator[i].value = calculateLabelWiseQualityScore(totalIterator[index], coveredIterator[i],
-                                                                             *heuristicPtr_);
+                    std::advance(labelIterator, index - previousIndex);
+                    IndexedValue<Tuple<float64>>& entry = sortedIterator[i];
+                    Tuple<float64>& tuple = entry.value;
+                    entry.index = index;
+                    tuple.first = calculateLabelWiseQualityScore(totalIterator[index], coveredIterator[i],
+                                                                 *heuristicPtr_);
+                    tuple.second = (float64) !(*labelIterator);
+                    previousIndex = index;
                 }
 
-                sortedVector_.sortByValues();
+                std::sort(sortedIterator, sortedVector_.end(), [=](const IndexedValue<Tuple<float64>>& a,
+                                                                   const IndexedValue<Tuple<float64>>& b) {
+                    return a.value.first < b.value.first;
+                });
+
                 float64 maxLift = liftFunctionPtr_->getMaxLift();
-                float64 sumOfQualityScores = (1 - sortedIterator[0].value);
+                float64 sumOfQualityScores = (1 - sortedIterator[0].value.first);
                 float64 bestQualityScore = calculateLiftedQualityScore(sumOfQualityScores, 1, *liftFunctionPtr_);
                 uint32 bestNumPredictions = 1;
 
                 for (uint32 i = 1; i < numElements; i++) {
                     uint32 numPredictions = i + 1;
-                    sumOfQualityScores += (1 - sortedIterator[i].value);
+                    sumOfQualityScores += (1 - sortedIterator[i].value.first);
                     float64 qualityScore = calculateLiftedQualityScore(sumOfQualityScores, numPredictions,
                                                                        *liftFunctionPtr_);
 
@@ -165,20 +174,15 @@ namespace seco {
                     }
                 }
 
-                std::sort(sortedIterator, &sortedIterator[bestNumPredictions], [=](const IndexedValue<float64>& a,
-                                                                                   const IndexedValue<float64>& b) {
-                    return a.index < b.index;
-                });
                 indexVector_.setNumElements(bestNumPredictions, false);
                 scoreVector_.overallQualityScore = (1 - bestQualityScore);
-                uint32 previousIndex = 0;
+                DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                PartialIndexVector::iterator predictedIndexIterator = indexVector_.begin();
 
                 for (uint32 i = 0; i < bestNumPredictions; i++) {
-                    uint32 index = sortedIterator[i].index;
-                    std::advance(labelIterator, index - previousIndex);
-                    scoreIterator[i] = (float64) !(*labelIterator);
-                    predictedIndexIterator[i] = index;
-                    previousIndex = index;
+                    const IndexedValue<Tuple<float64>>& entry = sortedIterator[i];
+                    predictedIndexIterator[i] = entry.index;
+                    scoreIterator[i] = entry.value.second;
                 }
 
                 return scoreVector_;
