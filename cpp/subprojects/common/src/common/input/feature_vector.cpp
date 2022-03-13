@@ -1,4 +1,5 @@
 #include "common/input/feature_vector.hpp"
+#include <algorithm>
 
 
 FeatureVector::FeatureVector(uint32 numElements)
@@ -31,5 +32,7 @@ void FeatureVector::setNumElements(uint32 numElements, bool freeMemory) {
 }
 
 void FeatureVector::sortByValues() {
-    vector_.sortByValues();
+    std::sort(vector_.begin(), vector_.end(), [=](const IndexedValue<float32>& a, const IndexedValue<float32>& b) {
+        return a.value < b.value;
+    });
 }
