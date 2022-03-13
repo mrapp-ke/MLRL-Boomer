@@ -27,7 +27,7 @@ PartialPrediction::index_const_iterator PartialPrediction::indices_cend() const 
 }
 
 void PartialPrediction::setNumElements(uint32 numElements, bool freeMemory) {
-    AbstractPrediction::setNumElements(numElements, freeMemory);
+    this->predictedScoreVector_.setNumElements(numElements, freeMemory);
     indexVector_.setNumElements(numElements, freeMemory);
 }
 

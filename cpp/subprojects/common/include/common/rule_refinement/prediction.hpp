@@ -18,8 +18,11 @@ class IHead;
  */
 class AbstractPrediction : public IIndexVector {
 
-    private:
+    protected:
 
+        /**
+         * A vector that stores the predicted scores.
+         */
         DenseVector<float64> predictedScoreVector_;
 
     public:
@@ -97,14 +100,6 @@ class AbstractPrediction : public IIndexVector {
          * @return An unique pointer to an object of type `IHead` that has been created
          */
         virtual std::unique_ptr<IHead> createHead() const = 0;
-
-        /**
-         * Sets the number of labels for which the rule predict.
-         *
-         * @param numElements   The number of labels to be set
-         * @param freeMemory    True, if unused memory should be freed if possible, false otherwise
-         */
-        virtual void setNumElements(uint32 numElements, bool freeMemory);
 
         uint32 getNumElements() const override;
 
