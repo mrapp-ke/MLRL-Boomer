@@ -83,6 +83,8 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
 
         void apply(IStatistics& statistics, uint32 statisticIndex) const override;
 
+        void sort() override;
+
         std::unique_ptr<IHead> createHead() const override;
 
 };

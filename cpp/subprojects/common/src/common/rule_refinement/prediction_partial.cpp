@@ -3,6 +3,7 @@
 #include "common/statistics/statistics.hpp"
 #include "common/model/head_partial.hpp"
 #include "common/data/arrays.hpp"
+#include "common/data/vector_sparse_array.hpp"
 
 
 PartialPrediction::PartialPrediction(uint32 numElements)
@@ -50,6 +51,31 @@ std::unique_ptr<IRuleRefinement> PartialPrediction::createRuleRefinement(IThresh
 
 void PartialPrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {
     statistics.applyPrediction(statisticIndex, *this);
+}
+
+void PartialPrediction::sort() {
+    uint32 numElements = this->getNumElements();
+
+    if (numElements > 1) {
+        SparseArrayVector<float64> sortedVector(numElements);
+        SparseArrayVector<float64>::iterator sortedIterator = sortedVector.begin();
+        index_iterator indexIterator = this->indices_begin();
+        score_iterator scoreIterator = this->scores_begin();
+
+        for (uint32 i = 0; i < numElements; i++) {
+            IndexedValue<float64>& entry = sortedIterator[i];
+            entry.index = indexIterator[i];
+            entry.value = scoreIterator[i];
+        }
+
+        sortedVector.sortByIndices();
+
+        for (uint32 i = 0; i < numElements; i++) {
+            const IndexedValue<float64>& entry = sortedIterator[i];
+            indexIterator[i] = entry.index;
+            scoreIterator[i] = entry.value;
+        }
+    }
 }
 
 std::unique_ptr<IHead> PartialPrediction::createHead() const {
