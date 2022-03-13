@@ -1,7 +1,7 @@
 #include "common/rule_refinement/rule_refinement_exact.hpp"
 #include "common/rule_refinement/score_processor.hpp"
 #include "common/math/math.hpp"
-#include "rule_refinement_common.hpp"
+#include <limits>
 
 
 template<typename T>
@@ -17,7 +17,8 @@ template<typename T>
 void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* currentHead) {
     std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
     refinementPtr->featureIndex = featureIndex_;
-    const AbstractEvaluatedPrediction* bestHead = currentHead;
+    float64 bestQualityScore =
+        currentHead != nullptr ? currentHead->overallQualityScore : std::numeric_limits<float64>::infinity();
     ScoreProcessor scoreProcessor;
 
     // Invoke the callback...
@@ -91,10 +92,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the == operator in case of a nominal feature) is used...
                     const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+                    float64 qualityScore = scoreVector.overallQualityScore;
 
                     // If the refinement is better than the current rule...
-                    if (isBetterThanBestHead(scoreVector, bestHead)) {
-                        bestHead = scoreProcessor.processScores(scoreVector);
+                    if (qualityScore < bestQualityScore) {
+                        bestQualityScore = qualityScore;
+                        scoreProcessor.processScores(scoreVector);
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
                         refinementPtr->previous = previousR;
@@ -113,10 +116,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                     // Find and evaluate the best head for the current refinement, if a condition that uses the >
                     // operator (or the != operator in case of a nominal feature) is used...
                     const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, false);
+                    qualityScore = scoreVector2.overallQualityScore;
 
                     // If the refinement is better than the current rule...
-                    if (isBetterThanBestHead(scoreVector2, bestHead)) {
-                        bestHead = scoreProcessor.processScores(scoreVector2);
+                    if (qualityScore < bestQualityScore) {
+                        bestQualityScore = qualityScore;
+                        scoreProcessor.processScores(scoreVector2);
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
                         refinementPtr->previous = previousR;
@@ -159,10 +164,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
             // used...
             const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+            float64 qualityScore = scoreVector.overallQualityScore;
 
             // If the refinement is better than the current rule...
-            if (isBetterThanBestHead(scoreVector, bestHead)) {
-                bestHead = scoreProcessor.processScores(scoreVector);
+            if (qualityScore < bestQualityScore) {
+                bestQualityScore = qualityScore;
+                scoreProcessor.processScores(scoreVector);
                 refinementPtr->start = firstR;
                 refinementPtr->end = (lastNegativeR + 1);
                 refinementPtr->previous = previousR;
@@ -175,10 +182,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
             // used...
             const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, false);
+            qualityScore = scoreVector2.overallQualityScore;
 
             // If the refinement is better than the current rule...
-            if (isBetterThanBestHead(scoreVector2, bestHead)) {
-                bestHead = scoreProcessor.processScores(scoreVector2);
+            if (qualityScore < bestQualityScore) {
+                bestQualityScore = qualityScore;
+                scoreProcessor.processScores(scoreVector2);
                 refinementPtr->start = firstR;
                 refinementPtr->end = (lastNegativeR + 1);
                 refinementPtr->previous = previousR;
@@ -234,10 +243,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                     // Find and evaluate the best head for the current refinement, if a condition that uses the
                     // > operator (or the == operator in case of a nominal feature) is used...
                     const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+                    float64 qualityScore = scoreVector.overallQualityScore;
 
                     // If the refinement is better than the current rule...
-                    if (isBetterThanBestHead(scoreVector, bestHead)) {
-                        bestHead = scoreProcessor.processScores(scoreVector);
+                    if (qualityScore < bestQualityScore) {
+                        bestQualityScore = qualityScore;
+                        scoreProcessor.processScores(scoreVector);
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
                         refinementPtr->previous = previousR;
@@ -256,10 +267,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the != operator in case of a nominal feature) is used...
                     const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, false);
+                    qualityScore = scoreVector2.overallQualityScore;
 
                     // If the refinement is better than the current rule...
-                    if (isBetterThanBestHead(scoreVector2, bestHead)) {
-                        bestHead = scoreProcessor.processScores(scoreVector2);
+                    if (qualityScore < bestQualityScore) {
+                        bestQualityScore = qualityScore;
+                        scoreProcessor.processScores(scoreVector2);
                         refinementPtr->start = firstR;
                         refinementPtr->end = r;
                         refinementPtr->previous = previousR;
@@ -302,10 +315,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
         // used...
         const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+        float64 qualityScore = scoreVector.overallQualityScore;
 
         // If the refinement is better than the current rule...
-        if (isBetterThanBestHead(scoreVector, bestHead)) {
-            bestHead = scoreProcessor.processScores(scoreVector);
+        if (qualityScore < bestQualityScore) {
+            bestQualityScore = qualityScore;
+            scoreProcessor.processScores(scoreVector);
             refinementPtr->start = firstR;
             refinementPtr->end = lastNegativeR;
             refinementPtr->previous = previousR;
@@ -318,10 +333,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
         // used...
         const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, false);
+        qualityScore = scoreVector2.overallQualityScore;
 
         // If the refinement is better than the current rule...
-        if (isBetterThanBestHead(scoreVector2, bestHead)) {
-            bestHead = scoreProcessor.processScores(scoreVector2);
+        if (qualityScore < bestQualityScore) {
+            bestQualityScore = qualityScore;
+            scoreProcessor.processScores(scoreVector2);
             refinementPtr->start = firstR;
             refinementPtr->end = lastNegativeR;
             refinementPtr->previous = previousR;
@@ -349,10 +366,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         // Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
         // the condition `f != 0` in case of a nominal feature) is used...
         const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, nominal_);
+        float64 qualityScore = scoreVector.overallQualityScore;
 
         // If the refinement is better than the current rule...
-        if (isBetterThanBestHead(scoreVector, bestHead)) {
-            bestHead = scoreProcessor.processScores(scoreVector);
+        if (qualityScore < bestQualityScore) {
+            bestQualityScore = qualityScore;
+            scoreProcessor.processScores(scoreVector);
             refinementPtr->start = firstR;
             refinementPtr->covered = true;
 
@@ -374,10 +393,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         // Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2`
         // (or `f == 0` in case of a nominal feature) is used...
         const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, nominal_);
+        qualityScore = scoreVector2.overallQualityScore;
 
         // If the refinement is better than the current rule...
-        if (isBetterThanBestHead(scoreVector2, bestHead)) {
-            bestHead = scoreProcessor.processScores(scoreVector2);
+        if (qualityScore < bestQualityScore) {
+            bestQualityScore = qualityScore;
+            scoreProcessor.processScores(scoreVector2);
             refinementPtr->start = firstR;
             refinementPtr->covered = false;
 
@@ -406,10 +427,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         // Find and evaluate the best head for the current refinement, if the condition that uses the <= operator is
         // used...
         const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, true);
+        float64 qualityScore = scoreVector.overallQualityScore;
 
         // If the refinement is better than the current rule...
-        if (isBetterThanBestHead(scoreVector, bestHead)) {
-            bestHead = scoreProcessor.processScores(scoreVector);
+        if (qualityScore < bestQualityScore) {
+            bestQualityScore = qualityScore;
+            scoreProcessor.processScores(scoreVector);
             refinementPtr->start = 0;
             refinementPtr->end = (lastNegativeR + 1);
             refinementPtr->previous = previousRNegative;
@@ -430,10 +453,12 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         // Find and evaluate the best head for the current refinement, if the condition that uses the > operator is
         // used...
         const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, true);
+        qualityScore = scoreVector2.overallQualityScore;
 
         // If the refinement is better than the current rule...
-        if (isBetterThanBestHead(scoreVector2, bestHead)) {
-            bestHead = scoreProcessor.processScores(scoreVector2);
+        if (qualityScore < bestQualityScore) {
+            bestQualityScore = qualityScore;
+            scoreProcessor.processScores(scoreVector2);
             refinementPtr->start = 0;
             refinementPtr->end = (lastNegativeR + 1);
             refinementPtr->previous = previousRNegative;

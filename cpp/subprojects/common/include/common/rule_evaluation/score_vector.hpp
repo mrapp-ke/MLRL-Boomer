@@ -37,9 +37,7 @@ class IScoreVector {
          * Passes the scores to an `ScoreProcessor` in order to convert them into the head of a rule.
          *
          * @param scoreProcessor A reference to an object of type `ScoreProcessor`, the scores should be passed to
-         * @return               A pointer to an object of type `AbstractEvaluatedPrediction` that has been created or a
-         *                       null pointer if no object has been created
          */
-        virtual const AbstractEvaluatedPrediction* processScores(ScoreProcessor& scoreProcessor) const = 0;
+        virtual void processScores(ScoreProcessor& scoreProcessor) const = 0;
 
 };
