@@ -50,11 +50,11 @@ HEAD_TYPE_SINGLE = 'single-label'
 
 HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
 
-ARGUMENT_LABEL_RATIO = 'label-ratio'
+ARGUMENT_LABEL_RATIO = 'label_ratio'
 
-ARGUMENT_MIN_LABELS = 'min-labels'
+ARGUMENT_MIN_LABELS = 'min_labels'
 
-ARGUMENT_MAX_LABELS = 'max-labels'
+ARGUMENT_MAX_LABELS = 'max_labels'
 
 HEAD_TYPE_COMPLETE = 'complete'
 
