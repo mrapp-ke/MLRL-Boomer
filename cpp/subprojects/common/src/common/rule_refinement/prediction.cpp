@@ -11,10 +11,6 @@ uint32 AbstractPrediction::getNumElements() const {
     return predictedScoreVector_.getNumElements();
 }
 
-void AbstractPrediction::setNumElements(uint32 numElements, bool freeMemory) {
-    predictedScoreVector_.setNumElements(numElements, freeMemory);
-}
-
 AbstractPrediction::score_iterator AbstractPrediction::scores_begin() {
     return predictedScoreVector_.begin();
 }

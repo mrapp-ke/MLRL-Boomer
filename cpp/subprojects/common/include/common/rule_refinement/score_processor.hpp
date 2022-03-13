@@ -26,50 +26,44 @@ class ScoreProcessor {
          * Processes the scores that are stored by a `DenseScoreVector<CompleteIndexVector>` in order to convert them
          * into the head of a rule.
          *
-         * @param scoreVector   A reference to an object of type `DenseScoreVector<CompleteIndexVector>` that stores the
-         *                      scores to be processed
-         * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created
+         * @param scoreVector A reference to an object of type `DenseScoreVector<CompleteIndexVector>` that stores the
+         *                    scores to be processed
          */
-        const AbstractEvaluatedPrediction* processScores(const DenseScoreVector<CompleteIndexVector>& scoreVector);
+        void processScores(const DenseScoreVector<CompleteIndexVector>& scoreVector);
 
         /**
          * Processes the scores that are stored by a `DenseScoreVector<PartialIndexVector>` in order to convert them
          * into the head of a rule.
          *
-         * @param scoreVector   A reference to an object of type `DenseScoreVector<PartialIndexVector>` that stores the
-         *                      scores to be processed
-         * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created
+         * @param scoreVector A reference to an object of type `DenseScoreVector<PartialIndexVector>` that stores the
+         *                    scores to be processed
          */
-        const AbstractEvaluatedPrediction* processScores(const DenseScoreVector<PartialIndexVector>& scoreVector);
+        void processScores(const DenseScoreVector<PartialIndexVector>& scoreVector);
 
         /**
          * Processes the scores that are stored by a `DenseBinnedScoreVector<CompleteIndexVector>` in order to convert
          * them into the head of a rule.
          *
-         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<CompleteIndexVector>` that
-         *                      stores the scores to be processed
-         * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created
+         * @param scoreVector A reference to an object of type `DenseBinnedScoreVector<CompleteIndexVector>` that stores
+         *                    the scores to be processed
          */
-        const AbstractEvaluatedPrediction* processScores(
-            const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector);
+        void processScores(const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector);
 
         /**
          * Processes the scores that are stored by a `DenseBinnedScoreVector<PartialIndexVector>` in order to convert
          * them into the head of a rule.
          *
-         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<PartialIndexVector>` that
-         *                      stores the scores to be processed
-         * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created
+         * @param scoreVector A reference to an object of type `DenseBinnedScoreVector<PartialIndexVector>` that stores
+         *                    the scores to be processed
          */
-        const AbstractEvaluatedPrediction* processScores(const DenseBinnedScoreVector<PartialIndexVector>& scoreVector);
+        void processScores(const DenseBinnedScoreVector<PartialIndexVector>& scoreVector);
 
         /**
          * Processes the scores that are stored by a `IScoreVector` in order to convert them into the head of a rule.
          *
-         * @param scoreVector   A reference to an object of type `IScoreVector` that stores the scores to be processed
-         * @return              A pointer to an object of type `AbstractEvaluatedPrediction` that has been created
+         * @param scoreVector A reference to an object of type `IScoreVector` that stores the scores to be processed
          */
-        const AbstractEvaluatedPrediction* processScores(const IScoreVector& scoreVector);
+        void processScores(const IScoreVector& scoreVector);
 
         /**
          * Returns the rule head that has been created by the processor.

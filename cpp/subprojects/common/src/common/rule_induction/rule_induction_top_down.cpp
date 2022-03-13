@@ -135,6 +135,7 @@ class TopDownRuleInduction final : public IRuleInduction {
 
                 if (foundRefinement) {
                     bestHead = bestRefinementPtr->headPtr.get();
+                    bestHead->sort();
 
                     // Filter the current subset of thresholds by applying the best refinement that has been found...
                     thresholdsSubsetPtr->filterThresholds(*bestRefinementPtr);

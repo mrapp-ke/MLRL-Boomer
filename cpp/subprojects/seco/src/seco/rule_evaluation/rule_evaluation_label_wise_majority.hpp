@@ -30,7 +30,7 @@ namespace seco {
              *                     the labels for which the rules may predict
              */
             LabelWiseMajorityRuleEvaluation(const T& labelIndices)
-                : scoreVector_(DenseScoreVector<T>(labelIndices)) {
+                : scoreVector_(DenseScoreVector<T>(labelIndices, true)) {
                 scoreVector_.overallQualityScore = 0;
             }
 

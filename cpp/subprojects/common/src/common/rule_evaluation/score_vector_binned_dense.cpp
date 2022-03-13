@@ -6,8 +6,9 @@
 
 
 template<typename T>
-DenseBinnedScoreVector<T>::DenseBinnedScoreVector(const T& labelIndices, uint32 numBins)
-    : labelIndices_(labelIndices), binnedVector_(DenseBinnedVector<float64>(labelIndices.getNumElements(), numBins)) {
+DenseBinnedScoreVector<T>::DenseBinnedScoreVector(const T& labelIndices, uint32 numBins, bool sorted)
+    : labelIndices_(labelIndices), binnedVector_(DenseBinnedVector<float64>(labelIndices.getNumElements(), numBins)),
+      sorted_(sorted) {
 
 }
 
@@ -92,13 +93,18 @@ bool DenseBinnedScoreVector<T>::isPartial() const {
 }
 
 template<typename T>
+bool DenseBinnedScoreVector<T>::isSorted() const {
+    return sorted_;
+}
+
+template<typename T>
 void DenseBinnedScoreVector<T>::updatePrediction(AbstractPrediction& prediction) const {
     prediction.set(this->scores_cbegin(), this->scores_cend());
 }
 
 template<typename T>
-const AbstractEvaluatedPrediction* DenseBinnedScoreVector<T>::processScores(ScoreProcessor& scoreProcessor) const {
-    return scoreProcessor.processScores(*this);
+void DenseBinnedScoreVector<T>::processScores(ScoreProcessor& scoreProcessor) const {
+    scoreProcessor.processScores(*this);
 }
 
 template class DenseBinnedScoreVector<PartialIndexVector>;

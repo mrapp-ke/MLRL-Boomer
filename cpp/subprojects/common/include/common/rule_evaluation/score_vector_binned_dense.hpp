@@ -23,14 +23,18 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
 
         DenseBinnedVector<float64> binnedVector_;
 
+        const bool sorted_;
+
     public:
 
         /**
          * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of
          *                      the labels for which the rule may predict
          * @param numBins       The number of bins
+         * @param sorted        True, if the indices of the labels for which the rule may predict are sorted in
+         *                      increasing order, false otherwise
          */
-        DenseBinnedScoreVector(const T& labelIndices, uint32 numBins);
+        DenseBinnedScoreVector(const T& labelIndices, uint32 numBins, bool sorted);
 
         /**
          * An iterator that provides read-only access to the indices of the labels for which the rule predicts.
@@ -180,8 +184,17 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
          */
         bool isPartial() const;
 
+        /**
+         * Returns whether the indices of the labels for which the rule may predict are sorted in increasing order, or
+         * not.
+         *
+         * @return True, if the indices of the labels for which the rule may predict are sorted in increasing order,
+         *         false otherwise
+         */
+        bool isSorted() const;
+
         void updatePrediction(AbstractPrediction& prediction) const override;
 
-        const AbstractEvaluatedPrediction* processScores(ScoreProcessor& scoreProcessor) const override;
+        void processScores(ScoreProcessor& scoreProcessor) const override;
 
 };

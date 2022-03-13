@@ -22,13 +22,17 @@ class DenseScoreVector final : virtual public IScoreVector {
 
         DenseVector<float64> predictedScoreVector_;
 
+        const bool sorted_;
+
     public:
 
         /**
-         * @param labelIndices A reference to an object of template type `T` that provides access to the indices of the
-         *                     labels for which the rule may predict
+         * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of the
+         *                      labels for which the rule may predict
+         * @param sorted        True, if the indices of the labels for which the rule may predict are sorted in
+         *                      increasing order, false otherwise
          */
-        DenseScoreVector(const T& labelIndices);
+        DenseScoreVector(const T& labelIndices, bool sorted);
 
         /**
          * An iterator that provides read-only access to the indices.
@@ -101,8 +105,17 @@ class DenseScoreVector final : virtual public IScoreVector {
          */
         bool isPartial() const;
 
+        /**
+         * Returns whether the indices of the labels for which the rule may predict are sorted in increasing order, or
+         * not.
+         *
+         * @return True, if the indices of the labels for which the rule may predict are sorted in increasing order,
+         *         false otherwise
+         */
+        bool isSorted() const;
+
         void updatePrediction(AbstractPrediction& prediction) const override;
 
-        const AbstractEvaluatedPrediction* processScores(ScoreProcessor& scoreProcessor) const override;
+        void processScores(ScoreProcessor& scoreProcessor) const override;
 
 };
