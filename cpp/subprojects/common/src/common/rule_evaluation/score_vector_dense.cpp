@@ -6,8 +6,9 @@
 
 
 template<typename T>
-DenseScoreVector<T>::DenseScoreVector(const T& labelIndices)
-    : labelIndices_(labelIndices), predictedScoreVector_(DenseVector<float64>(labelIndices.getNumElements())) {
+DenseScoreVector<T>::DenseScoreVector(const T& labelIndices, bool sorted)
+    : labelIndices_(labelIndices), predictedScoreVector_(DenseVector<float64>(labelIndices.getNumElements())),
+      sorted_(sorted) {
 
 }
 
@@ -49,6 +50,11 @@ uint32 DenseScoreVector<T>::getNumElements() const {
 template<typename T>
 bool DenseScoreVector<T>::isPartial() const {
     return labelIndices_.isPartial();
+}
+
+template<typename T>
+bool DenseScoreVector<T>::isSorted() const {
+    return sorted_;
 }
 
 template<typename T>

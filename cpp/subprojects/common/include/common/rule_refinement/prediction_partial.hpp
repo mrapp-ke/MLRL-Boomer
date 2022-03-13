@@ -19,12 +19,16 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
 
         PartialIndexVector indexVector_;
 
+        bool sorted_;
+
     public:
 
         /**
-         * @param numElements The number of labels for which the rule predicts
+         * @param numElements   The number of labels for which the rule predicts
+         * @param sorted        True, if the scores that are stored by this prediction are sorted in increasing order by
+         *                      the corresponding label indices, false otherwise
          */
-        PartialPrediction(uint32 numElements);
+        PartialPrediction(uint32 numElements, bool sorted);
 
         /**
          * An iterator that provides access to the indices for which the rule predicts and allows to modify them.
@@ -71,6 +75,15 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
          * @param freeMemory    True, if unused memory should be freed if possible, false otherwise
          */
         void setNumElements(uint32 numElements, bool freeMemory);
+
+        /**
+         * Sets whether the scores that are stored by this prediction are sorted in increasing order by the
+         * corresponding label indices, or not.
+         *
+         * @param sorted True, if the scores that are stored by this prediction are sorted in increasing order by the
+         *               corresponding label indices, false otherwise
+         */
+        void setSorted(bool sorted);
 
         bool isPartial() const override;
 
