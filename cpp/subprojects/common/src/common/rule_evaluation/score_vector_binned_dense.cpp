@@ -6,8 +6,9 @@
 
 
 template<typename T>
-DenseBinnedScoreVector<T>::DenseBinnedScoreVector(const T& labelIndices, uint32 numBins)
-    : labelIndices_(labelIndices), binnedVector_(DenseBinnedVector<float64>(labelIndices.getNumElements(), numBins)) {
+DenseBinnedScoreVector<T>::DenseBinnedScoreVector(const T& labelIndices, uint32 numBins, bool sorted)
+    : labelIndices_(labelIndices), binnedVector_(DenseBinnedVector<float64>(labelIndices.getNumElements(), numBins)),
+      sorted_(sorted) {
 
 }
 
@@ -89,6 +90,11 @@ void DenseBinnedScoreVector<T>::setNumBins(uint32 numBins, bool freeMemory) {
 template<typename T>
 bool DenseBinnedScoreVector<T>::isPartial() const {
     return labelIndices_.isPartial();
+}
+
+template<typename T>
+bool DenseBinnedScoreVector<T>::isSorted() const {
+    return sorted_;
 }
 
 template<typename T>

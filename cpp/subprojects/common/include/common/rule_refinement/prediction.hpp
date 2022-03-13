@@ -95,6 +95,12 @@ class AbstractPrediction : public IIndexVector {
         virtual void apply(IStatistics& statistics, uint32 statisticIndex) const = 0;
 
         /**
+         * Sorts the scores that stored by this prediction in increasing order by the the indices of the labels they
+         * correspond to.
+         */
+        virtual void sort() = 0;
+
+        /**
          * Creates and returns a head that contains the scores that are stored by this prediction.
          *
          * @return An unique pointer to an object of type `IHead` that has been created
