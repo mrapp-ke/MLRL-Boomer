@@ -43,7 +43,7 @@ namespace seco {
             LabelWiseSubsetRuleEvaluation(const PartialIndexVector& labelIndices,
                                           std::unique_ptr<IHeuristic> heuristicPtr,
                                           std::unique_ptr<ILiftFunction> liftFunctionPtr)
-                : scoreVector_(DenseScoreVector<PartialIndexVector>(labelIndices)),
+                : scoreVector_(DenseScoreVector<PartialIndexVector>(labelIndices, true)),
                   heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {
 
             }
@@ -116,7 +116,7 @@ namespace seco {
             LabelWisePartialRuleEvaluation(const T& labelIndices, std::unique_ptr<IHeuristic> heuristicPtr,
                                            std::unique_ptr<ILiftFunction> liftFunctionPtr)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
-                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_)),
+                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
                   sortedVector_(SparseArrayVector<Tuple<float64>>(labelIndices.getNumElements())),
                   heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {
 

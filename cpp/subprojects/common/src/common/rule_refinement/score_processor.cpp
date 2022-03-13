@@ -26,11 +26,15 @@ static inline void processPartialScores(std::unique_ptr<AbstractEvaluatedPredict
 
     if (!existingHead) {
         // Create a new head, if necessary...
-        existingHeadPtr = std::make_unique<PartialPrediction>(numElements);
+        existingHeadPtr = std::make_unique<PartialPrediction>(numElements, scoreVector.isSorted());
         existingHead = (PartialPrediction*) existingHeadPtr.get();
-    } else if (existingHead->getNumElements() != numElements) {
+    } else {
         // Adjust the size of the existing head, if necessary...
-        existingHead->setNumElements(numElements, false);
+        if (existingHead->getNumElements() != numElements) {
+            existingHead->setNumElements(numElements, false);
+        }
+
+        existingHead->setSorted(scoreVector.isSorted());
     }
 
     copyArray(scoreVector.scores_cbegin(), existingHead->scores_begin(), numElements);

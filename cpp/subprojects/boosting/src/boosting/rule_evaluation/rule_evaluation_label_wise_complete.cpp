@@ -49,8 +49,8 @@ namespace boosting {
              */
             DenseLabelWiseCompleteRuleEvaluation(const T& labelIndices, float64 l1RegularizationWeight,
                                                  float64 l2RegularizationWeight)
-                : scoreVector_(DenseScoreVector<T>(labelIndices)), l1RegularizationWeight_(l1RegularizationWeight),
-                  l2RegularizationWeight_(l2RegularizationWeight) {
+                : scoreVector_(DenseScoreVector<T>(labelIndices, true)),
+                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
 
             }
 

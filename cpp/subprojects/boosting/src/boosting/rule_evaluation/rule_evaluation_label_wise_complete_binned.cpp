@@ -79,7 +79,7 @@ namespace boosting {
                                                        float64 l2RegularizationWeight,
                                                        std::unique_ptr<ILabelBinning> binningPtr)
                 : maxBins_(binningPtr->getMaxBins(labelIndices.getNumElements())),
-                  scoreVector_(DenseBinnedScoreVector<T>(labelIndices, maxBins_ + 1)),
+                  scoreVector_(DenseBinnedScoreVector<T>(labelIndices, maxBins_ + 1, true)),
                   aggregatedStatisticVector_(DenseLabelWiseStatisticVector(maxBins_)),
                   numElementsPerBin_(new uint32[maxBins_]), criteria_(new float64[labelIndices.getNumElements()]),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
