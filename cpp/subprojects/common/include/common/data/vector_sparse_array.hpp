@@ -539,7 +539,12 @@ class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
         value_const_iterator values_cend() const;
 
         /**
-         * Sorts the elements in the vector in ascending order based on their values.
+         * Sorts the elements in the vector in descending order by their indices.
+         */
+        void sortByIndices();
+
+        /**
+         * Sorts the elements in the vector in ascending order by their values.
          */
         void sortByValues();
 
