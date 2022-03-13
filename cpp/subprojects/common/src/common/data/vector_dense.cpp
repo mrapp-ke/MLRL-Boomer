@@ -1,5 +1,6 @@
 #include "common/data/vector_dense.hpp"
 #include "common/data/indexed_value.hpp"
+#include "common/data/tuple.hpp"
 #include <cstdlib>
 
 
@@ -44,3 +45,7 @@ template class DenseVector<IndexedValue<uint8>>;
 template class DenseVector<IndexedValue<uint32>>;
 template class DenseVector<IndexedValue<float32>>;
 template class DenseVector<IndexedValue<float64>>;
+template class DenseVector<IndexedValue<Tuple<uint8>>>;
+template class DenseVector<IndexedValue<Tuple<uint32>>>;
+template class DenseVector<IndexedValue<Tuple<float32>>>;
+template class DenseVector<IndexedValue<Tuple<float64>>>;
