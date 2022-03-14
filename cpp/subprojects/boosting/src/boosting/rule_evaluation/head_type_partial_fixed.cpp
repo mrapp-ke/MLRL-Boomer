@@ -12,7 +12,7 @@ namespace boosting {
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
             const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
             const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
-        : labelRatio_(0.05f), minLabels_(2), maxLabels_(0), labelBinningConfigPtr_(labelBinningConfigPtr),
+        : labelRatio_(0.0f), minLabels_(2), maxLabels_(0), labelBinningConfigPtr_(labelBinningConfigPtr),
           multiThreadingConfigPtr_(multiThreadingConfigPtr), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
           l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
 
@@ -23,8 +23,10 @@ namespace boosting {
     }
 
     IFixedPartialHeadConfig& FixedPartialHeadConfig::setLabelRatio(float32 labelRatio) {
-        assertGreater<float32>("labelRatio", labelRatio, 0);
-        assertLess<float32>("labelRatio", labelRatio, 1);
+        if (labelRatio != 0) {
+            assertGreater<float32>("labelRatio", labelRatio, 0);
+            assertLess<float32>("labelRatio", labelRatio, 1);
+        }
         labelRatio_ = labelRatio;
         return *this;
     }
@@ -55,6 +57,8 @@ namespace boosting {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
+        float32 labelRatio =
+            labelRatio_ != 0 ? labelRatio_ : labelMatrix.calculateLabelCardinality() / labelMatrix.getNumCols();
         std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.createLabelWiseLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
             lossConfig.createEvaluationMeasureFactory();
@@ -62,10 +66,10 @@ namespace boosting {
             labelBinningConfigPtr_->createLabelWiseRuleEvaluationFactory();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
             std::make_unique<LabelWiseFixedPartialRuleEvaluationFactory>(
-                labelRatio_, minLabels_, maxLabels_, l1RegularizationWeight, l2RegularizationWeight);
+                labelRatio, minLabels_, maxLabels_, l1RegularizationWeight, l2RegularizationWeight);
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
             std::make_unique<LabelWiseFixedPartialRuleEvaluationFactory>(
-                labelRatio_, minLabels_, maxLabels_, l1RegularizationWeight, l2RegularizationWeight);
+                labelRatio, minLabels_, maxLabels_, l1RegularizationWeight, l2RegularizationWeight);
         return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),

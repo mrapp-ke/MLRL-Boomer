@@ -25,7 +25,8 @@ namespace boosting {
             /**
              * Returns the percentage that specifies for how many labels the rule heads predict.
              *
-             * @return The percentage that specifies for how labels the rule heads predict
+             * @return The percentage that specifies for how labels the rule heads predict or 0, if the percentage is
+             *         calculated based on the average label cardinality
              */
             virtual float32 getLabelRatio() const = 0;
 
@@ -34,7 +35,8 @@ namespace boosting {
              *
              * @param labelRatio    A percentage that specifies for how many labels the rule heads should predict, e.g.,
              *                      if 100 labels are available, a percentage of 0.5 means that the rule heads predict
-             *                      for a subset of `ceil(0.5 * 100) = 50` labels. Must be in (0, 1)
+             *                      for a subset of `ceil(0.5 * 100) = 50` labels. Must be in (0, 1) or 0, if the
+             *                      percentage should be calculated based on the average label cardinality
              * @return              A reference to an object of type `IFixedPartialHeadConfig` that allows further
              *                      configuration of the rule heads
              */
