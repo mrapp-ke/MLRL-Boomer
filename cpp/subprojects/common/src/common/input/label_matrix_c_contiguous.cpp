@@ -19,10 +19,10 @@ bool CContiguousLabelMatrix::isSparse() const {
     return false;
 }
 
-float64 CContiguousLabelMatrix::calculateLabelCardinality() const {
+float32 CContiguousLabelMatrix::calculateLabelCardinality() const {
     uint32 numRows = this->getNumRows();
     uint32 numCols = this->getNumCols();
-    float64 labelCardinality = 0;
+    float32 labelCardinality = 0;
 
     for (uint32 i = 0; i < numRows; i++) {
         value_const_iterator labelIterator = this->row_values_cbegin(i);
@@ -34,7 +34,7 @@ float64 CContiguousLabelMatrix::calculateLabelCardinality() const {
             }
         }
 
-        labelCardinality = iterativeArithmeticMean(i + 1, (float64) numRelevantLabels, labelCardinality);
+        labelCardinality = iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
     }
 
     return labelCardinality;

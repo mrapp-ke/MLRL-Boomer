@@ -21,15 +21,15 @@ bool CsrLabelMatrix::isSparse() const {
     return true;
 }
 
-float64 CsrLabelMatrix::calculateLabelCardinality() const {
+float32 CsrLabelMatrix::calculateLabelCardinality() const {
     uint32 numRows = this->getNumRows();
-    float64 labelCardinality = 0;
+    float32 labelCardinality = 0;
 
     for (uint32 i = 0; i < numRows; i++) {
         index_const_iterator indicesBegin = this->row_indices_cbegin(i);
         index_const_iterator indicesEnd = this->row_indices_cend(i);
         uint32 numRelevantLabels = indicesEnd - indicesBegin;
-        labelCardinality = iterativeArithmeticMean(i + 1, (float64) numRelevantLabels, labelCardinality);
+        labelCardinality = iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
     }
 
     return labelCardinality;
