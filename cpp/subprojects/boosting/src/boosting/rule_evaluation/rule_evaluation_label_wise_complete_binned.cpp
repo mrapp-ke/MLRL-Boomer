@@ -1,7 +1,7 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_complete_binned.hpp"
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "common/data/arrays.hpp"
-#include "rule_evaluation_label_wise_common.hpp"
+#include "rule_evaluation_label_wise_binned_common.hpp"
 
 
 namespace boosting {
@@ -15,26 +15,6 @@ namespace boosting {
             scoreIterator[i] = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
                                                        l2RegularizationWeight);
         }
-    }
-
-    template<typename ScoreIterator>
-    static inline float64 calculateBinnedScores(DenseLabelWiseStatisticVector::const_iterator statisticIterator,
-                                                ScoreIterator scoreIterator, const uint32* weights, uint32 numElements,
-                                                float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
-        float64 overallQualityScore = 0;
-
-        for (uint32 i = 0; i < numElements; i++) {
-            uint32 weight = weights[i];
-            const Tuple<float64>& tuple = statisticIterator[i];
-            float64 predictedScore = calculateLabelWiseScore(tuple.first, tuple.second, weight * l1RegularizationWeight,
-                                                             weight * l2RegularizationWeight);
-            scoreIterator[i] = predictedScore;
-            overallQualityScore += calculateLabelWiseQualityScore(predictedScore, tuple.first, tuple.second,
-                                                                  weight * l1RegularizationWeight,
-                                                                  weight * l2RegularizationWeight);
-        }
-
-        return overallQualityScore;
     }
 
     /**
