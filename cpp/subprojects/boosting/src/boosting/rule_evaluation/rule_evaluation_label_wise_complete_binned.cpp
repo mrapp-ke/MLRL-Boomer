@@ -7,6 +7,17 @@
 namespace boosting {
 
     template<typename ScoreIterator>
+    static inline void calculateLabelWiseCriteria(DenseLabelWiseStatisticVector::const_iterator statisticIterator,
+                                                  ScoreIterator scoreIterator, uint32 numElements,
+                                                  float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
+        for (uint32 i = 0; i < numElements; i++) {
+            const Tuple<float64>& tuple = statisticIterator[i];
+            scoreIterator[i] = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
+                                                       l2RegularizationWeight);
+        }
+    }
+
+    template<typename ScoreIterator>
     static inline float64 calculateBinnedScores(DenseLabelWiseStatisticVector::const_iterator statisticIterator,
                                                 ScoreIterator scoreIterator, const uint32* weights, uint32 numElements,
                                                 float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
@@ -89,8 +100,8 @@ namespace boosting {
                 // Calculate label-wise criteria...
                 uint32 numLabels = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                calculateLabelWiseScores(statisticIterator, criteria_, numLabels, l1RegularizationWeight_,
-                                         l2RegularizationWeight_);
+                calculateLabelWiseCriteria(statisticIterator, criteria_, numLabels, l1RegularizationWeight_,
+                                           l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
                 LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numLabels);
