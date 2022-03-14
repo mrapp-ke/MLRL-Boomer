@@ -9,7 +9,7 @@
 namespace boosting {
 
     template<typename ScoreIterator>
-    static inline void calculateLabelWiseScores(
+    static inline void calculateLabelWiseCriteria(
             DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
             DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator,
             ScoreIterator scoreIterator, uint32 numElements, float64 l1RegularizationWeight,
@@ -192,8 +192,8 @@ namespace boosting {
                     statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                     statisticVector.hessians_diagonal_cbegin();
-                calculateLabelWiseScores(gradientIterator, hessianIterator, criteria_, numLabels,
-                                         l1RegularizationWeight_, l2RegularizationWeight_);
+                calculateLabelWiseCriteria(gradientIterator, hessianIterator, criteria_, numLabels,
+                                           l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
                 LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numLabels);
