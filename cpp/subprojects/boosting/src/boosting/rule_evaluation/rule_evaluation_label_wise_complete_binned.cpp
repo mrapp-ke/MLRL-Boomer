@@ -7,27 +7,29 @@
 namespace boosting {
 
     template<typename ScoreIterator>
-    static inline void calculateLabelWiseScores(DenseLabelWiseStatisticVector::const_iterator statisticIterator,
-                                                ScoreIterator scoreIterator, const uint32* weights, uint32 numElements,
-                                                float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
+    static inline void calculateLabelWiseCriteria(DenseLabelWiseStatisticVector::const_iterator statisticIterator,
+                                                  ScoreIterator scoreIterator, uint32 numElements,
+                                                  float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numElements; i++) {
-            uint32 weight = weights[i];
             const Tuple<float64>& tuple = statisticIterator[i];
-            scoreIterator[i] = calculateLabelWiseScore(tuple.first, tuple.second, weight * l1RegularizationWeight,
-                                                       weight * l2RegularizationWeight);
+            scoreIterator[i] = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
+                                                       l2RegularizationWeight);
         }
     }
 
     template<typename ScoreIterator>
-    static inline constexpr float64 calculateOverallQualityScore(
-            DenseLabelWiseStatisticVector::const_iterator statisticIterator, ScoreIterator scoreIterator,
-            const uint32* weights, uint32 numElements, float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
+    static inline float64 calculateBinnedScores(DenseLabelWiseStatisticVector::const_iterator statisticIterator,
+                                                ScoreIterator scoreIterator, const uint32* weights, uint32 numElements,
+                                                float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
         float64 overallQualityScore = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 weight = weights[i];
             const Tuple<float64>& tuple = statisticIterator[i];
-            overallQualityScore += calculateLabelWiseQualityScore(scoreIterator[i], tuple.first, tuple.second,
+            float64 predictedScore = calculateLabelWiseScore(tuple.first, tuple.second, weight * l1RegularizationWeight,
+                                                             weight * l2RegularizationWeight);
+            scoreIterator[i] = predictedScore;
+            overallQualityScore += calculateLabelWiseQualityScore(predictedScore, tuple.first, tuple.second,
                                                                   weight * l1RegularizationWeight,
                                                                   weight * l2RegularizationWeight);
         }
@@ -98,8 +100,8 @@ namespace boosting {
                 // Calculate label-wise criteria...
                 uint32 numLabels = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                calculateLabelWiseScores(statisticIterator, criteria_, numLabels, l1RegularizationWeight_,
-                                         l2RegularizationWeight_);
+                calculateLabelWiseCriteria(statisticIterator, criteria_, numLabels, l1RegularizationWeight_,
+                                           l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
                 LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numLabels);
@@ -128,12 +130,10 @@ namespace boosting {
                 // Compute predictions, as well as an overall quality score...
                 typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
                     scoreVector_.scores_binned_begin();
-                calculateLabelWiseScores(aggregatedStatisticIterator, scoreIterator, numElementsPerBin_, numBins,
-                                         l1RegularizationWeight_, l2RegularizationWeight_);
-                scoreVector_.overallQualityScore = calculateOverallQualityScore(aggregatedStatisticIterator,
-                                                                                scoreIterator, numElementsPerBin_,
-                                                                                numBins, l1RegularizationWeight_,
-                                                                                l2RegularizationWeight_);
+                scoreVector_.overallQualityScore = calculateBinnedScores(aggregatedStatisticIterator, scoreIterator,
+                                                                         numElementsPerBin_, numBins,
+                                                                         l1RegularizationWeight_,
+                                                                         l2RegularizationWeight_);
                 return scoreVector_;
             }
 
