@@ -33,7 +33,7 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          *
          * @return The label cardinality
          */
-        virtual float64 calculateLabelCardinality() const = 0;
+        virtual float32 calculateLabelCardinality() const = 0;
 
         /**
          * Creates and returns a label vector that corresponds to a specific row in the label matrix.

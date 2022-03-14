@@ -1,4 +1,4 @@
-from mlrl.common.cython._types cimport uint8, uint32, float64
+from mlrl.common.cython._types cimport uint8, uint32, float32
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
@@ -23,7 +23,7 @@ cdef extern from "common/input/label_matrix_row_wise.hpp" nogil:
 
         # Functions:
 
-        float64 calculateLabelCardinality() const
+        float32 calculateLabelCardinality() const
 
 
 cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
