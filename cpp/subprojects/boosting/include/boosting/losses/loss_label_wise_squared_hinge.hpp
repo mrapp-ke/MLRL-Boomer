@@ -24,7 +24,7 @@ namespace boosting {
             LabelWiseSquaredHingeLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix, const Blas& blas,
+                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
                 const Lapack& lapack) const override;
 
             std::unique_ptr<IProbabilityFunctionFactory> createProbabilityFunctionFactory() const override;
