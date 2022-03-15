@@ -6,6 +6,24 @@
 
 namespace seco {
 
+    static inline float64 calculateLiftInternally(uint32 numLabels, uint32 totalLabels, uint32 peakLabel,
+                                                  float64 maxLift, float64 exponent) {
+        if (numLabels == peakLabel) {
+            return maxLift;
+        } else {
+            float64 normalization;
+
+            if (numLabels < peakLabel) {
+                normalization = ((float64) numLabels - 1) / ((float64) peakLabel - 1);
+            } else {
+                normalization = ((float64) numLabels - (float64) totalLabels)
+                                / ((float64) totalLabels - (float64) peakLabel);
+            }
+
+            return 1 + pow(normalization, exponent) * (maxLift - 1);
+        }
+    }
+
     /**
      * A lift function that monotonously increases until a certain number of labels, where the maximum lift is reached,
      * and monotonously decreases afterwards.
@@ -31,24 +49,15 @@ namespace seco {
              * @param curvature The curvature of the lift function. A greater value results in a steeper curvature, a
              *                  smaller value results in a flatter curvature. Must be greater than 0
              */
-            PeakLiftFunction(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature)
-                : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), exponent_(1.0 / curvature) {
+            PeakLiftFunction(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature,
+                             const float64* maxLiftsAfterPeak)
+                : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), exponent_(1.0 / curvature),
+                  maxLiftsAfterPeak_(maxLiftsAfterPeak) {
 
             }
 
             float64 calculateLift(uint32 numLabels) const override {
-                float64 normalization;
-
-                if (numLabels < peakLabel_) {
-                    normalization = ((float64) numLabels - 1) / ((float64) peakLabel_ - 1);
-                } else if (numLabels > peakLabel_) {
-                    normalization = ((float64) numLabels - (float64) numLabels_)
-                                    / ((float64) numLabels_ - (float64) peakLabel_);
-                } else {
-                    return maxLift_;
-                }
-
-                return 1 + pow(normalization, exponent_) * (maxLift_ - 1);
+                return calculateLiftInternally(numLabels, numLabels_, peakLabel_, maxLift_, exponent_);
             }
 
             float64 getMaxLift(uint32 numLabels) const override {
