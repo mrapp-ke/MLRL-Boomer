@@ -166,7 +166,10 @@ namespace seco {
                     if (qualityScore > bestQualityScore) {
                         bestQualityScore = qualityScore;
                         bestNumPredictions = numPredictions;
-                        maxLift = liftFunctionPtr_->getMaxLift(bestNumPredictions);
+
+                        if (bestNumPredictions < numElements) {
+                            maxLift = liftFunctionPtr_->getMaxLift(bestNumPredictions);
+                        }
                     }
 
                     if (qualityScore * maxLift < bestQualityScore) {
