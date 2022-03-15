@@ -40,14 +40,19 @@ namespace seco {
 
             float64 exponent_;
 
+            const float64* maxLiftsAfterPeak_;
+
         public:
 
             /**
-             * @param numLabels The total number of available labels. Must be greater than 0
-             * @param peakLabel The number of labels for which the lift is maximum. Must be in [1, numLabels]
-             * @param maxLift   The lift at the peak label. Must be at least 1
-             * @param curvature The curvature of the lift function. A greater value results in a steeper curvature, a
-             *                  smaller value results in a flatter curvature. Must be greater than 0
+             * @param numLabels         The total number of available labels. Must be greater than 0
+             * @param peakLabel         The number of labels for which the lift is maximum. Must be in [1, numLabels]
+             * @param maxLift           The lift at the peak label. Must be at least 1
+             * @param curvature         The curvature of the lift function. A greater value results in a steeper curve,
+             *                          a smaller value results in a flatter curve. Must be greater than 0
+             * @param maxLiftsAfterPeak A pointer to an array of type `float64`, shape `(numLabels - peakLabel)`, that
+             *                          specifies that maximum lifts that are possible by adding additional labels to
+             *                          heads that predict for more labels than the peak label
              */
             PeakLiftFunction(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature,
                              const float64* maxLiftsAfterPeak)
@@ -61,7 +66,11 @@ namespace seco {
             }
 
             float64 getMaxLift(uint32 numLabels) const override {
-                return maxLift_;
+                if (numLabels < peakLabel_) {
+                    return maxLift_;
+                } else {
+                    return maxLiftsAfterPeak_[numLabels - peakLabel_];
+                }
             }
 
     };
@@ -82,6 +91,8 @@ namespace seco {
 
             float64 curvature_;
 
+            float64* maxLiftsAfterPeak_;
+
         public:
 
             /**
@@ -92,12 +103,21 @@ namespace seco {
              *                  smaller value results in a flatter curvature. Must be greater than 0
              */
             PeakLiftFunctionFactory(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature)
-                : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), curvature_(curvature) {
+                : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), curvature_(curvature),
+                  maxLiftsAfterPeak_(new float64[numLabels - peakLabel]) {
+                for (uint32 i = 0; i < numLabels - peakLabel; i++) {
+                    maxLiftsAfterPeak_[i] = calculateLiftInternally(i + peakLabel, numLabels, peakLabel, maxLift,
+                                                                    curvature);
+                }
+            }
 
+            ~PeakLiftFunctionFactory() {
+                delete[] maxLiftsAfterPeak_;
             }
 
             std::unique_ptr<ILiftFunction> create() const override {
-                return std::make_unique<PeakLiftFunction>(numLabels_, peakLabel_, maxLift_, curvature_);
+                return std::make_unique<PeakLiftFunction>(numLabels_, peakLabel_, maxLift_, curvature_,
+                                                          maxLiftsAfterPeak_);
             }
 
     };
