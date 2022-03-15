@@ -51,7 +51,7 @@ namespace seco {
                 return 1 + pow(normalization, exponent_) * (maxLift_ - 1);
             }
 
-            float64 getMaxLift() const override {
+            float64 getMaxLift(uint32 numLabels) const override {
                 return maxLift_;
             }
 
