@@ -152,10 +152,10 @@ namespace seco {
                     return a.value.first < b.value.first;
                 });
 
-                float64 maxLift = liftFunctionPtr_->getMaxLift();
                 float64 sumOfQualityScores = (1 - sortedIterator[0].value.first);
                 float64 bestQualityScore = calculateLiftedQualityScore(sumOfQualityScores, 1, *liftFunctionPtr_);
                 uint32 bestNumPredictions = 1;
+                float64 maxLift = liftFunctionPtr_->getMaxLift(bestNumPredictions);
 
                 for (uint32 i = 1; i < numElements; i++) {
                     uint32 numPredictions = i + 1;
@@ -164,8 +164,12 @@ namespace seco {
                                                                        *liftFunctionPtr_);
 
                     if (qualityScore > bestQualityScore) {
-                        bestNumPredictions = numPredictions;
                         bestQualityScore = qualityScore;
+                        bestNumPredictions = numPredictions;
+
+                        if (bestNumPredictions < numElements) {
+                            maxLift = liftFunctionPtr_->getMaxLift(bestNumPredictions);
+                        }
                     }
 
                     if (qualityScore * maxLift < bestQualityScore) {
