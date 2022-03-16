@@ -69,3 +69,30 @@ cdef class PeakLiftFunctionConfig:
         assert_greater('curvature', curvature, 0)
         self.config_ptr.setCurvature(curvature)
         return self
+
+
+cdef class KlnLiftFunctionConfig:
+    """
+    Allows to configure a lift function that monotonously increases according to the natural logarithm of the number of
+    labels for which a rule predicts.
+    """
+
+    def get_k(self) -> float:
+        """
+        Returns the value of the parameter "k" that affects the steepness of the lift function.
+
+        :return: The value of the parameter "k"
+        """
+        return self.config_ptr.getK()
+
+    def set_k(self, k: float) -> KlnLiftFunctionConfig:
+        """
+        Sets the value of the parameter "k", which affects the steepness of the lift function.
+
+        :param k:   The value of the parameter "k". The steepness of the lift function increases with larger values for
+                    "k". Must be greater than 0
+        :return:     A `KlnLiftFunctionConfig` that allows further configuration of the lift function
+        """
+        assert_greater('k', k, 0)
+        self.config_ptr.setK(k)
+        return self

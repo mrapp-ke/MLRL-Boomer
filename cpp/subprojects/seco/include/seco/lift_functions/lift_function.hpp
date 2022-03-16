@@ -29,11 +29,13 @@ namespace seco {
             virtual float64 calculateLift(uint32 numLabels) const = 0;
 
             /**
-             * Returns the maximum lift possible.
+             * Returns the maximum lift that is possible by adding additional labels to a head of a given size.
              *
-             * @return The maximum lift possible
+             * @param numLabels The number of labels for which the current head predicts
+             * @return          The maximum lift that is possible by adding additional labels to a head of the given
+             *                  size
              */
-            virtual float64 getMaxLift() const = 0;
+            virtual float64 getMaxLift(uint32 numLabels) const = 0;
 
     };
 

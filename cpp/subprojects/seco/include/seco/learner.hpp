@@ -11,6 +11,7 @@
 #include "common/learner.hpp"
 #include "seco/heuristics/heuristic_f_measure.hpp"
 #include "seco/heuristics/heuristic_m_estimate.hpp"
+#include "seco/lift_functions/lift_function_kln.hpp"
 #include "seco/lift_functions/lift_function_peak.hpp"
 #include "seco/rule_evaluation/head_type.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
@@ -214,6 +215,15 @@ namespace seco {
                     virtual IPeakLiftFunctionConfig& usePeakLiftFunction() = 0;
 
                     /**
+                     * Configures the rule learner to use a lift function that monotonously increases according to the
+                     * natural logarithm of the number of labels for which a rule predicts.
+                     *
+                     * @return A reference to an object of type `IKlnLiftFunctionConfig` that allows further
+                     *         configuration of the lift function
+                     */
+                    virtual IKlnLiftFunctionConfig& useKlnLiftFunction() = 0;
+
+                    /**
                      * Configures the rule learner to use predictor for predicting whether individual labels of given
                      * query examples are relevant or irrelevant by processing rules of an existing rule-based model in
                      * the order they have been learned. If a rule covers an example, its prediction is applied to each
@@ -310,6 +320,8 @@ namespace seco {
                     void useWraPruningHeuristic() override;
 
                     IPeakLiftFunctionConfig& usePeakLiftFunction() override;
+
+                    IKlnLiftFunctionConfig& useKlnLiftFunction() override;
 
                     void useLabelWiseClassificationPredictor() override;
 
