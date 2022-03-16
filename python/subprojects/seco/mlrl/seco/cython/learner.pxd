@@ -1,6 +1,6 @@
 from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLearner, RuleLearnerConfig
 from mlrl.seco.cython.heuristic cimport IFMeasureConfig, IMEstimateConfig
-from mlrl.seco.cython.lift_function cimport IPeakLiftFunctionConfig
+from mlrl.seco.cython.lift_function cimport IPeakLiftFunctionConfig, IKlnLiftFunctionConfig
 from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfig
 
 from libcpp.memory cimport unique_ptr
@@ -49,6 +49,8 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         void useWraPruningHeuristic()
 
         IPeakLiftFunctionConfig& usePeakLiftFunction()
+
+        IKlnLiftFunctionConfig& useKlnLiftFunction()
 
         void useLabelWiseClassificationPredictor()
 
