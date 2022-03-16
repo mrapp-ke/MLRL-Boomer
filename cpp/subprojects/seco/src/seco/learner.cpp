@@ -157,6 +157,13 @@ namespace seco {
         return ref;
     }
 
+    IKlnLiftFunctionConfig& SeCoRuleLearner::Config::useKlnLiftFunction() {
+        std::unique_ptr<KlnLiftFunctionConfig> ptr = std::make_unique<KlnLiftFunctionConfig>();
+        IKlnLiftFunctionConfig& ref = *ptr;
+        liftFunctionConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
     void SeCoRuleLearner::Config::useLabelWiseClassificationPredictor() {
         classificationPredictorConfigPtr_ =
             std::make_unique<LabelWiseClassificationPredictorConfig>(parallelPredictionConfigPtr_);
