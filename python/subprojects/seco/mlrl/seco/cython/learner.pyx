@@ -2,7 +2,7 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from mlrl.seco.cython.heuristic cimport FMeasureConfig, MEstimateConfig
-from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfig
+from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfig, KlnLiftFunctionConfig
 from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig
 
 from libcpp.memory cimport make_unique
@@ -184,6 +184,19 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IPeakLiftFunctionConfig* config_ptr = &rule_learner_config_ptr.usePeakLiftFunction()
         cdef PeakLiftFunctionConfig config = PeakLiftFunctionConfig.__new__(PeakLiftFunctionConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_kln_lift_function(self) -> KlnLiftFunctionConfig:
+        """
+        Configures the rule learner to use a lift function that monotonously increases according to the natural
+        logarithm of the number of labels for which a rule predicts.
+
+        :return: A `KlnLiftFunctionConfig` that allows further configuration of the lift function
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IKlnLiftFunctionConfig* config_ptr = &rule_learner_config_ptr.useKlnLiftFunction()
+        cdef KlnLiftFunctionConfig config = KlnLiftFunctionConfig.__new__(KlnLiftFunctionConfig)
         config.config_ptr = config_ptr
         return config
 

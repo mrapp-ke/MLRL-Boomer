@@ -39,6 +39,10 @@ LIFT_FUNCTION_PEAK = 'peak'
 
 ARGUMENT_PEAK_LABEL = 'peak_label'
 
+LIFT_FUNCTION_KLN = 'kln'
+
+ARGUMENT_K = 'k'
+
 ARGUMENT_MAX_LIFT = 'max_lift'
 
 ARGUMENT_CURVATURE = 'curvature'
@@ -63,7 +67,8 @@ HEURISTIC_VALUES: Dict[str, Set[str]] = {
 }
 
 LIFT_FUNCTION_VALUES: Dict[str, Set[str]] = {
-    LIFT_FUNCTION_PEAK: {ARGUMENT_PEAK_LABEL, ARGUMENT_MAX_LIFT, ARGUMENT_CURVATURE}
+    LIFT_FUNCTION_PEAK: {ARGUMENT_PEAK_LABEL, ARGUMENT_MAX_LIFT, ARGUMENT_CURVATURE},
+    LIFT_FUNCTION_KLN: {ARGUMENT_K}
 }
 
 
@@ -102,7 +107,8 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         :param head_type:                   The type of the rule heads that should be used. Must be 'single-label' or
                                             'partial'
         :param lift_function:               The lift function that should be used for the induction of partial rule
-                                            heads. Must be 'peak'. For additional options refer to the documentation.
+                                            heads. Must be 'peak' or 'kln'. For additional options refer to the
+                                            documentation
         :param heuristic:                   The heuristic to be optimized. Must be 'accuracy', 'precision', 'recall',
                                             'weighted-relative-accuracy', 'f-measure', 'm-estimate' or 'laplace'. For
                                             additional options refer to the documentation
@@ -285,3 +291,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                 c.set_peak_label(options.get_int(ARGUMENT_PEAK_LABEL, c.get_peak_label()))
                 c.set_max_lift(options.get_float(ARGUMENT_MAX_LIFT, c.get_max_lift()))
                 c.set_curvature(options.get_float(ARGUMENT_CURVATURE, c.get_curvature()))
+            elif value == LIFT_FUNCTION_KLN:
+                c = config.use_kln_lift_function()
+                c.set_k(options.get_float(ARGUMENT_K, c.get_k()))
