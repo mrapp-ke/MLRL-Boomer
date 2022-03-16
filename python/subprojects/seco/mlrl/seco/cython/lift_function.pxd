@@ -20,8 +20,26 @@ cdef extern from "seco/lift_functions/lift_function_peak.hpp" namespace "seco" n
         IPeakLiftFunctionConfig& setCurvature(float64 curvature) except +
 
 
+cdef extern from "seco/lift_functions/lift_function_kln.hpp" namespace "seco" nogil:
+
+    cdef cppclass IKlnLiftFunctionConfig:
+
+        # Functions:
+
+        float64 getK() const
+
+        IKlnLiftFunctionConfig& setK(float64 k) except +
+
+
 cdef class PeakLiftFunctionConfig:
 
     # Attributes:
 
     cdef IPeakLiftFunctionConfig* config_ptr
+
+
+cdef class KlnLiftFunctionConfig:
+
+    # Attributes:
+
+    cdef IKlnLiftFunctionConfig* config_ptr
