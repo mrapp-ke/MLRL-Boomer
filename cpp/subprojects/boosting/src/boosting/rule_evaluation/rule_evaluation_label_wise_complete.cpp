@@ -5,24 +5,6 @@
 
 namespace boosting {
 
-    template<typename ScoreIterator>
-    static inline float64 calculateLabelWiseScores(DenseLabelWiseStatisticVector::const_iterator statisticIterator,
-                                                   ScoreIterator scoreIterator, uint32 numElements,
-                                                   float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
-        float64 overallQualityScore = 0;
-
-        for (uint32 i = 0; i < numElements; i++) {
-            const Tuple<float64>& tuple = statisticIterator[i];
-            float64 predictedScore = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
-                                                             l2RegularizationWeight);
-            scoreIterator[i] = predictedScore;
-            overallQualityScore += calculateLabelWiseQualityScore(predictedScore, tuple.first, tuple.second,
-                                                                  l1RegularizationWeight, l2RegularizationWeight);
-        }
-
-        return overallQualityScore;
-    }
-
     /**
      * Allows to calculate the predictions of complete rules, as well as an overall quality score, based on the
      * gradients and Hessians that are stored by a `DenseLabelWiseStatisticVector` using L1 and L2 regularization.
@@ -61,9 +43,19 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                scoreVector_.overallQualityScore = calculateLabelWiseScores(statisticIterator, scoreIterator,
-                                                                            numElements, l1RegularizationWeight_,
-                                                                            l2RegularizationWeight_);
+                float64 overallQualityScore = 0;
+
+                for (uint32 i = 0; i < numElements; i++) {
+                    const Tuple<float64>& tuple = statisticIterator[i];
+                    float64 predictedScore = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
+                                                                    l2RegularizationWeight_);
+                    scoreIterator[i] = predictedScore;
+                    overallQualityScore += calculateLabelWiseQualityScore(predictedScore, tuple.first, tuple.second,
+                                                                          l1RegularizationWeight_,
+                                                                          l2RegularizationWeight_);
+                }
+
+                scoreVector_.overallQualityScore = overallQualityScore;
                 return scoreVector_;
             }
 
