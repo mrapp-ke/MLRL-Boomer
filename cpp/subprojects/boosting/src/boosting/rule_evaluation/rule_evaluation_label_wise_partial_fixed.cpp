@@ -30,6 +30,8 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
+            FixedPriorityQueue priorityQueue_;
+
         public:
 
             /**
@@ -45,7 +47,8 @@ namespace boosting {
                                                      float64 l1RegularizationWeight, float64 l2RegularizationWeight)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(numPredictions)),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
-                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
+                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
+                  priorityQueue_(numPredictions) {
 
             }
 
@@ -53,24 +56,23 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
-                uint32 maxElements = indexVector_.getNumElements();
-                FixedPriorityQueue priorityQueue(maxElements);
 
                 for (uint32 i = 0; i < numElements; i++) {
                     const Tuple<float64>& tuple = statisticIterator[i];
                     float64 qualityScore = calculateLabelWiseQualityScore(tuple.first, tuple.second,
                                                                           l1RegularizationWeight_,
                                                                           l2RegularizationWeight_);
-                    priorityQueue.emplace(labelIndexIterator[i], qualityScore);
+                    priorityQueue_.emplace(labelIndexIterator[i], qualityScore);
                 }
 
+                uint32 numPredictions = indexVector_.getNumElements();
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 float64 overallQualityScore = 0;
 
-                for (uint32 i = 0; i < maxElements; i++) {
-                    const IndexedValue<float64> entry = priorityQueue.top();
-                    priorityQueue.pop();
+                for (uint32 i = 0; i < numPredictions; i++) {
+                    const IndexedValue<float64> entry = priorityQueue_.top();
+                    priorityQueue_.pop();
                     uint32 index = entry.index;
                     indexIterator[i] = index;
                     const Tuple<float64>& tuple = statisticIterator[index];
