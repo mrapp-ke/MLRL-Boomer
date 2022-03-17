@@ -63,14 +63,14 @@ namespace boosting {
                 float64 overallQualityScore = 0;
 
                 for (uint32 i = 0; i < numPredictions; i++) {
-                    const IndexedValue<float64> entry = priorityQueue_.top();
-                    priorityQueue_.pop();
+                    const IndexedValue<float64>& entry = priorityQueue_.top();
+                    overallQualityScore += entry.value;
                     uint32 index = entry.index;
                     indexIterator[i] = index;
                     const Tuple<float64>& tuple = statisticIterator[index];
                     scoreIterator[i] = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
                                                                l2RegularizationWeight_);
-                    overallQualityScore += entry.value;
+                    priorityQueue_.pop();
                 }
 
                 scoreVector_.overallQualityScore = overallQualityScore;
