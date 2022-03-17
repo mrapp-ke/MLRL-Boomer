@@ -63,7 +63,7 @@ namespace boosting {
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
             lossConfig.createEvaluationMeasureFactory();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createLabelWiseRuleEvaluationFactory();
+            labelBinningConfigPtr_->createLabelWiseCompleteRuleEvaluationFactory();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
             std::make_unique<LabelWiseFixedPartialRuleEvaluationFactory>(
                 labelRatio, minLabels_, maxLabels_, l1RegularizationWeight, l2RegularizationWeight);
@@ -84,11 +84,11 @@ namespace boosting {
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
             lossConfig.createExampleWiseLossFactory();
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseRuleEvaluationFactory(blas, lapack);
+            labelBinningConfigPtr_->createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseRuleEvaluationFactory(blas, lapack);
+            labelBinningConfigPtr_->createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseRuleEvaluationFactory(blas, lapack);
+            labelBinningConfigPtr_->createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
         return std::make_unique<DenseExampleWiseStatisticsProviderFactory>(
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
