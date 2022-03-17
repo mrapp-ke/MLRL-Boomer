@@ -2,57 +2,11 @@
 #include "common/data/indexed_value.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "common/math/math.hpp"
-#include "rule_evaluation_label_wise_common.hpp"
+#include "rule_evaluation_label_wise_complete_common.hpp"
 #include <queue>
 
 
 namespace boosting {
-
-    /**
-     * Allows to calculate the predictions of partial rules that predict for predefined subset of labels, as well as an
-     * overall quality score, based on the gradients and Hessians that are stored by a `DenseLabelWiseStatisticVector`
-     * using L1 and L2 regularization.
-     */
-    class DenseLabelWiseSubsetRuleEvaluation final : public IRuleEvaluation<DenseLabelWiseStatisticVector> {
-
-        private:
-
-            DenseScoreVector<PartialIndexVector> scoreVector_;
-
-            float64 l1RegularizationWeight_;
-
-            float64 l2RegularizationWeight_;
-
-        public:
-
-            DenseLabelWiseSubsetRuleEvaluation(const PartialIndexVector& labelIndices, float64 l1RegularizationWeight,
-                                               float64 l2RegularizationWeight)
-                : scoreVector_(DenseScoreVector<PartialIndexVector>(labelIndices, true)),
-                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
-
-            }
-
-            const IScoreVector& calculatePrediction(DenseLabelWiseStatisticVector& statisticVector) override {
-                uint32 numElements = scoreVector_.getNumElements();
-                DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                float64 overallQualityScore = 0;
-
-                for (uint32 i = 0; i < numElements; i++) {
-                    const Tuple<float64> tuple = statisticIterator[i];
-                    float64 predictedScore = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
-                                                                     l2RegularizationWeight_);
-                    scoreIterator[i] = predictedScore;
-                    overallQualityScore += calculateLabelWiseQualityScore(predictedScore, tuple.first, tuple.second,
-                                                                          l1RegularizationWeight_,
-                                                                          l2RegularizationWeight_);
-                }
-
-                scoreVector_.overallQualityScore = overallQualityScore;
-                return scoreVector_;
-            }
-
-    };
 
     /**
      * Allows to calculate the predictions of partial rules that predict for a predefined number of labels, as well as
@@ -158,8 +112,9 @@ namespace boosting {
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseFixedPartialRuleEvaluationFactory::create(
             const DenseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
-        return std::make_unique<DenseLabelWiseSubsetRuleEvaluation>(indexVector, l1RegularizationWeight_,
-                                                                    l2RegularizationWeight_);
+        return std::make_unique<DenseLabelWiseCompleteRuleEvaluation<PartialIndexVector>>(indexVector,
+                                                                                          l1RegularizationWeight_,
+                                                                                          l2RegularizationWeight_);
     }
 
 }
