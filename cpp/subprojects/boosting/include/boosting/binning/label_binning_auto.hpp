@@ -31,9 +31,9 @@ namespace boosting {
             AutomaticLabelBinningConfig(const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
                                         const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseRuleEvaluationFactory() const override;
+            std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory() const override;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseRuleEvaluationFactory(
+            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseCompleteRuleEvaluationFactory(
                 const Blas& blas, const Lapack& lapack) const override;
 
     };
