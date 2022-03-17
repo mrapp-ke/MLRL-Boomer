@@ -11,13 +11,13 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluationFactory> NoLabelBinningConfig::createLabelWiseRuleEvaluationFactory() const {
+    std::unique_ptr<ILabelWiseRuleEvaluationFactory> NoLabelBinningConfig::createLabelWiseCompleteRuleEvaluationFactory() const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         return std::make_unique<LabelWiseCompleteRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluationFactory> NoLabelBinningConfig::createExampleWiseRuleEvaluationFactory(
+    std::unique_ptr<IExampleWiseRuleEvaluationFactory> NoLabelBinningConfig::createExampleWiseCompleteRuleEvaluationFactory(
             const Blas& blas, const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();

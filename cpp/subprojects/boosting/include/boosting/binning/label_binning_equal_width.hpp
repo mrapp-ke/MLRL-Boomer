@@ -114,9 +114,9 @@ namespace boosting {
 
             IEqualWidthLabelBinningConfig& setMaxBins(uint32 maxBins) override;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseRuleEvaluationFactory() const override;
+            std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory() const override;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseRuleEvaluationFactory(
+            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseCompleteRuleEvaluationFactory(
                 const Blas& blas, const Lapack& lapack) const override;
 
     };
