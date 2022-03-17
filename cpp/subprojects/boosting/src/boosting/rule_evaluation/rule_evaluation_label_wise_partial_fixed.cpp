@@ -2,8 +2,8 @@
 #include "common/data/indexed_value.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "common/math/math.hpp"
+#include "rule_evaluation_label_wise_partial_fixed_common.hpp"
 #include "rule_evaluation_label_wise_complete_common.hpp"
-#include <queue>
 
 
 namespace boosting {
@@ -54,21 +54,14 @@ namespace boosting {
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 uint32 maxElements = indexVector_.getNumElements();
-                std::priority_queue<IndexedValue<float64>, std::vector<IndexedValue<float64>>,
-                                    IndexedValue<float64>::Compare> priorityQueue;
+                FixedPriorityQueue priorityQueue(maxElements);
 
                 for (uint32 i = 0; i < numElements; i++) {
                     const Tuple<float64>& tuple = statisticIterator[i];
                     float64 qualityScore = calculateLabelWiseQualityScore(tuple.first, tuple.second,
                                                                           l1RegularizationWeight_,
                                                                           l2RegularizationWeight_);
-
-                    if (priorityQueue.size() < maxElements) {
-                        priorityQueue.emplace(labelIndexIterator[i], qualityScore);
-                    } else if (priorityQueue.top().value > qualityScore) {
-                        priorityQueue.pop();
-                        priorityQueue.emplace(labelIndexIterator[i], qualityScore);
-                    }
+                    priorityQueue.emplace(labelIndexIterator[i], qualityScore);
                 }
 
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
