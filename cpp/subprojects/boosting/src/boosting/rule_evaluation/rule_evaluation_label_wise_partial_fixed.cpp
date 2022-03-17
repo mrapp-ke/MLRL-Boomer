@@ -81,26 +81,15 @@ namespace boosting {
             /**
              * @param labelIndices              A reference to an object of template type `T` that provides access to
              *                                  the indices of the labels for which the rules may predict
-             * @param labelRatio                A percentage that specifies for how many labels the rule heads should
-             *                                  predict, e.g., if 100 labels are available, a percentage of 0.5 means
-             *                                  that the rule heads predict for a subset of `ceil(0.5 * 100) = 50`
-             *                                  labels. Must be in (0, 1)
-             * @param minLabels                 The minimum number of labels for which the rule heads should predict.
-             *                                  Must be at least 2
-             * @param maxLabels                 The maximum number of labels for which the rule heads should predict.
-             *                                  Must be at least `minLabels` or 0, if the maximum number of labels
-             *                                  should not be restricted
+             * @param numPredictions            The number of labels for which the rules should predict
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DenseLabelWiseFixedPartialRuleEvaluation(const T& labelIndices, float32 labelRatio, uint32 minLabels,
-                                                     uint32 maxLabels, float64 l1RegularizationWeight,
-                                                     float64 l2RegularizationWeight)
-                : labelIndices_(labelIndices),
-                  indexVector_(PartialIndexVector(calculateBoundedFraction(labelIndices.getNumElements(), labelRatio,
-                                                                           minLabels, maxLabels))),
+            DenseLabelWiseFixedPartialRuleEvaluation(const T& labelIndices, uint32 numPredictions,
+                                                     float64 l1RegularizationWeight, float64 l2RegularizationWeight)
+                : labelIndices_(labelIndices), indexVector_(PartialIndexVector(numPredictions)),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
 
@@ -159,8 +148,10 @@ namespace boosting {
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseFixedPartialRuleEvaluationFactory::create(
             const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DenseLabelWiseFixedPartialRuleEvaluation<CompleteIndexVector>>(indexVector, labelRatio_,
-                                                                                               minLabels_, maxLabels_,
+        uint32 numPredictions = calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_,
+                                                         maxLabels_);
+        return std::make_unique<DenseLabelWiseFixedPartialRuleEvaluation<CompleteIndexVector>>(indexVector,
+                                                                                               numPredictions,
                                                                                                l1RegularizationWeight_,
                                                                                                l2RegularizationWeight_);
     }
