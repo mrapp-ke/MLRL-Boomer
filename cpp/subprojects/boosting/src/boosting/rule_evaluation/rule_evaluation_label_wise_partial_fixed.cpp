@@ -30,7 +30,7 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
-            FixedPriorityQueue priorityQueue_;
+            PriorityQueue priorityQueue_;
 
         public:
 
@@ -47,18 +47,17 @@ namespace boosting {
                                                      float64 l1RegularizationWeight, float64 l2RegularizationWeight)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(numPredictions)),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
-                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  priorityQueue_(numPredictions) {
+                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
 
             }
 
             const IScoreVector& calculatePrediction(DenseLabelWiseStatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
+                uint32 numPredictions = indexVector_.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
-                sortLabelWiseQualityScores(priorityQueue_, statisticIterator, labelIndexIterator, numElements,
-                                           l1RegularizationWeight_, l2RegularizationWeight_);
-                uint32 numPredictions = indexVector_.getNumElements();
+                sortLabelWiseQualityScores(priorityQueue_, numPredictions, statisticIterator, labelIndexIterator,
+                                           numElements, l1RegularizationWeight_, l2RegularizationWeight_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 float64 overallQualityScore = 0;
