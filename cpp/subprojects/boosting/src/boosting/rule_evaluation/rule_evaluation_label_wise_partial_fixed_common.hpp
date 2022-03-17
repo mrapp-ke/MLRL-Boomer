@@ -4,6 +4,8 @@
 #pragma once
 
 #include "common/data/indexed_value.hpp"
+#include "boosting/data/statistic_vector_label_wise_dense.hpp"
+#include "rule_evaluation_label_wise_common.hpp"
 #include <vector>
 #include <queue>
 
@@ -67,5 +69,30 @@ namespace boosting {
             }
 
     };
+
+    /**
+     * Calculates scores that asses the quality of optimal predictions for each label and adds them to a priority queue
+     * with fixed capacity.
+     *
+     * @tparam IndexIterator            The type of the iterator that provides access to the index of each label
+     * @param priorityQueue             A reference to a priority queue, which should be used for sorting
+     * @param statisticIterator         An iterator that provides access to the gradients and Hessians for each label
+     * @param indexIterator             An iterator that provides access to the index of each label
+     * @param numElements               The number of elements
+     * @param l1RegularizationWeight    The l2 regularization weight
+     * @param l2RegularizationWeight    The L1 regularization weight
+     */
+    template<typename IndexIterator>
+    static inline void sortLabelWiseQualityScores(
+            FixedPriorityQueue& priorityQueue, const DenseLabelWiseStatisticVector::const_iterator& statisticIterator,
+            IndexIterator indexIterator, uint32 numElements, float64 l1RegularizationWeight,
+            float64 l2RegularizationWeight) {
+        for (uint32 i = 0; i < numElements; i++) {
+            const Tuple<float64>& tuple = statisticIterator[i];
+            float64 qualityScore = calculateLabelWiseQualityScore(tuple.first, tuple.second, l1RegularizationWeight,
+                                                                  l2RegularizationWeight);
+            priorityQueue.emplace(indexIterator[i], qualityScore);
+        }
+    }
 
 }
