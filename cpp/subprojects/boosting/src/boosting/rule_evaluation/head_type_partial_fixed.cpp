@@ -54,8 +54,6 @@ namespace boosting {
     std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
             const ILabelWiseLossConfig& lossConfig) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
         float32 labelRatio =
             labelRatio_ != 0 ? labelRatio_ : labelMatrix.calculateLabelCardinality() / labelMatrix.getNumCols();
