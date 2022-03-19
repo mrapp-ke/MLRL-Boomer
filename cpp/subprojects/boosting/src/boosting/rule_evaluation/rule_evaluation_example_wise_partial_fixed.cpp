@@ -8,12 +8,12 @@ namespace boosting {
     template<typename HessianIterator, typename IndexIterator>
     static inline void copyCoefficients(HessianIterator hessianIterator, IndexIterator indexIterator,
                                         float64* coefficients, uint32 n) {
-        for (uint32 i = 0; i < n; i++) {
-            uint32 offset = triangularNumber(i);
-            uint32 offset2 = triangularNumber(indexIterator[i]);
+        for (uint32 c = 0; c < n; c++) {
+            uint32 offset = c * n;
+            uint32 offset2 = triangularNumber(indexIterator[c]);
 
-            for (uint32 j = 0; j < i + 1; j++) {
-                coefficients[offset + j] = hessianIterator[offset2 + indexIterator[j]];
+            for (uint32 r = 0; r <= c; r++) {
+                coefficients[offset + r] = hessianIterator[offset2 + indexIterator[r]];
             }
         }
     }
