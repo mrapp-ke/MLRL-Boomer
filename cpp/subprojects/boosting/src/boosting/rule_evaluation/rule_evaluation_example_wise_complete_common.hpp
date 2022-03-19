@@ -15,7 +15,8 @@ namespace boosting {
      *
      * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
      * @param hessianIterator   An iterator that provides random access to the Hessians
-     * @param coefficients      An array of type `float64`, shape `(n * n)`, the Hessians should be copied to
+     * @param coefficients      A pointer to an array of type `float64`, shape `(n * n)`, the Hessians should be copied
+     *                          to
      * @param n                 The dimensionality of the matrix of coefficients
      */
     template<typename HessianIterator>
@@ -35,7 +36,8 @@ namespace boosting {
      *
      * @tparam GradientIterator         The type of the iterator that provides access to the gradients
      * @param gradientIterator          An iterator that provides random access to the gradients
-     * @param ordinates                 An array of type `float64`, shape `(n)`, the gradients should be copied to
+     * @param ordinates                 A pointer to an array of type `float64`, shape `(n)`, the gradients should be
+     *                                  copied to
      * @param n                         The number of gradients
      */
     template<typename GradientIterator>
