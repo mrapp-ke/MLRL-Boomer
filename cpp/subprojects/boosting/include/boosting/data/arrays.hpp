@@ -9,7 +9,7 @@
 namespace boosting {
 
     /**
-     * Adds the elements in an array `b` to the elements in another array `b`, such that `a = a + b`.
+     * Adds the elements in an array `b` to the elements in another array `a`, such that `a = a + b`.
      *
      * @tparam T            The type of the arrays `a` and `b`
      * @param a             A pointer to an array of template type `T` to be updated
@@ -25,7 +25,7 @@ namespace boosting {
     }
 
     /**
-     * Adds the elements in an array `b` to the elements in another array `b`. The elements in the array `b` are
+     * Adds the elements in an array `b` to the elements in another array `a`. The elements in the array `b` are
      * multiplied by a given weight, such that `a = a + (b * weight)`.
      *
      * @tparam T            The type of the arrays `a` and `b`
@@ -44,7 +44,7 @@ namespace boosting {
     }
 
     /**
-     * Adds the elements in an array `b` to the elements in another array `b`. The elements in the array `b` are
+     * Adds the elements in an array `b` to the elements in another array `a`. The elements in the array `b` are
      * multiplied by a given weight, such that `a = a + (b * weight)`. The indices of elements in the array `b` that
      * correspond to the elements in array `a` are given as an additional array.
      *
