@@ -85,15 +85,18 @@ namespace boosting {
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
             const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
+        float32 labelRatio = calculateLabelRatio(labelRatio_, labelMatrix);
         std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.createExampleWiseLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
             lossConfig.createExampleWiseLossFactory();
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
             labelBinningConfigPtr_->createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
+            labelBinningConfigPtr_->createExampleWiseFixedPartialRuleEvaluationFactory(
+                labelRatio, minLabels_, maxLabels_, blas, lapack);
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
+            labelBinningConfigPtr_->createExampleWiseFixedPartialRuleEvaluationFactory(
+                labelRatio, minLabels_, maxLabels_, blas, lapack);
         return std::make_unique<DenseExampleWiseStatisticsProviderFactory>(
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),

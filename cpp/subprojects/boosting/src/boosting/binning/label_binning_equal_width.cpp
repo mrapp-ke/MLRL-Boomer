@@ -236,4 +236,15 @@ namespace boosting {
             l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr), blas, lapack);
     }
 
+    std::unique_ptr<IExampleWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::createExampleWiseFixedPartialRuleEvaluationFactory(
+            float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas, const Lapack& lapack) const {
+        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
+        std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
+            std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
+        // TODO Use correct class
+        return std::make_unique<ExampleWiseCompleteBinnedRuleEvaluationFactory>(
+            l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr), blas, lapack);
+    }
+
 }
