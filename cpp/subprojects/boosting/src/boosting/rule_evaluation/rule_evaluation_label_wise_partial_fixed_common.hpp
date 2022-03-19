@@ -19,7 +19,7 @@ namespace boosting {
     typedef std::priority_queue<IndexedValue<float64>, std::vector<IndexedValue<float64>>, IndexedValue<float64>::Compare> PriorityQueue;
 
     /**
-     * Calculates scores that asses the quality of optimal predictions for each label and adds them to a priority queue
+     * Calculates scores that assess the quality of optimal predictions for each label and adds them to a priority queue
      * with fixed capacity.
      *
      * @tparam IndexIterator            The type of the iterator that provides access to the index of each label
