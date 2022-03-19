@@ -251,11 +251,11 @@ namespace boosting {
             const IScoreVector& calculatePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
                 uint32 numPredictions = scoreVector_.getNumElements();
 
-                // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
+                // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
                 copyCoefficients(statisticVector.hessians_cbegin(), this->dsysvTmpArray1_, numPredictions);
                 addL2RegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
 
-                // Copy gradients to the vector of ordinates...
+                // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 copyOrdinates(statisticVector.gradients_cbegin(), scoreIterator, numPredictions);
                 addL1RegularizationWeight(scoreIterator, numPredictions, l1RegularizationWeight_);
