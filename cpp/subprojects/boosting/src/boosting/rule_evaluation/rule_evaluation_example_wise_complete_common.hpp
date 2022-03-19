@@ -9,7 +9,6 @@
 
 namespace boosting {
 
-
     /**
      * Copies Hessians from an iterator to a matrix of coefficients that may be passed to LAPACK's DSYSV routine.
      *
