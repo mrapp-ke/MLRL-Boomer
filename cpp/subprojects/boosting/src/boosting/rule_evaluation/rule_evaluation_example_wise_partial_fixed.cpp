@@ -92,7 +92,7 @@ namespace boosting {
                     const IndexedValue<float64>& entry = priorityQueue_.top();
                     uint32 index = entry.index;
                     indexIterator[i] = index;
-                    scoreIterator[i] = gradientIterator[index];
+                    scoreIterator[i] = -gradientIterator[index];
                     priorityQueue_.pop();
                 }
 
