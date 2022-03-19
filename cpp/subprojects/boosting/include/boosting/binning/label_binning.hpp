@@ -175,6 +175,23 @@ namespace boosting {
             virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseCompleteRuleEvaluationFactory(
                 const Blas& blas, const Lapack& lapack) const = 0;
 
+            /**
+             * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
+             * predictions of partial rules, which predict for a predefined number of labels, according to the specified
+             * configuration.
+             *
+             * @param labelRatio    A percentage that specifies for how many labels the rule heads should predict
+             * @param minLabels     The minimum number of labels for which the rule heads should predict
+             * @param maxLabels     The maximum number of labels for which the rule heads should predict
+             * @param blas          A reference to an object of type `Blas` that allows to execute BLAS routines
+             * @param lapack        A reference to an object of type `Lapack` that allows to execute LAPACK routines
+             * @return              An unique pointer to an object of type `IExampleWiseRuleEvaluationFactory` that has
+             *                      been created
+             */
+            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseFixedPartialRuleEvaluationFactory(
+                float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas,
+                const Lapack& lapack) const = 0;
+
     };
 
 }
