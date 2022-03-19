@@ -7,6 +7,14 @@
 
 namespace boosting {
 
+    static inline float32 calculateLabelRatio(float32 labelRatio, const IRowWiseLabelMatrix& labelMatrix) {
+        if (labelRatio > 0) {
+            return labelRatio;
+        } else {
+            return labelMatrix.calculateLabelCardinality() / labelMatrix.getNumCols();
+        }
+    }
+
     FixedPartialHeadConfig::FixedPartialHeadConfig(
             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
@@ -55,8 +63,7 @@ namespace boosting {
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
             const ILabelWiseLossConfig& lossConfig) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
-        float32 labelRatio =
-            labelRatio_ != 0 ? labelRatio_ : labelMatrix.calculateLabelCardinality() / labelMatrix.getNumCols();
+        float32 labelRatio = calculateLabelRatio(labelRatio_, labelMatrix);
         std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.createLabelWiseLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
             lossConfig.createEvaluationMeasureFactory();
