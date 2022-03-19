@@ -107,6 +107,33 @@ namespace boosting {
     }
 
     /**
+     * Calculates and returns the regularization term.
+     *
+     * @tparam ScoreIterator            The type of the iterator that provides access to the predicted scores
+     * @param scores                    An iterator that provides random access to the predicted scores
+     * @param numPredictions            The number of predictions
+     * @param l1RegularizationWeight    The weight of the L1 regularization term
+     * @param l2RegularizationWeight    The weight of the L2 regularization term
+     */
+    template<typename ScoreIterator>
+    static inline float64 calculateRegularizationTerm(ScoreIterator scores, uint32 numPredictions,
+                                                      float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
+        float64 regularizationTerm;
+
+        if (l1RegularizationWeight > 0) {
+            regularizationTerm = l1RegularizationWeight * l1Norm(scores, numPredictions);
+        } else {
+            regularizationTerm = 0;
+        }
+
+        if (l2RegularizationWeight > 0) {
+            regularizationTerm += 0.5 * l2RegularizationWeight * l2NormPow(scores, numPredictions);
+        }
+
+        return regularizationTerm;
+    }
+
+    /**
      * An abstract base class for all classes that allow to calculate the predictions of rules, as well as corresponding
      * quality scores, based on the gradients and Hessians that have been calculated according to a loss function that
      * is applied example-wise.
@@ -238,15 +265,16 @@ namespace boosting {
                               numPredictions, this->dsysvLwork_);
 
                 // Calculate the overall quality score...
-                float64 qualityScore = calculateOverallQualityScore(scoreIterator, statisticVector.gradients_begin(),
-                                                                    statisticVector.hessians_begin(),
-                                                                    this->dspmvTmpArray_, numPredictions, blas_);
+                float64 overallQualityScore = calculateOverallQualityScore(scoreIterator,
+                                                                           statisticVector.gradients_begin(),
+                                                                           statisticVector.hessians_begin(),
+                                                                           this->dspmvTmpArray_, numPredictions, blas_);
 
                 // Evaluate regularization term...
-                float64 l1RegularizationTerm = l1RegularizationWeight_ * l1Norm(scoreIterator, numPredictions);
-                float64 l2RegularizationTerm = 0.5 * l2RegularizationWeight_ * l2NormPow(scoreIterator, numPredictions);
+                overallQualityScore += calculateRegularizationTerm(scoreIterator, numPredictions,
+                                                                   l1RegularizationWeight_, l2RegularizationWeight_);
 
-                scoreVector_.overallQualityScore = qualityScore + l1RegularizationTerm + l2RegularizationTerm;
+                scoreVector_.overallQualityScore = overallQualityScore;
                 return scoreVector_;
             }
 
