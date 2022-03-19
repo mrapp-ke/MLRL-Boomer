@@ -151,7 +151,7 @@ namespace boosting {
 
             /**
              * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
-             * predictions of the complete rules according to the specified configuration.
+             * predictions of complete rules according to the specified configuration.
              *
              * @param blas      A reference to an object of type `Blas` that allows to execute BLAS routines
              * @param lapack    A reference to an object of type `Lapack` that allows to execute LAPACK routines
