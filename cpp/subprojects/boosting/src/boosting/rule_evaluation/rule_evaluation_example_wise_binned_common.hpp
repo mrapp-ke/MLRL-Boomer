@@ -186,6 +186,7 @@ namespace boosting {
             /**
              * @param labelIndices              A reference to an object of template type `T` that provides access to
              *                                  the indices of the labels for which the rules may predict
+             * @param indicesSorted             True, if the given indices are guaranteed to be sorted, false otherwise
              * @param maxBins                   The maximum number of bins
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
@@ -198,12 +199,12 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            AbstractExampleWiseBinnedRuleEvaluation(const T& labelIndices, uint32 maxBins,
+            AbstractExampleWiseBinnedRuleEvaluation(const T& labelIndices, bool indicesSorted, uint32 maxBins,
                                                     float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                                                     std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                     const Lapack& lapack)
                 : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(maxBins, lapack),
-                  maxBins_(maxBins), scoreVector_(DenseBinnedScoreVector<T>(labelIndices, maxBins + 1, true)),
+                  maxBins_(maxBins), scoreVector_(DenseBinnedScoreVector<T>(labelIndices, maxBins + 1, indicesSorted)),
                   aggregatedGradients_(new float64[maxBins]),
                   aggregatedHessians_(new float64[triangularNumber(maxBins)]), binIndices_(new uint32[maxBins]),
                   numElementsPerBin_(new uint32[maxBins]), criteria_(new float64[labelIndices.getNumElements()]),
@@ -348,7 +349,8 @@ namespace boosting {
                                                          float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                                                          std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                          const Lapack& lapack)
-                : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices, maxBins,
+                : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices, true,
+                                                                                              maxBins,
                                                                                               l1RegularizationWeight,
                                                                                               l2RegularizationWeight,
                                                                                               std::move(binningPtr),
