@@ -344,15 +344,13 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            DenseExampleWiseCompleteBinnedRuleEvaluation(const T& labelIndices, uint32 maxBins,
-                                                         float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+            DenseExampleWiseCompleteBinnedRuleEvaluation(const T& labelIndices, float64 l1RegularizationWeight,
+                                                         float64 l2RegularizationWeight,
                                                          std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                          const Lapack& lapack)
-                : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices, maxBins,
-                                                                                              l1RegularizationWeight,
-                                                                                              l2RegularizationWeight,
-                                                                                              std::move(binningPtr),
-                                                                                              blas, lapack) {
+                : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, T>(
+                      labelIndices, binningPtr->getMaxBins(labelIndices.getNumElements()), l1RegularizationWeight,
+                      l2RegularizationWeight, std::move(binningPtr), blas, lapack) {
 
             }
 
