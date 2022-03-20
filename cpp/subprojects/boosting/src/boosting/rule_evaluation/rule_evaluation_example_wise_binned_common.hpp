@@ -108,6 +108,36 @@ namespace boosting {
     }
 
     /**
+     * Calculates and returns the regularization term.
+     *
+     * @tparam ScoreIterator            The type of the iterator that provides access to the predicted scores
+     * @param scores                    An iterator that provides random access to the predicted scores
+     * @param numElementsPerBin         A pointer to an array of type `uint32`, shape `(numBins)`, that provides random
+     *                                  access to the number of elements per bin
+     * @param numBins                   The number of bins
+     * @param l1RegularizationWeight    The weight of the L1 regularization term
+     * @param l2RegularizationWeight    The weight of the L2 regularization term
+     */
+    template<typename ScoreIterator>
+    static inline float64 calculateRegularizationTerm(ScoreIterator scores, const uint32* numElementsPerBin,
+                                                      uint32 numBins, float64 l1RegularizationWeight,
+                                                      float64 l2RegularizationWeight) {
+        float64 regularizationTerm;
+
+        if (l1RegularizationWeight > 0) {
+            regularizationTerm = l1RegularizationWeight * l1Norm(scores, numElementsPerBin, numBins);
+        } else {
+            regularizationTerm = 0;
+        }
+
+        if (l2RegularizationWeight > 0) {
+            regularizationTerm += 0.5 * l2RegularizationWeight * l2NormPow(scores, numElementsPerBin, numBins);
+        }
+
+        return regularizationTerm;
+    }
+
+    /**
      * Allows to calculate the predictions of complete rules, as well as an overall quality score, based on the
      * gradients and Hessians that are stored by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization. The
      * labels are assigned to bins based on the gradients and Hessians.
@@ -247,17 +277,16 @@ namespace boosting {
                                   numBins, this->dsysvLwork_);
 
                     // Calculate the overall quality score...
-                    float64 qualityScore = calculateOverallQualityScore(scoreIterator, aggregatedGradients_,
-                                                                        aggregatedHessians_, this->dspmvTmpArray_,
-                                                                        numBins, blas_);
+                    float64 overallQualityScore = calculateOverallQualityScore(scoreIterator, aggregatedGradients_,
+                                                                               aggregatedHessians_,
+                                                                               this->dspmvTmpArray_, numBins, blas_);
 
                     // Evaluate regularization term...
-                    float64 l1RegularizationTerm = l1RegularizationWeight_
-                                                   * l1Norm(scoreIterator, numElementsPerBin_, numBins);
-                    float64 l2RegularizationTerm = 0.5 * l2RegularizationWeight_
-                                                   * l2NormPow(scoreIterator, numElementsPerBin_, numBins);
+                    overallQualityScore += calculateRegularizationTerm(scoreIterator, numElementsPerBin_, numBins,
+                                                                       l1RegularizationWeight_,
+                                                                       l2RegularizationWeight_);
 
-                    scoreVector_.overallQualityScore = qualityScore + l1RegularizationTerm + l2RegularizationTerm;
+                    scoreVector_.overallQualityScore = overallQualityScore;
                 } else {
                     setArrayToValue(scoreVector_.indices_binned_begin(), numLabels, maxBins_);
                     scoreVector_.overallQualityScore = 0;
