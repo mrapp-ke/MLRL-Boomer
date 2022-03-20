@@ -11,18 +11,6 @@
 
 namespace boosting {
 
-    template<typename ScoreIterator>
-    static inline void calculateLabelWiseCriteria(
-            DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
-            DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator,
-            ScoreIterator scoreIterator, uint32 numElements, float64 l1RegularizationWeight,
-            float64 l2RegularizationWeight) {
-        for (uint32 i = 0; i < numElements; i++) {
-            scoreIterator[i] = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i], l1RegularizationWeight,
-                                                       l2RegularizationWeight);
-        }
-    }
-
     static inline uint32 removeEmptyBins(uint32* numElementsPerBin, uint32* binIndices, uint32 numBins) {
         uint32 n = 0;
 
@@ -138,15 +126,16 @@ namespace boosting {
     }
 
     /**
-     * Allows to calculate the predictions of complete rules, as well as an overall quality score, based on the
-     * gradients and Hessians that are stored by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization. The
-     * labels are assigned to bins based on the gradients and Hessians.
+     * An abstract base class for all classes that allow to calculate the predictions of rules, as well as an overall
+     * quality score, based on the gradients and Hessians that have been calculated according to a loss function that is
+     * applied example-wise and using gradient-based label binning.
      *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
+     * @tparam T                The type of the vector that provides access to the labels for which predictions should
+     *                          be calculated
      */
-    template<typename T>
-    class DenseExampleWiseCompleteBinnedRuleEvaluation final :
-            public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T> {
+    template<typename StatisticVector, typename T>
+    class AbstractExampleWiseBinnedRuleEvaluation : public AbstractExampleWiseRuleEvaluation<StatisticVector, T> {
 
         private:
 
@@ -174,6 +163,24 @@ namespace boosting {
 
             const Lapack& lapack_;
 
+        protected:
+
+            /**
+             * Must be implemented by subclasses in order to calculate label-wise criteria that are used to determine
+             * the mapping from labels to bins.
+             *
+             * @param statisticVector           A reference to an object of template type `StatisticVector` that stores
+             *                                  the gradients and Hessians
+             * @param criteria                  A pointer to an array of type `float64`, shape `(numCriteria)`, the
+             *                                  label-wise criteria should be written to
+             * @param numCriteria               The number of label-wise criteria to be calculated
+             * @param l1RegularizationWeight    The L1 regularization weight
+             * @param l2RegularizationWeight    The L2 regularization weight
+             */
+            virtual void calculateLabelWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
+                                                    uint32 numCriteria, float64 l1RegularizationWeight,
+                                                    float64 l2RegularizationWeight) = 0;
+
         public:
 
             /**
@@ -191,10 +198,10 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            DenseExampleWiseCompleteBinnedRuleEvaluation(const T& labelIndices, uint32 maxBins,
-                                                         float64 l1RegularizationWeight, float64 l2RegularizationWeight,
-                                                         std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
-                                                         const Lapack& lapack)
+            AbstractExampleWiseBinnedRuleEvaluation(const T& labelIndices, uint32 maxBins,
+                                                    float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+                                                    std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
+                                                    const Lapack& lapack)
                 : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(maxBins, lapack),
                   maxBins_(maxBins), scoreVector_(DenseBinnedScoreVector<T>(labelIndices, maxBins + 1, true)),
                   aggregatedGradients_(new float64[maxBins]),
@@ -207,7 +214,7 @@ namespace boosting {
                 scoreVector_.scores_binned_begin()[maxBins_] = 0;
             }
 
-            ~DenseExampleWiseCompleteBinnedRuleEvaluation() override {
+            virtual ~AbstractExampleWiseBinnedRuleEvaluation() override {
                 delete[] aggregatedGradients_;
                 delete[] aggregatedHessians_;
                 delete[] binIndices_;
@@ -220,16 +227,12 @@ namespace boosting {
              */
             const IScoreVector& calculatePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
                 // Calculate label-wise criteria...
-                uint32 numLabels = statisticVector.getNumElements();
-                DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
-                    statisticVector.gradients_cbegin();
-                DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                    statisticVector.hessians_diagonal_cbegin();
-                calculateLabelWiseCriteria(gradientIterator, hessianIterator, criteria_, numLabels,
-                                           l1RegularizationWeight_, l2RegularizationWeight_);
+                uint32 numCriteria = scoreVector_.getNumElements();
+                this->calculateLabelWiseCriteria(statisticVector, criteria_, numCriteria, l1RegularizationWeight_,
+                                                 l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
-                LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numLabels);
+                LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numCriteria);
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
 
                 if (numBins > 0) {
@@ -247,7 +250,7 @@ namespace boosting {
                     auto zeroCallback = [=](uint32 labelIndex) {
                         binIndexIterator[labelIndex] = maxBins_;
                     };
-                    binningPtr_->createBins(labelInfo, criteria_, numLabels, callback, zeroCallback);
+                    binningPtr_->createBins(labelInfo, criteria_, numCriteria, callback, zeroCallback);
 
                     // Determine number of non-empty bins...
                     numBins = removeEmptyBins(numElementsPerBin_, binIndices_, numBins);
@@ -256,8 +259,8 @@ namespace boosting {
                     // Aggregate gradients and Hessians...
                     setArrayToZeros(aggregatedGradients_, numBins);
                     setArrayToZeros(aggregatedHessians_, triangularNumber(numBins));
-                    aggregateGradientsAndHessians(gradientIterator, statisticVector.hessians_cbegin(), numLabels,
-                                                  binIndexIterator, binIndices_, aggregatedGradients_,
+                    aggregateGradientsAndHessians(statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(),
+                                                  numCriteria, binIndexIterator, binIndices_, aggregatedGradients_,
                                                   aggregatedHessians_, maxBins_);
 
                     // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
@@ -288,11 +291,67 @@ namespace boosting {
 
                     scoreVector_.overallQualityScore = overallQualityScore;
                 } else {
-                    setArrayToValue(scoreVector_.indices_binned_begin(), numLabels, maxBins_);
+                    setArrayToValue(scoreVector_.indices_binned_begin(), numCriteria, maxBins_);
                     scoreVector_.overallQualityScore = 0;
                 }
 
                 return scoreVector_;
+            }
+
+    };
+
+    /**
+     * Allows to calculate the predictions of complete rules, as well as an overall quality score, based on the
+     * gradients and Hessians that are stored by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization. The
+     * labels are assigned to bins based on the gradients and Hessians.
+     *
+     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     */
+    template<typename T>
+    class DenseExampleWiseCompleteBinnedRuleEvaluation final :
+            public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, T> {
+
+        protected:
+
+            void calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
+                                            uint32 numCriteria, float64 l1RegularizationWeight,
+                                            float64 l2RegularizationWeight) override {
+                DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
+                    statisticVector.gradients_cbegin();
+                DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
+                    statisticVector.hessians_diagonal_cbegin();
+
+                for (uint32 i = 0; i < numCriteria; i++) {
+                    criteria[i] = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i],
+                                                          l1RegularizationWeight, l2RegularizationWeight);
+                }
+            }
+
+        public:
+
+            /**
+             * @param labelIndices              A reference to an object of template type `T` that provides access to
+             *                                  the indices of the labels for which the rules may predict
+             * @param maxBins                   The maximum number of bins
+             * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
+             *                                  scores to be predicted by rules
+             * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
+             *                                  scores to be predicted by rules
+             * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be
+             *                                  used to assign labels to bins
+             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
+             *                                  routines
+             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
+             *                                  routines
+             */
+            DenseExampleWiseCompleteBinnedRuleEvaluation(const T& labelIndices, uint32 maxBins,
+                                                         float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+                                                         std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
+                                                         const Lapack& lapack)
+                : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, T>(
+                      labelIndices, maxBins, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr),
+                      blas, lapack) {
+
             }
 
     };
