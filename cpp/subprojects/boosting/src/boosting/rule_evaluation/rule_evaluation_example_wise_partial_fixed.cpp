@@ -20,7 +20,7 @@ namespace boosting {
 
     /**
      * Allows to calculate the predictions of partial rules that predict for a predefined number of labels, as well as
-     * an overall quality score, based on the gradient and Hessians that are stored by a
+     * an overall quality score, based on the gradients and Hessians that are stored by a
      * `DenseExampleWiseStatisticVector` using L1 and L2 regularization.
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
