@@ -51,7 +51,7 @@ namespace boosting {
             /**
              * @param labelIndices              A reference to an object of template type `T` that provides access to
              *                                  the indices of the labels for which the rules may predict
-             * @param labelIndices              An unique pointer to an object of type `PartialIndexVector` that stores
+             * @param indexVectorPtr            An unique pointer to an object of type `PartialIndexVector` that stores
              *                                  the indices of the labels for which a rule predicts
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
