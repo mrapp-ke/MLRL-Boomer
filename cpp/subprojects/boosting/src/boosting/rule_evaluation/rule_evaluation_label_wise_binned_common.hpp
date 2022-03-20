@@ -97,6 +97,7 @@ namespace boosting {
             /**
              * @param labelIndices              A reference to an object of template type `T` that provides access to
              *                                  the indices of the labels for which the rules may predict
+             * @param indicesSorted             True, if the given indices are guaranteed to be sorted, false otherwise
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
@@ -104,11 +105,11 @@ namespace boosting {
              * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be
              *                                  used to assign labels to bins
              */
-            AbstractLabelWiseBinnedRuleEvaluation(const T& labelIndices, float64 l1RegularizationWeight,
-                                                  float64 l2RegularizationWeight,
+            AbstractLabelWiseBinnedRuleEvaluation(const T& labelIndices, bool indicesSorted,
+                                                  float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                                                   std::unique_ptr<ILabelBinning> binningPtr)
                 : maxBins_(binningPtr->getMaxBins(labelIndices.getNumElements())),
-                  scoreVector_(DenseBinnedScoreVector<T>(labelIndices, maxBins_ + 1, true)),
+                  scoreVector_(DenseBinnedScoreVector<T>(labelIndices, maxBins_ + 1, indicesSorted)),
                   aggregatedStatisticVector_(DenseLabelWiseStatisticVector(maxBins_)),
                   numElementsPerBin_(new uint32[maxBins_]), criteria_(new float64[labelIndices.getNumElements()]),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
@@ -206,7 +207,7 @@ namespace boosting {
             DenseLabelWiseCompleteBinnedRuleEvaluation(const T& labelIndices, float64 l1RegularizationWeight,
                                                        float64 l2RegularizationWeight,
                                                        std::unique_ptr<ILabelBinning> binningPtr)
-                : AbstractLabelWiseBinnedRuleEvaluation<DenseLabelWiseStatisticVector, T>(labelIndices,
+                : AbstractLabelWiseBinnedRuleEvaluation<DenseLabelWiseStatisticVector, T>(labelIndices, true,
                                                                                           l1RegularizationWeight,
                                                                                           l2RegularizationWeight,
                                                                                           std::move(binningPtr)) {
