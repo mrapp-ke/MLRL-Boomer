@@ -11,6 +11,16 @@
 
 namespace boosting {
 
+    /**
+     * Removes empty bins from an array that keeps track of the number of elements per bin, as well as an array that
+     * stores the index of each bin.
+     *
+     * @param numElementsPerBin A pointer to an array of type `uint32`, shape `(numBins)` that stores the number
+     *                          elements per bin
+     * @param binIndices        A pointer to an array of type `uint32`, shape `(numBins)`, that stores the index of each
+     *                          bin
+     * @param numBins           The number of available bins
+     */
     static inline uint32 removeEmptyBins(uint32* numElementsPerBin, uint32* binIndices, uint32 numBins) {
         uint32 n = 0;
 
@@ -27,6 +37,24 @@ namespace boosting {
         return n;
     }
 
+    /**
+     * Aggregates the gradients and Hessians of all elements that have been assigned to the same bin.
+     *
+     * @tparam BinIndexIterator The type of the iterator that provides access to the indices of the bins individual
+     *                          elements have been assigned to
+     * @param gradientIterator  An iterator that provides random access to the gradients
+     * @param hessianIterator   An iterator that provides random access to the Hessians
+     * @param numElements       The total number of available elements
+     * @param binIndexIterator  An iterator that provides random access to the indices of the bins individual elements
+     *                          have been assigned to
+     * @param binIndices        A pointer to an array of type `uint32`, shape `(maxBins)` that stores the index of each
+     *                          bin
+     * @param gradients         A pointer to an array of type `float64`, shape `(numElements)`, the aggregated gradients
+     *                          should be written to
+     * @param hessians          A pointer to an array of type `float64`, shape `(numElements * numElements)`, the
+     *                          aggregated Hessians should be written to
+     * @param maxBins           The maximum number of bins
+     */
     template<typename BinIndexIterator>
     static inline void aggregateGradientsAndHessians(
             DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
@@ -78,15 +106,35 @@ namespace boosting {
         }
     }
 
-    static inline void addL1RegularizationWeight(float64* ordinates, uint32 numPredictions, const uint32* weights,
+    /**
+     * Adds a L1 regularization weight to a vector of ordinates.
+     *
+     * @param ordinates                 A pointer to an array of type `float64`, shape `(n)`, the L1 regularization
+     *                                  weight should be added to
+     * @param n                         The number of ordinates
+     * @param weights                   A pointer to an array of type `uint32`, shape `(n)` that stores the weight of
+     *                                  each ordinate
+     * @param l1RegularizationWeight    The L1 regularization weight to be added to the ordinates
+     */
+    static inline void addL1RegularizationWeight(float64* ordinates, uint32 n, const uint32* weights,
                                                  float64 l1RegularizationWeight) {
-        for (uint32 i = 0; i < numPredictions; i++) {
+        for (uint32 i = 0; i < n; i++) {
             uint32 weight = weights[i];
             float64 gradient = ordinates[i];
             ordinates[i] += (weight * getL1RegularizationWeight(gradient, l1RegularizationWeight));
         }
     }
 
+    /**
+     * Adds a L2 regularization weight to the diagonal of a matrix of coefficients.
+     *
+     * @param coefficients              A pointer to an array of type `float64`, shape `(n * n)`, the regularization
+     *                                  weight should be added to
+     * @param n                         The number of coefficients on the diagonal
+     * @param weights                   A pointer to an array of type `uint32`, shape `(n)`, that stores the weight of
+     *                                  each coefficient
+     * @param l2RegularizationWeight    The L2 regularization weight to be added to the coefficients
+     */
     static inline void addL2RegularizationWeight(float64* coefficients, uint32 numPredictions, const uint32* weights,
                                                  float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numPredictions; i++) {
