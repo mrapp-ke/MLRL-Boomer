@@ -25,8 +25,8 @@ namespace boosting {
             /**
              * Returns the percentage that specifies for how many labels the rule heads predict.
              *
-             * @return The percentage that specifies for how labels the rule heads predict or 0, if the percentage is
-             *         calculated based on the average label cardinality
+             * @return The percentage that specifies for how many labels the rule heads predict or 0, if the percentage
+             *         is calculated based on the average label cardinality
              */
             virtual float32 getLabelRatio() const = 0;
 
