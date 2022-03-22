@@ -14,6 +14,7 @@
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
+#include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 #include "boosting/rule_evaluation/regularization_manual.hpp"
 
@@ -155,6 +156,16 @@ namespace boosting {
                      *         configuration of the rule heads
                      */
                     virtual IFixedPartialHeadConfig& useFixedPartialHeads() = 0;
+
+                    /**
+                     * Configures the rule learner to induce rules with partial heads that predict for a subset of the
+                     * available labels that is determined dynamically. Only those labels for which the absolute
+                     * variance of the predictive quality exceeds a certain threshold are included in a rule head.
+                     *
+                     * @return A reference to an object of type `IDynamicPartialHeadConfig` that allows further
+                     *         configuration of the rule heads
+                     */
+                    virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() = 0;
 
                     /**
                      * Configures the rule learner to induce rules with complete heads that predict for all available
@@ -345,6 +356,8 @@ namespace boosting {
                     void useSingleLabelHeads() override;
 
                     IFixedPartialHeadConfig& useFixedPartialHeads() override;
+
+                    IDynamicPartialHeadConfig& useDynamicPartialHeads() override;
 
                     void useCompleteHeads() override;
 
