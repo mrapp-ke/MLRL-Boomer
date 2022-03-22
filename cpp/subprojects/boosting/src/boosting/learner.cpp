@@ -16,7 +16,6 @@
 #include "boosting/output/predictor_probability_label_wise.hpp"
 #include "boosting/rule_evaluation/head_type_auto.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
-#include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
@@ -116,6 +115,15 @@ namespace boosting {
             labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
             l2RegularizationConfigPtr_);
         IFixedPartialHeadConfig& ref = *ptr;
+        headConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IDynamicPartialHeadConfig& BoostingRuleLearner::Config::useDynamicPartialHeads() {
+        std::unique_ptr<DynamicPartialHeadConfig> ptr = std::make_unique<DynamicPartialHeadConfig>(
+            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
+            l2RegularizationConfigPtr_);
+        IDynamicPartialHeadConfig& ref = *ptr;
         headConfigPtr_ = std::move(ptr);
         return ref;
     }
