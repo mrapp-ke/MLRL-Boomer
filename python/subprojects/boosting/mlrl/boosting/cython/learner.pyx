@@ -77,7 +77,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
     def use_fixed_partial_heads(self) -> FixedPartialHeadConfig:
         """
-        Configures the rule learner to induce rules with partial heads that predict for predefined number of labels.
+        Configures the rule learner to induce rules with partial heads that predict for a predefined number of labels.
 
         :return: A `FixedPartialHeadConfig` that allows further configuration of the rule heads
         """
