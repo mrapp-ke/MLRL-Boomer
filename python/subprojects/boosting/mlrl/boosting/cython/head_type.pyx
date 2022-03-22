@@ -49,7 +49,7 @@ cdef class FixedPartialHeadConfig:
         :param min_labels:  The minimum number of labels for which the rule heads should predict. Must be at least 2
         :return:            A `FixedPartialHeadConfig` that allows further configuration of the rule heads
         """
-        assert_greater_or_equal('min_labels', min_labels, 1)
+        assert_greater_or_equal('min_labels', min_labels, 2)
         self.config_ptr.setMinLabels(min_labels)
         return self
 
