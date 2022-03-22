@@ -9,20 +9,20 @@ namespace boosting {
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
             const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
             const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
-        : threshold_(0.1f), labelBinningConfigPtr_(labelBinningConfigPtr),
+        : varianceThreshold_(0.1f), labelBinningConfigPtr_(labelBinningConfigPtr),
           multiThreadingConfigPtr_(multiThreadingConfigPtr), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
           l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
 
     }
 
-    float32 DynamicPartialHeadConfig::getThreshold() const {
-        return threshold_;
+    float32 DynamicPartialHeadConfig::getVarianceThreshold() const {
+        return varianceThreshold_;
     }
 
-    IDynamicPartialHeadConfig& DynamicPartialHeadConfig::setThreshold(float32 threshold) {
-        assertGreater<float32>("threshold", threshold, 0);
-        assertLess<float32>("threshold", threshold, 1);
-        threshold_ = threshold;
+    IDynamicPartialHeadConfig& DynamicPartialHeadConfig::setVarianceThreshold(float32 varianceThreshold) {
+        assertGreater<float32>("varianceThreshold", varianceThreshold, 0);
+        assertLess<float32>("varianceThreshold", varianceThreshold, 1);
+        varianceThreshold_ = varianceThreshold;
         return *this;
     }
 

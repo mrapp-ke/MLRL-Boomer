@@ -82,26 +82,27 @@ cdef class DynamicPartialHeadConfig:
     are included in a rule head.
     """
 
-    def get_threshold(self) -> float:
+    def get_variance_threshold(self) -> float:
         """
         Returns the threshold that affects for how many labels the rule heads predict.
 
         :return: The threshold that affects for how many labels the rule heads predict
         """
-        return self.config_ptr.getThreshold()
+        return self.config_ptr.getVarianceThreshold()
 
-    def set_threshold(self, threshold: float) -> DynamicPartialHeadConfig:
+    def set_variance_threshold(self, variance_threshold: float) -> DynamicPartialHeadConfig:
         """
         Sets the threshold that affects for how many labels the rule heads should predict.
 
-        :param threshold:   A threshold that affects for how many labels the rule heads should predict. A smaller
-                            threshold results in less labels being selected. A greater threshold results in more labels
-                            being selected. E.g., a threshold of 0.5 means that a rule will only predict for a
-                            particular label if the absolute variance of the predictive quality exceeds the threshold
-                            `(maxVariance - minVariance) * (1 - 0.5) + minVariance`. Must be in (0, 1)
-        :return:            A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
+        :param variance_threshold:  A threshold that affects for how many labels the rule heads should predict. A
+                                    smaller threshold results in less labels being selected. A greater threshold results
+                                    in more labels being selected. E.g., a threshold of 0.5 means that a rule will only
+                                    predict for a particular label if the absolute variance of the predictive quality
+                                    exceeds the threshold `(maxVariance - minVariance) * (1 - 0.5) + minVariance`. Must
+                                    be in (0, 1)
+        :return:                    A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
         """
-        assert_greater('threshold', threshold, 0)
-        assert_less('threshold', threshold, 1)
-        self.config_ptr.setThreshold(threshold)
+        assert_greater('variance_threshold', variance_threshold, 0)
+        assert_less('variance_threshold', variance_threshold, 1)
+        self.config_ptr.setVarianceThreshold(variance_threshold)
         return self

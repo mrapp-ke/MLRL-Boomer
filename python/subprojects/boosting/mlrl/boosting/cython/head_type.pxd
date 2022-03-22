@@ -26,9 +26,9 @@ cdef extern from "boosting/rule_evaluation/head_type_partial_dynamic.hpp" namesp
 
         # Functions:
 
-        float32 getThreshold() const
+        float32 getVarianceThreshold() const
 
-        IDynamicPartialHeadConfig& setThreshold(float32 threshold) except +
+        IDynamicPartialHeadConfig& setVarianceThreshold(float32 varianceThreshold) except +
 
 
 cdef class FixedPartialHeadConfig:
