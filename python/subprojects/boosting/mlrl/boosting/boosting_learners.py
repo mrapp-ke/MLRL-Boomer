@@ -56,6 +56,10 @@ ARGUMENT_MIN_LABELS = 'min_labels'
 
 ARGUMENT_MAX_LABELS = 'max_labels'
 
+HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
+
+ARGUMENT_VARIANCE_THRESHOLD = 'variance_threshold'
+
 HEAD_TYPE_COMPLETE = 'complete'
 
 LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
@@ -75,6 +79,7 @@ PREDICTOR_EXAMPLE_WISE = 'example-wise'
 HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
     HEAD_TYPE_SINGLE: {},
     HEAD_TYPE_PARTIAL_FIXED: {ARGUMENT_LABEL_RATIO, ARGUMENT_MIN_LABELS, ARGUMENT_MAX_LABELS},
+    HEAD_TYPE_PARTIAL_DYNAMIC: {ARGUMENT_VARIANCE_THRESHOLD},
     HEAD_TYPE_COMPLETE: {},
     AUTOMATIC: {}
 }
@@ -166,8 +171,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             'none', if no early stopping should be used. For additional options refer to
                                             the documentation
         :param head_type:                   The type of the rule heads that should be used. Must be 'single-label',
-                                            'complete' or 'auto', if the type of the heads should be chosen
-                                            automatically
+                                            'complete', 'partial-fixed', 'partial-dynamic' or 'auto', if the type of the
+                                            heads should be chosen automatically
         :param loss:                        The loss function to be minimized. Must be 'squared-error-label-wise',
                                             'squared-hinge-label-wise', 'logistic-label-wise' or 'logistic-example-wise'
         :param predictor:                   The strategy that should be used for making predictions. Must be
@@ -404,6 +409,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 c.set_label_ratio(options.get_float(ARGUMENT_LABEL_RATIO, c.get_label_ratio()))
                 c.set_min_labels(options.get_int(ARGUMENT_MIN_LABELS, c.get_min_labels()))
                 c.set_max_labels(options.get_int(ARGUMENT_MAX_LABELS, c.get_max_labels()))
+            elif value == HEAD_TYPE_PARTIAL_DYNAMIC:
+                c = config.use_dynamic_partial_heads()
+                c.set_threshold(options.get_float(ARGUMENT_VARIANCE_THRESHOLD, c.get_threshold()))
             elif value == HEAD_TYPE_COMPLETE:
                 config.use_complete_heads()
 
