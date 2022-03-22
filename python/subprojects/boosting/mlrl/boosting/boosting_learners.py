@@ -411,7 +411,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 c.set_max_labels(options.get_int(ARGUMENT_MAX_LABELS, c.get_max_labels()))
             elif value == HEAD_TYPE_PARTIAL_DYNAMIC:
                 c = config.use_dynamic_partial_heads()
-                c.set_threshold(options.get_float(ARGUMENT_VARIANCE_THRESHOLD, c.get_threshold()))
+                c.set_variance_threshold(options.get_float(ARGUMENT_VARIANCE_THRESHOLD, c.get_variance_threshold()))
             elif value == HEAD_TYPE_COMPLETE:
                 config.use_complete_heads()
 
