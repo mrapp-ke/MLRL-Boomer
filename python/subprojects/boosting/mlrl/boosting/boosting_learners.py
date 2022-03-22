@@ -48,6 +48,14 @@ ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
 HEAD_TYPE_SINGLE = 'single-label'
 
+HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
+
+ARGUMENT_LABEL_RATIO = 'label_ratio'
+
+ARGUMENT_MIN_LABELS = 'min_labels'
+
+ARGUMENT_MAX_LABELS = 'max_labels'
+
 HEAD_TYPE_COMPLETE = 'complete'
 
 LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
@@ -64,10 +72,11 @@ PREDICTOR_LABEL_WISE = 'label-wise'
 
 PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
-HEAD_TYPE_VALUES: Set[str] = {
-    HEAD_TYPE_SINGLE,
-    HEAD_TYPE_COMPLETE,
-    AUTOMATIC
+HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
+    HEAD_TYPE_SINGLE: {},
+    HEAD_TYPE_PARTIAL_FIXED: {ARGUMENT_LABEL_RATIO, ARGUMENT_MIN_LABELS, ARGUMENT_MAX_LABELS},
+    HEAD_TYPE_COMPLETE: {},
+    AUTOMATIC: {}
 }
 
 EARLY_STOPPING_VALUES: Dict[str, Set[str]] = {
@@ -384,12 +393,17 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         head_type = self.head_type
 
         if head_type is not None:
-            value = parse_param("head_type", head_type, HEAD_TYPE_VALUES)
+            value, options = parse_param_and_options("head_type", head_type, HEAD_TYPE_VALUES)
 
             if value == AUTOMATIC:
                 config.use_automatic_heads()
             elif value == HEAD_TYPE_SINGLE:
                 config.use_single_label_heads()
+            elif value == HEAD_TYPE_PARTIAL_FIXED:
+                c = config.use_fixed_partial_heads()
+                c.set_label_ratio(options.get_float(ARGUMENT_LABEL_RATIO, c.get_label_ratio()))
+                c.set_min_labels(options.get_int(ARGUMENT_MIN_LABELS, c.get_min_labels()))
+                c.set_max_labels(options.get_int(ARGUMENT_MAX_LABELS, c.get_max_labels()))
             elif value == HEAD_TYPE_COMPLETE:
                 config.use_complete_heads()
 

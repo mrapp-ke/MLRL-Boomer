@@ -17,7 +17,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
+            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
             const ILabelWiseLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
@@ -38,7 +38,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
+            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
             const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();

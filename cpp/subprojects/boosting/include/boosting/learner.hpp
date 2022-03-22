@@ -14,7 +14,7 @@
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
-#include "boosting/rule_evaluation/head_type.hpp"
+#include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 #include "boosting/rule_evaluation/regularization_manual.hpp"
 
 
@@ -146,6 +146,15 @@ namespace boosting {
                      * label.
                      */
                     virtual void useSingleLabelHeads() = 0;
+
+                    /**
+                     * Configures the rule learner to induce rules with partial heads that predict for a predefined
+                     * number of labels.
+                     *
+                     * @return A reference to an object of type `IFixedPartialHeadConfig` that allows further
+                     *         configuration of the rule heads
+                     */
+                    virtual IFixedPartialHeadConfig& useFixedPartialHeads() = 0;
 
                     /**
                      * Configures the rule learner to induce rules with complete heads that predict for all available
@@ -334,6 +343,8 @@ namespace boosting {
                     void useAutomaticHeads() override;
 
                     void useSingleLabelHeads() override;
+
+                    IFixedPartialHeadConfig& useFixedPartialHeads() override;
 
                     void useCompleteHeads() override;
 

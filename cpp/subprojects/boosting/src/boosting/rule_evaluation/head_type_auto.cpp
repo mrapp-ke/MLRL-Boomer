@@ -15,7 +15,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
+            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
             const ILabelWiseLossConfig& lossConfig) const {
         if (labelMatrix.getNumCols() > 1) {
             SingleLabelHeadConfig headConfig(labelBinningConfigPtr_, multiThreadingConfigPtr_,
@@ -29,7 +29,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix,
+            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
             const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         CompleteHeadConfig headConfig(labelBinningConfigPtr_, multiThreadingConfigPtr_, l1RegularizationConfigPtr_,
                                       l2RegularizationConfigPtr_);
