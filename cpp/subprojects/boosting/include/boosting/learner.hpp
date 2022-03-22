@@ -148,8 +148,8 @@ namespace boosting {
                     virtual void useSingleLabelHeads() = 0;
 
                     /**
-                     * Configures the rule learner to induce rule with partial heads that predict for a predefined nuber
-                     * of labels.
+                     * Configures the rule learner to induce rules with partial heads that predict for a predefined
+                     * number of labels.
                      *
                      * @return A reference to an object of type `IFixedPartialHeadConfig` that allows further
                      *         configuration of the rule heads
