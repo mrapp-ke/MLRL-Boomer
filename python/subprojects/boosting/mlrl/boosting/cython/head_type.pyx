@@ -73,3 +73,35 @@ cdef class FixedPartialHeadConfig:
             assert_greater_or_equal('max_labels', max_labels, self.config_ptr.getMinLabels())
         self.config_ptr.setMaxLabels(max_labels)
         return self
+
+
+cdef class DynamicPartialHeadConfig:
+    """
+    Allows to configure partial rule heads that predict for a subset of the available labels that is determined
+    dynamically. Only those labels for which the absolute variance of the predictive quality exceeds a certain threshold
+    are included in a rule head.
+    """
+
+    def get_threshold(self) -> float:
+        """
+        Returns the threshold that affects for how many labels the rule heads predict.
+
+        :return: The threshold that affects for how many labels the rule heads predict
+        """
+        return self.config_ptr.getThreshold()
+
+    def set_threshold(self, threshold: float) -> DynamicPartialHeadConfig:
+        """
+        Sets the threshold that affects for how many labels the rule heads should predict.
+
+        :param threshold:   A threshold that affects for how many labels the rule heads should predict. A smaller
+                            threshold results in less labels being selected. A greater threshold results in more labels
+                            being selected. E.g., a threshold of 0.5 means that a rule will only predict for a
+                            particular label if the absolute variance of the predictive quality exceeds the threshold
+                            `(maxVariance - minVariance) * (1 - 0.5) + minVariance`. Must be in (0, 1)
+        :return:            A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
+        """
+        assert_greater('threshold', threshold, 0)
+        assert_less('threshold', threshold, 1)
+        self.config_ptr.setThreshold(threshold)
+        return self
