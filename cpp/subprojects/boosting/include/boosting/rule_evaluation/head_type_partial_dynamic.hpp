@@ -37,7 +37,7 @@ namespace boosting {
              *                  threshold results in less labels being selected. A greater threshold results in more
              *                  labels being selected. E.g., a threshold of 0.2 means that a rule will only predict for
              *                  a label if the estimated predictive quality `q` for this particular label satisfies the
-             *                  inequality `q^2 > q_max^2 * (1 - 0.2)`, where `q_max` is the best quality among all
+             *                  inequality `q^2 > q_best^2 * (1 - 0.2)`, where `q_best` is the best quality among all
              *                  labels. Must be in (0, 1)
              * @return          A reference to an object of type `IDynamicPartialHeadConfig` that allows further
              *                  configuration of the rule heads
