@@ -166,8 +166,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             'none', if no early stopping should be used. For additional options refer to
                                             the documentation
         :param head_type:                   The type of the rule heads that should be used. Must be 'single-label',
-                                            'complete' or 'auto', if the type of the heads should be chosen
-                                            automatically
+                                            'complete', 'partial-fixed', or 'auto', if the type of the heads should be
+                                            chosen automatically. For additional options refer to the documentation
         :param loss:                        The loss function to be minimized. Must be 'squared-error-label-wise',
                                             'squared-hinge-label-wise', 'logistic-label-wise' or 'logistic-example-wise'
         :param predictor:                   The strategy that should be used for making predictions. Must be
