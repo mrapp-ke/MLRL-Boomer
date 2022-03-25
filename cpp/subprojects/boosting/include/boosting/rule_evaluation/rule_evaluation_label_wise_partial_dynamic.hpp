@@ -30,7 +30,7 @@ namespace boosting {
              *                                  greater threshold results in more labels being selected. E.g., a
              *                                  threshold of 0.2 means that a rule will only predict for a label if the
              *                                  estimated predictive quality `q` for this particular label satisfies the
-             *                                  inequality `q^2 > q_max^2 * (1 - 0.2)`, where `q_max` is the best
+             *                                  inequality `q^2 > q_best^2 * (1 - 0.2)`, where `q_best` is the best
              *                                  quality among all labels. Must be in (0, 1)
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
