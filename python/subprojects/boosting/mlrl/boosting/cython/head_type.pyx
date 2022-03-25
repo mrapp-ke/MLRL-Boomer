@@ -78,31 +78,31 @@ cdef class FixedPartialHeadConfig:
 cdef class DynamicPartialHeadConfig:
     """
     Allows to configure partial rule heads that predict for a subset of the available labels that is determined
-    dynamically. Only those labels for which the absolute variance of the predictive quality exceeds a certain threshold
-    are included in a rule head.
+    dynamically. Only those labels for which the square of the predictive quality exceeds a certain threshold are
+    included in a rule head.
     """
 
-    def get_variance_threshold(self) -> float:
+    def get_threshold(self) -> float:
         """
         Returns the threshold that affects for how many labels the rule heads predict.
 
         :return: The threshold that affects for how many labels the rule heads predict
         """
-        return self.config_ptr.getVarianceThreshold()
+        return self.config_ptr.getThreshold()
 
-    def set_variance_threshold(self, variance_threshold: float) -> DynamicPartialHeadConfig:
+    def set_threshold(self, threshold: float) -> DynamicPartialHeadConfig:
         """
         Sets the threshold that affects for how many labels the rule heads should predict.
 
-        :param variance_threshold:  A threshold that affects for how many labels the rule heads should predict. A
-                                    smaller threshold results in less labels being selected. A greater threshold results
-                                    in more labels being selected. E.g., a threshold of 0.5 means that a rule will only
-                                    predict for a particular label if the absolute variance of the predictive quality
-                                    exceeds the threshold `(maxVariance - minVariance) * (1 - 0.5) + minVariance`. Must
-                                    be in (0, 1)
-        :return:                    A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
+        :param threshold:   A threshold that affects for how many labels the rule heads should predict. A smaller
+                            threshold results in less labels being selected. A greater threshold results in more labels
+                            being selected. E.g., a threshold of 0.2 means that a rule will only predict for a label if
+                            the estimated predictive quality `q` for this particular label satisfies the inequality
+                            `q^2 > q_max^2 * (1 - 0.2)`, where `q_max` is the best quality among all labels. Must be in
+                            (0, 1)
+        :return:            A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
         """
-        assert_greater('variance_threshold', variance_threshold, 0)
-        assert_less('variance_threshold', variance_threshold, 1)
-        self.config_ptr.setVarianceThreshold(variance_threshold)
+        assert_greater('threshold', threshold, 0)
+        assert_less('threshold', threshold, 1)
+        self.config_ptr.setThreshold(threshold)
         return self

@@ -58,7 +58,7 @@ ARGUMENT_MAX_LABELS = 'max_labels'
 
 HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
 
-ARGUMENT_VARIANCE_THRESHOLD = 'variance_threshold'
+ARGUMENT_THRESHOLD = 'threshold'
 
 HEAD_TYPE_COMPLETE = 'complete'
 
@@ -79,7 +79,7 @@ PREDICTOR_EXAMPLE_WISE = 'example-wise'
 HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
     HEAD_TYPE_SINGLE: {},
     HEAD_TYPE_PARTIAL_FIXED: {ARGUMENT_LABEL_RATIO, ARGUMENT_MIN_LABELS, ARGUMENT_MAX_LABELS},
-    HEAD_TYPE_PARTIAL_DYNAMIC: {ARGUMENT_VARIANCE_THRESHOLD},
+    HEAD_TYPE_PARTIAL_DYNAMIC: {ARGUMENT_THRESHOLD},
     HEAD_TYPE_COMPLETE: {},
     AUTOMATIC: {}
 }
@@ -172,7 +172,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             the documentation
         :param head_type:                   The type of the rule heads that should be used. Must be 'single-label',
                                             'complete', 'partial-fixed', 'partial-dynamic' or 'auto', if the type of the
-                                            heads should be chosen automatically
+                                            heads should be chosen automatically. For additional options refer to the
+                                            documentation
         :param loss:                        The loss function to be minimized. Must be 'squared-error-label-wise',
                                             'squared-hinge-label-wise', 'logistic-label-wise' or 'logistic-example-wise'
         :param predictor:                   The strategy that should be used for making predictions. Must be
@@ -411,7 +412,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 c.set_max_labels(options.get_int(ARGUMENT_MAX_LABELS, c.get_max_labels()))
             elif value == HEAD_TYPE_PARTIAL_DYNAMIC:
                 c = config.use_dynamic_partial_heads()
-                c.set_variance_threshold(options.get_float(ARGUMENT_VARIANCE_THRESHOLD, c.get_variance_threshold()))
+                c.set_threshold(options.get_float(ARGUMENT_THRESHOLD, c.get_threshold()))
             elif value == HEAD_TYPE_COMPLETE:
                 config.use_complete_heads()
 
