@@ -90,8 +90,8 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
     def use_dynamic_partial_heads(self) -> DynamicPartialHeadConfig:
         """
         Configures the rule learner to induce rules with partial heads that predict for a subset of the available labels
-        that is determined dynamically. Only those labels for which the absolute variance of the predictive quality
-        exceeds a certain threshold are included in a rule head.
+        that is determined dynamically. Only those labels for which the square of the predictive quality exceeds a
+        certain threshold are included in a rule head.
 
         :return: A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
         """

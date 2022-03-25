@@ -14,8 +14,8 @@ namespace boosting {
 
     /**
      * Defines an interface for all classes that allow to configure partial rule heads that predict for a subset of the
-     * available labels that is determined dynamically. Only those labels for which the absolute variance of the
-     * predictive quality exceeds a certain threshold are included in a rule head.
+     * available labels that is determined dynamically. Only those labels for which the square of the predictive quality
+     * exceeds a certain threshold are included in a rule head.
      */
     class MLRLBOOSTING_API IDynamicPartialHeadConfig {
 
@@ -28,34 +28,34 @@ namespace boosting {
              *
              * @return The threshold that affects for how many labels the rule heads predict
              */
-            virtual float32 getVarianceThreshold() const = 0;
+            virtual float32 getThreshold() const = 0;
 
             /**
              * Sets the threshold that affects for how many labels the rule heads should predict.
              *
-             * @param varianceThreshold A threshold that affects for how many labels the rule heads should predict. A
-             *                          smaller threshold results in less labels being selected. A greater threshold
-             *                          results in more labels being selected. E.g., a threshold of 0.5 means that a
-             *                          rule will only predict for a particular label if the absolute variance of the
-             *                          predictive quality exceeds the threshold
-             *                          `(maxVariance - minVariance) * (1 - 0.5) + minVariance`. Must be in (0, 1)
-             * @return                  A reference to an object of type `IDynamicPartialHeadConfig` that allows further
-             *                          configuration of the rule heads
+             * @param threshold A threshold that affects for how many labels the rule heads should predict. A smaller
+             *                  threshold results in less labels being selected. A greater threshold results in more
+             *                  labels being selected. E.g., a threshold of 0.2 means that a rule will only predict for
+             *                  a label if the estimated predictive quality `q` for this particular label satisfies the
+             *                  inequality `q^2 > q_max^2 * (1 - 0.2)`, where `q_max` is the best quality among all
+             *                  labels. Must be in (0, 1)
+             * @return          A reference to an object of type `IDynamicPartialHeadConfig` that allows further
+             *                  configuration of the rule heads
              */
-            virtual IDynamicPartialHeadConfig& setVarianceThreshold(float32 varianceThreshold) = 0;
+            virtual IDynamicPartialHeadConfig& setThreshold(float32 threshold) = 0;
 
     };
 
     /**
      * Allows to configure partial rule heads that predict for a for a subset of the available labels that is determined
-     * dynamically. Only those labels for which the absolute variance of the predictive quality exceeds a certain
-     * threshold are included in a rule head.
+     * dynamically. Only those labels for which the square of the predictive quality exceeds a certain threshold are
+     * included in a rule head.
      */
     class DynamicPartialHeadConfig final : public IHeadConfig, public IDynamicPartialHeadConfig {
 
         private:
 
-            float32 varianceThreshold_;
+            float32 threshold_;
 
             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr_;
 
@@ -83,9 +83,9 @@ namespace boosting {
                                      const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
                                      const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
 
-            float32 getVarianceThreshold() const override;
+            float32 getThreshold() const override;
 
-            IDynamicPartialHeadConfig& setVarianceThreshold(float32 varianceThreshold) override;
+            IDynamicPartialHeadConfig& setThreshold(float32 threshold) override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
