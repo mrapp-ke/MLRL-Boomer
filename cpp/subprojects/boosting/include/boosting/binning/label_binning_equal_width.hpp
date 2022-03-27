@@ -129,6 +129,9 @@ namespace boosting {
                 float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas,
                 const Lapack& lapack) const override;
 
+            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseDynamicPartialRuleEvaluationFactory(
+                float32 threshold, const Blas& blas, const Lapack& lapack) const override;
+
     };
 
 }
