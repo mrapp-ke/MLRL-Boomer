@@ -10,6 +10,8 @@ namespace boosting {
      * an overall quality score, based on the gradients and Hessians that are stored by a
      * `DenseLabelWiseStatisticVector` using L1 and L2 regularization. . The labels are assigned to bins based on the
      * gradients and Hessians.
+     *
+     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
     class DenseLabelWiseFixedPartialBinnedRuleEvaluation final :
