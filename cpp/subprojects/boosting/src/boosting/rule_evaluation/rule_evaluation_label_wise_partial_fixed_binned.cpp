@@ -27,7 +27,7 @@ namespace boosting {
 
         protected:
 
-            void calculateLabelWiseCriteria(const DenseLabelWiseStatisticVector& statisticVector, float64* criteria,
+            uint32 calculateLabelWiseCriteria(const DenseLabelWiseStatisticVector& statisticVector, float64* criteria,
                                             uint32 numCriteria, float64 l1RegularizationWeight,
                                             float64 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
@@ -46,6 +46,8 @@ namespace boosting {
                                                           l2RegularizationWeight);
                     priorityQueue_.pop();
                 }
+
+                return numCriteria;
             }
 
         public:
