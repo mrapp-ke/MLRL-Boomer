@@ -2,6 +2,7 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_complete_binned.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_partial_fixed_binned.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_complete_binned.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_label_wise_partial_dynamic_binned.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_partial_fixed_binned.hpp"
 #include "common/math/math.hpp"
 #include "common/util/validation.hpp"
@@ -225,6 +226,16 @@ namespace boosting {
         return std::make_unique<LabelWiseFixedPartialBinnedRuleEvaluationFactory>(
             labelRatio, minLabels, maxLabels, l1RegularizationWeight, l2RegularizationWeight,
             std::move(labelBinningFactoryPtr));
+    }
+
+    std::unique_ptr<ILabelWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(
+            float32 threshold) const {
+        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
+        std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
+            std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
+        return std::make_unique<LabelWiseDynamicPartialBinnedRuleEvaluationFactory>(
+            threshold, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::createExampleWiseCompleteRuleEvaluationFactory(
