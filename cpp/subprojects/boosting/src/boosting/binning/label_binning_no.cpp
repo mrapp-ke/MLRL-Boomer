@@ -2,6 +2,7 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_complete.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_partial_fixed.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_complete.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_label_wise_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_partial_fixed.hpp"
 
 
@@ -25,6 +26,14 @@ namespace boosting {
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         return std::make_unique<LabelWiseFixedPartialRuleEvaluationFactory>(
             labelRatio, minLabels, maxLabels, l1RegularizationWeight, l2RegularizationWeight);
+    }
+
+    std::unique_ptr<ILabelWiseRuleEvaluationFactory> NoLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(
+            float32 threshold) const {
+        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
+        return std::make_unique<LabelWiseDynamicPartialRuleEvaluationFactory>(
+            threshold, l1RegularizationWeight, l2RegularizationWeight);
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluationFactory> NoLabelBinningConfig::createExampleWiseCompleteRuleEvaluationFactory(

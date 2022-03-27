@@ -164,6 +164,18 @@ namespace boosting {
                 float32 labelRatio, uint32 minLabels, uint32 maxLabels) const = 0;
 
             /**
+             * Creates and returns a new object of type `ILabelWiseRuleEvaluationFactory` that allows to calculate the
+             * prediction of partial rules, which predict for a subset of the available labels that is determined
+             * dynamically, according to the specified configuration.
+             *
+             * @param threshold A threshold that affects for how many labels the rule heads should predict
+             * @return          An unique pointer to an object of type `ILabelWiseRuleEvaluationFactory` that has been
+             *                  created
+             */
+            virtual std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseDynamicPartialRuleEvaluationFactory(
+                float32 threshold) const = 0;
+
+            /**
              * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
              * predictions of complete rules according to the specified configuration.
              *

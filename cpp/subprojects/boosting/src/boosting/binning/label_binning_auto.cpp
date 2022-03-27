@@ -23,6 +23,12 @@ namespace boosting {
             .createLabelWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels, maxLabels);
     }
 
+    std::unique_ptr<ILabelWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(
+            float32 threshold) const {
+        return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
+            .createLabelWiseDynamicPartialRuleEvaluationFactory(threshold);
+    }
+
     std::unique_ptr<IExampleWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createExampleWiseCompleteRuleEvaluationFactory(
             const Blas& blas, const Lapack& lapack) const {
         return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_,l2RegularizationConfigPtr_)
