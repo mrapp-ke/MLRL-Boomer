@@ -1,4 +1,5 @@
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
+#include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
 #include "common/util/validation.hpp"
 
 
@@ -29,8 +30,20 @@ namespace boosting {
     std::unique_ptr<IStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
             const ILabelWiseLossConfig& lossConfig) const {
-        // TODO
-        return nullptr;
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
+        std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.createLabelWiseLossFactory();
+        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+            lossConfig.createEvaluationMeasureFactory();
+        std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
+            labelBinningConfigPtr_->createLabelWiseCompleteRuleEvaluationFactory();
+        std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+            labelBinningConfigPtr_->createLabelWiseDynamicPartialRuleEvaluationFactory(threshold_);
+        std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+            labelBinningConfigPtr_->createLabelWiseDynamicPartialRuleEvaluationFactory(threshold_);
+        return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(
+            std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+            std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
+            std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
     std::unique_ptr<IStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
