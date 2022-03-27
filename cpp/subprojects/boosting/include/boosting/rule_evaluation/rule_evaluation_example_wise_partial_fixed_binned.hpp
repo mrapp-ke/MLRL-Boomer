@@ -13,7 +13,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the class `IExampleWiseRuleEvaluationFactory` that allow to calculate the
-     * predictions of partial rules, which predict for a predefined number of labels.
+     * predictions of partial rules, which predict for a predefined number of labels, using gradient-based label
+     * binning.
      */
     class ExampleWiseFixedPartialBinnedRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
 
