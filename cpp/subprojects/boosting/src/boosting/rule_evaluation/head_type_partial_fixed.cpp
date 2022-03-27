@@ -1,5 +1,4 @@
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
-#include "boosting/rule_evaluation/rule_evaluation_label_wise_partial_fixed.hpp"
 #include "boosting/statistics/statistics_provider_example_wise_dense.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
 #include "common/util/validation.hpp"
