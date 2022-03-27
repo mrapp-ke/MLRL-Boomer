@@ -37,6 +37,7 @@ source_files = [
     'src/boosting/rule_evaluation/rule_evaluation_example_wise_complete.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_example_wise_complete_binned.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_example_wise_partial_dynamic.cpp',
+    'src/boosting/rule_evaluation/rule_evaluation_example_wise_partial_dynamic_binned.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_example_wise_partial_fixed.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_example_wise_partial_fixed_binned.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_complete.cpp',
