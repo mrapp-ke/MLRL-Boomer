@@ -4,7 +4,7 @@
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
-* The parameter `--head-type` does now allow to learn partial rules that predict for a predefined number of labels (`partial-fixed`).
+* The parameter `--head-type` does now allow to learn partial rules that predict for a predefined number of labels (`partial-fixed`) or a subset of the available labels that is determined dynamically (`partial-dynamic`).
 
 ### Version 0.8.1 (Mar. 4th, 2022)
 
