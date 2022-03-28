@@ -173,6 +173,10 @@ The following parameters allow to control the behavior of the algorithm:
     * ``min_labels`` (Default value = ``2``) The minimum number of labels for which the rules should predict. Must be at least 2.
     * ``max_labels`` (Default value = ``0``) The maximum number of labels for which the rules should predict or 0, if the number of predictions should not be restricted.
 
+  * ``'partial-dynamic'`` If all rules should predict for a subset of the available labels that is determined dynamically. The following options may be provided using the bracket notation:
+
+    * ``threshold`` (Default value = ``0.02``) A threshold that affects for how many labels the rules should predict. A smaller threshold results in less labels being selected. A greater threshold results in more labels being selected. E.g., a threshold of 0.02 means that a rule will only predict for a label if the estimated predictive quality ``q`` for this particular label satisfies the inequality ``q^2 > q_best^2 * (1 - 0.02)``, where ``q_best`` is the best quality among all labels. Must be in (0, 1)
+
   * ``'complete'`` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
 
 * ``shrinkage`` (Default value = ``0.3``)
