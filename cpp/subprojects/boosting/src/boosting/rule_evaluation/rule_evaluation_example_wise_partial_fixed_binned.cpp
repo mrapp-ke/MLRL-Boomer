@@ -27,9 +27,9 @@ namespace boosting {
 
         protected:
 
-            void calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
-                                            uint32 numCriteria, float64 l1RegularizationWeight,
-                                            float64 l2RegularizationWeight) override {
+            uint32 calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
+                                              uint32 numCriteria, float64 l1RegularizationWeight,
+                                              float64 l2RegularizationWeight) override {
                 uint32 numLabels = statisticVector.getNumElements();
                 uint32 numPredictions = indexVectorPtr_->getNumElements();
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
@@ -49,6 +49,8 @@ namespace boosting {
                                                           l1RegularizationWeight, l2RegularizationWeight);
                     priorityQueue_.pop();
                 }
+
+                return numCriteria;
             }
 
         public:
