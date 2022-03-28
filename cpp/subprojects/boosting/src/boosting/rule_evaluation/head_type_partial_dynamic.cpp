@@ -11,7 +11,7 @@ namespace boosting {
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
             const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
             const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
-        : threshold_(0.1f), labelBinningConfigPtr_(labelBinningConfigPtr),
+        : threshold_(0.02f), labelBinningConfigPtr_(labelBinningConfigPtr),
           multiThreadingConfigPtr_(multiThreadingConfigPtr), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
           l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
 
