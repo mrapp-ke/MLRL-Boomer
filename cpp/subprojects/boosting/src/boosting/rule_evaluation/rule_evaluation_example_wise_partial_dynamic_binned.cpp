@@ -4,6 +4,107 @@
 
 namespace boosting {
 
+    /**
+     * Allows to calculate the predictions of partial rules that predict for a subset of the available labels that is
+     * determined dynamically, as well as an overall quality score, based on the gradients and Hessians that are stored
+     * by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization. The labels are assigned to bins based on
+     * the gradients and Hessians.
+     *
+     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     */
+    template<typename T>
+    class DenseExampleWiseDynamicPartialBinnedRuleEvaluation final :
+            public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector> {
+
+        private:
+
+            const T& labelIndices_;
+
+            std::unique_ptr<PartialIndexVector> indexVectorPtr_;
+
+            float64 threshold_;
+
+        protected:
+
+            uint32 calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
+                                              uint32 numCriteria, float64 l1RegularizationWeight,
+                                              float64 l2RegularizationWeight) override {
+                uint32 numLabels = statisticVector.getNumElements();
+                DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
+                    statisticVector.gradients_cbegin();
+                DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
+                    statisticVector.hessians_diagonal_cbegin();
+                float64 bestScore = calculateLabelWiseScore(gradientIterator[0], hessianIterator[0],
+                                                            l1RegularizationWeight, l2RegularizationWeight);
+                criteria[0] = bestScore;
+                bestScore = std::abs(bestScore);
+
+                for (uint32 i = 1; i < numLabels; i++) {
+                    float64 score = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i],
+                                                            l1RegularizationWeight, l2RegularizationWeight);
+                    criteria[i] = score;
+                    score = std::abs(score);
+
+                    if (score > bestScore) {
+                        bestScore = score;
+                    }
+                }
+
+                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
+                float64 threshold = (bestScore * bestScore) * threshold_;
+                uint32 n = 0;
+
+                for (uint32 i = 0; i < numLabels; i++) {
+                    float64 score = criteria[i];
+
+                    if (score * score > threshold) {
+                        indexIterator[n] = labelIndexIterator[i];
+                        criteria[n] = score;
+                        n++;
+                    }
+                }
+
+                indexVectorPtr_->setNumElements(n, false);
+                return n;
+            }
+
+        public:
+
+            /**
+             * @param labelIndices              A reference to an object of template type `T` that provides access to
+             *                                  the indices of the labels for which the rules may predict
+             * @param maxBins                   The maximum number of bins
+             * @param indexVectorPtr            An unique pointer to an object of type `PartialIndexVector` that stores
+             *                                  the indices of the labels for which a rule predicts
+             * @param threshold                 A threshold that affects for how many labels the rule heads should
+             *                                  predict
+             * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
+             *                                  scores to be predicted by rules
+             * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
+             *                                  scores to be predicted by rules
+             * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be
+             *                                  used to assign labels to bins
+             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
+             *                                  routines
+             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
+             *                                  routines
+             */
+            DenseExampleWiseDynamicPartialBinnedRuleEvaluation(const T& labelIndices, uint32 maxBins,
+                                                               std::unique_ptr<PartialIndexVector> indexVectorPtr,
+                                                               float32 threshold, float64 l1RegularizationWeight,
+                                                               float64 l2RegularizationWeight,
+                                                               std::unique_ptr<ILabelBinning> binningPtr,
+                                                               const Blas& blas, const Lapack& lapack)
+                : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector>(
+                      *indexVectorPtr, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
+                      std::move(binningPtr), blas, lapack),
+                  labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)), threshold_(1.0 - threshold) {
+
+            }
+
+    };
+
     ExampleWiseDynamicPartialBinnedRuleEvaluationFactory::ExampleWiseDynamicPartialBinnedRuleEvaluationFactory(
             float32 threshold, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
             std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas, const Lapack& lapack)
@@ -15,8 +116,13 @@ namespace boosting {
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseDynamicPartialBinnedRuleEvaluationFactory::create(
             const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
-        // TODO
-        return nullptr;
+        uint32 numElements = indexVector.getNumElements();
+        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numElements);
+        std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
+        uint32 maxBins = labelBinningPtr->getMaxBins(numElements);
+        return std::make_unique<DenseExampleWiseDynamicPartialBinnedRuleEvaluation<CompleteIndexVector>>(
+            indexVector, maxBins, std::move(indexVectorPtr), threshold_, l1RegularizationWeight_,
+            l2RegularizationWeight_, std::move(labelBinningPtr), blas_, lapack_);
     }
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseDynamicPartialBinnedRuleEvaluationFactory::create(
