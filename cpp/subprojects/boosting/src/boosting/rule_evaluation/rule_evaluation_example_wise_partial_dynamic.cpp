@@ -68,12 +68,17 @@ namespace boosting {
                     statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                     statisticVector.hessians_diagonal_cbegin();
-                float64 bestScore = std::abs(calculateLabelWiseScore(gradientIterator[0], hessianIterator[0],
-                                                                     l1RegularizationWeight_, l2RegularizationWeight_));
+                typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                float64 bestScore = calculateLabelWiseScore(gradientIterator[0], hessianIterator[0],
+                                                            l1RegularizationWeight_, l2RegularizationWeight_);
+                scoreIterator[0] = bestScore;
+                bestScore = std::abs(bestScore);
 
                 for (uint32 i = 1; i < numLabels; i++) {
-                    float64 score = std::abs(calculateLabelWiseScore(gradientIterator[i], hessianIterator[i],
-                                                                     l1RegularizationWeight_, l2RegularizationWeight_));
+                    float64 score = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i],
+                                                            l1RegularizationWeight_, l2RegularizationWeight_);
+                    scoreIterator[i] = score;
+                    score = std::abs(score);
 
                     if (score > bestScore) {
                         bestScore = score;
@@ -83,18 +88,15 @@ namespace boosting {
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 float64 threshold = (bestScore * bestScore) * threshold_;
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {
-                    float64 gradient = gradientIterator[i];
-                    float64 score = calculateLabelWiseScore(gradient, hessianIterator[i], l1RegularizationWeight_,
-                                                            l2RegularizationWeight_);
+                    float64 score = scoreIterator[i];
 
                     if (score * score > threshold) {
                         indexIterator[n] = labelIndexIterator[i];
-                        scoreIterator[n] = -gradient;
+                        scoreIterator[n] = -gradientIterator[i];
                         n++;
                     }
                 }
