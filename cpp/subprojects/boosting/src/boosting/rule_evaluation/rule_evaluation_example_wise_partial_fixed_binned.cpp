@@ -43,10 +43,8 @@ namespace boosting {
 
                 for (uint32 i = 0; i < numCriteria; i++) {
                     const IndexedValue<float64>& entry = priorityQueue_.top();
-                    uint32 index = entry.index;
-                    indexIterator[i] = index;
-                    criteria[i] = calculateLabelWiseScore(gradientIterator[index], hessianIterator[index],
-                                                          l1RegularizationWeight, l2RegularizationWeight);
+                    indexIterator[i] = entry.index;
+                    criteria[i] = entry.value;
                     priorityQueue_.pop();
                 }
             }
