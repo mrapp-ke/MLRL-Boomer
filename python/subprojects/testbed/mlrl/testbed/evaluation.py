@@ -34,6 +34,9 @@ RECALL = 'Rec.'
 # The name of the F1 metric
 F1 = 'F1'
 
+# The name of the Jaccard metric
+JACCARD = 'Jacc.'
+
 # The name of the hamming loss metric
 HAMMING_LOSS = 'Hamm. Loss'
 
@@ -52,11 +55,17 @@ MICRO_PRECISION = 'Mi. Prec.'
 # The name of the macro-averaged precision metric
 MACRO_PRECISION = 'Ma. Prec.'
 
+# The name of the example-based precision metric
+EX_BASED_PRECISION = 'Ex.-based Prec.'
+
 # The name of the micro-averaged recall metric
 MICRO_RECALL = 'Mi. Rec.'
 
 # The name of the macro-averaged recall metric
 MACRO_RECALL = 'Ma. Rec.'
+
+# The name of the example-based recall metric
+EX_BASED_RECALL = 'Ex.-based Rec.'
 
 # The name of the micro-averaged F1 metric
 MICRO_F1 = 'Mi. F1'
@@ -64,14 +73,17 @@ MICRO_F1 = 'Mi. F1'
 # The name of the macro-averaged F1 metric
 MACRO_F1 = 'Ma. F1'
 
-# The name of the example-based precision metric
-EX_BASED_PRECISION = 'Ex.-based Prec.'
-
-# The name of the example-based recall metric
-EX_BASED_RECALL = 'Ex.-based Rec.'
-
 # The name of the example-based F1 metric
 EX_BASED_F1 = 'Ex.-based F1'
+
+# The name of the micro-averaged Jaccard metric
+MICRO_JACCARD = 'Mi. Jacc.'
+
+# The name of the macro-averaged Jaccard metric
+MACRO_JACCARD = 'Ma. Jacc.'
+
+# The name of the example-based Jaccard metric
+EX_BASED_JACCARD = 'Ex.-based Jacc.'
 
 # The name of the rank loss metric
 RANK_LOSS = 'Rank Loss'
@@ -414,18 +426,24 @@ class ClassificationEvaluation(AbstractEvaluation):
                        current_fold, num_folds)
             result.put(MICRO_F1, metrics.f1_score(ground_truth, predictions, average='micro', zero_division=1),
                        current_fold, num_folds)
-            result.put(MACRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='macro',
-                                                                zero_division=1), current_fold, num_folds)
+            result.put(MICRO_JACCARD, metrics.jaccard_score(ground_truth, predictions, average='micro',
+                                                            zero_division=1), current_fold, num_folds)
             result.put(MACRO_RECALL, metrics.recall_score(ground_truth, predictions, average='macro', zero_division=1),
                        current_fold, num_folds)
+            result.put(MACRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='macro',
+                                                                zero_division=1), current_fold, num_folds)
             result.put(MACRO_F1, metrics.f1_score(ground_truth, predictions, average='macro', zero_division=1),
                        current_fold, num_folds)
+            result.put(MACRO_JACCARD, metrics.jaccard_score(ground_truth, predictions, average='macro',
+                                                            zero_division=1), current_fold, num_folds)
             result.put(EX_BASED_PRECISION, metrics.precision_score(ground_truth, predictions, average='samples',
                                                                    zero_division=1), current_fold, num_folds)
             result.put(EX_BASED_RECALL, metrics.recall_score(ground_truth, predictions, average='samples',
                                                              zero_division=1), current_fold, num_folds)
             result.put(EX_BASED_F1, metrics.f1_score(ground_truth, predictions, average='samples', zero_division=1),
                        current_fold, num_folds)
+            result.put(EX_BASED_JACCARD, metrics.jaccard_score(ground_truth, predictions, average='samples',
+                                                               zero_division=1), current_fold, num_folds)
         else:
             predictions = np.ravel(enforce_dense(predictions, order='C', dtype=DTYPE_UINT8))
             ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8))
@@ -437,6 +455,8 @@ class ClassificationEvaluation(AbstractEvaluation):
             result.put(RECALL, metrics.recall_score(ground_truth, predictions, zero_division=1), current_fold,
                        num_folds)
             result.put(F1, metrics.f1_score(ground_truth, predictions, zero_division=1), current_fold, num_folds)
+            result.put(JACCARD, metrics.jaccard_score(ground_truth, predictions, zero_division=1), current_fold,
+                       num_folds)
 
 
 class RankingEvaluation(AbstractEvaluation):
