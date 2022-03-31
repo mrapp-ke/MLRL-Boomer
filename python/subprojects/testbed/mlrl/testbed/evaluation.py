@@ -204,17 +204,6 @@ class EvaluationOutput(ABC):
     An abstract base class for all outputs, evaluation results may be written to.
     """
 
-    def __init__(self, output_predictions: bool, output_individual_folds: bool):
-        """
-        :param output_predictions:      True, if predictions provided by a classifier or ranker should be written to the
-                                        output, False otherwise
-        :param output_individual_folds: True, if the evaluation results for individual cross validation folds should be
-                                        written to the outputs, False, if only the overall evaluation results, i.e.,
-                                        averaged over all folds, should be written to the outputs
-        """
-        self.output_predictions = output_predictions
-        self.output_individual_folds = output_individual_folds
-
     @abstractmethod
     def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, total_folds: int,
                                  fold: int = None):
@@ -251,33 +240,45 @@ class EvaluationLogOutput(EvaluationOutput):
     Outputs evaluation result using the logger.
     """
 
-    def __init__(self, output_predictions: bool = False, output_individual_folds: bool = True):
-        super().__init__(output_predictions, output_individual_folds)
+    def __init__(self, output_evaluation: bool = True, output_predictions: bool = False,
+                 output_individual_folds: bool = True):
+        """
+        :param output_evaluation:       True, if the evaluation results should be written to the output, False otherwise
+        :param output_predictions:      True, if predictions provided by a classifier or ranker should be written to the
+                                        output, False otherwise
+        :param output_individual_folds: True, if the evaluation results for individual cross validation folds should be
+                                        written to the outputs, False, if only the overall evaluation results, i.e.,
+                                        averaged over all folds, should be written to the outputs
+        """
+        self.output_evaluation = output_evaluation
+        self.output_predictions = output_predictions
+        self.output_individual_folds = output_individual_folds
 
     def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, total_folds: int,
                                  fold: int = None):
-        if fold is None or self.output_individual_folds:
-            text = ''
+        if self.output_evaluation:
+            if fold is None or self.output_individual_folds:
+                text = ''
 
-            for measure in sorted(evaluation_result.measures):
-                if measure != TIME_TRAIN and measure != TIME_PREDICT:
-                    if len(text) > 0:
-                        text += '\n'
+                for measure in sorted(evaluation_result.measures):
+                    if measure != TIME_TRAIN and measure != TIME_PREDICT:
+                        if len(text) > 0:
+                            text += '\n'
 
-                    if fold is None:
-                        score, std_dev = evaluation_result.avg(measure)
-                        text += (measure + ': ' + str(score))
+                        if fold is None:
+                            score, std_dev = evaluation_result.avg(measure)
+                            text += (measure + ': ' + str(score))
 
-                        if total_folds > 1:
-                            text += (' ±' + str(std_dev))
-                    else:
-                        score = evaluation_result.get(measure, fold)
-                        text += (measure + ': ' + str(score))
+                            if total_folds > 1:
+                                text += (' ±' + str(std_dev))
+                        else:
+                            score = evaluation_result.get(measure, fold)
+                            text += (measure + ': ' + str(score))
 
-            msg = ('Overall evaluation result for experiment \"' + experiment_name + '\"' if fold is None else
-                   'Evaluation result for experiment \"' + experiment_name + '\" (Fold ' + str(
-                       fold + 1) + ')') + ':\n\n%s\n'
-            log.info(msg, text)
+                msg = ('Overall evaluation result for experiment \"' + experiment_name + '\"' if fold is None else
+                       'Evaluation result for experiment \"' + experiment_name + '\" (Fold ' + str(
+                           fold + 1) + ')') + ':\n\n%s\n'
+                log.info(msg, text)
 
     def write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, total_folds: int,
                           fold: int = None):
@@ -297,10 +298,16 @@ class EvaluationCsvOutput(EvaluationOutput):
     def __init__(self, output_dir: str, clear_dir: bool = True, output_predictions: bool = False,
                  output_individual_folds: bool = True):
         """
-        :param output_dir:  The path of the directory, the CSV files should be written to
-        :param clear_dir:   True, if the directory, the CSV files should be written to, should be cleared
+        :param output_predictions:      True, if predictions provided by a classifier or ranker should be written to the
+                                        output, False otherwise
+        :param output_individual_folds: True, if the evaluation results for individual cross validation folds should be
+                                        written to the outputs, False, if only the overall evaluation results, i.e.,
+                                        averaged over all folds, should be written to the outputs
+        :param output_dir:              The path of the directory, the CSV files should be written to
+        :param clear_dir:               True, if the directory, the CSV files should be written to, should be cleared
         """
-        super().__init__(output_predictions, output_individual_folds)
+        self.output_predictions = output_predictions
+        self.output_individual_folds = output_individual_folds
         self.output_dir = output_dir
         self.clear_dir = clear_dir
 
