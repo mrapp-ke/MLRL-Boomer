@@ -69,8 +69,9 @@ class RuleLearnerRunnable(Runnable, ABC):
         if args.print_data_characteristics:
             data_characteristics_printer_outputs.append(DataCharacteristicsLogOutput())
 
-        if args.print_evaluation:
-            evaluation_outputs.append(EvaluationLogOutput())
+        if args.print_evaluation or args.print_predictions:
+            evaluation_outputs.append(EvaluationLogOutput(output_evaluation=args.print_evaluation,
+                                                          output_predictions=args.print_predictions))
 
         if args.print_model_characteristics:
             model_characteristics_printer_outputs.append(RuleModelCharacteristicsLogOutput())
