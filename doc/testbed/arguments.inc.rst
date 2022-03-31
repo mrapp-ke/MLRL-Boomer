@@ -45,6 +45,11 @@ In addition to the mandatory arguments that must be provided to the command line
   * ``true`` The evaluation results in terms of common metrics are written into .csv files. Does only have an effect if the parameter ``--output-dir`` is specified.
   * ``false`` The evaluation results are not written into .csv files.
 
+* ``--print-predictions`` (Default value = ``false``)
+
+  * ``true`` The predictions for individual examples and labels are printed on the console.
+  * ``false`` The predictions are not printed on the console.
+
 * ``--store-predictions`` (Default value = ``false``)
 
   * ``true`` The predictions for individual examples and labels are written into .arff files. Does only have an effect if the parameter ``--output-dir`` is specified.
