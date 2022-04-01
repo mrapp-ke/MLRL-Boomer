@@ -28,12 +28,14 @@ class Experiment(CrossValidation, ABC):
     """
 
     def __init__(self, base_learner: Learner, data_set: DataSet, num_folds: int = 1, current_fold: int = -1,
-                 train_evaluation: Evaluation = None, test_evaluation: Evaluation = None,
-                 parameter_input: ParameterInput = None, model_printer: ModelPrinter = None,
-                 model_characteristics_printer: ModelCharacteristicsPrinter = None,
+                 predict_probabilities: bool = False, train_evaluation: Evaluation = None,
+                 test_evaluation: Evaluation = None, parameter_input: ParameterInput = None,
+                 model_printer: ModelPrinter = None, model_characteristics_printer: ModelCharacteristicsPrinter = None,
                  data_characteristics_printer: DataCharacteristicsPrinter = None, persistence: ModelPersistence = None):
         """
         :param base_learner:                    The classifier or ranker to be trained
+        :param predict_probabilities:           True, if probabilities should be predicted rather than binary labels,
+                                                False otherwise
         :param train_evaluation:                The evaluation to be used for evaluating the predictions for the
                                                 training data or None, if the predictions should not be evaluated
         :param test_evaluation:                 The evaluation to be used for evaluating the predictions for the test
@@ -49,6 +51,7 @@ class Experiment(CrossValidation, ABC):
         """
         super().__init__(data_set, num_folds, current_fold)
         self.base_learner = base_learner
+        self.predict_probabilities = predict_probabilities
         self.train_evaluation = train_evaluation
         self.test_evaluation = test_evaluation
         self.parameter_input = parameter_input
@@ -105,28 +108,24 @@ class Experiment(CrossValidation, ABC):
 
         if evaluation is not None:
             log.info('Predicting for %s training examples...', train_x.shape[0])
-            start_time = timer()
-            predictions = current_learner.predict(train_x)
-            end_time = timer()
-            predict_time = end_time - start_time
-            log.info('Successfully predicted in %s seconds', predict_time)
-            evaluation.evaluate('train_' + learner_name, meta_data, predictions, train_y, first_fold=first_fold,
-                                current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
-                                train_time=current_learner.train_time_, predict_time=predict_time)
+            predictions, predict_time = self.__predict(current_learner, train_x)
+
+            if predictions is not None:
+                evaluation.evaluate('train_' + learner_name, meta_data, predictions, train_y, first_fold=first_fold,
+                                    current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
+                                    train_time=current_learner.train_time_, predict_time=predict_time)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
 
         if evaluation is not None:
             log.info('Predicting for %s test examples...', test_x.shape[0])
-            start_time = timer()
-            predictions = current_learner.predict(test_x)
-            end_time = timer()
-            predict_time = end_time - start_time
-            log.info('Successfully predicted in %s seconds', predict_time)
-            evaluation.evaluate('test_' + learner_name, meta_data, predictions, test_y, first_fold=first_fold,
-                                current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
-                                train_time=current_learner.train_time_, predict_time=predict_time)
+            predictions, predict_time = self.__predict(current_learner, test_x)
+
+            if predictions is not None:
+                evaluation.evaluate('test_' + learner_name, meta_data, predictions, test_y, first_fold=first_fold,
+                                    current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
+                                    train_time=current_learner.train_time_, predict_time=predict_time)
 
         # Print model characteristics, if necessary...
         model_characteristics_printer = self.model_characteristics_printer
@@ -141,6 +140,34 @@ class Experiment(CrossValidation, ABC):
         if model_printer is not None:
             model_printer.print(learner_name, meta_data, current_learner, current_fold=current_fold,
                                 num_folds=num_folds)
+
+    def __predict(self, learner, x):
+        """
+        Obtains predictions from a learner.
+
+        :param learner: The learner
+        :param x:       A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores
+                        the feature values of the query examples
+        :return:        The predictions, as well as the time needed
+        """
+        start_time = timer()
+
+        if self.predict_probabilities:
+            try:
+                predictions = learner.predict_proba(x)
+            except RuntimeError:
+                log.error('Prediction of probabilities not supported')
+                predictions = None
+        else:
+            predictions = learner.predict(x)
+
+        end_time = timer()
+        predict_time = end_time - start_time
+
+        if predictions is not None:
+            log.info('Successfully predicted in %s seconds', predict_time)
+
+        return predictions, predict_time
 
     def __load_model(self, model_name: str, current_fold: int, num_folds: int):
         """
