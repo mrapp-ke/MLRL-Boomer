@@ -45,6 +45,8 @@ PARAM_PRINT_PREDICTIONS = '--print-predictions'
 
 PARAM_STORE_PREDICTIONS = '--store-predictions'
 
+PARAM_PREDICT_PROBABILITIES = '--predict-probabilities'
+
 PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
 
 PARAM_STORE_DATA_CHARACTERISTICS = '--store-data-characteristics'
@@ -194,6 +196,9 @@ def add_learner_arguments(parser: ArgumentParser):
                         help='Whether the predictions for individual examples and labels should be written into output '
                              + 'files or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have '
                              + 'an effect, if the parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
+    parser.add_argument(PARAM_PREDICT_PROBABILITIES, type=boolean_string, default=False,
+                        help='Whether probabilities should be predicted rather than binary labels or not. Must be one '
+                            + 'of ' + format_enum_values(BooleanOption) + '.')
 
 
 def add_rule_learner_arguments(parser: ArgumentParser):

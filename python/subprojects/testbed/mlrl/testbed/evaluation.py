@@ -88,6 +88,18 @@ EX_BASED_JACCARD = 'Ex.-based Jacc.'
 # The name of the rank loss metric
 RANK_LOSS = 'Rank Loss'
 
+# The name of the coverage error metric
+COVERAGE_ERROR = 'Cov. Error'
+
+# The name of the label ranking average precision metric
+LABEL_RANKING_AVERAGE_PRECISION = 'LRAP'
+
+# The name of the discounted cumulative gain metric
+DISCOUNTED_CUMULATIVE_GAIN = 'DCG'
+
+# The name of the normalized discounted cumulative gain metric
+NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN = 'NDCG'
+
 # The time needed to train the model
 TIME_TRAIN = 'Training Time'
 
@@ -475,4 +487,14 @@ class RankingEvaluation(AbstractEvaluation):
         super().__init__(*args)
 
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
-        result.put(RANK_LOSS, metrics.label_ranking_loss(ground_truth, predictions), current_fold, num_folds)
+        if is_multilabel(ground_truth):
+            ground_truth = enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8)
+            result.put(RANK_LOSS, metrics.label_ranking_loss(ground_truth, predictions), current_fold, num_folds)
+            result.put(COVERAGE_ERROR, metrics.coverage_error(ground_truth, predictions), current_fold, num_folds)
+            result.put(LABEL_RANKING_AVERAGE_PRECISION,
+                       metrics.label_ranking_average_precision_score(ground_truth, predictions), current_fold,
+                       num_folds)
+            result.put(DISCOUNTED_CUMULATIVE_GAIN, metrics.dcg_score(ground_truth, predictions), current_fold,
+                       num_folds)
+            result.put(NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, metrics.ndcg_score(ground_truth, predictions),
+                       current_fold, num_folds)
