@@ -12,7 +12,8 @@ from argparse import ArgumentParser
 
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
-from mlrl.testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
+from mlrl.testbed.evaluation import ClassificationEvaluation, RankingEvaluation, EvaluationLogOutput, \
+    EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.model_characteristics import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput, \
     RuleModelCharacteristicsPrinter, RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
@@ -111,13 +112,21 @@ class RuleLearnerRunnable(Runnable, ABC):
             model_printer_outputs) > 0 else None
         model_characteristics_printer = RuleModelCharacteristicsPrinter(model_characteristics_printer_outputs) if len(
             model_characteristics_printer_outputs) > 0 else None
-        train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
-        test_evaluation = ClassificationEvaluation(*evaluation_outputs)
+        predict_probabilities = args.predict_probabilities
+
+        if predict_probabilities:
+            train_evaluation = RankingEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
+            test_evaluation = RankingEvaluation(*evaluation_outputs)
+        else:
+            train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
+            test_evaluation = ClassificationEvaluation(*evaluation_outputs)
+
         data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
-        experiment = Experiment(learner, test_evaluation=test_evaluation, train_evaluation=train_evaluation,
-                                data_set=data_set, num_folds=args.folds, current_fold=args.current_fold,
-                                parameter_input=parameter_input, model_printer=model_printer,
+        experiment = Experiment(learner, predict_probabilities=predict_probabilities, test_evaluation=test_evaluation,
+                                train_evaluation=train_evaluation, data_set=data_set, num_folds=args.folds,
+                                current_fold=args.current_fold, parameter_input=parameter_input,
+                                model_printer=model_printer,
                                 model_characteristics_printer=model_characteristics_printer,
                                 data_characteristics_printer=data_characteristics_printer, persistence=persistence)
         experiment.random_state = args.random_state
