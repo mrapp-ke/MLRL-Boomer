@@ -487,11 +487,14 @@ class RankingEvaluation(AbstractEvaluation):
         super().__init__(*args)
 
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
-        ground_truth = enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8)
-        result.put(RANK_LOSS, metrics.label_ranking_loss(ground_truth, predictions), current_fold, num_folds)
-        result.put(COVERAGE_ERROR, metrics.coverage_error(ground_truth, predictions), current_fold, num_folds)
-        result.put(LABEL_RANKING_AVERAGE_PRECISION,
-                   metrics.label_ranking_average_precision_score(ground_truth, predictions), current_fold, num_folds)
-        result.put(DISCOUNTED_CUMULATIVE_GAIN, metrics.dcg_score(ground_truth, predictions), current_fold, num_folds)
-        result.put(NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, metrics.ndcg_score(ground_truth, predictions), current_fold,
-                   num_folds)
+        if is_multilabel(ground_truth):
+            ground_truth = enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8)
+            result.put(RANK_LOSS, metrics.label_ranking_loss(ground_truth, predictions), current_fold, num_folds)
+            result.put(COVERAGE_ERROR, metrics.coverage_error(ground_truth, predictions), current_fold, num_folds)
+            result.put(LABEL_RANKING_AVERAGE_PRECISION,
+                       metrics.label_ranking_average_precision_score(ground_truth, predictions), current_fold,
+                       num_folds)
+            result.put(DISCOUNTED_CUMULATIVE_GAIN, metrics.dcg_score(ground_truth, predictions), current_fold,
+                       num_folds)
+            result.put(NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, metrics.ndcg_score(ground_truth, predictions),
+                       current_fold, num_folds)
