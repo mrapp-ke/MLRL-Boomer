@@ -68,9 +68,11 @@ LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
 
 NON_DECOMPOSABLE_LOSSES = {LOSS_LOGISTIC_EXAMPLE_WISE}
 
-PREDICTOR_LABEL_WISE = 'label-wise'
+CLASSIFICATION_PREDICTOR_LABEL_WISE = 'label-wise'
 
-PREDICTOR_EXAMPLE_WISE = 'example-wise'
+CLASSIFICATION_PREDICTOR_EXAMPLE_WISE = 'example-wise'
+
+PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
 
 HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
     HEAD_TYPE_SINGLE: {},
@@ -106,10 +108,14 @@ LOSS_VALUES: Set[str] = {
     LOSS_LOGISTIC_EXAMPLE_WISE
 }
 
-PREDICTOR_VALUES: Set[str] = {
-    PREDICTOR_LABEL_WISE,
-    PREDICTOR_EXAMPLE_WISE,
+CLASSIFICATION_PREDICTOR_VALUES: Set[str] = {
+    CLASSIFICATION_PREDICTOR_LABEL_WISE,
+    CLASSIFICATION_PREDICTOR_EXAMPLE_WISE,
     AUTOMATIC
+}
+
+PROBABILITY_PREDICTOR_VALUES: Set[str] = {
+    PROBABILITY_PREDICTOR_LABEL_WISE
 }
 
 PARALLEL_VALUES: Dict[str, Set[str]] = {
@@ -137,7 +143,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  early_stopping: Optional[str] = None,
                  head_type: Optional[str] = None,
                  loss: Optional[str] = None,
-                 predictor: Optional[str] = AUTOMATIC,
+                 classification_predictor: Optional[str] = None,
+                 probability_predictor: Optional[str] = None,
                  label_sampling: Optional[str] = None,
                  instance_sampling: Optional[str] = None,
                  feature_sampling: Optional[str] = None,
@@ -170,9 +177,11 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             chosen automatically. For additional options refer to the documentation
         :param loss:                        The loss function to be minimized. Must be 'squared-error-label-wise',
                                             'squared-hinge-label-wise', 'logistic-label-wise' or 'logistic-example-wise'
-        :param predictor:                   The strategy that should be used for making predictions. Must be
+        :param classification_predictor:    The strategy that should be used for predicting binary labels. Must be
                                             'label-wise', 'example-wise' or 'auto', if the most suitable strategy should
                                             be chosen automatically, depending on the loss function
+        :param probability_predictor:       The strategy that should be used for predicting probabilities. Must be
+                                            'label-wise'
         :param label_sampling:              The strategy that should be used to sample from the available labels
                                             whenever a new rule is learned. Must be 'without-replacement' or 'none', if
                                             no sampling should be used. For additional options refer to the
@@ -225,7 +234,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.early_stopping = early_stopping
         self.head_type = head_type
         self.loss = loss
-        self.predictor = predictor
+        self.classification_predictor = classification_predictor
+        self.probability_predictor = probability_predictor
         self.label_sampling = label_sampling
         self.instance_sampling = instance_sampling
         self.feature_sampling = feature_sampling
@@ -264,8 +274,10 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_head-type=' + str(self.head_type)
         if self.loss is not None:
             name += '_loss=' + str(self.loss)
-        if self.predictor is not None:
-            name += '_predictor=' + str(self.predictor)
+        if self.classification_predictor is not None:
+            name += '_classification_predictor=' + str(self.classification_predictor)
+        if self.probability_predictor is not None:
+            name += '_probability_predictor=' + str(self.probability_predictor)
         if self.label_sampling is not None:
             name += '_label-sampling=' + str(self.label_sampling)
         if self.instance_sampling is not None:
@@ -317,6 +329,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.__configure_loss(config)
         self.__configure_label_binning(config)
         self.__configure_classification_predictor(config)
+        self.__configure_probability_predictor(config)
         return BoostingRuleLearnerWrapper(config)
 
     def __configure_feature_binning(self, config: BoostingRuleLearnerConfig):
@@ -457,14 +470,23 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
 
     def __configure_classification_predictor(self, config: BoostingRuleLearnerConfig):
-        predictor = self.predictor
+        classification_predictor = self.classification_predictor
 
-        if predictor is not None:
-            value = parse_param('predictor', predictor, PREDICTOR_VALUES)
+        if classification_predictor is not None:
+            value = parse_param('classification_predictor', classification_predictor, CLASSIFICATION_PREDICTOR_VALUES)
 
-            if predictor == AUTOMATIC:
+            if value == AUTOMATIC:
                 config.use_automatic_label_binning()
-            elif value == PREDICTOR_LABEL_WISE:
+            elif value == CLASSIFICATION_PREDICTOR_LABEL_WISE:
                 config.use_label_wise_classification_predictor()
-            elif value == PREDICTOR_EXAMPLE_WISE:
+            elif value == CLASSIFICATION_PREDICTOR_EXAMPLE_WISE:
                 config.use_example_wise_classification_predictor()
+
+    def __configure_probability_predictor(self,config: BoostingRuleLearnerConfig):
+        probability_predictor = self.probability_predictor
+
+        if probability_predictor is not None:
+            value = parse_param('probability_predictor', probability_predictor, PROBABILITY_PREDICTOR_VALUES)
+
+            if value == PROBABILITY_PREDICTOR_LABEL_WISE:
+                config.use_label_wise_probability_predictor()
