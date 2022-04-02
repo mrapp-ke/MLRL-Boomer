@@ -12,7 +12,7 @@ from mlrl.testbed.args import add_rule_learner_arguments, PARAM_HEAD_TYPE, PARAM
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
 from mlrl.boosting.boosting_learners import Boomer, HEAD_TYPE_VALUES, EARLY_STOPPING_VALUES, LABEL_BINNING_VALUES, \
-    LOSS_VALUES, CLASSIFICATION_PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
+    LOSS_VALUES, CLASSIFICATION_PREDICTOR_VALUES, PROBABILITY_PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
 
 PARAM_RULE_MODEL_ASSEMBLAGE = '--rule-model-assemblage'
 
@@ -27,6 +27,8 @@ PARAM_LOSS = '--loss'
 PARAM_SHRINKAGE = '--shrinkage'
 
 PARAM_CLASSIFICATION_PREDICTOR = '--classification-predictor'
+
+PARAM_PROBABILITY_PREDICTOR = '--probability-predictor'
 
 PARAM_L1_REGULARIZATION_WEIGHT = '--l1-regularization-weight'
 
@@ -47,6 +49,7 @@ class BoomerRunnable(RuleLearnerRunnable):
                       early_stopping=args.early_stopping,
                       loss=args.loss,
                       classification_predictor=args.classification_predictor,
+                      probability_predictor=args.probability_predictor,
                       pruning=args.pruning,
                       label_sampling=args.label_sampling,
                       instance_sampling=args.instance_sampling,
@@ -93,6 +96,9 @@ def __add_arguments(parser: ArgumentParser):
                              + format_string_set(CLASSIFICATION_PREDICTOR_VALUES) + '. If set to "' + AUTOMATIC + '", '
                              + 'the most suitable strategy is chosen automatically based on the parameter '
                              + PARAM_LOSS + '.')
+    parser.add_argument(PARAM_PROBABILITY_PREDICTOR, type=str,
+                        help='The name of the strategy to be used for predicting probabilities. Must be one of '
+                             + format_string_set(PROBABILITY_PREDICTOR_VALUES) + '.')
     parser.add_argument(PARAM_L1_REGULARIZATION_WEIGHT, type=float,
                         help='The weight of the L1 regularization. Must be at least 0.')
     parser.add_argument(PARAM_L2_REGULARIZATION_WEIGHT, type=float,

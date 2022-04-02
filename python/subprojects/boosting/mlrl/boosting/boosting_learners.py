@@ -72,6 +72,8 @@ CLASSIFICATION_PREDICTOR_LABEL_WISE = 'label-wise'
 
 CLASSIFICATION_PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
+PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
+
 HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
     HEAD_TYPE_SINGLE: {},
     HEAD_TYPE_PARTIAL_FIXED: {ARGUMENT_LABEL_RATIO, ARGUMENT_MIN_LABELS, ARGUMENT_MAX_LABELS},
@@ -112,6 +114,10 @@ CLASSIFICATION_PREDICTOR_VALUES: Set[str] = {
     AUTOMATIC
 }
 
+PROBABILITY_PREDICTOR_VALUES: Set[str] = {
+    PROBABILITY_PREDICTOR_LABEL_WISE
+}
+
 PARALLEL_VALUES: Dict[str, Set[str]] = {
     str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
     str(BooleanOption.FALSE.value): {},
@@ -137,7 +143,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  early_stopping: Optional[str] = None,
                  head_type: Optional[str] = None,
                  loss: Optional[str] = None,
-                 classification_predictor: Optional[str] = AUTOMATIC,
+                 classification_predictor: Optional[str] = None,
+                 probability_predictor: Optional[str] = None,
                  label_sampling: Optional[str] = None,
                  instance_sampling: Optional[str] = None,
                  feature_sampling: Optional[str] = None,
@@ -173,6 +180,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param classification_predictor:    The strategy that should be used for predicting binary labels. Must be
                                             'label-wise', 'example-wise' or 'auto', if the most suitable strategy should
                                             be chosen automatically, depending on the loss function
+        :param probability_predictor:       The strategy that should be used for predicting probabilities. Must be
+                                            'label-wise'
         :param label_sampling:              The strategy that should be used to sample from the available labels
                                             whenever a new rule is learned. Must be 'without-replacement' or 'none', if
                                             no sampling should be used. For additional options refer to the
@@ -226,6 +235,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.head_type = head_type
         self.loss = loss
         self.classification_predictor = classification_predictor
+        self.probability_predictor = probability_predictor
         self.label_sampling = label_sampling
         self.instance_sampling = instance_sampling
         self.feature_sampling = feature_sampling
@@ -266,6 +276,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_loss=' + str(self.loss)
         if self.classification_predictor is not None:
             name += '_classification_predictor=' + str(self.classification_predictor)
+        if self.probability_predictor is not None:
+            name += '_probability_predictor=' + str(self.probability_predictor)
         if self.label_sampling is not None:
             name += '_label-sampling=' + str(self.label_sampling)
         if self.instance_sampling is not None:
@@ -317,6 +329,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.__configure_loss(config)
         self.__configure_label_binning(config)
         self.__configure_classification_predictor(config)
+        self.__configure_probability_predictor(config)
         return BoostingRuleLearnerWrapper(config)
 
     def __configure_feature_binning(self, config: BoostingRuleLearnerConfig):
@@ -462,9 +475,18 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if classification_predictor is not None:
             value = parse_param('classification_predictor', classification_predictor, CLASSIFICATION_PREDICTOR_VALUES)
 
-            if classification_predictor == AUTOMATIC:
+            if value == AUTOMATIC:
                 config.use_automatic_label_binning()
             elif value == CLASSIFICATION_PREDICTOR_LABEL_WISE:
                 config.use_label_wise_classification_predictor()
             elif value == CLASSIFICATION_PREDICTOR_EXAMPLE_WISE:
                 config.use_example_wise_classification_predictor()
+
+    def __configure_probability_predictor(self,config: BoostingRuleLearnerConfig):
+        probability_predictor = self.probability_predictor
+
+        if probability_predictor is not None:
+            value = parse_param('probability_predictor', probability_predictor, PROBABILITY_PREDICTOR_VALUES)
+
+            if value == PROBABILITY_PREDICTOR_LABEL_WISE:
+                config.use_label_wise_probability_predictor()

@@ -192,6 +192,10 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'label-wise'`` The prediction for an example is determined for each label independently.
   * ``'example-wise'`` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data.
 
+* ``probability_predictor`` (Default value = ``'label-wise'``)
+
+  * ``'label-wise'`` The prediction for an example is determined for each label independently
+
 * ``l1_regularization_weight`` (Default value = ``0.0``)
 
   * The weight of the L1 regularization. Must be at least 0. If 0 is used, the L1 regularization is turned off entirely. Increasing the value causes the model to become more conservative.
