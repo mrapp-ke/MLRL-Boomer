@@ -14,6 +14,7 @@
 #include "boosting/output/predictor_classification_label_wise.hpp"
 #include "boosting/output/predictor_regression_label_wise.hpp"
 #include "boosting/output/predictor_probability_label_wise.hpp"
+#include "boosting/output/predictor_probability_marginalized.hpp"
 #include "boosting/rule_evaluation/head_type_auto.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
@@ -204,6 +205,11 @@ namespace boosting {
     void BoostingRuleLearner::Config::useLabelWiseProbabilityPredictor() {
         probabilityPredictorConfigPtr_ =
             std::make_unique<LabelWiseProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+    }
+
+    void BoostingRuleLearner::Config::useMarginalizedProbabilityPredictor() {
+        probabilityPredictorConfigPtr_ =
+            std::make_unique<MarginalizedProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     BoostingRuleLearner::BoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr,
