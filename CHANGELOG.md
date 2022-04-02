@@ -2,6 +2,8 @@
 
 ### Version 0.9.0 (to be released)
 
+***This release comes with changes to the command line API. For an updated overview of the available parameters, please refer to the documentation.***
+
 A major update to the BOOMER algorithm that introduces the following changes:
 
 * The parameter `--head-type` does now allow to learn partial rules that predict for a predefined number of labels (`partial-fixed`).

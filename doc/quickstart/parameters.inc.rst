@@ -186,9 +186,9 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'squared-error-label-wise'`` A variant of the squared error loss that is applied to each label individually.
   * ``'squared-hinge-label-wise'`` A variant of the squared hinge loss that is applied to each label individually.
 
-* ``predictor`` (Default value = ``'auto'``)
+* ``classification_predictor`` (Default value = ``'auto'``)
 
-  * ``'auto'`` The most suitable strategy for making predictions is chosen automatically, depending on the loss function.
+  * ``'auto'`` The most suitable strategy for predicting binary labels is chosen automatically, depending on the loss function.
   * ``'label-wise'`` The prediction for an example is determined for each label independently.
   * ``'example-wise'`` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data.
 
