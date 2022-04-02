@@ -265,9 +265,9 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to use a predictor for predicting probability estimates by summing up
-                     * the scores that are provided by individual rules of an existing rule-based models and
-                     * transforming the aggregated scores into probabilities according to a certain transformation
-                     * function that is applied to each label individually.
+                     * the scores that are provided by individual rules of an existing rule-based model and transforming
+                     * the aggregated scores into probabilities according to a certain transformation function that is
+                     * applied to each label individually.
                      */
                     virtual void useLabelWiseProbabilityPredictor() = 0;
 
