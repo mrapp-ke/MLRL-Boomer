@@ -42,12 +42,6 @@ namespace boosting {
                 const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
-             * @see `IClassificationPredictorConfig::createLabelSpaceInfo`
-             */
-            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
-
-            /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`
              */
             bool isLabelVectorSetNeeded() const override;
