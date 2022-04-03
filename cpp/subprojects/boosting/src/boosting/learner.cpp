@@ -19,6 +19,7 @@
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
+#include "common/output/label_space_info_no.hpp"
 
 
 namespace boosting {
@@ -241,7 +242,13 @@ namespace boosting {
 
     std::unique_ptr<ILabelSpaceInfo> BoostingRuleLearner::createLabelSpaceInfo(
             const IRowWiseLabelMatrix& labelMatrix) const {
-        return configPtr_->getClassificationPredictorConfig().createLabelSpaceInfo(labelMatrix);
+        if (configPtr_->getClassificationPredictorConfig().isLabelVectorSetNeeded()
+            && configPtr_->getProbabilityPredictorConfig().isLabelVectorSetNeeded()
+            && configPtr_->getRegressionPredictorConfig().isLabelVectorSetNeeded()) {
+            return createLabelVectorSet(labelMatrix);
+        } else {
+            return createNoLabelSpaceInfo();
+        }
     }
 
     std::unique_ptr<IBoostingRuleLearner::IConfig> createBoostingRuleLearnerConfig() {

@@ -9,6 +9,7 @@
 #include "seco/rule_evaluation/head_type_partial.hpp"
 #include "seco/rule_evaluation/head_type_single.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
+#include "common/output/label_space_info_no.hpp"
 
 
 namespace seco {
@@ -201,7 +202,11 @@ namespace seco {
 
     std::unique_ptr<ILabelSpaceInfo> SeCoRuleLearner::createLabelSpaceInfo(
             const IRowWiseLabelMatrix& labelMatrix) const {
-        return configPtr_->getClassificationPredictorConfig().createLabelSpaceInfo(labelMatrix);
+        if (configPtr_->getClassificationPredictorConfig().isLabelVectorSetNeeded()) {
+            return createLabelVectorSet(labelMatrix);
+        } else {
+            return createNoLabelSpaceInfo();
+        }
     }
 
     std::unique_ptr<IClassificationPredictorFactory> SeCoRuleLearner::createClassificationPredictorFactory(
