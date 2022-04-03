@@ -16,17 +16,18 @@ namespace boosting {
                                              const ISimilarityMeasure& measure, const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator it = labelVectorSet.cbegin();
         float64 minDistance = measureSimilarity(it, scoresBegin, scoresEnd, measure);
+        distances[0] = minDistance;
         it++;
-        uint32 i = 0;
+        uint32 i = 1;
 
         for (; it != labelVectorSet.cend(); it++) {
             float64 distance = measureSimilarity(it, scoresBegin, scoresEnd, measure);
-            distances[i] = distance;
 
             if (distance < minDistance) {
                 minDistance = distance;
             }
 
+            distances[i] = distance;
             i++;
         }
 
