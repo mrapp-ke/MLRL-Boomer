@@ -97,6 +97,10 @@ namespace boosting {
                 return this->createExampleWiseLossFactory();
             }
 
+            bool isDecomposable() const override final {
+                return false;
+            }
+
     };
 
 }
