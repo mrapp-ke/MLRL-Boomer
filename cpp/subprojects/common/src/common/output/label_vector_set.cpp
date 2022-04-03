@@ -44,3 +44,14 @@ std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredicto
 std::unique_ptr<ILabelVectorSet> createLabelVectorSet() {
     return std::make_unique<LabelVectorSet>();
 }
+
+std::unique_ptr<ILabelVectorSet> createLabelVectorSet(const IRowWiseLabelMatrix& labelMatrix) {
+    std::unique_ptr<LabelVectorSet> labelVectorSetPtr = std::make_unique<LabelVectorSet>();
+    uint32 numRows = labelMatrix.getNumRows();
+
+    for (uint32 i = 0; i < numRows; i++) {
+        labelVectorSetPtr->addLabelVector(labelMatrix.createLabelVector(i));
+    }
+
+    return labelVectorSetPtr;
+}
