@@ -249,6 +249,13 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useMarginalizedProbabilityPredictor()
 
+    def use_automatic_probability_predictor(self):
+        """
+        Configures the rule learner to automatically decide for a predictor for predicting probability estimates.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAutomaticProbabilityPredictor()
+
 
 cdef class BoostingRuleLearner(RuleLearner):
     """
