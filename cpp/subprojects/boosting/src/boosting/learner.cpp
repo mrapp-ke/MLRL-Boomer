@@ -39,7 +39,7 @@ namespace boosting {
         this->useAutomaticLabelBinning();
         this->useAutomaticClassificationPredictor();
         this->useLabelWiseRegressionPredictor();
-        this->useLabelWiseProbabilityPredictor();
+        this->useAutomaticProbabilityPredictor();
     }
 
     const IHeadConfig& BoostingRuleLearner::Config::getHeadConfig() const {
