@@ -195,4 +195,8 @@ namespace boosting {
         }
     }
 
+    bool LabelWiseProbabilityPredictorConfig::isLabelVectorSetNeeded() const {
+        return false;
+    }
+
 }
