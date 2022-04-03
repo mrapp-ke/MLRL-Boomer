@@ -13,7 +13,7 @@ namespace boosting {
 
     uint32 AutoParallelStatisticUpdateConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
                                                             uint32 numLabels) const {
-        if (dynamic_cast<const IExampleWiseLossConfig*>(lossConfigPtr_.get()) && numLabels >= 20) {
+        if (!lossConfigPtr_->isDecomposable() && numLabels >= 20) {
             return getNumAvailableThreads(0);
         } else {
             return 1;
