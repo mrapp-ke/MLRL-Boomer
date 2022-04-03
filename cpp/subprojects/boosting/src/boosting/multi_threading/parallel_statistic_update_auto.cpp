@@ -1,5 +1,4 @@
 #include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
-#include "boosting/losses/loss_example_wise.hpp"
 #include "common/util/threads.hpp"
 
 
