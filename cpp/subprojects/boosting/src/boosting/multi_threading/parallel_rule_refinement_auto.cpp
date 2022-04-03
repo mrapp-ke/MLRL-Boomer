@@ -1,5 +1,4 @@
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
-#include "boosting/rule_evaluation/head_type_single.hpp"
 #include "common/util/threads.hpp"
 
 
@@ -15,7 +14,7 @@ namespace boosting {
 
     uint32 AutoParallelRuleRefinementConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
                                                            uint32 numLabels) const {
-        if (!lossConfigPtr_->isDecomposable() && !dynamic_cast<const SingleLabelHeadConfig*>(headConfigPtr_.get())) {
+        if (!lossConfigPtr_->isDecomposable() && !headConfigPtr_->isSingleLabel()) {
             return 1;
         } else if (featureMatrix.isSparse() && !featureSamplingConfigPtr_->isSamplingUsed()) {
             return 1;
