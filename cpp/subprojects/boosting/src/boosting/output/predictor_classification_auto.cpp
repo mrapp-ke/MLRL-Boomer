@@ -34,4 +34,14 @@ namespace boosting {
         }
     }
 
+    bool AutomaticClassificationPredictorConfig::isLabelVectorSetNeeded() const {
+        if (lossConfigPtr_->isDecomposable()) {
+            return LabelWiseClassificationPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+                .isLabelVectorSetNeeded();
+        } else {
+            return ExampleWiseClassificationPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+                .isLabelVectorSetNeeded();
+        }
+    }
+
 }

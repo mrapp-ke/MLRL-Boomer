@@ -369,4 +369,8 @@ namespace seco {
         return createNoLabelSpaceInfo();
     }
 
+    bool LabelWiseClassificationPredictorConfig::isLabelVectorSetNeeded() const {
+        return false;
+    }
+
 }

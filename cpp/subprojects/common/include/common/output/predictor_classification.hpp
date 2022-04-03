@@ -50,11 +50,11 @@ class IClassificationPredictorFactory {
  * Defines an interface for all classes that allow to configure a predictor that predicts whether individual labels of
  * given query examples are relevant or irrelevant.
  */
-class IClassificationPredictorConfig {
+class IClassificationPredictorConfig : public IPredictorConfig {
 
     public:
 
-        virtual ~IClassificationPredictorConfig() { };
+        virtual ~IClassificationPredictorConfig() override { };
 
         /**
          * Creates and returns a new object of type `IClassificationPredictorFactory` according to the specified
