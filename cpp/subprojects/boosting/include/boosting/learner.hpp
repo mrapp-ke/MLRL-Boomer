@@ -281,6 +281,12 @@ namespace boosting {
                      */
                     virtual void useMarginalizedProbabilityPredictor() = 0;
 
+                    /**
+                     * Configures the rule learner to automatically decide for a predictor for predicting probability
+                     * estimates.
+                     */
+                    virtual void useAutomaticProbabilityPredictor() = 0;
+
             };
 
             virtual ~IBoostingRuleLearner() override { };
@@ -391,6 +397,8 @@ namespace boosting {
                     void useLabelWiseProbabilityPredictor() override;
 
                     void useMarginalizedProbabilityPredictor() override;
+
+                    void useAutomaticProbabilityPredictor() override;
 
             };
 
