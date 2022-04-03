@@ -16,4 +16,6 @@ class NoFeatureSamplingConfig final : public IFeatureSamplingConfig {
         std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory(
             const IFeatureMatrix& featureMatrix) const override;
 
+        bool isSamplingUsed() const override;
+
 };

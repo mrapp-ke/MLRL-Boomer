@@ -19,13 +19,10 @@ namespace boosting {
                                                            uint32 numLabels) const {
         if (!lossConfigPtr_->isDecomposable() && !dynamic_cast<const SingleLabelHeadConfig*>(headConfigPtr_.get())) {
             return 1;
+        } else if (featureMatrix.isSparse() && !featureSamplingConfigPtr_->isSamplingUsed()) {
+            return 1;
         } else {
-            if (featureMatrix.isSparse()
-                    && !dynamic_cast<const NoFeatureSamplingConfig*>(featureSamplingConfigPtr_.get())) {
-                return 1;
-            } else {
-                return getNumAvailableThreads(0);
-            }
+            return getNumAvailableThreads(0);
         }
     };
 
