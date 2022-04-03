@@ -324,4 +324,8 @@ namespace boosting {
         return labelVectorSetPtr;
     }
 
+    bool ExampleWiseClassificationPredictorConfig::isLabelVectorSetNeeded() const {
+        return true;
+    }
+
 }

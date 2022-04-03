@@ -47,6 +47,11 @@ namespace boosting {
             std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
                 const IRowWiseLabelMatrix& labelMatrix) const override;
 
+            /**
+             * @see `IPredictorConfig::isLabelVectorSetNeeded`
+             */
+            bool isLabelVectorSetNeeded() const override;
+
     };
 
 }

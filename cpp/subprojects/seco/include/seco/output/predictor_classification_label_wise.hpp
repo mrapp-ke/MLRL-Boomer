@@ -37,6 +37,8 @@ namespace seco {
             std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
                 const IRowWiseLabelMatrix& labelMatrix) const override;
 
+            bool isLabelVectorSetNeeded() const override;
+
     };
 
 }

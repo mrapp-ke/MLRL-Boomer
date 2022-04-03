@@ -254,4 +254,8 @@ namespace boosting {
         return createNoLabelSpaceInfo();
     }
 
+    bool LabelWiseClassificationPredictorConfig::isLabelVectorSetNeeded() const {
+        return true;
+    }
+
 }
