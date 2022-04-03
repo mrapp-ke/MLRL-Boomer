@@ -23,4 +23,14 @@ namespace boosting {
         }
     }
 
+    bool AutomaticProbabilityPredictorConfig::isLabelVectorSetNeeded() const {
+        if (lossConfigPtr_->isDecomposable()) {
+            return LabelWiseProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+                .isLabelVectorSetNeeded();
+        } else {
+            return MarginalizedProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+                .isLabelVectorSetNeeded();
+        }
+    }
+
 }

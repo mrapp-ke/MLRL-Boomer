@@ -129,4 +129,8 @@ namespace boosting {
                                                                          numThreads);
     }
 
+    bool MarginalizedProbabilityPredictorConfig::isLabelVectorSetNeeded() const {
+        return true;
+    }
+
 }
