@@ -23,14 +23,13 @@ namespace boosting {
         }
     }
 
-    std::unique_ptr<ILabelSpaceInfo> AutomaticClassificationPredictorConfig::createLabelSpaceInfo(
-            const IRowWiseLabelMatrix& labelMatrix) const {
+    bool AutomaticClassificationPredictorConfig::isLabelVectorSetNeeded() const {
         if (lossConfigPtr_->isDecomposable()) {
             return LabelWiseClassificationPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-                .createLabelSpaceInfo(labelMatrix);
+                .isLabelVectorSetNeeded();
         } else {
             return ExampleWiseClassificationPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-                .createLabelSpaceInfo(labelMatrix);
+                .isLabelVectorSetNeeded();
         }
     }
 
