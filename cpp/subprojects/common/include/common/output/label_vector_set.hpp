@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/output/label_space_info.hpp"
-#include "common/input/label_vector.hpp"
+#include "common/input/label_matrix_row_wise.hpp"
 #include "common/data/functions.hpp"
 #include <unordered_map>
 #include <functional>
@@ -117,3 +117,12 @@ class LabelVectorSet final : public ILabelVectorSet {
  * @return An unique pointer to an object of type `ILabelVectorSet` that has been created
  */
 MLRLCOMMON_API std::unique_ptr<ILabelVectorSet> createLabelVectorSet();
+
+/**
+ * Creates and returns a new object of the type `ILabelVectorSet` that stores all label vectors that are encountered in
+ * a given label matrix.
+ *
+ * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix`
+ * @return              An unique pointer to an object of type `ILabelVectorSet` that has been created
+ */
+std::unique_ptr<ILabelVectorSet> createLabelVectorSet(const IRowWiseLabelMatrix& labelMatrix);
