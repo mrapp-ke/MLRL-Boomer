@@ -1,7 +1,5 @@
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
-#include "boosting/losses/loss_example_wise.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
-#include "common/sampling/feature_sampling_no.hpp"
 #include "common/util/threads.hpp"
 
 

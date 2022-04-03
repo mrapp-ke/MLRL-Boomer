@@ -1,7 +1,6 @@
 #include "boosting/output/predictor_classification_auto.hpp"
 #include "boosting/output/predictor_classification_example_wise.hpp"
 #include "boosting/output/predictor_classification_label_wise.hpp"
-#include "boosting/losses/loss_example_wise.hpp"
 
 
 namespace boosting {
