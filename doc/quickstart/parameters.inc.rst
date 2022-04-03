@@ -192,9 +192,11 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'label-wise'`` The prediction for an example is determined for each label independently.
   * ``'example-wise'`` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data.
 
-* ``probability_predictor`` (Default value = ``'label-wise'``)
+* ``probability_predictor`` (Default value = ``'auto'``)
 
+  * ``'auto'`` The most suitable strategy for predicting probability estimates is chosen automatically, depending on the loss function.
   * ``'label-wise'`` The prediction for an example is determined for each label independently
+  * ``'marginalized'`` The prediction for an example is determined via marginalization over the set of label vectors encountered in the training data.
 
 * ``l1_regularization_weight`` (Default value = ``0.0``)
 
