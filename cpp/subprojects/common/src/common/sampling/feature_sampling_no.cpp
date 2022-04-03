@@ -56,3 +56,7 @@ std::unique_ptr<IFeatureSamplingFactory> NoFeatureSamplingConfig::createFeatureS
         const IFeatureMatrix& featureMatrix) const {
     return std::make_unique<NoFeatureSamplingFactory>(featureMatrix.getNumCols());
 }
+
+bool NoFeatureSamplingConfig::isSamplingUsed() const {
+    return false;
+}
