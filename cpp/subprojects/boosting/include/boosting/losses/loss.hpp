@@ -78,6 +78,13 @@ namespace boosting {
             virtual std::unique_ptr<IProbabilityFunctionFactory> createProbabilityFunctionFactory() const = 0;
 
             /**
+             * Returns whether the loss function is decomposable or not.
+             *
+             * @return True, if the loss function is decomposable, false otherwise
+             */
+            virtual bool isDecomposable() const = 0;
+
+            /**
              * Returns the default prediction for an example that is not covered by any rules.
              *
              * @return The default prediction

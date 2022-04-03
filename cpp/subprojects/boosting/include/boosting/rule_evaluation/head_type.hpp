@@ -59,6 +59,13 @@ namespace boosting {
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
                 const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const = 0;
 
+            /**
+             * Returns whether the rule heads are guaranteed to predict for a single label or not.
+             *
+             * @return True, if the rule heads are guaranteed to predict for a single label, false otherwise
+             */
+            virtual bool isSingleLabel() const = 0;
+
     };
 
 }

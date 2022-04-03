@@ -36,4 +36,8 @@ namespace boosting {
         return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig, blas, lapack);
     }
 
+    bool AutomaticHeadConfig::isSingleLabel() const {
+        return false;
+    }
+
 }
