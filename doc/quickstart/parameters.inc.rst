@@ -206,7 +206,7 @@ The following parameters allow to control the behavior of the algorithm:
 
 **Multi-Threading**
 
-The following parameters allow to specifiy whether multi-threading should be used for different aspects of the algorithm:
+The following parameters allow to specify whether multi-threading should be used for different aspects of the algorithm:
 
 * ``parallel_rule_refinement`` (Default value = ``'auto'``)
 
