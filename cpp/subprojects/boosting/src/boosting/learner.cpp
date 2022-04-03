@@ -243,8 +243,8 @@ namespace boosting {
     std::unique_ptr<ILabelSpaceInfo> BoostingRuleLearner::createLabelSpaceInfo(
             const IRowWiseLabelMatrix& labelMatrix) const {
         if (configPtr_->getClassificationPredictorConfig().isLabelVectorSetNeeded()
-            && configPtr_->getProbabilityPredictorConfig().isLabelVectorSetNeeded()
-            && configPtr_->getRegressionPredictorConfig().isLabelVectorSetNeeded()) {
+            || configPtr_->getProbabilityPredictorConfig().isLabelVectorSetNeeded()
+            || configPtr_->getRegressionPredictorConfig().isLabelVectorSetNeeded()) {
             return createLabelVectorSet(labelMatrix);
         } else {
             return createNoLabelSpaceInfo();
