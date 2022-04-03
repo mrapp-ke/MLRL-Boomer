@@ -143,4 +143,8 @@ namespace boosting {
         return std::make_unique<LabelWiseRegressionPredictorFactory>(numThreads);
     }
 
+    bool LabelWiseRegressionPredictorConfig::isLabelVectorSetNeeded() const {
+        return false;
+    }
+
 }
