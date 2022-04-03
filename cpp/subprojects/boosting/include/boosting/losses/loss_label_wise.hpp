@@ -159,7 +159,7 @@ namespace boosting {
             }
 
             bool isDecomposable() const override final {
-                return false;
+                return true;
             }
 
     };
