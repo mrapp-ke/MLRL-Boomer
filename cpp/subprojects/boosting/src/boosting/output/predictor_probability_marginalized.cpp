@@ -1,7 +1,82 @@
 #include "boosting/output/predictor_probability_marginalized.hpp"
+#include "predictor_common.hpp"
+#include "omp.h"
 
 
 namespace boosting {
+
+    static inline float64 measureSimilarity(LabelVectorSet::const_iterator iterator, const float64* scoresBegin,
+                                            const float64* scoresEnd, const ISimilarityMeasure& measure) {
+        const auto& entry = *iterator;
+        const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
+        return measure.measureSimilarity(*labelVectorPtr, scoresBegin, scoresEnd);
+    }
+
+    static inline float64 calculateDistances(const float64* scoresBegin, const float64* scoresEnd, float64* distances,
+                                             const ISimilarityMeasure& measure, const LabelVectorSet& labelVectorSet) {
+        LabelVectorSet::const_iterator it = labelVectorSet.cbegin();
+        float64 minDistance = measureSimilarity(it, scoresBegin, scoresEnd, measure);
+        it++;
+        uint32 i = 0;
+
+        for (; it != labelVectorSet.cend(); it++) {
+            float64 distance = measureSimilarity(it, scoresBegin, scoresEnd, measure);
+            distances[i] = distance;
+
+            if (distance < minDistance) {
+                minDistance = distance;
+            }
+
+            i++;
+        }
+
+        return minDistance;
+    }
+
+    static inline float64 normalizeDistances(float64* distances, uint32 numDistances, float64 minDistance) {
+        float64 sumOfNormalizedDistances = 0;
+
+        for (uint32 i = 0; i < numDistances; i++) {
+            float64 normalizedDistance = minDistance / distances[i];
+            distances[i] = normalizedDistance;
+            sumOfNormalizedDistances += normalizedDistance;
+        }
+
+        return sumOfNormalizedDistances;
+    }
+
+    static inline void calculateMarginalizedProbabilities(CContiguousView<float64>::value_iterator predictionIterator,
+                                                          const float64* normalizedDistances,
+                                                          float64 sumOfNormalizedDistances,
+                                                          const LabelVectorSet& labelVectorSet) {
+        uint32 i = 0;
+
+        for (auto it = labelVectorSet.cbegin(); it != labelVectorSet.cend(); it++) {
+            const auto& entry = *it;
+            const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
+            uint32 numRelevantLabels = labelVectorPtr->getNumElements();
+            LabelVector::const_iterator labelIndexIterator = labelVectorPtr->cbegin();
+            float64 jointProbability = normalizedDistances[i] / sumOfNormalizedDistances;
+
+            for (uint32 j = 0; j < numRelevantLabels; j++) {
+                uint32 labelIndex = labelIndexIterator[j];
+                predictionIterator[labelIndex] += jointProbability;
+            }
+
+            i++;
+        }
+    }
+
+    static inline void predictMarginalizedProbabilities(const float64* scoresBegin, const float64* scoresEnd,
+                                                        CContiguousView<float64>::value_iterator predictionIterator,
+                                                        uint32 numElements, const ISimilarityMeasure& measure,
+                                                        const LabelVectorSet& labelVectorSet, uint32 numLabelVectors) {
+        float64* distances = new float64[numLabelVectors];
+        float64 minDistance = calculateDistances(scoresBegin, scoresEnd, distances, measure, labelVectorSet);
+        float64 sumOfNormalizedDistances = normalizeDistances(distances, numLabelVectors, minDistance);
+        calculateMarginalizedProbabilities(predictionIterator, distances, sumOfNormalizedDistances, labelVectorSet);
+        delete[] distances;
+    }
 
     /**
      * An implementation of the type `IProbabilityPredictor` that allows to predict marginalized probabilities for given
@@ -52,8 +127,38 @@ namespace boosting {
              */
             std::unique_ptr<DensePredictionMatrix<float64>> predict(
                     const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
-                // TODO
-                return nullptr;
+                uint32 numExamples = featureMatrix.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
+                    std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
+                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
+
+                if (labelVectorSetPtr) {
+                    uint32 numLabelVectors = labelVectorSetPtr->getNumLabelVectors();
+
+                    if (numLabelVectors > 0) {
+                        const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
+                        CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
+                        const Model* modelPtr = &model_;
+                        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
+
+                        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) \
+                        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
+                        firstprivate(similarityMeasureRawPtr) firstprivate(labelVectorSetPtr) schedule(dynamic) \
+                        num_threads(numThreads_)
+                        for (int64 i = 0; i < numExamples; i++) {
+                            float64* scoreVector = new float64[numLabels] {};
+                            applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
+                                       featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                            predictMarginalizedProbabilities(&scoreVector[0], &scoreVector[numLabels],
+                                                             predictionMatrixRawPtr->row_values_begin(i), numLabels,
+                                                             *similarityMeasureRawPtr, *labelVectorSetPtr,
+                                                             numLabelVectors);
+                            delete[] scoreVector;
+                        }
+                    }
+                }
+
+                return predictionMatrixPtr;
             }
 
             /**
@@ -61,8 +166,40 @@ namespace boosting {
              */
             std::unique_ptr<DensePredictionMatrix<float64>> predict(const CsrConstView<const float32>& featureMatrix,
                                                                     uint32 numLabels) const override {
-                // TODO
-                return nullptr;
+                uint32 numExamples = featureMatrix.getNumRows();
+                uint32 numFeatures = featureMatrix.getNumCols();
+                std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
+                    std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
+                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
+
+                if (labelVectorSetPtr) {
+                    uint32 numLabelVectors = labelVectorSetPtr->getNumLabelVectors();
+
+                    if (numLabelVectors > 0) {
+                        const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
+                        CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
+                        const Model* modelPtr = &model_;
+                        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
+
+                        #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) \
+                        firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+                        firstprivate(predictionMatrixRawPtr) firstprivate(similarityMeasureRawPtr) \
+                        firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads_)
+                        for (int64 i = 0; i < numExamples; i++) {
+                            float64* scoreVector = new float64[numLabels] {};
+                            applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                                          featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                                          featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                            predictMarginalizedProbabilities(&scoreVector[0], &scoreVector[numLabels],
+                                                             predictionMatrixRawPtr->row_values_begin(i), numLabels,
+                                                             *similarityMeasureRawPtr, *labelVectorSetPtr,
+                                                             numLabelVectors);
+                            delete[] scoreVector;
+                        }
+                    }
+                }
+
+                return predictionMatrixPtr;
             }
 
     };
