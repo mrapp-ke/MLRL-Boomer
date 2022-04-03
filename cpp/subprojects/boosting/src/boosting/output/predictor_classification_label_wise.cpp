@@ -1,6 +1,5 @@
 #include "boosting/output/predictor_classification_label_wise.hpp"
 #include "common/iterator/index_iterator.hpp"
-#include "common/output/label_space_info_no.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 
@@ -247,11 +246,6 @@ namespace boosting {
         float64 threshold = lossConfigPtr_->getDefaultPrediction();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseClassificationPredictorFactory>(threshold, numThreads);
-    }
-
-    std::unique_ptr<ILabelSpaceInfo> LabelWiseClassificationPredictorConfig::createLabelSpaceInfo(
-            const IRowWiseLabelMatrix& labelMatrix) const {
-        return createNoLabelSpaceInfo();
     }
 
     bool LabelWiseClassificationPredictorConfig::isLabelVectorSetNeeded() const {

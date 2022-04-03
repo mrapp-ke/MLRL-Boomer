@@ -312,18 +312,6 @@ namespace boosting {
             std::move(similarityMeasureFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<ILabelSpaceInfo> ExampleWiseClassificationPredictorConfig::createLabelSpaceInfo(
-            const IRowWiseLabelMatrix& labelMatrix) const {
-        std::unique_ptr<LabelVectorSet> labelVectorSetPtr = std::make_unique<LabelVectorSet>();
-        uint32 numRows = labelMatrix.getNumRows();
-
-        for (uint32 i = 0; i < numRows; i++) {
-            labelVectorSetPtr->addLabelVector(labelMatrix.createLabelVector(i));
-        }
-
-        return labelVectorSetPtr;
-    }
-
     bool ExampleWiseClassificationPredictorConfig::isLabelVectorSetNeeded() const {
         return true;
     }
