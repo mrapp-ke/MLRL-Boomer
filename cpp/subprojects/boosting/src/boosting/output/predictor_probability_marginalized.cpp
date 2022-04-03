@@ -1,4 +1,5 @@
 #include "boosting/output/predictor_probability_marginalized.hpp"
+#include "common/math/math.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 
@@ -38,7 +39,7 @@ namespace boosting {
         float64 sumOfNormalizedDistances = 0;
 
         for (uint32 i = 0; i < numDistances; i++) {
-            float64 normalizedDistance = minDistance / distances[i];
+            float64 normalizedDistance = divideOrZero(minDistance, distances[i]);
             distances[i] = normalizedDistance;
             sumOfNormalizedDistances += normalizedDistance;
         }
@@ -57,7 +58,7 @@ namespace boosting {
             const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
             uint32 numRelevantLabels = labelVectorPtr->getNumElements();
             LabelVector::const_iterator labelIndexIterator = labelVectorPtr->cbegin();
-            float64 jointProbability = normalizedDistances[i] / sumOfNormalizedDistances;
+            float64 jointProbability = divideOrZero(normalizedDistances[i], sumOfNormalizedDistances);
 
             for (uint32 j = 0; j < numRelevantLabels; j++) {
                 uint32 labelIndex = labelIndexIterator[j];
