@@ -40,6 +40,11 @@ namespace boosting {
             std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
                 const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
+            /**
+             * @see `IPredictorConfig::isLabelVectorSetNeeded`
+             */
+            bool isLabelVectorSetNeeded() const override;
+
     };
 
 }
