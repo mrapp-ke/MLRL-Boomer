@@ -238,6 +238,24 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useLabelWiseProbabilityPredictor()
 
+    def use_marginalized_probability_predictor(self):
+        """
+        Configures the rule learner to use a predictor for predicting probability estimates by summing up the scores
+        that are provided by individual rules of an existing rule-based model and comparing the aggregated score vector
+        to the known label vectors according to a certain distance measure. The probability for an individual label
+        calculates as the sum of the distances that have been obtained for all label vectors, where the respective label
+        is specified to be relevant, divided by the total sum of all distances.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useMarginalizedProbabilityPredictor()
+
+    def use_automatic_probability_predictor(self):
+        """
+        Configures the rule learner to automatically decide for a predictor for predicting probability estimates.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAutomaticProbabilityPredictor()
+
 
 cdef class BoostingRuleLearner(RuleLearner):
     """

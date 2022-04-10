@@ -13,6 +13,10 @@ LabelVectorSet::const_iterator LabelVectorSet::cend() const {
     return labelVectors_.cend();
 }
 
+uint32 LabelVectorSet::getNumLabelVectors() const {
+    return (uint32) labelVectors_.size();
+}
+
 void LabelVectorSet::addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr) {
     ++labelVectors_[std::move(labelVectorPtr)];
 }

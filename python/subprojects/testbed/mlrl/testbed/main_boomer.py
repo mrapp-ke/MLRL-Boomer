@@ -98,7 +98,9 @@ def __add_arguments(parser: ArgumentParser):
                              + PARAM_LOSS + '.')
     parser.add_argument(PARAM_PROBABILITY_PREDICTOR, type=str,
                         help='The name of the strategy to be used for predicting probabilities. Must be one of '
-                             + format_string_set(PROBABILITY_PREDICTOR_VALUES) + '.')
+                             + format_string_set(PROBABILITY_PREDICTOR_VALUES) + '. If set to "' + AUTOMATIC + '", the '
+                             + 'most suitable strategy is chosen automatically based on the parameter ' + PARAM_LOSS
+                             + '.')
     parser.add_argument(PARAM_L1_REGULARIZATION_WEIGHT, type=float,
                         help='The weight of the L1 regularization. Must be at least 0.')
     parser.add_argument(PARAM_L2_REGULARIZATION_WEIGHT, type=float,
