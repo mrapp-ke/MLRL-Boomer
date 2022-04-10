@@ -105,7 +105,6 @@ class PredictionPrinter:
         :param current_fold:    The current fold
         :param num_folds:       The total number of folds
         """
-        if len(self.outputs) > 0:
-            for output in self.outputs:
-                output.write_predictions(experiment_name, meta_data, predictions, ground_truth, num_folds,
-                                         current_fold if num_folds > 1 else None)
+        for output in self.outputs:
+            output.write_predictions(experiment_name, meta_data, predictions, ground_truth, num_folds,
+                                     current_fold if num_folds > 1 else None)
