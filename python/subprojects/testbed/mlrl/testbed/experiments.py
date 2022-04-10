@@ -17,6 +17,7 @@ from mlrl.testbed.evaluation import Evaluation
 from mlrl.testbed.model_characteristics import ModelPrinter, ModelCharacteristicsPrinter
 from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
+from mlrl.testbed.predictions import PredictionPrinter
 from mlrl.testbed.training import CrossValidation, DataSet
 from sklearn.base import clone
 
@@ -29,7 +30,8 @@ class Experiment(CrossValidation, ABC):
 
     def __init__(self, base_learner: Learner, data_set: DataSet, num_folds: int = 1, current_fold: int = -1,
                  predict_probabilities: bool = False, train_evaluation: Evaluation = None,
-                 test_evaluation: Evaluation = None, parameter_input: ParameterInput = None,
+                 test_evaluation: Evaluation = None, train_prediction_printer: PredictionPrinter = None,
+                 test_prediction_printer: PredictionPrinter = None, parameter_input: ParameterInput = None,
                  model_printer: ModelPrinter = None, model_characteristics_printer: ModelCharacteristicsPrinter = None,
                  data_characteristics_printer: DataCharacteristicsPrinter = None, persistence: ModelPersistence = None):
         """
@@ -40,6 +42,10 @@ class Experiment(CrossValidation, ABC):
                                                 training data or None, if the predictions should not be evaluated
         :param test_evaluation:                 The evaluation to be used for evaluating the predictions for the test
                                                 data or None, if the predictions should not be evaluated
+        :param train_prediction_printer:        The printer that should be used to print the predictions for the
+                                                training data or None, if the predictions should not be printed
+        :param test_prediction_printer          The printer that should be used to print the predictions for the test
+                                                data or None, if the predictions should not be printed
         :param parameter_input:                 The input that should be used to read the parameter settings
         :param model_printer:                   The printer that should be used to print textual representations of
                                                 models or None, if no textual representations should be printed
@@ -54,6 +60,8 @@ class Experiment(CrossValidation, ABC):
         self.predict_probabilities = predict_probabilities
         self.train_evaluation = train_evaluation
         self.test_evaluation = test_evaluation
+        self.train_prediction_printer = train_prediction_printer
+        self.test_prediction_printer = test_prediction_printer
         self.parameter_input = parameter_input
         self.model_printer = model_printer
         self.model_characteristics_printer = model_characteristics_printer
@@ -105,27 +113,42 @@ class Experiment(CrossValidation, ABC):
 
         # Obtain and evaluate predictions for training data, if necessary...
         evaluation = self.train_evaluation
+        prediction_printer = self.train_prediction_printer
 
-        if evaluation is not None:
+        if evaluation is not None or prediction_printer is not None:
             log.info('Predicting for %s training examples...', train_x.shape[0])
             predictions, predict_time = self.__predict(current_learner, train_x)
 
             if predictions is not None:
-                evaluation.evaluate('train_' + learner_name, meta_data, predictions, train_y, first_fold=first_fold,
-                                    current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
-                                    train_time=current_learner.train_time_, predict_time=predict_time)
+                experiment_name = 'train_' + learner_name
+                if evaluation is not None:
+                    evaluation.evaluate(experiment_name, meta_data, predictions, train_y, first_fold=first_fold,
+                                        current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
+                                        train_time=current_learner.train_time_, predict_time=predict_time)
+
+                if prediction_printer is not None:
+                    prediction_printer.print(experiment_name, meta_data, predictions, train_y,
+                                             current_fold=current_fold, num_folds=num_folds)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
+        prediction_printer = self.test_prediction_printer
 
-        if evaluation is not None:
+        if evaluation is not None or prediction_printer is not None:
             log.info('Predicting for %s test examples...', test_x.shape[0])
             predictions, predict_time = self.__predict(current_learner, test_x)
 
             if predictions is not None:
-                evaluation.evaluate('test_' + learner_name, meta_data, predictions, test_y, first_fold=first_fold,
-                                    current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
-                                    train_time=current_learner.train_time_, predict_time=predict_time)
+                experiment_name = 'test_' + learner_name
+
+                if evaluation is not None:
+                    evaluation.evaluate(experiment_name, meta_data, predictions, test_y, first_fold=first_fold,
+                                        current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
+                                        train_time=current_learner.train_time_, predict_time=predict_time)
+
+                if prediction_printer is not None:
+                    prediction_printer.print(experiment_name, meta_data, predictions, test_y, current_fold=current_fold,
+                                             num_folds=num_folds)
 
         # Print model characteristics, if necessary...
         model_characteristics_printer = self.model_characteristics_printer

@@ -14,9 +14,8 @@ import numpy as np
 import sklearn.metrics as metrics
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
-from mlrl.testbed.data import MetaData, save_arff_file, Label
-from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer, clear_directory, SUFFIX_ARFF, \
-    get_file_name_per_fold
+from mlrl.testbed.data import MetaData
+from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer, clear_directory
 from sklearn.utils.multiclass import is_multilabel
 
 # The name of the accuracy metric
@@ -230,75 +229,43 @@ class EvaluationOutput(ABC):
         """
         pass
 
-    @abstractmethod
-    def write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, total_folds: int,
-                          fold: int = None):
-        """
-        Writes predictions to the output.
-
-        :param experiment_name: The name of the experiment
-        :param meta_data:       The meta data of the data set
-        :param predictions:     The predictions
-        :param ground_truth:    The ground truth
-        :param total_folds:     The total number of folds
-        :param fold:            The fold for which the predictions should be written or None, if no cross validation is
-                                used
-        """
-        pass
-
 
 class EvaluationLogOutput(EvaluationOutput):
     """
     Outputs evaluation result using the logger.
     """
 
-    def __init__(self, output_evaluation: bool = True, output_predictions: bool = False,
-                 output_individual_folds: bool = True):
+    def __init__(self, output_individual_folds: bool = True):
         """
-        :param output_evaluation:       True, if the evaluation results should be written to the output, False otherwise
-        :param output_predictions:      True, if predictions provided by a classifier or ranker should be written to the
-                                        output, False otherwise
         :param output_individual_folds: True, if the evaluation results for individual cross validation folds should be
                                         written to the outputs, False, if only the overall evaluation results, i.e.,
                                         averaged over all folds, should be written to the outputs
         """
-        self.output_evaluation = output_evaluation
-        self.output_predictions = output_predictions
         self.output_individual_folds = output_individual_folds
 
     def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, total_folds: int,
                                  fold: int = None):
-        if self.output_evaluation:
-            if fold is None or self.output_individual_folds:
-                text = ''
+        if fold is None or self.output_individual_folds:
+            text = ''
 
-                for measure in sorted(evaluation_result.measures):
-                    if measure != TIME_TRAIN and measure != TIME_PREDICT:
-                        if len(text) > 0:
-                            text += '\n'
+            for measure in sorted(evaluation_result.measures):
+                if measure != TIME_TRAIN and measure != TIME_PREDICT:
+                    if len(text) > 0:
+                        text += '\n'
 
-                        if fold is None:
-                            score, std_dev = evaluation_result.avg(measure)
-                            text += (measure + ': ' + str(score))
+                    if fold is None:
+                        score, std_dev = evaluation_result.avg(measure)
+                        text += (measure + ': ' + str(score))
 
-                            if total_folds > 1:
-                                text += (' ±' + str(std_dev))
-                        else:
-                            score = evaluation_result.get(measure, fold)
-                            text += (measure + ': ' + str(score))
+                        if total_folds > 1:
+                            text += (' ±' + str(std_dev))
+                    else:
+                        score = evaluation_result.get(measure, fold)
+                        text += (measure + ': ' + str(score))
 
-                msg = ('Overall evaluation result for experiment \"' + experiment_name + '\"' if fold is None else
-                       'Evaluation result for experiment \"' + experiment_name + '\" (Fold ' + str(
-                           fold + 1) + ')') + ':\n\n%s\n'
-                log.info(msg, text)
-
-    def write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, total_folds: int,
-                          fold: int = None):
-        if self.output_predictions:
-            text = 'Ground truth:\n\n' + np.array2string(ground_truth) + '\n\nPredictions:\n\n' + np.array2string(
-                predictions)
-            msg = ('Predictions for experiment \"' + experiment_name + '\"' if fold is None else
-                   'Predictions for experiment \"' + experiment_name + '\" (Fold ' + str(fold + 1) + ')') + ':\n\n%s\n'
+            msg = ('Overall evaluation result for experiment \"' + experiment_name + '\"' if fold is None else
+                   'Evaluation result for experiment \"' + experiment_name + '\" (Fold ' + str(
+                       fold + 1) + ')') + ':\n\n%s\n'
             log.info(msg, text)
 
 
@@ -307,8 +274,7 @@ class EvaluationCsvOutput(EvaluationOutput):
     Writes evaluation results to CSV files.
     """
 
-    def __init__(self, output_dir: str, clear_dir: bool = True, output_predictions: bool = False,
-                 output_individual_folds: bool = True):
+    def __init__(self, output_dir: str, clear_dir: bool = True, output_individual_folds: bool = True):
         """
         :param output_predictions:      True, if predictions provided by a classifier or ranker should be written to the
                                         output, False otherwise
@@ -318,7 +284,6 @@ class EvaluationCsvOutput(EvaluationOutput):
         :param output_dir:              The path of the directory, the CSV files should be written to
         :param clear_dir:               True, if the directory, the CSV files should be written to, should be cleared
         """
-        self.output_predictions = output_predictions
         self.output_individual_folds = output_individual_folds
         self.output_dir = output_dir
         self.clear_dir = clear_dir
@@ -336,16 +301,6 @@ class EvaluationCsvOutput(EvaluationOutput):
                 csv_writer = create_csv_dict_writer(csv_file, header)
                 csv_writer.writerow(columns)
 
-    def write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, total_folds: int,
-                          fold: int = None):
-        if self.output_predictions:
-            self.__clear_dir_if_necessary()
-            file_name = get_file_name_per_fold('predictions_' + experiment_name, SUFFIX_ARFF, fold)
-            attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
-            labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
-            prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
-            save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
-
     def __clear_dir_if_necessary(self):
         """
         Clears the output directory, if necessary.
@@ -361,11 +316,11 @@ class AbstractEvaluation(Evaluation):
     write the results to one or several outputs.
     """
 
-    def __init__(self, *args: EvaluationOutput):
+    def __init__(self, outputs: List[EvaluationOutput]):
         """
         :param args: The outputs, the evaluation results should be written to
         """
-        self.outputs = args
+        self.outputs = outputs
         self.results: Dict[str, EvaluationResult] = {}
 
     def evaluate(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, first_fold: int,
@@ -375,31 +330,12 @@ class AbstractEvaluation(Evaluation):
         result.put(TIME_TRAIN, train_time, current_fold, num_folds)
         result.put(TIME_PREDICT, predict_time, current_fold, num_folds)
         self._populate_result(result, predictions, ground_truth, current_fold=current_fold, num_folds=num_folds)
-        self.__write_predictions(experiment_name, meta_data, predictions, ground_truth, current_fold=current_fold,
-                                 num_folds=num_folds)
         self.__write_evaluation_result(experiment_name, result, first_fold=first_fold, current_fold=current_fold,
                                        last_fold=last_fold, num_folds=num_folds)
 
     @abstractmethod
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
         pass
-
-    def __write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth,
-                            current_fold: int, num_folds: int):
-        """
-        Writes predictions to the outputs.
-
-        :param experiment_name: The name of the experiment
-        :param meta_data:       The meta data of the data set
-        :param predictions:     The predictions
-        :param ground_truth:    The ground truth
-        :param current_fold:    The current cross validation fold or 0, if no cross validation is used
-        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
-        """
-
-        for output in self.outputs:
-            output.write_predictions(experiment_name, meta_data, predictions, ground_truth, num_folds,
-                                     current_fold if num_folds > 1 else None)
 
     def __write_evaluation_result(self, experiment_name: str, result: EvaluationResult, first_fold: int,
                                   current_fold: int, last_fold: int, num_folds: int):
