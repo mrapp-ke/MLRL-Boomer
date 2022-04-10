@@ -192,9 +192,11 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'label-wise'`` The prediction for an example is determined for each label independently.
   * ``'example-wise'`` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data.
 
-* ``probability_predictor`` (Default value = ``'label-wise'``)
+* ``probability_predictor`` (Default value = ``'auto'``)
 
+  * ``'auto'`` The most suitable strategy for predicting probability estimates is chosen automatically, depending on the loss function.
   * ``'label-wise'`` The prediction for an example is determined for each label independently
+  * ``'marginalized'`` The prediction for an example is determined via marginalization over the set of label vectors encountered in the training data.
 
 * ``l1_regularization_weight`` (Default value = ``0.0``)
 
@@ -206,7 +208,7 @@ The following parameters allow to control the behavior of the algorithm:
 
 **Multi-Threading**
 
-The following parameters allow to specifiy whether multi-threading should be used for different aspects of the algorithm:
+The following parameters allow to specify whether multi-threading should be used for different aspects of the algorithm:
 
 * ``parallel_rule_refinement`` (Default value = ``'auto'``)
 

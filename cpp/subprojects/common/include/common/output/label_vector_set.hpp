@@ -96,6 +96,13 @@ class LabelVectorSet final : public ILabelVectorSet {
          */
         const_iterator cend() const;
 
+        /**
+         * Returns the number of label vectors in the set.
+         *
+         * @return The number of label vectors
+         */
+        uint32 getNumLabelVectors() const;
+
         void addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr) override;
 
         void visit(LabelVectorVisitor visitor) const override;

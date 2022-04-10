@@ -114,12 +114,17 @@ class RuleLearnerRunnable(Runnable, ABC):
             model_characteristics_printer_outputs) > 0 else None
         predict_probabilities = args.predict_probabilities
 
-        if predict_probabilities:
-            train_evaluation = RankingEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
-            test_evaluation = RankingEvaluation(*evaluation_outputs)
+        if len(evaluation_outputs) > 0:
+            if predict_probabilities:
+                train_evaluation = RankingEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
+                test_evaluation = RankingEvaluation(*evaluation_outputs)
+            else:
+                train_evaluation = ClassificationEvaluation(
+                    *evaluation_outputs) if args.evaluate_training_data else None
+                test_evaluation = ClassificationEvaluation(*evaluation_outputs)
         else:
-            train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
-            test_evaluation = ClassificationEvaluation(*evaluation_outputs)
+            train_evaluation = None
+            test_evaluation = None
 
         data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)

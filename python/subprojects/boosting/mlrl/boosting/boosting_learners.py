@@ -74,6 +74,8 @@ CLASSIFICATION_PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
 PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
 
+PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
+
 HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
     HEAD_TYPE_SINGLE: {},
     HEAD_TYPE_PARTIAL_FIXED: {ARGUMENT_LABEL_RATIO, ARGUMENT_MIN_LABELS, ARGUMENT_MAX_LABELS},
@@ -115,7 +117,9 @@ CLASSIFICATION_PREDICTOR_VALUES: Set[str] = {
 }
 
 PROBABILITY_PREDICTOR_VALUES: Set[str] = {
-    PROBABILITY_PREDICTOR_LABEL_WISE
+    PROBABILITY_PREDICTOR_LABEL_WISE,
+    PROBABILITY_PREDICTOR_MARGINALIZED,
+    AUTOMATIC
 }
 
 PARALLEL_VALUES: Dict[str, Set[str]] = {
@@ -181,7 +185,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             'label-wise', 'example-wise' or 'auto', if the most suitable strategy should
                                             be chosen automatically, depending on the loss function
         :param probability_predictor:       The strategy that should be used for predicting probabilities. Must be
-                                            'label-wise'
+                                            'label-wise', 'marginalized' or 'auto', if the most suitable strategy should
+                                            be chosen automatically, depending on the loss function
         :param label_sampling:              The strategy that should be used to sample from the available labels
                                             whenever a new rule is learned. Must be 'without-replacement' or 'none', if
                                             no sampling should be used. For additional options refer to the
@@ -488,5 +493,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if probability_predictor is not None:
             value = parse_param('probability_predictor', probability_predictor, PROBABILITY_PREDICTOR_VALUES)
 
-            if value == PROBABILITY_PREDICTOR_LABEL_WISE:
+            if value == AUTOMATIC:
+                config.use_automatic_probability_predictor()
+            elif value == PROBABILITY_PREDICTOR_LABEL_WISE:
                 config.use_label_wise_probability_predictor()
+            elif value == PROBABILITY_PREDICTOR_MARGINALIZED:
+                config.use_marginalized_probability_predictor()
