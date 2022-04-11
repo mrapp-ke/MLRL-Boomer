@@ -3,11 +3,10 @@
  */
 #pragma once
 
-#include "common/data/indexed_value.hpp"
+#include "common/data/vector_sparse_array.hpp"
 #include "boosting/data/statistic_vector_label_wise_dense.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
-#include <vector>
-#include <queue>
+#include <algorithm>
 
 
 namespace boosting {
@@ -34,42 +33,31 @@ namespace boosting {
     };
 
     /**
-     * The type of a priority queue which is used to identify the labels for which a rule is able to predict most
-     * accurately.
-     */
-    typedef std::priority_queue<IndexedValue<float64>, std::vector<IndexedValue<float64>>, CompareLabelWiseCriteria> PriorityQueue;
-
-    /**
-     * Calculates scores that assess the quality of optimal predictions for each label and adds them to a priority queue
-     * with fixed capacity.
+     * Calculates the scores to be predicted for individual labels and sorts them by their quality, such that the first
+     * `numPredictions` elements are the best-rated ones.
      *
-     * @tparam IndexIterator            The type of the iterator that provides access to the index of each label
-     * @param priorityQueue             A reference to an object of type `PriorityQueue`, which should be used for
-     *                                  sorting
-     * @param maxCapacity               The maximum capacity of the given priority queue
+     * @param tmpIterator               An iterator that provides random access to a temporary array, which should be
+     *                                  used to store the sorted scores and their original indices
      * @param statisticIterator         An iterator that provides access to the gradients and Hessians for each label
-     * @param indexIterator             An iterator that provides access to the index of each label
-     * @param numElements               The number of elements
+     * @param numLabels                 The total number of available labels
+     * @param numPrediction             The number of the best-rated predictions to be determined
      * @param l1RegularizationWeight    The l2 regularization weight
      * @param l2RegularizationWeight    The L1 regularization weight
      */
-    template<typename IndexIterator>
-    static inline void sortLabelWiseQualityScores(
-            PriorityQueue& priorityQueue, uint32 maxCapacity,
-            const DenseLabelWiseStatisticVector::const_iterator& statisticIterator, IndexIterator indexIterator,
-            uint32 numElements, float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
-        for (uint32 i = 0; i < numElements; i++) {
+    static inline void sortLabelWiseScores(SparseArrayVector<float64>::iterator tmpIterator,
+                                           const DenseLabelWiseStatisticVector::const_iterator& statisticIterator,
+                                           uint32 numLabels, uint32 numPredictions, float64 l1RegularizationWeight,
+                                           float64 l2RegularizationWeight) {
+        for (uint32 i = 0; i < numLabels; i++) {
             const Tuple<float64>& tuple = statisticIterator[i];
-            float64 score = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
-                                                    l2RegularizationWeight);
-
-            if (priorityQueue.size() < maxCapacity) {
-                priorityQueue.emplace(indexIterator[i], score);
-            } else if (std::abs(priorityQueue.top().value) < std::abs(score)) {
-                priorityQueue.pop();
-                priorityQueue.emplace(indexIterator[i], score);
-            }
+            IndexedValue<float64>& entry = tmpIterator[i];
+            entry.index = i;
+            entry.value = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
+                                                  l2RegularizationWeight);
         }
+
+        std::partial_sort(tmpIterator, &tmpIterator[numPredictions], &tmpIterator[numLabels],
+                          CompareLabelWiseCriteria());
     }
 
 }
