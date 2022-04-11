@@ -23,7 +23,7 @@ namespace boosting {
 
             std::unique_ptr<PartialIndexVector> indexVectorPtr_;
 
-            PriorityQueue priorityQueue_;
+            SparseArrayVector<float64> tmpVector_;
 
         protected:
 
@@ -32,16 +32,16 @@ namespace boosting {
                                             float64 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
-                sortLabelWiseQualityScores(priorityQueue_, numCriteria, statisticIterator, labelIndexIterator,
-                                           numElements, l1RegularizationWeight, l2RegularizationWeight);
+                SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
+                sortLabelWiseScores(tmpIterator, statisticIterator, numElements, numCriteria, l1RegularizationWeight,
+                                    l2RegularizationWeight);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
+                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
-                    const IndexedValue<float64>& entry = priorityQueue_.top();
-                    indexIterator[i] = entry.index;
+                    const IndexedValue<float64>& entry = tmpIterator[i];
+                    indexIterator[i] = labelIndexIterator[entry.index];
                     criteria[i] = entry.value;
-                    priorityQueue_.pop();
                 }
             }
 
@@ -66,7 +66,8 @@ namespace boosting {
                                                            std::unique_ptr<ILabelBinning> binningPtr)
                 : AbstractLabelWiseBinnedRuleEvaluation<DenseLabelWiseStatisticVector, PartialIndexVector>(
                       *indexVectorPtr, false, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)),
-                  labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)) {
+                  labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)),
+                  tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {
 
             }
 

@@ -23,7 +23,7 @@ namespace boosting {
 
             std::unique_ptr<PartialIndexVector> indexVectorPtr_;
 
-            PriorityQueue priorityQueue_;
+            SparseArrayVector<float64> tmpVector_;
 
         protected:
 
@@ -36,16 +36,16 @@ namespace boosting {
                     statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                     statisticVector.hessians_diagonal_cbegin();
-                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
-                sortLabelWiseCriteria(priorityQueue_, numPredictions, gradientIterator, hessianIterator,
-                                      labelIndexIterator, numLabels, l1RegularizationWeight, l2RegularizationWeight);
+                SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
+                sortLabelWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numLabels, numPredictions,
+                                      l1RegularizationWeight, l2RegularizationWeight);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
+                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
-                    const IndexedValue<float64>& entry = priorityQueue_.top();
-                    indexIterator[i] = entry.index;
+                    const IndexedValue<float64>& entry = tmpIterator[i];
+                    indexIterator[i] = labelIndexIterator[entry.index];
                     criteria[i] = entry.value;
-                    priorityQueue_.pop();
                 }
             }
 
@@ -77,7 +77,8 @@ namespace boosting {
                 : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector>(
                       *indexVectorPtr, false, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                       std::move(binningPtr), blas, lapack),
-                  labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)) {
+                  labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)),
+                  tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {
 
             }
 
