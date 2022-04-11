@@ -10,37 +10,34 @@
 namespace boosting {
 
     /**
-     * Calculates scores that assess the quality of optimal predictions for each label and adds them to a priority queue
-     * with fixed capacity.
+     * Calculates scores that assess the quality of optimal predictions for each label and sorts them, such that the
+     * first `numPredictions` elements are the best-rated ones.
      *
-     * @tparam IndexIterator            The type of the iterator that provides access to the index of each label
-     * @param priorityQueue             A reference to an object of type `PriorityQueue`, which should be used for
-     *                                  sorting
-     * @param maxCapacity               The maximum capacity of the given priority queue
-     * @param statisticIterator         An iterator that provides access to the gradients and Hessians for each label
-     * @param indexIterator             An iterator that provides access to the index of each label
-     * @param numElements               The number of elements
+     * @param tmpIterator               An iterator that provides random access to a temporary array, which should be
+     *                                  used to store the sorted scores and their original indices
+     * @param gradientIterator          An iterator that provides access to the gradient for each label
+     * @param hessianIterator           An iterator that provides access to the Hessian for each label
+     * @param numLabels                 The total number of available labels
+     * @param numPrediction             The number of the best-rated predictions to be determined
      * @param l1RegularizationWeight    The l2 regularization weight
      * @param l2RegularizationWeight    The L1 regularization weight
      */
-    template<typename IndexIterator>
     static inline void sortLabelWiseCriteria(
-            PriorityQueue& priorityQueue, uint32 maxCapacity,
+            SparseArrayVector<float64>::iterator tmpIterator,
             DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
             DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator,
-            IndexIterator indexIterator, uint32 numElements, float64 l1RegularizationWeight,
+            uint32 numLabels, uint32 numPredictions, float64 l1RegularizationWeight,
             float64 l2RegularizationWeight) {
-        for (uint32 i = 0; i < numElements; i++) {
-            float64 score = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i], l1RegularizationWeight,
-                                                    l2RegularizationWeight);
+        for (uint32 i = 0; i < numLabels; i++) {
+            IndexedValue<float64>& entry = tmpIterator[i];
+            entry.index = i;
+            entry.value = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i], l1RegularizationWeight,
+                                                  l2RegularizationWeight);
 
-            if (priorityQueue.size() < maxCapacity) {
-                priorityQueue.emplace(indexIterator[i], score);
-            } else if (std::abs(priorityQueue.top().value) < std::abs(score)) {
-                priorityQueue.pop();
-                priorityQueue.emplace(indexIterator[i], score);
-            }
         }
+
+        std::partial_sort(tmpIterator, &tmpIterator[numPredictions], &tmpIterator[numLabels],
+                          CompareLabelWiseCriteria());
     }
 
 }

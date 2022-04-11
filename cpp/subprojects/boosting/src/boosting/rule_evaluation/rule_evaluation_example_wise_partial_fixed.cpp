@@ -45,7 +45,7 @@ namespace boosting {
 
             const Lapack& lapack_;
 
-            PriorityQueue priorityQueue_;
+            SparseArrayVector<float64> tmpVector_;
 
         public:
 
@@ -69,7 +69,7 @@ namespace boosting {
                   labelIndices_(labelIndices), indexVector_(PartialIndexVector(numPredictions)),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  blas_(blas), lapack_(lapack) {
+                  blas_(blas), lapack_(lapack), tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {
 
             }
 
@@ -80,20 +80,20 @@ namespace boosting {
                     statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                     statisticVector.hessians_diagonal_cbegin();
-                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
-                sortLabelWiseCriteria(priorityQueue_, numPredictions, gradientIterator, hessianIterator,
-                                      labelIndexIterator, numLabels, l1RegularizationWeight_, l2RegularizationWeight_);
+                SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
+                sortLabelWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numLabels, numPredictions,
+                                      l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
 
                 for (uint32 i = 0; i < numPredictions; i++) {
-                    const IndexedValue<float64>& entry = priorityQueue_.top();
+                    const IndexedValue<float64>& entry = tmpIterator[i];
                     uint32 index = entry.index;
-                    indexIterator[i] = index;
+                    indexIterator[i] = labelIndexIterator[index];
                     scoreIterator[i] = -gradientIterator[index];
-                    priorityQueue_.pop();
                 }
 
                 addL1RegularizationWeight(scoreIterator, numPredictions, l1RegularizationWeight_);
