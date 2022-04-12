@@ -11,7 +11,7 @@ namespace boosting {
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
             const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
             const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
-        : threshold_(0.02f), labelBinningConfigPtr_(labelBinningConfigPtr),
+        : threshold_(0.02f), exponent_(2.0), labelBinningConfigPtr_(labelBinningConfigPtr),
           multiThreadingConfigPtr_(multiThreadingConfigPtr), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
           l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
 
@@ -25,6 +25,16 @@ namespace boosting {
         assertGreater<float32>("threshold", threshold, 0);
         assertLess<float32>("threshold", threshold, 1);
         threshold_ = threshold;
+        return *this;
+    }
+
+    float32 DynamicPartialHeadConfig::getExponent() const {
+        return exponent_;
+    }
+
+    IDynamicPartialHeadConfig& DynamicPartialHeadConfig::setExponent(float32 exponent) {
+        assertGreater<float32>("exponent", exponent, 0);
+        exponent_ = exponent;
         return *this;
     }
 

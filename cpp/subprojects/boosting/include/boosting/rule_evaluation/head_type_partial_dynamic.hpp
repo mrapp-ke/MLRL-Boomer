@@ -37,12 +37,30 @@ namespace boosting {
              *                  threshold results in less labels being selected. A greater threshold results in more
              *                  labels being selected. E.g., a threshold of 0.2 means that a rule will only predict for
              *                  a label if the estimated predictive quality `q` for this particular label satisfies the
-             *                  inequality `q^2 > q_best^2 * (1 - 0.2)`, where `q_best` is the best quality among all
-             *                  labels. Must be in (0, 1)
+             *                  inequality `q^exponent > q_best^exponent * (1 - 0.2)`, where `q_best` is the best
+             *                  quality among all labels. Must be in (0, 1)
              * @return          A reference to an object of type `IDynamicPartialHeadConfig` that allows further
              *                  configuration of the rule heads
              */
             virtual IDynamicPartialHeadConfig& setThreshold(float32 threshold) = 0;
+
+            /**
+             * Sets the exponent that is used to weigh the estimated predictive quality for individual labels.
+             *
+             * @return The exponent that is used to weight the estimated predictive quality for individual labels
+             */
+            virtual float32 getExponent() const = 0;
+
+            /**
+             * Sets the exponent that should be used to weigh the estimated predictive quality for individual labels.
+             *
+             * @param exponent  An exponent that should be used to weigh the estimated predictive quality for individual
+             *                  labels. E.g., an exponent of 2 means that the estimated predictive quality `q` for a
+             *                  particular label is weighed as `q^2`. Must be greater than 0
+             * @return          A reference to an object of type `IDynamicPartialHeadConfig` that allows further
+             *                  configuration of the rule heads
+             */
+            virtual IDynamicPartialHeadConfig& setExponent(float32 exponent) = 0;
 
     };
 
@@ -56,6 +74,8 @@ namespace boosting {
         private:
 
             float32 threshold_;
+
+            float32 exponent_;
 
             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr_;
 
@@ -86,6 +106,10 @@ namespace boosting {
             float32 getThreshold() const override;
 
             IDynamicPartialHeadConfig& setThreshold(float32 threshold) override;
+
+            float32 getExponent() const override;
+
+            IDynamicPartialHeadConfig& setExponent(float32 exponent) override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,

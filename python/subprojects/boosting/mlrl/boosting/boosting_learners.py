@@ -60,6 +60,8 @@ HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
 
 ARGUMENT_THRESHOLD = 'threshold'
 
+ARGUMENT_EXPONENT = 'exponent'
+
 HEAD_TYPE_COMPLETE = 'complete'
 
 LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
@@ -83,7 +85,7 @@ PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
 HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
     HEAD_TYPE_SINGLE: {},
     HEAD_TYPE_PARTIAL_FIXED: {ARGUMENT_LABEL_RATIO, ARGUMENT_MIN_LABELS, ARGUMENT_MAX_LABELS},
-    HEAD_TYPE_PARTIAL_DYNAMIC: {ARGUMENT_THRESHOLD},
+    HEAD_TYPE_PARTIAL_DYNAMIC: {ARGUMENT_THRESHOLD, ARGUMENT_EXPONENT},
     HEAD_TYPE_COMPLETE: {},
     AUTOMATIC: {}
 }
@@ -431,6 +433,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             elif value == HEAD_TYPE_PARTIAL_DYNAMIC:
                 c = config.use_dynamic_partial_heads()
                 c.set_threshold(options.get_float(ARGUMENT_THRESHOLD, c.get_threshold()))
+                c.set_exponent(options.get_float(ARGUMENT_EXPONENT, c.get_threshold()))
             elif value == HEAD_TYPE_COMPLETE:
                 config.use_complete_heads()
 
