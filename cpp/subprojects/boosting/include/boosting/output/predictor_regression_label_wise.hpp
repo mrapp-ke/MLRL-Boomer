@@ -34,6 +34,11 @@ namespace boosting {
             std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory(
                 const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
+            /**
+             * @see `IPredictorConfig::isLabelVectorSetNeeded`
+             */
+            bool isLabelVectorSetNeeded() const override;
+
     };
 
 }

@@ -12,12 +12,14 @@ from argparse import ArgumentParser
 
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
-from mlrl.testbed.evaluation import ClassificationEvaluation, EvaluationLogOutput, EvaluationCsvOutput
+from mlrl.testbed.evaluation import ClassificationEvaluation, RankingEvaluation, EvaluationLogOutput, \
+    EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.model_characteristics import RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput, \
     RuleModelCharacteristicsPrinter, RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
 from mlrl.testbed.parameters import ParameterCsvInput
 from mlrl.testbed.persistence import ModelPersistence
+from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, PredictionArffOutput
 from mlrl.testbed.training import DataSet
 
 LOG_FORMAT = '%(levelname)s %(message)s'
@@ -61,6 +63,7 @@ class RuleLearnerRunnable(Runnable, ABC):
     def _run(self, args):
         parameter_input = None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
         evaluation_outputs = []
+        prediction_printer_outputs = []
         data_characteristics_printer_outputs = []
         model_characteristics_printer_outputs = []
         model_printer_outputs = []
@@ -71,6 +74,9 @@ class RuleLearnerRunnable(Runnable, ABC):
 
         if args.print_evaluation:
             evaluation_outputs.append(EvaluationLogOutput())
+
+        if args.print_predictions:
+            prediction_printer_outputs.append(PredictionLogOutput())
 
         if args.print_model_characteristics:
             model_characteristics_printer_outputs.append(RuleModelCharacteristicsLogOutput())
@@ -88,8 +94,11 @@ class RuleLearnerRunnable(Runnable, ABC):
 
             if args.store_evaluation:
                 evaluation_outputs.append(
-                    EvaluationCsvOutput(output_dir=output_dir, output_predictions=args.store_predictions,
-                                        clear_dir=clear_dir))
+                    EvaluationCsvOutput(output_dir=output_dir, clear_dir=clear_dir))
+                clear_dir = False
+
+            if args.store_predictions:
+                prediction_printer_outputs.append(PredictionArffOutput(output_dir=output_dir, clear_dir=clear_dir))
                 clear_dir = False
 
             if args.store_model_characteristics:
@@ -110,13 +119,34 @@ class RuleLearnerRunnable(Runnable, ABC):
             model_printer_outputs) > 0 else None
         model_characteristics_printer = RuleModelCharacteristicsPrinter(model_characteristics_printer_outputs) if len(
             model_characteristics_printer_outputs) > 0 else None
-        train_evaluation = ClassificationEvaluation(*evaluation_outputs) if args.evaluate_training_data else None
-        test_evaluation = ClassificationEvaluation(*evaluation_outputs)
+        predict_probabilities = args.predict_probabilities
+        evaluate_training_data = args.evaluate_training_data
+
+        if len(prediction_printer_outputs) > 0:
+            train_prediction_printer = PredictionPrinter(prediction_printer_outputs) if evaluate_training_data else None
+            test_prediction_printer = PredictionPrinter(prediction_printer_outputs)
+        else:
+            train_prediction_printer = None
+            test_prediction_printer = None
+
+        if len(evaluation_outputs) > 0:
+            if predict_probabilities:
+                train_evaluation = RankingEvaluation(evaluation_outputs) if evaluate_training_data else None
+                test_evaluation = RankingEvaluation(evaluation_outputs)
+            else:
+                train_evaluation = ClassificationEvaluation(evaluation_outputs) if evaluate_training_data else None
+                test_evaluation = ClassificationEvaluation(evaluation_outputs)
+        else:
+            train_evaluation = None
+            test_evaluation = None
+
         data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
-        experiment = Experiment(learner, test_evaluation=test_evaluation, train_evaluation=train_evaluation,
-                                data_set=data_set, num_folds=args.folds, current_fold=args.current_fold,
-                                parameter_input=parameter_input, model_printer=model_printer,
+        experiment = Experiment(learner, predict_probabilities=predict_probabilities, test_evaluation=test_evaluation,
+                                train_evaluation=train_evaluation, train_prediction_printer=train_prediction_printer,
+                                test_prediction_printer=test_prediction_printer, data_set=data_set,
+                                num_folds=args.folds, current_fold=args.current_fold, parameter_input=parameter_input,
+                                model_printer=model_printer,
                                 model_characteristics_printer=model_characteristics_printer,
                                 data_characteristics_printer=data_characteristics_printer, persistence=persistence)
         experiment.random_state = args.random_state

@@ -158,6 +158,10 @@ namespace boosting {
                 return this->createLabelWiseLossFactory();
             }
 
+            bool isDecomposable() const override final {
+                return true;
+            }
+
     };
 
 }

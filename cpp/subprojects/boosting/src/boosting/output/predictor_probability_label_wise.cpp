@@ -18,10 +18,10 @@ namespace boosting {
     }
 
     /**
-     * An implementation of the type `ILabelWiseProbabilityPredictor` that allows to predict label-wise probabilities
-     * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
-     * that are provided by individual rules of an existing rule-based models and transforming the aggregated scores
-     * into probabilities in [0, 1] according to a certain transformation function that is applied to each label
+     * An implementation of the type `IProbabilityPredictor` that allows to predict label-wise probabilities for given
+     * query examples, which estimate the chance of individual labels to be relevant, by summing up the scores that are
+     * provided by individual rules of an existing rule-based model and transforming the aggregated scores into
+     * probabilities in [0, 1] according to a certain transformation function that is applied to each label
      * individually.
      *
      * @tparam Model The type of the rule-based model that is used to obtain predictions
@@ -134,8 +134,8 @@ namespace boosting {
     /**
      * Allows to create instances of the type `IProbabilityPredictor` that allow to predict label-wise probabilities
      * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
-     * that are provided by individual rules of an existing rule-based models and transforming the aggregated scores
-     * into probabilities in [0, 1] according to a certain transformation function that is applied to each label
+     * that are provided by individual rules of an existing rule-based model and transforming the aggregated scores into
+     * probabilities in [0, 1] according to a certain transformation function that is applied to each label
      * individually.
      */
     class LabelWiseProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
@@ -193,6 +193,10 @@ namespace boosting {
         } else {
             return nullptr;
         }
+    }
+
+    bool LabelWiseProbabilityPredictorConfig::isLabelVectorSetNeeded() const {
+        return false;
     }
 
 }

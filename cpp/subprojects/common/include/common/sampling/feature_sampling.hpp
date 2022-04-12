@@ -66,4 +66,11 @@ class IFeatureSamplingConfig {
         virtual std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory(
             const IFeatureMatrix& featureMatrix) const = 0;
 
+        /**
+         * Returns whether feature sampling is used or not.
+         *
+         * @return True, if feature sampling is used, false otherwise
+         */
+        virtual bool isSamplingUsed() const = 0;
+
 };

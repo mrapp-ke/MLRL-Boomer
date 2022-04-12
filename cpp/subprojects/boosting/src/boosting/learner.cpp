@@ -13,12 +13,15 @@
 #include "boosting/output/predictor_classification_example_wise.hpp"
 #include "boosting/output/predictor_classification_label_wise.hpp"
 #include "boosting/output/predictor_regression_label_wise.hpp"
+#include "boosting/output/predictor_probability_auto.hpp"
 #include "boosting/output/predictor_probability_label_wise.hpp"
+#include "boosting/output/predictor_probability_marginalized.hpp"
 #include "boosting/rule_evaluation/head_type_auto.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
+#include "common/output/label_space_info_no.hpp"
 
 
 namespace boosting {
@@ -37,7 +40,7 @@ namespace boosting {
         this->useAutomaticLabelBinning();
         this->useAutomaticClassificationPredictor();
         this->useLabelWiseRegressionPredictor();
-        this->useLabelWiseProbabilityPredictor();
+        this->useAutomaticProbabilityPredictor();
     }
 
     const IHeadConfig& BoostingRuleLearner::Config::getHeadConfig() const {
@@ -215,6 +218,16 @@ namespace boosting {
             std::make_unique<LabelWiseProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
+    void BoostingRuleLearner::Config::useMarginalizedProbabilityPredictor() {
+        probabilityPredictorConfigPtr_ =
+            std::make_unique<MarginalizedProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+    }
+
+    void BoostingRuleLearner::Config::useAutomaticProbabilityPredictor() {
+        probabilityPredictorConfigPtr_ =
+            std::make_unique<AutomaticProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+    }
+
     BoostingRuleLearner::BoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr,
                                              Blas::DdotFunction ddotFunction, Blas::DspmvFunction dspmvFunction,
                                              Lapack::DsysvFunction dsysvFunction)
@@ -250,7 +263,13 @@ namespace boosting {
 
     std::unique_ptr<ILabelSpaceInfo> BoostingRuleLearner::createLabelSpaceInfo(
             const IRowWiseLabelMatrix& labelMatrix) const {
-        return configPtr_->getClassificationPredictorConfig().createLabelSpaceInfo(labelMatrix);
+        if (configPtr_->getClassificationPredictorConfig().isLabelVectorSetNeeded()
+            || configPtr_->getProbabilityPredictorConfig().isLabelVectorSetNeeded()
+            || configPtr_->getRegressionPredictorConfig().isLabelVectorSetNeeded()) {
+            return createLabelVectorSet(labelMatrix);
+        } else {
+            return createNoLabelSpaceInfo();
+        }
     }
 
     std::unique_ptr<IBoostingRuleLearner::IConfig> createBoostingRuleLearnerConfig() {

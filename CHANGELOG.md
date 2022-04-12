@@ -2,9 +2,19 @@
 
 ### Version 0.9.0 (to be released)
 
+***This release comes with changes to the command line API. For an updated overview of the available parameters, please refer to the documentation.***
+
 A major update to the BOOMER algorithm that introduces the following changes:
 
 * The parameter `--head-type` does now allow to learn partial rules that predict for a predefined number of labels (`partial-fixed`) or a subset of the available labels that is determined dynamically (`partial-dynamic`).
+* A new parameter `--probability-predictor` has been added. It allows to specify whether probability estimates should be obtained for each label independently (`label-wise`) or via marginization over the label vectors that are encountered in the training data (`marginalized`).
+
+### Version 0.8.2 (Apr. 11th, 2022)
+
+A bugfix release that solves the following issues:
+
+* Fixed prebuilt packages available at [PyPI](https://pypi.org/project/mlrl-boomer/).
+* Fixed output of nominal values when using the option `--print-rules true`.
 
 ### Version 0.8.1 (Mar. 4th, 2022)
 

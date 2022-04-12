@@ -68,6 +68,10 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useLabelWiseProbabilityPredictor()
 
+        void useMarginalizedProbabilityPredictor()
+
+        void useAutomaticProbabilityPredictor()
+
 
     cdef cppclass IBoostingRuleLearner(IRuleLearner):
         pass
