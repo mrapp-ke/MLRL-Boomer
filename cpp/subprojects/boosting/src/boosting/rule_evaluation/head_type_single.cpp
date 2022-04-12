@@ -58,4 +58,8 @@ namespace boosting {
             std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
+    bool SingleLabelHeadConfig::isSingleLabel() const {
+        return false;
+    }
+
 }

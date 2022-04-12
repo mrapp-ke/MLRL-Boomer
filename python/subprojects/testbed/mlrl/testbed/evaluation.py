@@ -14,9 +14,8 @@ import numpy as np
 import sklearn.metrics as metrics
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
-from mlrl.testbed.data import MetaData, save_arff_file, Label
-from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer, clear_directory, SUFFIX_ARFF, \
-    get_file_name_per_fold
+from mlrl.testbed.data import MetaData
+from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer, clear_directory
 from sklearn.utils.multiclass import is_multilabel
 
 # The name of the accuracy metric
@@ -33,6 +32,9 @@ RECALL = 'Rec.'
 
 # The name of the F1 metric
 F1 = 'F1'
+
+# The name of the Jaccard metric
+JACCARD = 'Jacc.'
 
 # The name of the hamming loss metric
 HAMMING_LOSS = 'Hamm. Loss'
@@ -52,11 +54,17 @@ MICRO_PRECISION = 'Mi. Prec.'
 # The name of the macro-averaged precision metric
 MACRO_PRECISION = 'Ma. Prec.'
 
+# The name of the example-based precision metric
+EX_BASED_PRECISION = 'Ex.-based Prec.'
+
 # The name of the micro-averaged recall metric
 MICRO_RECALL = 'Mi. Rec.'
 
 # The name of the macro-averaged recall metric
 MACRO_RECALL = 'Ma. Rec.'
+
+# The name of the example-based recall metric
+EX_BASED_RECALL = 'Ex.-based Rec.'
 
 # The name of the micro-averaged F1 metric
 MICRO_F1 = 'Mi. F1'
@@ -64,17 +72,32 @@ MICRO_F1 = 'Mi. F1'
 # The name of the macro-averaged F1 metric
 MACRO_F1 = 'Ma. F1'
 
-# The name of the example-based precision metric
-EX_BASED_PRECISION = 'Ex.-based Prec.'
-
-# The name of the example-based recall metric
-EX_BASED_RECALL = 'Ex.-based Rec.'
-
 # The name of the example-based F1 metric
 EX_BASED_F1 = 'Ex.-based F1'
 
+# The name of the micro-averaged Jaccard metric
+MICRO_JACCARD = 'Mi. Jacc.'
+
+# The name of the macro-averaged Jaccard metric
+MACRO_JACCARD = 'Ma. Jacc.'
+
+# The name of the example-based Jaccard metric
+EX_BASED_JACCARD = 'Ex.-based Jacc.'
+
 # The name of the rank loss metric
 RANK_LOSS = 'Rank Loss'
+
+# The name of the coverage error metric
+COVERAGE_ERROR = 'Cov. Error'
+
+# The name of the label ranking average precision metric
+LABEL_RANKING_AVERAGE_PRECISION = 'LRAP'
+
+# The name of the discounted cumulative gain metric
+DISCOUNTED_CUMULATIVE_GAIN = 'DCG'
+
+# The name of the normalized discounted cumulative gain metric
+NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN = 'NDCG'
 
 # The time needed to train the model
 TIME_TRAIN = 'Training Time'
@@ -192,17 +215,6 @@ class EvaluationOutput(ABC):
     An abstract base class for all outputs, evaluation results may be written to.
     """
 
-    def __init__(self, output_predictions: bool, output_individual_folds: bool):
-        """
-        :param output_predictions:      True, if predictions provided by a classifier or ranker should be written to the
-                                        output, False otherwise
-        :param output_individual_folds: True, if the evaluation results for individual cross validation folds should be
-                                        written to the outputs, False, if only the overall evaluation results, i.e.,
-                                        averaged over all folds, should be written to the outputs
-        """
-        self.output_predictions = output_predictions
-        self.output_individual_folds = output_individual_folds
-
     @abstractmethod
     def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, total_folds: int,
                                  fold: int = None):
@@ -217,30 +229,19 @@ class EvaluationOutput(ABC):
         """
         pass
 
-    @abstractmethod
-    def write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, total_folds: int,
-                          fold: int = None):
-        """
-        Writes predictions to the output.
-
-        :param experiment_name: The name of the experiment
-        :param meta_data:       The meta data of the data set
-        :param predictions:     The predictions
-        :param ground_truth:    The ground truth
-        :param total_folds:     The total number of folds
-        :param fold:            The fold for which the predictions should be written or None, if no cross validation is
-                                used
-        """
-        pass
-
 
 class EvaluationLogOutput(EvaluationOutput):
     """
     Outputs evaluation result using the logger.
     """
 
-    def __init__(self, output_predictions: bool = False, output_individual_folds: bool = True):
-        super().__init__(output_predictions, output_individual_folds)
+    def __init__(self, output_individual_folds: bool = True):
+        """
+        :param output_individual_folds: True, if the evaluation results for individual cross validation folds should be
+                                        written to the outputs, False, if only the overall evaluation results, i.e.,
+                                        averaged over all folds, should be written to the outputs
+        """
+        self.output_individual_folds = output_individual_folds
 
     def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, total_folds: int,
                                  fold: int = None):
@@ -267,28 +268,23 @@ class EvaluationLogOutput(EvaluationOutput):
                        fold + 1) + ')') + ':\n\n%s\n'
             log.info(msg, text)
 
-    def write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, total_folds: int,
-                          fold: int = None):
-        if self.output_predictions:
-            text = 'Ground truth:\n\n' + np.array2string(ground_truth) + '\n\nPredictions:\n\n' + np.array2string(
-                predictions)
-            msg = ('Predictions for experiment \"' + experiment_name + '\"' if fold is None else
-                   'Predictions for experiment \"' + experiment_name + '\" (Fold ' + str(fold + 1) + ')') + ':\n\n%s\n'
-            log.info(msg, text)
-
 
 class EvaluationCsvOutput(EvaluationOutput):
     """
     Writes evaluation results to CSV files.
     """
 
-    def __init__(self, output_dir: str, clear_dir: bool = True, output_predictions: bool = False,
-                 output_individual_folds: bool = True):
+    def __init__(self, output_dir: str, clear_dir: bool = True, output_individual_folds: bool = True):
         """
-        :param output_dir:  The path of the directory, the CSV files should be written to
-        :param clear_dir:   True, if the directory, the CSV files should be written to, should be cleared
+        :param output_predictions:      True, if predictions provided by a classifier or ranker should be written to the
+                                        output, False otherwise
+        :param output_individual_folds: True, if the evaluation results for individual cross validation folds should be
+                                        written to the outputs, False, if only the overall evaluation results, i.e.,
+                                        averaged over all folds, should be written to the outputs
+        :param output_dir:              The path of the directory, the CSV files should be written to
+        :param clear_dir:               True, if the directory, the CSV files should be written to, should be cleared
         """
-        super().__init__(output_predictions, output_individual_folds)
+        self.output_individual_folds = output_individual_folds
         self.output_dir = output_dir
         self.clear_dir = clear_dir
 
@@ -305,16 +301,6 @@ class EvaluationCsvOutput(EvaluationOutput):
                 csv_writer = create_csv_dict_writer(csv_file, header)
                 csv_writer.writerow(columns)
 
-    def write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, total_folds: int,
-                          fold: int = None):
-        if self.output_predictions:
-            self.__clear_dir_if_necessary()
-            file_name = get_file_name_per_fold('predictions_' + experiment_name, SUFFIX_ARFF, fold)
-            attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
-            labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
-            prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
-            save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
-
     def __clear_dir_if_necessary(self):
         """
         Clears the output directory, if necessary.
@@ -330,11 +316,11 @@ class AbstractEvaluation(Evaluation):
     write the results to one or several outputs.
     """
 
-    def __init__(self, *args: EvaluationOutput):
+    def __init__(self, outputs: List[EvaluationOutput]):
         """
         :param args: The outputs, the evaluation results should be written to
         """
-        self.outputs = args
+        self.outputs = outputs
         self.results: Dict[str, EvaluationResult] = {}
 
     def evaluate(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, first_fold: int,
@@ -344,31 +330,12 @@ class AbstractEvaluation(Evaluation):
         result.put(TIME_TRAIN, train_time, current_fold, num_folds)
         result.put(TIME_PREDICT, predict_time, current_fold, num_folds)
         self._populate_result(result, predictions, ground_truth, current_fold=current_fold, num_folds=num_folds)
-        self.__write_predictions(experiment_name, meta_data, predictions, ground_truth, current_fold=current_fold,
-                                 num_folds=num_folds)
         self.__write_evaluation_result(experiment_name, result, first_fold=first_fold, current_fold=current_fold,
                                        last_fold=last_fold, num_folds=num_folds)
 
     @abstractmethod
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
         pass
-
-    def __write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth,
-                            current_fold: int, num_folds: int):
-        """
-        Writes predictions to the outputs.
-
-        :param experiment_name: The name of the experiment
-        :param meta_data:       The meta data of the data set
-        :param predictions:     The predictions
-        :param ground_truth:    The ground truth
-        :param current_fold:    The current cross validation fold or 0, if no cross validation is used
-        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
-        """
-
-        for output in self.outputs:
-            output.write_predictions(experiment_name, meta_data, predictions, ground_truth, num_folds,
-                                     current_fold if num_folds > 1 else None)
 
     def __write_evaluation_result(self, experiment_name: str, result: EvaluationResult, first_fold: int,
                                   current_fold: int, last_fold: int, num_folds: int):
@@ -414,18 +381,24 @@ class ClassificationEvaluation(AbstractEvaluation):
                        current_fold, num_folds)
             result.put(MICRO_F1, metrics.f1_score(ground_truth, predictions, average='micro', zero_division=1),
                        current_fold, num_folds)
-            result.put(MACRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='macro',
-                                                                zero_division=1), current_fold, num_folds)
+            result.put(MICRO_JACCARD, metrics.jaccard_score(ground_truth, predictions, average='micro',
+                                                            zero_division=1), current_fold, num_folds)
             result.put(MACRO_RECALL, metrics.recall_score(ground_truth, predictions, average='macro', zero_division=1),
                        current_fold, num_folds)
+            result.put(MACRO_PRECISION, metrics.precision_score(ground_truth, predictions, average='macro',
+                                                                zero_division=1), current_fold, num_folds)
             result.put(MACRO_F1, metrics.f1_score(ground_truth, predictions, average='macro', zero_division=1),
                        current_fold, num_folds)
+            result.put(MACRO_JACCARD, metrics.jaccard_score(ground_truth, predictions, average='macro',
+                                                            zero_division=1), current_fold, num_folds)
             result.put(EX_BASED_PRECISION, metrics.precision_score(ground_truth, predictions, average='samples',
                                                                    zero_division=1), current_fold, num_folds)
             result.put(EX_BASED_RECALL, metrics.recall_score(ground_truth, predictions, average='samples',
                                                              zero_division=1), current_fold, num_folds)
             result.put(EX_BASED_F1, metrics.f1_score(ground_truth, predictions, average='samples', zero_division=1),
                        current_fold, num_folds)
+            result.put(EX_BASED_JACCARD, metrics.jaccard_score(ground_truth, predictions, average='samples',
+                                                               zero_division=1), current_fold, num_folds)
         else:
             predictions = np.ravel(enforce_dense(predictions, order='C', dtype=DTYPE_UINT8))
             ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8))
@@ -437,6 +410,8 @@ class ClassificationEvaluation(AbstractEvaluation):
             result.put(RECALL, metrics.recall_score(ground_truth, predictions, zero_division=1), current_fold,
                        num_folds)
             result.put(F1, metrics.f1_score(ground_truth, predictions, zero_division=1), current_fold, num_folds)
+            result.put(JACCARD, metrics.jaccard_score(ground_truth, predictions, zero_division=1), current_fold,
+                       num_folds)
 
 
 class RankingEvaluation(AbstractEvaluation):
@@ -448,4 +423,14 @@ class RankingEvaluation(AbstractEvaluation):
         super().__init__(*args)
 
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
-        result.put(RANK_LOSS, metrics.label_ranking_loss(ground_truth, predictions), current_fold, num_folds)
+        if is_multilabel(ground_truth):
+            ground_truth = enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8)
+            result.put(RANK_LOSS, metrics.label_ranking_loss(ground_truth, predictions), current_fold, num_folds)
+            result.put(COVERAGE_ERROR, metrics.coverage_error(ground_truth, predictions), current_fold, num_folds)
+            result.put(LABEL_RANKING_AVERAGE_PRECISION,
+                       metrics.label_ranking_average_precision_score(ground_truth, predictions), current_fold,
+                       num_folds)
+            result.put(DISCOUNTED_CUMULATIVE_GAIN, metrics.dcg_score(ground_truth, predictions), current_fold,
+                       num_folds)
+            result.put(NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, metrics.ndcg_score(ground_truth, predictions),
+                       current_fold, num_folds)

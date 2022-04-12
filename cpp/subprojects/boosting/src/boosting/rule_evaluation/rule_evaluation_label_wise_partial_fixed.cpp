@@ -27,7 +27,7 @@ namespace boosting {
 
             float64 l2RegularizationWeight_;
 
-            PriorityQueue priorityQueue_;
+            SparseArrayVector<float64> tmpVector_;
 
         public:
 
@@ -44,7 +44,8 @@ namespace boosting {
                                                      float64 l1RegularizationWeight, float64 l2RegularizationWeight)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(numPredictions)),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
-                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
+                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
+                  tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())){
 
             }
 
@@ -52,22 +53,24 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 uint32 numPredictions = indexVector_.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
-                sortLabelWiseQualityScores(priorityQueue_, numPredictions, statisticIterator, labelIndexIterator,
-                                           numElements, l1RegularizationWeight_, l2RegularizationWeight_);
+                SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
+                sortLabelWiseScores(tmpIterator, statisticIterator, numElements, numPredictions,
+                                    l1RegularizationWeight_, l2RegularizationWeight_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 float64 overallQualityScore = 0;
 
                 for (uint32 i = 0; i < numPredictions; i++) {
-                    const IndexedValue<float64>& entry = priorityQueue_.top();
-                    overallQualityScore += entry.value;
+                    const IndexedValue<float64>& entry = tmpIterator[i];
                     uint32 index = entry.index;
-                    indexIterator[i] = index;
+                    float64 predictedScore = entry.value;
+                    indexIterator[i] = labelIndexIterator[index];
+                    scoreIterator[i] = predictedScore;
                     const Tuple<float64>& tuple = statisticIterator[index];
-                    scoreIterator[i] = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
-                                                               l2RegularizationWeight_);
-                    priorityQueue_.pop();
+                    overallQualityScore += calculateLabelWiseQualityScore(predictedScore, tuple.first, tuple.second,
+                                                                          l1RegularizationWeight_,
+                                                                          l2RegularizationWeight_);
                 }
 
                 scoreVector_.overallQualityScore = overallQualityScore;

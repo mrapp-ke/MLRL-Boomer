@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/output/predictor_classification.hpp"
+#include "common/output/predictor_probability.hpp"
 #include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
 
@@ -11,12 +11,10 @@
 namespace boosting {
 
     /**
-     * Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
-     * irrelevant by summing up the scores that are provided by the individual rules of an existing rule-based model and
-     * transforming them into binary values according to a certain threshold that is applied to each label individually
-     * (1 if a score exceeds the threshold, i.e., the label is relevant, 0 otherwise).
+     * Allows to configure a predictor that automatically decides for a method that is used to predict probabilities for
+     * given query examples, which estimate the chance of individual labels to be relevant.
      */
-    class LabelWiseClassificationPredictorConfig final : public IClassificationPredictorConfig {
+    class AutomaticProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
 
         private:
 
@@ -33,14 +31,13 @@ namespace boosting {
              *                                  multi-threading behavior that should be used to predict for several
              *                                  query examples in parallel
              */
-            LabelWiseClassificationPredictorConfig(
-                const std::unique_ptr<ILossConfig>& lossConfigPtr,
-                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+            AutomaticProbabilityPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
+                                                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
             /**
-             * @see `IClassificationPredictorFactory::createClassificationPredictorFactory`
+             * @see `IProbabilityPredictorConfig::createProbabilityPredictorFactory`
              */
-            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
+            std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
                 const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**

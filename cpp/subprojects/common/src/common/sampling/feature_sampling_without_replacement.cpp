@@ -87,3 +87,7 @@ std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig
     uint32 numSamples = (uint32) (sampleSize_ > 0 ? sampleSize_ * numFeatures : log2(numFeatures - 1) + 1);
     return std::make_unique<FeatureSamplingWithoutReplacementFactory>(numFeatures, numSamples);
 }
+
+bool FeatureSamplingWithoutReplacementConfig::isSamplingUsed() const {
+    return true;
+}

@@ -4,7 +4,6 @@
 #include "common/iterator/non_zero_index_forward_iterator.hpp"
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
-#include "common/output/label_space_info_no.hpp"
 #include "omp.h"
 
 
@@ -364,9 +363,8 @@ namespace seco {
         return std::make_unique<LabelWiseClassificationPredictorFactory>(numThreads);
     }
 
-    std::unique_ptr<ILabelSpaceInfo> LabelWiseClassificationPredictorConfig::createLabelSpaceInfo(
-            const IRowWiseLabelMatrix& labelMatrix) const {
-        return createNoLabelSpaceInfo();
+    bool LabelWiseClassificationPredictorConfig::isLabelVectorSetNeeded() const {
+        return false;
     }
 
 }

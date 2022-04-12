@@ -1,5 +1,4 @@
 #include "boosting/output/predictor_classification_example_wise.hpp"
-#include "common/data/arrays.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 #include <algorithm>
@@ -7,65 +6,68 @@
 
 namespace boosting {
 
-    static inline const LabelVector* findClosestLabelVector(const float64* scoresBegin, const float64* scoresEnd,
+    static inline const LabelVector* measureSimilarity(LabelVectorSet::const_iterator iterator,
+                                                       const float64* scoresBegin, const float64* scoresEnd,
+                                                       const ISimilarityMeasure& measure, float64& distance,
+                                                       uint32& count) {
+        const auto& entry = *iterator;
+        const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
+        distance = measure.measureSimilarity(*labelVectorPtr, scoresBegin, scoresEnd);
+        count = entry.second;
+        return labelVectorPtr.get();
+    }
+
+    static inline const LabelVector& findClosestLabelVector(const float64* scoresBegin, const float64* scoresEnd,
                                                             const ISimilarityMeasure& measure,
-                                                            const LabelVectorSet* labelVectorSet) {
-        const LabelVector* closestLabelVector = nullptr;
+                                                            const LabelVectorSet& labelVectorSet) {
+        float64 minDistance;
+        uint32 maxCount;
+        LabelVectorSet::const_iterator it = labelVectorSet.cbegin();
+        const LabelVector* closestLabelVector = measureSimilarity(it, scoresBegin, scoresEnd, measure, minDistance,
+                                                                  maxCount);
+        it++;
 
-        if (labelVectorSet) {
-            float64 bestScore = 0;
-            uint32 bestCount = 0;
+        for (; it != labelVectorSet.cend(); it++) {
+            float64 distance;
+            uint32 count;
+            const LabelVector* labelVector = measureSimilarity(it, scoresBegin, scoresEnd, measure, distance, count);
 
-            for (auto it = labelVectorSet->cbegin(); it != labelVectorSet->cend(); it++) {
-                const auto& entry = *it;
-                const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
-                uint32 count = entry.second;
-                float64 score = measure.measureSimilarity(*labelVectorPtr, scoresBegin, scoresEnd);
-
-                if (!closestLabelVector || score < bestScore || (score == bestScore && count > bestCount)) {
-                    closestLabelVector = labelVectorPtr.get();
-                    bestScore = score;
-                    bestCount = count;
-                }
+            if (distance < minDistance || (distance == minDistance && count > maxCount)) {
+                closestLabelVector = labelVector;
+                minDistance = distance;
+                maxCount = count;
             }
         }
 
-        return closestLabelVector;
+        return *closestLabelVector;
     }
 
-    static inline void predictLabelVector(CContiguousView<uint8>::value_iterator predictionIterator, uint32 numElements,
-                                          const LabelVector* labelVector) {
-        setArrayToZeros(predictionIterator, numElements);
+    static inline void predictLabelVector(CContiguousView<uint8>::value_iterator predictionIterator,
+                                          const LabelVector& labelVector) {
+        uint32 numIndices = labelVector.getNumElements();
+        LabelVector::const_iterator indexIterator = labelVector.cbegin();
 
-        if (labelVector) {
-            uint32 numIndices = labelVector->getNumElements();
-            LabelVector::const_iterator indexIterator = labelVector->cbegin();
-
-            for (uint32 i = 0; i < numIndices; i++) {
-                uint32 labelIndex = indexIterator[i];
-                predictionIterator[labelIndex] = 1;
-            }
+        for (uint32 i = 0; i < numIndices; i++) {
+            uint32 labelIndex = indexIterator[i];
+            predictionIterator[labelIndex] = 1;
         }
     }
 
-    static inline uint32 predictLabelVector(BinaryLilMatrix::Row& row, const LabelVector* labelVector) {
+    static inline uint32 predictLabelVector(BinaryLilMatrix::Row& row, const LabelVector& labelVector) {
         uint32 numNonZeroElements = 0;
+        uint32 numIndices = labelVector.getNumElements();
+        LabelVector::const_iterator indexIterator = labelVector.cbegin();
 
-        if (labelVector) {
-            uint32 numIndices = labelVector->getNumElements();
-            LabelVector::const_iterator indexIterator = labelVector->cbegin();
+        if (numIndices > 0) {
+            uint32 labelIndex = indexIterator[0];
+            row.emplace_front(labelIndex);
+            numNonZeroElements++;
+            BinaryLilMatrix::Row::iterator it = row.begin();
 
-            if (numIndices > 0) {
-                uint32 labelIndex = indexIterator[0];
-                row.emplace_front(labelIndex);
+            for (uint32 i = 1; i < numIndices; i++) {
+                labelIndex = indexIterator[i];
+                it = row.emplace_after(it, labelIndex);
                 numNonZeroElements++;
-                BinaryLilMatrix::Row::iterator it = row.begin();
-
-                for (uint32 i = 1; i < numIndices; i++) {
-                    labelIndex = indexIterator[i];
-                    it = row.emplace_after(it, labelIndex);
-                    numNonZeroElements++;
-                }
             }
         }
 
@@ -109,8 +111,8 @@ namespace boosting {
             ExampleWiseClassificationPredictor(const Model& model, const LabelVectorSet* labelVectorSet,
                                                std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr,
                                                uint32 numThreads)
-                : model_(model), labelVectorSet_(labelVectorSet), similarityMeasurePtr_(std::move(similarityMeasurePtr)),
-                  numThreads_(numThreads) {
+                : model_(model), labelVectorSet_(labelVectorSet),
+                  similarityMeasurePtr_(std::move(similarityMeasurePtr)), numThreads_(numThreads) {
 
             }
 
@@ -121,27 +123,30 @@ namespace boosting {
                     const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
-                const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
-                CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
-                const Model* modelPtr = &model_;
+                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
                 const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
-                const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
 
-                #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-                firstprivate(similarityMeasureRawPtr) firstprivate(labelVectorSetPtr) schedule(dynamic) \
-                num_threads(numThreads_)
-                for (int64 i = 0; i < numExamples; i++) {
-                    float64* scoreVector = new float64[numLabels] {};
-                    applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                               &scoreVector[0]);
-                    const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0],
-                                                                                   &scoreVector[numLabels],
-                                                                                   *similarityMeasureRawPtr,
-                                                                                   labelVectorSetPtr);
-                    predictLabelVector(predictionMatrixRawPtr->row_values_begin(i), numLabels, closestLabelVector);
-                    delete[] scoreVector;
+                if (labelVectorSetPtr && labelVectorSetPtr->getNumLabelVectors() > 0) {
+                    const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
+                    CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
+                    const Model* modelPtr = &model_;
+                    const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
+
+                    #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
+                    firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
+                    firstprivate(similarityMeasureRawPtr) firstprivate(labelVectorSetPtr) schedule(dynamic) \
+                    num_threads(numThreads_)
+                    for (int64 i = 0; i < numExamples; i++) {
+                        float64* scoreVector = new float64[numLabels] {};
+                        applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
+                                   featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                        const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0],
+                                                                                       &scoreVector[numLabels],
+                                                                                       *similarityMeasureRawPtr,
+                                                                                       *labelVectorSetPtr);
+                        predictLabelVector(predictionMatrixRawPtr->row_values_begin(i), closestLabelVector);
+                        delete[] scoreVector;
+                    }
                 }
 
                 return predictionMatrixPtr;
@@ -155,28 +160,31 @@ namespace boosting {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
-                const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
-                CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
-                const Model* modelPtr = &model_;
+                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
                 const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
-                const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
 
-                #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-                firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-                firstprivate(similarityMeasureRawPtr) firstprivate(labelVectorSetPtr) schedule(dynamic) \
-                num_threads(numThreads_)
-                for (int64 i = 0; i < numExamples; i++) {
-                    float64* scoreVector = new float64[numLabels] {};
-                    applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
-                                  featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                                  featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                    const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0],
-                                                                                   &scoreVector[numLabels],
-                                                                                   *similarityMeasureRawPtr,
-                                                                                   labelVectorSetPtr);
-                    predictLabelVector(predictionMatrixRawPtr->row_values_begin(i), numLabels, closestLabelVector);
-                    delete[] scoreVector;
+                if (labelVectorSetPtr && labelVectorSetPtr->getNumLabelVectors() > 0) {
+                    const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
+                    CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
+                    const Model* modelPtr = &model_;
+                    const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
+
+                    #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) \
+                    firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+                    firstprivate(predictionMatrixRawPtr) firstprivate(similarityMeasureRawPtr) \
+                    firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads_)
+                    for (int64 i = 0; i < numExamples; i++) {
+                        float64* scoreVector = new float64[numLabels] {};
+                        applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                                      featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                                      featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                        const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0],
+                                                                                       &scoreVector[numLabels],
+                                                                                       *similarityMeasureRawPtr,
+                                                                                       *labelVectorSetPtr);
+                        predictLabelVector(predictionMatrixRawPtr->row_values_begin(i), closestLabelVector);
+                        delete[] scoreVector;
+                    }
                 }
 
                 return predictionMatrixPtr;
@@ -189,27 +197,30 @@ namespace boosting {
                     const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 BinaryLilMatrix lilMatrix(numExamples);
-                const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
-                BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
-                const Model* modelPtr = &model_;
-                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
-                const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
                 uint32 numNonZeroElements = 0;
+                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
 
-                #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
-                firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-                firstprivate(predictionMatrixPtr) firstprivate(similarityMeasureRawPtr) \
-                firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads_)
-                for (int64 i = 0; i < numExamples; i++) {
-                    float64* scoreVector = new float64[numLabels] {};
-                    applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                               &scoreVector[0]);
-                    const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0],
-                                                                                   &scoreVector[numLabels],
-                                                                                   *similarityMeasureRawPtr,
-                                                                                   labelVectorSetPtr);
-                    numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
-                    delete[] scoreVector;
+                if (labelVectorSetPtr && labelVectorSetPtr->getNumLabelVectors() > 0) {
+                    const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
+                    BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
+                    const Model* modelPtr = &model_;
+                    const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
+
+                    #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
+                    firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+                    firstprivate(predictionMatrixPtr) firstprivate(similarityMeasureRawPtr) \
+                    firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads_)
+                    for (int64 i = 0; i < numExamples; i++) {
+                        float64* scoreVector = new float64[numLabels] {};
+                        applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
+                                   featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                        const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0],
+                                                                                       &scoreVector[numLabels],
+                                                                                       *similarityMeasureRawPtr,
+                                                                                       *labelVectorSetPtr);
+                        numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
+                        delete[] scoreVector;
+                    }
                 }
 
                 return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
@@ -223,28 +234,32 @@ namespace boosting {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 BinaryLilMatrix lilMatrix(numExamples);
-                const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
-                BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
-                const Model* modelPtr = &model_;
-                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
-                const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
                 uint32 numNonZeroElements = 0;
+                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
 
-                #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
-                firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) \
-                firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(similarityMeasureRawPtr) \
-                firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads_)
-                for (int64 i = 0; i < numExamples; i++) {
-                    float64* scoreVector = new float64[numLabels] {};
-                    applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
-                                  featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                                  featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                    const LabelVector* closestLabelVector = findClosestLabelVector(&scoreVector[0],
-                                                                                   &scoreVector[numLabels],
-                                                                                   *similarityMeasureRawPtr,
-                                                                                   labelVectorSetPtr);
-                    numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
-                    delete[] scoreVector;
+                if (labelVectorSetPtr && labelVectorSetPtr->getNumLabelVectors() > 0) {
+                    const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
+                    BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
+                    const Model* modelPtr = &model_;
+                    const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
+
+                    #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
+                    firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) \
+                    firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+                    firstprivate(similarityMeasureRawPtr) firstprivate(labelVectorSetPtr) schedule(dynamic) \
+                    num_threads(numThreads_)
+                    for (int64 i = 0; i < numExamples; i++) {
+                        float64* scoreVector = new float64[numLabels] {};
+                        applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                                      featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                                      featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                        const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0],
+                                                                                       &scoreVector[numLabels],
+                                                                                       *similarityMeasureRawPtr,
+                                                                                       *labelVectorSetPtr);
+                        numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
+                        delete[] scoreVector;
+                    }
                 }
 
                 return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
@@ -312,16 +327,8 @@ namespace boosting {
             std::move(similarityMeasureFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<ILabelSpaceInfo> ExampleWiseClassificationPredictorConfig::createLabelSpaceInfo(
-            const IRowWiseLabelMatrix& labelMatrix) const {
-        std::unique_ptr<LabelVectorSet> labelVectorSetPtr = std::make_unique<LabelVectorSet>();
-        uint32 numRows = labelMatrix.getNumRows();
-
-        for (uint32 i = 0; i < numRows; i++) {
-            labelVectorSetPtr->addLabelVector(labelMatrix.createLabelVector(i));
-        }
-
-        return labelVectorSetPtr;
+    bool ExampleWiseClassificationPredictorConfig::isLabelVectorSetNeeded() const {
+        return true;
     }
 
 }

@@ -13,7 +13,7 @@ namespace boosting {
     /**
      * Allows to configure a predictor that predicts label-wise probabilities for given query examples, which estimate
      * the chance of individual labels to be relevant, by summing up the scores that are provided by individual rules of
-     * an existing rule-based models and transforming the aggregated scores into probabilities in [0, 1] according to a
+     * an existing rule-based model and transforming the aggregated scores into probabilities in [0, 1] according to a
      * certain transformation function that is applied to each label individually.
      */
     class LabelWiseProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
@@ -41,6 +41,11 @@ namespace boosting {
              */
             std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
                 const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+
+            /**
+             * @see `IPredictorConfig::isLabelVectorSetNeeded`
+             */
+            bool isLabelVectorSetNeeded() const override;
 
     };
 

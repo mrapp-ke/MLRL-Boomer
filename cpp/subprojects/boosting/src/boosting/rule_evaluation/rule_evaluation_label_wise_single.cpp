@@ -48,29 +48,27 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 const Tuple<float64>& firstTuple = statisticIterator[0];
-                float64 bestQualityScore = calculateLabelWiseQualityScore(firstTuple.first, firstTuple.second,
-                                                                          l1RegularizationWeight_,
-                                                                          l2RegularizationWeight_);
+                float64 bestScore = calculateLabelWiseScore(firstTuple.first, firstTuple.second,
+                                                            l1RegularizationWeight_, l2RegularizationWeight_);
                 uint32 bestIndex = 0;
 
                 for (uint32 i = 1; i < numElements; i++) {
                     const Tuple<float64>& tuple = statisticIterator[i];
-                    float64 qualityScore = calculateLabelWiseQualityScore(tuple.first, tuple.second,
-                                                                          l1RegularizationWeight_,
-                                                                          l2RegularizationWeight_);
+                    float64 score = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
+                                                            l2RegularizationWeight_);
 
-                    if (qualityScore < bestQualityScore) {
+                    if (std::abs(score) > std::abs(bestScore)) {
                         bestIndex = i;
-                        bestQualityScore = qualityScore;
+                        bestScore = score;
                     }
                 }
 
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                scoreIterator[0] = calculateLabelWiseScore(statisticIterator[bestIndex].first,
-                                                           statisticIterator[bestIndex].second,
-                                                           l1RegularizationWeight_, l2RegularizationWeight_);
+                scoreIterator[0] = bestScore;
                 indexVector_.begin()[0] = labelIndices_.cbegin()[bestIndex];
-                scoreVector_.overallQualityScore = bestQualityScore;
+                scoreVector_.overallQualityScore = calculateLabelWiseQualityScore(
+                    bestScore, statisticIterator[bestIndex].first, statisticIterator[bestIndex].second,
+                    l1RegularizationWeight_, l2RegularizationWeight_);;
                 return scoreVector_;
             }
 

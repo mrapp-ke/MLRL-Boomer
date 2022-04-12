@@ -276,11 +276,27 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to use a predictor for predicting probability estimates by summing up
-                     * the scores that are provided by individual rules of an existing rule-based models and
-                     * transforming the aggregated scores into probabilities according to a certain transformation
-                     * function that is applied to each label individually.
+                     * the scores that are provided by individual rules of an existing rule-based model and transforming
+                     * the aggregated scores into probabilities according to a certain transformation function that is
+                     * applied to each label individually.
                      */
                     virtual void useLabelWiseProbabilityPredictor() = 0;
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting probability estimates by summing up
+                     * the scores that are provided by individual rules of an existing rule-based model and comparing
+                     * the aggregated score vector to the known label vectors according to a certain distance measure.
+                     * The probability for an individual label calculates as the sum of the distances that have been
+                     * obtained for all label vectors, where the respective label is specified to be relevant, divided
+                     * by the total sum of all distances.
+                     */
+                    virtual void useMarginalizedProbabilityPredictor() = 0;
+
+                    /**
+                     * Configures the rule learner to automatically decide for a predictor for predicting probability
+                     * estimates.
+                     */
+                    virtual void useAutomaticProbabilityPredictor() = 0;
 
             };
 
@@ -392,6 +408,10 @@ namespace boosting {
                     void useLabelWiseRegressionPredictor() override;
 
                     void useLabelWiseProbabilityPredictor() override;
+
+                    void useMarginalizedProbabilityPredictor() override;
+
+                    void useAutomaticProbabilityPredictor() override;
 
             };
 
