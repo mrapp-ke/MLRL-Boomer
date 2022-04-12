@@ -33,7 +33,7 @@ namespace boosting {
     }
 
     IDynamicPartialHeadConfig& DynamicPartialHeadConfig::setExponent(float32 exponent) {
-        assertGreater<float32>("exponent", exponent, 0);
+        assertGreaterOrEqual<float32>("exponent", exponent, 1);
         exponent_ = exponent;
         return *this;
     }
