@@ -24,6 +24,8 @@ namespace boosting {
 
             float64 threshold_;
 
+            float64 exponent_;
+
             float64 l1RegularizationWeight_;
 
             float64 l2RegularizationWeight_;
@@ -35,16 +37,19 @@ namespace boosting {
              *                                  the indices of the labels for which the rules may predict
              * @param threshold                 A threshold that affects for how many labels the rule heads should
              *                                  predict
+             * @param exponent                  An exponent that is used to weigh that estimated predictive quality for
+             *                                  individual labels
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DenseLabelWiseDynamicPartialRuleEvaluation(const T& labelIndices, float32 threshold,
+            DenseLabelWiseDynamicPartialRuleEvaluation(const T& labelIndices, float32 threshold, float32 exponent,
                                                        float64 l1RegularizationWeight, float64 l2RegularizationWeight)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, true)), threshold_(1.0 - threshold),
-                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
+                  exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
+                  l2RegularizationWeight_(l2RegularizationWeight) {
 
             }
 
@@ -95,8 +100,8 @@ namespace boosting {
     };
 
     LabelWiseDynamicPartialRuleEvaluationFactory::LabelWiseDynamicPartialRuleEvaluationFactory(
-            float32 threshold, float64 l1RegularizationWeight, float64 l2RegularizationWeight)
-        : threshold_(threshold), l1RegularizationWeight_(l1RegularizationWeight),
+            float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight)
+        : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight) {
 
     }
@@ -104,7 +109,7 @@ namespace boosting {
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseDynamicPartialRuleEvaluationFactory::create(
             const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         return std::make_unique<DenseLabelWiseDynamicPartialRuleEvaluation<CompleteIndexVector>>(
-            indexVector, threshold_, l1RegularizationWeight_, l2RegularizationWeight_);
+            indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseDynamicPartialRuleEvaluationFactory::create(

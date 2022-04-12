@@ -24,6 +24,8 @@ namespace boosting {
 
             float64 threshold_;
 
+            float64 exponent_;
+
         protected:
 
             uint32 calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
@@ -77,6 +79,8 @@ namespace boosting {
              *                                  the indices of the labels for which a rule predicts
              * @param threshold                 A threshold that affects for how many labels the rule heads should
              *                                  predict
+             * @param exponent                  An exponent that is used to weight the estimated predictive quality for
+             *                                  individual labels
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
@@ -90,23 +94,25 @@ namespace boosting {
              */
             DenseExampleWiseDynamicPartialBinnedRuleEvaluation(const T& labelIndices, uint32 maxBins,
                                                                std::unique_ptr<PartialIndexVector> indexVectorPtr,
-                                                               float32 threshold, float64 l1RegularizationWeight,
+                                                               float32 threshold, float32 exponent,
+                                                               float64 l1RegularizationWeight,
                                                                float64 l2RegularizationWeight,
                                                                std::unique_ptr<ILabelBinning> binningPtr,
                                                                const Blas& blas, const Lapack& lapack)
                 : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector>(
                       *indexVectorPtr, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                       std::move(binningPtr), blas, lapack),
-                  labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)), threshold_(1.0 - threshold) {
+                  labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)), threshold_(1.0 - threshold),
+                  exponent_(exponent) {
 
             }
 
     };
 
     ExampleWiseDynamicPartialBinnedRuleEvaluationFactory::ExampleWiseDynamicPartialBinnedRuleEvaluationFactory(
-            float32 threshold, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+            float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
             std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas, const Lapack& lapack)
-        : threshold_(threshold), l1RegularizationWeight_(l1RegularizationWeight),
+        : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)),
           blas_(blas), lapack_(lapack) {
 
@@ -119,7 +125,7 @@ namespace boosting {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(numElements);
         return std::make_unique<DenseExampleWiseDynamicPartialBinnedRuleEvaluation<CompleteIndexVector>>(
-            indexVector, maxBins, std::move(indexVectorPtr), threshold_, l1RegularizationWeight_,
+            indexVector, maxBins, std::move(indexVectorPtr), threshold_, exponent_, l1RegularizationWeight_,
             l2RegularizationWeight_, std::move(labelBinningPtr), blas_, lapack_);
     }
 

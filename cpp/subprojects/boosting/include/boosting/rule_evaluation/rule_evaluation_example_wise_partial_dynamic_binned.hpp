@@ -22,6 +22,8 @@ namespace boosting {
 
             float32 threshold_;
 
+            float32 exponent_;
+
             float64 l1RegularizationWeight_;
 
             float64 l2RegularizationWeight_;
@@ -40,8 +42,12 @@ namespace boosting {
              *                                  greater threshold results in more labels being selected. E.g., a
              *                                  threshold of 0.2 means that a rule will only predict for a label if the
              *                                  estimated predictive quality `q` for this particular label satisfies the
-             *                                  inequality `q^2 > q_best^2 * (1 - 0.2)`, where `q_best` is the best
-             *                                  quality among all labels. Must be in (0, 1)
+             *                                  inequality `q^exponent > q_best^exponent * (1 - 0.2)`, where `q_best` is
+             *                                  the best quality among all labels. Must be in (0, 1)
+             * @param exponent                  An exponent that should be used to weigh the estimated predictive
+             *                                  quality for individual labels. E.g., an exponent of 2 means that the
+             *                                  estimated predictive quality `q` for a particular label is weighed as
+             *                                  `q^2`. Must be at least 1
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
@@ -54,7 +60,7 @@ namespace boosting {
              *                                  routines
              */
             ExampleWiseDynamicPartialBinnedRuleEvaluationFactory(
-                float32 threshold, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+                float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                 std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas, const Lapack& lapack);
 
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
