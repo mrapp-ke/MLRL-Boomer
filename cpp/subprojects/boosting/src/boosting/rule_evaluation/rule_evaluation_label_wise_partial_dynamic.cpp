@@ -52,39 +52,37 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 const Tuple<float64>& firstTuple = statisticIterator[0];
-                float64 bestQualityScore = calculateLabelWiseQualityScore(firstTuple.first, firstTuple.second,
-                                                                          l1RegularizationWeight_,
-                                                                          l2RegularizationWeight_);
+                float64 bestScore = calculateLabelWiseScore(firstTuple.first, firstTuple.second,
+                                                            l1RegularizationWeight_, l2RegularizationWeight_);
 
                 for (uint32 i = 1; i < numElements; i++) {
                     const Tuple<float64>& tuple = statisticIterator[i];
-                    float64 qualityScore = calculateLabelWiseQualityScore(tuple.first, tuple.second,
-                                                                          l1RegularizationWeight_,
-                                                                          l2RegularizationWeight_);
+                    float64 score = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
+                                                            l2RegularizationWeight_);
 
-                    if (qualityScore < bestQualityScore) {
-                        bestQualityScore = qualityScore;
+                    if (std::abs(score) > std::abs(bestScore)) {
+                        bestScore = score;
                     }
                 }
 
-                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                float64 threshold = (bestQualityScore * bestQualityScore) * threshold_;
+                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                float64 threshold = (bestScore * bestScore) * threshold_;
                 float64 overallQualityScore = 0;
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     const Tuple<float64>& tuple = statisticIterator[i];
-                    float64 qualityScore = calculateLabelWiseQualityScore(tuple.first, tuple.second,
-                                                                          l1RegularizationWeight_,
-                                                                          l2RegularizationWeight_);
+                    float64 score = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
+                                                            l2RegularizationWeight_);
 
-                    if (qualityScore * qualityScore > threshold) {
-                        overallQualityScore += qualityScore;
-                        scoreIterator[n] = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
-                                                                   l2RegularizationWeight_);
+                    if (score * score > threshold) {
                         indexIterator[n] = labelIndexIterator[i];
+                        scoreIterator[n] = score;
+                        overallQualityScore += calculateLabelWiseQualityScore(score, tuple.first, tuple.second,
+                                                                              l1RegularizationWeight_,
+                                                                              l2RegularizationWeight_);
                         n++;
                     }
                 }
