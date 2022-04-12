@@ -1,5 +1,6 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_partial_dynamic_binned.hpp"
 #include "rule_evaluation_example_wise_binned_common.hpp"
+#include "rule_evaluation_example_wise_partial_dynamic_common.hpp"
 
 
 namespace boosting {
@@ -36,29 +37,20 @@ namespace boosting {
                     statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                     statisticVector.hessians_diagonal_cbegin();
-                float64 bestScore = calculateLabelWiseScore(gradientIterator[0], hessianIterator[0],
-                                                            l1RegularizationWeight, l2RegularizationWeight);
-                criteria[0] = bestScore;
 
-                for (uint32 i = 1; i < numLabels; i++) {
-                    float64 score = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i],
-                                                            l1RegularizationWeight, l2RegularizationWeight);
-                    criteria[i] = score;
-
-                    if (std::abs(score) > std::abs(bestScore)) {
-                        bestScore = score;
-                    }
-                }
-
+                const std::pair<float64, float64> pair = getMinAndMaxScore(criteria, gradientIterator, hessianIterator,
+                                                                           numLabels, l1RegularizationWeight,
+                                                                           l2RegularizationWeight);
+                float64 minAbsScore = pair.first;
+                float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
-                float64 threshold = (bestScore * bestScore) * threshold_;
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {
                     float64 score = criteria[i];
 
-                    if (score * score > threshold) {
+                    if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
                         indexIterator[n] = labelIndexIterator[i];
                         criteria[n] = score;
                         n++;

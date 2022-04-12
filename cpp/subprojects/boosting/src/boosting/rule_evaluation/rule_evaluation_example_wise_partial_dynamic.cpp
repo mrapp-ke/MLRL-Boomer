@@ -1,6 +1,7 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_partial_dynamic.hpp"
 #include "rule_evaluation_example_wise_complete_common.hpp"
 #include "rule_evaluation_example_wise_partial_common.hpp"
+#include "rule_evaluation_example_wise_partial_dynamic_common.hpp"
 
 
 namespace boosting {
@@ -73,30 +74,23 @@ namespace boosting {
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                     statisticVector.hessians_diagonal_cbegin();
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                float64 bestScore = calculateLabelWiseScore(gradientIterator[0], hessianIterator[0],
-                                                            l1RegularizationWeight_, l2RegularizationWeight_);
-                scoreIterator[0] = bestScore;
+                const std::pair<float64, float64> pair = getMinAndMaxScore(scoreIterator, gradientIterator,
+                                                                           hessianIterator, numLabels,
+                                                                           l1RegularizationWeight_,
+                                                                           l2RegularizationWeight_);
+                float64 minAbsScore = pair.first;
 
-                for (uint32 i = 1; i < numLabels; i++) {
-                    float64 score = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i],
-                                                            l1RegularizationWeight_, l2RegularizationWeight_);
-                    scoreIterator[i] = score;
-
-                    if (std::abs(score) > std::abs(bestScore)) {
-                        bestScore = score;
-                    }
-                }
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
+                float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
-                float64 threshold = (bestScore * bestScore) * threshold_;
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {
                     float64 score = scoreIterator[i];
 
-                    if (score * score > threshold) {
+                    if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
                         indexIterator[n] = labelIndexIterator[i];
                         scoreIterator[n] = -gradientIterator[i];
                         n++;
