@@ -56,7 +56,7 @@ namespace boosting {
              *
              * @param exponent  An exponent that should be used to weigh the estimated predictive quality for individual
              *                  labels. E.g., an exponent of 2 means that the estimated predictive quality `q` for a
-             *                  particular label is weighed as `q^2`. Must be greater than 0
+             *                  particular label is weighed as `q^2`. Must be at least 1
              * @return          A reference to an object of type `IDynamicPartialHeadConfig` that allows further
              *                  configuration of the rule heads
              */

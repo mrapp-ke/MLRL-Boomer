@@ -121,9 +121,9 @@ cdef class DynamicPartialHeadConfig:
 
         :param exponent:    An exponent that should be used to weigh the estimated predictive quality for individual
                             labels. E.g., an exponent of 2 means that the estimated predictive quality `q` for a
-                            particular label is weighed as `q^2`. Must be greater than 0
+                            particular label is weighed as `q^2`. Must be at least 1
         :return:            A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
         """
-        assert_greater('exponent', exponent, 0)
+        assert_greater_or_equal('exponent', exponent, 1)
         self.config_ptr.setExponent(exponent)
         return self
