@@ -30,6 +30,10 @@ cdef extern from "boosting/rule_evaluation/head_type_partial_dynamic.hpp" namesp
 
         IDynamicPartialHeadConfig& setThreshold(float32 threshold) except +
 
+        float32 getExponent() const
+
+        IDynamicPartialHeadConfig& setExponent(float32 exponent) except +
+
 
 cdef class FixedPartialHeadConfig:
 

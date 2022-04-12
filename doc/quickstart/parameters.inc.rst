@@ -175,7 +175,8 @@ The following parameters allow to control the behavior of the algorithm:
 
   * ``'partial-dynamic'`` If all rules should predict for a subset of the available labels that is determined dynamically. The following options may be provided using the bracket notation:
 
-    * ``threshold`` (Default value = ``0.02``) A threshold that affects for how many labels the rules should predict. A smaller threshold results in less labels being selected. A greater threshold results in more labels being selected. E.g., a threshold of 0.02 means that a rule will only predict for a label if the estimated predictive quality ``q`` for this particular label satisfies the inequality ``q^2 > q_best^2 * (1 - 0.02)``, where ``q_best`` is the best quality among all labels. Must be in (0, 1)
+    * ``threshold`` (Default value = ``0.02``) A threshold that affects for how many labels the rules should predict. A smaller threshold results in less labels being selected. A greater threshold results in more labels being selected. E.g., a threshold of 0.02 means that a rule will only predict for a label if the estimated predictive quality ``q`` for this particular label satisfies the inequality ``q^exponent > q_best^exponent * (1 - 0.02)``, where ``q_best`` is the best quality among all labels. Must be in (0, 1)
+    * ``exponent`` (Default value = ``2.0``) An exponent that is used to weigh the estimated predictive quality for individual labels. E.g., an exponent of 2 means that the estimated predictive quality `q` for a particular label is weighed as ``q^2``. Must be greater than 0.
 
   * ``'complete'`` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
 

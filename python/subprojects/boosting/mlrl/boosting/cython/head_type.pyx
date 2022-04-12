@@ -98,11 +98,32 @@ cdef class DynamicPartialHeadConfig:
                             threshold results in less labels being selected. A greater threshold results in more labels
                             being selected. E.g., a threshold of 0.2 means that a rule will only predict for a label if
                             the estimated predictive quality `q` for this particular label satisfies the inequality
-                            `q^2 > q_best^2 * (1 - 0.2)`, where `q_best` is the best quality among all labels. Must be
-                            in (0, 1)
+                            `q^exponent > q_best^exponent * (1 - 0.2)`, where `q_best` is the best quality among all
+                            labels. Must be in (0, 1)
         :return:            A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
         """
         assert_greater('threshold', threshold, 0)
         assert_less('threshold', threshold, 1)
         self.config_ptr.setThreshold(threshold)
+        return self
+
+    def get_exponent(self) -> float:
+        """
+        Sets the exponent that is used to weigh the estimated predictive quality for individual labels.
+
+        :return: The exponent that is used to weight the estimated predictive quality for individual labels
+        """
+        return self.config_ptr.getExponent()
+
+    def set_exponent(self, exponent: float) -> DynamicPartialHeadConfig:
+        """
+        Sets the exponent that should be used to weigh the estimated predictive quality for individual labels.
+
+        :param exponent:    An exponent that should be used to weigh the estimated predictive quality for individual
+                            labels. E.g., an exponent of 2 means that the estimated predictive quality `q` for a
+                            particular label is weighed as `q^2`. Must be greater than 0
+        :return:            A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
+        """
+        assert_greater('exponent', exponent, 0)
+        self.config_ptr.setExponent(exponent)
         return self
