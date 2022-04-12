@@ -72,22 +72,20 @@ namespace boosting {
                 float64 bestScore = calculateLabelWiseScore(gradientIterator[0], hessianIterator[0],
                                                             l1RegularizationWeight_, l2RegularizationWeight_);
                 scoreIterator[0] = bestScore;
-                bestScore = std::abs(bestScore);
 
                 for (uint32 i = 1; i < numLabels; i++) {
                     float64 score = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i],
                                                             l1RegularizationWeight_, l2RegularizationWeight_);
                     scoreIterator[i] = score;
-                    score = std::abs(score);
 
-                    if (score > bestScore) {
+                    if (std::abs(score) > std::abs(bestScore)) {
                         bestScore = score;
                     }
                 }
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
-                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
+                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 float64 threshold = (bestScore * bestScore) * threshold_;
                 uint32 n = 0;
 
