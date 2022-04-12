@@ -1,5 +1,6 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_partial_dynamic_binned.hpp"
 #include "rule_evaluation_label_wise_binned_common.hpp"
+#include "rule_evaluation_label_wise_partial_dynamic_common.hpp"
 
 
 namespace boosting {
@@ -33,21 +34,11 @@ namespace boosting {
                                               float64 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                const Tuple<float64>& firstTuple = statisticIterator[0];
-                float64 bestScore = calculateLabelWiseScore(firstTuple.first, firstTuple.second, l1RegularizationWeight,
-                                                            l2RegularizationWeight);
-
-                for (uint32 i = 1; i < numElements; i++) {
-                    const Tuple<float64>& tuple = statisticIterator[i];
-                    float64 score = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
-                                                            l2RegularizationWeight);
-
-                    if (std::abs(score) > std::abs(bestScore)) {
-                        bestScore = score;
-                    }
-                }
-
-                float64 threshold = (bestScore * bestScore) * threshold_;
+                const std::pair<float64, float64> pair = getMinAndMaxScore(statisticIterator, numElements,
+                                                                           l1RegularizationWeight,
+                                                                           l2RegularizationWeight);
+                float64 minAbsScore = pair.first;
+                float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 uint32 n = 0;
@@ -57,7 +48,7 @@ namespace boosting {
                     float64 score = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
                                                             l2RegularizationWeight);
 
-                    if (score * score > threshold) {
+                    if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
                         indexIterator[n] = labelIndexIterator[i];
                         criteria[n] = score;
                         n++;
