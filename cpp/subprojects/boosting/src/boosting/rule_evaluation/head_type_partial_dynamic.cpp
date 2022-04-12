@@ -48,9 +48,9 @@ namespace boosting {
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
             labelBinningConfigPtr_->createLabelWiseCompleteRuleEvaluationFactory();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createLabelWiseDynamicPartialRuleEvaluationFactory(threshold_);
+            labelBinningConfigPtr_->createLabelWiseDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createLabelWiseDynamicPartialRuleEvaluationFactory(threshold_);
+            labelBinningConfigPtr_->createLabelWiseDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
         return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
@@ -67,9 +67,11 @@ namespace boosting {
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
             labelBinningConfigPtr_->createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseDynamicPartialRuleEvaluationFactory(threshold_, blas, lapack);
+            labelBinningConfigPtr_->createExampleWiseDynamicPartialRuleEvaluationFactory(
+                threshold_, exponent_, blas, lapack);
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseDynamicPartialRuleEvaluationFactory(threshold_, blas, lapack);
+            labelBinningConfigPtr_->createExampleWiseDynamicPartialRuleEvaluationFactory(
+                threshold_, exponent_, blas, lapack);
         return std::make_unique<DenseExampleWiseStatisticsProviderFactory>(
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),

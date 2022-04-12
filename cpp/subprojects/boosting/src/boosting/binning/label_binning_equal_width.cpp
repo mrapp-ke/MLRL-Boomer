@@ -230,13 +230,13 @@ namespace boosting {
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(
-            float32 threshold) const {
+            float32 threshold, float32 exponent) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
             std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
         return std::make_unique<LabelWiseDynamicPartialBinnedRuleEvaluationFactory>(
-            threshold, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
+            threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::createExampleWiseCompleteRuleEvaluationFactory(
@@ -261,13 +261,14 @@ namespace boosting {
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::createExampleWiseDynamicPartialRuleEvaluationFactory(
-            float32 threshold, const Blas& blas, const Lapack& lapack) const {
+            float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
             std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
         return std::make_unique<ExampleWiseDynamicPartialBinnedRuleEvaluationFactory>(
-            threshold, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr), blas, lapack);
+            threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr),
+            blas, lapack);
     }
 
 }

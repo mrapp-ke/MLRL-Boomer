@@ -26,6 +26,8 @@ namespace boosting {
 
             float64 threshold_;
 
+            float64 exponent_;
+
             float64 l1RegularizationWeight_;
 
             float64 l2RegularizationWeight_;
@@ -41,6 +43,8 @@ namespace boosting {
              *                                  the indices of the labels for which the rules may predict
              * @param threshold                 A threshold that affects for how many labels the rule heads should
              *                                  predict
+             * @param exponent                  An exponent that is used to weigh the estimated predictive quality for
+             *                                  individual labels
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
@@ -50,15 +54,15 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            DenseExampleWiseDynamicPartialRuleEvaluation(const T& labelIndices, float32 threshold,
+            DenseExampleWiseDynamicPartialRuleEvaluation(const T& labelIndices, float32 threshold, float32 exponent,
                                                          float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                                                          const Blas& blas, const Lapack& lapack)
                 : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices.getNumElements(),
                                                                                         lapack),
                   labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, true)), threshold_(1.0 - threshold),
-                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  blas_(blas), lapack_(lapack) {
+                  exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
+                  l2RegularizationWeight_(l2RegularizationWeight), blas_(blas), lapack_(lapack) {
 
             }
 
@@ -127,9 +131,9 @@ namespace boosting {
     };
 
     ExampleWiseDynamicPartialRuleEvaluationFactory::ExampleWiseDynamicPartialRuleEvaluationFactory(
-            float32 threshold, float64 l1RegularizationWeight, float64 l2RegularizationWeight, const Blas& blas,
-            const Lapack& lapack)
-        : threshold_(threshold), l1RegularizationWeight_(l1RegularizationWeight),
+            float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+            const Blas& blas, const Lapack& lapack)
+        : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), blas_(blas), lapack_(lapack) {
 
     }
@@ -137,7 +141,7 @@ namespace boosting {
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseDynamicPartialRuleEvaluationFactory::create(
             const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         return std::make_unique<DenseExampleWiseDynamicPartialRuleEvaluation<CompleteIndexVector>>(
-            indexVector, threshold_, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
+            indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseDynamicPartialRuleEvaluationFactory::create(
