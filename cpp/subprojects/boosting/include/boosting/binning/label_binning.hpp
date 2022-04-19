@@ -164,6 +164,19 @@ namespace boosting {
                 float32 labelRatio, uint32 minLabels, uint32 maxLabels) const = 0;
 
             /**
+             * Creates and returns a new object of type `ILabelWiseRuleEvaluationFactory` that allows to calculate the
+             * prediction of partial rules, which predict for a subset of the available labels that is determined
+             * dynamically, according to the specified configuration.
+             *
+             * @param threshold A threshold that affects for how many labels the rule heads should predict
+             * @param exponent  An exponent that is used to weigh the estimated predictive quality for individual labels
+             * @return          An unique pointer to an object of type `ILabelWiseRuleEvaluationFactory` that has been
+             *                  created
+             */
+            virtual std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseDynamicPartialRuleEvaluationFactory(
+                float32 threshold, float32 exponent) const = 0;
+
+            /**
              * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
              * predictions of complete rules according to the specified configuration.
              *
@@ -191,6 +204,21 @@ namespace boosting {
             virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseFixedPartialRuleEvaluationFactory(
                 float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas,
                 const Lapack& lapack) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
+             * predictions of partial rules, which predict for a subset of the available labels that is determined
+             * dynamically, according to the specified configuration.
+             *
+             * @param threshold A threshold that affects for how many labels the rule heads should predict
+             * @param exponent  An exponent that is used to weigh the estimated predictive quality for individual labels
+             * @param blas      A reference to an object of type `Blas` that allows to execute BLAS routines
+             * @param lapack    A reference to an object of type `Lapack` that allows to execute LAPACK routines
+             * @return          An unique pointer to an object of type `IExampleWiseRuleEvaluationFactory` that has been
+             *                  created
+             */
+            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseDynamicPartialRuleEvaluationFactory(
+                float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const = 0;
 
     };
 
