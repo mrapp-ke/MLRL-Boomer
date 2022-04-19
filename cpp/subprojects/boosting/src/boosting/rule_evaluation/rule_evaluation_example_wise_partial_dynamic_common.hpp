@@ -34,15 +34,15 @@ namespace boosting {
         float64 minAbsScore = maxAbsScore;
 
         for (uint32 i = 1; i < numLabels; i++) {
-            float64 score = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i], l1RegularizationWeight,
-                                                    l2RegularizationWeight);
+            score = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i], l1RegularizationWeight,
+                                            l2RegularizationWeight);
             scoreIterator[i] = score;
-            float64 absScore = std::abs(score);
+            float64 score = std::abs(score);
 
-            if (absScore > maxAbsScore) {
-                maxAbsScore = absScore;
-            } else if (absScore < minAbsScore) {
-                minAbsScore = absScore;
+            if (score > maxAbsScore) {
+                maxAbsScore = score;
+            } else if (score < minAbsScore) {
+                minAbsScore = score;
             }
         }
 
