@@ -73,3 +73,57 @@ cdef class FixedPartialHeadConfig:
             assert_greater_or_equal('max_labels', max_labels, self.config_ptr.getMinLabels())
         self.config_ptr.setMaxLabels(max_labels)
         return self
+
+
+cdef class DynamicPartialHeadConfig:
+    """
+    Allows to configure partial rule heads that predict for a subset of the available labels that is determined
+    dynamically. Only those labels for which the square of the predictive quality exceeds a certain threshold are
+    included in a rule head.
+    """
+
+    def get_threshold(self) -> float:
+        """
+        Returns the threshold that affects for how many labels the rule heads predict.
+
+        :return: The threshold that affects for how many labels the rule heads predict
+        """
+        return self.config_ptr.getThreshold()
+
+    def set_threshold(self, threshold: float) -> DynamicPartialHeadConfig:
+        """
+        Sets the threshold that affects for how many labels the rule heads should predict.
+
+        :param threshold:   A threshold that affects for how many labels the rule heads should predict. A smaller
+                            threshold results in less labels being selected. A greater threshold results in more labels
+                            being selected. E.g., a threshold of 0.2 means that a rule will only predict for a label if
+                            the estimated predictive quality `q` for this particular label satisfies the inequality
+                            `q^exponent > q_best^exponent * (1 - 0.2)`, where `q_best` is the best quality among all
+                            labels. Must be in (0, 1)
+        :return:            A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
+        """
+        assert_greater('threshold', threshold, 0)
+        assert_less('threshold', threshold, 1)
+        self.config_ptr.setThreshold(threshold)
+        return self
+
+    def get_exponent(self) -> float:
+        """
+        Sets the exponent that is used to weigh the estimated predictive quality for individual labels.
+
+        :return: The exponent that is used to weight the estimated predictive quality for individual labels
+        """
+        return self.config_ptr.getExponent()
+
+    def set_exponent(self, exponent: float) -> DynamicPartialHeadConfig:
+        """
+        Sets the exponent that should be used to weigh the estimated predictive quality for individual labels.
+
+        :param exponent:    An exponent that should be used to weigh the estimated predictive quality for individual
+                            labels. E.g., an exponent of 2 means that the estimated predictive quality `q` for a
+                            particular label is weighed as `q^2`. Must be at least 1
+        :return:            A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
+        """
+        assert_greater_or_equal('exponent', exponent, 1)
+        self.config_ptr.setExponent(exponent)
+        return self

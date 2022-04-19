@@ -1,5 +1,5 @@
 from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLearner, RuleLearnerConfig
-from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig
+from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
@@ -33,6 +33,8 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useSingleLabelHeads()
 
         IFixedPartialHeadConfig& useFixedPartialHeads()
+
+        IDynamicPartialHeadConfig& useDynamicPartialHeads()
 
         void useCompleteHeads()
 

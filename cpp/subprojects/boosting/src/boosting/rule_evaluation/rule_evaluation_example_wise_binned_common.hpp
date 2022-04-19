@@ -224,10 +224,11 @@ namespace boosting {
              * @param numCriteria               The number of label-wise criteria to be calculated
              * @param l1RegularizationWeight    The L1 regularization weight
              * @param l2RegularizationWeight    The L2 regularization weight
+             * @return                          The number of label-wise criteria that have been calculated
              */
-            virtual void calculateLabelWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
-                                                    uint32 numCriteria, float64 l1RegularizationWeight,
-                                                    float64 l2RegularizationWeight) = 0;
+            virtual uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
+                                                      uint32 numCriteria, float64 l1RegularizationWeight,
+                                                      float64 l2RegularizationWeight) = 0;
 
         public:
 
@@ -276,9 +277,9 @@ namespace boosting {
              */
             const IScoreVector& calculatePrediction(DenseExampleWiseStatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
-                uint32 numCriteria = scoreVector_.getNumElements();
-                this->calculateLabelWiseCriteria(statisticVector, criteria_, numCriteria, l1RegularizationWeight_,
-                                                 l2RegularizationWeight_);
+                uint32 numCriteria = this->calculateLabelWiseCriteria(statisticVector, criteria_,
+                                                                      scoreVector_.getNumElements(),
+                                                                      l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
                 LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numCriteria);
@@ -362,9 +363,9 @@ namespace boosting {
 
         protected:
 
-            void calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
-                                            uint32 numCriteria, float64 l1RegularizationWeight,
-                                            float64 l2RegularizationWeight) override {
+            uint32 calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
+                                              uint32 numCriteria, float64 l1RegularizationWeight,
+                                              float64 l2RegularizationWeight) override {
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
                     statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
@@ -374,6 +375,8 @@ namespace boosting {
                     criteria[i] = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i],
                                                           l1RegularizationWeight, l2RegularizationWeight);
                 }
+
+                return numCriteria;
             }
 
         public:

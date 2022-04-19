@@ -23,6 +23,12 @@ namespace boosting {
             .createLabelWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels, maxLabels);
     }
 
+    std::unique_ptr<ILabelWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(
+            float32 threshold, float32 exponent) const {
+        return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
+            .createLabelWiseDynamicPartialRuleEvaluationFactory(threshold, exponent);
+    }
+
     std::unique_ptr<IExampleWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createExampleWiseCompleteRuleEvaluationFactory(
             const Blas& blas, const Lapack& lapack) const {
         return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_,l2RegularizationConfigPtr_)
@@ -33,6 +39,12 @@ namespace boosting {
             float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas, const Lapack& lapack) const {
         return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_,l2RegularizationConfigPtr_)
             .createExampleWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels, maxLabels, blas, lapack);
+    }
+
+    std::unique_ptr<IExampleWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createExampleWiseDynamicPartialRuleEvaluationFactory(
+            float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const {
+        return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
+            .createExampleWiseDynamicPartialRuleEvaluationFactory(threshold, exponent, blas, lapack);
     }
 
 }

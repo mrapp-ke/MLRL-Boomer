@@ -1,22 +1,10 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_partial_fixed.hpp"
 #include "rule_evaluation_example_wise_complete_common.hpp"
+#include "rule_evaluation_example_wise_partial_common.hpp"
 #include "rule_evaluation_example_wise_partial_fixed_common.hpp"
 
 
 namespace boosting {
-
-    template<typename HessianIterator, typename IndexIterator>
-    static inline void copyCoefficients(HessianIterator hessianIterator, IndexIterator indexIterator,
-                                        float64* coefficients, uint32 n) {
-        for (uint32 c = 0; c < n; c++) {
-            uint32 offset = c * n;
-            uint32 offset2 = triangularNumber(indexIterator[c]);
-
-            for (uint32 r = 0; r <= c; r++) {
-                coefficients[offset + r] = hessianIterator[offset2 + indexIterator[r]];
-            }
-        }
-    }
 
     /**
      * Allows to calculate the predictions of partial rules that predict for a predefined number of labels, as well as
