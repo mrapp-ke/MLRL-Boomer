@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
@@ -7,11 +5,12 @@ from argparse import ArgumentParser
 
 from mlrl.common.rule_learners import PARALLEL_VALUES
 from mlrl.common.strings import format_dict_keys, format_string_set
-from mlrl.seco.seco_learners import SeCoRuleLearner, HEAD_TYPE_VALUES, HEURISTIC_VALUES, LIFT_FUNCTION_VALUES, \
-    HEAD_TYPE_PARTIAL
 from mlrl.testbed.args import add_rule_learner_arguments, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, \
     PARAM_PARALLEL_STATISTIC_UPDATE
 from mlrl.testbed.runnables import RuleLearnerRunnable
+
+from mlrl.seco.seco_learners import SeCoRuleLearner, HEAD_TYPE_VALUES, HEURISTIC_VALUES, LIFT_FUNCTION_VALUES, \
+    HEAD_TYPE_PARTIAL
 
 PARAM_HEURISTIC = '--heuristic'
 
