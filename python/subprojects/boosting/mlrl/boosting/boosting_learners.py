@@ -433,7 +433,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             elif value == HEAD_TYPE_PARTIAL_DYNAMIC:
                 c = config.use_dynamic_partial_heads()
                 c.set_threshold(options.get_float(ARGUMENT_THRESHOLD, c.get_threshold()))
-                c.set_exponent(options.get_float(ARGUMENT_EXPONENT, c.get_threshold()))
+                c.set_exponent(options.get_float(ARGUMENT_EXPONENT, c.get_exponent()))
             elif value == HEAD_TYPE_COMPLETE:
                 config.use_complete_heads()
 
