@@ -145,8 +145,8 @@ namespace boosting {
 
                         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) \
                         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-                        firstprivate(similarityMeasureRawPtr) firstprivate(labelVectorSetPtr) schedule(dynamic) \
-                        num_threads(numThreads_)
+                        firstprivate(similarityMeasureRawPtr) firstprivate(labelVectorSetPtr) \
+                        firstprivate(numLabelVectors) schedule(dynamic) num_threads(numThreads_)
                         for (int64 i = 0; i < numExamples; i++) {
                             float64* scoreVector = new float64[numLabels] {};
                             applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
@@ -186,7 +186,8 @@ namespace boosting {
                         #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) \
                         firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
                         firstprivate(predictionMatrixRawPtr) firstprivate(similarityMeasureRawPtr) \
-                        firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads_)
+                        firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) schedule(dynamic) \
+                        num_threads(numThreads_)
                         for (int64 i = 0; i < numExamples; i++) {
                             float64* scoreVector = new float64[numLabels] {};
                             applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
