@@ -6,6 +6,7 @@ Provides classes for performing experiments.
 import logging as log
 from abc import ABC
 from timeit import default_timer as timer
+from typing import Optional
 
 from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.testbed.data import MetaData, AttributeType
@@ -26,11 +27,14 @@ class Experiment(CrossValidation, ABC):
     """
 
     def __init__(self, base_learner: Learner, data_set: DataSet, num_folds: int = 1, current_fold: int = -1,
-                 predict_probabilities: bool = False, train_evaluation: Evaluation = None,
-                 test_evaluation: Evaluation = None, train_prediction_printer: PredictionPrinter = None,
-                 test_prediction_printer: PredictionPrinter = None, parameter_input: ParameterInput = None,
-                 model_printer: ModelPrinter = None, model_characteristics_printer: ModelCharacteristicsPrinter = None,
-                 data_characteristics_printer: DataCharacteristicsPrinter = None, persistence: ModelPersistence = None):
+                 predict_probabilities: bool = False, train_evaluation: Optional[Evaluation] = None,
+                 test_evaluation: Optional[Evaluation] = None,
+                 train_prediction_printer: Optional[PredictionPrinter] = None,
+                 test_prediction_printer: Optional[PredictionPrinter] = None,
+                 parameter_input: Optional[ParameterInput] = None, model_printer: Optional[ModelPrinter] = None,
+                 model_characteristics_printer: Optional[ModelCharacteristicsPrinter] = None,
+                 data_characteristics_printer: Optional[DataCharacteristicsPrinter] = None,
+                 persistence: Optional[ModelPersistence] = None):
         """
         :param base_learner:                    The classifier or ranker to be trained
         :param predict_probabilities:           True, if probabilities should be predicted rather than binary labels,
