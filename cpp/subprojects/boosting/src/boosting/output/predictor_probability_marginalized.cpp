@@ -71,7 +71,7 @@ namespace boosting {
 
     static inline void predictMarginalizedProbabilities(const float64* scoresBegin, const float64* scoresEnd,
                                                         CContiguousView<float64>::value_iterator predictionIterator,
-                                                        uint32 numElements, const ISimilarityMeasure& measure,
+                                                        const ISimilarityMeasure& measure,
                                                         const LabelVectorSet& labelVectorSet, uint32 numLabelVectors) {
         float64* distances = new float64[numLabelVectors];
         float64 minDistance = calculateDistances(scoresBegin, scoresEnd, distances, measure, labelVectorSet);
@@ -152,7 +152,7 @@ namespace boosting {
                             applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
                                        featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                             predictMarginalizedProbabilities(&scoreVector[0], &scoreVector[numLabels],
-                                                             predictionMatrixRawPtr->row_values_begin(i), numLabels,
+                                                             predictionMatrixRawPtr->row_values_begin(i),
                                                              *similarityMeasureRawPtr, *labelVectorSetPtr,
                                                              numLabelVectors);
                             delete[] scoreVector;
@@ -193,7 +193,7 @@ namespace boosting {
                                           featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                             predictMarginalizedProbabilities(&scoreVector[0], &scoreVector[numLabels],
-                                                             predictionMatrixRawPtr->row_values_begin(i), numLabels,
+                                                             predictionMatrixRawPtr->row_values_begin(i),
                                                              *similarityMeasureRawPtr, *labelVectorSetPtr,
                                                              numLabelVectors);
                             delete[] scoreVector;
