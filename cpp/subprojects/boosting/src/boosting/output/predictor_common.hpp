@@ -1,4 +1,8 @@
+/*
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
+ */
 #pragma once
+
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
 
