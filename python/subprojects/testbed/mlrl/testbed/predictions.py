@@ -5,6 +5,7 @@ Provides classes for printing the predictions of a model. The predictions can be
 to the console or to a file.
 """
 import logging as log
+import sys
 from abc import ABC, abstractmethod
 from typing import List
 
@@ -42,8 +43,8 @@ class PredictionLogOutput(PredictionOutput):
 
     def write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, total_folds: int,
                           fold: int = None):
-        text = 'Ground truth:\n\n' + np.array2string(ground_truth) + '\n\nPredictions:\n\n' + np.array2string(
-            predictions)
+        text = 'Ground truth:\n\n' + np.array2string(ground_truth, threshold=sys.maxsize) + '\n\nPredictions:\n\n' \
+               + np.array2string(predictions, threshold=sys.maxsize)
         msg = ('Predictions for experiment \"' + experiment_name + '\"' if fold is None else
                'Predictions for experiment \"' + experiment_name + '\" (Fold ' + str(fold + 1) + ')') + ':\n\n%s\n'
         log.info(msg, text)
