@@ -73,3 +73,19 @@ def label_imbalance_ratio(y) -> float:
 
     max_relevant = np.max(num_relevant_per_label)
     return np.average(max_relevant / num_relevant_per_label[num_relevant_per_label != 0])
+
+
+class LabelCharacteristics:
+    """
+    Stores characteristics of a label matrix.
+    """
+
+    def __init__(self, y):
+        """
+        :param y: A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
+        """
+        self.num_labels = y.shape[1]
+        self.label_density = density(y)
+        self.avg_label_imbalance_ratio = label_imbalance_ratio(y)
+        self.avg_label_cardinality = label_cardinality(y)
+        self.num_distinct_label_vectors = distinct_label_vectors(y)
