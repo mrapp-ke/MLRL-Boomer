@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for printing textual representations of models. The models can be written to one or several outputs,
-e.g. to the console or to a file.
+e.g., to the console or to a file.
 """
 import logging as log
 from _io import StringIO
