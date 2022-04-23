@@ -19,25 +19,12 @@ namespace boosting {
     static inline uint32 applyThreshold(CContiguousConstView<float64>::value_const_iterator originalIterator,
                                         BinaryLilMatrix::Row& row, uint32 numElements, float64 threshold) {
         uint32 numNonZeroElements = 0;
-        uint32 i = 0;
 
-        for (; i < numElements; i++) {
+        for (uint32 i = 0; i < numElements; i++) {
             float64 originalValue = originalIterator[i];
 
             if (originalValue > threshold) {
-                row.emplace_front(i);
-                numNonZeroElements++;
-                break;
-            }
-        }
-
-        BinaryLilMatrix::Row::iterator it = row.begin();
-
-        for (i = i + 1; i < numElements; i++) {
-            float64 originalValue = originalIterator[i];
-
-            if (originalValue > threshold) {
-                it = row.emplace_after(it, i);
+                row.emplace_back(i);
                 numNonZeroElements++;
             }
         }
