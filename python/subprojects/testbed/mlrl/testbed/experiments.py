@@ -27,11 +27,24 @@ class Experiment(CrossValidation, ABC):
     validation or separate training and test sets.
     """
 
+    class ExecutionHook(ABC):
+        """
+        An abstract base class for all operations that may be executed before or after an experiment.
+        """
+
+        @abstractmethod
+        def execute(self):
+            """
+            Must be overridden by subclasses in order to execute the operation.
+            """
+            pass
+
     def __init__(self,
                  base_learner: Learner,
                  data_set: DataSet,
                  num_folds: int = 1,
                  current_fold: int = -1,
+                 pre_execution_hook: Optional[ExecutionHook] = None,
                  predict_probabilities: bool = False,
                  train_evaluation: Optional[Evaluation] = None,
                  test_evaluation: Optional[Evaluation] = None,
@@ -46,6 +59,7 @@ class Experiment(CrossValidation, ABC):
                  persistence: Optional[ModelPersistence] = None):
         """
         :param base_learner:                                The classifier or ranker to be trained
+        :param pre_execution_hook:                          An operation that should be executed before the experiment
         :param predict_probabilities:                       True, if probabilities should be predicted rather than
                                                             binary labels, False otherwise
         :param train_evaluation:                            The evaluation to be used for evaluating the predictions for
@@ -81,6 +95,7 @@ class Experiment(CrossValidation, ABC):
         """
         super().__init__(data_set, num_folds, current_fold)
         self.base_learner = base_learner
+        self.pre_execution_hook = pre_execution_hook
         self.predict_probabilities = predict_probabilities
         self.train_evaluation = train_evaluation
         self.test_evaluation = test_evaluation
@@ -96,6 +111,11 @@ class Experiment(CrossValidation, ABC):
 
     def run(self):
         log.info('Starting experiment \"' + self.base_learner.get_name() + '\"...')
+
+        # Run pre-execution hook, if necessary...
+        if self.pre_execution_hook is not None:
+            self.pre_execution_hook.execute()
+
         super().run()
 
     def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
