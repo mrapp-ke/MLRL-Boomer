@@ -11,7 +11,7 @@ from typing import List
 
 import numpy as np
 from mlrl.testbed.data import MetaData, Label, save_arff_file
-from mlrl.testbed.io import clear_directory, SUFFIX_ARFF, get_file_name_per_fold
+from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
 
 
 class PredictionOutput(ABC):
@@ -55,30 +55,19 @@ class PredictionArffOutput(PredictionOutput):
     Writes predictions and ground truth labels to ARFF files.
     """
 
-    def __init__(self, output_dir: str, clear_dir: bool = True):
+    def __init__(self, output_dir: str):
         """
-        :param output_dir:  The path of the directory, the CSV files should be written to
-        :param clear_dir:   True, if the directory, the CSV files should be written to, should be cleared
+        :param output_dir: The path of the directory, the CSV files should be written to
         """
         self.output_dir = output_dir
-        self.clear_dir = clear_dir
 
     def write_predictions(self, experiment_name: str, meta_data: MetaData, predictions, ground_truth, total_folds: int,
                           fold: int = None):
-        self.__clear_dir_if_necessary()
         file_name = get_file_name_per_fold('predictions_' + experiment_name, SUFFIX_ARFF, fold)
         attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
         labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
         prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
         save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
-
-    def __clear_dir_if_necessary(self):
-        """
-        Clears the output directory, if necessary.
-        """
-        if self.clear_dir:
-            clear_directory(self.output_dir)
-            self.clear_dir = False
 
 
 class PredictionPrinter:
