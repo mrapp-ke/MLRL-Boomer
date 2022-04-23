@@ -13,7 +13,7 @@ import sklearn.metrics as metrics
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.testbed.data import MetaData
-from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer, clear_directory
+from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from sklearn.utils.multiclass import is_multilabel
 
 # The name of the accuracy metric
@@ -272,24 +272,19 @@ class EvaluationCsvOutput(EvaluationOutput):
     Writes evaluation results to CSV files.
     """
 
-    def __init__(self, output_dir: str, clear_dir: bool = True, output_individual_folds: bool = True):
+    def __init__(self, output_dir: str, output_individual_folds: bool = True):
         """
-        :param output_predictions:      True, if predictions provided by a classifier or ranker should be written to the
-                                        output, False otherwise
+        :param output_dir:              The path of the directory, the CSV files should be written to
         :param output_individual_folds: True, if the evaluation results for individual cross validation folds should be
                                         written to the outputs, False, if only the overall evaluation results, i.e.,
                                         averaged over all folds, should be written to the outputs
-        :param output_dir:              The path of the directory, the CSV files should be written to
-        :param clear_dir:               True, if the directory, the CSV files should be written to, should be cleared
         """
-        self.output_individual_folds = output_individual_folds
         self.output_dir = output_dir
-        self.clear_dir = clear_dir
+        self.output_individual_folds = output_individual_folds
 
     def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, total_folds: int,
                                  fold: int = None):
         if fold is None or self.output_individual_folds:
-            self.__clear_dir_if_necessary()
             columns = evaluation_result.avg_dict() if fold is None else evaluation_result.dict(fold)
             header = sorted(columns.keys())
             header.insert(0, 'Approach')
@@ -298,14 +293,6 @@ class EvaluationCsvOutput(EvaluationOutput):
             with open_writable_csv_file(self.output_dir, 'evaluation', fold, append=True) as csv_file:
                 csv_writer = create_csv_dict_writer(csv_file, header)
                 csv_writer.writerow(columns)
-
-    def __clear_dir_if_necessary(self):
-        """
-        Clears the output directory, if necessary.
-        """
-        if self.clear_dir:
-            clear_directory(self.output_dir)
-            self.clear_dir = False
 
 
 class AbstractEvaluation(Evaluation):
@@ -316,7 +303,7 @@ class AbstractEvaluation(Evaluation):
 
     def __init__(self, outputs: List[EvaluationOutput]):
         """
-        :param args: The outputs, the evaluation results should be written to
+        :param outputs: The outputs, the evaluation results should be written to
         """
         self.outputs = outputs
         self.results: Dict[str, EvaluationResult] = {}

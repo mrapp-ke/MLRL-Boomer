@@ -11,7 +11,7 @@ from typing import List
 
 from mlrl.testbed.characteristics import LabelCharacteristics, density
 from mlrl.testbed.data import MetaData, AttributeType
-from mlrl.testbed.io import clear_directory, open_writable_csv_file, create_csv_dict_writer
+from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 
 
 class FeatureCharacteristics:
@@ -84,18 +84,15 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
     Writes the characteristics of a data set to a CSV file.
     """
 
-    def __init__(self, output_dir: str, clear_dir: bool = True):
+    def __init__(self, output_dir: str):
         """
-        :param output_dir:  The path of the directory, the CSV files should be written to
-        :param clear_dir:   True, if the directory, the CSV files should be written to, should be cleared
+        :param output_dir: The path of the directory, the CSV files should be written to
         """
         self.output_dir = output_dir
-        self.clear_dir = clear_dir
 
     def write_data_characteristics(self, experiment_name: str, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics, total_folds: int, fold: int = None):
         if fold is not None:
-            self.__clear_dir_if_necessary()
             columns = {
                 'Examples': feature_characteristics.num_examples,
                 'Features': feature_characteristics.num_features,
@@ -116,14 +113,6 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
             with open_writable_csv_file(self.output_dir, 'data_characteristics', fold) as csv_file:
                 csv_writer = create_csv_dict_writer(csv_file, header)
                 csv_writer.writerow(columns)
-
-    def __clear_dir_if_necessary(self):
-        """
-        Clears the output directory, if necessary.
-        """
-        if self.clear_dir:
-            clear_directory(self.output_dir)
-            self.clear_dir = False
 
 
 class DataCharacteristicsPrinter:

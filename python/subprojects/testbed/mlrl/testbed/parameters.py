@@ -9,7 +9,6 @@ from abc import abstractmethod
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.interfaces import Randomized
-from mlrl.testbed.io import clear_directory
 from mlrl.testbed.io import open_readable_csv_file, create_csv_dict_writer
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_reader
 from mlrl.testbed.training import CrossValidation, DataSet
@@ -192,12 +191,11 @@ class ParameterCsvOutput(ParameterOutput):
     Writes parameter settings to CSV files.
     """
 
-    def __init__(self, output_dir: str, clear_dir: bool = True):
+    def __init__(self, output_dir: str):
         """
         :param output_dir: The path of the directory, the CSV files should be written to
         """
         self.output_dir = output_dir
-        self.clear_dir = clear_dir
 
     def write_parameters(self, parameters: dict, score: float, total_folds: int, fold: int = None):
         header = parameters.keys()
@@ -205,14 +203,6 @@ class ParameterCsvOutput(ParameterOutput):
         with open_writable_csv_file(self.output_dir, 'parameters', fold) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(parameters)
-
-    def __clear_dir_if_necessary(self):
-        """
-        Clears the output directory, if necessary.
-        """
-        if self.clear_dir:
-            clear_directory(self.output_dir)
-            self.clear_dir = False
 
 
 class ParameterTuning(CrossValidation):
