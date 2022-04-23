@@ -60,6 +60,16 @@ In addition to the mandatory arguments that must be provided to the command line
   * ``true`` The predictions for individual examples and labels are written into .arff files. Does only have an effect if the parameter ``--output-dir`` is specified.
   * ``false`` Predictions are not written into .arff files.
 
+* ``--print-prediction-characteristics`` (Default value = ``false``)
+
+  * ``true`` The characteristics of binary predictions are printed on the console. Does only have an effect if the parameter ``--predict-probability`` is set to ``false``.
+  * ``false`` The characteristics of predictions are not printed on the console.
+
+* ``--store-prediction-characteristics`` (Default value = ``false``)
+
+  * ``true`` The characteristics of binary predictions are written into .csv files. Does only have an effect if the parameter ``--predict-probabilities`` is set to ``false``.
+  * ``false`` The characteristics of predictions are not written into .csv files.
+
 * ``--print-data-characteristics`` (Default value = ``false``)
 
   * ``true`` The characteristics of the training data set are printed on the console

@@ -45,6 +45,10 @@ PARAM_STORE_PREDICTIONS = '--store-predictions'
 
 PARAM_PREDICT_PROBABILITIES = '--predict-probabilities'
 
+PARAM_PRINT_PREDICTION_CHARACTERISTICS = '--print-prediction-characteristics'
+
+PARAM_STORE_PREDICTION_CHARACTERISTICS = '--store-prediction-characteristics'
+
 PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
 
 PARAM_STORE_DATA_CHARACTERISTICS = '--store-data-characteristics'
@@ -170,6 +174,16 @@ def add_learner_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_EVALUATE_TRAINING_DATA, type=boolean_string, default=False,
                         help='Whether the models should not only be evaluated on the test data, but also on the '
                              + 'training data. Must be one of ' + format_enum_values(BooleanOption) + '.')
+    parser.add_argument(PARAM_PRINT_PREDICTION_CHARACTERISTICS, type=boolean_string, default=False,
+                        help='Whether the characteristics of binary predictions should be printed on the console or '
+                             + 'not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an '
+                             + 'effect if the parameter ' + PARAM_PREDICT_PROBABILITIES + ' is set to '
+                             + BooleanOption.FALSE.value + '.')
+    parser.add_argument(PARAM_STORE_PREDICTION_CHARACTERISTICS, type=boolean_string, default=False,
+                        help='Whether the characteristics of binary predictions should be writting into output files '
+                             + 'or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an '
+                             + 'effect if the parameter ' + PARAM_PREDICT_PROBABILITIES + ' is set to '
+                             + BooleanOption.FALSE.value + '.')
     parser.add_argument(PARAM_PRINT_DATA_CHARACTERISTICS, type=boolean_string, default=False,
                         help='Whether the characteristics of the training data should be printed on the console or '
                              + 'not. Must be one of ' + format_enum_values(BooleanOption) + '.')
@@ -196,7 +210,7 @@ def add_learner_arguments(parser: ArgumentParser):
                              + 'an effect, if the parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
     parser.add_argument(PARAM_PREDICT_PROBABILITIES, type=boolean_string, default=False,
                         help='Whether probabilities should be predicted rather than binary labels or not. Must be one '
-                            + 'of ' + format_enum_values(BooleanOption) + '.')
+                             + 'of ' + format_enum_values(BooleanOption) + '.')
 
 
 def add_rule_learner_arguments(parser: ArgumentParser):

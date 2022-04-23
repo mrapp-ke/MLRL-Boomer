@@ -1,8 +1,8 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for printing the predictions of a model. The predictions can be written to one or several outputs, e.g.
-to the console or to a file.
+Provides classes for printing the predictions of a model. The predictions can be written to one or several outputs,
+e.g., to the console or to a file.
 """
 import logging as log
 import sys
