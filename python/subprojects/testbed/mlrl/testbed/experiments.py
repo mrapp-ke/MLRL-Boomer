@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for performing experiments.
 """
 import logging as log
-from abc import ABC
+from abc import ABC, abstractmethod
 from timeit import default_timer as timer
 from typing import Optional
 
