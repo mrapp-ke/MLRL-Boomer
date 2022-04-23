@@ -14,7 +14,7 @@ from mlrl.common.cython.rule_model import RuleModelVisitor, EmptyBody, Conjuncti
 from mlrl.common.learners import Learner
 from mlrl.common.options import Options
 from mlrl.testbed.data import Attribute, MetaData
-from mlrl.testbed.io import clear_directory, open_writable_txt_file, open_writable_csv_file, create_csv_dict_writer
+from mlrl.testbed.io import open_writable_txt_file, open_writable_csv_file, create_csv_dict_writer
 
 ARGUMENT_PRINT_FEATURE_NAMES = 'print_feature_names'
 
@@ -234,21 +234,15 @@ class ModelPrinterTxtOutput(ModelPrinterOutput):
     Writes the textual representation of a model to a text file.
     """
 
-    def __init__(self, output_dir: str, clear_dir: bool = True):
+    def __init__(self, output_dir: str):
+        """
+        :param output_dir: The path of the directory, the text files should be written to
+        """
         self.output_dir = output_dir
-        self.clear_dir = clear_dir
 
     def write_model(self, experiment_name: str, model: str, total_folds: int, fold: int = None):
         with open_writable_txt_file(self.output_dir, 'rules', fold, append=False) as text_file:
             text_file.write(model)
-
-    def __clear_dir_if_necessary(self):
-        """
-        Clears the output directory, if necessary.
-        """
-        if self.clear_dir:
-            clear_directory(self.output_dir)
-            self.clear_dir = False
 
 
 class RulePrinter(ModelPrinter):
@@ -451,18 +445,15 @@ class RuleModelCharacteristicsCsvOutput(RuleModelCharacteristicsOutput):
 
     COL_NEG_PREDICTIONS = 'neg. predictions'
 
-    def __init__(self, output_dir: str, clear_dir: bool = True):
+    def __init__(self, output_dir: str):
         """
-        :param output_dir:  The path of the directory, the CSV files should be written to
-        :param clear_dir:   True, if the directory, the CSV files should be written to, should be cleared
+        :param output_dir: The path of the directory, the CSV files should be written to
         """
         self.output_dir = output_dir
-        self.clear_dir = clear_dir
 
     def write_model_characteristics(self, experiment_name: str, characteristics: RuleModelCharacteristics,
                                     total_folds: int, fold: int = None):
         if fold is not None:
-            self.__clear_dir_if_necessary()
             header = [
                 RuleModelCharacteristicsCsvOutput.COL_RULE_NAME,
                 RuleModelCharacteristicsCsvOutput.COL_CONDITIONS,
@@ -522,14 +513,6 @@ class RuleModelCharacteristicsCsvOutput(RuleModelCharacteristicsOutput):
                         RuleModelCharacteristicsCsvOutput.COL_NEG_PREDICTIONS: num_neg_predictions
                     }
                     csv_writer.writerow(columns)
-
-    def __clear_dir_if_necessary(self):
-        """
-        Clears the output directory, if necessary.
-        """
-        if self.clear_dir:
-            clear_directory(self.output_dir)
-            self.clear_dir = False
 
 
 class ModelCharacteristicsPrinter(ABC):
