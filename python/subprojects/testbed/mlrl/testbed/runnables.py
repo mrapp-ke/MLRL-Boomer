@@ -14,6 +14,7 @@ from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCh
 from mlrl.testbed.evaluation import Evaluation, ClassificationEvaluation, RankingEvaluation, EvaluationLogOutput, \
     EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ModelPrinter, RulePrinter, ModelPrinterLogOutput, \
     ModelPrinterTxtOutput, ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, \
     RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
@@ -62,6 +63,22 @@ class LearnerRunnable(Runnable, ABC):
     A base class for all programs that perform an experiment that involves training and evaluation of a learner.
     """
 
+    class ClearOutputDirHook(Experiment.ExecutionHook):
+        """
+        Deletes all files from the output directory before an experiment starts.
+        """
+
+        def __init__(self, output_dir: str):
+            self.output_dir = output_dir
+
+        def execute(self):
+            clear_directory(self.output_dir)
+
+    @staticmethod
+    def __create_pre_execution_hook(args) -> Optional[Experiment.ExecutionHook]:
+        return None if args.output_dir is None or args.current_fold >= 0 else LearnerRunnable.ClearOutputDirHook(
+            output_dir=args.output_dir)
+
     @staticmethod
     def __create_data_set(args) -> DataSet:
         return DataSet(data_dir=args.data_dir, data_set_name=args.dataset, use_one_hot_encoding=args.one_hot_encoding)
@@ -75,15 +92,14 @@ class LearnerRunnable(Runnable, ABC):
         return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
 
     @staticmethod
-    def __create_evaluation(args, clear_output_dir: bool) -> (Optional[Evaluation], bool):
+    def __create_evaluation(args) -> Optional[Evaluation]:
         outputs = []
 
         if args.print_evaluation:
             outputs.append(EvaluationLogOutput())
 
         if args.store_evaluation and args.output_dir is not None:
-            outputs.append(EvaluationCsvOutput(output_dir=args.output_dir, clear_dir=clear_output_dir))
-            clear_output_dir = False
+            outputs.append(EvaluationCsvOutput(output_dir=args.output_dir))
 
         if len(outputs) > 0:
             if args.predict_probabilities:
@@ -93,79 +109,69 @@ class LearnerRunnable(Runnable, ABC):
         else:
             evaluation = None
 
-        return evaluation, clear_output_dir
+        return evaluation
 
     @staticmethod
-    def __create_prediction_printer(args, clear_output_dir: bool) -> (Optional[PredictionPrinter], bool):
+    def __create_prediction_printer(args) -> Optional[PredictionPrinter]:
         outputs = []
 
         if args.print_predictions:
             outputs.append(PredictionLogOutput())
 
         if args.store_predictions and args.output_dir is not None:
-            outputs.append(PredictionArffOutput(output_dir=args.output_dir, clear_dir=clear_output_dir))
-            clear_output_dir = False
+            outputs.append(PredictionArffOutput(output_dir=args.output_dir))
 
         printer = PredictionPrinter(outputs) if len(outputs) > 0 else None
-        return printer, clear_output_dir
+        return printer
 
     @staticmethod
-    def __create_prediction_characteristics_printer(
-            args, clear_output_dir: bool) -> (Optional[PredictionCharacteristicsPrinter], bool):
+    def __create_prediction_characteristics_printer(args) -> Optional[PredictionCharacteristicsPrinter]:
         outputs = []
 
         if args.print_prediction_characteristics:
             outputs.append(PredictionCharacteristicsLogOutput())
 
         if args.store_prediction_characteristics and args.output_dir is not None:
-            outputs.append(PredictionCharacteristicsCsvOutput(output_dir=args.output_dir, clear_dir=clear_output_dir))
-            clear_output_dir = False
+            outputs.append(PredictionCharacteristicsCsvOutput(output_dir=args.output_dir))
 
         printer = PredictionCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
-        return printer, clear_output_dir
+        return printer
 
     @staticmethod
-    def __create_data_characteristics_printer(args,
-                                              clear_output_dir: bool) -> (Optional[DataCharacteristicsPrinter], bool):
+    def __create_data_characteristics_printer(args) -> (Optional[DataCharacteristicsPrinter], bool):
         outputs = []
 
         if args.print_data_characteristics:
             outputs.append(DataCharacteristicsLogOutput())
 
         if args.store_data_characteristics and args.output_dir is not None:
-            outputs.append(DataCharacteristicsCsvOutput(output_dir=args.output_dir, clear_dir=clear_output_dir))
-            clear_output_dir = False
+            outputs.append(DataCharacteristicsCsvOutput(output_dir=args.output_dir))
 
         printer = DataCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
-        return printer, clear_output_dir
+        return printer
 
     def _run(self, args):
         # Create outputs...
-        clear_output_dir = args.current_fold < 0
-        data_characteristics_printer, clear_output_dir = self.__create_data_characteristics_printer(
-            args, clear_output_dir)
+        data_characteristics_printer = self.__create_data_characteristics_printer(args)
 
         if args.evaluate_training_data:
-            train_evaluation, clear_output_dir = self.__create_evaluation(args, clear_output_dir)
-            train_prediction_printer, clear_output_dir = self.__create_prediction_printer(args, clear_output_dir)
-            train_prediction_characteristics_printer, clear_output_dir = \
-                self.__create_prediction_characteristics_printer(args, clear_output_dir)
+            train_evaluation = self.__create_evaluation(args)
+            train_prediction_printer = self.__create_prediction_printer(args)
+            train_prediction_characteristics_printer = self.__create_prediction_characteristics_printer(args)
         else:
             train_evaluation = None
             train_prediction_printer = None
             train_prediction_characteristics_printer = None
 
-        test_evaluation, clear_output_dir = self.__create_evaluation(args, clear_output_dir)
-        test_prediction_printer, clear_output_dir = self.__create_prediction_printer(args, clear_output_dir)
-        test_prediction_characteristics_printer, clear_output_dir = self.__create_prediction_characteristics_printer(
-            args, clear_output_dir)
-        model_characteristics_printer, clear_output_dir = self._create_model_characteristics_printer(
-            args, clear_output_dir)
-        model_printer, clear_output_dir = self._create_model_printer(args, clear_output_dir)
-
+        test_evaluation = self.__create_evaluation(args)
+        test_prediction_printer = self.__create_prediction_printer(args)
+        test_prediction_characteristics_printer = self.__create_prediction_characteristics_printer(args)
+        model_characteristics_printer = self._create_model_characteristics_printer(args)
+        model_printer = self._create_model_printer(args)
 
         # Configure experiment...
         experiment = Experiment(base_learner=self._create_learner(args),
+                                pre_execution_hook=self.__create_pre_execution_hook(args),
                                 predict_probabilities=args.predict_probabilities,
                                 test_evaluation=test_evaluation,
                                 train_evaluation=train_evaluation,
@@ -184,31 +190,24 @@ class LearnerRunnable(Runnable, ABC):
         experiment.random_state = args.random_state
         experiment.run()
 
-    def _create_model_printer(self, args, clear_output_dir: bool) -> (Optional[ModelPrinter], bool):
+    def _create_model_printer(self, args) -> Optional[ModelPrinter]:
         """
         May be overridden by subclasses in order to create the `ModelPrinter` that should be used to print textual
         representations of models.
 
-        :param args:                The command line arguments
-        :param clear_output_dir:    True, if the output dir should be cleared before writing output files, False
-                                    otherwise
-        :return:                    The `ModelPrinter` that has been created and whether it clears the output directory
-                                    before writing output files
+        :param args:    The command line arguments
+        :return:        The `ModelPrinter` that has been created
         """
         log.warning('The learner does not support printing textual representations of models')
         return None, False
 
-    def _create_model_characteristics_printer(self, args,
-                                              clear_output_dir: bool) -> (Optional[ModelCharacteristicsPrinter], bool):
+    def _create_model_characteristics_printer(self, args) -> Optional[ModelCharacteristicsPrinter]:
         """
         May be overridden by subclasses in order to create the `ModelCharacteristicsPrinter` that should be used to
         print the characteristics of models.
 
-        :param args:                The command line arguments
-        :param clear_output_dir:    True, if the output directory should be cleared before writing output files, False
-                                    otherwise
-        :return:                    The `ModelCharacteristicsPrinter` that has been created and whether it clears the
-                                    output directory before writing output files
+        :param args:    The command line arguments
+        :return:        The `ModelCharacteristicsPrinter` that has been created
         """
         log.warning('The learner does not support printing the characteristics of models')
         return None, False
@@ -229,29 +228,26 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
     A base class for all programs that perform an experiment that involves training and evaluation of a rule learner.
     """
 
-    def _create_model_printer(self, args, clear_output_dir: bool) -> (Optional[ModelPrinter], bool):
+    def _create_model_printer(self, args) -> Optional[ModelPrinter]:
         outputs = []
 
         if args.print_rules:
             outputs.append(ModelPrinterLogOutput())
 
         if args.store_rules and args.output_dir is not None:
-            outputs.append(ModelPrinterTxtOutput(output_dir=args.output_dir, clear_dir=clear_output_dir))
-            clear_output_dir = False
+            outputs.append(ModelPrinterTxtOutput(output_dir=args.output_dir))
 
         printer = RulePrinter(args.print_options, outputs) if len(outputs) > 0 else None
-        return printer, clear_output_dir
+        return printer
 
-    def _create_model_characteristics_printer(self, args,
-                                              clear_output_dir: bool) -> (Optional[ModelCharacteristicsPrinter], bool):
+    def _create_model_characteristics_printer(self, args) -> Optional[ModelCharacteristicsPrinter]:
         outputs = []
 
         if args.print_model_characteristics:
             outputs.append(RuleModelCharacteristicsLogOutput())
 
         if args.store_model_characteristics and args.output_dir is not None:
-            outputs.append(RuleModelCharacteristicsCsvOutput(output_dir=args.output_dir, clear_dir=clear_output_dir))
-            clear_output_dir = False
+            outputs.append(RuleModelCharacteristicsCsvOutput(output_dir=args.output_dir))
 
         printer = RuleModelCharacteristicsPrinter(outputs) if len(outputs) > 0 else None
-        return printer, clear_output_dir
+        return printer
