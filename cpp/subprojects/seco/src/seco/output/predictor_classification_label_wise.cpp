@@ -52,95 +52,83 @@ namespace seco {
     }
 
     template<typename ScoreIterator, typename IndexIterator>
-    static inline uint32 addFirst(ScoreIterator& scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
-                                  BinaryLilMatrix::Row& row) {
+    static inline uint32 applyHead(ScoreIterator scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
+                                   BinaryLilMatrix::Row& row, uint32 numLabels) {
         if (scoresBegin != scoresEnd) {
-            uint32 index = indexIterator[*scoresBegin];
+            uint32 numElements = row.size();
 
-            if (row.empty()) {
-                row.emplace_front(index);
-                scoresBegin++;
-                return 1;
-            } else {
-                BinaryLilMatrix::Row::iterator it = row.begin();
-                uint32 firstIndex = *it;
+            if (numElements > 0) {
+                BinaryLilMatrix::Row::iterator end = row.end();
+                BinaryLilMatrix::Row::iterator start = std::lower_bound(row.begin(), end, indexIterator[*scoresBegin]);
+                uint32 bufferSize = end - start;
+                uint32* buffer = new uint32[bufferSize];
 
-                if (index == firstIndex) {
-                    scoresBegin++;
-                } else if (index < firstIndex) {
-                    row.emplace_front(index);
-                    scoresBegin++;
-                    return 1;
+                for (uint32 i = 0; i < bufferSize; i++) {
+                    buffer[i] = start[i];
                 }
+
+                uint32 i = 0;
+
+                for (uint32 n = 0; n < bufferSize; n++) {
+                    uint32 index1 = i < bufferSize ? buffer[i] : numLabels;
+                    uint32 index2 = scoresBegin != scoresEnd ? indexIterator[*scoresBegin] : numLabels;
+
+                    if (index1 < index2) {
+                        start[n] = index1;
+                        i++;
+                    } else if (index1 == index2) {
+                        start[n] = index1;
+                        i++;
+                        scoresBegin++;
+                    } else {
+                        start[n] = index2;
+                        scoresBegin++;
+                    }
+                }
+
+                while (i < bufferSize) {
+                    uint32 index1 = buffer[i];
+                    uint32 index2 = scoresBegin != scoresEnd ? indexIterator[*scoresBegin] : numLabels;
+
+                    if (index1 < index2) {
+                        row.emplace_back(index1);
+                        i++;
+                    } else if (index1 == index2) {
+                        row.emplace_back(index1);
+                        i++;
+                        scoresBegin++;
+                    } else {
+                        row.emplace_back(index2);
+                        scoresBegin++;
+                    }
+                }
+
+                delete[] buffer;
             }
+
+            for (; scoresBegin != scoresEnd; scoresBegin++) {
+                row.emplace_back(indexIterator[*scoresBegin]);
+            }
+
+            return row.size() - numElements;
         }
 
         return 0;
     }
 
-    template<typename ScoreIterator, typename IndexIterator>
-    static inline uint32 applyHead(ScoreIterator scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
-                                   BinaryLilMatrix::Row& row) {
-        uint32 numNonZeroElements = addFirst(scoresBegin, scoresEnd, indexIterator, row);
-        BinaryLilMatrix::Row::iterator prevIt = row.begin();
-        BinaryLilMatrix::Row::iterator it = prevIt;
-        it++;
-
-        for (; scoresBegin != scoresEnd && it != row.end(); scoresBegin++) {
-            uint32 index = indexIterator[*scoresBegin];
-            uint32 currentIndex = *it;
-            BinaryLilMatrix::Row::iterator nextIt = it;
-            nextIt++;
-
-            while (index > currentIndex && nextIt != row.end()) {
-                uint32 nextIndex = *nextIt;
-
-                if (index >= nextIndex) {
-                    currentIndex = nextIndex;
-                    prevIt = it;
-                    it = nextIt;
-                    nextIt++;
-                } else {
-                    break;
-                }
-            }
-
-            if (index > currentIndex) {
-                prevIt = row.emplace_after(it, index);
-                numNonZeroElements++;
-                it = prevIt;
-            } else if (index < currentIndex) {
-                prevIt = row.emplace_after(prevIt, index);
-                numNonZeroElements++;
-                it = prevIt;
-            } else {
-                prevIt = it;
-            }
-
-            it++;
-        }
-
-        for (; scoresBegin != scoresEnd; scoresBegin++) {
-            uint32 index = indexIterator[*scoresBegin];
-            prevIt = row.emplace_after(prevIt, index);
-            numNonZeroElements++;
-        }
-
-        return numNonZeroElements;
-    }
-
-    static inline uint32 applyHead(const IHead& head, BinaryLilMatrix::Row& row) {
+    static inline uint32 applyHead(const IHead& head, BinaryLilMatrix::Row& row, uint32 numLabels) {
         uint32 numNonZeroElements;
         auto completeHeadVisitor = [&](const CompleteHead& head) mutable {
             numNonZeroElements = applyHead(
                 make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
-                make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0), row);
+                make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0), row,
+                numLabels);
         };
         auto partialHeadVisitor = [&](const PartialHead& head) mutable {
             numNonZeroElements = applyHead(
                 make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
                 make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), head.indices_cbegin(),
-                row);
+                row, numLabels);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
         return numNonZeroElements;
@@ -269,7 +257,7 @@ namespace seco {
 
                         if (body.covers(featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i))) {
                             const IHead& head = rule.getHead();
-                            numNonZeroElements += applyHead(head, row);
+                            numNonZeroElements += applyHead(head, row, numLabels);
                         }
                     }
                 }
@@ -305,7 +293,7 @@ namespace seco {
                                         featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                                         &tmpArray1[0], &tmpArray2[0], n)) {
                             const IHead& head = rule.getHead();
-                            numNonZeroElements += applyHead(head, row);
+                            numNonZeroElements += applyHead(head, row, numLabels);
                         }
 
                         n++;

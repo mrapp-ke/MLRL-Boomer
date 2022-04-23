@@ -3,7 +3,8 @@
  */
 #pragma once
 
-#include "common/data/vector_sparse_list_binary.hpp"
+#include "common/data/types.hpp"
+#include <vector>
 
 
 /**
@@ -17,7 +18,7 @@ class BinaryLilMatrix final {
         /**
          * The type of a row in the matrix.
          */
-        typedef BinarySparseListVector Row;
+        typedef std::vector<uint32> Row;
 
     private:
 
@@ -37,12 +38,12 @@ class BinaryLilMatrix final {
         /**
          * An iterator that provides access to the elements at a row and allows to modify them.
          */
-        typedef typename BinarySparseListVector::iterator iterator;
+        typedef Row::iterator iterator;
 
         /**
          * An iterator that provides read-only access to the elements at a row.
          */
-        typedef typename BinarySparseListVector::const_iterator const_iterator;
+        typedef Row::const_iterator const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of a specific row.
