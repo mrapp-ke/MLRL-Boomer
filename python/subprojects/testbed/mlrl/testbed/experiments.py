@@ -15,6 +15,7 @@ from mlrl.testbed.evaluation import Evaluation
 from mlrl.testbed.model_characteristics import ModelPrinter, ModelCharacteristicsPrinter
 from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
+from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
 from mlrl.testbed.predictions import PredictionPrinter
 from mlrl.testbed.training import CrossValidation, DataSet
 from sklearn.base import clone
@@ -26,35 +27,57 @@ class Experiment(CrossValidation, ABC):
     validation or separate training and test sets.
     """
 
-    def __init__(self, base_learner: Learner, data_set: DataSet, num_folds: int = 1, current_fold: int = -1,
-                 predict_probabilities: bool = False, train_evaluation: Optional[Evaluation] = None,
+    def __init__(self,
+                 base_learner: Learner,
+                 data_set: DataSet,
+                 num_folds: int = 1,
+                 current_fold: int = -1,
+                 predict_probabilities: bool = False,
+                 train_evaluation: Optional[Evaluation] = None,
                  test_evaluation: Optional[Evaluation] = None,
                  train_prediction_printer: Optional[PredictionPrinter] = None,
                  test_prediction_printer: Optional[PredictionPrinter] = None,
-                 parameter_input: Optional[ParameterInput] = None, model_printer: Optional[ModelPrinter] = None,
+                 train_prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter] = None,
+                 test_prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter] = None,
+                 parameter_input: Optional[ParameterInput] = None,
+                 model_printer: Optional[ModelPrinter] = None,
                  model_characteristics_printer: Optional[ModelCharacteristicsPrinter] = None,
                  data_characteristics_printer: Optional[DataCharacteristicsPrinter] = None,
                  persistence: Optional[ModelPersistence] = None):
         """
-        :param base_learner:                    The classifier or ranker to be trained
-        :param predict_probabilities:           True, if probabilities should be predicted rather than binary labels,
-                                                False otherwise
-        :param train_evaluation:                The evaluation to be used for evaluating the predictions for the
-                                                training data or None, if the predictions should not be evaluated
-        :param test_evaluation:                 The evaluation to be used for evaluating the predictions for the test
-                                                data or None, if the predictions should not be evaluated
-        :param train_prediction_printer:        The printer that should be used to print the predictions for the
-                                                training data or None, if the predictions should not be printed
-        :param test_prediction_printer          The printer that should be used to print the predictions for the test
-                                                data or None, if the predictions should not be printed
-        :param parameter_input:                 The input that should be used to read the parameter settings
-        :param model_printer:                   The printer that should be used to print textual representations of
-                                                models or None, if no textual representations should be printed
-        :param model_characteristics_printer:   The printer that should be used to print the characteristics of models
-                                                or None, if the characteristics should not be printed
-        :param data_characteristics_printer:    The printer that should be used to print the characteristics of the
-                                                training data or None, if the characteristics should not be printed
-        :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
+        :param base_learner:                                The classifier or ranker to be trained
+        :param predict_probabilities:                       True, if probabilities should be predicted rather than
+                                                            binary labels, False otherwise
+        :param train_evaluation:                            The evaluation to be used for evaluating the predictions for
+                                                            the training data or None, if the predictions should not be
+                                                            evaluated
+        :param test_evaluation:                             The evaluation to be used for evaluating the predictions for
+                                                            the test data or None, if the predictions should not be
+                                                            evaluated
+        :param train_prediction_printer:                    The printer that should be used to print the predictions for
+                                                            the training data or None, if the predictions should not be
+                                                            printed
+        :param test_prediction_printer                      The printer that should be used to print the predictions for
+                                                            the test data or None, if the predictions should not be
+                                                            printed
+        :param train_prediction_characteristics_printer:    The printer that should be used to print the characteristics
+                                                            of binary predictions for the training data or None, if the
+                                                            characteristics should not be printed
+        :param test_prediction_characteristics_printer:     The printer that should be used to print the characteristics
+                                                            of binary predictions for the test data or None, if the
+                                                            characteristics should not be printed
+        :param parameter_input:                             The input that should be used to read the parameter settings
+        :param model_printer:                               The printer that should be used to print textual
+                                                            representations of models or None, if no textual
+                                                            representations should be printed
+        :param model_characteristics_printer:               The printer that should be used to print the characteristics
+                                                            of models or None, if the characteristics should not be
+                                                            printed
+        :param data_characteristics_printer:                The printer that should be used to print the characteristics
+                                                            of the training data or None, if the characteristics should
+                                                            not be printed
+        :param persistence:                                 The `ModelPersistence` that should be used for loading and
+                                                            saving models
         """
         super().__init__(data_set, num_folds, current_fold)
         self.base_learner = base_learner
@@ -63,6 +86,8 @@ class Experiment(CrossValidation, ABC):
         self.test_evaluation = test_evaluation
         self.train_prediction_printer = train_prediction_printer
         self.test_prediction_printer = test_prediction_printer
+        self.train_prediction_characteristics_printer = train_prediction_characteristics_printer
+        self.test_prediction_characteristics_printer = test_prediction_characteristics_printer
         self.parameter_input = parameter_input
         self.model_printer = model_printer
         self.model_characteristics_printer = model_characteristics_printer
@@ -115,8 +140,10 @@ class Experiment(CrossValidation, ABC):
         # Obtain and evaluate predictions for training data, if necessary...
         evaluation = self.train_evaluation
         prediction_printer = self.train_prediction_printer
+        prediction_characteristics_printer = None if self.predict_probabilities else \
+            self.train_prediction_characteristics_printer
 
-        if evaluation is not None or prediction_printer is not None:
+        if evaluation is not None or prediction_printer is not None or prediction_characteristics_printer is not None:
             log.info('Predicting for %s training examples...', train_x.shape[0])
             predictions, predict_time = self.__predict(current_learner, train_x)
 
@@ -131,11 +158,17 @@ class Experiment(CrossValidation, ABC):
                     prediction_printer.print(experiment_name, meta_data, predictions, train_y,
                                              current_fold=current_fold, num_folds=num_folds)
 
+                if prediction_characteristics_printer is not None:
+                    prediction_characteristics_printer.print(experiment_name, predictions, current_fold=current_fold,
+                                                             num_folds=num_folds)
+
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
         prediction_printer = self.test_prediction_printer
+        prediction_characteristics_printer = None if self.predict_probabilities else \
+            self.test_prediction_characteristics_printer
 
-        if evaluation is not None or prediction_printer is not None:
+        if evaluation is not None or prediction_printer is not None or prediction_characteristics_printer is not None:
             log.info('Predicting for %s test examples...', test_x.shape[0])
             predictions, predict_time = self.__predict(current_learner, test_x)
 
@@ -150,6 +183,10 @@ class Experiment(CrossValidation, ABC):
                 if prediction_printer is not None:
                     prediction_printer.print(experiment_name, meta_data, predictions, test_y, current_fold=current_fold,
                                              num_folds=num_folds)
+
+                if prediction_characteristics_printer is not None:
+                    prediction_characteristics_printer.print(experiment_name, predictions, current_fold=current_fold,
+                                                             num_folds=num_folds)
 
         # Print model characteristics, if necessary...
         model_characteristics_printer = self.model_characteristics_printer
