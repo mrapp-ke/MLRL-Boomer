@@ -407,7 +407,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 c.set_num_past(options.get_int(ARGUMENT_NUM_PAST, c.get_num_past()))
                 c.set_num_current(options.get_int(ARGUMENT_NUM_RECENT, c.get_num_current()))
                 c.set_min_improvement(options.get_float(ARGUMENT_MIN_IMPROVEMENT, c.get_min_improvement()))
-                c.set_force_stop(options.get_bool(ARGUMENT_FORCE_STOP, c.get_force_stop()))
+                c.set_force_stop(options.get_bool(ARGUMENT_FORCE_STOP, c.is_stop_forced()))
 
     @staticmethod
     def __create_aggregation_function(aggregation_function: str) -> AggregationFunction:

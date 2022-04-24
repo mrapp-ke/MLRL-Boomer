@@ -78,14 +78,14 @@ cdef class TopDownRuleInductionConfig:
         self.config_ptr.setMaxHeadRefinements(max_head_refinements)
         return self
 
-    def get_recalculate_predictions(self) -> bool:
+    def are_predictions_recalculated(self) -> bool:
         """
         Returns whether the predictions of rules are recalculated on all training examples, if some of the examples have
         zero weights, or not.
 
         :return: True, if the predictions of rules are recalculated on all training examples, False otherwise
         """
-        return self.config_ptr.getRecalculatePredictions()
+        return self.config_ptr.arePredictionsRecalculated()
 
     def set_recalculate_predictions(self, recalculate_predictions: bool) -> TopDownRuleInductionConfig:
         """
