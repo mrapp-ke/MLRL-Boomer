@@ -18,6 +18,8 @@ namespace boosting {
 
         private:
 
+            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+
             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr_;
 
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
@@ -29,6 +31,8 @@ namespace boosting {
         public:
 
             /**
+             * @param lossConfigPtr             A reference to an unique pointer that stores the configuration of the
+             *                                  loss function
              * @param labelBinningConfigPtr     A reference to an unique pointer that stores the configuration of the
              *                                  method for assigning labels to bins
              * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
@@ -39,7 +43,8 @@ namespace boosting {
              * @param l2RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L2
              *                                  regularization
              */
-            AutomaticHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
+            AutomaticHeadConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
+                                const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
                                 const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
                                 const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
                                 const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
@@ -55,6 +60,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
                 const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const override;
+
+            bool isPartial() const override;
 
             bool isSingleLabel() const override;
 

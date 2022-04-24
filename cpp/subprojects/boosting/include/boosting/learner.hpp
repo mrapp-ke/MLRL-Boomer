@@ -17,6 +17,7 @@
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 #include "boosting/rule_evaluation/regularization_manual.hpp"
+#include "boosting/statistics/statistic_format.hpp"
 
 
 namespace boosting {
@@ -45,6 +46,14 @@ namespace boosting {
                      *         rule heads
                      */
                     virtual const IHeadConfig& getHeadConfig() const = 0;
+
+                    /**
+                     * Returns the configuration of the statistics that should be used by the rule learner.
+                     *
+                     * @return A reference to an object of type `IStatisticsConfig` that specifies the configuration of
+                     *         the statistics
+                     */
+                    virtual const IStatisticsConfig& getStatisticsConfig() const = 0;
 
                     /**
                      * Returns the configuration of the L1 regularization term.
@@ -172,6 +181,23 @@ namespace boosting {
                      * labels.
                      */
                     virtual void useCompleteHeads() = 0;
+
+                    /**
+                     * Configures the rule learner to automatically decide whether a dense or sparse representation of
+                     * gradients and Hessians should be used.
+                     */
+                    virtual void useAutomaticStatistics() = 0;
+
+                    /**
+                     * Configures the rule learner to use a dense representation of gradients and Hessians.
+                     */
+                    virtual void useDenseStatistics() = 0;
+
+                    /**
+                     * Configures the rule learner to use a sparse representation of gradients and Hessians, if
+                     * possible.
+                     */
+                    virtual void useSparseStatistics() = 0;
 
                     /**
                      * Configures the rule learner to not use L1 regularization.
@@ -320,6 +346,8 @@ namespace boosting {
 
                     std::unique_ptr<IHeadConfig> headConfigPtr_;
 
+                    std::unique_ptr<IStatisticsConfig> statisticsConfigPtr_;
+
                     std::unique_ptr<ILossConfig> lossConfigPtr_;
 
                     std::unique_ptr<IRegularizationConfig> l1RegularizationConfigPtr_;
@@ -335,6 +363,8 @@ namespace boosting {
                     std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
 
                     const IHeadConfig& getHeadConfig() const override;
+
+                    const IStatisticsConfig& getStatisticsConfig() const override;
 
                     const IRegularizationConfig& getL1RegularizationConfig() const override;
 
@@ -376,6 +406,12 @@ namespace boosting {
                     IDynamicPartialHeadConfig& useDynamicPartialHeads() override;
 
                     void useCompleteHeads() override;
+
+                    void useAutomaticStatistics() override;
+
+                    void useDenseStatistics() override;
+
+                    void useSparseStatistics() override;
 
                     void useNoL1Regularization() override;
 

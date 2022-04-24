@@ -51,6 +51,8 @@ class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageCon
 
         SequentialRuleModelAssemblageConfig();
 
+        bool isDefaultRuleUsed() const override;
+
         bool getUseDefaultRule() const override;
 
         ISequentialRuleModelAssemblageConfig& setUseDefaultRule(bool useDefaultRule) override;

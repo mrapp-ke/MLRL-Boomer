@@ -123,6 +123,8 @@ namespace boosting {
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
                 const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const override;
 
+            bool isPartial() const override;
+
             bool isSingleLabel() const override;
 
     };

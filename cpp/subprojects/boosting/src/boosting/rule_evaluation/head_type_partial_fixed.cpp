@@ -122,6 +122,10 @@ namespace boosting {
             std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
+    bool FixedPartialHeadConfig::isPartial() const {
+        return true;
+    }
+
     bool FixedPartialHeadConfig::isSingleLabel() const {
         return false;
     }
