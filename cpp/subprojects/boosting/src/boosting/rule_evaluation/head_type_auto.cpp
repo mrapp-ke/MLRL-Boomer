@@ -57,7 +57,7 @@ namespace boosting {
     }
 
     bool AutomaticHeadConfig::isSingleLabel() const {
-        return false;
+        return lossConfigPtr_->isDecomposable();
     }
 
 }
