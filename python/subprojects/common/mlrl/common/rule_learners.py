@@ -148,7 +148,7 @@ def configure_rule_model_assemblage(config: RuleLearnerConfig, rule_model_assemb
 
         if value == RULE_MODEL_ASSEMBLAGE_SEQUENTIAL:
             c = config.use_sequential_rule_model_assemblage()
-            c.set_use_default_rule(options.get_bool(ARGUMENT_USE_DEFAULT_RULE, c.get_use_default_rule()))
+            c.set_use_default_rule(options.get_bool(ARGUMENT_USE_DEFAULT_RULE, c.is_default_rule_used()))
 
 
 def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional[str]):
@@ -161,7 +161,7 @@ def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional
             c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
             c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
             c.set_recalculate_predictions(options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS,
-                                                           c.get_recalculate_predictions()))
+                                                           c.are_predictions_recalculated()))
 
 
 def configure_feature_binning(config: RuleLearnerConfig, feature_binning: Optional[str]):

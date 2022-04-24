@@ -7,7 +7,7 @@ cdef extern from "common/rule_induction/rule_model_assemblage_sequential.hpp" no
 
         # Functions:
 
-        bool getUseDefaultRule() const
+        bool isDefaultRuleUsed() const
 
         ISequentialRuleModelAssemblageConfig& setUseDefaultRule(bool useDefaultRule) except +
 

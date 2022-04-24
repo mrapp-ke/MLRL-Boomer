@@ -255,10 +255,6 @@ bool SequentialRuleModelAssemblageConfig::isDefaultRuleUsed() const {
     return useDefaultRule_;
 }
 
-bool SequentialRuleModelAssemblageConfig::getUseDefaultRule() const {
-    return useDefaultRule_;
-}
-
 ISequentialRuleModelAssemblageConfig& SequentialRuleModelAssemblageConfig::setUseDefaultRule(bool useDefaultRule) {
     useDefaultRule_ = useDefaultRule;
     return *this;

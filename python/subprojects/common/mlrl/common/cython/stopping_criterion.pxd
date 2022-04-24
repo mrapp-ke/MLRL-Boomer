@@ -68,7 +68,7 @@ cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
 
         IMeasureStoppingCriterionConfig& setMinImprovement(float64 minImprovement) except +
 
-        bool getForceStop() const
+        bool isStopForced() const
 
         IMeasureStoppingCriterionConfig& setForceStop(bool forceStop) except +
 
