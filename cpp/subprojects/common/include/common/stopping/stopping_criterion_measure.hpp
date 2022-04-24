@@ -182,7 +182,7 @@ class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
          * @return True, if the induction of rules is forced to be stopped, if the stopping criterion is met, false, if
          *         only the time of stopping is stored
          */
-        virtual bool getForceStop() const = 0;
+        virtual bool isStopForced() const = 0;
 
         /**
          * Sets whether the induction of rules should be forced to be stopped, if the stopping criterion is met.
@@ -252,7 +252,7 @@ class MeasureStoppingCriterionConfig final : public IStoppingCriterionConfig, pu
 
         IMeasureStoppingCriterionConfig& setMinImprovement(float64 minImprovement) override;
 
-        bool getForceStop() const override;
+        bool isStopForced() const override;
 
         IMeasureStoppingCriterionConfig& setForceStop(bool forceStop) override;
 

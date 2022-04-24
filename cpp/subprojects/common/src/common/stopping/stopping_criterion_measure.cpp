@@ -455,7 +455,7 @@ IMeasureStoppingCriterionConfig& MeasureStoppingCriterionConfig::setMinImproveme
     return *this;
 }
 
-bool MeasureStoppingCriterionConfig::getForceStop() const{
+bool MeasureStoppingCriterionConfig::isStopForced() const{
     return forceStop_;
 }
 

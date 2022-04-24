@@ -251,7 +251,7 @@ SequentialRuleModelAssemblageConfig::SequentialRuleModelAssemblageConfig()
 
 }
 
-bool SequentialRuleModelAssemblageConfig::getUseDefaultRule() const {
+bool SequentialRuleModelAssemblageConfig::isDefaultRuleUsed() const {
     return useDefaultRule_;
 }
 

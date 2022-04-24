@@ -79,7 +79,7 @@ class MLRLCOMMON_API ITopDownRuleInductionConfig {
          *
          * @return True, if the predictions of rules are recalculated on all training examples, false otherwise
          */
-        virtual bool getRecalculatePredictions() const = 0;
+        virtual bool arePredictionsRecalculated() const = 0;
 
         /**
          * Sets whether the predictions of rules should be recalculated on all training examples, if some of the
@@ -132,7 +132,7 @@ class TopDownRuleInductionConfig final : public IRuleInductionConfig, public ITo
 
         ITopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) override;
 
-        bool getRecalculatePredictions() const override;
+        bool arePredictionsRecalculated() const override;
 
         ITopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) override;
 

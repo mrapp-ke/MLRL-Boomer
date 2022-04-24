@@ -23,7 +23,7 @@ cdef extern from "common/rule_induction/rule_induction_top_down.hpp" nogil:
 
         ITopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) except +
 
-        bool getRecalculatePredictions() const
+        bool arePredictionsRecalculated() const
 
 
 cdef class TopDownRuleInductionConfig:

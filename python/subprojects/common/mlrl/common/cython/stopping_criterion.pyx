@@ -236,14 +236,14 @@ cdef class MeasureStoppingCriterionConfig:
         self.config_ptr.setMinImprovement(min_improvement)
         return self
 
-    def get_force_stop(self) -> bool:
+    def is_stop_forced(self) -> bool:
         """
         Returns whether the induction of rules is forced to be stopped, if the stopping criterion is met.
 
         :return: True, if the induction of rules is forced to be stopped, if the stopping criterion is met, False, if
                  only the time of stopping is stored
         """
-        return self.config_ptr.getForceStop()
+        return self.config_ptr.isStopForced()
 
     def set_force_stop(self, force_stop: bool) -> MeasureStoppingCriterionConfig:
         """
