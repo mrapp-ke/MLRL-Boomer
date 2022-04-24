@@ -5,12 +5,14 @@
 
 namespace boosting {
 
-    AutomaticHeadConfig::AutomaticHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
+    AutomaticHeadConfig::AutomaticHeadConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
+                                             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
                                              const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
                                              const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
                                              const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
-        : labelBinningConfigPtr_(labelBinningConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr),
-          l1RegularizationConfigPtr_(l1RegularizationConfigPtr), l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
+        : lossConfigPtr_(lossConfigPtr), labelBinningConfigPtr_(labelBinningConfigPtr),
+          multiThreadingConfigPtr_(multiThreadingConfigPtr), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
+          l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
 
     }
 
@@ -37,7 +39,7 @@ namespace boosting {
     }
 
     bool AutomaticHeadConfig::isSingleLabel() const {
-        return false;
+        return lossConfigPtr_->isDecomposable();
     }
 
 }
