@@ -13,7 +13,7 @@
  * @tparam T The type of the values that are stored in the matrix
  */
 template<typename T>
-class LilMatrix final {
+class LilMatrix {
 
     public:
 
@@ -35,7 +35,7 @@ class LilMatrix final {
          */
         LilMatrix(uint32 numRows);
 
-        ~LilMatrix();
+        virtual ~LilMatrix();
 
         /**
          * An iterator that provides access to the elements at a row and allows to modify them.
