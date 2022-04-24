@@ -6,7 +6,7 @@
 #include "common/input/feature_matrix.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "boosting/losses/loss_example_wise.hpp"
-#include "boosting/losses/loss_label_wise.hpp"
+#include "boosting/losses/loss_label_wise_sparse.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 
@@ -39,6 +39,23 @@ namespace boosting {
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
                 const ILabelWiseLossConfig& lossConfig) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
+             * configuration.
+             *
+             * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the
+             *                      feature values of the training examples
+             * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides access to the
+             *                      labels of the training examples
+             * @param lossConfig    A reference to an object of type `ISparseLabelWiseLossConfig` that specifies the
+             *                      configuration of the loss function
+             * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
+             *                      created
+             */
+            virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+                const ISparseLabelWiseLossConfig& lossConfig) const = 0;
 
             /**
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
