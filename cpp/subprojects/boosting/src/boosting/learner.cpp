@@ -20,6 +20,9 @@
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
+#include "boosting/statistics/statistic_format_auto.hpp"
+#include "boosting/statistics/statistic_format_dense.hpp"
+#include "boosting/statistics/statistic_format_sparse.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
 #include "common/output/label_space_info_no.hpp"
 
@@ -34,6 +37,7 @@ namespace boosting {
         this->useAutomaticParallelRuleRefinement();
         this->useAutomaticParallelStatisticUpdate();
         this->useAutomaticHeads();
+        this->useAutomaticStatistics();
         this->useNoL1Regularization();
         this->useL2Regularization();
         this->useLabelWiseLogisticLoss();
@@ -45,6 +49,10 @@ namespace boosting {
 
     const IHeadConfig& BoostingRuleLearner::Config::getHeadConfig() const {
         return *headConfigPtr_;
+    }
+
+    const IStatisticsConfig& BoostingRuleLearner::Config::getStatisticsConfig() const {
+        return *statisticsConfigPtr_;
     }
 
     const IRegularizationConfig& BoostingRuleLearner::Config::getL1RegularizationConfig() const {
@@ -103,7 +111,7 @@ namespace boosting {
 
     void BoostingRuleLearner::Config::useAutomaticHeads() {
         headConfigPtr_ = std::make_unique<AutomaticHeadConfig>(
-            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
+            lossConfigPtr_, labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
             l2RegularizationConfigPtr_);
     }
 
@@ -135,6 +143,19 @@ namespace boosting {
         headConfigPtr_ = std::make_unique<CompleteHeadConfig>(
             labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
             l2RegularizationConfigPtr_);
+    }
+
+    void BoostingRuleLearner::Config::useAutomaticStatistics() {
+        statisticsConfigPtr_ =
+            std::make_unique<AutomaticStatisticsConfig>(lossConfigPtr_, headConfigPtr_, ruleModelAssemblageConfigPtr_);
+    }
+
+    void BoostingRuleLearner::Config::useDenseStatistics() {
+        statisticsConfigPtr_ = std::make_unique<DenseStatisticsConfig>(lossConfigPtr_);
+    }
+
+    void BoostingRuleLearner::Config::useSparseStatistics() {
+        statisticsConfigPtr_ = std::make_unique<SparseStatisticsConfig>(lossConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useNoL1Regularization() {
@@ -238,8 +259,8 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
-        return configPtr_->getLossConfig()
-            .createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_, lapack_, false);
+        return configPtr_->getStatisticsConfig()
+            .createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_, lapack_);
     }
 
     std::unique_ptr<IModelBuilder> BoostingRuleLearner::createModelBuilder() const {
