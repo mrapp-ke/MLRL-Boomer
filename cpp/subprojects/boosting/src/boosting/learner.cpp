@@ -238,7 +238,8 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> BoostingRuleLearner::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
-        return configPtr_->getLossConfig().createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_, lapack_);
+        return configPtr_->getLossConfig()
+            .createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_, lapack_, false);
     }
 
     std::unique_ptr<IModelBuilder> BoostingRuleLearner::createModelBuilder() const {
