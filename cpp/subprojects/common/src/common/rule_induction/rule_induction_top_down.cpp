@@ -278,7 +278,7 @@ ITopDownRuleInductionConfig& TopDownRuleInductionConfig::setMaxHeadRefinements(u
     return *this;
 }
 
-bool TopDownRuleInductionConfig::getRecalculatePredictions() const {
+bool TopDownRuleInductionConfig::arePredictionsRecalculated() const {
     return recalculatePredictions_;
 }
 

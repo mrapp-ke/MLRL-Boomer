@@ -22,7 +22,7 @@ class MLRLCOMMON_API ISequentialRuleModelAssemblageConfig {
          *
          * @return True, if a default rule should be used, false otherwise
          */
-        virtual bool getUseDefaultRule() const = 0;
+        virtual bool isDefaultRuleUsed() const = 0;
 
         /**
          * Sets whether a default rule should be used or not.
@@ -51,7 +51,7 @@ class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageCon
 
         SequentialRuleModelAssemblageConfig();
 
-        bool getUseDefaultRule() const override;
+        bool isDefaultRuleUsed() const override;
 
         ISequentialRuleModelAssemblageConfig& setUseDefaultRule(bool useDefaultRule) override;
 
