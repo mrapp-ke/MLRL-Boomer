@@ -39,18 +39,22 @@ namespace boosting {
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
              * configuration.
              *
-             * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the
-             *                      feature values of the training examples
-             * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides access to the
-             *                      labels of the training examples
-             * @param blas          A reference to an object of type `Blas` that allows to execute BLAS routines
-             * @param lapack        A reference to an object of type `Lapack` that allows to execute LAPACK routines
-             * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
-             *                      created
+             * @param featureMatrix             A reference to an object of type `IFeatureMatrix` that provides access
+             *                                  to the feature values of the training examples
+             * @param labelMatrix               A reference to an object of type `IRowWiseLabelMatrix` that provides
+             *                                  access to the labels of the training examples
+             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
+             *                                  routines
+             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
+             *                                  routines
+             * @param preferSparseStatistics    True, if a sparse representation of statistics should be preferred, if
+             *                                  possible, false otherwise
+             * @return                          An unique pointer to an object of type `IStatisticsProviderFactory` that
+             *                                  has been created
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-                const Lapack& lapack) const = 0;
+                const Lapack& lapack, bool preferSparseStatistics) const = 0;
 
             /**
              * Creates and returns a new object of type `IEvaluationMeasureFactory` according to the specified
