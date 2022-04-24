@@ -59,7 +59,7 @@ namespace boosting {
     }
 
     bool SingleLabelHeadConfig::isSingleLabel() const {
-        return false;
+        return true;
     }
 
 }
