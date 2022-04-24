@@ -1,6 +1,7 @@
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/statistics/statistics_provider_example_wise_dense.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
+#include "boosting/statistics/statistics_provider_label_wise_sparse.hpp"
 #include "common/util/validation.hpp"
 
 
@@ -55,6 +56,22 @@ namespace boosting {
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
             std::move(pruningRuleEvaluationFactoryPtr), numThreads);
+    }
+
+    std::unique_ptr<IStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
+            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+            const ISparseLabelWiseLossConfig& lossConfig) const {
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
+        std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr = lossConfig.createSparseLabelWiseLossFactory();
+        std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+            lossConfig.createSparseEvaluationMeasureFactory();
+        std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+            labelBinningConfigPtr_->createLabelWiseDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
+        std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+            labelBinningConfigPtr_->createLabelWiseDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
+        return std::make_unique<SparseLabelWiseStatisticsProviderFactory>(
+            std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+            std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
     std::unique_ptr<IStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
