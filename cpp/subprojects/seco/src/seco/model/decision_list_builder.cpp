@@ -32,7 +32,7 @@ namespace seco {
                 modelPtr_->addRule(conditionListPtr->createConjunctiveBody(), predictionPtr->createHead());
             }
 
-            std::unique_ptr<IRuleModel> build(uint32 numUsedRules) override {
+            std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) override {
                 if (defaultHeadPtr_) {
                     modelPtr_->addDefaultRule(std::move(defaultHeadPtr_));
                 }

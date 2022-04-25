@@ -29,7 +29,7 @@ namespace boosting {
                 modelPtr_->addRule(conditionListPtr->createConjunctiveBody(), predictionPtr->createHead());
             }
 
-            std::unique_ptr<IRuleModel> build(uint32 numUsedRules) override {
+            std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) override {
                 modelPtr_->setNumUsedRules(numUsedRules);
                 return std::move(modelPtr_);
             }
