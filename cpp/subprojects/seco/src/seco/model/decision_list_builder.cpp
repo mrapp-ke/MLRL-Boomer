@@ -23,12 +23,13 @@ namespace seco {
 
             }
 
-            void setDefaultRule(const AbstractPrediction& prediction) override {
-                defaultHeadPtr_ = prediction.createHead();
+            void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
+                defaultHeadPtr_ = predictionPtr->createHead();
             }
 
-            void addRule(const ConditionList& conditions, const AbstractPrediction& prediction) override {
-                modelPtr_->addRule(conditions.createConjunctiveBody(), prediction.createHead());
+            void addRule(std::unique_ptr<ConditionList>& conditionListPtr,
+                         std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
+                modelPtr_->addRule(conditionListPtr->createConjunctiveBody(), predictionPtr->createHead());
             }
 
             std::unique_ptr<IRuleModel> build(uint32 numUsedRules) override {

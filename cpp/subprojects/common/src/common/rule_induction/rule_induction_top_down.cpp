@@ -66,7 +66,7 @@ class TopDownRuleInduction final : public IRuleInduction {
                 defaultPredictionPtr->apply(statistics, i);
             }
 
-            modelBuilder.setDefaultRule(*defaultPredictionPtr);
+            modelBuilder.setDefaultRule(defaultPredictionPtr);
         }
 
         bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
@@ -76,9 +76,8 @@ class TopDownRuleInduction final : public IRuleInduction {
             bool instanceSamplingUsed = weights.hasZeroWeights();
             // The label indices for which the next refinement of the rule may predict
             const IIndexVector* currentLabelIndices = &labelIndices;
-            // A (stack-allocated) list that contains the conditions in the rule's body (in the order they have been
-            // learned)
-            ConditionList conditions;
+            // A list that contains the conditions in the rule's body (in the order they have been learned)
+            std::unique_ptr<ConditionList> conditionListPtr = std::make_unique<ConditionList>();
             // The total number of conditions
             uint32 numConditions = 0;
             // A map that stores a pointer to an object of type `IRuleRefinement` for each feature
@@ -142,7 +141,7 @@ class TopDownRuleInduction final : public IRuleInduction {
                     uint32 numCoveredExamples = bestRefinementPtr->numCovered;
 
                     // Add the new condition...
-                    conditions.addCondition(*bestRefinementPtr);
+                    conditionListPtr->addCondition(*bestRefinementPtr);
                     numConditions++;
 
                     // Keep the labels for which the rule predicts, if the head should not be further refined...
@@ -163,7 +162,7 @@ class TopDownRuleInduction final : public IRuleInduction {
                     IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
                     statisticsProvider.switchToPruningRuleEvaluation();
                     std::unique_ptr<ICoverageState> coverageStatePtr = pruning.prune(*thresholdsSubsetPtr, partition,
-                                                                                     conditions, *bestHead);
+                                                                                     *conditionListPtr, *bestHead);
                     statisticsProvider.switchToRegularRuleEvaluation();
 
                     // Re-calculate the scores in the head based on the entire training data...
@@ -181,7 +180,7 @@ class TopDownRuleInduction final : public IRuleInduction {
                 thresholdsSubsetPtr->applyPrediction(*bestHead);
 
                 // Add the induced rule to the model...
-                modelBuilder.addRule(conditions, *bestHead);
+                modelBuilder.addRule(conditionListPtr, bestRefinementPtr->headPtr);
                 return true;
             } else {
                 // No rule could be induced, because no useful condition could be found. This might be the case, if all
