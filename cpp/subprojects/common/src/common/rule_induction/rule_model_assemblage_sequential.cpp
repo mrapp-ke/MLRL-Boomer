@@ -200,7 +200,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             }
 
             // Build and return the final model...
-            return modelBuilderPtr->build(numUsedRules);
+            return modelBuilderPtr->buildModel(numUsedRules);
         }
 
 };
