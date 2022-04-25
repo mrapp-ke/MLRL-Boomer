@@ -196,8 +196,8 @@ namespace seco {
         return configPtr_->getHeadConfig().createStatisticsProviderFactory(labelMatrix);
     }
 
-    std::unique_ptr<IModelBuilder> SeCoRuleLearner::createModelBuilder() const {
-        return std::make_unique<DecisionListBuilder>();
+    std::unique_ptr<IModelBuilderFactory> SeCoRuleLearner::createModelBuilderFactory() const {
+        return std::make_unique<DecisionListBuilderFactory>();
     }
 
     std::unique_ptr<ILabelSpaceInfo> SeCoRuleLearner::createLabelSpaceInfo(

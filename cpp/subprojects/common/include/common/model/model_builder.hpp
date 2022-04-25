@@ -43,3 +43,21 @@ class IModelBuilder {
         virtual std::unique_ptr<IRuleModel> build(uint32 numUsedRules) = 0;
 
 };
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IModelBuilder`.
+ */
+class IModelBuilderFactory {
+
+    public:
+
+        virtual ~IModelBuilderFactory() { };
+
+        /**
+         * Creates and returns a new instance of type `IModelBuilder`.
+         *
+         * @return An unique pointer to an object of type `IModelBuilder` that has been created
+         */
+        virtual std::unique_ptr<IModelBuilder> create() const = 0;
+
+};
