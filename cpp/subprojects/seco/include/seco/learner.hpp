@@ -341,7 +341,7 @@ namespace seco {
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
 
-            std::unique_ptr<IModelBuilder> createModelBuilder() const override;
+            std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override;
 
             std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
                 const IRowWiseLabelMatrix& labelMatrix) const override;

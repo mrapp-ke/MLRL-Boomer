@@ -448,16 +448,15 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
     std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr = this->createLabelSpaceInfo(labelMatrix);
     std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
         this->createRuleModelAssemblageFactory();
-    std::unique_ptr<IModelBuilder> modelBuilderPtr = this->createModelBuilder();
     std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr = ruleModelAssemblageFactoryPtr->create(
-        this->createStatisticsProviderFactory(featureMatrix, labelMatrix),
+        this->createModelBuilderFactory(), this->createStatisticsProviderFactory(featureMatrix, labelMatrix),
         this->createThresholdsFactory(featureMatrix, labelMatrix),
         this->createRuleInductionFactory(featureMatrix, labelMatrix), this->createLabelSamplingFactory(labelMatrix),
         this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(featureMatrix),
         this->createPartitionSamplingFactory(), this->createPruningFactory(), this->createPostProcessorFactory(),
         stoppingCriterionFactories);
     std::unique_ptr<IRuleModel> ruleModelPtr = ruleModelAssemblagePtr->induceRules(
-        nominalFeatureMask, featureMatrix, labelMatrix, randomState, *modelBuilderPtr);
+        nominalFeatureMask, featureMatrix, labelMatrix, randomState);
     return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), std::move(ruleModelPtr),
                                             std::move(labelSpaceInfoPtr));
 }
