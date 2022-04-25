@@ -432,9 +432,9 @@ namespace boosting {
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
 
             /**
-             * @see `AbstractRuleLearner::createModelBuilder`
+             * @see `AbstractRuleLearner::createModelBuilderFactory`
              */
-            std::unique_ptr<IModelBuilder> createModelBuilder() const override;
+            std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override;
 
             /**
              * @see `AbstractRuleLearner::createLabelSpaceInfo`

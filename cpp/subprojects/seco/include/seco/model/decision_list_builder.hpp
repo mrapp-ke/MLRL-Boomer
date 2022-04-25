@@ -4,41 +4,19 @@
 #pragma once
 
 #include "common/model/model_builder.hpp"
-#include "common/model/rule_list.hpp"
 
 
 namespace seco {
 
     /**
-     * Allows to build models that store several rules in the order they have been added, except for the default rule, which
-     * is always located at the end.
+     * Allows to create instances of the type `IModelBuilder` that build models that store several rules in the order
+     * they have been added, except for the default rule, which is always located at the end.
      */
-    class DecisionListBuilder final : public IModelBuilder {
-
-        private:
-
-            std::unique_ptr<IHead> defaultHeadPtr_;
-
-            std::unique_ptr<RuleList> modelPtr_;
+    class DecisionListBuilderFactory : public IModelBuilderFactory {
 
         public:
 
-            DecisionListBuilder();
-
-            /**
-             * @see `IModelBuilder::setDefaultRule`
-             */
-            void setDefaultRule(const AbstractPrediction& prediction) override;
-
-            /**
-             * @see `IModelBuilder::addRule`
-             */
-            void addRule(const ConditionList& conditions, const AbstractPrediction& prediction) override;
-
-            /**
-             * @see `IModelBuilder::build`
-             */
-            std::unique_ptr<IRuleModel> build(uint32 numUsedRules) override;
+            std::unique_ptr<IModelBuilder> create() const override;
 
     };
 
