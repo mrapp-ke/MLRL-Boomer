@@ -263,8 +263,8 @@ namespace boosting {
             .createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_, lapack_);
     }
 
-    std::unique_ptr<IModelBuilder> BoostingRuleLearner::createModelBuilder() const {
-        return std::make_unique<RuleListBuilder>();
+    std::unique_ptr<IModelBuilderFactory> BoostingRuleLearner::createModelBuilderFactory() const {
+        return std::make_unique<RuleListBuilderFactory>();
     }
 
     std::unique_ptr<IClassificationPredictorFactory> BoostingRuleLearner::createClassificationPredictorFactory(
