@@ -161,7 +161,7 @@ The following parameters allow to control the behavior of the algorithm:
 * ``pruning`` (Default value = ``'none'``)
 
   * ``'none'`` No pruning is used.
-  * ``'irep'``. Subsequent conditions of rules may be pruned on a holdout set, similar to the IREP algorithm. Does only have an effect if the parameter ``instance_sampling`` is not set to ``'none'``.
+  * ``'irep'`` Subsequent conditions of rules may be pruned on a holdout set, similar to the IREP algorithm. Does only have an effect if the parameter ``instance_sampling`` is not set to ``'none'``.
 
 * ``head_type`` (Default value = ``'auto'``)
 

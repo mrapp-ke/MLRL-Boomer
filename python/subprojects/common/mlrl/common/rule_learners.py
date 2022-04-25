@@ -360,7 +360,7 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
     If the given policy is `SparsePolicy.AUTO`, the matrix will be converted into the given sparse format, if possible,
     if the sparse matrix is expected to occupy less memory than a dense matrix. To be able to convert the matrix into a
     sparse format, it must be a `scipy.sparse.lil_matrix`, `scipy.sparse.dok_matrix` or `scipy.sparse.coo_matrix`. If
-    the given sparse format is `csr` or `csc` and the matrix is a already in that format, it will not be converted.
+    the given sparse format is `csr` or `csc` and the matrix is already in that format, it will not be converted.
 
     If the given policy is `SparsePolicy.FORCE_DENSE`, the matrix will always be converted into the specified sparse
     format, if possible.

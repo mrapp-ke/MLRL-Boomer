@@ -38,15 +38,13 @@ class IRuleModelAssemblage {
          * @param labelMatrix           A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise
          *                              access to the labels of individual training examples
          * @param randomState           The seed to be used by the random number generators
-         * @param modelBuilder          A reference to an object of type `IModelBuilder`, the induced rules should be
-         *                              added to
          * @return                      An unique pointer to an object of type `IRuleModel` that consists of the rules
          *                              that have been induced
          */
         virtual std::unique_ptr<IRuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
                                                         const IColumnWiseFeatureMatrix& featureMatrix,
-                                                        const IRowWiseLabelMatrix& labelMatrix, uint32 randomState,
-                                                        IModelBuilder& modelBuilder) const = 0;
+                                                        const IRowWiseLabelMatrix& labelMatrix,
+                                                        uint32 randomState) const = 0;
 
 };
 
@@ -62,6 +60,8 @@ class IRuleModelAssemblageFactory {
         /**
          * Creates and returns a new object of the type `IRuleModelAssemblage`.
          *
+         * @param modelBuilderFactoryPtr        An unique pointer to an object of type `IModelBuilderFactory` that
+         *                                      allows to create the builder to be used for assembling a model
          * @param statisticsProviderFactoryPtr  An unique pointer to an object of type `IStatisticsProviderFactory` that
          *                                      provides access to the statistics which serve as the basis for learning
          *                                      rules
@@ -94,6 +94,7 @@ class IRuleModelAssemblageFactory {
          *                                      induced or not
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
+            std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
             std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
             std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
             std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
