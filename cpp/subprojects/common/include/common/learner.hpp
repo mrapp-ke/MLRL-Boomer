@@ -946,11 +946,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const = 0;
 
         /**
-         * Must be implemented by subclasses in order to create `IModelBuilder` to be used by the rule learner.
+         * Must be implemented by subclasses in order to create the `IModelBuilderFactory` to be used by the rule
+         * learner.
          *
-         * @return An unique pointer to an object of type `IModelBuilder` that has been created
+         * @return An unique pointer to an object of type `IModelBuilderFactory` that has been created
          */
-        virtual std::unique_ptr<IModelBuilder> createModelBuilder() const = 0;
+        virtual std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const = 0;
 
         /**
          * Must be overridden by subclasses in order to create the `ILabelSpaceInfo` to be used by the rule learner as a
