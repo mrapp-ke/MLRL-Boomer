@@ -5,7 +5,6 @@
 #pragma once
 
 #include "common/statistics/statistics.hpp"
-#include <functional>
 
 
 namespace seco {
@@ -22,20 +21,6 @@ namespace seco {
         public:
 
             virtual ~ICoverageStatistics() override { };
-
-            /**
-             * A visitor function for handling objects of the type `DenseCoverageMatrix`.
-             */
-            typedef std::function<void(std::unique_ptr<DenseCoverageMatrix>&)> DenseCoverageMatrixVisitor;
-
-            /**
-             * Invokes one of the given visitor functions, depending on which one is able to handle the particular type
-             * of matrix that is used to store how often individual examples and labels have been covered.
-             *
-             * @param denseCoverageMatrixVisitor The visitor function for handling objects of the type
-             *                                   `DenseCoverageMatrix`
-             */
-            virtual void visitCoverageMatrix(DenseCoverageMatrixVisitor denseCoverageMatrixVisitor) = 0;
 
             /**
              * Returns the sum of the weights of all labels that remain to be covered.
