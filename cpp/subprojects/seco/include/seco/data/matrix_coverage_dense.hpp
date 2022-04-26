@@ -38,7 +38,8 @@ namespace seco {
             float64 getSumOfUncoveredWeights() const;
 
             /**
-             * Updates the elements at a specific row of this matrix, given the predictions for certain labels.
+             * Increases the number of times the elements at a specific row of this matrix are covered, given the
+             * predictions of a rule that predicts for all available labels.
              *
              * @param row                   The row
              * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
@@ -48,14 +49,15 @@ namespace seco {
              * @param indicesBegin          An iterator to the beginning of the label indices
              * @param indicesEnd            An iterator to the end of the label indices
              */
-            void updateRow(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
-                           VectorView<float64>::const_iterator predictionBegin,
-                           VectorView<float64>::const_iterator predictionEnd,
-                           CompleteIndexVector::const_iterator indicesBegin,
-                           CompleteIndexVector::const_iterator indicesEnd);
+            void increaseCoverage(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+                                  VectorView<float64>::const_iterator predictionBegin,
+                                  VectorView<float64>::const_iterator predictionEnd,
+                                  CompleteIndexVector::const_iterator indicesBegin,
+                                  CompleteIndexVector::const_iterator indicesEnd);
 
             /**
-             * Updates the elements at a specific row of this matrix, given the predictions for certain labels.
+             * Increases the number of times the elements at a specific row of this matrix are covered, given the
+             * predictions of a rule that predicts for a subset of the available labels.
              *
              * @param row                   The row
              * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
@@ -65,11 +67,11 @@ namespace seco {
              * @param indicesBegin          An iterator to the beginning of the label indices
              * @param indicesEnd            An iterator to the end of the label indices
              */
-            void updateRow(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
-                           VectorView<float64>::const_iterator predictionBegin,
-                           VectorView<float64>::const_iterator predictionEnd,
-                           PartialIndexVector::const_iterator indicesBegin,
-                           PartialIndexVector::const_iterator indicesEnd);
+            void increaseCoverage(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+                                  VectorView<float64>::const_iterator predictionBegin,
+                                  VectorView<float64>::const_iterator predictionEnd,
+                                  PartialIndexVector::const_iterator indicesBegin,
+                                  PartialIndexVector::const_iterator indicesEnd);
 
     };
 
