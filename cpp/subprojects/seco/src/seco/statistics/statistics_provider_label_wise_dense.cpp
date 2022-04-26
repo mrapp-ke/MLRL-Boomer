@@ -1,5 +1,4 @@
 #include "seco/statistics/statistics_provider_label_wise_dense.hpp"
-#include "seco/data/matrix_weight_dense.hpp"
 #include "seco/data/vector_confusion_matrix_dense.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "statistics_provider_label_wise.hpp"
@@ -12,7 +11,7 @@ namespace seco {
      * stored using dense data structures.
      */
     template<typename LabelMatrix>
-    class DenseLabelWiseStatistics final : public AbstractLabelWiseStatistics<LabelMatrix, DenseWeightMatrix,
+    class DenseLabelWiseStatistics final : public AbstractLabelWiseStatistics<LabelMatrix, DenseCoverageMatrix,
                                                                               DenseConfusionMatrixVector,
                                                                               ILabelWiseRuleEvaluationFactory>  {
 
@@ -24,23 +23,25 @@ namespace seco {
              *                                  predictions, as well as corresponding quality scores, of rules
              * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
              *                                  access to the labels of the training examples
-             * @param weightMatrixPtr           An unique pointer to an object of type `DenseWeightMatrix` that stores
-             *                                  the weights of individual examples and labels
+             * @param coverageMatrixPtr         An unique pointer to an object of type `DenseCoverageMatrix` that stores
+             *                                  how often individual examples and labels have been covered
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
              */
             DenseLabelWiseStatistics(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
-                                     const LabelMatrix& labelMatrix, std::unique_ptr<DenseWeightMatrix> weightMatrixPtr,
+                                     const LabelMatrix& labelMatrix,
+                                     std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr,
                                      std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
-                : AbstractLabelWiseStatistics<LabelMatrix, DenseWeightMatrix, DenseConfusionMatrixVector,
+                : AbstractLabelWiseStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector,
                                               ILabelWiseRuleEvaluationFactory>(
-                      ruleEvaluationFactory, labelMatrix, std::move(weightMatrixPtr),
+                      ruleEvaluationFactory, labelMatrix, std::move(coverageMatrixPtr),
                       std::move(majorityLabelVectorPtr)) {
 
             }
 
-            void visitWeightMatrix(ICoverageStatistics::DenseWeightMatrixVisitor denseWeightMatrixVisitor) override {
-                denseWeightMatrixVisitor(this->weightMatrixPtr_);
+            void visitCoverageMatrix(
+                    ICoverageStatistics::DenseCoverageMatrixVisitor denseCoverageMatrixVisitor) override {
+                denseCoverageMatrixVisitor(this->coverageMatrixPtr_);
             }
 
     };
@@ -75,10 +76,10 @@ namespace seco {
         }
 
         majorityLabelVectorPtr->setNumElements(n, true);
-        std::unique_ptr<DenseWeightMatrix> weightMatrixPtr =
-            std::make_unique<DenseWeightMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
+        std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr =
+            std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
         return std::make_unique<DenseLabelWiseStatistics<CContiguousConstView<const uint8>>>(
-            ruleEvaluationFactory, labelMatrix,  std::move(weightMatrixPtr), std::move(majorityLabelVectorPtr));
+            ruleEvaluationFactory, labelMatrix,  std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr));
     }
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
@@ -116,10 +117,10 @@ namespace seco {
         }
 
         majorityLabelVectorPtr->setNumElements(n, true);
-        std::unique_ptr<DenseWeightMatrix> weightMatrixPtr =
-            std::make_unique<DenseWeightMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
+        std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr =
+            std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
         return std::make_unique<DenseLabelWiseStatistics<BinaryCsrConstView>>(ruleEvaluationFactory, labelMatrix,
-                                                                              std::move(weightMatrixPtr),
+                                                                              std::move(coverageMatrixPtr),
                                                                               std::move(majorityLabelVectorPtr));
     }
 
