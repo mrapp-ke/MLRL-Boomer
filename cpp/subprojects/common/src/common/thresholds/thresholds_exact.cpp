@@ -276,91 +276,94 @@ class ExactThresholds final : public AbstractThresholds {
 
             private:
 
-            /**
-             * A callback that allows to retrieve feature vectors. If available, the feature vectors are retrieved from
-             * the cache. Otherwise, they are fetched from the feature matrix.
-             */
-            class Callback final : public IRuleRefinementCallback<FeatureVector, IWeightVector> {
+                /**
+                 * A callback that allows to retrieve feature vectors. If available, the feature vectors are retrieved
+                 * from the cache. Otherwise, they are fetched from the feature matrix.
+                 */
+                class Callback final : public IRuleRefinementCallback<FeatureVector, IWeightVector> {
 
-                private:
+                    private:
 
-                    ThresholdsSubset& thresholdsSubset_;
+                        ThresholdsSubset& thresholdsSubset_;
 
-                    uint32 featureIndex_;
+                        uint32 featureIndex_;
 
-                public:
+                    public:
 
-                    /**
-                     * @param thresholdsSubset  A reference to an object of type `ThresholdsSubset` that caches the
-                     *                          feature vectors
-                     * @param featureIndex      The index of the feature for which the feature vector should be
-                     *                          retrieved
-                     */
-                    Callback(ThresholdsSubset& thresholdsSubset, uint32 featureIndex)
-                        : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {
+                        /**
+                         * @param thresholdsSubset  A reference to an object of type `ThresholdsSubset` that caches the
+                         *                          feature vectors
+                         * @param featureIndex      The index of the feature for which the feature vector should be
+                         *                          retrieved
+                         */
+                        Callback(ThresholdsSubset& thresholdsSubset, uint32 featureIndex)
+                            : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {
 
-                    }
+                        }
 
-                    std::unique_ptr<Result> get() override {
-                        auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
-                        FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
-                        FeatureVector* featureVector = cacheEntry.vectorPtr.get();
-
-                        if (!featureVector) {
-                            auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
-                            featureVector = cacheIterator->second.get();
+                        std::unique_ptr<Result> get() override {
+                            auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
+                            FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
+                            FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
                             if (!featureVector) {
-                                thresholdsSubset_.thresholds_.featureMatrix_.fetchFeatureVector(featureIndex_,
-                                                                                                cacheIterator->second);
-                                cacheIterator->second->sortByValues();
+                                auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
                                 featureVector = cacheIterator->second.get();
+
+                                if (!featureVector) {
+                                    thresholdsSubset_.thresholds_.featureMatrix_.fetchFeatureVector(
+                                        featureIndex_, cacheIterator->second);
+                                    cacheIterator->second->sortByValues();
+                                    featureVector = cacheIterator->second.get();
+                                }
                             }
+
+                            // Filter feature vector, if only a subset of its elements are covered by the current
+                            // rule...
+                            uint32 numConditions = thresholdsSubset_.numModifications_;
+
+                            if (numConditions > cacheEntry.numConditions) {
+                                filterAnyVector(*featureVector, cacheEntry, numConditions,
+                                                thresholdsSubset_.coverageMask_);
+                                featureVector = cacheEntry.vectorPtr.get();
+                            }
+
+                            return std::make_unique<Result>(thresholdsSubset_.thresholds_.statisticsProvider_.get(),
+                                                            thresholdsSubset_.weights_, *featureVector);
                         }
 
-                        // Filter feature vector, if only a subset of its elements are covered by the current rule...
-                        uint32 numConditions = thresholdsSubset_.numModifications_;
+                };
 
-                        if (numConditions > cacheEntry.numConditions) {
-                            filterAnyVector(*featureVector, cacheEntry, numConditions, thresholdsSubset_.coverageMask_);
-                            featureVector = cacheEntry.vectorPtr.get();
-                        }
+                ExactThresholds& thresholds_;
 
-                        return std::make_unique<Result>(thresholdsSubset_.thresholds_.statisticsProvider_.get(),
-                                                        thresholdsSubset_.weights_, *featureVector);
+                const IWeightVector& weights_;
+
+                uint32 numCoveredExamples_;
+
+                CoverageMask coverageMask_;
+
+                uint32 numModifications_;
+
+                std::unordered_map<uint32, FilteredCacheEntry> cacheFiltered_;
+
+                template<typename T>
+                std::unique_ptr<IRuleRefinement> createExactRuleRefinement(const T& labelIndices, uint32 featureIndex) {
+                    // Retrieve the `FilteredCacheEntry` from the cache, or insert a new one if it does not already
+                    // exist...
+                    auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
+                    FeatureVector* featureVector = cacheFilteredIterator->second.vectorPtr.get();
+
+                    // If the `FilteredCacheEntry` in the cache does not refer to a `FeatureVector`, add an empty
+                    // `unique_ptr` to the cache...
+                    if (!featureVector) {
+                        thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
                     }
 
-            };
-
-            ExactThresholds& thresholds_;
-
-            const IWeightVector& weights_;
-
-            uint32 numCoveredExamples_;
-
-            CoverageMask coverageMask_;
-
-            uint32 numModifications_;
-
-            std::unordered_map<uint32, FilteredCacheEntry> cacheFiltered_;
-
-            template<typename T>
-            std::unique_ptr<IRuleRefinement> createExactRuleRefinement(const T& labelIndices, uint32 featureIndex) {
-                // Retrieve the `FilteredCacheEntry` from the cache, or insert a new one if it does not already exist...
-                auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
-                FeatureVector* featureVector = cacheFilteredIterator->second.vectorPtr.get();
-
-                // If the `FilteredCacheEntry` in the cache does not refer to a `FeatureVector`, add an empty
-                // `unique_ptr` to the cache...
-                if (!featureVector) {
-                    thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
+                    bool nominal = thresholds_.nominalFeatureMask_.isNominal(featureIndex);
+                    std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
+                    return std::make_unique<ExactRuleRefinement<T>>(labelIndices, numCoveredExamples_, featureIndex,
+                                                                    nominal, std::move(callbackPtr));
                 }
-
-                bool nominal = thresholds_.nominalFeatureMask_.isNominal(featureIndex);
-                std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
-                return std::make_unique<ExactRuleRefinement<T>>(labelIndices, numCoveredExamples_, featureIndex,
-                                                                nominal, std::move(callbackPtr));
-            }
 
             public:
 
