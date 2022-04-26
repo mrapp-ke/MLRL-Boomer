@@ -3,7 +3,6 @@ project('seco', 'cpp')
 # Source files
 source_files = [
     'src/seco/data/matrix_coverage_dense.cpp',
-    'src/seco/data/matrix_weight_dense.cpp',
     'src/seco/data/vector_confusion_matrix_dense.cpp',
     'src/seco/heuristics/heuristic_accuracy.cpp',
     'src/seco/heuristics/heuristic_f_measure.cpp',
