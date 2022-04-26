@@ -13,8 +13,9 @@ namespace seco {
     static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                           CoverageMatrix& coverageMatrix,
                                                           const VectorConstView<uint32>& majorityLabelIndices) {
-        coverageMatrix.updateRow(statisticIndex, majorityLabelIndices, prediction.scores_cbegin(),
-                                 prediction.scores_cend(), prediction.indices_cbegin(), prediction.indices_cend());
+        coverageMatrix.increaseCoverage(statisticIndex, majorityLabelIndices, prediction.scores_cbegin(),
+                                        prediction.scores_cend(), prediction.indices_cbegin(),
+                                        prediction.indices_cend());
     }
 
     /**
