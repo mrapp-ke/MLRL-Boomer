@@ -235,10 +235,10 @@ class IThresholdsSubset {
                                            Refinement& refinement) const = 0;
 
         /**
-         * Applies the predictions of a rule to the statistics that correspond to the current subset.
+         * Updates the statistics that correspond to the current subset based on the prediction of a rule.
          *
-         * @param prediction A reference to an object of type `AbstractPrediction`, representing the predictions to be
-         *                   applied
+         * @param prediction A reference to an object of type `AbstractPrediction` that stores the prediction of the
+         *                   rule
          */
         virtual void applyPrediction(const AbstractPrediction& prediction) = 0;
 
