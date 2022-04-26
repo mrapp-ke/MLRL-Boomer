@@ -39,11 +39,6 @@ namespace seco {
 
             }
 
-            void visitCoverageMatrix(
-                    ICoverageStatistics::DenseCoverageMatrixVisitor denseCoverageMatrixVisitor) override {
-                denseCoverageMatrixVisitor(this->coverageMatrixPtr_);
-            }
-
     };
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
