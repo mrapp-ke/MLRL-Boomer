@@ -8,16 +8,18 @@
 
 namespace boosting {
 
-    template<typename Prediction, typename LabelMatrix, typename StatisticView, typename ScoreMatrix,
-             typename LossFunction>
+    template<typename Prediction, typename ScoreMatrix>
     static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                          const LabelMatrix& labelMatrix, StatisticView& statisticView,
-                                                          ScoreMatrix& scoreMatrix, const LossFunction& lossFunction) {
-        // Update the scores that are currently predicted for the example at the given index...
+                                                          ScoreMatrix& scoreMatrix) {
         scoreMatrix.addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
                                        prediction.indices_cbegin(), prediction.indices_cend());
+    }
 
-        // Update the gradients and Hessians of the example at the given index...
+    template<typename Prediction, typename LabelMatrix, typename StatisticView, typename ScoreMatrix,
+             typename LossFunction>
+    static inline void updateLabelWiseStatisticsInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                           const LabelMatrix& labelMatrix, StatisticView& statisticView,
+                                                           ScoreMatrix& scoreMatrix, const LossFunction& lossFunction) {
         lossFunction.updateLabelWiseStatistics(statisticIndex, labelMatrix, scoreMatrix, prediction.indices_cbegin(),
                                                prediction.indices_cend(), statisticView);
     }
@@ -516,18 +518,18 @@ namespace boosting {
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                applyLabelWisePredictionInternally<CompletePrediction, LabelMatrix, StatisticView, ScoreMatrix,
-                                                   LossFunction>(
-                    statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_, *lossPtr_);
+                applyLabelWisePredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
+                updateLabelWiseStatisticsInternally(statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_,
+                                                    *scoreMatrixPtr_, *lossPtr_);
             }
 
             /**
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                applyLabelWisePredictionInternally<PartialPrediction, LabelMatrix, StatisticView, ScoreMatrix,
-                                                   LossFunction>(
-                    statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_, *lossPtr_);
+                applyLabelWisePredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
+                updateLabelWiseStatisticsInternally(statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_,
+                                                    *scoreMatrixPtr_, *lossPtr_);
             }
 
             /**
