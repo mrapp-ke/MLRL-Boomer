@@ -425,13 +425,12 @@ class ExactThresholds final : public AbstractThresholds {
                     numCoveredExamples_ = condition.numCovered;
 
                     uint32 featureIndex = condition.featureIndex;
-                    auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
+                    auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
                     FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
                     FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
                     if (!featureVector) {
-                        auto cacheIterator = thresholds_.cache_.emplace(featureIndex,
-                                                                        std::unique_ptr<FeatureVector>()).first;
+                        auto cacheIterator = thresholds_.cache_.find(featureIndex);
                         featureVector = cacheIterator->second.get();
                     }
 
