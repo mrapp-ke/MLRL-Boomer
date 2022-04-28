@@ -34,7 +34,7 @@ static inline int64 upperBound(FeatureVector::const_iterator iterator, int64 sta
         if (featureValue <= threshold) {
             start = pivot + 1;
         } else {
-            end = pivot - 1;
+            end = pivot;
         }
     }
 
@@ -62,9 +62,10 @@ static inline int64 adjustSplit(FeatureVector& featureVector, int64 conditionEnd
     FeatureVector::const_iterator iterator = featureVector.cbegin();
 
     if (conditionEnd < conditionPrevious) {
-        return upperBound(iterator, conditionEnd + 1, conditionPrevious - 1, threshold) - 1;
+        int64 bound = upperBound(iterator, conditionEnd + 1, conditionPrevious, threshold);
+        return bound - 1;
     } else {
-        return upperBound(iterator, conditionPrevious + 1, conditionEnd - 1, threshold);
+        return upperBound(iterator, conditionPrevious + 1, conditionEnd, threshold);
     }
 }
 
