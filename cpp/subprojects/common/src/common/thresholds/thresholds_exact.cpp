@@ -26,6 +26,15 @@ struct FilteredCacheEntry {
 
 };
 
+/**
+ * Uses a binary search to search for the index of the first feature value that is greater than a given threshold.
+ *
+ * @param iterator  An iterator of type `FeatureVector::const_iterator` that provides access to the feature values
+ * @param start     The first index to be considered by the search (inclusive)
+ * @param end       The last index to be considered by the search (exclusive)
+ * @param threshold The threshold
+ * @return          The index of the first feature value that is greater than the given threshold
+ */
 static inline uint32 upperBound(FeatureVector::const_iterator iterator, uint32 start, uint32 end, float32 threshold) {
     while (start < end) {
         uint32 pivot = start + ((end - start) / 2);
