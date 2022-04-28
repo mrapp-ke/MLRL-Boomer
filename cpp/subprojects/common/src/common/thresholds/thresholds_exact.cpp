@@ -26,9 +26,9 @@ struct FilteredCacheEntry {
 
 };
 
-static inline int64 upperBound(FeatureVector::const_iterator iterator, int64 start, int64 end, float32 threshold) {
+static inline uint32 upperBound(FeatureVector::const_iterator iterator, uint32 start, uint32 end, float32 threshold) {
     while (start < end) {
-        int64 pivot = start + ((end - start) / 2);
+        uint32 pivot = start + ((end - start) / 2);
         float32 featureValue = iterator[pivot].value;
 
         if (featureValue <= threshold) {
