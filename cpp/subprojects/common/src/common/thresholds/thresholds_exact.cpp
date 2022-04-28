@@ -26,7 +26,7 @@ struct FilteredCacheEntry {
 
 };
 
-static inline int64 adjustSplit(FeatureVector::const_iterator iterator, int64 start, int64 end, float32 threshold) {
+static inline int64 upperBound(FeatureVector::const_iterator iterator, int64 start, int64 end, float32 threshold) {
     while (start < end) {
         int64 pivot = start + ((end - start) / 2);
         float32 featureValue = iterator[pivot].value;
@@ -62,9 +62,9 @@ static inline int64 adjustSplit(FeatureVector& featureVector, int64 conditionEnd
     FeatureVector::const_iterator iterator = featureVector.cbegin();
 
     if (conditionEnd < conditionPrevious) {
-        return adjustSplit(iterator, conditionEnd + 1, conditionPrevious - 1, threshold) - 1;
+        return upperBound(iterator, conditionEnd + 1, conditionPrevious - 1, threshold) - 1;
     } else {
-        return adjustSplit(iterator, conditionPrevious + 1, conditionEnd - 1, threshold);
+        return upperBound(iterator, conditionPrevious + 1, conditionEnd - 1, threshold);
     }
 }
 
