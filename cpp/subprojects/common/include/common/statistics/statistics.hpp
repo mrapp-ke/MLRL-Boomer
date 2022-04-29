@@ -90,8 +90,8 @@ class IStatistics : virtual public IImmutableStatistics {
          * rule.
          *
          * @param statisticIndex    The index of the statistic to be updated
-         * @param prediction        A reference to an object of type `Prediction` that stores the scores that are
-         *                          predicted by the rule
+         * @param prediction        A reference to an object of type `CompletePrediction` that stores the scores that
+         *                          are predicted by the rule
          */
         virtual void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) = 0;
 
