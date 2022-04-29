@@ -1,0 +1,46 @@
+name: 'Test build'
+on:
+  push:
+    paths:
+      - '**/*.hpp'
+      - '**/*.cpp'
+      - '**/*.pxd'
+      - '**/*.pyx'
+      - '**/*.build'
+      - 'Makefile'
+      - 'python/requirements.txt'
+jobs:
+  linux_build:
+    name: Test Linux build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Compile via GCC
+        run: |
+          make compile
+  macos_build:
+    name: Test MacOS build
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Compile via Clang
+        run: |
+          brew install libomp
+          make compile
+  windows_build:
+    name: Test Windows build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Remove conflicting link.exe
+        uses: JesseTG/rm@v1.0.2
+        with:
+          path: C:\Program Files\Git\usr\bin\link.EXE
+      - name: Compile via MSVC
+        run: |
+          make compile
