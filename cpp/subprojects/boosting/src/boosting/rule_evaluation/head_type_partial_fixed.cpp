@@ -17,12 +17,9 @@ namespace boosting {
 
     FixedPartialHeadConfig::FixedPartialHeadConfig(
             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
-            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : labelRatio_(0.0f), minLabels_(2), maxLabels_(0), labelBinningConfigPtr_(labelBinningConfigPtr),
-          multiThreadingConfigPtr_(multiThreadingConfigPtr), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
-          l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
+          multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
     }
 
