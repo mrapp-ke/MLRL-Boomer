@@ -8,12 +8,9 @@ namespace boosting {
 
     DynamicPartialHeadConfig::DynamicPartialHeadConfig(
             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
-            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
+            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : threshold_(0.02f), exponent_(2.0f), labelBinningConfigPtr_(labelBinningConfigPtr),
-          multiThreadingConfigPtr_(multiThreadingConfigPtr), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
-          l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
+          multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
     }
 
