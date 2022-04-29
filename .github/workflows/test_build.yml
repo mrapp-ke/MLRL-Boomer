@@ -1,0 +1,16 @@
+name: 'Test build'
+on:
+  push
+jobs:
+  linux_build:
+    name: Test Linux build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Compile code
+        run: |
+          make compile
+      - name: Build documentation
+        run: |
+          make doc
