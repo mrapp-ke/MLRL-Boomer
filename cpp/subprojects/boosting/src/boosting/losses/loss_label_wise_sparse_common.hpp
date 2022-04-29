@@ -1,5 +1,6 @@
 #include "boosting/losses/loss_label_wise_sparse.hpp"
 #include "loss_label_wise_common.hpp"
+#include <iostream>  // TODO Remove
 
 
 namespace boosting {
@@ -28,6 +29,8 @@ namespace boosting {
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
                 // TODO Implement
+                std::cout << "SparseLabelWiseLoss::updateLabelWiseStatistics(CContiguousConstView, CompleteIndexVector)\n";
+                std::exit(-1);
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
@@ -36,6 +39,8 @@ namespace boosting {
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
                 // TODO Implement
+                std::cout << "SparseLabelWiseLoss::updateLabelWiseStatistics(CContiguousConstView, PartialIndexVector)\n";
+                std::exit(-1);
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
@@ -44,6 +49,8 @@ namespace boosting {
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
                 // TODO Implement
+                std::cout << "SparseLabelWiseLoss::updateLabelWiseStatistics(BinaryCsrConstView, CompleteIndexVector)\n";
+                std::exit(-1);
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
@@ -52,17 +59,23 @@ namespace boosting {
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
                 // TODO Implement
+                std::cout << "SparseLabelWiseLoss::updateLabelWiseStatistics(BinaryCsrConstView, PartialIndexVector)\n";
+                std::exit(-1);
             }
 
             float64 evaluate(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                              const LilMatrix<float64>& scoreMatrix) const override {
                 // TODO Implement
+                std::cout << "SparseLabelWiseLoss::evaluate(CContiguousConstView)\n";
+                std::exit(-1);
                 return 0;
             }
 
             float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                              const LilMatrix<float64>& scoreMatrix) const override {
                 // TODO Implement
+                std::cout << "SparseLabelWiseLoss::evaluate(BinaryCsrConstView)\n";
+                std::exit(-1);
                 return 0;
             }
 
