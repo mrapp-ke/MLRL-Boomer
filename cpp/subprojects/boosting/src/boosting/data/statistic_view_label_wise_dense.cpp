@@ -1,6 +1,7 @@
 #include "boosting/data/statistic_view_label_wise_dense.hpp"
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
+#include <iostream>  // TODO Remove
 
 
 namespace boosting {
@@ -52,6 +53,8 @@ namespace boosting {
     void DenseLabelWiseStatisticView::addToRow(uint32 row, SparseLabelWiseStatisticConstView::const_iterator begin,
                                                SparseLabelWiseStatisticConstView::const_iterator end, float64 weight) {
         // TODO Implement
+        std::cout << "DenseLabelWiseStatisticView::addToRow(SparseLabelWiseStatisticConstView)\n";
+        std::exit(-1);
     }
 
 }

@@ -1,4 +1,5 @@
 #include "boosting/data/matrix_lil_numeric.hpp"
+#include <iostream>  // TODO Remove
 
 
 namespace boosting {
@@ -15,6 +16,8 @@ namespace boosting {
                                                  CompleteIndexVector::const_iterator indicesBegin,
                                                  CompleteIndexVector::const_iterator indicesEnd) {
         // TODO Implement
+        std::cout << "NumericLilMatrix::addToRowFromSubset(CompleteIndexVector)\n";
+        std::exit(-1);
     }
 
     template<typename T>
@@ -23,6 +26,8 @@ namespace boosting {
                                                  PartialIndexVector::const_iterator indicesBegin,
                                                  PartialIndexVector::const_iterator indicesEnd) {
         // TODO Implement
+        std::cout << "NumericLilMatrix::addToRowFromSubset(PartialIndexVector)\n";
+        std::exit(-1);
     }
 
     template class NumericLilMatrix<uint8>;
