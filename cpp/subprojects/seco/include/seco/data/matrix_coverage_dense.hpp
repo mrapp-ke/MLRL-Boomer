@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/data/matrix_dense.hpp"
-#include "common/data/vector_sparse_array_binary.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
@@ -12,9 +11,10 @@
 namespace seco {
 
     /**
-     * A two-dimensional matrix that stores the weights of individual examples and labels in a C-contiguous array.
+     * A two-dimensional matrix that stores how often individual examples and labels have been covered in a C-contiguous
+     * array.
      */
-    class DenseWeightMatrix final : public DenseMatrix<float64> {
+    class DenseCoverageMatrix final : public DenseMatrix<uint32> {
 
         private:
 
@@ -25,19 +25,21 @@ namespace seco {
             /**
              * @param numRows               The number of rows in the matrix
              * @param numCols               The number of columns in the matrix
-             * @param sumOfUncoveredWeights The sum of the weights of all labels that remain to be covered
+             * @param sumOfUncoveredWeights The sum of the weights of all examples and labels that have not been covered
+             *                              yet
              */
-            DenseWeightMatrix(uint32 numRows, uint32 numCols, float64 sumOfUncoveredWeights);
+            DenseCoverageMatrix(uint32 numRows, uint32 numCols, float64 sumOfUncoveredWeights);
 
             /**
-             * Returns the sum of the weights of all labels that remain to be covered.
+             * Returns the sum of the weights of all examples and labels that have not been covered yet.
              *
-             * @return The sum of the weights
+             * @return The sum of the weights of all examples and labels that have not been covered yet
              */
             float64 getSumOfUncoveredWeights() const;
 
             /**
-             * Updates the weights at a specific row of this matrix, given the predictions for certain labels.
+             * Increases the number of times the elements at a specific row of this matrix are covered, given the
+             * predictions of a rule that predicts for all available labels.
              *
              * @param row                   The row
              * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
@@ -47,14 +49,15 @@ namespace seco {
              * @param indicesBegin          An iterator to the beginning of the label indices
              * @param indicesEnd            An iterator to the end of the label indices
              */
-            void updateRow(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
-                           VectorView<float64>::const_iterator predictionBegin,
-                           VectorView<float64>::const_iterator predictionEnd,
-                           CompleteIndexVector::const_iterator indicesBegin,
-                           CompleteIndexVector::const_iterator indicesEnd);
+            void increaseCoverage(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+                                  VectorView<float64>::const_iterator predictionBegin,
+                                  VectorView<float64>::const_iterator predictionEnd,
+                                  CompleteIndexVector::const_iterator indicesBegin,
+                                  CompleteIndexVector::const_iterator indicesEnd);
 
             /**
-             * Updates the weights at a specific row of this matrix, given the predictions for certain labels.
+             * Increases the number of times the elements at a specific row of this matrix are covered, given the
+             * predictions of a rule that predicts for a subset of the available labels.
              *
              * @param row                   The row
              * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
@@ -64,11 +67,11 @@ namespace seco {
              * @param indicesBegin          An iterator to the beginning of the label indices
              * @param indicesEnd            An iterator to the end of the label indices
              */
-            void updateRow(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
-                           VectorView<float64>::const_iterator predictionBegin,
-                           VectorView<float64>::const_iterator predictionEnd,
-                           PartialIndexVector::const_iterator indicesBegin,
-                           PartialIndexVector::const_iterator indicesEnd);
+            void increaseCoverage(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+                                  VectorView<float64>::const_iterator predictionBegin,
+                                  VectorView<float64>::const_iterator predictionEnd,
+                                  PartialIndexVector::const_iterator indicesBegin,
+                                  PartialIndexVector::const_iterator indicesEnd);
 
     };
 

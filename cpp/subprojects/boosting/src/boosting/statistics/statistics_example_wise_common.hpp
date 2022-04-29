@@ -8,16 +8,17 @@
 
 namespace boosting {
 
-    template<typename Prediction, typename LabelMatrix, typename StatisticView, typename ScoreMatrix,
-             typename LossFunction>
-    void applyExampleWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                              const LabelMatrix& labelMatrix, StatisticView& statisticView,
-                                              ScoreMatrix& scoreMatrix, const LossFunction& lossFunction) {
-        // Update the scores that are currently predicted for the example at the given index...
+    template<typename Prediction, typename ScoreMatrix>
+    static inline void applyExampleWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                            ScoreMatrix& scoreMatrix) {
         scoreMatrix.addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
                                        prediction.indices_cbegin(), prediction.indices_cend());
+    }
 
-        // Update the gradients and Hessians for the example at the given index...
+    template<typename LabelMatrix, typename StatisticView, typename ScoreMatrix, typename LossFunction>
+    static inline void updateExampleWiseStatisticsInternally(uint32 statisticIndex, const LabelMatrix& labelMatrix,
+                                                             StatisticView& statisticView, ScoreMatrix& scoreMatrix,
+                                                             const LossFunction& lossFunction) {
         lossFunction.updateExampleWiseStatistics(statisticIndex, labelMatrix, scoreMatrix, statisticView);
     }
 
@@ -564,18 +565,18 @@ namespace boosting {
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                applyExampleWisePredictionInternally<CompletePrediction, LabelMatrix, StatisticView, ScoreMatrix,
-                                                     LossFunction>(
-                    statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_, *lossPtr_);
+                applyExampleWisePredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
+                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, *this->statisticViewPtr_,
+                                                      *scoreMatrixPtr_, *lossPtr_);
             }
 
             /**
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                applyExampleWisePredictionInternally<PartialPrediction, LabelMatrix, StatisticView, ScoreMatrix,
-                                                     LossFunction>(
-                    statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_, *scoreMatrixPtr_, *lossPtr_);
+                applyExampleWisePredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
+                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, *this->statisticViewPtr_,
+                                                      *scoreMatrixPtr_, *lossPtr_);
             }
 
             /**

@@ -6,7 +6,7 @@
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_csr_binary.hpp"
 #include "seco/data/confusion_matrix.hpp"
-#include "seco/data/matrix_weight_dense.hpp"
+#include "seco/data/matrix_coverage_dense.hpp"
 
 
 namespace seco {
@@ -109,12 +109,12 @@ namespace seco {
              *                              access to the labels of the training examples
              * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
              *                              of the labels that are relevant to the majority of the training examples
-             * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
-             *                              of individual examples and labels
+             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
+             *                              individual examples and labels have been covered
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
             void add(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                     const VectorConstView<uint32>& majorityLabelIndices, const DenseWeightMatrix& weightMatrix,
+                     const VectorConstView<uint32>& majorityLabelIndices, const DenseCoverageMatrix& coverageMatrix,
                      float64 weight);
 
             /**
@@ -126,12 +126,12 @@ namespace seco {
              *                              access to the labels of the training examples
              * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
              *                              of the labels that are relevant to the majority of the training examples
-             * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
-             *                              of individual examples and labels
+             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
+             *                              individual examples and labels have been covered
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
             void add(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                     const VectorConstView<uint32>& majorityLabelIndices, const DenseWeightMatrix& weightMatrix,
+                     const VectorConstView<uint32>& majorityLabelIndices, const DenseCoverageMatrix& coverageMatrix,
                      float64 weight);
 
             /**
@@ -144,14 +144,15 @@ namespace seco {
              *                              access to the labels of the training examples
              * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
              *                              of the labels that are relevant to the majority of the training examples
-             * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
-             *                              of individual examples and labels
+             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
+             *                              individual examples and labels have been covered
              * @param indices               A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                             const VectorConstView<uint32>& majorityLabelIndices, const DenseWeightMatrix& weightMatrix,
-                             const CompleteIndexVector& indices, float64 weight);
+                             const VectorConstView<uint32>& majorityLabelIndices,
+                             const DenseCoverageMatrix& coverageMatrix, const CompleteIndexVector& indices,
+                             float64 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -163,14 +164,15 @@ namespace seco {
              *                              access to the labels of the training examples
              * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
              *                              of the labels that are relevant to the majority of the training examples
-             * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
-             *                              of individual examples and labels
+             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
+             *                              individual examples and labels have been covered
              * @param indices               A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                             const VectorConstView<uint32>& majorityLabelIndices, const DenseWeightMatrix& weightMatrix,
-                             const CompleteIndexVector& indices, float64 weight);
+                             const VectorConstView<uint32>& majorityLabelIndices,
+                             const DenseCoverageMatrix& coverageMatrix, const CompleteIndexVector& indices,
+                             float64 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -182,14 +184,15 @@ namespace seco {
              *                              access to the labels of the training examples
              * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
              *                              of the labels that are relevant to the majority of the training examples
-             * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
-             *                              of individual examples and labels
+             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
+             *                              individual examples and labels have been covered
              * @param indices               A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                             const VectorConstView<uint32>& majorityLabelIndices, const DenseWeightMatrix& weightMatrix,
-                             const PartialIndexVector& indices, float64 weight);
+                             const VectorConstView<uint32>& majorityLabelIndices,
+                             const DenseCoverageMatrix& coverageMatrix, const PartialIndexVector& indices,
+                             float64 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -201,14 +204,15 @@ namespace seco {
              *                              access to the labels of the training examples
              * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
              *                              of the labels that are relevant to the majority of the training examples
-             * @param weightMatrix          A reference to an object of type `DenseWeightMatrix` that stores the weights
-             *                              of individual examples and labels
+             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
+             *                              individual examples and labels have been covered
              * @param indices               A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight                The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                             const VectorConstView<uint32>& majorityLabelIndices, const DenseWeightMatrix& weightMatrix,
-                             const PartialIndexVector& indices, float64 weight);
+                             const VectorConstView<uint32>& majorityLabelIndices,
+                             const DenseCoverageMatrix& coverageMatrix, const PartialIndexVector& indices,
+                             float64 weight);
 
             /**
              * Sets the confusion matrix elements in this vector to the difference `first - second` between the elements

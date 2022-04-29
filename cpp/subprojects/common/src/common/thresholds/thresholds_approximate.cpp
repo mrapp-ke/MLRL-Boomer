@@ -3,6 +3,7 @@
 #include "thresholds_common.hpp"
 #include <unordered_map>
 
+
 /**
  * An entry that is stored in the cache. It contains the result of a binning method and an unique pointer to an
  * histogram, well as to a vector that stores the weights of individual bins.
