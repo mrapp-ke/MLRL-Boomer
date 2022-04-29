@@ -8,9 +8,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Compile code
+      - name: Compile via GCC
         run: |
           make compile
-      - name: Build documentation
+  macos_build:
+    name: Test MacOS build
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Compile via Clang
         run: |
-          make doc
+          brew install libomp
+          make compile
+  windows_build:
+    name: Test Windows build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Remove conflicting link.exe
+        uses: JesseTG/rm@v1.0.2
+        with:
+          path: C:\Program Files\Git\usr\bin\link.EXE
+      - name: Compile via MSVC
+        run: |
+          make compile
