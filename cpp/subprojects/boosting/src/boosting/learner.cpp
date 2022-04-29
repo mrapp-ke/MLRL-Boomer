@@ -115,8 +115,7 @@ namespace boosting {
 
     IFixedPartialHeadConfig& BoostingRuleLearner::Config::useFixedPartialHeads() {
         std::unique_ptr<FixedPartialHeadConfig> ptr = std::make_unique<FixedPartialHeadConfig>(
-            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
-            l2RegularizationConfigPtr_);
+            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_);
         IFixedPartialHeadConfig& ref = *ptr;
         headConfigPtr_ = std::move(ptr);
         return ref;
