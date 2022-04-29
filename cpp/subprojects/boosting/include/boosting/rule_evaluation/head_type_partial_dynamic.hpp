@@ -89,10 +89,6 @@ namespace boosting {
              * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
              *                                  multi-threading behavior that should be used for the parallel update of
              *                                  statistics
-             * @param l1RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L1
-             *                                  regularization
-             * @param l2RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L2
-             *                                  regularization
              */
             DynamicPartialHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
                                      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
