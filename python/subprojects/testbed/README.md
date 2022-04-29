@@ -17,7 +17,7 @@ Most notably, the package includes command line APIs that allow to configure the
 * **Models can be saved into files** and reloaded for later use.
 * **Parameter tuning can be used** to determine the optimal configuration of an algorithm and write it into a configuration file, which can afterwards be used for training a model.  
 * **[Bootstrap Bias-corrected Cross Validation (BBC-CV)](https://arxiv.org/pdf/1708.07180v2.pdf)** can be used to incorporate parameter tuning and evaluation of an algorithm  in a computationally efficient way.
-* **Textual representations of rule models**, as well as the **characteristics of models or datasets** can be written into output files.
+* **Textual representations of rule models**, as well as the **characteristics of models, datasets or predictions** can be written into output files.
 
 ## License
 
