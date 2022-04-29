@@ -37,7 +37,7 @@ namespace boosting {
             score = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i], l1RegularizationWeight,
                                             l2RegularizationWeight);
             scoreIterator[i] = score;
-            float64 score = std::abs(score);
+            score = std::abs(score);
 
             if (score > maxAbsScore) {
                 maxAbsScore = score;
