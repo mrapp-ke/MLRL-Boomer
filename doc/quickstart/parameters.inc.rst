@@ -183,7 +183,7 @@ The following parameters allow to control the behavior of the algorithm:
 * ``statistic_format`` (Default value ``'auto'``)
 
   * ``'auto'`` The most suitable format for the representation of gradients and Hessians is chosen automatically, depending on the loss function, the type of rule heads, the characteristics of the label matrix and whether a default rule is used or not.
-  * ``'dense'`` A dense format is used for the representation of gradients and Hessians
+  * ``'dense'`` A dense format is used for the representation of gradients and Hessians.
   * ``'sparse'`` A sparse format is used for the representation of gradients and Hessians, if supported by the loss function.
 
 * ``shrinkage`` (Default value = ``0.3``)
