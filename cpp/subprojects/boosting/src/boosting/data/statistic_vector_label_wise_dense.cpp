@@ -64,6 +64,14 @@ namespace boosting {
         addToArray(statistics_, view.row_cbegin(row), numElements_, weight);
     }
 
+    void DenseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticConstView& view, uint32 row) {
+        // TODO Implement
+    }
+
+    void DenseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticConstView& view, uint32 row, float64 weight) {
+        // TODO Implement
+    }
+
     void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
                                                     const CompleteIndexVector& indices, float64 weight) {
         addToArray(statistics_, view.row_cbegin(row), numElements_, weight);
@@ -73,6 +81,16 @@ namespace boosting {
                                                     const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         addToArray(statistics_, view.row_cbegin(row), indexIterator, numElements_, weight);
+    }
+
+    void DenseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
+                                                    const CompleteIndexVector& indices, float64 weight) {
+        // TODO Implement
+    }
+
+    void DenseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
+                                                    const PartialIndexVector& indices, float64 weight) {
+        // TODO Implement
     }
 
     void DenseLabelWiseStatisticVector::difference(const DenseLabelWiseStatisticVector& first,
