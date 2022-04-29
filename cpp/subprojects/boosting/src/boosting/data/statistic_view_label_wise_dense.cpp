@@ -49,4 +49,9 @@ namespace boosting {
         addToArray(&statistics_[offset], begin, numCols_, weight);
     }
 
+    void DenseLabelWiseStatisticView::addToRow(uint32 row, SparseLabelWiseStatisticConstView::const_iterator begin,
+                                               SparseLabelWiseStatisticConstView::const_iterator end, float64 weight) {
+        // TODO Implement
+    }
+
 }

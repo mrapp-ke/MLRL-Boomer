@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/tuple.hpp"
+#include "boosting/data/statistic_view_label_wise_sparse.hpp"
 
 
 namespace boosting {
@@ -130,6 +130,19 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToRow(uint32 row, const_iterator begin, const_iterator end, float64 weight);
+
+            /**
+             * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
+             * to be added are multiplied by a specific weight.
+             *
+             * @param row       The row
+             * @param begin     A `SparseLabelWiseStatisticConstView::const_iterator` to the beginning of the vector
+             * @param end       A `SparseLabelWiseStatisticConstView::const_iterator` to the end of the vector
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
+             */
+            // TODO This function is used when this class is used as a histogram. Maybe we should use a sparse data structure instead
+            void addToRow(uint32 row, SparseLabelWiseStatisticConstView::const_iterator begin,
+                          SparseLabelWiseStatisticConstView::const_iterator end, float64 weight);
 
     };
 
