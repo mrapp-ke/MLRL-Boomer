@@ -1,6 +1,14 @@
 name: 'Test build'
 on:
-  push
+  push:
+    paths:
+      - '**/*.hpp'
+      - '**/*.cpp'
+      - '**/*.pxd'
+      - '**/*.pyx'
+      - '**/*.build'
+      - 'Makefile'
+      - 'python/requirements.txt'
 jobs:
   linux_build:
     name: Test Linux build
