@@ -7,15 +7,14 @@
 #include "common/indices/index_vector_partial.hpp"
 #include "boosting/data/statistic_view_label_wise_dense.hpp"
 #include "boosting/data/statistic_view_label_wise_sparse.hpp"
-#include <memory>
 
 
 namespace boosting {
 
     /**
-     * An one-dimensional vector that stores gradients and Hessians that have been calculated using a label-wise
-     * decomposable loss function in C-contiguous arrays. For each element in the vector a single gradient and Hessian
-     * is stored.
+     * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
+     * label-wise decomposable loss function in a C-contiguous array. For each element in the vector a single gradient
+     * and Hessian is stored.
      */
     class DenseLabelWiseStatisticVector final {
 
