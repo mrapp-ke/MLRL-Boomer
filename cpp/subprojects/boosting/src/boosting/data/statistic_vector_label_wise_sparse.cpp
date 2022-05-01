@@ -1,6 +1,7 @@
 #include "boosting/data/statistic_vector_label_wise_sparse.hpp"
 #include "common/data/arrays.hpp"
 #include <cstdlib>
+#include <iostream>  // TODO Remove
 
 
 namespace boosting {
@@ -43,37 +44,51 @@ namespace boosting {
 
     void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticVector& vector) {
         // TODO Implement
+        std::cout << "SparseLabelWiseStatisticVector::add(SparseLabelWiseStatisticVector)\n";
+        std::exit(-1);
     }
 
     void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticConstView& view, uint32 row) {
         // TODO Implement
+        std::cout << "SparseLabelWiseStatisticVector::add(SparseLabelWiseStatisticConstView)\n";
+        std::exit(-1);
     }
 
     void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticConstView& view, uint32 row,
                                              float64 weight) {
         // TODO Implement
+        std::cout << "SparseLabelWiseStatisticVector::add(SparseLabelWiseStatisticConstView, weight)\n";
+        std::exit(-1);
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
                                                      const CompleteIndexVector& indices, float64 weight) {
         // TODO Implement
+        std::cout << "SparseLabelWiseStatisticVector::addToSubset(CompleteIndexVector)\n";
+        std::exit(-1);
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
                                                      const PartialIndexVector& indices, float64 weight) {
         // TODO Implement
+        std::cout << "SparseLabelWiseStatisticVector::addToSubset(PartialIndexVector)\n";
+        std::exit(-1);
     }
 
     void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
                                                     const CompleteIndexVector& firstIndices,
                                                     const SparseLabelWiseStatisticVector& second) {
         // TODO Implement
+        std::cout << "SparseLabelWiseStatisticVector::difference(CompleteIndexVector)\n";
+        std::exit(-1);
     }
 
     void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
                                                     const PartialIndexVector& firstIndices,
                                                     const SparseLabelWiseStatisticVector& second) {
         // TODO Implement
+        std::cout << "SparseLabelWiseStatisticVector::difference(PartialIndexVector)\n";
+        std::exit(-1);
     }
 
 }
