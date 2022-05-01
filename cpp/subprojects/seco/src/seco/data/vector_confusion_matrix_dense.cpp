@@ -154,8 +154,8 @@ namespace seco {
                                                              majorityLabelIndices.cend());
         typename DenseCoverageMatrix::value_const_iterator coverageIterator =
             coverageMatrix.row_values_cbegin(exampleIndex);
-        auto labelIterator = make_binary_forward_iterator(labelMatrix.row_indices_cbegin(exampleIndex),
-                                                          labelMatrix.row_indices_cend(exampleIndex));
+        BinaryCsrConstView::index_const_iterator labelIndexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
+        BinaryCsrConstView::index_const_iterator labelIndicesEnd = labelMatrix.row_indices_cend(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
         uint32 previousIndex = 0;
@@ -165,8 +165,8 @@ namespace seco {
             uint32 coverage = coverageIterator[index];
 
             if (coverage == 0) {
-                std::advance(labelIterator, index - previousIndex);
-                bool trueLabel = *labelIterator;
+                labelIndexIterator = std::lower_bound(labelIndexIterator, labelIndicesEnd, index);
+                bool trueLabel = labelIndexIterator != labelIndicesEnd && *labelIndexIterator == index;
                 std::advance(majorityIterator, index - previousIndex);
                 bool majorityLabel = *majorityIterator;
                 ConfusionMatrix& confusionMatrix = array_[i];
