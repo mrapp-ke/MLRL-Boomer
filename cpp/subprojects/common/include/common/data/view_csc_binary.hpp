@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/data/view_two_dimensional.hpp"
-#include "common/iterator/binary_forward_iterator.hpp"
 
 
 /**
@@ -55,11 +54,6 @@ class BinaryCscConstView : virtual public ITwoDimensionalView {
         typedef const uint32* index_const_iterator;
 
         /**
-         * An iterator that provides read-only access to the values in the view.
-         */
-        typedef BinaryForwardIterator<index_const_iterator> value_const_iterator;
-
-        /**
          * Returns an `index_const_iterator` to the beginning of the indices at a specific column.
          *
          * @param col   The column
@@ -74,22 +68,6 @@ class BinaryCscConstView : virtual public ITwoDimensionalView {
          * @return      An `index_const_iterator` to the end of the indices
          */
         index_const_iterator column_indices_cend(uint32 col) const;
-
-        /**
-         * Returns a `value_const_iterator` to the beginning of the values at a specific column.
-         *
-         * @param col   The column
-         * @return      A `value_const_iterator` to the beginning of the values
-         */
-        value_const_iterator column_values_cbegin(uint32 col) const;
-
-        /**
-         * Returns a `value_const_iterator` to the end of the values at a specific column.
-         *
-         * @param col   The column
-         * @return      A `value_const_iterator` to the end of the values
-         */
-        value_const_iterator column_values_cend(uint32 col) const;
 
         /**
          * Returns the number of non-zero elements in the view.
