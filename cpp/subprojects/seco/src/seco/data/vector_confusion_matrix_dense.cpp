@@ -1,6 +1,7 @@
 #include "seco/data/vector_confusion_matrix_dense.hpp"
 #include "common/data/arrays.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
+#include <algorithm>
 #include <cstdlib>
 
 
