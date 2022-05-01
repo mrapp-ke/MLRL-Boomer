@@ -5,6 +5,7 @@
 #pragma once
 
 #include "common/rule_evaluation/score_vector_dense.hpp"
+#include "common/iterator/binary_forward_iterator.hpp"
 #include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
 
 
