@@ -88,10 +88,6 @@ namespace boosting {
 
             const T& labelIndices_;
 
-            PartialIndexVector indexVector_;
-
-            DenseScoreVector<PartialIndexVector> scoreVector_;
-
             float64 l1RegularizationWeight_;
 
             float64 l2RegularizationWeight_;
@@ -117,7 +113,6 @@ namespace boosting {
                 // TODO Implement
                 std::cout << "SparseLabelWiseSingleLabelRuleEvaluation::calculatePrediction()\n";
                 std::exit(-1);
-                return nullptr;
             }
 
     };
