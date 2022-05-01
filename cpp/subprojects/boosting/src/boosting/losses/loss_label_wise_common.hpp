@@ -1,5 +1,7 @@
 #include "boosting/losses/loss_label_wise.hpp"
+#include "common/iterator/binary_forward_iterator.hpp"
 #include "common/math/math.hpp"
+#include <algorithm>
 
 
 namespace boosting {
@@ -94,7 +96,8 @@ namespace boosting {
                 DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
                 CContiguousConstView<float64>::value_const_iterator scoreIterator =
                     scoreMatrix.row_values_cbegin(exampleIndex);
-                BinaryCsrConstView::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
+                auto labelIterator = make_binary_forward_iterator(labelMatrix.row_indices_cbegin(exampleIndex),
+                                                                  labelMatrix.row_indices_cend(exampleIndex));
                 uint32 numLabels = labelMatrix.getNumCols();
 
                 for (uint32 i = 0; i < numLabels; i++) {
@@ -114,18 +117,17 @@ namespace boosting {
                 DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.row_begin(exampleIndex);
                 CContiguousConstView<float64>::value_const_iterator scoreIterator =
                     scoreMatrix.row_values_cbegin(exampleIndex);
-                BinaryCsrConstView::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
+                BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
+                BinaryCsrConstView::index_const_iterator indicesEnd = labelMatrix.row_indices_cend(exampleIndex);
                 uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
-                uint32 previousLabelIndex = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {
                     uint32 labelIndex = labelIndicesBegin[i];
-                    std::advance(labelIterator, labelIndex - previousLabelIndex);
-                    bool trueLabel = *labelIterator;
+                    indexIterator = std::lower_bound(indexIterator, indicesEnd, labelIndex);
+                    bool trueLabel = indexIterator != indicesEnd && *indexIterator == labelIndex;
                     float64 predictedScore = scoreIterator[labelIndex];
                     Tuple<float64>& tuple = statisticIterator[labelIndex];
                     (*updateFunction_)(trueLabel, predictedScore, &(tuple.first), &(tuple.second));
-                    previousLabelIndex = labelIndex;
                 }
             }
 
@@ -158,7 +160,8 @@ namespace boosting {
                              const CContiguousConstView<float64>& scoreMatrix) const override {
                 CContiguousConstView<float64>::value_const_iterator scoreIterator =
                     scoreMatrix.row_values_cbegin(exampleIndex);
-                BinaryCsrConstView::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
+                auto labelIterator = make_binary_forward_iterator(labelMatrix.row_indices_cbegin(exampleIndex),
+                                                                  labelMatrix.row_indices_cend(exampleIndex));
                 uint32 numLabels = labelMatrix.getNumCols();
                 float64 mean = 0;
 
