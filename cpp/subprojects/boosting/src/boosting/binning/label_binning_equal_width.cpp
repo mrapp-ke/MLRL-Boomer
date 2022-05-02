@@ -218,7 +218,7 @@ namespace boosting {
             l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::createLabelWiseFixedPartialRuleEvaluationFactory(
+    std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::createLabelWiseFixedPartialRuleEvaluationFactory(
             float32 labelRatio, uint32 minLabels, uint32 maxLabels) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
@@ -229,7 +229,7 @@ namespace boosting {
             std::move(labelBinningFactoryPtr));
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(
+    std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> EqualWidthLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(
             float32 threshold, float32 exponent) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
