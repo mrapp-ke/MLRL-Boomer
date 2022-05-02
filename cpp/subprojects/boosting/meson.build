@@ -6,6 +6,7 @@ source_files = [
     'src/boosting/binning/label_binning_auto.cpp',
     'src/boosting/binning/label_binning_equal_width.cpp',
     'src/boosting/binning/label_binning_no.cpp',
+    'src/boosting/data/histogram_view_label_wise_sparse.cpp',
     'src/boosting/data/matrix_dense_numeric.cpp',
     'src/boosting/data/matrix_lil_numeric.cpp',
     'src/boosting/data/statistic_vector_example_wise_dense.cpp',
