@@ -26,7 +26,7 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             SparseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
-                : SparseLabelWiseStatisticView(numCols, new LilMatrix<Tuple<float64>>(numRows)) {
+                : SparseLabelWiseStatisticView(numCols, new LilMatrix<Tuple<float64>>(numRows, numCols)) {
 
             }
 
@@ -103,7 +103,7 @@ namespace boosting {
         std::unique_ptr<SparseLabelWiseStatisticMatrix> statisticMatrixPtr =
             std::make_unique<SparseLabelWiseStatisticMatrix>(numExamples, numLabels);
         std::unique_ptr<NumericLilMatrix<float64>> scoreMatrixPtr =
-            std::make_unique<NumericLilMatrix<float64>>(numExamples);
+            std::make_unique<NumericLilMatrix<float64>>(numExamples, numLabels);
         const ISparseLabelWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const LilMatrix<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();

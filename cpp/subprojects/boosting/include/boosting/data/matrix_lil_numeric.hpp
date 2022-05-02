@@ -22,9 +22,10 @@ namespace boosting {
         public:
 
             /**
-             * @param numRows The number of rows in the matrix
+             * @param numRows   The number of rows in the matrix
+             * @param numCols   The number of columns in the matrix
              */
-            NumericLilMatrix(uint32 numRows);
+            NumericLilMatrix(uint32 numRows, uint32 numCols);
 
             /**
              * Adds all values in another vector to certain elements, whose positions are given as a
