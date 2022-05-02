@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/indexed_value.hpp"
+#include "common/data/vector_sparse_unordered.hpp"
 #include <vector>
 
 
@@ -20,22 +20,19 @@ class LilMatrix {
         /**
          * The type of a row in the matrix.
          */
-        typedef std::vector<IndexedValue<T>> Row;
+        typedef SparseUnorderedVector<T> Row;
 
     private:
 
-        uint32 numRows_;
-
-        Row* array_;
+        std::vector<Row> rows_;
 
     public:
 
         /**
-         * @param numRows The number of rows in the matrix
+         * @param numRows   The number of rows in the matrix
+         * @param numCols   The number of columns in the matrix
          */
-        LilMatrix(uint32 numRows);
-
-        virtual ~LilMatrix();
+        LilMatrix(uint32 numRows, uint32 numCols);
 
         /**
          * An iterator that provides access to the elements at a row and allows to modify them.
