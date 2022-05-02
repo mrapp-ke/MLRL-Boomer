@@ -9,8 +9,8 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the class `ILabelWiseRuleEvaluationFactory` that allow to calculate the predictions
-     * of single-label rules, which predict for a single label.
+     * Allows to create instances of the class `ISparseLabelWiseRuleEvaluationFactory` that allow to calculate the
+     * predictions of single-label rules, which predict for a single label.
      */
     class LabelWiseSingleLabelRuleEvaluationFactory final : public ISparseLabelWiseRuleEvaluationFactory {
 
