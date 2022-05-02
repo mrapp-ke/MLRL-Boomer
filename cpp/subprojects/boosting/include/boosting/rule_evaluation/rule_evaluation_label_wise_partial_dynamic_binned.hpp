@@ -3,18 +3,18 @@
  */
 #pragma once
 
-#include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
 #include "boosting/binning/label_binning.hpp"
 
 
 namespace boosting {
 
     /**
-     * Allows to create instances of the class `ILabelWiseRuleEvaluationFactory` that allow to calculate the predictions
-     * of partial rules, which predict for a subset of the available labels that is determined dynamically, using
-     * gradient-based label binning.
+     * Allows to create instances of the class `ISparseLabelWiseRuleEvaluationFactory` that allow to calculate the
+     * predictions of partial rules, which predict for a subset of the available labels that is determined dynamically,
+     * using gradient-based label binning.
      */
-    class LabelWiseDynamicPartialBinnedRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
+    class LabelWiseDynamicPartialBinnedRuleEvaluationFactory final : public ISparseLabelWiseRuleEvaluationFactory {
 
         private:
 
@@ -59,6 +59,14 @@ namespace boosting {
 
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
                 const DenseLabelWiseStatisticVector& statisticVector,
+                const PartialIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
+                const SparseLabelWiseStatisticVector& statisticVector,
+                const CompleteIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
+                const SparseLabelWiseStatisticVector& statisticVector,
                 const PartialIndexVector& indexVector) const override;
 
     };
