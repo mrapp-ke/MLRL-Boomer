@@ -2,7 +2,6 @@
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
 #include <cstdlib>
-#include <iostream>  // TODO Remove
 
 
 namespace boosting {
@@ -65,18 +64,6 @@ namespace boosting {
         addToArray(statistics_, view.row_cbegin(row), numElements_, weight);
     }
 
-    void DenseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticConstView& view, uint32 row) {
-        // TODO Implement
-        std::cout << "DenseLabelWiseStatisticVector::add(SparseLabelWiseStatisticConstView)\n";
-        std::exit(-1);
-    }
-
-    void DenseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticConstView& view, uint32 row, float64 weight) {
-        // TODO Implement
-        std::cout << "DenseLabelWiseStatisticVector::add(SparseLabelWiseStatisticConstView, weight)\n";
-        std::exit(-1);
-    }
-
     void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
                                                     const CompleteIndexVector& indices, float64 weight) {
         addToArray(statistics_, view.row_cbegin(row), numElements_, weight);
@@ -86,20 +73,6 @@ namespace boosting {
                                                     const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         addToArray(statistics_, view.row_cbegin(row), indexIterator, numElements_, weight);
-    }
-
-    void DenseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
-                                                    const CompleteIndexVector& indices, float64 weight) {
-        // TODO Implement
-        std::cout << "DenseLabelWiseStatisticVector::addToSubset(SparseLabelWiseStatisticConstView, CompleteIndexVector)\n";
-        std::exit(-1);
-    }
-
-    void DenseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
-                                                    const PartialIndexVector& indices, float64 weight) {
-        // TODO Implement
-        std::cout << "DenseLabelWiseStatisticVector::addToSubset(SparseLabelWiseStatisticConstView, PartialIndexVector)\n";
-        std::exit(-1);
     }
 
     void DenseLabelWiseStatisticVector::difference(const DenseLabelWiseStatisticVector& first,
