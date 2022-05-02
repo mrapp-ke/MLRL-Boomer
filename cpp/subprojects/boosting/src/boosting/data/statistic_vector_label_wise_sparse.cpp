@@ -75,6 +75,20 @@ namespace boosting {
         std::exit(-1);
     }
 
+    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
+                                                     const CompleteIndexVector& indices, float64 weight) {
+        // TODO Implement
+        std::cout << "SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseHistogramConstView, CompleteIndexVector)\n";
+        std::exit(-1);
+    }
+
+    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
+                                                     const PartialIndexVector& indices, float64 weight) {
+        // TODO Implement
+        std::cout << "SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseHistogramConstView, PartialIndexVector)\n";
+        std::exit(-1);
+    }
+
     void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
                                                     const CompleteIndexVector& firstIndices,
                                                     const SparseLabelWiseStatisticVector& second) {
