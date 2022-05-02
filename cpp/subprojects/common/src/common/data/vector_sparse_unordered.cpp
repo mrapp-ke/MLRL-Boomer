@@ -1,6 +1,7 @@
 #include "common/data/vector_sparse_unordered.hpp"
 #include "common/data/arrays.hpp"
 #include "common/data/tuple.hpp"
+#include "common/data/triple.hpp"
 
 
 template<typename T>
@@ -89,3 +90,7 @@ template class SparseUnorderedVector<Tuple<uint8>>;
 template class SparseUnorderedVector<Tuple<uint32>>;
 template class SparseUnorderedVector<Tuple<float32>>;
 template class SparseUnorderedVector<Tuple<float64>>;
+template class SparseUnorderedVector<Triple<uint8>>;
+template class SparseUnorderedVector<Triple<uint32>>;
+template class SparseUnorderedVector<Triple<float32>>;
+template class SparseUnorderedVector<Triple<float64>>;

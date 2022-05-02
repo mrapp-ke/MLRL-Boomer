@@ -1,5 +1,6 @@
 #include "common/data/matrix_lil.hpp"
 #include "common/data/tuple.hpp"
+#include "common/data/triple.hpp"
 
 
 template<typename T>
@@ -58,3 +59,7 @@ template class LilMatrix<Tuple<uint8>>;
 template class LilMatrix<Tuple<uint32>>;
 template class LilMatrix<Tuple<float32>>;
 template class LilMatrix<Tuple<float64>>;
+template class LilMatrix<Triple<uint8>>;
+template class LilMatrix<Triple<uint32>>;
+template class LilMatrix<Triple<float32>>;
+template class LilMatrix<Triple<float64>>;
