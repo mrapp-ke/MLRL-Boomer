@@ -8,7 +8,6 @@
 #include "common/indices/index_vector_partial.hpp"
 #include "boosting/data/histogram_view_label_wise_sparse.hpp"
 #include "boosting/data/statistic_view_label_wise_sparse.hpp"
-#include <memory>
 
 
 namespace boosting {
