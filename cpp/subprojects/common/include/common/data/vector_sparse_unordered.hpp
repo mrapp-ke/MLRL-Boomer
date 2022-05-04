@@ -25,9 +25,7 @@ class SparseUnorderedVector final {
 
         std::vector<IndexedValue<T>> values_;
 
-        IndexedValue<T>** ptrs_;
-
-        uint32 maxElements_;
+        uint32* indices_;
 
     public:
 
@@ -84,20 +82,32 @@ class SparseUnorderedVector final {
         uint32 getNumElements() const;
 
         /**
-         * Returns the maximum number of elements in the vector.
+         * Returns a pointer to the element that corresponds to a specific index.
          *
-         * @return The maximum number of elements in the vector
+         * @param index The index of the element to be returned
+         * @return      A pointer to the element that corresponds to the given index or a null pointer, if no such
+         *              element is available
          */
-        uint32 getMaxElements() const;
+        const IndexedValue<T>* operator[](uint32 index) const;
 
         /**
          * Returns a reference to the element that corresponds to a specific index. If no such element is available, it
          * is inserted into the vector.
          *
          * @param index The index of the element to be returned
-         * @return      A reference to the element that correspond to the given index
+         * @return      A reference to the element that corresponds to the given index
          */
-        IndexedValue<T>& operator[](uint32 index);
+        IndexedValue<T>& emplace(uint32 index);
+
+        /**
+         * Returns a reference to the element that corresponds to a specific index. If no such element is available, it
+         * is inserted into the vector using a specific default value.
+         *
+         * @param index         The index of the element to be returned
+         * @param defaultValue  The default value to be used
+         * @return              A reference to the element that corresponds to the given index
+         */
+        IndexedValue<T>& emplace(uint32 index, const T& defaultValue);
 
         /**
          * Removes the element that corresponds to a specific index, if available.
