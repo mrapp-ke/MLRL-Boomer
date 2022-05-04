@@ -11,15 +11,16 @@ namespace boosting {
      * determined dynamically, as well as an overall quality score, based on the gradients and Hessians that are stored
      * by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization.
      *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
+     *                     calculated
      */
-    template<typename T>
+    template<typename IndexVector>
     class DenseExampleWiseDynamicPartialRuleEvaluation final :
-            public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T> {
+            public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
 
         private:
 
-            const T& labelIndices_;
+            const IndexVector& labelIndices_;
 
             PartialIndexVector indexVector_;
 
@@ -40,8 +41,8 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `T` that provides access to
-             *                                  the indices of the labels for which the rules may predict
+             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the labels for which the rules may predict
              * @param threshold                 A threshold that affects for how many labels the rule heads should
              *                                  predict
              * @param exponent                  An exponent that is used to weigh the estimated predictive quality for
@@ -55,11 +56,12 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            DenseExampleWiseDynamicPartialRuleEvaluation(const T& labelIndices, float32 threshold, float32 exponent,
-                                                         float64 l1RegularizationWeight, float64 l2RegularizationWeight,
-                                                         const Blas& blas, const Lapack& lapack)
-                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices.getNumElements(),
-                                                                                        lapack),
+            DenseExampleWiseDynamicPartialRuleEvaluation(const IndexVector& labelIndices, float32 threshold,
+                                                         float32 exponent, float64 l1RegularizationWeight,
+                                                         float64 l2RegularizationWeight, const Blas& blas,
+                                                         const Lapack& lapack)
+                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(
+                      labelIndices.getNumElements(), lapack),
                   labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, true)), threshold_(1.0 - threshold),
                   exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
@@ -73,7 +75,7 @@ namespace boosting {
                     statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                     statisticVector.hessians_diagonal_cbegin();
-                typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                typename DenseScoreVector<IndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 const std::pair<float64, float64> pair = getMinAndMaxScore(scoreIterator, gradientIterator,
                                                                            hessianIterator, numLabels,
                                                                            l1RegularizationWeight_,
@@ -84,7 +86,7 @@ namespace boosting {
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {

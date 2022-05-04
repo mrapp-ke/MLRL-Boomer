@@ -11,15 +11,16 @@ namespace boosting {
      * by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization. The labels are assigned to bins based on
      * the gradients and Hessians.
      *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
+     *                     calculated
      */
-    template<typename T>
+    template<typename IndexVector>
     class DenseExampleWiseDynamicPartialBinnedRuleEvaluation final :
             public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector> {
 
         private:
 
-            const T& labelIndices_;
+            const IndexVector& labelIndices_;
 
             std::unique_ptr<PartialIndexVector> indexVectorPtr_;
 
@@ -44,7 +45,7 @@ namespace boosting {
                 float64 minAbsScore = pair.first;
                 float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
-                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {
@@ -64,8 +65,8 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `T` that provides access to
-             *                                  the indices of the labels for which the rules may predict
+             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the labels for which the rules may predict
              * @param maxBins                   The maximum number of bins
              * @param indexVectorPtr            An unique pointer to an object of type `PartialIndexVector` that stores
              *                                  the indices of the labels for which a rule predicts
@@ -84,7 +85,7 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            DenseExampleWiseDynamicPartialBinnedRuleEvaluation(const T& labelIndices, uint32 maxBins,
+            DenseExampleWiseDynamicPartialBinnedRuleEvaluation(const IndexVector& labelIndices, uint32 maxBins,
                                                                std::unique_ptr<PartialIndexVector> indexVectorPtr,
                                                                float32 threshold, float32 exponent,
                                                                float64 l1RegularizationWeight,

@@ -9,14 +9,15 @@ namespace boosting {
      * Allows to calculate the predictions of single-label rules, as well as an overall quality score, based on the
      * gradients and Hessians that are stored by a `DenseLabelWiseStatisticVector` using L1 and L2 regularization.
      *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
+     *                     calculated
      */
-    template<typename T>
+    template<typename IndexVector>
     class DenseLabelWiseSingleLabelRuleEvaluation final : public IRuleEvaluation<DenseLabelWiseStatisticVector> {
 
         private:
 
-            const T& labelIndices_;
+            const IndexVector& labelIndices_;
 
             PartialIndexVector indexVector_;
 
@@ -29,14 +30,14 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `T` that provides access to
-             *                                  the indices of the labels for which the rules may predict
+             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the labels for which the rules may predict
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DenseLabelWiseSingleLabelRuleEvaluation(const T& labelIndices, float64 l1RegularizationWeight,
+            DenseLabelWiseSingleLabelRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
                                                     float64 l2RegularizationWeight)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(1)),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, true)),

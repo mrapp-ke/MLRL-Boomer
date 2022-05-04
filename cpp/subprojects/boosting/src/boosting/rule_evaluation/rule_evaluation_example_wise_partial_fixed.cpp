@@ -11,15 +11,16 @@ namespace boosting {
      * an overall quality score, based on the gradients and Hessians that are stored by a
      * `DenseExampleWiseStatisticVector` using L1 and L2 regularization.
      *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
+     *                     calculated
      */
-    template<typename T>
+    template<typename IndexVector>
     class DenseExampleWiseFixedPartialRuleEvaluation final :
-            public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T> {
+            public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
 
         private:
 
-            const T& labelIndices_;
+            const IndexVector& labelIndices_;
 
             PartialIndexVector indexVector_;
 
@@ -38,8 +39,8 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `T` that provides access to
-             *                                  the indices of the labels for which the rules may predict
+             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the labels for which the rules may predict
              * @param numPredictions            The number of labels for which the rules should predict
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
@@ -50,10 +51,11 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            DenseExampleWiseFixedPartialRuleEvaluation(const T& labelIndices, uint32 numPredictions,
+            DenseExampleWiseFixedPartialRuleEvaluation(const IndexVector& labelIndices, uint32 numPredictions,
                                                        float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                                                        const Blas& blas, const Lapack& lapack)
-                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(numPredictions, lapack),
+                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(numPredictions,
+                                                                                                  lapack),
                   labelIndices_(labelIndices), indexVector_(PartialIndexVector(numPredictions)),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
@@ -74,8 +76,8 @@ namespace boosting {
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                typename DenseScoreVector<IndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
 
                 for (uint32 i = 0; i < numPredictions; i++) {
                     const IndexedValue<float64>& entry = tmpIterator[i];
