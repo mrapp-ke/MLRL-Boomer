@@ -5,49 +5,61 @@
 
 template<typename T>
 LilMatrix<T>::LilMatrix(uint32 numRows, uint32 numCols)
-    : rows_(std::vector<Row>(numRows, Row(numCols))) {
+    : numRows_(numRows), rows_(new Row*[numRows]) {
+    for (uint32 i = 0; i < numRows; i++) {
+        rows_[i] = new Row(numCols);
+    }
+}
 
+template<typename T>
+LilMatrix<T>::~LilMatrix() {
+    for (uint32 i = 0; i < numRows_; i++) {
+        Row* row = rows_[i];
+        delete row;
+    }
+
+    delete[] rows_;
 }
 
 template<typename T>
 typename LilMatrix<T>::iterator LilMatrix<T>::row_begin(uint32 row) {
-    return rows_[row].begin();
+    return rows_[row]->begin();
 }
 
 template<typename T>
 typename LilMatrix<T>::iterator LilMatrix<T>::row_end(uint32 row) {
-    return rows_[row].end();
+    return rows_[row]->end();
 }
 
 template<typename T>
 typename LilMatrix<T>::const_iterator LilMatrix<T>::row_cbegin(uint32 row) const {
-    return rows_[row].cbegin();
+    return rows_[row]->cbegin();
 }
 
 template<typename T>
 typename LilMatrix<T>::const_iterator LilMatrix<T>::row_cend(uint32 row) const {
-    return rows_[row].cend();
+    return rows_[row]->cend();
 }
 
 template<typename T>
 typename LilMatrix<T>::Row& LilMatrix<T>::getRow(uint32 row) {
-    return rows_[row];
+    return *rows_[row];
 }
 
 template<typename T>
 const typename LilMatrix<T>::Row& LilMatrix<T>::getRow(uint32 row) const {
-    return rows_[row];
+    return *rows_[row];
 }
 
 template<typename T>
 uint32 LilMatrix<T>::getNumRows() const {
-    return (uint32) rows_.size();
+    return numRows_;
 }
 
 template<typename T>
 void LilMatrix<T>::clear() {
-    for (typename std::vector<Row>::size_type i = 0; i < rows_.size(); i++) {
-        rows_[i].clear();
+    for (uint32 i = 0; i < numRows_; i++) {
+        rows_[i]->clear();
     }
 }
 

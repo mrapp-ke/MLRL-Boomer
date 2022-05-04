@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/data/vector_sparse_unordered.hpp"
-#include <vector>
 
 
 /**
@@ -24,7 +23,9 @@ class LilMatrix {
 
     private:
 
-        std::vector<Row> rows_;
+        uint32 numRows_;
+
+        Row** rows_;
 
     public:
 
@@ -33,6 +34,8 @@ class LilMatrix {
          * @param numCols   The number of columns in the matrix
          */
         LilMatrix(uint32 numRows, uint32 numCols);
+
+        virtual ~LilMatrix();
 
         /**
          * An iterator that provides access to the elements at a row and allows to modify them.
