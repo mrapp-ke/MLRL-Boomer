@@ -2,17 +2,20 @@
 #include "common/data/arrays.hpp"
 #include "common/data/tuple.hpp"
 #include "common/data/triple.hpp"
+#include <limits>
 
+
+static const uint32 MAX_INDEX = std::numeric_limits<uint32>::max();
 
 template<typename T>
 SparseUnorderedVector<T>::SparseUnorderedVector(uint32 maxElements)
-    : ptrs_(new IndexedValue<T>*[maxElements] {}), maxElements_(maxElements) {
-
+    : indices_(new uint32[maxElements]) {
+    setArrayToValue(indices_, maxElements, MAX_INDEX);
 }
 
 template<typename T>
 SparseUnorderedVector<T>::~SparseUnorderedVector() {
-    delete[] ptrs_;
+    delete[] indices_;
 }
 
 template<typename T>
@@ -41,45 +44,62 @@ uint32 SparseUnorderedVector<T>::getNumElements() const {
 }
 
 template<typename T>
-uint32 SparseUnorderedVector<T>::getMaxElements() const {
-    return maxElements_;
+const IndexedValue<T>* SparseUnorderedVector<T>::operator[](uint32 index) const {
+    uint32 i = indices_[index];
+    return i == MAX_INDEX ? nullptr : &values_[i];
 }
 
 template<typename T>
-IndexedValue<T>& SparseUnorderedVector<T>::operator[](uint32 index) {
-    IndexedValue<T>* ptr = ptrs_[index];
+IndexedValue<T>& SparseUnorderedVector<T>::emplace(uint32 index) {
+    uint32 i = indices_[index];
 
-    if (!ptr) {
+    if (i == MAX_INDEX) {
+        indices_[index] = (uint32) values_.size();
         values_.emplace_back(index);
-        ptr = &values_.back();
-        ptrs_[index] = ptr;
+        return values_.back();
     }
 
-    return *ptr;
+    return values_[i];
+}
+
+template<typename T>
+IndexedValue<T>& SparseUnorderedVector<T>::emplace(uint32 index, const T& defaultValue) {
+    uint32 i = indices_[index];
+
+    if (i == MAX_INDEX) {
+        indices_[index] = (uint32) values_.size();
+        values_.emplace_back(index, defaultValue);
+        return values_.back();
+    }
+
+    return values_[i];
 }
 
 template<typename T>
 void SparseUnorderedVector<T>::erase(uint32 index) {
-    IndexedValue<T>* ptr = ptrs_[index];
+    uint32 i = indices_[index];
 
-    if (ptr) {
+    if (i != MAX_INDEX) {
         const IndexedValue<T>& lastEntry = values_.back();
         uint32 lastIndex = lastEntry.index;
 
         if (lastIndex != index) {
-            *ptr = lastEntry;
-            ptrs_[lastIndex] = ptr;
+            values_[i] = lastEntry;
+            indices_[lastIndex] = i;
         }
 
-        ptrs_[index] = nullptr;
-        values_.resize(values_.size() - 1);
+        indices_[index] = MAX_INDEX;
+        values_.pop_back();
     }
 }
 
 template<typename T>
 void SparseUnorderedVector<T>::clear() {
-    setArrayToValue<IndexedValue<T>*>(ptrs_, maxElements_, nullptr);
-    values_.clear();
+    while (!values_.empty()) {
+        const IndexedValue<T>& lastEntry = values_.back();
+        indices_[lastEntry.index] = MAX_INDEX;
+        values_.pop_back();
+    }
 }
 
 template class SparseUnorderedVector<uint8>;
