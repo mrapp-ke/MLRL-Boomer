@@ -62,6 +62,7 @@ class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
 
                 /**
                  * Returns the element at a specific index.
+                 *
                  * @param index The index of the element to be returned
                  * @return      The element at the given index
                  */
