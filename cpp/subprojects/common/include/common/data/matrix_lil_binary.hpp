@@ -80,7 +80,7 @@ class BinaryLilMatrix final {
         /**
          * Returns a reference to a specific row.
          *
-         * @param row   The row
+         * @param row   The index of the row to be returned
          * @return      A reference to the row
          */
         Row& getRow(uint32 row);
@@ -88,7 +88,7 @@ class BinaryLilMatrix final {
         /**
          * Returns a const reference to a specific row.
          *
-         * @param row   The row
+         * @param row   The index of the row to be returned
          * @return      A const reference to the row
          */
         const Row& getRow(uint32 row) const;
