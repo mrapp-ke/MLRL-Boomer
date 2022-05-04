@@ -70,12 +70,12 @@ namespace boosting {
             const_iterator row_cend(uint32 row) const;
 
             /**
-             * Returns a const reference to a specific row.
+             * Returns a specific row.
              *
-             * @param row   The row
-             * @return      A const reference to the row
+             * @param row   The index of the row to be returned
+             * @return      The row
              */
-            const Row& getRow(uint32 row) const;
+            const Row getRow(uint32 row) const;
 
             /**
              * Returns the weight of a specific row.
@@ -119,12 +119,12 @@ namespace boosting {
                                          DenseVector<float64>* weights);
 
             /**
-             * Returns a reference to a specific row.
+             * Returns a specific row.
              *
-             * @param row   The row
-             * @return      A reference to the row
+             * @param row   The index of the row to be returned
+             * @return      The row
              */
-            Row& getRow(uint32 row);
+            Row getRow(uint32 row);
 
             /**
              * Sets all gradients and Hessians in the matrix to zero.

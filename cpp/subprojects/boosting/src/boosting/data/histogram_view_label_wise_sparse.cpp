@@ -13,14 +13,14 @@ namespace boosting {
     }
 
     SparseLabelWiseHistogramConstView::const_iterator SparseLabelWiseHistogramConstView::row_cbegin(uint32 row) const {
-        return histogram_->getRow(row).cbegin();
+        return histogram_->row_cbegin(row);
     }
 
     SparseLabelWiseHistogramConstView::const_iterator SparseLabelWiseHistogramConstView::row_cend(uint32 row) const {
-        return histogram_->getRow(row).cend();
+        return histogram_->row_cend(row);
     }
 
-    const SparseLabelWiseHistogramConstView::Row& SparseLabelWiseHistogramConstView::getRow(uint32 row) const {
+    const SparseLabelWiseHistogramConstView::Row SparseLabelWiseHistogramConstView::getRow(uint32 row) const {
         return histogram_->getRow(row);
     }
 
@@ -42,7 +42,7 @@ namespace boosting {
 
     }
 
-    SparseLabelWiseHistogramView::Row& SparseLabelWiseHistogramView::getRow(uint32 row) {
+    SparseLabelWiseHistogramView::Row SparseLabelWiseHistogramView::getRow(uint32 row) {
         return histogram_->getRow(row);
     }
 
