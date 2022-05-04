@@ -179,17 +179,18 @@ namespace boosting {
      * applied example-wise and using gradient-based label binning.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
-     * @tparam T                The type of the vector that provides access to the labels for which predictions should
+     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
      *                          be calculated
      */
-    template<typename StatisticVector, typename T>
-    class AbstractExampleWiseBinnedRuleEvaluation : public AbstractExampleWiseRuleEvaluation<StatisticVector, T> {
+    template<typename StatisticVector, typename IndexVector>
+    class AbstractExampleWiseBinnedRuleEvaluation :
+            public AbstractExampleWiseRuleEvaluation<StatisticVector, IndexVector> {
 
         private:
 
             uint32 maxBins_;
 
-            DenseBinnedScoreVector<T> scoreVector_;
+            DenseBinnedScoreVector<IndexVector> scoreVector_;
 
             float64* aggregatedGradients_;
 
@@ -233,8 +234,8 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `T` that provides access to
-             *                                  the indices of the labels for which the rules may predict
+             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the labels for which the rules may predict
              * @param indicesSorted             True, if the given indices are guaranteed to be sorted, false otherwise
              * @param maxBins                   The maximum number of bins
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
@@ -248,12 +249,13 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            AbstractExampleWiseBinnedRuleEvaluation(const T& labelIndices, bool indicesSorted, uint32 maxBins,
+            AbstractExampleWiseBinnedRuleEvaluation(const IndexVector& labelIndices, bool indicesSorted, uint32 maxBins,
                                                     float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                                                     std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                     const Lapack& lapack)
-                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, T>(maxBins, lapack),
-                  maxBins_(maxBins), scoreVector_(DenseBinnedScoreVector<T>(labelIndices, maxBins + 1, indicesSorted)),
+                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(maxBins, lapack),
+                  maxBins_(maxBins),
+                  scoreVector_(DenseBinnedScoreVector<IndexVector>(labelIndices, maxBins + 1, indicesSorted)),
                   aggregatedGradients_(new float64[maxBins]),
                   aggregatedHessians_(new float64[triangularNumber(maxBins)]), binIndices_(new uint32[maxBins]),
                   numElementsPerBin_(new uint32[maxBins]), criteria_(new float64[labelIndices.getNumElements()]),
@@ -291,7 +293,7 @@ namespace boosting {
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
-                    typename DenseBinnedScoreVector<T>::index_binned_iterator binIndexIterator =
+                    typename DenseBinnedScoreVector<IndexVector>::index_binned_iterator binIndexIterator =
                         scoreVector_.indices_binned_begin();
                     auto callback = [=](uint32 binIndex, uint32 labelIndex) {
                         numElementsPerBin_[binIndex] += 1;
@@ -319,7 +321,7 @@ namespace boosting {
                                               l2RegularizationWeight_);
 
                     // Copy gradients to the vector of ordinates...
-                    typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
+                    typename DenseBinnedScoreVector<IndexVector>::score_binned_iterator scoreIterator =
                         scoreVector_.scores_binned_begin();
                     copyOrdinates(aggregatedGradients_, scoreIterator, numBins);
                     addL1RegularizationWeight(scoreIterator, numBins, numElementsPerBin_, l1RegularizationWeight_);
@@ -355,11 +357,12 @@ namespace boosting {
      * gradients and Hessians that are stored by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization. The
      * labels are assigned to bins based on the gradients and Hessians.
      *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
+     *                     calculated
      */
-    template<typename T>
+    template<typename IndexVector>
     class DenseExampleWiseCompleteBinnedRuleEvaluation final :
-            public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, T> {
+            public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
 
         protected:
 
@@ -382,8 +385,8 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `T` that provides access to
-             *                                  the indices of the labels for which the rules may predict
+             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the labels for which the rules may predict
              * @param maxBins                   The maximum number of bins
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
@@ -396,16 +399,13 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            DenseExampleWiseCompleteBinnedRuleEvaluation(const T& labelIndices, uint32 maxBins,
+            DenseExampleWiseCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, uint32 maxBins,
                                                          float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                                                          std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                          const Lapack& lapack)
-                : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, T>(labelIndices, true,
-                                                                                              maxBins,
-                                                                                              l1RegularizationWeight,
-                                                                                              l2RegularizationWeight,
-                                                                                              std::move(binningPtr),
-                                                                                              blas, lapack) {
+                : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(
+                      labelIndices, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
+                      std::move(binningPtr), blas, lapack) {
 
             }
 

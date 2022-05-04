@@ -50,17 +50,17 @@ namespace boosting {
      * is applied label-wise and using gradient-based label binning.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
-     * @tparam T                The type of the vector that provides access to the labels for which predictions should
+     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
      *                          be calculated
      */
-    template<typename StatisticVector, typename T>
+    template<typename StatisticVector, typename IndexVector>
     class AbstractLabelWiseBinnedRuleEvaluation : public IRuleEvaluation<StatisticVector> {
 
         private:
 
             uint32 maxBins_;
 
-            DenseBinnedScoreVector<T> scoreVector_;
+            DenseBinnedScoreVector<IndexVector> scoreVector_;
 
             DenseLabelWiseStatisticVector aggregatedStatisticVector_;
 
@@ -96,8 +96,8 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `T` that provides access to
-             *                                  the indices of the labels for which the rules may predict
+             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the labels for which the rules may predict
              * @param indicesSorted             True, if the given indices are guaranteed to be sorted, false otherwise
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
@@ -106,11 +106,11 @@ namespace boosting {
              * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be
              *                                  used to assign labels to bins
              */
-            AbstractLabelWiseBinnedRuleEvaluation(const T& labelIndices, bool indicesSorted,
+            AbstractLabelWiseBinnedRuleEvaluation(const IndexVector& labelIndices, bool indicesSorted,
                                                   float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                                                   std::unique_ptr<ILabelBinning> binningPtr)
                 : maxBins_(binningPtr->getMaxBins(labelIndices.getNumElements())),
-                  scoreVector_(DenseBinnedScoreVector<T>(labelIndices, maxBins_ + 1, indicesSorted)),
+                  scoreVector_(DenseBinnedScoreVector<IndexVector>(labelIndices, maxBins_ + 1, indicesSorted)),
                   aggregatedStatisticVector_(DenseLabelWiseStatisticVector(maxBins_)),
                   numElementsPerBin_(new uint32[maxBins_]), criteria_(new float64[labelIndices.getNumElements()]),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
@@ -147,7 +147,7 @@ namespace boosting {
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                typename DenseBinnedScoreVector<T>::index_binned_iterator binIndexIterator =
+                typename DenseBinnedScoreVector<IndexVector>::index_binned_iterator binIndexIterator =
                     scoreVector_.indices_binned_begin();
                 auto callback = [=](uint32 binIndex, uint32 labelIndex) {
                     aggregatedStatisticIterator[binIndex] += statisticIterator[labelIndex];
@@ -160,7 +160,7 @@ namespace boosting {
                 binningPtr_->createBins(labelInfo, criteria_, numCriteria, callback, zeroCallback);
 
                 // Compute predictions, as well as an overall quality score...
-                typename DenseBinnedScoreVector<T>::score_binned_iterator scoreIterator =
+                typename DenseBinnedScoreVector<IndexVector>::score_binned_iterator scoreIterator =
                     scoreVector_.scores_binned_begin();
                 scoreVector_.overallQualityScore = calculateBinnedScores(aggregatedStatisticIterator, scoreIterator,
                                                                          numElementsPerBin_, numBins,
@@ -176,11 +176,12 @@ namespace boosting {
      * gradients and Hessians that are stored by a `DenseLabelWiseStatisticVector` using L1 and L2 regularization. The
      * labels are assigned to bins based on the gradients and Hessians.
      *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
+     *                     calculated
      */
-    template<typename T>
+    template<typename IndexVector>
     class DenseLabelWiseCompleteBinnedRuleEvaluation final :
-            public AbstractLabelWiseBinnedRuleEvaluation<DenseLabelWiseStatisticVector, T> {
+            public AbstractLabelWiseBinnedRuleEvaluation<DenseLabelWiseStatisticVector, IndexVector> {
 
         protected:
 
@@ -201,8 +202,8 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `T` that provides access to
-             *                                  the indices of the labels for which the rules may predict
+             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the labels for which the rules may predict
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
@@ -210,13 +211,11 @@ namespace boosting {
              * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be
              *                                  used to assign labels to bins
              */
-            DenseLabelWiseCompleteBinnedRuleEvaluation(const T& labelIndices, float64 l1RegularizationWeight,
+            DenseLabelWiseCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
                                                        float64 l2RegularizationWeight,
                                                        std::unique_ptr<ILabelBinning> binningPtr)
-                : AbstractLabelWiseBinnedRuleEvaluation<DenseLabelWiseStatisticVector, T>(labelIndices, true,
-                                                                                          l1RegularizationWeight,
-                                                                                          l2RegularizationWeight,
-                                                                                          std::move(binningPtr)) {
+                : AbstractLabelWiseBinnedRuleEvaluation<DenseLabelWiseStatisticVector, IndexVector>(
+                      labelIndices, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)) {
 
             }
 

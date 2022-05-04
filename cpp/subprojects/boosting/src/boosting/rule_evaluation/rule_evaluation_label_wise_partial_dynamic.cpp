@@ -10,14 +10,15 @@ namespace boosting {
      * determined dynamically, as well as an overall quality score, based on the gradients and Hessians that are stored
      * by a `DenseLabelWiseStatisticVector` using L1 and L2 regularization.
      *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
+     *                     calculated
      */
-    template<typename T>
+    template<typename IndexVector>
     class DenseLabelWiseDynamicPartialRuleEvaluation final : public IRuleEvaluation<DenseLabelWiseStatisticVector> {
 
         private:
 
-            const T& labelIndices_;
+            const IndexVector& labelIndices_;
 
             PartialIndexVector indexVector_;
 
@@ -34,8 +35,8 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `T` that provides access to
-             *                                  the indices of the labels for which the rules may predict
+             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the labels for which the rules may predict
              * @param threshold                 A threshold that affects for how many labels the rule heads should
              *                                  predict
              * @param exponent                  An exponent that is used to weigh that estimated predictive quality for
@@ -45,8 +46,9 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DenseLabelWiseDynamicPartialRuleEvaluation(const T& labelIndices, float32 threshold, float32 exponent,
-                                                       float64 l1RegularizationWeight, float64 l2RegularizationWeight)
+            DenseLabelWiseDynamicPartialRuleEvaluation(const IndexVector& labelIndices, float32 threshold,
+                                                       float32 exponent, float64 l1RegularizationWeight,
+                                                       float64 l2RegularizationWeight)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, true)), threshold_(1.0 - threshold),
                   exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
@@ -64,7 +66,7 @@ namespace boosting {
                 float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 float64 overallQualityScore = 0;
                 uint32 n = 0;
 

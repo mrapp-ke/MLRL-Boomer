@@ -10,14 +10,15 @@ namespace boosting {
      * an overall quality score, based on the gradients and Hessians that are stored by a
      * `DenseLabelWiseStatisticVector` using L1 and L2 regularization.
      *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
+     *                     calculated
      */
-    template<typename T>
+    template<typename IndexVector>
     class DenseLabelWiseFixedPartialRuleEvaluation final : public IRuleEvaluation<DenseLabelWiseStatisticVector> {
 
         private:
 
-            const T& labelIndices_;
+            const IndexVector& labelIndices_;
 
             PartialIndexVector indexVector_;
 
@@ -32,15 +33,15 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `T` that provides access to
-             *                                  the indices of the labels for which the rules may predict
+             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the labels for which the rules may predict
              * @param numPredictions            The number of labels for which the rules should predict
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DenseLabelWiseFixedPartialRuleEvaluation(const T& labelIndices, uint32 numPredictions,
+            DenseLabelWiseFixedPartialRuleEvaluation(const IndexVector& labelIndices, uint32 numPredictions,
                                                      float64 l1RegularizationWeight, float64 l2RegularizationWeight)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(numPredictions)),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
@@ -58,7 +59,7 @@ namespace boosting {
                                     l1RegularizationWeight_, l2RegularizationWeight_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                typename T::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 float64 overallQualityScore = 0;
 
                 for (uint32 i = 0; i < numPredictions; i++) {
