@@ -15,10 +15,10 @@ namespace boosting {
      * is applied example-wise.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
-     * @tparam T                The type of the vector that provides access to the labels for which predictions should
+     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
      *                          be calculated
      */
-    template<typename StatisticVector, typename T>
+    template<typename StatisticVector, typename IndexVector>
     class AbstractExampleWiseRuleEvaluation : public IRuleEvaluation<StatisticVector> {
 
         protected:
