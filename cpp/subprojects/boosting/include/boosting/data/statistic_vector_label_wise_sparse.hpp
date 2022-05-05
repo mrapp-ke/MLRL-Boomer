@@ -21,6 +21,121 @@ namespace boosting {
 
         private:
 
+            /**
+             * An iterator that provides random read-only access to the statistics in a
+             * `SparseLabelWiseStatisticVector`.
+             */
+            class ConstIterator final {
+
+                private:
+
+                    const Triple<float64>* iterator_;
+
+                    const float64 sumOfWeights_;
+
+                public:
+
+                    /**
+                     * @param iterator      An iterator that provides access to the elements in a
+                     *                      `SparseLabelWiseStatisticVector`
+                     * @param sumOfWeights  The sum of the weights of all statistics that have been added to the vector
+                     */
+                    ConstIterator(const Triple<float64>* iterator, float64 sumOfWeights);
+
+                    /**
+                     * The type that is used to represent the difference between two iterators.
+                     */
+                    typedef int difference_type;
+
+                    /**
+                     * The type of the elements, the iterator provides access to.
+                     */
+                    typedef const Tuple<float64> value_type;
+
+                    /**
+                     * The type of a pointer to an element, the iterator provides access to.
+                     */
+                    typedef const Tuple<float64>* pointer;
+
+                    /**
+                     * The type of a reference to an element, the iterator provides access to.
+                     */
+                    typedef const Tuple<float64>& reference;
+
+                    /**
+                     * The tag that specifies the capabilities of the iterator.
+                     */
+                    typedef std::random_access_iterator_tag iterator_category;
+
+                    /**
+                     * Returns the element at a specific index.
+                     *
+                     * @param index The index of the element to be returned
+                     * @return      The element at the given index
+                     */
+                    value_type operator[](uint32 index) const;
+
+                    /**
+                     * Returns the element, the iterator currently refers to.
+                     *
+                     * @return The element, the iterator currently refers to
+                     */
+                    value_type operator*() const;
+
+                    /**
+                     * Returns an iterator to the next element.
+                     *
+                     * @return A reference to an iterator that refers to the next element
+                     */
+                    ConstIterator& operator++();
+
+                    /**
+                     * Returns an iterator to the next element.
+                     *
+                     * @return A reference to an iterator that refers to the next element
+                     */
+                    ConstIterator& operator++(int n);
+
+                    /**
+                     * Returns an iterator to the previous element.
+                     *
+                     * @return A reference to an iterator that refers to the previous element
+                     */
+                    ConstIterator& operator--();
+
+                    /**
+                     * Returns an iterator to the previous element.
+                     *
+                     * @return A reference to an iterator that refers to the previous element
+                     */
+                    ConstIterator& operator--(int n);
+
+                    /**
+                     * Returns whether this iterator and another one refer to the same element.
+                     *
+                     * @param rhs   A reference to another iterator
+                     * @return      True, if the iterators do not refer to the same element, false otherwise
+                     */
+                    bool operator!=(const ConstIterator& rhs) const;
+
+                    /**
+                     * Returns whether this iterator and another one refer to the same element.
+                     *
+                     * @param rhs   A reference to another iterator
+                     * @return      True, if the iterators refer to the same element, false otherwise
+                     */
+                    bool operator==(const ConstIterator& rhs) const;
+
+                    /**
+                     * Returns the difference between this iterator and another one.
+                     *
+                     * @param rhs   A reference to another iterator
+                     * @return      The difference between the iterators
+                     */
+                    difference_type operator-(const ConstIterator& rhs) const;
+
+            };
+
             uint32 numElements_;
 
             Triple<float64>* statistics_;
@@ -51,7 +166,7 @@ namespace boosting {
             /**
              * An iterator that provides read-only access to the elements in the vector.
              */
-            typedef Triple<float64>* const_iterator;
+            typedef ConstIterator const_iterator;
 
             /**
              * Returns a `const_iterator` to the beginning of the vector.
@@ -66,6 +181,13 @@ namespace boosting {
              * @return A `const_iterator` to the end
              */
             const_iterator cend() const;
+
+            /**
+             * Returns the number of elements in the vector.
+             *
+             * @return The number of elements in the vector
+             */
+            uint32 getNumElements() const;
 
             /**
              * Sets all gradients and Hessians in the vector to zero.

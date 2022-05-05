@@ -6,6 +6,59 @@
 
 namespace boosting {
 
+    SparseLabelWiseStatisticVector::ConstIterator::ConstIterator(const Triple<float64>* iterator, float64 sumOfWeights)
+        : iterator_(iterator), sumOfWeights_(sumOfWeights) {
+
+    }
+
+    SparseLabelWiseStatisticVector::ConstIterator::value_type SparseLabelWiseStatisticVector::ConstIterator::operator[](
+            uint32 index) const {
+        const Triple<float64>& triple = iterator_[index];
+        float64 gradient = triple.first;
+        float64 hessian = triple.second + (sumOfWeights_ - triple.third);
+        return Tuple<float64>(gradient, hessian);
+    }
+
+    SparseLabelWiseStatisticVector::ConstIterator::value_type SparseLabelWiseStatisticVector::ConstIterator::operator*() const {
+        const Triple<float64>& triple = *iterator_;
+        float64 gradient = triple.first;
+        float64 hessian = triple.second + (sumOfWeights_ - triple.third);
+        return Tuple<float64>(gradient, hessian);
+    }
+
+    SparseLabelWiseStatisticVector::ConstIterator& SparseLabelWiseStatisticVector::ConstIterator::operator++() {
+        ++iterator_;
+        return *this;
+    }
+
+    SparseLabelWiseStatisticVector::ConstIterator& SparseLabelWiseStatisticVector::ConstIterator::operator++(int n) {
+        iterator_++;
+        return *this;
+    }
+
+    SparseLabelWiseStatisticVector::ConstIterator& SparseLabelWiseStatisticVector::ConstIterator::operator--() {
+        --iterator_;
+        return *this;
+    }
+
+    SparseLabelWiseStatisticVector::ConstIterator& SparseLabelWiseStatisticVector::ConstIterator::operator--(int n) {
+        iterator_--;
+        return *this;
+    }
+
+    bool SparseLabelWiseStatisticVector::ConstIterator::operator!=(const ConstIterator& rhs) const {
+        return iterator_ != rhs.iterator_;
+    }
+
+    bool SparseLabelWiseStatisticVector::ConstIterator::operator==(const ConstIterator& rhs) const {
+        return iterator_ == rhs.iterator_;
+    }
+
+    SparseLabelWiseStatisticVector::ConstIterator::difference_type SparseLabelWiseStatisticVector::ConstIterator::operator-(
+            const ConstIterator& rhs) const {
+        return iterator_ - rhs.iterator_;
+    }
+
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements)
         : SparseLabelWiseStatisticVector(numElements, false) {
 
@@ -30,11 +83,15 @@ namespace boosting {
     }
 
     SparseLabelWiseStatisticVector::const_iterator SparseLabelWiseStatisticVector::cbegin() const {
-        return statistics_;
+        return ConstIterator(statistics_, sumOfWeights_);
     }
 
     SparseLabelWiseStatisticVector::const_iterator SparseLabelWiseStatisticVector::cend() const {
-        return &statistics_[numElements_];
+        return ConstIterator(&statistics_[numElements_], sumOfWeights_);
+    }
+
+    uint32 SparseLabelWiseStatisticVector::getNumElements() const {
+        return numElements_;
     }
 
     void SparseLabelWiseStatisticVector::clear() {
