@@ -11,13 +11,14 @@ namespace boosting {
 
     /**
      * Allows to calculate the predictions of complete rules, as well as an overall quality score, based on the
-     * gradients and Hessians that are stored by a `DenseLabelWiseStatisticVector` using L1 and L2 regularization.
+     * gradients and Hessians that are stored by a vector using L1 and L2 regularization.
      *
-     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
-     *                     calculated
+     * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
+     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
+     *                          be calculated
      */
-    template<typename IndexVector>
-    class DenseLabelWiseCompleteRuleEvaluation final : public IRuleEvaluation<DenseLabelWiseStatisticVector> {
+    template<typename StatisticVector, typename IndexVector>
+    class LabelWiseCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
 
         private:
 
@@ -37,16 +38,16 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DenseLabelWiseCompleteRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
-                                                 float64 l2RegularizationWeight)
+            LabelWiseCompleteRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
+                                            float64 l2RegularizationWeight)
                 : scoreVector_(DenseScoreVector<IndexVector>(labelIndices, true)),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
 
             }
 
-            const IScoreVector& calculatePrediction(DenseLabelWiseStatisticVector& statisticVector) override {
+            const IScoreVector& calculatePrediction(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
-                DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
+                typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename DenseScoreVector<IndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 float64 overallQualityScore = 0;
 

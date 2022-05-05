@@ -36,6 +36,7 @@ namespace boosting {
      * Calculates the scores to be predicted for individual labels and sorts them by their quality, such that the first
      * `numPredictions` elements are the best-rated ones.
      *
+     * @tparam StatisticIterator        The type of the iterator that provides access to the gradients and Hessians
      * @param tmpIterator               An iterator that provides random access to a temporary array, which should be
      *                                  used to store the sorted scores and their original indices
      * @param statisticIterator         An iterator that provides access to the gradients and Hessians for each label
@@ -44,9 +45,10 @@ namespace boosting {
      * @param l1RegularizationWeight    The l2 regularization weight
      * @param l2RegularizationWeight    The L1 regularization weight
      */
+    template<typename StatisticIterator>
     static inline void sortLabelWiseScores(SparseArrayVector<float64>::iterator tmpIterator,
-                                           const DenseLabelWiseStatisticVector::const_iterator& statisticIterator,
-                                           uint32 numLabels, uint32 numPredictions, float64 l1RegularizationWeight,
+                                           StatisticIterator& statisticIterator, uint32 numLabels,
+                                           uint32 numPredictions, float64 l1RegularizationWeight,
                                            float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numLabels; i++) {
             const Tuple<float64>& tuple = statisticIterator[i];

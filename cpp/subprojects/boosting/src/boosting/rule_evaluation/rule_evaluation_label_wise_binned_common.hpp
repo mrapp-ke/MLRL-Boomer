@@ -173,22 +173,23 @@ namespace boosting {
 
     /**
      * Allows to calculate the predictions of complete rules, as well as an overall quality score, based on the
-     * gradients and Hessians that are stored by a `DenseLabelWiseStatisticVector` using L1 and L2 regularization. The
-     * labels are assigned to bins based on the gradients and Hessians.
+     * gradients and Hessians that are stored by a vector using L1 and L2 regularization. The labels are assigned to
+     * bins based on the gradients and Hessians.
      *
-     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
-     *                     calculated
+     * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
+     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
+     *                          be calculated
      */
-    template<typename IndexVector>
-    class DenseLabelWiseCompleteBinnedRuleEvaluation final :
-            public AbstractLabelWiseBinnedRuleEvaluation<DenseLabelWiseStatisticVector, IndexVector> {
+    template<typename StatisticVector, typename IndexVector>
+    class LabelWiseCompleteBinnedRuleEvaluation final :
+            public AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, IndexVector> {
 
         protected:
 
-            uint32 calculateLabelWiseCriteria(const DenseLabelWiseStatisticVector& statisticVector, float64* criteria,
+            uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
                                               uint32 numCriteria, float64 l1RegularizationWeight,
                                               float64 l2RegularizationWeight) override {
-                DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
+                typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
                     const Tuple<float64>& tuple = statisticIterator[i];
@@ -211,11 +212,13 @@ namespace boosting {
              * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be
              *                                  used to assign labels to bins
              */
-            DenseLabelWiseCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
-                                                       float64 l2RegularizationWeight,
-                                                       std::unique_ptr<ILabelBinning> binningPtr)
-                : AbstractLabelWiseBinnedRuleEvaluation<DenseLabelWiseStatisticVector, IndexVector>(
-                      labelIndices, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)) {
+            LabelWiseCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
+                                                  float64 l2RegularizationWeight,
+                                                  std::unique_ptr<ILabelBinning> binningPtr)
+                : AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, IndexVector>(labelIndices, true,
+                                                                                      l1RegularizationWeight,
+                                                                                      l2RegularizationWeight,
+                                                                                      std::move(binningPtr)) {
 
             }
 

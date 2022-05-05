@@ -13,15 +13,17 @@ namespace boosting {
     /**
      * Determines and returns the minimum and maximum absolute score to be predicted for a label.
      *
+     * @tparam StatisticIterator        The type of the iterator that provides access to the gradients and Hessians
      * @param statisticIterator         An iterator that provides access to the gradients and Hessians for each label
      * @param numLabels                 The total number of available labels
      * @param l1RegularizationWeight    The l2 regularization weight
      * @param l2RegularizationWeight    The L1 regularization weight
      * @return                          A `std::pair` that stores the minimum and maximum absolute score
      */
-    static inline std::pair<float64, float64> getMinAndMaxScore(
-            const DenseLabelWiseStatisticVector::const_iterator& statisticIterator, uint32 numLabels,
-            float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
+    template<typename StatisticIterator>
+    static inline std::pair<float64, float64> getMinAndMaxScore(StatisticIterator& statisticIterator, uint32 numLabels,
+                                                                float64 l1RegularizationWeight,
+                                                                float64 l2RegularizationWeight) {
         const Tuple<float64>& firstTuple = statisticIterator[0];
         float64 maxAbsScore = std::abs(calculateLabelWiseScore(firstTuple.first, firstTuple.second,
                                                                l1RegularizationWeight, l2RegularizationWeight));
