@@ -146,7 +146,7 @@ namespace boosting {
                 setArrayToZeros(numElementsPerBin_, numBins);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
-                DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
+                typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename DenseBinnedScoreVector<IndexVector>::index_binned_iterator binIndexIterator =
                     scoreVector_.indices_binned_begin();
                 auto callback = [=](uint32 binIndex, uint32 labelIndex) {
