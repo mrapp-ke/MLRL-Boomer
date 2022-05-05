@@ -8,13 +8,14 @@ namespace boosting {
     /**
      * Allows to calculate the predictions of partial rules, which predict for a subset of the available labels that is
      * determined dynamically, as well as an overall quality score, based on the gradients and Hessians that are stored
-     * by a `DenseLabelWiseStatisticVector` using L1 and L2 regularization.
+     * by a vector using L1 and L2 regularization.
      *
-     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
-     *                     calculated
+     * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
+     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
+     *                          be calculated
      */
-    template<typename IndexVector>
-    class DenseLabelWiseDynamicPartialRuleEvaluation final : public IRuleEvaluation<DenseLabelWiseStatisticVector> {
+    template<typename StatisticVector, typename IndexVector>
+    class LabelWiseDynamicPartialRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
 
         private:
 
@@ -46,9 +47,8 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DenseLabelWiseDynamicPartialRuleEvaluation(const IndexVector& labelIndices, float32 threshold,
-                                                       float32 exponent, float64 l1RegularizationWeight,
-                                                       float64 l2RegularizationWeight)
+            LabelWiseDynamicPartialRuleEvaluation(const IndexVector& labelIndices, float32 threshold, float32 exponent,
+                                                  float64 l1RegularizationWeight, float64 l2RegularizationWeight)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, true)), threshold_(1.0 - threshold),
                   exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
@@ -56,9 +56,9 @@ namespace boosting {
 
             }
 
-            const IScoreVector& calculatePrediction(DenseLabelWiseStatisticVector& statisticVector) override {
+            const IScoreVector& calculatePrediction(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
-                DenseLabelWiseStatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
+                typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 const std::pair<float64, float64> pair = getMinAndMaxScore(statisticIterator, numElements,
                                                                            l1RegularizationWeight_,
                                                                            l2RegularizationWeight_);
@@ -101,27 +101,26 @@ namespace boosting {
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseDynamicPartialRuleEvaluationFactory::create(
             const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DenseLabelWiseDynamicPartialRuleEvaluation<CompleteIndexVector>>(
+        return std::make_unique<LabelWiseDynamicPartialRuleEvaluation<DenseLabelWiseStatisticVector, CompleteIndexVector>>(
             indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseDynamicPartialRuleEvaluationFactory::create(
             const DenseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
-        return std::make_unique<DenseLabelWiseCompleteRuleEvaluation<PartialIndexVector>>(indexVector,
-                                                                                          l1RegularizationWeight_,
-                                                                                          l2RegularizationWeight_);
+        return std::make_unique<LabelWiseCompleteRuleEvaluation<DenseLabelWiseStatisticVector, PartialIndexVector>>(
+            indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseDynamicPartialRuleEvaluationFactory::create(
             const SparseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
-        // TODO Implement
-        return nullptr;
+        return std::make_unique<LabelWiseDynamicPartialRuleEvaluation<SparseLabelWiseStatisticVector, CompleteIndexVector>>(
+            indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseDynamicPartialRuleEvaluationFactory::create(
             const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
-        // TODO Implement
-        return nullptr;
+        return std::make_unique<LabelWiseCompleteRuleEvaluation<SparseLabelWiseStatisticVector, PartialIndexVector>>(
+            indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
 }
