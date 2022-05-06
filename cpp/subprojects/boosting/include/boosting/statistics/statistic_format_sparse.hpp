@@ -9,6 +9,9 @@
 
 namespace boosting {
 
+    /**
+     * Allows to configure a sparse format for storing statistics about the labels of the training examples.
+     */
     class SparseStatisticsConfig : public IStatisticsConfig {
 
         private:

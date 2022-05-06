@@ -11,6 +11,10 @@
 
 namespace boosting {
 
+    /**
+     * Allows to configure a method that automatically decides for a format for storing statistics about the labels of
+     * the training examples.
+     */
     class AutomaticStatisticsConfig : public IStatisticsConfig {
 
         private:
