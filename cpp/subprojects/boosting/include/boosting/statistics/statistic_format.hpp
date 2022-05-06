@@ -12,6 +12,10 @@
 
 namespace boosting {
 
+    /**
+     * Defines an interface for all classes that allow to configure which format should be used for storing statistics
+     * about the labels of the training examples.
+     */
     class IStatisticsConfig {
 
         public:
