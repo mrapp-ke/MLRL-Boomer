@@ -342,9 +342,10 @@ def is_sparse(m, sparse_format: SparseFormat, dtype, sparse_values: bool = True)
     if issparse(m):
         num_pointers = m.shape[1 if sparse_format == SparseFormat.CSC else 0]
         size_int = np.dtype(DTYPE_UINT32).itemsize
-        size_data = np.dtype(dtype).itemsize if sparse_values else 0
+        size_data = np.dtype(dtype).itemsize
+        size_sparse_data = size_data if sparse_values else 0
         num_non_zero = m.nnz
-        size_sparse = (num_non_zero * size_data) + (num_non_zero * size_int) + (num_pointers * size_int)
+        size_sparse = (num_non_zero * size_sparse_data) + (num_non_zero * size_int) + (num_pointers * size_int)
         size_dense = np.prod(m.shape) * size_data
         return size_sparse < size_dense
     return False
@@ -442,7 +443,7 @@ class MLRuleLearner(Learner, NominalAttributeLearner):
         prediction_sparse_policy = create_sparse_policy('prediction_format', self.prediction_format)
         self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
                 prediction_sparse_policy == SparsePolicy.FORCE_SPARSE or
-                is_sparse(y, sparse_format=y_sparse_format, dtype=DTYPE_UINT8, sparse_values=True))
+                is_sparse(y, sparse_format=y_sparse_format, dtype=DTYPE_UINT8, sparse_values=False))
 
         y_sparse_policy = create_sparse_policy('label_format', self.label_format)
         y_enforce_sparse = should_enforce_sparse(y, sparse_format=y_sparse_format, policy=y_sparse_policy,
