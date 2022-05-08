@@ -61,6 +61,8 @@ cdef extern from "common/learner.hpp" nogil:
 
         # Functions:
 
+        void useDefaultRule()
+
         ISequentialRuleModelAssemblageConfig& useSequentialRuleModelAssemblage()
 
         ITopDownRuleInductionConfig& useTopDownRuleInduction()
