@@ -149,7 +149,7 @@ namespace boosting {
 
     void BoostingRuleLearner::Config::useAutomaticStatistics() {
         statisticsConfigPtr_ =
-            std::make_unique<AutomaticStatisticsConfig>(lossConfigPtr_, headConfigPtr_, ruleModelAssemblageConfigPtr_);
+            std::make_unique<AutomaticStatisticsConfig>(lossConfigPtr_, headConfigPtr_, defaultRuleConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useDenseStatistics() {

@@ -6,7 +6,7 @@
 #include "boosting/statistics/statistic_format.hpp"
 #include "boosting/losses/loss.hpp"
 #include "boosting/rule_evaluation/head_type.hpp"
-#include "common/rule_induction/rule_model_assemblage.hpp"
+#include "common/rule_induction/default_rule.hpp"
 
 
 namespace boosting {
@@ -23,21 +23,21 @@ namespace boosting {
 
             const std::unique_ptr<IHeadConfig>& headConfigPtr_;
 
-            const std::unique_ptr<IRuleModelAssemblageConfig>& ruleModelAssemblageConfigPtr_;
+            const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr_;
 
         public:
 
             /**
-             * @param lossConfigPtr                 A reference to an unique pointer that stores the configuration of
-             *                                      the loss function
-             * @param headConfigPtr                 A reference to an unique pointer that stores the configuration of
-             *                                      the rule heads
-             * @param ruleModelAssemblageConfigPtr  A reference to an unique pointer that stores the configuration of
-             *                                      the algorithm for the induction of several rules
+             * @param lossConfigPtr         A reference to an unique pointer that stores the configuration of the loss
+             *                              function
+             * @param headConfigPtr         A reference to an unique pointer that stores the configuration of the rule
+             *                              heads
+             * @param defaultRuleConfigPtr  A reference to an unique pointer that stores the configuration of the
+             *                              default rule
              */
             AutomaticStatisticsConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
                                       const std::unique_ptr<IHeadConfig>& headConfigPtr,
-                                      const std::unique_ptr<IRuleModelAssemblageConfig>& ruleModelAssemblageConfigPtr);
+                                      const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,

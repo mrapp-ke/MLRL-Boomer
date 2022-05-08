@@ -5,9 +5,8 @@ namespace boosting {
 
     AutomaticStatisticsConfig::AutomaticStatisticsConfig(
             const std::unique_ptr<ILossConfig>& lossConfigPtr, const std::unique_ptr<IHeadConfig>& headConfigPtr,
-            const std::unique_ptr<IRuleModelAssemblageConfig>& ruleModelAssemblageConfigPtr)
-        : lossConfigPtr_(lossConfigPtr), headConfigPtr_(headConfigPtr),
-          ruleModelAssemblageConfigPtr_(ruleModelAssemblageConfigPtr) {
+            const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr)
+        : lossConfigPtr_(lossConfigPtr), headConfigPtr_(headConfigPtr), defaultRuleConfigPtr_(defaultRuleConfigPtr) {
 
     }
 
@@ -15,8 +14,7 @@ namespace boosting {
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
                 const Lapack& lapack) const {
         bool preferSparseStatistics = labelMatrix.isSparse() && labelMatrix.getNumCols() > 1
-                                      && !ruleModelAssemblageConfigPtr_->isDefaultRuleUsed()
-                                      && headConfigPtr_->isPartial();
+                                      && !defaultRuleConfigPtr_->isDefaultRuleUsed() && headConfigPtr_->isPartial();
         return lossConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack,
                                                                preferSparseStatistics);
     }
