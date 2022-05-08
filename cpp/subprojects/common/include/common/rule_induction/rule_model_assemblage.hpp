@@ -119,13 +119,6 @@ class IRuleModelAssemblageConfig {
         virtual ~IRuleModelAssemblageConfig() { };
 
         /**
-         * Returns whether a default rule is used or not.
-         *
-         * @return True, if a default rule is used, false otherwise
-         */
-        virtual bool isDefaultRuleUsed() const = 0;
-
-        /**
          * Creates and returns a new object of type `IRuleModelAssemblageFactory` according to specified configuration.
          *
          * @return An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been created
