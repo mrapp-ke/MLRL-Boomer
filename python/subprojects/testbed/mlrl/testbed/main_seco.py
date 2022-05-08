@@ -26,6 +26,7 @@ class SeCoRunnable(RuleLearnerRunnable):
                                feature_format=args.feature_format,
                                label_format=args.label_format,
                                prediction_format=args.prediction_format,
+                               rule_model_assemblage=args.rule_model_assemblage,
                                rule_induction=args.rule_induction,
                                max_rules=args.max_rules,
                                time_limit=args.time_limit,

@@ -81,6 +81,10 @@ namespace boosting {
         return ref;
     }
 
+    void BoostingRuleLearner::Config::useNoDefaultRule() {
+        defaultRuleConfigPtr_ = std::make_unique<DefaultRuleConfig>(false);
+    }
+
     void BoostingRuleLearner::Config::useAutomaticFeatureBinning() {
         featureBinningConfigPtr_ = std::make_unique<AutomaticFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
     }

@@ -20,6 +20,8 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
+        void useNoDefaultRule()
+
         void useAutomaticFeatureBinning()
 
         IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
