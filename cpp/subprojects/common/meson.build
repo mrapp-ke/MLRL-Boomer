@@ -56,6 +56,7 @@ source_files = [
     'src/common/pruning/pruning_no.cpp',
     'src/common/rule_evaluation/score_vector_binned_dense.cpp',
     'src/common/rule_evaluation/score_vector_dense.cpp',
+    'src/common/rule_induction/default_rule.cpp',
     'src/common/rule_induction/rule_induction_top_down.cpp',
     'src/common/rule_induction/rule_model_assemblage_sequential.cpp',
     'src/common/rule_refinement/prediction_complete.cpp',

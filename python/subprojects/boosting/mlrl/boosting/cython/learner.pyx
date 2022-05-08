@@ -24,6 +24,13 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
     cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
         return self.rule_learner_config_ptr.get()
 
+    def use_no_default_rule(self):
+        """
+        Configures the rule learner to not induce a default rule.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoDefaultRule()
+
     def use_automatic_feature_binning(self):
         """
         Configures the rule learning to automatically decide whether a method for the assignment of numerical feature

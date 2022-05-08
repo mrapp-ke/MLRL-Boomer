@@ -16,7 +16,6 @@ cython_module_names = [
     'partition_sampling',
     'rule_induction',
     'rule_model',
-    'rule_model_assemblage',
     'stopping_criterion'
 ]
 
