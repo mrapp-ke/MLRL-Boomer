@@ -7,10 +7,10 @@ from typing import Dict, Set, Optional
 
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import configure_rule_induction, configure_label_sampling, configure_instance_sampling, \
-    configure_feature_sampling, configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
-    configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
-    configure_time_stopping_criterion
+from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
+    configure_label_sampling, configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, \
+    configure_pruning, configure_parallel_rule_refinement, configure_parallel_statistic_update, \
+    configure_parallel_prediction, configure_size_stopping_criterion, configure_time_stopping_criterion
 from mlrl.common.rule_learners import parse_param, parse_param_and_options
 from mlrl.seco.cython.learner import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
@@ -80,6 +80,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                  feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value,
                  prediction_format: str = SparsePolicy.AUTO.value,
+                 rule_model_assemblage: Optional[str] = None,
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
                  time_limit: Optional[int] = None,
@@ -96,6 +97,8 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
+        :param rule_model_assemblage:       The algorithm that should be used for the induction of several rules. Must
+                                            be 'sequential'
         :param rule_induction:              A algorithm to be used for the induction of individual rules. Must be
                                             'top-down'. For additional options refer to the documentation
         :param max_rules:                   The maximum number of rules to be learned (including the default rule). Must
@@ -144,6 +147,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                                             documentation
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
+        self.rule_model_assemblage = rule_model_assemblage
         self.rule_induction = rule_induction
         self.max_rules = max_rules
         self.time_limit = time_limit
@@ -170,6 +174,8 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_label-format=' + str(self.label_format)
         if self.prediction_format != SparsePolicy.AUTO.value:
             name += '_prediction-format=' + str(self.prediction_format)
+        if self.rule_model_assemblage is not None:
+            name += '_rule-model-assemblage=' + str(self.rule_model_assemblage)
         if self.rule_induction is not None:
             name += '_rule-induction=' + str(self.rule_induction)
         if self.max_rules is not None:
@@ -204,6 +210,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def _create_learner(self) -> RuleLearnerWrapper:
         config = SeCoRuleLearnerConfig()
+        configure_rule_model_assemblage(config, self.rule_model_assemblage)
         configure_rule_induction(config, self.rule_induction)
         configure_label_sampling(config, self.label_sampling)
         configure_instance_sampling(config, self.instance_sampling)

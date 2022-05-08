@@ -90,6 +90,11 @@ STATISTIC_FORMAT_VALUES: Set[str] = {
     AUTOMATIC
 }
 
+DEFAULT_RULE_VALUES: Set[str] = {
+    BooleanOption.TRUE.value,
+    BooleanOption.FALSE.value
+}
+
 HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
     HEAD_TYPE_SINGLE: {},
     HEAD_TYPE_PARTIAL_FIXED: {ARGUMENT_LABEL_RATIO, ARGUMENT_MIN_LABELS, ARGUMENT_MAX_LABELS},
@@ -156,6 +161,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  label_format: str = SparsePolicy.AUTO.value,
                  prediction_format: str = SparsePolicy.AUTO.value,
                  statistic_format: Optional[str] = None,
+                 default_rule: Optional[str] = None,
                  rule_model_assemblage: Optional[str] = None,
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
@@ -182,8 +188,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param statistic_format:            The format to be used for representation of gradients and Hessians. Must be
                                             'dense', 'sparse' or 'auto', if the most suitable format should be chosen
                                             automatically
+        :param default_rule:                Whether a default rule should be induced or not. Must be 'true' or 'false'
         :param rule_model_assemblage:       The algorithm that should be used for the induction of several rules. Must
-                                            be 'sequential'. For additional options refer to the documentation
+                                            be 'sequential'
         :param rule_induction:              The algorithm that should be used for the induction of individual rules.
                                             Must be 'top-down'. For additional options refer to the documentation
         :param max_rules:                   The maximum number of rules to be learned (including the default rule). Must
@@ -253,6 +260,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
         self.statistic_format = statistic_format
+        self.default_rule = default_rule
         self.rule_model_assemblage = rule_model_assemblage
         self.rule_induction = rule_induction
         self.max_rules = max_rules
@@ -288,6 +296,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_prediction-format=' + str(self.prediction_format)
         if self.statistic_format is not None:
             name += '_statistic-format=' + str(self.statistic_format)
+        if self.default_rule is not None:
+            name += '_default-rule=' + str(self.default_rule)
         if self.rule_model_assemblage is not None:
             name += '_rule-model-assemblage=' + str(self.rule_model_assemblage)
         if self.rule_induction is not None:
@@ -336,6 +346,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def _create_learner(self) -> RuleLearnerWrapper:
         config = BoostingRuleLearnerConfig()
+        self.__configure_default_rule(config)
         configure_rule_model_assemblage(config, self.rule_model_assemblage)
         configure_rule_induction(config, self.rule_induction)
         self.__configure_feature_binning(config)
@@ -360,6 +371,17 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.__configure_classification_predictor(config)
         self.__configure_probability_predictor(config)
         return BoostingRuleLearnerWrapper(config)
+
+    def __configure_default_rule(self, config: BoostingRuleLearnerConfig):
+        default_rule = self.default_rule
+
+        if default_rule is not None:
+            value = parse_param('pruning', default_rule, DEFAULT_RULE_VALUES)
+
+            if value == BooleanOption.TRUE.value:
+                config.use_default_rule()
+            else:
+                config.use_no_default_rule()
 
     def __configure_feature_binning(self, config: BoostingRuleLearnerConfig):
         feature_binning = self.feature_binning

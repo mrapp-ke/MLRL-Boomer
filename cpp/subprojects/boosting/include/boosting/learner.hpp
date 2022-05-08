@@ -119,7 +119,12 @@ namespace boosting {
                     virtual ~IConfig() override { };
 
                     /**
-                     * Configures the rule learning to automatically decide whether a method for the assignment of
+                     * Configures the rule learner to not induce a default rule.
+                     */
+                    virtual void useNoDefaultRule() = 0;
+
+                    /**
+                     * Configures the rule learner to automatically decide whether a method for the assignment of
                      * numerical feature values to bins should be used or not.
                      */
                     virtual void useAutomaticFeatureBinning() = 0;
@@ -388,6 +393,8 @@ namespace boosting {
                      * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
+
+                    void useNoDefaultRule() override final;
 
                     void useAutomaticFeatureBinning() override final;
 
