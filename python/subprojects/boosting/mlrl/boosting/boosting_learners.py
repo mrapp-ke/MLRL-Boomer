@@ -176,7 +176,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         """
         :param default_rule:                Whether a default rule should be induced or not. Must be 'true' or 'false'
         :param rule_model_assemblage:       The algorithm that should be used for the induction of several rules. Must
-                                            be 'sequential'. For additional options refer to the documentation
+                                            be 'sequential'
         :param rule_induction:              The algorithm that should be used for the induction of individual rules.
                                             Must be 'top-down'. For additional options refer to the documentation
         :param max_rules:                   The maximum number of rules to be learned (including the default rule). Must

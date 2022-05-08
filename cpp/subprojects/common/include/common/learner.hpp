@@ -18,7 +18,7 @@
 #include "common/output/predictor_probability.hpp"
 #include "common/rule_induction/default_rule.hpp"
 #include "common/rule_induction/rule_induction_top_down.hpp"
-#include "common/rule_induction/rule_model_assemblage_sequential.hpp"
+#include "common/rule_induction/rule_model_assemblage.hpp"
 #include "common/sampling/feature_sampling_without_replacement.hpp"
 #include "common/sampling/instance_sampling_stratified_example_wise.hpp"
 #include "common/sampling/instance_sampling_stratified_label_wise.hpp"
@@ -254,12 +254,8 @@ class MLRLCOMMON_API IRuleLearner {
                 /**
                  * Configures the rule learner to use an algorithm that sequentially induces several rules, optionally
                  * starting with a default rule, that are added to a rule-based model.
-                 *
-                 * @return A reference to an object of type `ISequentialRuleModelAssemblageConfig` that allows further
-                 *         configuration of the algorithm for the induction of several rules that are added to a
-                 *         rule-based model
                  */
-                virtual ISequentialRuleModelAssemblageConfig& useSequentialRuleModelAssemblage() = 0;
+                virtual void useSequentialRuleModelAssemblage() = 0;
 
                 /**
                  * Configures the rule learner to use a top-down greedy search for the induction of individual rules.
@@ -844,7 +840,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useDefaultRule() override;
 
-                ISequentialRuleModelAssemblageConfig& useSequentialRuleModelAssemblage() override;
+                void useSequentialRuleModelAssemblage() override;
 
                 ITopDownRuleInductionConfig& useTopDownRuleInduction() override;
 
