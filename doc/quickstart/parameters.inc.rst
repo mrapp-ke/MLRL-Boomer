@@ -48,11 +48,14 @@ The following parameters allow to control the behavior of the algorithm:
 
   * The seed to be used by random number generators. Must be at least 1.
 
+* ``default_rule`` (Default value = ``'true'``)
+
+  * ``'true'`` A default rule that provides a default prediction for all examples is included as the first rule of a model.
+  * ``'false'`` No default rule is used.
+
 * ``rule_model_assemblage`` (Default value = ``'sequential'``)
 
-  * ``'sequential'`` The rules in a model are learned sequentially, starting with a default rule. The following options may be provided using the bracket notation:
-
-    * ``default_rule`` (Default value = ``'true'``) ``'true'``, if the first rule should be a default rule that provides a default prediction for all examples, ``'false'``, if no default rule should be used.
+  * ``'sequential'`` The rules in a model are learned sequentially, starting with a default rule.
 
 * ``rule_induction`` (Default value = ``'top-down'``)
 

@@ -14,7 +14,6 @@ from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiParti
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.rule_induction cimport ITopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
-from mlrl.common.cython.rule_model_assemblage cimport ISequentialRuleModelAssemblageConfig
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig, \
     IMeasureStoppingCriterionConfig
 
@@ -61,7 +60,9 @@ cdef extern from "common/learner.hpp" nogil:
 
         # Functions:
 
-        ISequentialRuleModelAssemblageConfig& useSequentialRuleModelAssemblage()
+        void useDefaultRule()
+
+        void useSequentialRuleModelAssemblage()
 
         ITopDownRuleInductionConfig& useTopDownRuleInduction()
 

@@ -4,6 +4,7 @@
 #include "common/post_processing/post_processor_no.hpp"
 #include "common/pruning/pruning_irep.hpp"
 #include "common/pruning/pruning_no.hpp"
+#include "common/rule_induction/rule_model_assemblage_sequential.hpp"
 #include "common/sampling/feature_sampling_no.hpp"
 #include "common/sampling/instance_sampling_no.hpp"
 #include "common/sampling/label_sampling_no.hpp"
@@ -66,6 +67,7 @@ class TrainingResult final : public ITrainingResult {
 };
 
 AbstractRuleLearner::Config::Config() {
+    this->useDefaultRule();
     this->useSequentialRuleModelAssemblage();
     this->useTopDownRuleInduction();
     this->useNoFeatureBinning();
@@ -81,6 +83,10 @@ AbstractRuleLearner::Config::Config() {
     this->useNoSizeStoppingCriterion();
     this->useNoTimeStoppingCriterion();
     this->useNoMeasureStoppingCriterion();
+}
+
+const IDefaultRuleConfig& AbstractRuleLearner::Config::getDefaultRuleConfig() const {
+    return *defaultRuleConfigPtr_;
 }
 
 const IRuleModelAssemblageConfig& AbstractRuleLearner::Config::getRuleModelAssemblageConfig() const {
@@ -143,11 +149,12 @@ const MeasureStoppingCriterionConfig* AbstractRuleLearner::Config::getMeasureSto
     return measureStoppingCriterionConfigPtr_.get();
 }
 
-ISequentialRuleModelAssemblageConfig& AbstractRuleLearner::Config::useSequentialRuleModelAssemblage() {
-    std::unique_ptr<SequentialRuleModelAssemblageConfig> ptr = std::make_unique<SequentialRuleModelAssemblageConfig>();
-    ISequentialRuleModelAssemblageConfig& ref = *ptr;
-    ruleModelAssemblageConfigPtr_ = std::move(ptr);
-    return ref;
+void AbstractRuleLearner::Config::useDefaultRule() {
+    defaultRuleConfigPtr_ = std::make_unique<DefaultRuleConfig>(true);
+}
+
+void AbstractRuleLearner::Config::useSequentialRuleModelAssemblage() {
+    ruleModelAssemblageConfigPtr_ = std::make_unique<SequentialRuleModelAssemblageConfig>(defaultRuleConfigPtr_);
 }
 
 ITopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction() {
