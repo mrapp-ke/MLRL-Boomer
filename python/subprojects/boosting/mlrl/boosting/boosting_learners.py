@@ -92,7 +92,8 @@ STATISTIC_FORMAT_VALUES: Set[str] = {
 
 DEFAULT_RULE_VALUES: Set[str] = {
     BooleanOption.TRUE.value,
-    BooleanOption.FALSE.value
+    BooleanOption.FALSE.value,
+    AUTOMATIC
 }
 
 HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
@@ -188,7 +189,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param statistic_format:            The format to be used for representation of gradients and Hessians. Must be
                                             'dense', 'sparse' or 'auto', if the most suitable format should be chosen
                                             automatically
-        :param default_rule:                Whether a default rule should be induced or not. Must be 'true' or 'false'
+        :param default_rule:                Whether a default rule should be induced or not. Must be 'true', 'false' or
+                                            'auto', if it should be decided automatically whether a default rule should
+                                            be induced or not
         :param rule_model_assemblage:       The algorithm that should be used for the induction of several rules. Must
                                             be 'sequential'
         :param rule_induction:              The algorithm that should be used for the induction of individual rules.
@@ -378,7 +381,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if default_rule is not None:
             value = parse_param('pruning', default_rule, DEFAULT_RULE_VALUES)
 
-            if value == BooleanOption.TRUE.value:
+            if value == AUTOMATIC:
+                config.use_automatic_default_rule()
+            elif value == BooleanOption.TRUE.value:
                 config.use_default_rule()
             else:
                 config.use_no_default_rule()

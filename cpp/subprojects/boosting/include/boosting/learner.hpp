@@ -124,6 +124,12 @@ namespace boosting {
                     virtual void useNoDefaultRule() = 0;
 
                     /**
+                     * Configures the rule learner to automatically decide whether a default rule should be induced or
+                     * not.
+                     */
+                    virtual void useAutomaticDefaultRule() = 0;
+
+                    /**
                      * Configures the rule learner to automatically decide whether a method for the assignment of
                      * numerical feature values to bins should be used or not.
                      */
@@ -395,6 +401,8 @@ namespace boosting {
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
                     void useNoDefaultRule() override final;
+
+                    void useAutomaticDefaultRule() override final;
 
                     void useAutomaticFeatureBinning() override final;
 

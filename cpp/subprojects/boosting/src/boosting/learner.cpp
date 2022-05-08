@@ -20,6 +20,7 @@
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
+#include "boosting/rule_induction/default_rule_auto.hpp"
 #include "boosting/statistics/statistic_format_auto.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
 #include "boosting/statistics/statistic_format_sparse.hpp"
@@ -30,6 +31,7 @@
 namespace boosting {
 
     BoostingRuleLearner::Config::Config() {
+        this->useAutomaticDefaultRule();
         this->useAutomaticFeatureBinning();
         this->useFeatureSamplingWithoutReplacement();
         this->useSizeStoppingCriterion();
@@ -91,6 +93,10 @@ namespace boosting {
 
     void BoostingRuleLearner::Config::useNoDefaultRule() {
         defaultRuleConfigPtr_ = std::make_unique<DefaultRuleConfig>(false);
+    }
+
+    void BoostingRuleLearner::Config::useAutomaticDefaultRule() {
+        defaultRuleConfigPtr_ = std::make_unique<AutomaticDefaultRuleConfig>(headConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useAutomaticFeatureBinning() {
