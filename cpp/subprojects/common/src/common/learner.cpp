@@ -355,8 +355,9 @@ AbstractRuleLearner::AbstractRuleLearner(const IRuleLearner::IConfig& config)
 
 }
 
-std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory() const {
-    return config_.getRuleModelAssemblageConfig().createRuleModelAssemblageFactory();
+std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory(
+        const IRowWiseLabelMatrix& labelMatrix) const {
+    return config_.getRuleModelAssemblageConfig().createRuleModelAssemblageFactory(labelMatrix);
 }
 
 std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory(
@@ -454,7 +455,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
 
     std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr = this->createLabelSpaceInfo(labelMatrix);
     std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
-        this->createRuleModelAssemblageFactory();
+        this->createRuleModelAssemblageFactory(labelMatrix);
     std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr = ruleModelAssemblageFactoryPtr->create(
         this->createModelBuilderFactory(), this->createStatisticsProviderFactory(featureMatrix, labelMatrix),
         this->createThresholdsFactory(featureMatrix, labelMatrix),

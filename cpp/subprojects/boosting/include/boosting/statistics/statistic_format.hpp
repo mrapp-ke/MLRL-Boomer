@@ -13,6 +13,20 @@
 namespace boosting {
 
     /**
+     * Returns whether a sparse representation of the gradients and Hessians should be preferred or not.
+     *
+     * @param labelMatrix       A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
+     *                          the labels of the training examples
+     * @param defaultRuleUsed   True, if a default rule is used, false otherwise
+     * @param partialHeadsUsed  True, if the partial heads are used by the rules, false otherwise
+     * @return                  True, if a sparse representation should be preferred, false otherwise
+     */
+    static inline bool shouldSparseStatisticsBePreferred(const IRowWiseLabelMatrix& labelMatrix, bool defaultRuleUsed,
+                                                         bool partialHeadsUsed) {
+        return labelMatrix.isSparse() && labelMatrix.getNumCols() > 1 && !defaultRuleUsed && partialHeadsUsed;
+    }
+
+    /**
      * Defines an interface for all classes that allow to configure which format should be used for storing statistics
      * about the labels of the training examples.
      */
