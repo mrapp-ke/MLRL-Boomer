@@ -66,6 +66,7 @@ class TrainingResult final : public ITrainingResult {
 };
 
 AbstractRuleLearner::Config::Config() {
+    this->useDefaultRule();
     this->useSequentialRuleModelAssemblage();
     this->useTopDownRuleInduction();
     this->useNoFeatureBinning();
@@ -81,6 +82,10 @@ AbstractRuleLearner::Config::Config() {
     this->useNoSizeStoppingCriterion();
     this->useNoTimeStoppingCriterion();
     this->useNoMeasureStoppingCriterion();
+}
+
+const IDefaultRuleConfig& AbstractRuleLearner::Config::getDefaultRuleConfig() const {
+    return *defaultRuleConfigPtr_;
 }
 
 const IRuleModelAssemblageConfig& AbstractRuleLearner::Config::getRuleModelAssemblageConfig() const {
@@ -141,6 +146,10 @@ const TimeStoppingCriterionConfig* AbstractRuleLearner::Config::getTimeStoppingC
 
 const MeasureStoppingCriterionConfig* AbstractRuleLearner::Config::getMeasureStoppingCriterionConfig() const {
     return measureStoppingCriterionConfigPtr_.get();
+}
+
+void AbstractRuleLearner::Config::useDefaultRule() {
+    defaultRuleConfigPtr_ = std::make_unique<DefaultRuleConfig>(true);
 }
 
 ISequentialRuleModelAssemblageConfig& AbstractRuleLearner::Config::useSequentialRuleModelAssemblage() {

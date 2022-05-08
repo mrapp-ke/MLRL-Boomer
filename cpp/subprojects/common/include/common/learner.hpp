@@ -16,6 +16,7 @@
 #include "common/output/predictor_classification.hpp"
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
+#include "common/rule_induction/default_rule.hpp"
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_induction/rule_model_assemblage_sequential.hpp"
 #include "common/sampling/feature_sampling_without_replacement.hpp"
@@ -97,6 +98,14 @@ class MLRLCOMMON_API IRuleLearner {
             friend class AbstractRuleLearner;
 
             private:
+
+                /**
+                 * Returns the configuration of the default that is included in a rule-based model.
+                 *
+                 * @return A reference to an object of type `IDefaultRuleConfig` that specifies the configuration of the
+                 *         default rule that is included in a rule-based model
+                 */
+                virtual const IDefaultRuleConfig& getDefaultRuleConfig() const = 0;
 
                 /**
                  * Returns the configuration of the algorithm for the induction of several rules that are added to a
@@ -236,6 +245,11 @@ class MLRLCOMMON_API IRuleLearner {
             public:
 
                 virtual ~IConfig() { };
+
+                /**
+                 * Configures the rule learner to induce a default rule.
+                 */
+                virtual void useDefaultRule() = 0;
 
                 /**
                  * Configures the rule learner to use an algorithm that sequentially induces several rules, optionally
@@ -699,6 +713,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
             protected:
 
                 /**
+                 * An unique pointer that stores the configuration of the default rule that is included in a rule-based
+                 * model.
+                 */
+                std::unique_ptr<IDefaultRuleConfig> defaultRuleConfigPtr_;
+
+                /**
                  * An unique pointer that stores the configuration of the method for the induction of several rules that
                  * are added to a rule-based model.
                  */
@@ -786,6 +806,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
             private:
 
+                const IDefaultRuleConfig& getDefaultRuleConfig() const override final;
+
                 const IRuleModelAssemblageConfig& getRuleModelAssemblageConfig() const override final;
 
                 const IRuleInductionConfig& getRuleInductionConfig() const override final;
@@ -819,6 +841,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
             public:
 
                 Config();
+
+                void useDefaultRule() override;
 
                 ISequentialRuleModelAssemblageConfig& useSequentialRuleModelAssemblage() override;
 
