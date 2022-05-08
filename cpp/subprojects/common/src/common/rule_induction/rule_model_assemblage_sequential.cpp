@@ -254,20 +254,13 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
 
 };
 
-SequentialRuleModelAssemblageConfig::SequentialRuleModelAssemblageConfig()
-    : useDefaultRule_(true) {
+SequentialRuleModelAssemblageConfig::SequentialRuleModelAssemblageConfig(
+        const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr)
+    : defaultRuleConfigPtr_(defaultRuleConfigPtr) {
 
-}
-
-bool SequentialRuleModelAssemblageConfig::isDefaultRuleUsed() const {
-    return useDefaultRule_;
-}
-
-ISequentialRuleModelAssemblageConfig& SequentialRuleModelAssemblageConfig::setUseDefaultRule(bool useDefaultRule) {
-    useDefaultRule_ = useDefaultRule;
-    return *this;
 }
 
 std::unique_ptr<IRuleModelAssemblageFactory> SequentialRuleModelAssemblageConfig::createRuleModelAssemblageFactory() const {
-    return std::make_unique<SequentialRuleModelAssemblageFactory>(useDefaultRule_);
+    bool useDefaultRule = defaultRuleConfigPtr_->isDefaultRuleUsed();
+    return std::make_unique<SequentialRuleModelAssemblageFactory>(useDefaultRule);
 }

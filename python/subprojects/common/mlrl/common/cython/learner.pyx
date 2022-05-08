@@ -18,7 +18,6 @@ from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartit
     LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
 from mlrl.common.cython.rule_induction cimport TopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
-from mlrl.common.cython.rule_model_assemblage cimport SequentialRuleModelAssemblageConfig
 from mlrl.common.cython.stopping_criterion cimport SizeStoppingCriterionConfig, TimeStoppingCriterionConfig, \
     MeasureStoppingCriterionConfig
 
@@ -62,19 +61,13 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useDefaultRule()
 
-    def use_sequential_rule_model_assemblage(self) -> SequentialRuleModelAssemblageConfig:
+    def use_sequential_rule_model_assemblage(self):
         """
         Configures the rule learner to use an algorithm that sequentially induces several rules, optionally starting
         with a default rule, that are added to a rule-based model.
-
-        :return: A `SequentialRuleModelAssemblageConfig` that allows further configuration of the algorithm for the
-                 induction of several rules that are added to a rule-based model
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef ISequentialRuleModelAssemblageConfig* config_ptr = &rule_learner_config_ptr.useSequentialRuleModelAssemblage()
-        cdef SequentialRuleModelAssemblageConfig config = SequentialRuleModelAssemblageConfig.__new__(SequentialRuleModelAssemblageConfig)
-        config.config_ptr = config_ptr
-        return config
+        rule_learner_config_ptr.useSequentialRuleModelAssemblage()
 
     def use_top_down_rule_induction(self) -> TopDownRuleInductionConfig:
         """
