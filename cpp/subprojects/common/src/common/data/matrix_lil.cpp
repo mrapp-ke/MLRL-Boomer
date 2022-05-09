@@ -7,7 +7,6 @@
 
 static const uint32 MAX_INDEX = std::numeric_limits<uint32>::max();
 
-
 template<typename T>
 static inline void clearRow(std::vector<IndexedValue<T>>& values, uint32* indices) {
     while (!values.empty()) {
