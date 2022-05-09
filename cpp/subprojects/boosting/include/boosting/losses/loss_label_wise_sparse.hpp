@@ -21,6 +21,9 @@ namespace boosting {
 
             virtual ~ISparseLabelWiseLoss() override { };
 
+            // // Keep "updateLabelWiseStatistics" functions from the parent class rather than hiding them
+            using ILabelWiseLoss::updateLabelWiseStatistics;
+
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
              * provided by a `CompleteIndexVector`.
