@@ -1,7 +1,8 @@
 #include "boosting/data/statistic_vector_label_wise_sparse.hpp"
+#include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
+#include "statistic_vector_label_wise_sparse_common.hpp"
 #include <cstdlib>
-#include <iostream>  // TODO Remove
 
 
 namespace boosting {
@@ -100,66 +101,88 @@ namespace boosting {
     }
 
     void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticVector& vector) {
-        // TODO Implement
-        std::cout << "SparseLabelWiseStatisticVector::add(SparseLabelWiseStatisticVector)\n";
-        std::exit(-1);
+        sumOfWeights_ += vector.sumOfWeights_;
+        addToArray(statistics_, vector.statistics_, numElements_);
     }
 
     void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticConstView& view, uint32 row) {
-        // TODO Implement
-        std::cout << "SparseLabelWiseStatisticVector::add(SparseLabelWiseStatisticConstView)\n";
-        std::exit(-1);
+        sumOfWeights_ += 1;
+        addToSparseLabelWiseStatisticVector(statistics_, view.row_cbegin(row), view.row_cend(row), 1);
     }
 
     void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticConstView& view, uint32 row,
                                              float64 weight) {
-        // TODO Implement
-        std::cout << "SparseLabelWiseStatisticVector::add(SparseLabelWiseStatisticConstView, weight)\n";
-        std::exit(-1);
+        if (weight != 0) {
+            sumOfWeights_ += weight;
+            addToSparseLabelWiseStatisticVector(statistics_, view.row_cbegin(row), view.row_cend(row), weight);
+        }
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
                                                      const CompleteIndexVector& indices, float64 weight) {
-        // TODO Implement
-        std::cout << "SparseLabelWiseStatisticVector::addToSubset(CompleteIndexVector)\n";
-        std::exit(-1);
+        if (weight != 0) {
+            sumOfWeights_ += weight;
+            addToSparseLabelWiseStatisticVector(statistics_, view.row_cbegin(row), view.row_cend(row), weight);
+        }
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
                                                      const PartialIndexVector& indices, float64 weight) {
-        // TODO Implement
-        std::cout << "SparseLabelWiseStatisticVector::addToSubset(PartialIndexVector)\n";
-        std::exit(-1);
+        if (weight != 0) {
+            sumOfWeights_ += weight;
+            SparseLabelWiseStatisticConstView::Row viewRow = view.getRow(row);
+            PartialIndexVector::const_iterator indexIterator = indices.cbegin();
+            uint32 numElements = indices.getNumElements();
+
+            for (uint32 i = 0; i < numElements; i++) {
+                uint32 index = indexIterator[i];
+                const IndexedValue<Tuple<float64>>* entry = viewRow[index];
+
+                if (entry) {
+                    const Tuple<float64>& tuple = entry->value;
+                    Triple<float64>& triple = statistics_[i];
+                    triple.first += (tuple.first * weight);
+                    triple.second += (tuple.second * weight);
+                    triple.third += weight;
+                }
+            }
+        }
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
                                                      const CompleteIndexVector& indices, float64 weight) {
-        // TODO Implement
-        std::cout << "SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseHistogramConstView, CompleteIndexVector)\n";
-        std::exit(-1);
+        SparseLabelWiseHistogramConstView::weight_const_iterator weightIterator = view.weights_cbegin();
+        float64 binWeight = weightIterator[row] * weight;
+
+        if (binWeight != 0) {
+            sumOfWeights_ += binWeight;
+            addToArray(statistics_, view.row_cbegin(row), numElements_, weight);
+        }
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
                                                      const PartialIndexVector& indices, float64 weight) {
-        // TODO Implement
-        std::cout << "SparseLabelWiseStatisticVector::addToSubset(SparseLabelWiseHistogramConstView, PartialIndexVector)\n";
-        std::exit(-1);
+        SparseLabelWiseHistogramConstView::weight_const_iterator weightIterator = view.weights_cbegin();
+        float64 binWeight = weightIterator[row] * weight;
+
+        if (binWeight != 0) {
+            sumOfWeights_ += binWeight;
+            addToArray(statistics_, view.row_cbegin(row), indices.cbegin(), indices.getNumElements(), weight);
+        }
     }
 
     void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
                                                     const CompleteIndexVector& firstIndices,
                                                     const SparseLabelWiseStatisticVector& second) {
-        // TODO Implement
-        std::cout << "SparseLabelWiseStatisticVector::difference(CompleteIndexVector)\n";
-        std::exit(-1);
+        sumOfWeights_ = first.sumOfWeights_ - second.sumOfWeights_;
+        setArrayToDifference(statistics_, first.statistics_, second.statistics_, numElements_);
     }
 
     void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
                                                     const PartialIndexVector& firstIndices,
                                                     const SparseLabelWiseStatisticVector& second) {
-        // TODO Implement
-        std::cout << "SparseLabelWiseStatisticVector::difference(PartialIndexVector)\n";
-        std::exit(-1);
+        sumOfWeights_ = first.sumOfWeights_ - second.sumOfWeights_;
+        setArrayToDifference(statistics_, first.statistics_, second.statistics_, firstIndices.cbegin(), numElements_);
     }
 
 }

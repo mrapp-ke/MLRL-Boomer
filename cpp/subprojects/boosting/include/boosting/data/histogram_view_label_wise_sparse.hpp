@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/data/triple.hpp"
-#include "common/data/vector_dense.hpp"
 #include "boosting/data/statistic_view_label_wise_sparse.hpp"
 
 
@@ -19,71 +18,75 @@ namespace boosting {
         protected:
 
             /**
+             * The number of rows in the view.
+             */
+            uint32 numRows_;
+
+            /**
              * The number of columns in the view.
              */
             uint32 numCols_;
 
             /**
-             * A pointer to an object of type `LilMatrix` that stores the gradients and Hessians.
+             * A pointer to an array that stores the gradients and Hessians of each bin.
              */
-            LilMatrix<Triple<float64>>* histogram_;
+            Triple<float64>* statistics_;
 
             /**
-             * A pointer to an object of type `DenseVector` that stores the weight of each bin.
+             * A pointer to an array that stores the weight of each bin.
              */
-            DenseVector<float64>* weights_;
+            float64* weights_;
 
         public:
 
             /**
-             * @param numCols   The number of columns in the view
-             * @param histogram A pointer to an object of type `LilMatrix` that stores the gradients and Hessians
-             * @param weights   A pointer to an object of type `DenseVector` that stores the weight of each bin
+             * @param numRows       The number of rows in the view
+             * @param numCols       The number of columns in the view
+             * @param statistics    A pointer to an array that stores the gradients and Hessians of each bin
+             * @param weights       A pointer to an array that stores the weight of each bin
              */
-            SparseLabelWiseHistogramConstView(uint32 numCols, LilMatrix<Triple<float64>>* histogram,
-                                              DenseVector<float64>* weights);
+            SparseLabelWiseHistogramConstView(uint32 numRows, uint32 numCols, Triple<float64>* statistics,
+                                              float64* weights);
 
             /**
-             * The type of a row.
+             * An iterator that provides read-only access to the gradients and Hessians.
              */
-            typedef LilMatrix<Triple<float64>>::Row Row;
+            typedef const Triple<float64>* const_iterator;
 
             /**
-             * An iterator that provides read-only access to the elements in the view.
+             * An iterator that provides read-only access to the weights that correspond to individual bins.
              */
-            typedef Row::const_iterator const_iterator;
+            typedef const float64* weight_const_iterator;
 
             /**
-             * Returns a `const_iterator` to the beginning of a specific row.
+             * Returns a `const_iterator` to the beginning of the gradients and Hessians at a specific row.
              *
              * @param row   The row
-             * @return      A `const_iterator` to the beginning
+             * @return      A `const_iterator` to the beginning of the row
              */
             const_iterator row_cbegin(uint32 row) const;
 
-            /**
-             * Returns a `const_iterator` to the end of a specific row.
+            /*
+             * Returns a `const_iterator` to the end of the gradients and Hessians at a specific row.
              *
              * @param row   The row
-             * @return      A `const_iterator` to the end
+             * @return      A `const_iterator` to the end of the row
              */
             const_iterator row_cend(uint32 row) const;
 
             /**
-             * Returns a specific row.
+             * Returns a `weight_const_iterator` to the beginning of the weights that correspond to individual bins.
              *
-             * @param row   The index of the row to be returned
-             * @return      The row
+             * @return A `weight_const_iterator` to the beginning
              */
-            const Row getRow(uint32 row) const;
+            weight_const_iterator weights_cbegin() const;
 
             /**
-             * Returns the weight of a specific row.
+             * Returns a `weight_const_iterator` to the end of the weights that correspond to individual bins.
              *
-             * @param row   The row
-             * @return      The weight of the row
+             * @return A `weight_const_iterator` to the end
              */
-            const float64 getWeight(uint32 row) const;
+            weight_const_iterator weights_cend() const;
 
             /**
              * Returns the number of rows in the view.
@@ -111,20 +114,12 @@ namespace boosting {
         public:
 
             /**
-             * @param numCols   The number of columns in the view
-             * @param histogram A pointer to an object of type `LilMatrix` that stores the gradients and Hessians
-             * @param weights   A pointer to an object of type `DenseVector` that stores the weight of each bin
+             * @param numRows       The number of rows in the view
+             * @param numCols       The number of columns in the view
+             * @param statistics    A pointer to an array that stores the gradients and Hessians of each bin
+             * @param weights       A pointer to an array that stores the weight of each bin
              */
-            SparseLabelWiseHistogramView(uint32 numCols, LilMatrix<Triple<float64>>* histogram,
-                                         DenseVector<float64>* weights);
-
-            /**
-             * Returns a specific row.
-             *
-             * @param row   The index of the row to be returned
-             * @return      The row
-             */
-            Row getRow(uint32 row);
+            SparseLabelWiseHistogramView(uint32 numRows, uint32 numCols, Triple<float64>* statistics, float64* weights);
 
             /**
              * Sets all gradients and Hessians in the matrix to zero.

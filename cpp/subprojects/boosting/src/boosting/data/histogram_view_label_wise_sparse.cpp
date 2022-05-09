@@ -1,62 +1,57 @@
 #include "boosting/data/histogram_view_label_wise_sparse.hpp"
 #include "common/data/arrays.hpp"
-#include <iostream>  // TODO Remove
+#include "statistic_vector_label_wise_sparse_common.hpp"
 
 
 namespace boosting {
 
-    SparseLabelWiseHistogramConstView::SparseLabelWiseHistogramConstView(uint32 numCols,
-                                                                         LilMatrix<Triple<float64>>* histogram,
-                                                                         DenseVector<float64>* weights)
-        : numCols_(numCols), histogram_(histogram), weights_(weights) {
+    SparseLabelWiseHistogramConstView::SparseLabelWiseHistogramConstView(uint32 numRows, uint32 numCols,
+                                                                         Triple<float64>* statistics, float64* weights)
+        : numRows_(numRows), numCols_(numCols), statistics_(statistics), weights_(weights) {
 
     }
 
     SparseLabelWiseHistogramConstView::const_iterator SparseLabelWiseHistogramConstView::row_cbegin(uint32 row) const {
-        return histogram_->row_cbegin(row);
+        return &statistics_[row * numCols_];
     }
 
     SparseLabelWiseHistogramConstView::const_iterator SparseLabelWiseHistogramConstView::row_cend(uint32 row) const {
-        return histogram_->row_cend(row);
+        return &statistics_[(row + 1) * numCols_];
     }
 
-    const SparseLabelWiseHistogramConstView::Row SparseLabelWiseHistogramConstView::getRow(uint32 row) const {
-        return histogram_->getRow(row);
+    SparseLabelWiseHistogramConstView::weight_const_iterator SparseLabelWiseHistogramConstView::weights_cbegin() const {
+        return weights_;
     }
 
-    const float64 SparseLabelWiseHistogramConstView::getWeight(uint32 row) const {
-        return (*weights_)[row];
+    SparseLabelWiseHistogramConstView::weight_const_iterator SparseLabelWiseHistogramConstView::weights_cend() const {
+        return &weights_[numRows_];
     }
 
     uint32 SparseLabelWiseHistogramConstView::getNumRows() const {
-        return histogram_->getNumRows();
+        return numRows_;
     }
 
     uint32 SparseLabelWiseHistogramConstView::getNumCols() const {
         return numCols_;
     }
 
-    SparseLabelWiseHistogramView::SparseLabelWiseHistogramView(uint32 numCols, LilMatrix<Triple<float64>>* histogram,
-                                                               DenseVector<float64>* weights)
-        : SparseLabelWiseHistogramConstView(numCols, histogram, weights) {
+    SparseLabelWiseHistogramView::SparseLabelWiseHistogramView(uint32 numRows, uint32 numCols,
+                                                               Triple<float64>* statistics, float64* weights)
+        : SparseLabelWiseHistogramConstView(numRows, numCols, statistics, weights) {
 
-    }
-
-    SparseLabelWiseHistogramView::Row SparseLabelWiseHistogramView::getRow(uint32 row) {
-        return histogram_->getRow(row);
     }
 
     void SparseLabelWiseHistogramView::clear() {
-        // TODO Implement
-        std::cout << "SparseLabelWiseHistogramView::clear()\n";
-        std::exit(-1);
+        setArrayToZeros(weights_, numRows_);
+        setArrayToZeros(statistics_, numRows_ * numCols_);
     }
 
     void SparseLabelWiseHistogramView::addToRow(uint32 row, SparseLabelWiseStatisticConstView::const_iterator begin,
                                                 SparseLabelWiseStatisticConstView::const_iterator end, float64 weight) {
-        // TODO Implement
-        std::cout << "SparseLabelWiseHistogramView::addToRow()\n";
-        std::exit(-1);
+        if (weight != 0) {
+            weights_[row] += weight;
+            addToSparseLabelWiseStatisticVector(&statistics_[row * numCols_], begin, end, weight);
+        }
     }
 
 }
