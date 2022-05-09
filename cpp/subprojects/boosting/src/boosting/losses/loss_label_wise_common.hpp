@@ -167,7 +167,7 @@ namespace boosting {
 
                 for (uint32 i = 0; i < numLabels; i++) {
                     float64 predictedScore = scoreIterator[i];
-                    bool trueLabel= *labelIterator;
+                    bool trueLabel = *labelIterator;
                     float64 score = (*evaluateFunction_)(trueLabel, predictedScore);
                     mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
                     labelIterator++;
