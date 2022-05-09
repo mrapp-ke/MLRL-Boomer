@@ -143,6 +143,9 @@ namespace boosting {
 
             }
 
+            // Keep "updateLabelWiseStatistics" functions from the parent class rather than hiding them
+            using LabelWiseLoss::updateLabelWiseStatistics;
+
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                                            const LilMatrix<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
