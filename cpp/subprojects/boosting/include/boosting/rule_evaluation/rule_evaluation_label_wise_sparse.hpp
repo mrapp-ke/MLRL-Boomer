@@ -20,6 +20,9 @@ namespace boosting {
 
             virtual ~ISparseLabelWiseRuleEvaluationFactory() override { };
 
+            // Keep "create" functions from the parent class rather than hiding them
+            using ILabelWiseRuleEvaluationFactory::create;
+
             /**
              * Creates a new instance of the class `IRuleEvaluation` that allows to calculate the predictions of rules
              * that predict for all available labels, based on the gradients and Hessians that are stored by a
