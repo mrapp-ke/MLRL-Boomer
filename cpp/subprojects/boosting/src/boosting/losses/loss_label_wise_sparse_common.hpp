@@ -3,6 +3,11 @@
  */
 #pragma once
 
+#ifdef _WIN32
+    #pragma warning( push )
+    #pragma warning( disable : 4250 )
+#endif
+
 #include "boosting/losses/loss_label_wise_sparse.hpp"
 #include "common/iterator/non_zero_index_forward_iterator.hpp"
 #include "loss_label_wise_common.hpp"
@@ -258,3 +263,7 @@ namespace boosting {
     };
 
 }
+
+#ifdef _WIN32
+    #pragma warning ( pop )
+#endif
