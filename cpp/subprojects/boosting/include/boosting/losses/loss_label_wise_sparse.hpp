@@ -21,7 +21,7 @@ namespace boosting {
 
             virtual ~ISparseLabelWiseLoss() override { };
 
-            // // Keep "updateLabelWiseStatistics" functions from the parent class rather than hiding them
+            // Keep "updateLabelWiseStatistics" functions from the parent class rather than hiding them
             using ILabelWiseLoss::updateLabelWiseStatistics;
 
             /**
