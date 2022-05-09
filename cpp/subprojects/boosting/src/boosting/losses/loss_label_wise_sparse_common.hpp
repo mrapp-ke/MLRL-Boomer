@@ -1,3 +1,8 @@
+/*
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
+ */
+#pragma once
+
 #include "boosting/losses/loss_label_wise_sparse.hpp"
 #include "common/iterator/non_zero_index_forward_iterator.hpp"
 #include "loss_label_wise_common.hpp"
