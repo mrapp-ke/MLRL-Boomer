@@ -32,10 +32,28 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+            const ISparseLabelWiseLossConfig& lossConfig) const {
+        if (labelMatrix.getNumCols() > 1) {
+            SingleLabelHeadConfig headConfig(labelBinningConfigPtr_, multiThreadingConfigPtr_,
+                                             l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
+            return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
+        } else {
+            CompleteHeadConfig headConfig(labelBinningConfigPtr_, multiThreadingConfigPtr_, l1RegularizationConfigPtr_,
+                                          l2RegularizationConfigPtr_);
+            return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
+        }
+    }
+
+    std::unique_ptr<IStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
+            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
             const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         CompleteHeadConfig headConfig(labelBinningConfigPtr_, multiThreadingConfigPtr_, l1RegularizationConfigPtr_,
                                       l2RegularizationConfigPtr_);
         return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig, blas, lapack);
+    }
+
+    bool AutomaticHeadConfig::isPartial() const {
+        return lossConfigPtr_->isDecomposable();
     }
 
     bool AutomaticHeadConfig::isSingleLabel() const {

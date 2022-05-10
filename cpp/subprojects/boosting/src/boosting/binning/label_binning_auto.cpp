@@ -17,13 +17,13 @@ namespace boosting {
             .createLabelWiseCompleteRuleEvaluationFactory();
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createLabelWiseFixedPartialRuleEvaluationFactory(
+    std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createLabelWiseFixedPartialRuleEvaluationFactory(
             float32 labelRatio, uint32 minLabels, uint32 maxLabels) const {
         return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
             .createLabelWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels, maxLabels);
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(
+    std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> AutomaticLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(
             float32 threshold, float32 exponent) const {
         return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
             .createLabelWiseDynamicPartialRuleEvaluationFactory(threshold, exponent);

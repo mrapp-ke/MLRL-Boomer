@@ -101,6 +101,10 @@ namespace boosting {
                 return false;
             }
 
+            bool isSparse() const override {
+                return true;
+            }
+
     };
 
 }

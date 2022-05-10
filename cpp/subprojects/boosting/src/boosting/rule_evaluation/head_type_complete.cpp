@@ -38,6 +38,13 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+            const ISparseLabelWiseLossConfig& lossConfig) const {
+        return this->createStatisticsProviderFactory(featureMatrix, labelMatrix,
+                                                     static_cast<const ILabelWiseLossConfig&>(lossConfig));
+    }
+
+    std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
+            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
             const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
         std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.createExampleWiseLossFactory();
@@ -53,6 +60,10 @@ namespace boosting {
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
             std::move(pruningRuleEvaluationFactoryPtr), numThreads);
+    }
+
+    bool CompleteHeadConfig::isPartial() const {
+        return false;
     }
 
     bool CompleteHeadConfig::isSingleLabel() const {

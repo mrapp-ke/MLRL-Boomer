@@ -21,7 +21,7 @@ namespace boosting {
         return std::make_unique<LabelWiseCompleteRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluationFactory> NoLabelBinningConfig::createLabelWiseFixedPartialRuleEvaluationFactory(
+    std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> NoLabelBinningConfig::createLabelWiseFixedPartialRuleEvaluationFactory(
             float32 labelRatio, uint32 minLabels, uint32 maxLabels) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
@@ -29,7 +29,7 @@ namespace boosting {
             labelRatio, minLabels, maxLabels, l1RegularizationWeight, l2RegularizationWeight);
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluationFactory> NoLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(
+    std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> NoLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(
             float32 threshold, float32 exponent) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();

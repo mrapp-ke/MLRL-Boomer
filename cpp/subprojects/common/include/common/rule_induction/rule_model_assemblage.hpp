@@ -121,8 +121,12 @@ class IRuleModelAssemblageConfig {
         /**
          * Creates and returns a new object of type `IRuleModelAssemblageFactory` according to specified configuration.
          *
-         * @return An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been created
+         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
+         *                      the labels of the training examples
+         * @return              An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been
+         *                      created
          */
-        virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory() const = 0;
+        virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
+            const IRowWiseLabelMatrix& labelMatrix) const = 0;
 
 };

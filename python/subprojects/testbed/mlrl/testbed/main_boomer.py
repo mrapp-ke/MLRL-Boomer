@@ -3,14 +3,16 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from argparse import ArgumentParser
 
-from mlrl.boosting.boosting_learners import Boomer, DEFAULT_RULE_VALUES, HEAD_TYPE_VALUES, EARLY_STOPPING_VALUES, \
-    LABEL_BINNING_VALUES, LOSS_VALUES, CLASSIFICATION_PREDICTOR_VALUES, PROBABILITY_PREDICTOR_VALUES, PARALLEL_VALUES, \
-    FEATURE_BINNING_VALUES
+from mlrl.boosting.boosting_learners import Boomer, STATISTIC_FORMAT_VALUES, DEFAULT_RULE_VALUES, HEAD_TYPE_VALUES, \
+    EARLY_STOPPING_VALUES, LABEL_BINNING_VALUES, LOSS_VALUES, CLASSIFICATION_PREDICTOR_VALUES, \
+    PROBABILITY_PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
 from mlrl.common.rule_learners import AUTOMATIC
 from mlrl.common.strings import format_dict_keys, format_string_set
 from mlrl.testbed.args import add_rule_learner_arguments, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, \
     PARAM_PARALLEL_STATISTIC_UPDATE
 from mlrl.testbed.runnables import RuleLearnerRunnable
+
+PARAM_STATISTIC_FORMAT = '--statistic-format'
 
 PARAM_DEFAULT_RULE = '--default-rule'
 
@@ -40,6 +42,7 @@ class BoomerRunnable(RuleLearnerRunnable):
                       feature_format=args.feature_format,
                       label_format=args.label_format,
                       prediction_format=args.prediction_format,
+                      statistic_format=args.statistic_format,
                       default_rule=args.default_rule,
                       rule_model_assemblage=args.rule_model_assemblage,
                       rule_induction=args.rule_induction,
@@ -67,6 +70,12 @@ class BoomerRunnable(RuleLearnerRunnable):
 
 def __add_arguments(parser: ArgumentParser):
     add_rule_learner_arguments(parser)
+    parser.add_argument(PARAM_STATISTIC_FORMAT, type=str,
+                        help='The format to be used for the representation of gradients and Hessians. Must be one of '
+                             + format_string_set(STATISTIC_FORMAT_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
+                             + 'suitable format is chosen automatically based on the parameters ' + PARAM_LOSS + ', '
+                             + PARAM_HEAD_TYPE + ', ' + PARAM_DEFAULT_RULE + ' and the characteristics of the label '
+                             + 'matrix.')
     parser.add_argument(PARAM_DEFAULT_RULE, type=str,
                         help='Whether a default rule should be induced or not. Must be one of '
                              + format_string_set(DEFAULT_RULE_VALUES) + '.')
