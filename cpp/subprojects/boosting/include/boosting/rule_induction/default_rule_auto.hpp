@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/rule_induction/default_rule.hpp"
+#include "boosting/losses/loss.hpp"
 #include "boosting/rule_evaluation/head_type.hpp"
 #include "boosting/statistics/statistic_format.hpp"
 
@@ -20,6 +21,8 @@ namespace boosting {
 
             const std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr_;
 
+            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+
             const std::unique_ptr<IHeadConfig>& headConfigPtr_;
 
         public:
@@ -27,10 +30,13 @@ namespace boosting {
             /**
              * @param statisticsConfigPtr   A reference to an unique pointer that stores the configuration of the
              *                              statistics
+             * @param lossConfigPtr         A reference to an unique pointer that stores the configuration of the loss
+             *                              function
              * @param headConfigPtr         A reference to an unique pointer that stores the configuration of the rule
              *                              heads
              */
             AutomaticDefaultRuleConfig(const std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr,
+                                       const std::unique_ptr<ILossConfig>& lossConfigPtr,
                                        const std::unique_ptr<IHeadConfig>& headConfigPtr);
 
             bool isDefaultRuleUsed(const IRowWiseLabelMatrix& labelMatrix) const override;
