@@ -96,7 +96,7 @@ namespace boosting {
     }
 
     void BoostingRuleLearner::Config::useAutomaticDefaultRule() {
-        defaultRuleConfigPtr_ = std::make_unique<AutomaticDefaultRuleConfig>(headConfigPtr_);
+        defaultRuleConfigPtr_ = std::make_unique<AutomaticDefaultRuleConfig>(statisticsConfigPtr_, headConfigPtr_);
     }
 
     void BoostingRuleLearner::Config::useAutomaticFeatureBinning() {

@@ -14,4 +14,12 @@ namespace boosting {
         return lossConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack, true);
     }
 
+    bool SparseStatisticsConfig::isDense() const {
+        return false;
+    }
+
+    bool SparseStatisticsConfig::isSparse() const {
+        return true;
+    }
+
 }

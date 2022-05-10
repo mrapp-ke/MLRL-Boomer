@@ -19,4 +19,12 @@ namespace boosting {
                                                                preferSparseStatistics);
     }
 
+    bool AutomaticStatisticsConfig::isDense() const {
+        return false;
+    }
+
+    bool AutomaticStatisticsConfig::isSparse() const {
+        return false;
+    }
+
 }
