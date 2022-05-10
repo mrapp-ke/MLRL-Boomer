@@ -15,7 +15,8 @@ namespace boosting {
         } else if (statisticsConfigPtr_->isSparse()) {
             return !lossConfigPtr_->isSparse();
         } else {
-            return !shouldSparseStatisticsBePreferred(labelMatrix, false, headConfigPtr_->isPartial());
+            return !lossConfigPtr_->isSparse()
+                   || !shouldSparseStatisticsBePreferred(labelMatrix, false, headConfigPtr_->isPartial());
         }
     }
 
