@@ -31,6 +31,13 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoDefaultRule()
 
+    def use_automatic_default_rule(self):
+        """
+        Configures the rule learner to automatically decide whether a default rule should be induced or not.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAutomaticDefaultRule()
+
     def use_automatic_feature_binning(self):
         """
         Configures the rule learning to automatically decide whether a method for the assignment of numerical feature
@@ -114,6 +121,28 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useCompleteHeads()
+
+    def use_automatic_statistics(self):
+        """
+        Configures the rule learner to automatically decide whether a dense or sparse representation of gradients and
+        Hessians should be used.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAutomaticStatistics()
+
+    def use_dense_statistics(self):
+        """
+        Configures the rule learner to use a dense representation of gradients and Hessians.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useDenseStatistics()
+
+    def use_sparse_statistics(self):
+        """
+        Configures the rule learner to use a sparse representation of gradients and Hessians, if possible.
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useSparseStatistics()
 
     def use_no_l1_regularization(self):
         """

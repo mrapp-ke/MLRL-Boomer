@@ -6,6 +6,6 @@ DefaultRuleConfig::DefaultRuleConfig(bool useDefaultRule)
 
 }
 
-bool DefaultRuleConfig::isDefaultRuleUsed() const {
+bool DefaultRuleConfig::isDefaultRuleUsed(const IRowWiseLabelMatrix& labelMatrix) const {
     return useDefaultRule_;
 }

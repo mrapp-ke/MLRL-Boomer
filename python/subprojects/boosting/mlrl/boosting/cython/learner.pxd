@@ -22,6 +22,8 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useNoDefaultRule()
 
+        void useAutomaticDefaultRule()
+
         void useAutomaticFeatureBinning()
 
         IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
@@ -39,6 +41,12 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         IDynamicPartialHeadConfig& useDynamicPartialHeads()
 
         void useCompleteHeads()
+
+        void useAutomaticStatistics()
+
+        void useDenseStatistics()
+
+        void useSparseStatistics()
 
         void useNoL1Regularization()
 

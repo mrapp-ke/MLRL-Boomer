@@ -50,6 +50,7 @@ The following parameters allow to control the behavior of the algorithm:
 
 * ``default_rule`` (Default value = ``'true'``)
 
+  * ``'auto'`` A default rule that provides a default prediction for all examples is included as the first rule of a model unless it prevents a sparse format for the representation of gradients and Hessians from being used (see parameter ``statistic_format``).
   * ``'true'`` A default rule that provides a default prediction for all examples is included as the first rule of a model.
   * ``'false'`` No default rule is used.
 
@@ -182,6 +183,12 @@ The following parameters allow to control the behavior of the algorithm:
     * ``exponent`` (Default value = ``2.0``) An exponent that is used to weigh the estimated predictive quality for individual labels. E.g., an exponent of 2 means that the estimated predictive quality `q` for a particular label is weighed as ``q^2``. Must be at least 1.
 
   * ``'complete'`` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
+
+* ``statistic_format`` (Default value ``'auto'``)
+
+  * ``'auto'`` The most suitable format for the representation of gradients and Hessians is chosen automatically, depending on the loss function, the type of rule heads, the characteristics of the label matrix and whether a default rule is used or not.
+  * ``'dense'`` A dense format is used for the representation of gradients and Hessians.
+  * ``'sparse'`` A sparse format is used for the representation of gradients and Hessians, if supported by the loss function.
 
 * ``shrinkage`` (Default value = ``0.3``)
 

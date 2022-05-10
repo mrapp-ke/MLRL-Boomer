@@ -260,7 +260,8 @@ SequentialRuleModelAssemblageConfig::SequentialRuleModelAssemblageConfig(
 
 }
 
-std::unique_ptr<IRuleModelAssemblageFactory> SequentialRuleModelAssemblageConfig::createRuleModelAssemblageFactory() const {
-    bool useDefaultRule = defaultRuleConfigPtr_->isDefaultRuleUsed();
+std::unique_ptr<IRuleModelAssemblageFactory> SequentialRuleModelAssemblageConfig::createRuleModelAssemblageFactory(
+        const IRowWiseLabelMatrix& labelMatrix) const {
+    bool useDefaultRule = defaultRuleConfigPtr_->isDefaultRuleUsed(labelMatrix);
     return std::make_unique<SequentialRuleModelAssemblageFactory>(useDefaultRule);
 }

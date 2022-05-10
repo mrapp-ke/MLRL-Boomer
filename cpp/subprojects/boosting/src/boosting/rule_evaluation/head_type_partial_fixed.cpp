@@ -1,6 +1,7 @@
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 #include "boosting/statistics/statistics_provider_example_wise_dense.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
+#include "boosting/statistics/statistics_provider_label_wise_sparse.hpp"
 #include "common/util/validation.hpp"
 
 
@@ -79,6 +80,25 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+            const ISparseLabelWiseLossConfig& lossConfig) const {
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
+        float32 labelRatio = calculateLabelRatio(labelRatio_, labelMatrix);
+        std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr = lossConfig.createSparseLabelWiseLossFactory();
+        std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+            lossConfig.createSparseEvaluationMeasureFactory();
+        std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+            labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(
+                labelRatio, minLabels_, maxLabels_);
+        std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+            labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(
+                labelRatio, minLabels_, maxLabels_);
+        return std::make_unique<SparseLabelWiseStatisticsProviderFactory>(
+            std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+            std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
+    }
+
+    std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
+            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
             const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
         float32 labelRatio = calculateLabelRatio(labelRatio_, labelMatrix);
@@ -97,6 +117,10 @@ namespace boosting {
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
             std::move(pruningRuleEvaluationFactoryPtr), numThreads);
+    }
+
+    bool FixedPartialHeadConfig::isPartial() const {
+        return true;
     }
 
     bool FixedPartialHeadConfig::isSingleLabel() const {

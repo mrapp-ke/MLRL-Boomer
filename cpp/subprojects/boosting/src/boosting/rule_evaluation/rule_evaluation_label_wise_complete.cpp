@@ -12,16 +12,14 @@ namespace boosting {
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::create(
             const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DenseLabelWiseCompleteRuleEvaluation<CompleteIndexVector>>(indexVector,
-                                                                                           l1RegularizationWeight_,
-                                                                                           l2RegularizationWeight_);
+        return std::make_unique<LabelWiseCompleteRuleEvaluation<DenseLabelWiseStatisticVector, CompleteIndexVector>>(
+            indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteRuleEvaluationFactory::create(
             const DenseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
-        return std::make_unique<DenseLabelWiseCompleteRuleEvaluation<PartialIndexVector>>(indexVector,
-                                                                                          l1RegularizationWeight_,
-                                                                                          l2RegularizationWeight_);
+        return std::make_unique<LabelWiseCompleteRuleEvaluation<DenseLabelWiseStatisticVector, PartialIndexVector>>(
+            indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
 }

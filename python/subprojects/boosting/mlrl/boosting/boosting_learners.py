@@ -44,6 +44,10 @@ ARGUMENT_FORCE_STOP = 'force_stop'
 
 ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
+STATISTIC_FORMAT_DENSE = 'dense'
+
+STATISTIC_FORMAT_SPARSE = 'sparse'
+
 HEAD_TYPE_SINGLE = 'single-label'
 
 HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
@@ -80,9 +84,16 @@ PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
 
 PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
 
+STATISTIC_FORMAT_VALUES: Set[str] = {
+    STATISTIC_FORMAT_DENSE,
+    STATISTIC_FORMAT_SPARSE,
+    AUTOMATIC
+}
+
 DEFAULT_RULE_VALUES: Set[str] = {
     BooleanOption.TRUE.value,
-    BooleanOption.FALSE.value
+    BooleanOption.FALSE.value,
+    AUTOMATIC
 }
 
 HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
@@ -150,6 +161,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value,
                  prediction_format: str = SparsePolicy.AUTO.value,
+                 statistic_format: Optional[str] = None,
                  default_rule: Optional[str] = None,
                  rule_model_assemblage: Optional[str] = None,
                  rule_induction: Optional[str] = None,
@@ -174,7 +186,12 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
-        :param default_rule:                Whether a default rule should be induced or not. Must be 'true' or 'false'
+        :param statistic_format:            The format to be used for representation of gradients and Hessians. Must be
+                                            'dense', 'sparse' or 'auto', if the most suitable format should be chosen
+                                            automatically
+        :param default_rule:                Whether a default rule should be induced or not. Must be 'true', 'false' or
+                                            'auto', if it should be decided automatically whether a default rule should
+                                            be induced or not
         :param rule_model_assemblage:       The algorithm that should be used for the induction of several rules. Must
                                             be 'sequential'
         :param rule_induction:              The algorithm that should be used for the induction of individual rules.
@@ -245,6 +262,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             documentation
         """
         super().__init__(random_state, feature_format, label_format, prediction_format)
+        self.statistic_format = statistic_format
         self.default_rule = default_rule
         self.rule_model_assemblage = rule_model_assemblage
         self.rule_induction = rule_induction
@@ -279,6 +297,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_label-format=' + str(self.label_format)
         if self.prediction_format != SparsePolicy.AUTO.value:
             name += '_prediction-format=' + str(self.prediction_format)
+        if self.statistic_format is not None:
+            name += '_statistic-format=' + str(self.statistic_format)
         if self.default_rule is not None:
             name += '_default-rule=' + str(self.default_rule)
         if self.rule_model_assemblage is not None:
@@ -346,6 +366,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.__configure_measure_stopping_criterion(config)
         self.__configure_post_processor(config)
         self.__configure_head_type(config)
+        self.__configure_statistics(config)
         self.__configure_l1_regularization(config)
         self.__configure_l2_regularization(config)
         self.__configure_loss(config)
@@ -360,7 +381,9 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         if default_rule is not None:
             value = parse_param('pruning', default_rule, DEFAULT_RULE_VALUES)
 
-            if value == BooleanOption.TRUE.value:
+            if value == AUTOMATIC:
+                config.use_automatic_default_rule()
+            elif value == BooleanOption.TRUE.value:
                 config.use_default_rule()
             else:
                 config.use_no_default_rule()
@@ -456,6 +479,19 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 c.set_exponent(options.get_float(ARGUMENT_EXPONENT, c.get_exponent()))
             elif value == HEAD_TYPE_COMPLETE:
                 config.use_complete_heads()
+
+    def __configure_statistics(self, config: BoostingRuleLearnerConfig):
+        statistic_format = self.statistic_format
+
+        if statistic_format is not None:
+            value = parse_param("statistic_format", statistic_format, STATISTIC_FORMAT_VALUES)
+
+            if value == AUTOMATIC:
+                config.use_automatic_statistics()
+            elif value == STATISTIC_FORMAT_DENSE:
+                config.use_dense_statistics()
+            elif value == STATISTIC_FORMAT_SPARSE:
+                config.use_sparse_statistics()
 
     def __configure_l1_regularization(self, config: BoostingRuleLearnerConfig):
         l1_regularization_weight = self.l1_regularization_weight

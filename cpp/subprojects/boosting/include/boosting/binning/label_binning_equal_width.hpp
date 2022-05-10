@@ -116,10 +116,10 @@ namespace boosting {
 
             std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory() const override;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseFixedPartialRuleEvaluationFactory(
+            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseFixedPartialRuleEvaluationFactory(
                 float32 labelRatio, uint32 minLabels, uint32 maxLabels) const override;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseDynamicPartialRuleEvaluationFactory(
+            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseDynamicPartialRuleEvaluationFactory(
                 float32 threshold, float32 exponent) const override;
 
             std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseCompleteRuleEvaluationFactory(

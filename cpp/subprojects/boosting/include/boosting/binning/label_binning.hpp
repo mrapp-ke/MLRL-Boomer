@@ -6,7 +6,7 @@
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
-#include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
 #include <functional>
 #include <memory>
 
@@ -150,30 +150,30 @@ namespace boosting {
             virtual std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory() const = 0;
 
             /**
-             * Creates and returns a new object of type `ILabelWiseRuleEvaluationFactory` that allows to calculate the
-             * prediction of partial rules, which predict for a predefined number of labels, according to the specified
-             * configuration.
+             * Creates and returns a new object of type `ISparseLabelWiseRuleEvaluationFactory` that allows to calculate
+             * the prediction of partial rules, which predict for a predefined number of labels, according to the
+             * specified configuration.
              *
              * @param labelRatio    A percentage that specifies for how many labels the rule heads should predict
              * @param minLabels     The minimum number of labels for which the rule heads should predict
              * @param maxLabels     The maximum number of labels for which the rule heads should predict
-             * @return              An unique pointer to an object of type `ILabelWiseRuleEvaluationFactory` that has
-             *                      been created
+             * @return              An unique pointer to an object of type `ISparseLabelWiseRuleEvaluationFactory` that
+             *                      has been created
              */
-            virtual std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseFixedPartialRuleEvaluationFactory(
+            virtual std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseFixedPartialRuleEvaluationFactory(
                 float32 labelRatio, uint32 minLabels, uint32 maxLabels) const = 0;
 
             /**
-             * Creates and returns a new object of type `ILabelWiseRuleEvaluationFactory` that allows to calculate the
-             * prediction of partial rules, which predict for a subset of the available labels that is determined
+             * Creates and returns a new object of type `ISparseLabelWiseRuleEvaluationFactory` that allows to calculate
+             * the prediction of partial rules, which predict for a subset of the available labels that is determined
              * dynamically, according to the specified configuration.
              *
              * @param threshold A threshold that affects for how many labels the rule heads should predict
              * @param exponent  An exponent that is used to weigh the estimated predictive quality for individual labels
-             * @return          An unique pointer to an object of type `ILabelWiseRuleEvaluationFactory` that has been
-             *                  created
+             * @return          An unique pointer to an object of type `ISparseLabelWiseRuleEvaluationFactory` that has
+             *                  been created
              */
-            virtual std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseDynamicPartialRuleEvaluationFactory(
+            virtual std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseDynamicPartialRuleEvaluationFactory(
                 float32 threshold, float32 exponent) const = 0;
 
             /**
