@@ -43,6 +43,10 @@ namespace boosting {
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
                 const Lapack& lapack) const override;
 
+            bool isDense() const override;
+
+            bool isSparse() const override;
+
     };
 
 };

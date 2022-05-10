@@ -53,6 +53,22 @@ namespace boosting {
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
                 const Lapack& lapack) const = 0;
 
+            /**
+             * Returns whether a dense format is used for storing statistics about the labels of the training examples
+             * or not.
+             *
+             * @return True, if a dense format is used, false otherwise
+             */
+            virtual bool isDense() const = 0;
+
+            /**
+             * Returns whether a sparse format is used for storing statistics about the labels of the training examples
+             * or not.
+             *
+             * @return True, if a sparse format is used, false otherwise
+             */
+            virtual bool isSparse() const = 0;
+
     };
 
 };
