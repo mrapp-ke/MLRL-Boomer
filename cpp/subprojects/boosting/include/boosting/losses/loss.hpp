@@ -89,6 +89,14 @@ namespace boosting {
             virtual bool isDecomposable() const = 0;
 
             /**
+             * Returns whether the loss function supports to use a sparse format for storing statistics or not.
+             *
+             * @return True, if the loss function supports to use a sparse format for storing statistics, false
+             *         otherwise
+             */
+            virtual bool isSparse() const = 0;
+
+            /**
              * Returns the default prediction for an example that is not covered by any rules.
              *
              * @return The default prediction

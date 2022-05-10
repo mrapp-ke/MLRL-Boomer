@@ -168,6 +168,10 @@ namespace boosting {
                 return this->createSparseLabelWiseLossFactory();
             }
 
+            bool isSparse() const override final {
+                return true;
+            }
+
     };
 
 }
