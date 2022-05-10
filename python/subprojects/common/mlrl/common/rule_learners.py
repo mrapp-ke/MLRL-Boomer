@@ -393,7 +393,7 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
 
 class MLRuleLearner(Learner, NominalAttributeLearner):
     """
-    A scikit-multilearn implementation of a rule learning algorithm for multi-label classification or ranking.
+    A scikit-learn implementation of a rule learning algorithm for multi-label classification or ranking.
     """
 
     def __init__(self, random_state: int, feature_format: str, label_format: str, prediction_format: str):
