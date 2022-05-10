@@ -141,8 +141,8 @@ PARALLEL_VALUES: Dict[str, Set[str]] = {
 
 class Boomer(MLRuleLearner, ClassifierMixin):
     """
-    A scikit-multilearn implementation of "BOOMER", an algorithm for learning gradient boosted multi-label
-    classification rules.
+    A scikit-learn implementation of "BOOMER", an algorithm for learning gradient boosted multi-label classification
+    rules.
     """
 
     def __init__(self,
