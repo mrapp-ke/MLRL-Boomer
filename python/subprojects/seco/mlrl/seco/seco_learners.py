@@ -79,7 +79,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     def __init__(self, random_state: int = 1,
                  feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value,
-                 prediction_format: str = SparsePolicy.AUTO.value,
+                 predicted_label_format: str = SparsePolicy.AUTO.value,
                  rule_model_assemblage: Optional[str] = None,
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
@@ -146,7 +146,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                                             not. Must be 'true' or 'false'. For additional options refer to the
                                             documentation
         """
-        super().__init__(random_state, feature_format, label_format, prediction_format)
+        super().__init__(random_state, feature_format, label_format, predicted_label_format)
         self.rule_model_assemblage = rule_model_assemblage
         self.rule_induction = rule_induction
         self.max_rules = max_rules
@@ -172,8 +172,8 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             name += '_feature-format=' + str(self.feature_format)
         if self.label_format != SparsePolicy.AUTO.value:
             name += '_label-format=' + str(self.label_format)
-        if self.prediction_format != SparsePolicy.AUTO.value:
-            name += '_prediction-format=' + str(self.prediction_format)
+        if self.predicted_label_format != SparsePolicy.AUTO.value:
+            name += '_predicted-label-format=' + str(self.predicted_label_format)
         if self.rule_model_assemblage is not None:
             name += '_rule-model-assemblage=' + str(self.rule_model_assemblage)
         if self.rule_induction is not None:
