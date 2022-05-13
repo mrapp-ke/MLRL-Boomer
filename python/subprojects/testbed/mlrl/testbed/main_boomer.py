@@ -41,7 +41,7 @@ class BoomerRunnable(RuleLearnerRunnable):
         return Boomer(random_state=args.random_state,
                       feature_format=args.feature_format,
                       label_format=args.label_format,
-                      prediction_format=args.prediction_format,
+                      predicted_label_format=args.predicted_label_format,
                       statistic_format=args.statistic_format,
                       default_rule=args.default_rule,
                       rule_model_assemblage=args.rule_model_assemblage,
