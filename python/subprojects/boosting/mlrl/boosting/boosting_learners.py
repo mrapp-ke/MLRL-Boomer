@@ -160,7 +160,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  random_state: int = 1,
                  feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value,
-                 prediction_format: str = SparsePolicy.AUTO.value,
+                 predicted_label_format: str = SparsePolicy.AUTO.value,
                  statistic_format: Optional[str] = None,
                  default_rule: Optional[str] = None,
                  rule_model_assemblage: Optional[str] = None,
@@ -261,7 +261,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             not. Must be 'true' or 'false'. For additional options refer to the
                                             documentation
         """
-        super().__init__(random_state, feature_format, label_format, prediction_format)
+        super().__init__(random_state, feature_format, label_format, predicted_label_format)
         self.statistic_format = statistic_format
         self.default_rule = default_rule
         self.rule_model_assemblage = rule_model_assemblage
@@ -295,8 +295,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             name += '_feature-format=' + str(self.feature_format)
         if self.label_format != SparsePolicy.AUTO.value:
             name += '_label-format=' + str(self.label_format)
-        if self.prediction_format != SparsePolicy.AUTO.value:
-            name += '_prediction-format=' + str(self.prediction_format)
+        if self.predicted_label_format != SparsePolicy.AUTO.value:
+            name += '_predicted-label-format=' + str(self.predicted_label_format)
         if self.statistic_format is not None:
             name += '_statistic-format=' + str(self.statistic_format)
         if self.default_rule is not None:
