@@ -60,6 +60,8 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
         std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr_;
 
+        std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr_;
+
         bool useDefaultRule_;
 
         std::forward_list<std::unique_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories_;
@@ -95,6 +97,9 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
          * @param postProcessorFactoryPtr       An unique pointer to an object of type `IPostProcessorFactory` that
          *                                      allows to create the implementation to be used for post-processing the
          *                                      predictions of rules
+         * @param postOptimizationFactoryPtr    An unique pointer to an object of type `IPostOptimizationFactory` that
+         *                                      allows to create the implementation to be used for optimizing a
+         *                                      rule-based model once it has been learned
          * @param useDefaultRule                True, if a default rule should be used, False otherwise
          */
         SequentialRuleModelAssemblage(
@@ -108,6 +113,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
             std::unique_ptr<IPruningFactory> pruningFactoryPtr,
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
+            std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
             bool useDefaultRule)
             : modelBuilderFactoryPtr_(std::move(modelBuilderFactoryPtr)),
               statisticsProviderFactoryPtr_(std::move(statisticsProviderFactoryPtr)),
@@ -119,6 +125,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
               partitionSamplingFactoryPtr_(std::move(partitionSamplingFactoryPtr)),
               pruningFactoryPtr_(std::move(pruningFactoryPtr)),
               postProcessorFactoryPtr_(std::move(postProcessorFactoryPtr)),
+              postOptimizationFactoryPtr_(std::move(postOptimizationFactoryPtr)),
               useDefaultRule_(useDefaultRule) {
 
         }
@@ -156,13 +163,14 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             }
 
             // Induce default rule...
-            std::unique_ptr<IModelBuilder> modelBuilderPtr = modelBuilderFactoryPtr_->create();
+            std::unique_ptr<IPostOptimization> postOptimizationPtr = postOptimizationFactoryPtr_->create(
+                *modelBuilderFactoryPtr_);
             std::unique_ptr<IStatisticsProvider> statisticsProviderPtr = labelMatrix.createStatisticsProvider(
                 *statisticsProviderFactoryPtr_);
             std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr_->create();
 
             if (useDefaultRule_) {
-                ruleInductionPtr->induceDefaultRule(statisticsProviderPtr->get(), *modelBuilderPtr);
+                ruleInductionPtr->induceDefaultRule(statisticsProviderPtr->get(), *postOptimizationPtr);
             }
 
             statisticsProviderPtr->switchToRegularRuleEvaluation();
@@ -190,7 +198,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 const IIndexVector& labelIndices = labelSamplingPtr->sample(rng);
                 bool success = ruleInductionPtr->induceRule(*thresholdsPtr, labelIndices, weights, partition,
                                                             *featureSamplingPtr, *pruningPtr, *postProcessorPtr, rng,
-                                                            *modelBuilderPtr);
+                                                            *postOptimizationPtr);
 
                 if (success) {
                     numRules++;
@@ -199,8 +207,12 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 }
             }
 
+            // Post-optimize the model...
+            postOptimizationPtr->optimizeModel(*thresholdsPtr, *ruleInductionPtr, partition, *instanceSamplingPtr,
+                                               *featureSamplingPtr, *pruningPtr, *postProcessorPtr, rng);
+
             // Build and return the final model...
-            return modelBuilderPtr->buildModel(numUsedRules);
+            return postOptimizationPtr->buildModel(numUsedRules);
         }
 
 };
@@ -236,6 +248,7 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
                 std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
                 std::unique_ptr<IPruningFactory> pruningFactoryPtr,
                 std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
+                std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
                 std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const override {
             std::unique_ptr<SequentialRuleModelAssemblage> rule_model_assemblage_ptr =
                 std::make_unique<SequentialRuleModelAssemblage>(
@@ -243,7 +256,8 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
                     std::move(thresholdsFactoryPtr), std::move(ruleInductionFactoryPtr),
                     std::move(labelSamplingFactoryPtr), std::move(instanceSamplingFactoryPtr),
                     std::move(featureSamplingFactoryPtr), std::move(partitionSamplingFactoryPtr),
-                    std::move(pruningFactoryPtr), std::move(postProcessorFactoryPtr), useDefaultRule_);
+                    std::move(pruningFactoryPtr), std::move(postProcessorFactoryPtr),
+                    std::move(postOptimizationFactoryPtr), useDefaultRule_);
 
             for (auto it = stoppingCriterionFactories.begin(); it != stoppingCriterionFactories.end(); it++) {
                 rule_model_assemblage_ptr->addStoppingCriterionFactory(std::move(*it));
