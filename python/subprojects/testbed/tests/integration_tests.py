@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 import subprocess
 from abc import ABC
-from functools import reduce
 from os import path
 from typing import List
 from unittest import TestCase
@@ -70,7 +69,6 @@ class IntegrationTests(ABC, TestCase):
         :param expected_output_dir:         The path of the directory that contains the file with the expected output
         """
         args = builder.build()
-        print(reduce(lambda a, b: a + (' ' if len(a) > 0 else '') + b, args, ''))
         out = subprocess.run(args, capture_output=True, text=True)
         self.assertEqual(out.returncode, 0, 'Command terminated with non-zero exit code')
 
@@ -83,4 +81,3 @@ class IntegrationTests(ABC, TestCase):
 
                     if not line.startswith('INFO Configuration:') and not line.endswith('seconds'):
                         self.assertEqual(stdout[i], line, 'Output differs at line ' + str(i + 1))
-                        print(line)
