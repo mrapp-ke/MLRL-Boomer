@@ -32,9 +32,9 @@ class IStatisticsSubset {
          * currently considered for refining a rule.
          *
          * This function must be called repeatedly for each statistic that is covered by the current condition,
-         * immediately after the invocation of the function `Statistics#createSubset`. Each of these statistics must
-         * have been provided earlier via the function `Statistics#addSampledStatistic` or
-         * `Statistics#updateCoveredStatistic`.
+         * immediately after the invocation of the function `Statistics::createSubset`. Each of these statistics must
+         * have been provided earlier via the function `Statistics::addSampledStatistic` or
+         * `Statistics::updateCoveredStatistic`.
          *
          * This function is supposed to update any internal state of the subset that relates to the statistics that are
          * covered by the current condition, i.e., to compute and store local information that is required by the other
@@ -51,7 +51,7 @@ class IStatisticsSubset {
          * `addToSubset`.
          *
          * This function is supposed to reset the internal state of the subset to the state when the subset was created
-         * via the function `Statistics#createSubset`. When calling this function, the current state must not be purged
+         * via the function `Statistics::createSubset`. When calling this function, the current state must not be purged
          * entirely, but it must be cached and made available for use by the functions `calculateExampleWisePrediction`
          * and `calculateLabelWisePrediction` (if the function argument `accumulated` is set accordingly).
          *
@@ -67,23 +67,23 @@ class IStatisticsSubset {
          * quality of the predicted scores.
          *
          * If the argument `uncovered` is true, the rule is considered to cover all statistics that belong to the
-         * difference between the statistics that have been provided via the function `Statistics#addSampledStatistic`
-         * or `Statistics#updateCoveredStatistic` and the statistics that have been added to the subset via the function
-         * `addToSubset`.
+         * difference between the statistics that have been provided via the function `Statistics::addSampledStatistic`
+         * or `Statistics::updateCoveredStatistic` and the statistics that have been added to the subset via the
+         * function `addToSubset`.
          *
          * If the argument `accumulated` is true, all statistics that have been added since the subset has been created
-         * via the function `Statistics#createSubset` are taken into account even if the function `resetSubset` has been
-         * called since then. If said function has not been invoked, this argument does not have any effect.
+         * via the function `Statistics::createSubset` are taken into account even if the function `resetSubset` has
+         * been called since then. If said function has not been invoked, this argument does not have any effect.
          *
          * @param uncovered     False, if the rule covers all statistics that have been added to the subset via the
          *                      function `addToSubset`, true, if the rule covers all statistics that belong to the
          *                      difference between the statistics that have been provided via the function
-         *                      `Statistics#addSampledStatistic` or `Statistics#updateCoveredStatistic` and the
+         *                      `Statistics::addSampledStatistic` or `Statistics::updateCoveredStatistic` and the
          *                      statistics that have been added via the function `addToSubset`
          * @param accumulated   False, if the rule covers all statistics that have been added to the subset via the
          *                      function `addToSubset` since the function `resetSubset` has been called for the last
          *                      time, true, if the rule covers all examples that have been provided since the subset has
-         *                      been created via the function `Statistics#createSubset`
+         *                      been created via the function `Statistics::createSubset`
          * @return              A reference to an object of type `IScoreVector` that stores the scores to be predicted
          *                      by the rule for each considered label, as well as an overall quality score
          */
