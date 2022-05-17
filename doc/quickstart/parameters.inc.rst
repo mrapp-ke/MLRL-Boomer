@@ -167,6 +167,10 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'none'`` No pruning is used.
   * ``'irep'`` Subsequent conditions of rules may be pruned on a holdout set, similar to the IREP algorithm. Does only have an effect if the parameter ``instance_sampling`` is not set to ``'none'``.
 
+* ``post_optimization`` (Default value = ``'none'``)
+
+  * ``'none'`` No post-optimization is used.
+
 * ``head_type`` (Default value = ``'auto'``)
 
   * ``'auto'`` The most suitable type of rule heads is chosen automatically, depending on the loss function.

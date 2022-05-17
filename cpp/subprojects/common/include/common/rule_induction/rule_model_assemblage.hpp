@@ -8,6 +8,7 @@
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/model/model_builder.hpp"
 #include "common/rule_induction/rule_induction.hpp"
+#include "common/post_optimization/post_optimization.hpp"
 #include "common/sampling/label_sampling.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/sampling/feature_sampling.hpp"
@@ -88,6 +89,9 @@ class IRuleModelAssemblageFactory {
          * @param postProcessorFactoryPtr       An unique pointer to an object of type `IPostProcessorFactory` that
          *                                      allows to create the implementation to be used for post-processing the
          *                                      predictions of rules
+         * @param postOptimizationFactoryPtr    An unique pointer to an object of type `IPostOptimizationFactory` that
+         *                                      allows to create the implementation to be used for optimizing a
+         *                                      rule-based model once it has been learned
          * @param stoppingCriterionFactories    A reference to a `std::forward_list` that stores unique pointers to
          *                                      objects of type `IStoppingCriterionFactory` that allow to create the
          *                                      implementations to be used to decide whether additional rules should be
@@ -104,6 +108,7 @@ class IRuleModelAssemblageFactory {
             std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
             std::unique_ptr<IPruningFactory> pruningFactoryPtr,
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
+            std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
             std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const = 0;
 
 };

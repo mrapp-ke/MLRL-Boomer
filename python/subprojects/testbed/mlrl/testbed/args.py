@@ -10,7 +10,7 @@ from enum import Enum
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy, RULE_MODEL_ASSEMBLAGE_VALUES, RULE_INDUCTION_VALUES, \
     LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, \
-    PRUNING_VALUES, PARALLEL_VALUES
+    PRUNING_VALUES, POST_OPTIMIZATION_VALUES, PARALLEL_VALUES
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 
 PARAM_LOG_LEVEL = '--log-level'
@@ -82,6 +82,8 @@ PARAM_PARTITION_SAMPLING = '--holdout'
 PARAM_PRUNING = '--pruning'
 
 PARAM_RULE_MODEL_ASSEMBLAGE = '--rule-model-assemblage'
+
+PARAM_POST_OPTIMIZATION = '--post-optimization'
 
 PARAM_RULE_INDUCTION = '--rule-induction'
 
@@ -276,6 +278,9 @@ def add_rule_learner_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_RULE_MODEL_ASSEMBLAGE, type=str,
                         help='The name of the algorithm to be used for the induction of several rule. Must be one of '
                              + format_string_set(RULE_MODEL_ASSEMBLAGE_VALUES) + '.')
+    parser.add_argument(PARAM_POST_OPTIMIZATION, type=str,
+                        help='The name of the strategy to be used for optimizing a model globally once it has been '
+                             + 'learned. Must be one of ' + format_string_set(POST_OPTIMIZATION_VALUES) + '.')
     parser.add_argument(PARAM_RULE_INDUCTION, type=str,
                         help='The name of the algorithm to be used for the induction of individual rules. Must be one '
                              + 'of ' + format_string_set(RULE_INDUCTION_VALUES) + '. For additional options refer to '

@@ -16,6 +16,7 @@
 #include "common/output/predictor_classification.hpp"
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
+#include "common/post_optimization/post_optimization.hpp"
 #include "common/rule_induction/default_rule.hpp"
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_induction/rule_model_assemblage.hpp"
@@ -183,6 +184,14 @@ class MLRLCOMMON_API IRuleLearner {
                  *         of the method that post-processes the predictions of rules once they have been learned
                  */
                 virtual const IPostProcessorConfig& getPostProcessorConfig() const = 0;
+
+                /**
+                 * Returns the configuration of the method for post-optimizing a model once it has been learned.
+                 *
+                 * @return A reference to an object of type `IPostOptimizationConfig` that specifies the configuration
+                 *         of the method that post-optimizes a model once it has been learned
+                 */
+                virtual const IPostOptimizationConfig& getPostOptimizationConfig() const = 0;
 
                 /**
                  * Returns the configuration of the multi-threading behavior that is used for the parallel refinement of
@@ -415,6 +424,11 @@ class MLRLCOMMON_API IRuleLearner {
                  * Configures the rule learner to not use any post processor.
                  */
                 virtual void useNoPostProcessor() = 0;
+
+                /**
+                 * Configures the rule learner to not optimize a model once it has been learned.
+                 */
+                virtual void useNoPostOptimization() = 0;
 
                 /**
                  * Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
@@ -765,6 +779,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<IPostProcessorConfig> postProcessorConfigPtr_;
 
                 /**
+                 * An unique pointer that stores the configuration of the method for post-optimizing a model once it has
+                 * been learned.
+                 */
+                std::unique_ptr<IPostOptimizationConfig> postOptimizationConfigPtr_;
+
+                /**
                  * An unique pointer that stores the configuration of the multi-threading behavior that is used for the
                  * parallel refinement of rules.
                  */
@@ -821,6 +841,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 const IPruningConfig& getPruningConfig() const override final;
 
                 const IPostProcessorConfig& getPostProcessorConfig() const override final;
+
+                const IPostOptimizationConfig& getPostOptimizationConfig() const override final;
 
                 const IMultiThreadingConfig& getParallelRuleRefinementConfig() const override final;
 
@@ -882,6 +904,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoPostProcessor() override final;
 
+                void useNoPostOptimization() override final;
+
                 void useNoParallelRuleRefinement() override final;
 
                 IManualMultiThreadingConfig& useParallelRuleRefinement() override;
@@ -933,6 +957,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         std::unique_ptr<IPruningFactory> createPruningFactory() const;
 
         std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const;
+
+        std::unique_ptr<IPostOptimizationFactory> createPostOptimizationFactory() const;
 
         std::unique_ptr<IStoppingCriterionFactory> createSizeStoppingCriterionFactory() const;
 
