@@ -555,7 +555,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             elif value == CLASSIFICATION_PREDICTOR_EXAMPLE_WISE:
                 config.use_example_wise_classification_predictor()
 
-    def __configure_probability_predictor(self,config: BoostingRuleLearnerConfig):
+    def __configure_probability_predictor(self, config: BoostingRuleLearnerConfig):
         probability_predictor = self.probability_predictor
 
         if probability_predictor is not None:
