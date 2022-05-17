@@ -36,11 +36,11 @@ class IImmutableStatistics {
         /**
          * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
          * a specific `CompleteIndexVector`. Individual statistics that are covered by a refinement of a rule can be
-         * added to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
+         * added to the subset via subsequent calls to the function `IStatisticsSubset::addToSubset`.
          *
          * This function, or the function `createSubset(PartialIndexVector&)` must be called each time a new refinement
          * is considered, unless the refinement covers all statistics previously provided via calls to the function
-         * `IStatisticsSubset#addToSubset`.
+         * `IStatisticsSubset::addToSubset`.
          *
          * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
          *                      indices of the labels that should be included in the subset
@@ -51,11 +51,11 @@ class IImmutableStatistics {
         /**
          * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
          * a specific `PartialIndexVector`. Individual statistics that are covered by a refinement of a rule can be
-         * added to the subset via subsequent calls to the function `IStatisticsSubset#addToSubset`.
+         * added to the subset via subsequent calls to the function `IStatisticsSubset::addToSubset`.
          *
          * This function, or the function `createSubset(CompleteIndexVector&)` must be called each time a new refinement
          * is considered, unless the refinement covers all statistics previously provided via calls to the function
-         * `IStatisticsSubset#addToSubset`.
+         * `IStatisticsSubset::addToSubset`.
          *
          * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
          *                      indices of the labels that should be included in the subset
