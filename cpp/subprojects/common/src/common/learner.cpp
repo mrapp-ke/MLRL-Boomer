@@ -1,6 +1,7 @@
 #include "common/learner.hpp"
 #include "common/binning/feature_binning_no.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
+#include "common/post_optimization/post_optimization_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
 #include "common/pruning/pruning_irep.hpp"
 #include "common/pruning/pruning_no.hpp"
@@ -77,6 +78,7 @@ AbstractRuleLearner::Config::Config() {
     this->useNoPartitionSampling();
     this->useNoPruning();
     this->useNoPostProcessor();
+    this->useNoPostOptimization();
     this->useNoParallelRuleRefinement();
     this->useNoParallelStatisticUpdate();
     this->useParallelPrediction();
@@ -123,6 +125,10 @@ const IPruningConfig& AbstractRuleLearner::Config::getPruningConfig() const {
 
 const IPostProcessorConfig& AbstractRuleLearner::Config::getPostProcessorConfig() const {
     return *postProcessorConfigPtr_;
+}
+
+const IPostOptimizationConfig& AbstractRuleLearner::Config::getPostOptimizationConfig() const {
+    return *postOptimizationConfigPtr_;
 }
 
 const IMultiThreadingConfig& AbstractRuleLearner::Config::getParallelRuleRefinementConfig() const {
@@ -284,6 +290,10 @@ void AbstractRuleLearner::Config::useNoPostProcessor() {
     postProcessorConfigPtr_ = std::make_unique<NoPostProcessorConfig>();
 }
 
+void AbstractRuleLearner::Config::useNoPostOptimization() {
+    postOptimizationConfigPtr_ = std::make_unique<NoPostOptimizationConfig>();
+}
+
 void AbstractRuleLearner::Config::useNoParallelRuleRefinement() {
     parallelRuleRefinementConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
 }
@@ -396,6 +406,10 @@ std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorF
     return config_.getPostProcessorConfig().createPostProcessorFactory();
 }
 
+std::unique_ptr<IPostOptimizationFactory> AbstractRuleLearner::createPostOptimizationFactory() const {
+    return config_.getPostOptimizationConfig().createPostOptimizationFactory();
+}
+
 std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createSizeStoppingCriterionFactory() const {
     const SizeStoppingCriterionConfig* config = config_.getSizeStoppingCriterionConfig();
     return config ? config->createStoppingCriterionFactory() : nullptr;
@@ -462,7 +476,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         this->createRuleInductionFactory(featureMatrix, labelMatrix), this->createLabelSamplingFactory(labelMatrix),
         this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(featureMatrix),
         this->createPartitionSamplingFactory(), this->createPruningFactory(), this->createPostProcessorFactory(),
-        stoppingCriterionFactories);
+        this->createPostOptimizationFactory(), stoppingCriterionFactories);
     std::unique_ptr<IRuleModel> ruleModelPtr = ruleModelAssemblagePtr->induceRules(
         nominalFeatureMask, featureMatrix, labelMatrix, randomState);
     return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), std::move(ruleModelPtr),

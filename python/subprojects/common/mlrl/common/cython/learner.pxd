@@ -104,6 +104,8 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoPostProcessor()
 
+        void useNoPostOptimization()
+
         void useNoParallelRuleRefinement()
 
         IManualMultiThreadingConfig& useParallelRuleRefinement()

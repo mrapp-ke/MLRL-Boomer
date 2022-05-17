@@ -114,6 +114,10 @@ PRUNING_VALUES: Set[str] = {
     PRUNING_IREP
 }
 
+POST_OPTIMIZATION_VALUES: Set[str] = {
+    NONE
+}
+
 PARALLEL_VALUES: Dict[str, Set[str]] = {
     str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
     str(BooleanOption.FALSE.value): {}
@@ -245,6 +249,14 @@ def configure_pruning(config: RuleLearnerConfig, pruning: Optional[str]):
             config.use_no_pruning()
         elif value == PRUNING_IREP:
             config.use_irep_pruning()
+
+
+def configure_post_optimization(config: RuleLearnerConfig, post_optimization: Optional[str]):
+    if post_optimization is not None:
+        value = parse_param('post_optimization', post_optimization, POST_OPTIMIZATION_VALUES)
+
+        if value == NONE:
+            config.use_no_post_optimization()
 
 
 def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_refinement: Optional[str]):
