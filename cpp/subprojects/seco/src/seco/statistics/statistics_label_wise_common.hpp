@@ -58,11 +58,12 @@ namespace seco {
 
                     ConfusionMatrixVector sumVector_;
 
-                    ConfusionMatrixVector* accumulatedSumVector_;
-
-                    ConfusionMatrixVector* totalCoverableSumVector_;
-
                     ConfusionMatrixVector tmpVector_;
+
+                    std::unique_ptr<ConfusionMatrixVector> accumulatedSumVectorPtr_;
+
+                    std::unique_ptr<ConfusionMatrixVector> totalCoverableSumVectorPtr_;
+
 
                 public:
 
@@ -80,14 +81,8 @@ namespace seco {
                         : statistics_(statistics), totalSumVector_(&statistics_.subsetSumVector_),
                           ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
                           sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)),
-                          accumulatedSumVector_(nullptr), totalCoverableSumVector_(nullptr),
                           tmpVector_(ConfusionMatrixVector(labelIndices.getNumElements())) {
 
-                    }
-
-                    ~StatisticsSubset() override {
-                        delete accumulatedSumVector_;
-                        delete totalCoverableSumVector_;
                     }
 
                     /**
@@ -95,16 +90,16 @@ namespace seco {
                      */
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
-                        if (!totalCoverableSumVector_) {
-                            totalCoverableSumVector_ = new ConfusionMatrixVector(*totalSumVector_);
-                            totalSumVector_ = totalCoverableSumVector_;
+                        if (!totalCoverableSumVectorPtr_) {
+                            totalCoverableSumVectorPtr_ = std::make_unique<ConfusionMatrixVector>(*totalSumVector_);
+                            totalSumVector_ = totalCoverableSumVectorPtr_.get();
                         }
 
                         // For each label, subtract the confusion matrices of the example at the given index (weighted
                         // by the given weight) from the total sum of confusion matrices...
-                        totalCoverableSumVector_->add(statisticIndex, statistics_.labelMatrix_,
-                                                      *statistics_.majorityLabelVectorPtr_,
-                                                      *statistics_.coverageMatrixPtr_, -weight);
+                        totalCoverableSumVectorPtr_->add(statisticIndex, statistics_.labelMatrix_,
+                                                         *statistics_.majorityLabelVectorPtr_,
+                                                         *statistics_.coverageMatrixPtr_, -weight);
                     }
 
                     /**
@@ -120,12 +115,12 @@ namespace seco {
                      * @see `IStatisticsSubset::resetSubset`
                      */
                     void resetSubset() override {
-                        if (!accumulatedSumVector_) {
+                        if (!accumulatedSumVectorPtr_) {
                             // Allocate a vector for storing the accumulated confusion matrices, if necessary...
-                            accumulatedSumVector_ = new ConfusionMatrixVector(sumVector_);
+                            accumulatedSumVectorPtr_ = std::make_unique<ConfusionMatrixVector>(sumVector_);
                         } else {
                             // Add the confusion matrix for each label to the accumulated confusion matrix...
-                            accumulatedSumVector_->add(sumVector_.cbegin(), sumVector_.cend());
+                            accumulatedSumVectorPtr_->add(sumVector_.cbegin(), sumVector_.cend());
                         }
 
                         // Reset the confusion matrix for each label to zero...
@@ -137,7 +132,7 @@ namespace seco {
                      */
                     const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override {
                         const ConfusionMatrixVector& sumsOfConfusionMatrices =
-                            accumulated ? *accumulatedSumVector_ : sumVector_;
+                            accumulated ? *accumulatedSumVectorPtr_ : sumVector_;
 
                         if (uncovered) {
                             tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
