@@ -159,12 +159,6 @@ namespace boosting {
 
             };
 
-        private:
-
-            uint32 numStatistics_;
-
-            uint32 numLabels_;
-
         protected:
 
             /**
@@ -189,8 +183,7 @@ namespace boosting {
              */
             AbstractExampleWiseImmutableStatistics(std::unique_ptr<StatisticView> statisticViewPtr,
                                                    const RuleEvaluationFactory& ruleEvaluationFactory)
-                : numStatistics_(statisticViewPtr->getNumRows()), numLabels_(statisticViewPtr->getNumCols()),
-                  statisticViewPtr_(std::move(statisticViewPtr)), ruleEvaluationFactoryPtr_(&ruleEvaluationFactory) {
+                : statisticViewPtr_(std::move(statisticViewPtr)), ruleEvaluationFactoryPtr_(&ruleEvaluationFactory) {
 
             }
 
@@ -198,14 +191,14 @@ namespace boosting {
              * @see `IImmutableStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
-                return numStatistics_;
+                return statisticViewPtr_->getNumRows();
             }
 
             /**
              * @see `IImmutableStatistics::getNumLabels`
              */
             uint32 getNumLabels() const override final {
-                return numLabels_;
+                return statisticViewPtr_->getNumCols();
             }
 
     };

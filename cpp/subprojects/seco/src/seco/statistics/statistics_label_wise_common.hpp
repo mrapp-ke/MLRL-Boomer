@@ -153,10 +153,6 @@ namespace seco {
 
             };
 
-            uint32 numStatistics_;
-
-            uint32 numLabels_;
-
             const RuleEvaluationFactory* ruleEvaluationFactoryPtr_;
 
             const LabelMatrix& labelMatrix_;
@@ -192,11 +188,10 @@ namespace seco {
                                         const LabelMatrix& labelMatrix,
                                         std::unique_ptr<CoverageMatrix> coverageMatrixPtr,
                                         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
-                : numStatistics_(labelMatrix.getNumRows()), numLabels_(labelMatrix.getNumCols()),
-                  ruleEvaluationFactoryPtr_(&ruleEvaluationFactory), labelMatrix_(labelMatrix),
+                : ruleEvaluationFactoryPtr_(&ruleEvaluationFactory), labelMatrix_(labelMatrix),
                   majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)),
-                  totalSumVector_(ConfusionMatrixVector(numLabels_)),
-                  subsetSumVector_(ConfusionMatrixVector(numLabels_)),
+                  totalSumVector_(ConfusionMatrixVector(labelMatrix.getNumCols())),
+                  subsetSumVector_(ConfusionMatrixVector(labelMatrix.getNumCols())),
                   coverageMatrixPtr_(std::move(coverageMatrixPtr)) {
 
             }
@@ -205,14 +200,14 @@ namespace seco {
              * @see `IImmutableStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
-                return numStatistics_;
+                return labelMatrix_.getNumRows();
             }
 
             /**
              * @see `IImmutableStatistics::getNumLabels`
              */
             uint32 getNumLabels() const override final {
-                return numLabels_;
+                return labelMatrix_.getNumCols();
             }
 
             /**
