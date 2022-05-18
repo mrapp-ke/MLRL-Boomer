@@ -28,11 +28,10 @@ namespace boosting {
      *
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
-     * @tparam ScoreMatrix              The type of the matrices that are used to store predicted scores
      * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
      *                                  well as corresponding quality scores, of rules
      */
-    template<typename StatisticVector, typename StatisticView, typename ScoreMatrix, typename RuleEvaluationFactory>
+    template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory>
     class AbstractExampleWiseImmutableStatistics : virtual public IImmutableStatistics {
 
         protected:
@@ -205,14 +204,11 @@ namespace boosting {
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the original gradients and Hessians
      * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
-     * @tparam ScoreMatrix              The type of the matrices that are used to store predicted scores
      * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
      *                                  well as corresponding quality scores, of rules
      */
-    template<typename StatisticVector, typename StatisticView, typename Histogram, typename ScoreMatrix,
-             typename RuleEvaluationFactory>
+    template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory>
     class ExampleWiseHistogram final : public AbstractExampleWiseImmutableStatistics<StatisticVector, Histogram,
-                                                                                     ScoreMatrix,
                                                                                      RuleEvaluationFactory>,
                                        virtual public IHistogram {
 
@@ -227,7 +223,7 @@ namespace boosting {
              */
             template<typename T>
             class StatisticsSubset final :
-                    public AbstractExampleWiseImmutableStatistics<StatisticVector, Histogram, ScoreMatrix,
+                    public AbstractExampleWiseImmutableStatistics<StatisticVector, Histogram,
                                                                   RuleEvaluationFactory>::template AbstractStatisticsSubset<T> {
 
                 private:
@@ -252,7 +248,7 @@ namespace boosting {
                     StatisticsSubset(const ExampleWiseHistogram& histogram, const StatisticVector& totalSumVector,
                                      std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
                                      const T& labelIndices)
-                        : AbstractExampleWiseImmutableStatistics<StatisticVector, Histogram, ScoreMatrix,
+                        : AbstractExampleWiseImmutableStatistics<StatisticVector, Histogram,
                                                                  RuleEvaluationFactory>::template AbstractStatisticsSubset<T>(
                               histogram, totalSumVector, std::move(ruleEvaluationPtr), labelIndices),
                           histogram_(histogram), totalCoverableSumVector_(nullptr) {
@@ -303,8 +299,7 @@ namespace boosting {
              */
             ExampleWiseHistogram(const StatisticView& originalStatisticView, const StatisticVector& totalSumVector,
                                  const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins)
-                : AbstractExampleWiseImmutableStatistics<StatisticVector, Histogram, ScoreMatrix,
-                                                         RuleEvaluationFactory>(
+                : AbstractExampleWiseImmutableStatistics<StatisticVector, Histogram, RuleEvaluationFactory>(
                       std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols()), ruleEvaluationFactory),
                   originalStatisticView_(originalStatisticView), totalSumVector_(totalSumVector) {
 
@@ -376,7 +371,7 @@ namespace boosting {
              typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure,
              typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
     class AbstractExampleWiseStatistics :
-            public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix,
+            public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
                                                           ExampleWiseRuleEvaluationFactory>,
             virtual public IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory> {
 
@@ -392,7 +387,7 @@ namespace boosting {
              */
             template<typename T>
             class StatisticsSubset final :
-                    public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix,
+                    public AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
                                                                   ExampleWiseRuleEvaluationFactory>::template AbstractStatisticsSubset<T> {
 
                 private:
@@ -417,7 +412,7 @@ namespace boosting {
                                      const StatisticVector& totalSumVector,
                                      std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
                                      const T& labelIndices)
-                        : AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix,
+                        : AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
                                                                  ExampleWiseRuleEvaluationFactory>::template AbstractStatisticsSubset<T>(
                               statistics, totalSumVector, std::move(ruleEvaluationPtr), labelIndices),
                           totalCoverableSumVector_(nullptr) {
@@ -499,7 +494,7 @@ namespace boosting {
                                           const LabelMatrix& labelMatrix,
                                           std::unique_ptr<StatisticView> statisticViewPtr,
                                           std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView, ScoreMatrix,
+                : AbstractExampleWiseImmutableStatistics<StatisticVector, StatisticView,
                                                          ExampleWiseRuleEvaluationFactory>(
                       std::move(statisticViewPtr), ruleEvaluationFactory),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(this->statisticViewPtr_->getNumCols())),
@@ -578,7 +573,7 @@ namespace boosting {
              * @see `IStatistics::createHistogram`
              */
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override final {
-                return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, Histogram, ScoreMatrix,
+                return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, Histogram,
                                                              ExampleWiseRuleEvaluationFactory>>(
                     *this->statisticViewPtr_, *totalSumVectorPtr_, *this->ruleEvaluationFactoryPtr_, numBins);
             }
