@@ -221,7 +221,7 @@ namespace boosting {
 
                     const LabelWiseHistogram& histogram_;
 
-                    StatisticVector* totalCoverableSumVector_;
+                    std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
 
                 public:
 
@@ -241,12 +241,8 @@ namespace boosting {
                         : AbstractLabelWiseImmutableStatistics<StatisticVector, Histogram,
                                                                RuleEvaluationFactory>::template AbstractStatisticsSubset<T>(
                               histogram, totalSumVector, std::move(ruleEvaluationPtr), labelIndices),
-                          histogram_(histogram), totalCoverableSumVector_(nullptr) {
+                          histogram_(histogram) {
 
-                    }
-
-                    ~StatisticsSubset() override {
-                        delete totalCoverableSumVector_;
                     }
 
                     /**
@@ -254,15 +250,15 @@ namespace boosting {
                      */
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
-                        if (!totalCoverableSumVector_) {
-                            totalCoverableSumVector_ = new StatisticVector(*this->totalSumVector_);
-                            this->totalSumVector_ = totalCoverableSumVector_;
+                        if (!totalCoverableSumVectorPtr_) {
+                            totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*this->totalSumVector_);
+                            this->totalSumVector_ = totalCoverableSumVectorPtr_.get();
                         }
 
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
                         const StatisticView& originalStatisticView = histogram_.originalStatisticView_;
-                        totalCoverableSumVector_->add(originalStatisticView, statisticIndex, -weight);
+                        totalCoverableSumVectorPtr_->add(originalStatisticView, statisticIndex, -weight);
                     }
 
             };
@@ -370,7 +366,7 @@ namespace boosting {
 
                 private:
 
-                    StatisticVector* totalCoverableSumVector_;
+                    std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
 
                 public:
 
@@ -391,13 +387,8 @@ namespace boosting {
                                      const T& labelIndices)
                         : AbstractLabelWiseImmutableStatistics<StatisticVector, StatisticView,
                                                                RuleEvaluationFactory>::template AbstractStatisticsSubset<T>(
-                              statistics, totalSumVector, std::move(ruleEvaluationPtr), labelIndices),
-                          totalCoverableSumVector_(nullptr) {
+                              statistics, totalSumVector, std::move(ruleEvaluationPtr), labelIndices) {
 
-                    }
-
-                    ~StatisticsSubset() override {
-                        delete totalCoverableSumVector_;
                     }
 
                     /**
@@ -405,15 +396,15 @@ namespace boosting {
                      */
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
-                        if (!totalCoverableSumVector_) {
-                            totalCoverableSumVector_ = new StatisticVector(*this->totalSumVector_);
-                            this->totalSumVector_ = totalCoverableSumVector_;
+                        if (!totalCoverableSumVectorPtr_) {
+                            totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*this->totalSumVector_);
+                            this->totalSumVector_ = totalCoverableSumVectorPtr_.get();
                         }
 
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
                         const StatisticView& statisticView = this->getStatisticView();
-                        totalCoverableSumVector_->add(statisticView, statisticIndex, -weight);
+                        totalCoverableSumVectorPtr_->add(statisticView, statisticIndex, -weight);
                     }
 
             };
