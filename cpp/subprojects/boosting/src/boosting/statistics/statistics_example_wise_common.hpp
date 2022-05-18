@@ -57,9 +57,9 @@ namespace boosting {
 
                     StatisticVector sumVector_;
 
-                    StatisticVector* accumulatedSumVector_;
-
                     StatisticVector tmpVector_;
+
+                    std::unique_ptr<StatisticVector> accumulatedSumVectorPtr_;
 
                 protected:
 
@@ -99,13 +99,8 @@ namespace boosting {
                                              const T& labelIndices)
                         : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                           labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
-                          accumulatedSumVector_(nullptr), tmpVector_(StatisticVector(labelIndices.getNumElements())),
-                          totalSumVector_(&totalSumVector) {
+                          tmpVector_(StatisticVector(labelIndices.getNumElements())), totalSumVector_(&totalSumVector) {
 
-                    }
-
-                    ~AbstractStatisticsSubset() override {
-                        delete accumulatedSumVector_;
                     }
 
                     /**
@@ -123,15 +118,15 @@ namespace boosting {
                      * @see `IStatisticsSubset::resetSubset`
                      */
                     void resetSubset() override final {
-                        if (!accumulatedSumVector_) {
+                        if (!accumulatedSumVectorPtr_) {
                             // Create a vector for storing the accumulated sums of gradients and Hessians, if
                             // necessary...
-                            accumulatedSumVector_ = new StatisticVector(sumVector_);
+                            accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(sumVector_);
                         } else {
                             // Add the sum of gradients and Hessians to the accumulated sums of gradients and
                             // Hessians...
-                            accumulatedSumVector_->add(sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
-                                                       sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
+                            accumulatedSumVectorPtr_->add(sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
+                                                          sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
                         }
 
                         // Reset the sum of gradients and Hessians to zero...
@@ -142,7 +137,7 @@ namespace boosting {
                      * @see `IStatisticsSubset::calculatePrediction`
                      */
                     const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override final {
-                        StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVector_ : sumVector_;
+                        StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVectorPtr_ : sumVector_;
 
                         if (uncovered) {
                             tmpVector_.difference(totalSumVector_->gradients_cbegin(),
