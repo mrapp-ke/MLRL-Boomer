@@ -64,7 +64,6 @@ namespace seco {
 
                     std::unique_ptr<ConfusionMatrixVector> totalCoverableSumVectorPtr_;
 
-
                 public:
 
                     /**
