@@ -26,7 +26,8 @@ uint32 CompletePrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
 }
 
-std::unique_ptr<IStatisticsSubset> CompletePrediction::createSubset(const IImmutableStatistics& statistics) const {
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createSubset(
+        const IImmutableWeightedStatistics& statistics) const {
     return indexVector_.createSubset(statistics);
 }
 

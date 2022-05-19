@@ -7,7 +7,7 @@
 #include "common/indices/index_vector_partial.hpp"
 
 // Forward declarations
-class IImmutableStatistics;
+class IImmutableWeightedStatistics;
 
 
 /**
@@ -89,7 +89,7 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const IImmutableStatistics& statistics) const override;
+        std::unique_ptr<IStatisticsSubset> createSubset(const IImmutableWeightedStatistics& statistics) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;

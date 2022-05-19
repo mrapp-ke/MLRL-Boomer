@@ -191,14 +191,14 @@ namespace seco {
             }
 
             /**
-             * @see `IImmutableStatistics::getNumStatistics`
+             * @see `IImmutableWeightedStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
                 return labelMatrix_.getNumRows();
             }
 
             /**
-             * @see `IImmutableStatistics::getNumLabels`
+             * @see `IImmutableWeightedStatistics::getNumLabels`
              */
             uint32 getNumLabels() const override final {
                 return labelMatrix_.getNumCols();
@@ -253,7 +253,7 @@ namespace seco {
             }
 
             /**
-             * @see `IImmutableStatistics::createSubset`
+             * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
@@ -263,7 +263,7 @@ namespace seco {
             }
 
             /**
-             * @see `IImmutableStatistics::createSubset`
+             * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {

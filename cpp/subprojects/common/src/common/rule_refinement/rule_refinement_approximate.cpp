@@ -23,7 +23,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     // Invoke the callback...
     std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>::Result> callbackResultPtr =
         callbackPtr_->get();
-    const IImmutableStatistics& statistics = callbackResultPtr->statistics_;
+    const IImmutableWeightedStatistics& statistics = callbackResultPtr->statistics_;
     const BinWeightVector& weights = callbackResultPtr->weights_;
     const ThresholdVector& thresholdVector = callbackResultPtr->vector_;
     ThresholdVector::const_iterator thresholdIterator = thresholdVector.cbegin();

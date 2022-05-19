@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_immutable.hpp"
+#include "common/statistics/statistics_weighted_immutable.hpp"
 #include <memory>
 
 
@@ -28,23 +28,24 @@ class IRuleRefinementCallback {
             public:
 
                 /**
-                 * @param statistics        A reference to an object of type `IImmutableStatistics` that should be used
-                 *                          to search for potential refinements
+                 * @param statistics        A reference to an object of type `IImmutableWeightedStatistics` that should
+                 *                          be used to search for potential refinements
                  * @param weights           A reference to an object of template type `WeightVector` that provides
                  *                          access to the weights of the elements in `vector`
                  * @param vector            A reference to an object of template type `Vector` that should be used to
                  *                          search for potential refinements
                  */
-                Result(const IImmutableStatistics& statistics, const WeightVector& weights, const Vector& vector)
+                Result(const IImmutableWeightedStatistics& statistics, const WeightVector& weights,
+                       const Vector& vector)
                     : statistics_(statistics), weights_(weights), vector_(vector) {
 
                 }
 
                 /**
-                 * A reference to an object of type `IImmutableStatistics` that should be used to search for potential
-                 * refinements.
+                 * A reference to an object of type `IImmutableWeightedStatistics` that should be used to search for
+                 * potential refinements.
                  */
-                const IImmutableStatistics& statistics_;
+                const IImmutableWeightedStatistics& statistics_;
 
                 /**
                  * A reference to an object of type `WeightVector` that provides access to the weights of the elements

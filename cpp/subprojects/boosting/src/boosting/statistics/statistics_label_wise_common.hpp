@@ -34,7 +34,7 @@ namespace boosting {
      *                                  well as corresponding quality scores, of rules
      */
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory>
-    class AbstractLabelWiseImmutableStatistics : virtual public IImmutableStatistics {
+    class AbstractLabelWiseImmutableStatistics : virtual public IImmutableWeightedStatistics {
 
         protected:
 
@@ -173,14 +173,14 @@ namespace boosting {
             }
 
             /**
-             * @see `IImmutableStatistics::getNumStatistics`
+             * @see `IImmutableWeightedStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
                 return statisticViewPtr_->getNumRows();
             }
 
             /**
-             * @see `IImmutableStatistics::getNumLabels`
+             * @see `IImmutableWeightedStatistics::getNumLabels`
              */
             uint32 getNumLabels() const override final {
                 return statisticViewPtr_->getNumCols();
@@ -304,7 +304,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IImmutableStatistics::createSubset`
+             * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices) const override {
                 std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
@@ -315,7 +315,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IImmutableStatistics::createSubset`
+             * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const override {
                 std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
@@ -524,7 +524,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IImmutableStatistics::createSubset`
+             * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
@@ -536,7 +536,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IImmutableStatistics::createSubset`
+             * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
