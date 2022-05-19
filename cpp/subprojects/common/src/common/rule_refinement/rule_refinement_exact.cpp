@@ -24,7 +24,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     // Invoke the callback...
     std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>::Result> callbackResultPtr =
         callbackPtr_->get();
-    const IImmutableStatistics& statistics = callbackResultPtr->statistics_;
+    const IImmutableWeightedStatistics& statistics = callbackResultPtr->statistics_;
     const IWeightVector& weights = callbackResultPtr->weights_;
     const FeatureVector& featureVector = callbackResultPtr->vector_;
     FeatureVector::const_iterator iterator = featureVector.cbegin();
