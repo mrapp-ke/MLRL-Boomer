@@ -9,7 +9,7 @@
 #include "omp.h"
 
 
-static inline void updateSampledStatisticsInternally(IStatistics& statistics, const IWeightVector& weights) {
+static inline void updateSampledStatisticsInternally(IWeightedStatistics& statistics, const IWeightVector& weights) {
     uint32 numExamples = statistics.getNumStatistics();
     statistics.resetSampledStatistics();
 
@@ -21,7 +21,8 @@ static inline void updateSampledStatisticsInternally(IStatistics& statistics, co
 
 template<typename T>
 static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExamples, const IWeightVector& weights,
-                                                    const CoverageMask& coverageMask, const IStatistics& statistics,
+                                                    const CoverageMask& coverageMask,
+                                                    const IWeightedStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
 
@@ -38,7 +39,7 @@ static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExampl
 }
 
 static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
-                                                    const IStatistics& statistics,
+                                                    const IWeightedStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
     uint32 numCovered = coverageSet.getNumCovered();
@@ -57,7 +58,7 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
 }
 
 static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
-                                                    BiPartition& partition, const IStatistics& statistics,
+                                                    BiPartition& partition, const IWeightedStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
     const BitVector& holdoutSet = partition.getSecondSet();
@@ -78,7 +79,7 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
 
 template<typename T>
 static inline void recalculatePredictionInternally(T iterator, uint32 numExamples, const CoverageMask& coverageMask,
-                                                   const IStatistics& statistics, Refinement& refinement) {
+                                                   const IWeightedStatistics& statistics, Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
 
@@ -94,8 +95,8 @@ static inline void recalculatePredictionInternally(T iterator, uint32 numExample
     scoreVector.updatePrediction(head);
 }
 
-static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, const IStatistics& statistics,
-                                                   Refinement& refinement) {
+static inline void recalculatePredictionInternally(const CoverageSet& coverageSet,
+                                                   const IWeightedStatistics& statistics, Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
     uint32 numCovered = coverageSet.getNumCovered();
@@ -111,7 +112,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
 }
 
 static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, BiPartition& partition,
-                                                   const IStatistics& statistics, Refinement& refinement) {
+                                                   const IWeightedStatistics& statistics, Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
     const BitVector& holdoutSet = partition.getSecondSet();
