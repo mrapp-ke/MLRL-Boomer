@@ -97,16 +97,16 @@ static inline int64 adjustSplit(FeatureVector& featureVector, int64 conditionEnd
  * @param numConditions         The total number of conditions in the rule's body (including the new one)
  * @param coverageMask          A reference to an object of type `CoverageMask` that is used to keep track of the
  *                              elements that are covered by the previous rule. It will be updated by this function
- * @param statistics            A reference to an object of type `IStatistics` to be notified about the statistics that
- *                              must be considered when searching for the next refinement, i.e., the statistics that are
- *                              covered by the new rule
+ * @param statistics            A reference to an object of type `IWeightedStatistics` to be notified about the
+ *                              statistics that must be considered when searching for the next refinement, i.e., the
+ *                              statistics that are covered by the new rule
  * @param weights               A reference to an an object of type `IWeightVector` that provides access to the weights
  *                              of the individual training examples
  */
 static inline void filterCurrentVector(const FeatureVector& vector, FilteredCacheEntry& cacheEntry,
                                        int64 conditionStart, int64 conditionEnd, Comparator conditionComparator,
                                        bool covered, uint32 numConditions, CoverageMask& coverageMask,
-                                       IStatistics& statistics, const IWeightVector& weights) {
+                                       IWeightedStatistics& statistics, const IWeightVector& weights) {
     // Determine the number of elements in the filtered vector...
     uint32 numTotalElements = vector.getNumElements();
     uint32 distance = std::abs(conditionStart - conditionEnd);
@@ -338,13 +338,15 @@ class ExactThresholds final : public AbstractThresholds {
                                 featureVector = cacheEntry.vectorPtr.get();
                             }
 
-                            return std::make_unique<Result>(thresholdsSubset_.thresholds_.statisticsProvider_.get(),
+                            return std::make_unique<Result>(*thresholdsSubset_.weightedStatisticsPtr_,
                                                             thresholdsSubset_.weights_, *featureVector);
                         }
 
                 };
 
                 ExactThresholds& thresholds_;
+
+                std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr_;
 
                 const IWeightVector& weights_;
 
@@ -378,12 +380,18 @@ class ExactThresholds final : public AbstractThresholds {
             public:
 
                 /**
-                 * @param thresholds    A reference to an object of type `ExactThresholds` that stores the thresholds
-                 * @param weights       A reference to an object of type `IWeightVector` that provides access to the
-                 *                      weights of the individual training examples
+                 * @param thresholds            A reference to an object of type `ExactThresholds` that stores the
+                 *                              thresholds
+                 * @param weightedStatisticsPtr An unique pointer to an object of type `IWeightedStatistics` that
+                 *                              provides access to the statistics
+                 * @param weights               A reference to an object of type `IWeightVector` that provides access to
+                 *                              the weights of the individual training examples
                  */
-                ThresholdsSubset(ExactThresholds& thresholds, const IWeightVector& weights)
-                    : thresholds_(thresholds), weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
+                ThresholdsSubset(ExactThresholds& thresholds,
+                                 std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr,
+                                 const IWeightVector& weights)
+                    : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
+                      weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
                       coverageMask_(CoverageMask(thresholds.featureMatrix_.getNumRows())), numModifications_(0) {
 
                 }
@@ -427,7 +435,7 @@ class ExactThresholds final : public AbstractThresholds {
                     // Identify the examples that are covered by the refined rule...
                     filterCurrentVector(*featureVector, cacheEntry, refinement.start, refinement.end,
                                         refinement.comparator, refinement.covered, numModifications_, coverageMask_,
-                                        thresholds_.statisticsProvider_.get(), weights_);
+                                        *weightedStatisticsPtr_, weights_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
@@ -453,7 +461,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                     filterCurrentVector(*featureVector, cacheEntry, condition.start, condition.end,
                                         condition.comparator, condition.covered, numModifications_, coverageMask_,
-                                        thresholds_.statisticsProvider_.get(), weights_);
+                                        *weightedStatisticsPtr_, weights_);
                 }
 
                 void resetThresholds() override {
@@ -471,51 +479,49 @@ class ExactThresholds final : public AbstractThresholds {
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
                         partition.cbegin(), partition.getNumElements(), weights_, coverageState,
-                        thresholds_.statisticsProvider_.get(), head);
+                        *weightedStatisticsPtr_, head);
                 }
 
                 float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
                         partition.first_cbegin(), partition.getNumFirst(), weights_, coverageState,
-                        thresholds_.statisticsProvider_.get(), head);
+                        *weightedStatisticsPtr_, head);
                 }
 
                 float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const override {
-                    return evaluateOutOfSampleInternally(weights_, coverageState, thresholds_.statisticsProvider_.get(),
-                                                         head);
+                    return evaluateOutOfSampleInternally(weights_, coverageState, *weightedStatisticsPtr_, head);
                 }
 
                 float64 evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const override {
-                    return evaluateOutOfSampleInternally(weights_, coverageState, partition,
-                                                         thresholds_.statisticsProvider_.get(), head);
+                    return evaluateOutOfSampleInternally(weights_, coverageState, partition, *weightedStatisticsPtr_,
+                                                         head);
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
-                        partition.cbegin(), partition.getNumElements(), coverageState,
-                        thresholds_.statisticsProvider_.get(), refinement);
+                        partition.cbegin(), partition.getNumElements(), coverageState, *weightedStatisticsPtr_,
+                        refinement);
                 }
 
                 void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const override {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
-                        partition.first_cbegin(), partition.getNumFirst(), coverageState,
-                        thresholds_.statisticsProvider_.get(), refinement);
+                        partition.first_cbegin(), partition.getNumFirst(), coverageState, *weightedStatisticsPtr_,
+                        refinement);
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
                                            Refinement& refinement) const override {
-                    recalculatePredictionInternally(coverageState, thresholds_.statisticsProvider_.get(), refinement);
+                    recalculatePredictionInternally(coverageState, *weightedStatisticsPtr_, refinement);
                 }
 
                 void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
                                            Refinement& refinement) const override {
-                    recalculatePredictionInternally(coverageState, partition, thresholds_.statisticsProvider_.get(),
-                                                    refinement);
+                    recalculatePredictionInternally(coverageState, partition, *weightedStatisticsPtr_, refinement);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
@@ -559,8 +565,11 @@ class ExactThresholds final : public AbstractThresholds {
         }
 
         std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override {
-            updateSampledStatisticsInternally(statisticsProvider_.get(), weights);
-            return std::make_unique<ExactThresholds::ThresholdsSubset>(*this, weights);
+            IStatistics& statistics = statisticsProvider_.get();
+            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics();
+            updateSampledStatisticsInternally(*weightedStatisticsPtr, weights);
+            return std::make_unique<ExactThresholds::ThresholdsSubset>(*this, std::move(weightedStatisticsPtr),
+                                                                       weights);
         }
 
 };
