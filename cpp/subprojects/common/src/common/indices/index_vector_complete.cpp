@@ -1,5 +1,5 @@
 #include "common/indices/index_vector_complete.hpp"
-#include "common/statistics/statistics_immutable.hpp"
+#include "common/statistics/statistics_weighted_immutable.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
 
@@ -31,7 +31,8 @@ CompleteIndexVector::const_iterator CompleteIndexVector::cend() const {
     return IndexIterator(numElements_);
 }
 
-std::unique_ptr<IStatisticsSubset> CompleteIndexVector::createSubset(const IImmutableStatistics& statistics) const {
+std::unique_ptr<IStatisticsSubset> CompleteIndexVector::createSubset(
+        const IImmutableWeightedStatistics& statistics) const {
     return statistics.createSubset(*this);
 }
 
