@@ -356,13 +356,16 @@ namespace boosting {
      * function that is applied example-wise and allows to update the gradients and Hessians after a new rule has been
      * learned.
      *
+     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
+     *                                  training examples
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
      * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
      * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
      *                                  well as corresponding quality scores, of rules
      */
-    template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory>
+    template<typename WeightVector, typename StatisticVector, typename StatisticView, typename Histogram,
+             typename RuleEvaluationFactory>
     class ExampleWiseWeightedStatistics :
             public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
                                                                   RuleEvaluationFactory>,
@@ -431,22 +434,26 @@ namespace boosting {
 
             };
 
+            const WeightVector& weights_;
+
             std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
         public:
 
             /**
+             * @param weights               A reference to an object of template type `WeightVector` that provides
+             *                              access to the weights of individual training examples
              * @param statisticView         A reference to an object of template type `StatisticView` that provides
              *                              access to the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`, to be
              *                              used for calculating the predictions, as well as corresponding quality
              *                              scores, of rules
              */
-            ExampleWiseWeightedStatistics(const StatisticView& statisticView,
+            ExampleWiseWeightedStatistics(const WeightVector& weights, const StatisticView& statisticView,
                                           const RuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory>(
                       statisticView, ruleEvaluationFactory),
-                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.getNumCols())) {
+                  weights_(weights), totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.getNumCols())) {
 
             }
 
@@ -665,9 +672,9 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
                     const EqualWeightVector& weights) const override final {
-                return std::make_unique<ExampleWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
-                                                                      ExampleWiseRuleEvaluationFactory>>(
-                    *statisticViewPtr_, *ruleEvaluationFactory_);
+                return std::make_unique<ExampleWiseWeightedStatistics<EqualWeightVector, StatisticVector, StatisticView,
+                                                                      Histogram, ExampleWiseRuleEvaluationFactory>>(
+                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
             }
 
             /**
@@ -675,9 +682,9 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
                     const BitWeightVector& weights) const override final {
-                return std::make_unique<ExampleWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
-                                                                      ExampleWiseRuleEvaluationFactory>>(
-                    *statisticViewPtr_, *ruleEvaluationFactory_);
+                return std::make_unique<ExampleWiseWeightedStatistics<BitWeightVector, StatisticVector, StatisticView,
+                                                                      Histogram, ExampleWiseRuleEvaluationFactory>>(
+                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
             }
 
             /**
@@ -685,9 +692,10 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
                     const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<ExampleWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
+                return std::make_unique<ExampleWiseWeightedStatistics<DenseWeightVector<uint32>, StatisticVector,
+                                                                      StatisticView, Histogram,
                                                                       ExampleWiseRuleEvaluationFactory>>(
-                    *statisticViewPtr_, *ruleEvaluationFactory_);
+                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
             }
 
     };
