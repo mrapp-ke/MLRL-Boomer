@@ -97,6 +97,22 @@ namespace boosting {
         addToArray(hessians_, hessiansBegin, numHessians_, weight);
     }
 
+    void DenseExampleWiseStatisticVector::remove(gradient_const_iterator gradientsBegin,
+                                                 gradient_const_iterator gradientsEnd,
+                                                 hessian_const_iterator hessiansBegin,
+                                                 hessian_const_iterator hessiansEnd) {
+        removeFromArray(gradients_, gradientsBegin, numGradients_);
+        removeFromArray(hessians_, hessiansBegin, numHessians_);
+    }
+
+    void DenseExampleWiseStatisticVector::remove(gradient_const_iterator gradientsBegin,
+                                                 gradient_const_iterator gradientsEnd,
+                                                 hessian_const_iterator hessiansBegin,
+                                                 hessian_const_iterator hessiansEnd, float64 weight) {
+        removeFromArray(gradients_, gradientsBegin, numGradients_, weight);
+        removeFromArray(hessians_, hessiansBegin, numHessians_, weight);
+    }
+
     void DenseExampleWiseStatisticVector::addToSubset(gradient_const_iterator gradientsBegin,
                                                       gradient_const_iterator gradientsEnd,
                                                       hessian_const_iterator hessiansBegin,
