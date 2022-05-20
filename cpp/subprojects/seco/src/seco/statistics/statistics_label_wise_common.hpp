@@ -9,6 +9,36 @@
 
 namespace seco {
 
+    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
+    static inline void initializeLabelWiseSampledStatistics(const EqualWeightVector& weights,
+                                                            const LabelMatrix& labelMatrix,
+                                                            const BinarySparseArrayVector& majorityLabelVector,
+                                                            const CoverageMatrix& coverageMatrix,
+                                                            ConfusionMatrixVector& totalSumVector,
+                                                            ConfusionMatrixVector& subsetSumVector) {
+        uint32 numStatistics = weights.getNumElements();
+
+        for (uint32 i = 0; i < numStatistics; i++) {
+            totalSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, 1);
+            subsetSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, 1);
+        }
+    }
+
+    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
+    static inline void initializeLabelWiseSampledStatistics(const WeightVector& weights, const LabelMatrix& labelMatrix,
+                                                            const BinarySparseArrayVector& majorityLabelVector,
+                                                            const CoverageMatrix& coverageMatrix,
+                                                            ConfusionMatrixVector& totalSumVector,
+                                                            ConfusionMatrixVector& subsetSumVector) {
+        uint32 numStatistics = weights.getNumElements();
+
+        for (uint32 i = 0; i < numStatistics; i++) {
+            float64 weight = weights.getWeight(i);
+            totalSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, weight);
+            subsetSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, weight);
+        }
+    }
+
     template<typename Prediction, typename CoverageMatrix>
     static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                           CoverageMatrix& coverageMatrix,
@@ -189,9 +219,11 @@ namespace seco {
                                         const BinarySparseArrayVector& majorityLabelVector)
                 : weights_(weights), ruleEvaluationFactory_(ruleEvaluationFactory), labelMatrix_(labelMatrix),
                   majorityLabelVector_(majorityLabelVector),
-                  totalSumVector_(ConfusionMatrixVector(labelMatrix.getNumCols())),
-                  subsetSumVector_(ConfusionMatrixVector(labelMatrix.getNumCols())), coverageMatrix_(coverageMatrix) {
-
+                  totalSumVector_(ConfusionMatrixVector(labelMatrix.getNumCols(), true)),
+                  subsetSumVector_(ConfusionMatrixVector(labelMatrix.getNumCols(), true)),
+                  coverageMatrix_(coverageMatrix) {
+                initializeLabelWiseSampledStatistics(weights, labelMatrix, majorityLabelVector, coverageMatrix,
+                                                     totalSumVector_, subsetSumVector_);
             }
 
             /**
@@ -212,16 +244,14 @@ namespace seco {
              * @see `IWeightedStatistics::resetSampledStatistics`
              */
             void resetSampledStatistics() override final {
-                totalSumVector_.clear();
-                subsetSumVector_.clear();
+
             }
 
             /**
              * @see `IWeightedStatistics::addSampledStatistic`
              */
             void addSampledStatistic(uint32 statisticIndex, float64 weight) override final {
-                totalSumVector_.add(statisticIndex, labelMatrix_, majorityLabelVector_, coverageMatrix_, weight);
-                subsetSumVector_.add(statisticIndex, labelMatrix_, majorityLabelVector_, coverageMatrix_, weight);
+
             }
 
             /**
