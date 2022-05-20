@@ -52,12 +52,6 @@ class TopDownRuleInduction final : public IRuleInduction {
             EqualWeightVector weightVector(numStatistics);
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr =
                 statistics.createWeightedStatistics(weightVector);
-            weightedStatisticsPtr->resetSampledStatistics();
-
-            for (uint32 i = 0; i < numStatistics; i++) {
-                weightedStatisticsPtr->addSampledStatistic(i, 1);
-            }
-
             CompleteIndexVector labelIndices(numLabels);
             std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices.createSubset(*weightedStatisticsPtr);
             const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(true, false);
