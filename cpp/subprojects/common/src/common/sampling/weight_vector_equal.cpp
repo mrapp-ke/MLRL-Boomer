@@ -1,4 +1,6 @@
 #include "common/sampling/weight_vector_equal.hpp"
+#include "common/thresholds/thresholds.hpp"
+#include "common/thresholds/thresholds_subset.hpp"
 
 
 EqualWeightVector::EqualWeightVector(uint32 numElements)
@@ -20,4 +22,8 @@ bool EqualWeightVector::hasZeroWeights() const {
 
 float64 EqualWeightVector::getWeight(uint32 pos) const {
     return 1;
+}
+
+std::unique_ptr<IThresholdsSubset> EqualWeightVector::createThresholdsSubset(IThresholds& thresholds) const {
+    return thresholds.createSubset(*this);
 }

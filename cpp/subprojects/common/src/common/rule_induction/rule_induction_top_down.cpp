@@ -92,7 +92,7 @@ class TopDownRuleInduction final : public IRuleInduction {
             bool foundRefinement = true;
 
             // Create a new subset of the given thresholds...
-            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = thresholds.createSubset(weights);
+            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(thresholds);
 
             // Search for the best refinement until no improvement in terms of the rule's quality score is possible
             // anymore or the maximum number of conditions has been reached...
