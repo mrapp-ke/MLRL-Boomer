@@ -100,13 +100,11 @@ static inline int64 adjustSplit(FeatureVector& featureVector, int64 conditionEnd
  * @param statistics            A reference to an object of type `IWeightedStatistics` to be notified about the
  *                              statistics that must be considered when searching for the next refinement, i.e., the
  *                              statistics that are covered by the new rule
- * @param weights               A reference to an an object of type `IWeightVector` that provides access to the weights
- *                              of the individual training examples
  */
 static inline void filterCurrentVector(const FeatureVector& vector, FilteredCacheEntry& cacheEntry,
                                        int64 conditionStart, int64 conditionEnd, Comparator conditionComparator,
                                        bool covered, uint32 numConditions, CoverageMask& coverageMask,
-                                       IWeightedStatistics& statistics, const IWeightVector& weights) {
+                                       IWeightedStatistics& statistics) {
     // Determine the number of elements in the filtered vector...
     uint32 numTotalElements = vector.getNumElements();
     uint32 distance = std::abs(conditionStart - conditionEnd);
@@ -147,8 +145,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
             coverageMaskIterator[index] = numConditions;
             filteredIterator[i].index = index;
             filteredIterator[i].value = iterator[r].value;
-            float64 weight = weights.getWeight(index);
-            statistics.updateCoveredStatistic(index, weight, false);
+            statistics.updateCoveredStatistic(index, false);
             i++;
         }
     } else {
@@ -157,8 +154,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
         for (int64 r = start; r < end; r++) {
             uint32 index = iterator[r].index;
             coverageMaskIterator[index] = numConditions;
-            float64 weight = weights.getWeight(index);
-            statistics.updateCoveredStatistic(index, weight, true);
+            statistics.updateCoveredStatistic(index, true);
         }
 
         if (conditionComparator == NEQ) {
@@ -212,8 +208,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
         for (auto it = vector.missing_indices_cbegin(); it != vector.missing_indices_cend(); it++) {
             uint32 index = *it;
             coverageMaskIterator[index] = numConditions;
-            float64 weight = weights.getWeight(index);
-            statistics.updateCoveredStatistic(index, weight, true);
+            statistics.updateCoveredStatistic(index, true);
         }
     }
 
@@ -439,7 +434,7 @@ class ExactThresholds final : public AbstractThresholds {
                     // Identify the examples that are covered by the refined rule...
                     filterCurrentVector(*featureVector, cacheEntry, refinement.start, refinement.end,
                                         refinement.comparator, refinement.covered, numModifications_, coverageMask_,
-                                        *weightedStatisticsPtr_, weights_);
+                                        *weightedStatisticsPtr_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
@@ -465,7 +460,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                     filterCurrentVector(*featureVector, cacheEntry, condition.start, condition.end,
                                         condition.comparator, condition.covered, numModifications_, coverageMask_,
-                                        *weightedStatisticsPtr_, weights_);
+                                        *weightedStatisticsPtr_);
                 }
 
                 void resetThresholds() override {
