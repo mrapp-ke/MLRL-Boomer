@@ -118,6 +118,19 @@ namespace boosting {
         }
     }
 
+    void SparseLabelWiseStatisticVector::remove(const SparseLabelWiseStatisticConstView& view, uint32 row) {
+        sumOfWeights_ -= 1;
+        addToSparseLabelWiseStatisticVector(statistics_, view.row_cbegin(row), view.row_cend(row), -1);
+    }
+
+    void SparseLabelWiseStatisticVector::remove(const SparseLabelWiseStatisticConstView& view, uint32 row,
+                                             float64 weight) {
+        if (weight != 0) {
+            sumOfWeights_ -= weight;
+            addToSparseLabelWiseStatisticVector(statistics_, view.row_cbegin(row), view.row_cend(row), -weight);
+        }
+    }
+
     void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
                                                      const CompleteIndexVector& indices, float64 weight) {
         if (weight != 0) {

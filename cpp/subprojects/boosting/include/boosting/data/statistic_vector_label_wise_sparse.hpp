@@ -223,6 +223,27 @@ namespace boosting {
             void add(const SparseLabelWiseStatisticConstView& view, uint32 row, float64 weight);
 
             /**
+             * Removes all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` from this
+             * vector.
+             *
+             * @param view  A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
+             *              gradients and Hessians to be removed from this vector
+             * @param row   The index of the row to be removed from this vector
+             */
+            void remove(const SparseLabelWiseStatisticConstView& view, uint32 row);
+
+            /**
+             * Removes all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` from this
+             * vector. The gradients and Hessians to be added are multiplied by a specific weight.
+             *
+             * @param view      A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
+             *                  gradients and Hessians to be removed from this vector
+             * @param row       The index of the row to be removed from this vector
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
+             */
+            void remove(const SparseLabelWiseStatisticConstView& view, uint32 row, float64 weight);
+
+            /**
              * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView`, whose
              * positions are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added
              * are multiplied by a specific weight.
