@@ -369,7 +369,32 @@ namespace seco {
             /**
              * @see `IStatistics::createWeightedStatistics`
              */
-            std::unique_ptr<IWeightedStatistics> createWeightedStatistics() const override final {
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+                    const EqualWeightVector& weights) const override final {
+                return std::make_unique<LabelWiseWeightedStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                                    RuleEvaluationFactory>>(*ruleEvaluationFactory_,
+                                                                                            labelMatrix_,
+                                                                                            *coverageMatrixPtr_,
+                                                                                            *majorityLabelVectorPtr_);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+                    const BitWeightVector& weights) const override final {
+                return std::make_unique<LabelWiseWeightedStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                                    RuleEvaluationFactory>>(*ruleEvaluationFactory_,
+                                                                                            labelMatrix_,
+                                                                                            *coverageMatrixPtr_,
+                                                                                            *majorityLabelVectorPtr_);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+                    const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<LabelWiseWeightedStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                                     RuleEvaluationFactory>>(*ruleEvaluationFactory_,
                                                                                             labelMatrix_,
