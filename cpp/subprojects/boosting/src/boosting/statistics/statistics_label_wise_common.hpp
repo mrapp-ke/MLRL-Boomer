@@ -476,6 +476,14 @@ namespace boosting {
             }
 
             /**
+             * @see `IWeightedStatistics::removeCoveredStatistic`
+             */
+            void removeCoveredStatistic(uint32 statisticIndex) override final {
+                float64 weight = weights_.getWeight(statisticIndex);
+                totalSumVectorPtr_->add(this->statisticView_, statisticIndex, -weight);
+            }
+
+            /**
              * @see `IWeightedStatistics::createHistogram`
              */
             std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override final {
