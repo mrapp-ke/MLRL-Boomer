@@ -36,19 +36,14 @@ class IWeightedStatistics : virtual public IImmutableWeightedStatistics {
          * This function must be called repeatedly for each statistic that is covered by the existing rule, immediately
          * after the invocation of the function `resetCoveredStatistics`.
          *
-         * Alternatively, this function may be used to indicate that a statistic, which has previously been passed to
-         * this function, should not be considered anymore by setting the argument `remove` accordingly.
-         *
          * This function is supposed to update any internal state that relates to the considered statistics, i.e., to
          * compute and store local information that is required by the other functions that will be called later. Any
          * information computed by this function is expected to be reset when invoking the function
          * `resetCoveredStatistics` for the next time.
          *
-         * @param statisticIndex    The index of the statistic that should be added
-         * @param remove            False, if the statistic should be considered, True, if the statistic should not be
-         *                          considered anymore
+         * @param statisticIndex The index of the statistic that should be added
          */
-        virtual void addCoveredStatistic(uint32 statisticIndex, bool remove) = 0;
+        virtual void addCoveredStatistic(uint32 statisticIndex) = 0;
 
         /**
          * Removes a specific statistic from the subset that is covered by an existing rule and therefore should not be
@@ -61,7 +56,7 @@ class IWeightedStatistics : virtual public IImmutableWeightedStatistics {
          * information computed by this function is expected to be reset when invoking the function
          * `resetCoveredStatistics` for the next time.
          *
-         * @param statisticIndex    The index of the statistic that should be removed
+         * @param statisticIndex The index of the statistic that should be removed
          */
         virtual void removeCoveredStatistic(uint32 statisticIndex) = 0;
 

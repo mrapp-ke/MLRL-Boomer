@@ -145,7 +145,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
             coverageMaskIterator[index] = numConditions;
             filteredIterator[i].index = index;
             filteredIterator[i].value = iterator[r].value;
-            statistics.addCoveredStatistic(index, false);
+            statistics.addCoveredStatistic(index);
             i++;
         }
     } else {
