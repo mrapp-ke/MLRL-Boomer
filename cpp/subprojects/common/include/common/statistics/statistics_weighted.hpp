@@ -45,11 +45,10 @@ class IWeightedStatistics : virtual public IImmutableWeightedStatistics {
          * `resetCoveredStatistics` for the next time.
          *
          * @param statisticIndex    The index of the statistic that should be updated
-         * @param weight            The weight of the statistic that should be updated
          * @param remove            False, if the statistic should be considered, True, if the statistic should not be
          *                          considered anymore
          */
-        virtual void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) = 0;
+        virtual void updateCoveredStatistic(uint32 statisticIndex, bool remove) = 0;
 
         /**
          * Creates and returns a new histogram based on the statistics.

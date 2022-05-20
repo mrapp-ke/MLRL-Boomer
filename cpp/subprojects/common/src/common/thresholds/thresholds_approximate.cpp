@@ -40,13 +40,10 @@ struct CacheEntry : public IFeatureBinning::Result {
  * @param statistics        A reference to an object of type `IWeightedStatistics` to be notified about the statistics
  *                          that must be considered when searching for the next refinement, i.e., the statistics that
  *                          are covered by the new rule
- * @param weights           A reference to an an object of type `IWeightVector` that provides access to the weights of
- *                          the individual training examples
  */
 static inline void updateCoveredExamples(const ThresholdVector& thresholdVector, const IBinIndexVector& binIndices,
                                          int64 conditionStart, int64 conditionEnd, bool covered,
-                                         CoverageSet& coverageSet, IWeightedStatistics& statistics,
-                                         const IWeightVector& weights) {
+                                         CoverageSet& coverageSet, IWeightedStatistics& statistics) {
     int64 start, end;
 
     if (conditionEnd < conditionStart) {
@@ -73,8 +70,7 @@ static inline void updateCoveredExamples(const ThresholdVector& thresholdVector,
             }
 
             if ((binIndex >= start && binIndex < end) == covered) {
-                float64 weight = weights.getWeight(exampleIndex);
-                statistics.updateCoveredStatistic(exampleIndex, weight, false);
+                statistics.updateCoveredStatistic(exampleIndex, false);
                 coverageSetIterator[n] = exampleIndex;
                 n++;
             }
@@ -282,7 +278,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     const ThresholdVector& thresholdVector = *cacheIterator->second.thresholdVectorPtr;
                     const IBinIndexVector& binIndices = *cacheIterator->second.binIndicesPtr;
                     updateCoveredExamples(thresholdVector, binIndices, refinement.start, refinement.end,
-                                          refinement.covered, coverageSet_, *weightedStatisticsPtr_, weights_);
+                                          refinement.covered, coverageSet_, *weightedStatisticsPtr_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
@@ -291,7 +287,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     const ThresholdVector& thresholdVector = *cacheIterator->second.thresholdVectorPtr;
                     const IBinIndexVector& binIndices = *cacheIterator->second.binIndicesPtr;
                     updateCoveredExamples(thresholdVector, binIndices, condition.start, condition.end,
-                                          condition.covered, coverageSet_, *weightedStatisticsPtr_, weights_);
+                                          condition.covered, coverageSet_, *weightedStatisticsPtr_);
                 }
 
                 void resetThresholds() override {
