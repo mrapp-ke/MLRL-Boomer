@@ -469,10 +469,9 @@ namespace boosting {
             /**
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
-            void addCoveredStatistic(uint32 statisticIndex, bool remove) override final {
+            void addCoveredStatistic(uint32 statisticIndex) override final {
                 float64 weight = weights_.getWeight(statisticIndex);
-                float64 signedWeight = remove ? -weight : weight;
-                totalSumVectorPtr_->add(this->statisticView_, statisticIndex, signedWeight);
+                totalSumVectorPtr_->add(this->statisticView_, statisticIndex, weight);
             }
 
             /**

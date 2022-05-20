@@ -250,10 +250,9 @@ namespace seco {
             /**
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
-            void addCoveredStatistic(uint32 statisticIndex, bool remove) override final {
+            void addCoveredStatistic(uint32 statisticIndex) override final {
                 float64 weight = weights_.getWeight(statisticIndex);
-                float64 signedWeight = remove ? -weight : weight;
-                subsetSumVector_.add(statisticIndex, labelMatrix_, majorityLabelVector_, coverageMatrix_, signedWeight);
+                subsetSumVector_.add(statisticIndex, labelMatrix_, majorityLabelVector_, coverageMatrix_, weight);
             }
 
             /**
