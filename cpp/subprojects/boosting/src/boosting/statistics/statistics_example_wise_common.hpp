@@ -8,6 +8,31 @@
 
 namespace boosting {
 
+    template<typename StatisticView, typename StatisticVector>
+    static inline void initializeExampleWiseSampledStatistics(const EqualWeightVector& weights,
+                                                              const StatisticView& statisticView,
+                                                              StatisticVector& totalSumVector) {
+        uint32 numStatistics = weights.getNumElements();
+
+        for (uint32 i = 0; i < numStatistics; i++) {
+            totalSumVector.add(statisticView.gradients_row_cbegin(i), statisticView.gradients_row_cend(i),
+                               statisticView.hessians_row_cbegin(i), statisticView.hessians_row_cend(i));
+        }
+    }
+
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void initializeExampleWiseSampledStatistics(const WeightVector& weights,
+                                                              const StatisticView& statisticView,
+                                                              StatisticVector& totalSumVector) {
+        uint32 numStatistics = weights.getNumElements();
+
+        for (uint32 i = 0; i < numStatistics; i++) {
+            float64 weight = weights.getWeight(i);
+            totalSumVector.add(statisticView.gradients_row_cbegin(i), statisticView.gradients_row_cend(i),
+                               statisticView.hessians_row_cbegin(i), statisticView.hessians_row_cend(i), weight);
+        }
+    }
+
     template<typename Prediction, typename ScoreMatrix>
     static inline void applyExampleWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                             ScoreMatrix& scoreMatrix) {
@@ -453,24 +478,23 @@ namespace boosting {
                                           const RuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory>(
                       statisticView, ruleEvaluationFactory),
-                  weights_(weights), totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.getNumCols())) {
-
+                  weights_(weights),
+                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.getNumCols(), true)) {
+                initializeExampleWiseSampledStatistics(weights, statisticView, *totalSumVectorPtr_);
             }
 
             /**
              * @see `IWeightedStatistics::resetSampledStatistics`
              */
             void resetSampledStatistics() override final {
-                // This function is equivalent to the function `resetCoveredStatistics`...
-                this->resetCoveredStatistics();
+
             }
 
             /**
              * @see `IWeightedStatistics::addSampledStatistic`
              */
             void addSampledStatistic(uint32 statisticIndex, float64 weight) override final {
-                // This function is equivalent to the function `updateCoveredStatistic`...
-                this->updateCoveredStatistic(statisticIndex, weight, false);
+
             }
 
             /**
