@@ -19,7 +19,7 @@ class IWeightedStatistics : virtual public IImmutableWeightedStatistics {
 
         /**
          * Resets the statistics which should be considered in the following for refining an existing rule. The indices
-         * of the respective statistics must be provided via subsequent calls to the function `updateCoveredStatistic`.
+         * of the respective statistics must be provided via subsequent calls to the function `addCoveredStatistic`.
          *
          * This function must be invoked each time an existing rule has been refined, i.e., when a new condition has
          * been added to its body, because this results in a subset of the statistics being covered by the refined rule.
@@ -48,7 +48,7 @@ class IWeightedStatistics : virtual public IImmutableWeightedStatistics {
          * @param remove            False, if the statistic should be considered, True, if the statistic should not be
          *                          considered anymore
          */
-        virtual void updateCoveredStatistic(uint32 statisticIndex, bool remove) = 0;
+        virtual void addCoveredStatistic(uint32 statisticIndex, bool remove) = 0;
 
         /**
          * Creates and returns a new histogram based on the statistics.
