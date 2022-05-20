@@ -40,35 +40,35 @@ namespace seco {
     }
 
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void addStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
-                                    const BinarySparseArrayVector& majorityLabelVector,
-                                    const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
-                                    uint32 statisticIndex) {
+    static inline void addLabelWiseStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
+                                             const BinarySparseArrayVector& majorityLabelVector,
+                                             const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
+                                             uint32 statisticIndex) {
         vector.add(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, 1);
     }
 
     template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void addStatistic(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                    const BinarySparseArrayVector& majorityLabelVector,
-                                    const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
-                                    uint32 statisticIndex) {
+    static inline void addLabelWiseStatistic(const WeightVector& weights, const LabelMatrix& labelMatrix,
+                                             const BinarySparseArrayVector& majorityLabelVector,
+                                             const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
+                                             uint32 statisticIndex) {
         float64 weight = weights.getWeight(statisticIndex);
         vector.add(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, weight);
     }
 
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void removeStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
-                                       const BinarySparseArrayVector& majorityLabelVector,
-                                       const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
-                                       uint32 statisticIndex) {
+    static inline void removeLabelWiseStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
+                                                const BinarySparseArrayVector& majorityLabelVector,
+                                                const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
+                                                uint32 statisticIndex) {
         vector.remove(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, 1);
     }
 
     template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void removeStatistic(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                       const BinarySparseArrayVector& majorityLabelVector,
-                                       const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
-                                       uint32 statisticIndex) {
+    static inline void removeLabelWiseStatistic(const WeightVector& weights, const LabelMatrix& labelMatrix,
+                                                const BinarySparseArrayVector& majorityLabelVector,
+                                                const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
+                                                uint32 statisticIndex) {
         float64 weight = weights.getWeight(statisticIndex);
         vector.remove(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, weight);
     }
@@ -285,16 +285,16 @@ namespace seco {
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
             void addCoveredStatistic(uint32 statisticIndex) override final {
-                addStatistic(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_, subsetSumVector_,
-                             statisticIndex);
+                addLabelWiseStatistic(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_, subsetSumVector_,
+                                      statisticIndex);
             }
 
             /**
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
             void removeCoveredStatistic(uint32 statisticIndex) override final {
-                removeStatistic(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_, subsetSumVector_,
-                                statisticIndex);
+                removeLabelWiseStatistic(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_, subsetSumVector_,
+                                         statisticIndex);
             }
 
             /**

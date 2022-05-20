@@ -32,27 +32,27 @@ namespace boosting {
     }
 
     template<typename StatisticView, typename StatisticVector>
-    static inline void addStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                    StatisticVector& statisticVector, uint32 statisticIndex) {
+    static inline void addLabelWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                             StatisticVector& statisticVector, uint32 statisticIndex) {
         statisticVector.add(statisticView, statisticIndex);
     }
 
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void addStatistic(const WeightVector& weights, const StatisticView& statisticView,
-                                    StatisticVector& statisticVector, uint32 statisticIndex) {
+    static inline void addLabelWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                             StatisticVector& statisticVector, uint32 statisticIndex) {
         float64 weight = weights.getWeight(statisticIndex);
         statisticVector.add(statisticView, statisticIndex, weight);
     }
 
     template<typename StatisticView, typename StatisticVector>
-    static inline void removeStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                       StatisticVector& statisticVector, uint32 statisticIndex) {
+    static inline void removeLabelWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                                StatisticVector& statisticVector, uint32 statisticIndex) {
         statisticVector.remove(statisticView, statisticIndex);
     }
 
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void removeStatistic(const WeightVector& weights, const StatisticView& statisticView,
-                                       StatisticVector& statisticVector, uint32 statisticIndex) {
+    static inline void removeLabelWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                                StatisticVector& statisticVector, uint32 statisticIndex) {
         float64 weight = weights.getWeight(statisticIndex);
         statisticVector.remove(statisticView, statisticIndex, weight);
     }
@@ -496,14 +496,14 @@ namespace boosting {
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
             void addCoveredStatistic(uint32 statisticIndex) override final {
-                addStatistic(weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
+                addLabelWiseStatistic(weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
             }
 
             /**
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
             void removeCoveredStatistic(uint32 statisticIndex) override final {
-                removeStatistic(weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
+                removeLabelWiseStatistic(weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
             }
 
             /**
