@@ -70,7 +70,7 @@ static inline void updateCoveredExamples(const ThresholdVector& thresholdVector,
             }
 
             if ((binIndex >= start && binIndex < end) == covered) {
-                statistics.updateCoveredStatistic(exampleIndex, false);
+                statistics.addCoveredStatistic(exampleIndex, false);
                 coverageSetIterator[n] = exampleIndex;
                 n++;
             }
