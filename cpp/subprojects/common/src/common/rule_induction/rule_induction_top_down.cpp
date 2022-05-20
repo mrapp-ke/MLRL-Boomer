@@ -49,13 +49,9 @@ class TopDownRuleInduction final : public IRuleInduction {
         void induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const override {
             uint32 numStatistics = statistics.getNumStatistics();
             uint32 numLabels = statistics.getNumLabels();
-            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics();
-            weightedStatisticsPtr->resetSampledStatistics();
-
-            for (uint32 i = 0; i < numStatistics; i++) {
-                weightedStatisticsPtr->addSampledStatistic(i, 1);
-            }
-
+            EqualWeightVector weightVector(numStatistics);
+            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr =
+                statistics.createWeightedStatistics(weightVector);
             CompleteIndexVector labelIndices(numLabels);
             std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices.createSubset(*weightedStatisticsPtr);
             const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(true, false);
@@ -92,7 +88,7 @@ class TopDownRuleInduction final : public IRuleInduction {
             bool foundRefinement = true;
 
             // Create a new subset of the given thresholds...
-            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = thresholds.createSubset(weights);
+            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(thresholds);
 
             // Search for the best refinement until no improvement in terms of the rule's quality score is possible
             // anymore or the maximum number of conditions has been reached...

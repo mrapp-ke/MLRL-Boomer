@@ -8,6 +8,44 @@
 
 namespace boosting {
 
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void addExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                               StatisticVector& statisticVector, uint32 statisticIndex) {
+        float64 weight = weights.getWeight(statisticIndex);
+        statisticVector.add(statisticView.gradients_row_cbegin(statisticIndex),
+                            statisticView.gradients_row_cend(statisticIndex),
+                            statisticView.hessians_row_cbegin(statisticIndex),
+                            statisticView.hessians_row_cend(statisticIndex), weight);
+    }
+
+    template<typename StatisticView, typename StatisticVector>
+    static inline void addExampleWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                               StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.add(statisticView.gradients_row_cbegin(statisticIndex),
+                            statisticView.gradients_row_cend(statisticIndex),
+                            statisticView.hessians_row_cbegin(statisticIndex),
+                            statisticView.hessians_row_cend(statisticIndex));
+    }
+
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void removeExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
+        float64 weight = weights.getWeight(statisticIndex);
+        statisticVector.remove(statisticView.gradients_row_cbegin(statisticIndex),
+                               statisticView.gradients_row_cend(statisticIndex),
+                               statisticView.hessians_row_cbegin(statisticIndex),
+                               statisticView.hessians_row_cend(statisticIndex), weight);
+    }
+
+    template<typename StatisticView, typename StatisticVector>
+    static inline void removeExampleWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.remove(statisticView.gradients_row_cbegin(statisticIndex),
+                               statisticView.gradients_row_cend(statisticIndex),
+                               statisticView.hessians_row_cbegin(statisticIndex),
+                               statisticView.hessians_row_cend(statisticIndex));
+    }
+
     template<typename Prediction, typename ScoreMatrix>
     static inline void applyExampleWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                             ScoreMatrix& scoreMatrix) {
@@ -356,13 +394,16 @@ namespace boosting {
      * function that is applied example-wise and allows to update the gradients and Hessians after a new rule has been
      * learned.
      *
+     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
+     *                                  training examples
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
      * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
      * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
      *                                  well as corresponding quality scores, of rules
      */
-    template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory>
+    template<typename WeightVector, typename StatisticVector, typename StatisticView, typename Histogram,
+             typename RuleEvaluationFactory>
     class ExampleWiseWeightedStatistics :
             public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
                                                                   RuleEvaluationFactory>,
@@ -431,39 +472,32 @@ namespace boosting {
 
             };
 
+            const WeightVector& weights_;
+
             std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
         public:
 
             /**
+             * @param weights               A reference to an object of template type `WeightVector` that provides
+             *                              access to the weights of individual training examples
              * @param statisticView         A reference to an object of template type `StatisticView` that provides
              *                              access to the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`, to be
              *                              used for calculating the predictions, as well as corresponding quality
              *                              scores, of rules
              */
-            ExampleWiseWeightedStatistics(const StatisticView& statisticView,
+            ExampleWiseWeightedStatistics(const WeightVector& weights, const StatisticView& statisticView,
                                           const RuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory>(
                       statisticView, ruleEvaluationFactory),
-                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.getNumCols())) {
+                  weights_(weights),
+                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.getNumCols(), true)) {
+                uint32 numStatistics = weights.getNumElements();
 
-            }
-
-            /**
-             * @see `IWeightedStatistics::resetSampledStatistics`
-             */
-            void resetSampledStatistics() override final {
-                // This function is equivalent to the function `resetCoveredStatistics`...
-                this->resetCoveredStatistics();
-            }
-
-            /**
-             * @see `IWeightedStatistics::addSampledStatistic`
-             */
-            void addSampledStatistic(uint32 statisticIndex, float64 weight) override final {
-                // This function is equivalent to the function `updateCoveredStatistic`...
-                this->updateCoveredStatistic(statisticIndex, weight, false);
+                for (uint32 i = 0; i < numStatistics; i++) {
+                    addExampleWiseStatistic(weights, statisticView, *totalSumVectorPtr_, i);
+                }
             }
 
             /**
@@ -474,14 +508,17 @@ namespace boosting {
             }
 
             /**
-             * @see `IWeightedStatistics::updateCoveredStatistic`
+             * @see `IWeightedStatistics::addCoveredStatistic`
              */
-            void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override final {
-                float64 signedWeight = remove ? -weight : weight;
-                totalSumVectorPtr_->add(this->statisticView_.gradients_row_cbegin(statisticIndex),
-                                        this->statisticView_.gradients_row_cend(statisticIndex),
-                                        this->statisticView_.hessians_row_cbegin(statisticIndex),
-                                        this->statisticView_.hessians_row_cend(statisticIndex), signedWeight);
+            void addCoveredStatistic(uint32 statisticIndex) override final {
+                addExampleWiseStatistic(weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
+            }
+
+            /**
+             * @see `IWeightedStatistics::removeCoveredStatistic`
+             */
+            void removeCoveredStatistic(uint32 statisticIndex) override final {
+                removeExampleWiseStatistic(weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
             }
 
             /**
@@ -663,10 +700,32 @@ namespace boosting {
             /**
              * @see `IStatistics::createWeightedStatistics`
              */
-            std::unique_ptr<IWeightedStatistics> createWeightedStatistics() const override final {
-                return std::make_unique<ExampleWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+                    const EqualWeightVector& weights) const override final {
+                return std::make_unique<ExampleWiseWeightedStatistics<EqualWeightVector, StatisticVector, StatisticView,
+                                                                      Histogram, ExampleWiseRuleEvaluationFactory>>(
+                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+                    const BitWeightVector& weights) const override final {
+                return std::make_unique<ExampleWiseWeightedStatistics<BitWeightVector, StatisticVector, StatisticView,
+                                                                      Histogram, ExampleWiseRuleEvaluationFactory>>(
+                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+                    const DenseWeightVector<uint32>& weights) const override final {
+                return std::make_unique<ExampleWiseWeightedStatistics<DenseWeightVector<uint32>, StatisticVector,
+                                                                      StatisticView, Histogram,
                                                                       ExampleWiseRuleEvaluationFactory>>(
-                    *statisticViewPtr_, *ruleEvaluationFactory_);
+                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
             }
 
     };
