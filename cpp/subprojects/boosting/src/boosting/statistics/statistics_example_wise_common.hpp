@@ -33,6 +33,44 @@ namespace boosting {
         }
     }
 
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void addExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                               StatisticVector& statisticVector, uint32 statisticIndex) {
+        float64 weight = weights.getWeight(statisticIndex);
+        statisticVector.add(statisticView.gradients_row_cbegin(statisticIndex),
+                            statisticView.gradients_row_cend(statisticIndex),
+                            statisticView.hessians_row_cbegin(statisticIndex),
+                            statisticView.hessians_row_cend(statisticIndex), weight);
+    }
+
+    template<typename StatisticView, typename StatisticVector>
+    static inline void addExampleWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                               StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.add(statisticView.gradients_row_cbegin(statisticIndex),
+                            statisticView.gradients_row_cend(statisticIndex),
+                            statisticView.hessians_row_cbegin(statisticIndex),
+                            statisticView.hessians_row_cend(statisticIndex));
+    }
+
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void removeExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
+        float64 weight = weights.getWeight(statisticIndex);
+        statisticVector.remove(statisticView.gradients_row_cbegin(statisticIndex),
+                               statisticView.gradients_row_cend(statisticIndex),
+                               statisticView.hessians_row_cbegin(statisticIndex),
+                               statisticView.hessians_row_cend(statisticIndex), weight);
+    }
+
+    template<typename StatisticView, typename StatisticVector>
+    static inline void removeExampleWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.remove(statisticView.gradients_row_cbegin(statisticIndex),
+                               statisticView.gradients_row_cend(statisticIndex),
+                               statisticView.hessians_row_cbegin(statisticIndex),
+                               statisticView.hessians_row_cend(statisticIndex));
+    }
+
     template<typename Prediction, typename ScoreMatrix>
     static inline void applyExampleWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                             ScoreMatrix& scoreMatrix) {
@@ -494,22 +532,14 @@ namespace boosting {
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
             void addCoveredStatistic(uint32 statisticIndex) override final {
-                float64 weight = weights_.getWeight(statisticIndex);
-                totalSumVectorPtr_->add(this->statisticView_.gradients_row_cbegin(statisticIndex),
-                                        this->statisticView_.gradients_row_cend(statisticIndex),
-                                        this->statisticView_.hessians_row_cbegin(statisticIndex),
-                                        this->statisticView_.hessians_row_cend(statisticIndex), weight);
+                addExampleWiseStatistic(weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
             }
 
             /**
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
             void removeCoveredStatistic(uint32 statisticIndex) override final {
-                float64 weight = weights_.getWeight(statisticIndex);
-                totalSumVectorPtr_->add(this->statisticView_.gradients_row_cbegin(statisticIndex),
-                                        this->statisticView_.gradients_row_cend(statisticIndex),
-                                        this->statisticView_.hessians_row_cbegin(statisticIndex),
-                                        this->statisticView_.hessians_row_cend(statisticIndex), -weight);
+                removeExampleWiseStatistic(weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
             }
 
             /**
