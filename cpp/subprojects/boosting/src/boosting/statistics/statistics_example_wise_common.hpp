@@ -663,7 +663,28 @@ namespace boosting {
             /**
              * @see `IStatistics::createWeightedStatistics`
              */
-            std::unique_ptr<IWeightedStatistics> createWeightedStatistics() const override final {
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+                    const EqualWeightVector& weights) const override final {
+                return std::make_unique<ExampleWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
+                                                                      ExampleWiseRuleEvaluationFactory>>(
+                    *statisticViewPtr_, *ruleEvaluationFactory_);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+                    const BitWeightVector& weights) const override final {
+                return std::make_unique<ExampleWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
+                                                                      ExampleWiseRuleEvaluationFactory>>(
+                    *statisticViewPtr_, *ruleEvaluationFactory_);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+                    const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<ExampleWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
                                                                       ExampleWiseRuleEvaluationFactory>>(
                     *statisticViewPtr_, *ruleEvaluationFactory_);

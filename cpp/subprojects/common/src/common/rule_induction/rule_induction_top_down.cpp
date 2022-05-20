@@ -49,7 +49,9 @@ class TopDownRuleInduction final : public IRuleInduction {
         void induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const override {
             uint32 numStatistics = statistics.getNumStatistics();
             uint32 numLabels = statistics.getNumLabels();
-            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics();
+            EqualWeightVector weightVector(numStatistics);
+            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr =
+                statistics.createWeightedStatistics(weightVector);
             weightedStatisticsPtr->resetSampledStatistics();
 
             for (uint32 i = 0; i < numStatistics; i++) {

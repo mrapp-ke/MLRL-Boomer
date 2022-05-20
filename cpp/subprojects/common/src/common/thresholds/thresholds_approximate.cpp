@@ -404,7 +404,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
         std::unique_ptr<IThresholdsSubset> createSubset(const EqualWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
-            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics();
+            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
             updateSampledStatisticsInternally(*weightedStatisticsPtr, weights);
             return std::make_unique<ApproximateThresholds::ThresholdsSubset<EqualWeightVector>>(
                 *this, std::move(weightedStatisticsPtr), weights);
@@ -412,7 +412,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
         std::unique_ptr<IThresholdsSubset> createSubset(const BitWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
-            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics();
+            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
             updateSampledStatisticsInternally(*weightedStatisticsPtr, weights);
             return std::make_unique<ApproximateThresholds::ThresholdsSubset<BitWeightVector>>(
                 *this, std::move(weightedStatisticsPtr), weights);
@@ -420,7 +420,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
         std::unique_ptr<IThresholdsSubset> createSubset(const DenseWeightVector<uint32>& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
-            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics();
+            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
             updateSampledStatisticsInternally(*weightedStatisticsPtr, weights);
             return std::make_unique<ApproximateThresholds::ThresholdsSubset<DenseWeightVector<uint32>>>(
                 *this, std::move(weightedStatisticsPtr), weights);
