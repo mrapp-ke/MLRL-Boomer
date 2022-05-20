@@ -184,6 +184,30 @@ namespace boosting {
                      hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight);
 
             /**
+             * Removes all gradients and Hessians in another vector from this vector.
+             *
+             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients
+             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients
+             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians
+             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
+             */
+            void remove(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
+                        hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd);
+
+            /**
+             * Removes all gradients and Hessians in another vector from this vector. The gradients and Hessians to be
+             * removed are multiplied by a specific weight.
+             *
+             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients
+             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients
+             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians
+             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
+             * @param weight            The weight, the gradients and Hessians should be multiplied by
+             */
+            void remove(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
+                        hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight);
+
+            /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
              * `CompleteIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a
              * specific weight.
