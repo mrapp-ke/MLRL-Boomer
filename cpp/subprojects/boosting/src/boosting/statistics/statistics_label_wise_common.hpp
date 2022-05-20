@@ -9,29 +9,6 @@
 namespace boosting {
 
     template<typename StatisticView, typename StatisticVector>
-    static inline void initializeLabelWiseSampledStatistics(const EqualWeightVector& weights,
-                                                            const StatisticView& statisticView,
-                                                            StatisticVector& totalSumVector) {
-        uint32 numStatistics = weights.getNumElements();
-
-        for (uint32 i = 0; i < numStatistics; i++) {
-            totalSumVector.add(statisticView, i);
-        }
-    }
-
-    template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void initializeLabelWiseSampledStatistics(const WeightVector& weights,
-                                                            const StatisticView& statisticView,
-                                                            StatisticVector& totalSumVector) {
-        uint32 numStatistics = weights.getNumElements();
-
-        for (uint32 i = 0; i < numStatistics; i++) {
-            float64 weight = weights.getWeight(i);
-            totalSumVector.add(statisticView, i, weight);
-        }
-    }
-
-    template<typename StatisticView, typename StatisticVector>
     static inline void addLabelWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
                                              StatisticVector& statisticVector, uint32 statisticIndex) {
         statisticVector.add(statisticView, statisticIndex);
@@ -481,8 +458,11 @@ namespace boosting {
                       statisticView, ruleEvaluationFactory),
                   weights_(weights),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.getNumCols(), true)) {
-                initializeLabelWiseSampledStatistics(weights, statisticView, *totalSumVectorPtr_);
+                uint32 numStatistics = weights.getNumElements();
 
+                for (uint32 i = 0; i < numStatistics; i++) {
+                    addLabelWiseStatistic(weights, statisticView, *totalSumVectorPtr_, i);
+                }
             }
 
             /**
