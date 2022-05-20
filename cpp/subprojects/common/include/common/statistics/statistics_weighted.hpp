@@ -18,35 +18,6 @@ class IWeightedStatistics : virtual public IImmutableWeightedStatistics {
         virtual ~IWeightedStatistics() override { };
 
         /**
-         * Resets the statistics which should be considered in the following for learning a new rule. The indices of the
-         * respective statistics must be provided via subsequent calls to the function `addSampledStatistic`.
-         *
-         * This function must be invoked before a new rule is learned from scratch, as each rule may be learned on a
-         * different sub-sample of the statistics.
-         *
-         * This function is supposed to reset any non-global internal state that only holds for a certain subset of the
-         * available statistics and therefore becomes invalid when a different subset of the statistics should be used.
-         */
-        virtual void resetSampledStatistics() = 0;
-
-        /**
-         * Adds a specific statistic to the sub-sample that should be considered in the following for learning a new
-         * rule from scratch.
-         *
-         * This function must be called repeatedly for each statistic that should be considered, immediately after the
-         * invocation of the function `resetSampledStatistics`.
-         *
-         * This function is supposed to update any internal state that relates to the considered statistics, i.e., to
-         * compute and store local information that is required by the other function that will be called later. Any
-         * information computed by this function is expected to be reset when invoking the function
-         * `resetSampledStatistics` for the next time.
-         *
-         * @param statisticIndex    The index of the statistic that should be considered
-         * @param weight            The weight of the statistic that should be considered
-         */
-        virtual void addSampledStatistic(uint32 statisticIndex, float64 weight) = 0;
-
-        /**
          * Resets the statistics which should be considered in the following for refining an existing rule. The indices
          * of the respective statistics must be provided via subsequent calls to the function `updateCoveredStatistic`.
          *

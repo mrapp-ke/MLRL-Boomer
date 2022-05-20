@@ -460,20 +460,6 @@ namespace boosting {
             }
 
             /**
-             * @see `IWeightedStatistics::resetSampledStatistics`
-             */
-            void resetSampledStatistics() override final {
-
-            }
-
-            /**
-             * @see `IWeightedStatistics::addSampledStatistic`
-             */
-            void addSampledStatistic(uint32 statisticIndex, float64 weight) override final {
-
-            }
-
-            /**
              * @see `IWeightedStatistics::resetCoveredStatistic`
              */
             void resetCoveredStatistics() override final {
