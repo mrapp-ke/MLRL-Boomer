@@ -5,7 +5,9 @@
 
 #include "common/input/feature_matrix_column_wise.hpp"
 #include "common/input/nominal_feature_mask.hpp"
-#include "common/sampling/weight_vector.hpp"
+#include "common/sampling/weight_vector_bit.hpp"
+#include "common/sampling/weight_vector_dense.hpp"
+#include "common/sampling/weight_vector_equal.hpp"
 #include "common/statistics/statistics_provider.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
@@ -23,11 +25,29 @@ class IThresholds {
         /**
          * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
          *
-         * @param weights   A reference to an object of type `IWeightVector` that provides access to the weights of the
+         * @param weights   A reference to an object of type `EqualWeightVector` that provides access to the weights of
          *                  individual training examples
          * @return          An unique pointer to an object of type `IThresholdsSubset` that has been created
          */
-        virtual std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) = 0;
+        virtual std::unique_ptr<IThresholdsSubset> createSubset(const EqualWeightVector& weights) = 0;
+
+        /**
+         * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
+         *
+         * @param weights   A reference to an object of type `BitWeightVector` that provides access to the weights of
+         *                  individual training examples
+         * @return          An unique pointer to an object of type `IThresholdsSubset` that has been created
+         */
+        virtual std::unique_ptr<IThresholdsSubset> createSubset(const BitWeightVector& weights) = 0;
+
+        /**
+         * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
+         *
+         * @param weights   A reference to an object of type `DenseWeightVector<uint32>` that provides access to the
+         *                  weights of individual training examples
+         * @return          An unique pointer to an object of type `IThresholdsSubset` that has been created
+         */
+        virtual std::unique_ptr<IThresholdsSubset> createSubset(const DenseWeightVector<uint32>& weights) = 0;
 
         /**
          * Returns a reference to an object of type `IStatisticsProvider` that provides access to the statistics that

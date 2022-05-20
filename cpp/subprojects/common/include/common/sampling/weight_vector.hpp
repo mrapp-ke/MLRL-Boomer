@@ -4,6 +4,11 @@
 #pragma once
 
 #include "common/data/types.hpp"
+#include <memory>
+
+// Forward declarations
+class IThresholds;
+class IThresholdsSubset;
 
 
 /**
@@ -36,5 +41,15 @@ class IWeightVector {
          * @return      The weight at the given index
          */
         virtual float64 getWeight(uint32 pos) const = 0;
+
+        /**
+         * Creates and returns a new instance of type `IThresholdsSubset` that provides access to the statistics that
+         * correspond to individual training examples whose weights are stored in this vector.
+         *
+         * @param thresholds    A reference to an object of type `IThresholds` that should be used to create the
+         *                      instance
+         * @return              An unique pointer to an object of type `IThresholdsSubset` that has been created
+         */
+        virtual std::unique_ptr<IThresholdsSubset> createThresholdsSubset(IThresholds& thresholds) const = 0;
 
 };

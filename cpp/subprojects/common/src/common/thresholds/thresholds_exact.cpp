@@ -100,13 +100,11 @@ static inline int64 adjustSplit(FeatureVector& featureVector, int64 conditionEnd
  * @param statistics            A reference to an object of type `IWeightedStatistics` to be notified about the
  *                              statistics that must be considered when searching for the next refinement, i.e., the
  *                              statistics that are covered by the new rule
- * @param weights               A reference to an an object of type `IWeightVector` that provides access to the weights
- *                              of the individual training examples
  */
 static inline void filterCurrentVector(const FeatureVector& vector, FilteredCacheEntry& cacheEntry,
                                        int64 conditionStart, int64 conditionEnd, Comparator conditionComparator,
                                        bool covered, uint32 numConditions, CoverageMask& coverageMask,
-                                       IWeightedStatistics& statistics, const IWeightVector& weights) {
+                                       IWeightedStatistics& statistics) {
     // Determine the number of elements in the filtered vector...
     uint32 numTotalElements = vector.getNumElements();
     uint32 distance = std::abs(conditionStart - conditionEnd);
@@ -147,8 +145,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
             coverageMaskIterator[index] = numConditions;
             filteredIterator[i].index = index;
             filteredIterator[i].value = iterator[r].value;
-            float64 weight = weights.getWeight(index);
-            statistics.updateCoveredStatistic(index, weight, false);
+            statistics.addCoveredStatistic(index);
             i++;
         }
     } else {
@@ -157,8 +154,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
         for (int64 r = start; r < end; r++) {
             uint32 index = iterator[r].index;
             coverageMaskIterator[index] = numConditions;
-            float64 weight = weights.getWeight(index);
-            statistics.updateCoveredStatistic(index, weight, true);
+            statistics.removeCoveredStatistic(index);
         }
 
         if (conditionComparator == NEQ) {
@@ -212,8 +208,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
         for (auto it = vector.missing_indices_cbegin(); it != vector.missing_indices_cend(); it++) {
             uint32 index = *it;
             coverageMaskIterator[index] = numConditions;
-            float64 weight = weights.getWeight(index);
-            statistics.updateCoveredStatistic(index, weight, true);
+            statistics.removeCoveredStatistic(index);
         }
     }
 
@@ -281,7 +276,11 @@ class ExactThresholds final : public AbstractThresholds {
 
         /**
          * Provides access to a subset of the thresholds that are stored by an instance of the class `ExactThresholds`.
+         *
+         * @tparam WeightVector The type of the vector that provides access to the weights of individual training
+         *                      examples
          */
+        template<typename WeightVector>
         class ThresholdsSubset final : public IThresholdsSubset {
 
             private:
@@ -348,7 +347,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                 std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr_;
 
-                const IWeightVector& weights_;
+                const WeightVector& weights_;
 
                 uint32 numCoveredExamples_;
 
@@ -384,12 +383,12 @@ class ExactThresholds final : public AbstractThresholds {
                  *                              thresholds
                  * @param weightedStatisticsPtr An unique pointer to an object of type `IWeightedStatistics` that
                  *                              provides access to the statistics
-                 * @param weights               A reference to an object of type `IWeightVector` that provides access to
-                 *                              the weights of the individual training examples
+                 * @param weights               A reference to an object of template type `WeightVector` that provides
+                 *                              access to the weights of individual training examples
                  */
                 ThresholdsSubset(ExactThresholds& thresholds,
                                  std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr,
-                                 const IWeightVector& weights)
+                                 const WeightVector& weights)
                     : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
                       weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
                       coverageMask_(CoverageMask(thresholds.featureMatrix_.getNumRows())), numModifications_(0) {
@@ -435,7 +434,7 @@ class ExactThresholds final : public AbstractThresholds {
                     // Identify the examples that are covered by the refined rule...
                     filterCurrentVector(*featureVector, cacheEntry, refinement.start, refinement.end,
                                         refinement.comparator, refinement.covered, numModifications_, coverageMask_,
-                                        *weightedStatisticsPtr_, weights_);
+                                        *weightedStatisticsPtr_);
                 }
 
                 void filterThresholds(const Condition& condition) override {
@@ -461,7 +460,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                     filterCurrentVector(*featureVector, cacheEntry, condition.start, condition.end,
                                         condition.comparator, condition.covered, numModifications_, coverageMask_,
-                                        *weightedStatisticsPtr_, weights_);
+                                        *weightedStatisticsPtr_);
                 }
 
                 void resetThresholds() override {
@@ -564,12 +563,25 @@ class ExactThresholds final : public AbstractThresholds {
 
         }
 
-        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override {
+        std::unique_ptr<IThresholdsSubset> createSubset(const EqualWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
-            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics();
-            updateSampledStatisticsInternally(*weightedStatisticsPtr, weights);
-            return std::make_unique<ExactThresholds::ThresholdsSubset>(*this, std::move(weightedStatisticsPtr),
-                                                                       weights);
+            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
+            return std::make_unique<ExactThresholds::ThresholdsSubset<EqualWeightVector>>(
+                *this, std::move(weightedStatisticsPtr), weights);
+        }
+
+        std::unique_ptr<IThresholdsSubset> createSubset(const BitWeightVector& weights) override {
+            IStatistics& statistics = statisticsProvider_.get();
+            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
+            return std::make_unique<ExactThresholds::ThresholdsSubset<BitWeightVector>>(
+                *this, std::move(weightedStatisticsPtr), weights);
+        }
+
+        std::unique_ptr<IThresholdsSubset> createSubset(const DenseWeightVector<uint32>& weights) override {
+            IStatistics& statistics = statisticsProvider_.get();
+            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
+            return std::make_unique<ExactThresholds::ThresholdsSubset<DenseWeightVector<uint32>>>(
+                *this, std::move(weightedStatisticsPtr), weights);
         }
 
 };

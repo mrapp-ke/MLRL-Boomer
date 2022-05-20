@@ -9,16 +9,6 @@
 #include "omp.h"
 
 
-static inline void updateSampledStatisticsInternally(IWeightedStatistics& statistics, const IWeightVector& weights) {
-    uint32 numExamples = statistics.getNumStatistics();
-    statistics.resetSampledStatistics();
-
-    for (uint32 i = 0; i < numExamples; i++) {
-        float64 weight = weights.getWeight(i);
-        statistics.addSampledStatistic(i, weight);
-    }
-}
-
 template<typename T>
 static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExamples, const IWeightVector& weights,
                                                     const CoverageMask& coverageMask,

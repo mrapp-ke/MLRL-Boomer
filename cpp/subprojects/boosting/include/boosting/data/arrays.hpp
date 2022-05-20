@@ -66,4 +66,39 @@ namespace boosting {
         }
     }
 
+    /**
+     * Removes the elements in an array `b` from the elements in another array `a`, such that `a = a - b`.
+     *
+     * @tparam T            The type of the arrays `a` and `b`
+     * @param a             A pointer to an array of template type `T` to be updated
+     * @param b             A pointer to an array of template type `T`
+     * @param numElements   The number of elements in the arrays `a` and `b`
+     *
+     */
+    template<typename T>
+    static inline void removeFromArray(T* a, const T* b, uint32 numElements) {
+        for (uint32 i = 0; i < numElements; i++) {
+            a[i] -= b[i];
+        }
+    }
+
+    /**
+     * Removes the elements in an array `b` from the elements in another array `a`. The elements in the array `b` are
+     * multiplied by a given weight, such that `a = a - (b * weight)`.
+     *
+     * @tparam T            The type of the arrays `a` and `b`
+     * @tparam W            The type of the weight
+     * @param a             A pointer to an array of template type `T` to be updated
+     * @param b             A pointer to an array of template type `T`
+     * @param numElements   The number of elements in the arrays `a` and `b`
+     * @param weight        The weight, the elements in the array `b` should be multiplied by
+     *
+     */
+    template<typename T, typename W>
+    static inline void removeFromArray(T* a, const T* b, uint32 numElements, W weight) {
+        for (uint32 i = 0; i < numElements; i++) {
+            a[i] -= (b[i] * weight);
+        }
+    }
+
 }

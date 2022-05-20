@@ -8,6 +8,32 @@
 
 namespace boosting {
 
+    template<typename StatisticView, typename StatisticVector>
+    static inline void addLabelWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                             StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.add(statisticView, statisticIndex);
+    }
+
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void addLabelWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                             StatisticVector& statisticVector, uint32 statisticIndex) {
+        float64 weight = weights.getWeight(statisticIndex);
+        statisticVector.add(statisticView, statisticIndex, weight);
+    }
+
+    template<typename StatisticView, typename StatisticVector>
+    static inline void removeLabelWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                                StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.remove(statisticView, statisticIndex);
+    }
+
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void removeLabelWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                                StatisticVector& statisticVector, uint32 statisticIndex) {
+        float64 weight = weights.getWeight(statisticIndex);
+        statisticVector.remove(statisticView, statisticIndex, weight);
+    }
+
     template<typename Prediction, typename ScoreMatrix>
     static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                           ScoreMatrix& scoreMatrix) {
@@ -338,13 +364,16 @@ namespace boosting {
      * according to a differentiable loss function that is applied label-wise and allows to update the gradients and
      * Hessians after a new rule has been learned.
      *
+     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
+     *                                  training examples
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
      * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
      * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
      *                                  well as corresponding quality scores, of rules
      */
-    template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory>
+    template<typename WeightVector, typename StatisticVector, typename StatisticView, typename Histogram,
+             typename RuleEvaluationFactory>
     class LabelWiseWeightedStatistics :
             public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory>,
             virtual public IWeightedStatistics {
@@ -408,39 +437,32 @@ namespace boosting {
 
             };
 
+            const WeightVector& weights_;
+
             std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
         public:
 
             /**
+             * @param weights               A reference to an object of template type `WeightVector` that provides
+             *                              access to the weights of individual training examples
              * @param statisticView         A reference to an object of template type `StatisticView` that provides
              *                              access to the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory`, that allows to
              *                              create instances of the class that is used for calculating the
              *                              predictions, as well as corresponding quality scores, of rules
              */
-            LabelWiseWeightedStatistics(const StatisticView& statisticView,
+            LabelWiseWeightedStatistics(const WeightVector& weights, const StatisticView& statisticView,
                                         const RuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory>(
                       statisticView, ruleEvaluationFactory),
-                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.getNumCols())) {
+                  weights_(weights),
+                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.getNumCols(), true)) {
+                uint32 numStatistics = weights.getNumElements();
 
-            }
-
-            /**
-             * @see `IWeightedStatistics::resetSampledStatistics`
-             */
-            void resetSampledStatistics() override final {
-                // This function is equivalent to the function `resetCoveredStatistics`...
-                this->resetCoveredStatistics();
-            }
-
-            /**
-             * @see `IWeightedStatistics::addSampledStatistic`
-             */
-            void addSampledStatistic(uint32 statisticIndex, float64 weight) override final {
-                // This function is equivalent to the function `updateCoveredStatistic`...
-                this->updateCoveredStatistic(statisticIndex, weight, false);
+                for (uint32 i = 0; i < numStatistics; i++) {
+                    addLabelWiseStatistic(weights, statisticView, *totalSumVectorPtr_, i);
+                }
             }
 
             /**
@@ -451,11 +473,17 @@ namespace boosting {
             }
 
             /**
-             * @see `IWeightedStatistics::updateCoveredStatistic`
+             * @see `IWeightedStatistics::addCoveredStatistic`
              */
-            void updateCoveredStatistic(uint32 statisticIndex, float64 weight, bool remove) override final {
-                float64 signedWeight = remove ? -weight : weight;
-                totalSumVectorPtr_->add(this->statisticView_, statisticIndex, signedWeight);
+            void addCoveredStatistic(uint32 statisticIndex) override final {
+                addLabelWiseStatistic(weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
+            }
+
+            /**
+             * @see `IWeightedStatistics::removeCoveredStatistic`
+             */
+            void removeCoveredStatistic(uint32 statisticIndex) override final {
+                removeLabelWiseStatistic(weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
             }
 
             /**
@@ -611,10 +639,31 @@ namespace boosting {
             /**
              * @see `IStatistics::createWeightedStatistics`
              */
-            std::unique_ptr<IWeightedStatistics> createWeightedStatistics() const override final {
-                return std::make_unique<LabelWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
-                                                                    RuleEvaluationFactory>>(*statisticViewPtr_,
-                                                                                            *ruleEvaluationFactory_);
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+                    const EqualWeightVector& weights) const override final {
+                return std::make_unique<LabelWiseWeightedStatistics<EqualWeightVector, StatisticVector, StatisticView,
+                                                                    Histogram, RuleEvaluationFactory>>(
+                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+                    const BitWeightVector& weights) const override final {
+                return std::make_unique<LabelWiseWeightedStatistics<BitWeightVector, StatisticVector, StatisticView,
+                                                                    Histogram, RuleEvaluationFactory>>(
+                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+                    const DenseWeightVector<uint32>& weights) const override final {
+                return std::make_unique<LabelWiseWeightedStatistics<DenseWeightVector<uint32>, StatisticVector,
+                                                                    StatisticView, Histogram, RuleEvaluationFactory>>(
+                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
             }
 
     };

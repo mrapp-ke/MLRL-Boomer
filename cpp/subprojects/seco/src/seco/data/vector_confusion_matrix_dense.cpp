@@ -97,6 +97,22 @@ namespace seco {
                       array_, numElements_);
     }
 
+    void DenseConfusionMatrixVector::remove(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
+                                            const VectorConstView<uint32>& majorityLabelIndices,
+                                            const DenseCoverageMatrix& coverageMatrix, float64 weight) {
+        addInternally(labelMatrix.row_values_cbegin(exampleIndex), majorityLabelIndices,
+                      coverageMatrix.row_values_cbegin(exampleIndex), -weight, array_, numElements_);
+    }
+
+    void DenseConfusionMatrixVector::remove(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+                                            const VectorConstView<uint32>& majorityLabelIndices,
+                                            const DenseCoverageMatrix& coverageMatrix, float64 weight) {
+        auto labelIterator = make_binary_forward_iterator(labelMatrix.row_indices_cbegin(exampleIndex),
+                                                          labelMatrix.row_indices_cend(exampleIndex));
+        addInternally(labelIterator, majorityLabelIndices, coverageMatrix.row_values_cbegin(exampleIndex), -weight,
+                      array_, numElements_);
+    }
+
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex,
                                                  const CContiguousConstView<const uint8>& labelMatrix,
                                                  const VectorConstView<uint32>& majorityLabelIndices,

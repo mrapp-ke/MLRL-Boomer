@@ -1,4 +1,6 @@
 #include "common/sampling/weight_vector_bit.hpp"
+#include "common/thresholds/thresholds.hpp"
+#include "common/thresholds/thresholds_subset.hpp"
 
 
 BitWeightVector::BitWeightVector(uint32 numElements)
@@ -37,4 +39,8 @@ void BitWeightVector::clear() {
 
 float64 BitWeightVector::getWeight(uint32 pos) const {
     return (float64) vector_[pos];
+}
+
+std::unique_ptr<IThresholdsSubset> BitWeightVector::createThresholdsSubset(IThresholds& thresholds) const {
+    return thresholds.createSubset(*this);
 }
