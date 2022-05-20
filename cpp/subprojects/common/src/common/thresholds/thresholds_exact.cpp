@@ -571,7 +571,6 @@ class ExactThresholds final : public AbstractThresholds {
         std::unique_ptr<IThresholdsSubset> createSubset(const EqualWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
-            updateSampledStatisticsInternally(*weightedStatisticsPtr, weights);
             return std::make_unique<ExactThresholds::ThresholdsSubset<EqualWeightVector>>(
                 *this, std::move(weightedStatisticsPtr), weights);
         }
@@ -579,7 +578,6 @@ class ExactThresholds final : public AbstractThresholds {
         std::unique_ptr<IThresholdsSubset> createSubset(const BitWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
-            updateSampledStatisticsInternally(*weightedStatisticsPtr, weights);
             return std::make_unique<ExactThresholds::ThresholdsSubset<BitWeightVector>>(
                 *this, std::move(weightedStatisticsPtr), weights);
         }
@@ -587,7 +585,6 @@ class ExactThresholds final : public AbstractThresholds {
         std::unique_ptr<IThresholdsSubset> createSubset(const DenseWeightVector<uint32>& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
-            updateSampledStatisticsInternally(*weightedStatisticsPtr, weights);
             return std::make_unique<ExactThresholds::ThresholdsSubset<DenseWeightVector<uint32>>>(
                 *this, std::move(weightedStatisticsPtr), weights);
         }
