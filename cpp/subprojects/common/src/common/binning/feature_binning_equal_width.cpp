@@ -96,7 +96,8 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
             Result result;
             uint32 numElements = featureVector.getNumElements();
             bool sparse = numElements < numExamples;
-            std::tuple<uint32, float32, float32> tuple = preprocess(featureVector, sparse, binRatio_, minBins_, maxBins_);
+            std::tuple<uint32, float32, float32> tuple = preprocess(featureVector, sparse, binRatio_, minBins_,
+                                                                    maxBins_);
             uint32 numBins = std::get<0>(tuple);
             result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, numBins, true);
 
