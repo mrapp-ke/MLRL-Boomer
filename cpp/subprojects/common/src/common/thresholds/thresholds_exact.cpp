@@ -281,7 +281,11 @@ class ExactThresholds final : public AbstractThresholds {
 
         /**
          * Provides access to a subset of the thresholds that are stored by an instance of the class `ExactThresholds`.
+         *
+         * @tparam WeightVector The type of the vector that provides access to the weights of individual training
+         *                      examples
          */
+        template<typename WeightVector>
         class ThresholdsSubset final : public IThresholdsSubset {
 
             private:
@@ -348,7 +352,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                 std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr_;
 
-                const IWeightVector& weights_;
+                const WeightVector& weights_;
 
                 uint32 numCoveredExamples_;
 
@@ -384,12 +388,12 @@ class ExactThresholds final : public AbstractThresholds {
                  *                              thresholds
                  * @param weightedStatisticsPtr An unique pointer to an object of type `IWeightedStatistics` that
                  *                              provides access to the statistics
-                 * @param weights               A reference to an object of type `IWeightVector` that provides access to
-                 *                              the weights of the individual training examples
+                 * @param weights               A reference to an object of template type `WeightVector` that provides
+                 *                              access to the weights of individual training examples
                  */
                 ThresholdsSubset(ExactThresholds& thresholds,
                                  std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr,
-                                 const IWeightVector& weights)
+                                 const WeightVector& weights)
                     : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
                       weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
                       coverageMask_(CoverageMask(thresholds.featureMatrix_.getNumRows())), numModifications_(0) {
@@ -564,12 +568,28 @@ class ExactThresholds final : public AbstractThresholds {
 
         }
 
-        std::unique_ptr<IThresholdsSubset> createSubset(const IWeightVector& weights) override {
+        std::unique_ptr<IThresholdsSubset> createSubset(const EqualWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics();
             updateSampledStatisticsInternally(*weightedStatisticsPtr, weights);
-            return std::make_unique<ExactThresholds::ThresholdsSubset>(*this, std::move(weightedStatisticsPtr),
-                                                                       weights);
+            return std::make_unique<ExactThresholds::ThresholdsSubset<EqualWeightVector>>(
+                *this, std::move(weightedStatisticsPtr), weights);
+        }
+
+        std::unique_ptr<IThresholdsSubset> createSubset(const BitWeightVector& weights) override {
+            IStatistics& statistics = statisticsProvider_.get();
+            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics();
+            updateSampledStatisticsInternally(*weightedStatisticsPtr, weights);
+            return std::make_unique<ExactThresholds::ThresholdsSubset<BitWeightVector>>(
+                *this, std::move(weightedStatisticsPtr), weights);
+        }
+
+        std::unique_ptr<IThresholdsSubset> createSubset(const DenseWeightVector<uint32>& weights) override {
+            IStatistics& statistics = statisticsProvider_.get();
+            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics();
+            updateSampledStatisticsInternally(*weightedStatisticsPtr, weights);
+            return std::make_unique<ExactThresholds::ThresholdsSubset<DenseWeightVector<uint32>>>(
+                *this, std::move(weightedStatisticsPtr), weights);
         }
 
 };
