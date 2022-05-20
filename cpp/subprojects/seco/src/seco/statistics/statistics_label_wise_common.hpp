@@ -257,6 +257,14 @@ namespace seco {
             }
 
             /**
+             * @see `IWeightedStatistics::removeCoveredStatistic`
+             */
+            void removeCoveredStatistic(uint32 statisticIndex) override final {
+                float64 weight = weights_.getWeight(statisticIndex);
+                subsetSumVector_.add(statisticIndex, labelMatrix_, majorityLabelVector_, coverageMatrix_, -weight);
+            }
+
+            /**
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(

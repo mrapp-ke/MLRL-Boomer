@@ -154,7 +154,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
         for (int64 r = start; r < end; r++) {
             uint32 index = iterator[r].index;
             coverageMaskIterator[index] = numConditions;
-            statistics.addCoveredStatistic(index, true);
+            statistics.removeCoveredStatistic(index);
         }
 
         if (conditionComparator == NEQ) {
@@ -208,7 +208,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
         for (auto it = vector.missing_indices_cbegin(); it != vector.missing_indices_cend(); it++) {
             uint32 index = *it;
             coverageMaskIterator[index] = numConditions;
-            statistics.addCoveredStatistic(index, true);
+            statistics.removeCoveredStatistic(index);
         }
     }
 

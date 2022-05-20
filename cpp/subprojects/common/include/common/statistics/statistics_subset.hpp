@@ -33,8 +33,9 @@ class IStatisticsSubset {
          *
          * This function must be called repeatedly for each statistic that is covered by the current condition,
          * immediately after the invocation of the function `Statistics::createSubset`. If a rule has already been
-         * refined, each of these statistics must have been provided earlier via the function
-         * `Statistics::addCoveredStatistic`.
+         * refined, each of these statistics must have been marked as covered earlier via the function
+         * `Statistics::addCoveredStatistic` and must not have been marked as uncovered via the function
+         * `Statistics::removeCoveredStatistic`.
          *
          * This function is supposed to update any internal state of the subset that relates to the statistics that are
          * covered by the current condition, i.e., to compute and store local information that is required by the other
@@ -67,9 +68,9 @@ class IStatisticsSubset {
          * quality of the predicted scores.
          *
          * If the argument `uncovered` is true, the rule is considered to cover all statistics that belong to the
-         * difference between the statistics that have been provided via the function `Statistics::addSampledStatistic`
-         * or `Statistics::addCoveredStatistic` and the statistics that have been added to the subset via the
-         * function `addToSubset`.
+         * difference between the statistics that have been marked as covered via the functions
+         * `Statistics::addCoveredStatistic` or `Statistics::removeCoveredStatistic` and the statistics that have been
+         * added to the subset via the function `addToSubset`.
          *
          * If the argument `accumulated` is true, all statistics that have been added since the subset has been created
          * via the function `Statistics::createSubset` are taken into account even if the function `resetSubset` has
@@ -77,8 +78,8 @@ class IStatisticsSubset {
          *
          * @param uncovered     False, if the rule covers all statistics that have been added to the subset via the
          *                      function `addToSubset`, true, if the rule covers all statistics that belong to the
-         *                      difference between the statistics that have been provided via the function
-         *                      `Statistics::addSampledStatistic` or `Statistics::addCoveredStatistic` and the
+         *                      difference between the statistics that have been marked as covered via the function
+         *                      `Statistics::addCoveredStatistic` or `Statistics::removeCoveredStatistic` and the
          *                      statistics that have been added via the function `addToSubset`
          * @param accumulated   False, if the rule covers all statistics that have been added to the subset via the
          *                      function `addToSubset` since the function `resetSubset` has been called for the last
