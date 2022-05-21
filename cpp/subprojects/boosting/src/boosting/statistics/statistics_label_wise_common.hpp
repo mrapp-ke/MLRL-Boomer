@@ -187,8 +187,8 @@ namespace boosting {
         public:
 
             /**
-             * @param statisticViewPtr      An unique pointer to an object of template type `StatisticView` that
-             *                              provides access to the the gradients and Hessians
+             * @param statisticView         A reference to an object of template type `StatisticView` that provides
+             *                              access to the the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`, that
              *                              allows to create instances of the class that is used for calculating the
              *                              predictions, as well as corresponding quality scores, of rules
@@ -365,7 +365,7 @@ namespace boosting {
      * Hessians after a new rule has been learned.
      *
      * @tparam WeightVector             The type of the vector that provides access to the weights of individual
-     *                                  training examples
+     *                                  statistics
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
      * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
@@ -445,7 +445,7 @@ namespace boosting {
 
             /**
              * @param weights               A reference to an object of template type `WeightVector` that provides
-             *                              access to the weights of individual training examples
+             *                              access to the weights of individual statistics
              * @param statisticView         A reference to an object of template type `StatisticView` that provides
              *                              access to the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory`, that allows to
