@@ -299,16 +299,16 @@ namespace boosting {
         public:
 
             /**
-             * @param histogramPtr              An unique pointer to an object of template type `Histogram` that stores
-             *                                  the gradients and Hessians in the histogram
-             * @param originalStatisticView     A reference to an object of template type `StatisticView` that provides
-             *                                  access to the original gradients and Hessians, the histogram was created
-             *                                  from
-             * @param totalSumVector            A reference to an object of template type `StatisticVector` that stores
-             *                                  the total sums of gradients and Hessians
-             * @param ruleEvaluationFactory     A reference to an object of type `RuleEvaluationFactory`, that
-             *                                  allows to create instances of the class that is used for calculating the
-             *                                  predictions, as well as corresponding quality scores, of rules
+             * @param histogramPtr          An unique pointer to an object of template type `Histogram` that stores the
+             *                              gradients and Hessians in the histogram
+             * @param originalStatisticView A reference to an object of template type `StatisticView` that provides
+             *                              access to the original gradients and Hessians, the histogram was created
+             *                              from
+             * @param totalSumVector        A reference to an object of template type `StatisticVector` that stores the
+             *                              total sums of gradients and Hessians
+             * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory`, that allows to
+             *                              create instances of the class that is used for calculating the predictions,
+             *                              as well as corresponding quality scores, of rules
              */
             LabelWiseHistogram(std::unique_ptr<Histogram> histogramPtr, const StatisticView& originalStatisticView,
                                const StatisticVector& totalSumVector,
