@@ -87,7 +87,7 @@ namespace seco {
      * are computed independently for each label.
      *
      * @tparam WeightVector             The type of the vector that provides access to the weights of individual
-     *                                  training examples
+     *                                  statistics
      * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
      *                                  examples
      * @tparam CoverageMatrix           The type of the matrix that is used to store how often individual examples and
@@ -237,7 +237,7 @@ namespace seco {
 
             /**
              * @param weights               A reference to an object of template type `WeightVector` that provides
-             *                              access to the weights of individual training examples
+             *                              access to the weights of individual statistics
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that is used for calculating the
              *                              predictions, as well as corresponding quality scores, of rules
