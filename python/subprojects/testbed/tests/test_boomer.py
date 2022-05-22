@@ -27,7 +27,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .cross_validation()
         self.run_cmd(builder, 'boomer_cross_validation')
 
-    def test_current_fold(self):
+    def test_single_fold(self):
         """
         Tests the default configuration of the BOOMER algorithm using a single fold of a cross validation.
         """
