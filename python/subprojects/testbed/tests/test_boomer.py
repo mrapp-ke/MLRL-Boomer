@@ -21,7 +21,7 @@ class BoostingIntegrationTests(IntegrationTests):
 
     def test_cross_validation(self):
         """
-        Tests the default configuration of the BOOMER algorithm using cross validation.
+        Tests the default configuration of the BOOMER algorithm using a cross validation.
         """
         builder = CmdBuilder() \
             .cross_validation()
