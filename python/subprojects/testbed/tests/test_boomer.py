@@ -38,7 +38,6 @@ class BoostingIntegrationTests(IntegrationTests):
     def test_evaluate_training_data(self):
         """
         Tests the default configuration of the BOOMER algorithm when evaluated on the training data.
-        :return:
         """
         builder = CmdBuilder() \
             .evaluate_training_data()
