@@ -31,7 +31,7 @@ class CmdBuilder:
         """
         self.args = [cmd, '--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset]
 
-    def cross_validation(self, folds: int = 10, current_fold=0):
+    def cross_validation(self, folds: int = 10, current_fold: int = 0):
         """
         Configures the rule learner to use a cross validation.
 
