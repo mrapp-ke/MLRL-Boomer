@@ -8,20 +8,20 @@ from integration_tests import IntegrationTests, CmdBuilder
 
 class BoostingIntegrationTests(IntegrationTests):
     """
-    Defines a series of integration tests that run the boosting algorithm.
+    Defines a series of integration tests that run the BOOMER algorithm.
     """
 
     def test_train_test_split(self):
         """
-        Tests the default configuration of the algorithm using a predefined split of the dataset into training and test
-        data.
+        Tests the default configuration of the BOOMER algorithm using a predefined split of the dataset into training
+        and test data.
         """
         builder = CmdBuilder()
         self.run_cmd(builder, 'boomer_train_test')
 
     def test_cross_validation(self):
         """
-        Tests the default configuration of the algorithm using cross validation.
+        Tests the default configuration of the BOOMER algorithm using cross validation.
         """
         builder = CmdBuilder() \
             .cross_validation()
@@ -29,7 +29,7 @@ class BoostingIntegrationTests(IntegrationTests):
 
     def test_current_fold(self):
         """
-        Tests the default configuration of the algorithm using a single fold of a cross validation.
+        Tests the default configuration of the BOOMER algorithm using a single fold of a cross validation.
         """
         builder = CmdBuilder() \
             .cross_validation(current_fold=1)
@@ -37,7 +37,7 @@ class BoostingIntegrationTests(IntegrationTests):
 
     def test_evaluate_training_data(self):
         """
-        Tests the default configuration of the algorithm when evaluated on the training data.
+        Tests the default configuration of the BOOMER algorithm when evaluated on the training data.
         :return:
         """
         builder = CmdBuilder() \
