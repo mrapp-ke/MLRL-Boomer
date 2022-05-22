@@ -33,7 +33,7 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder() \
             .cross_validation(current_fold=1)
-        self.run_cmd(builder, 'boomer_current_fold')
+        self.run_cmd(builder, 'boomer_single_fold')
 
     def test_evaluate_training_data(self):
         """
