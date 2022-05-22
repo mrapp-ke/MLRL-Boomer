@@ -9,6 +9,7 @@ python/**/cython/*.dylib
 python/**/cython/*.dll
 python/**/cython/*.lib
 python/**/cython/*.pyd
+python/**/tests/res/tmp/
 
 # Documentation files
 doc/_build/
