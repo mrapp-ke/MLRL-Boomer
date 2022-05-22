@@ -45,6 +45,18 @@ class CmdBuilder:
         self.args.append(str(current_fold))
         return self
 
+    def evaluate_training_data(self, evaluate_training_data: bool = True):
+        """
+        Configures whether the rule learner should be evaluated on the training data or not.
+
+        :param evaluate_training_data:  True, if the rule learner should be evaluated on the training data, False
+                                        otherwise
+        :return:                        The builder itself
+        """
+        self.args.append('--evaluate-training-data')
+        self.args.append(str(evaluate_training_data).lower())
+        return self
+
     def build(self) -> List[str]:
         """
         Returns a list of strings that contains the command that has been configured using the builder, as well as all

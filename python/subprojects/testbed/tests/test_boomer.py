@@ -35,6 +35,15 @@ class BoostingIntegrationTests(IntegrationTests):
             .cross_validation(current_fold=1)
         self.run_cmd(builder, 'boomer_current_fold')
 
+    def test_evaluate_training_data(self):
+        """
+        Tests the default configuration of the algorithm when evaluated on the training data.
+        :return:
+        """
+        builder = CmdBuilder() \
+            .evaluate_training_data()
+        self.run_cmd(builder, 'boomer_evaluate_training_data')
+
 
 if __name__ == '__main__':
     main()
