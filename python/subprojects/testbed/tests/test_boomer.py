@@ -43,6 +43,34 @@ class BoostingIntegrationTests(IntegrationTests):
             .evaluate_training_data()
         self.run_cmd(builder, 'boomer_evaluate_training_data')
 
+    def test_model_persistence_train_test(self):
+        """
+        Tests the functionality to store BOOMER models and load them afterwards when using a predefined split of the
+        dataset into training and test data.
+        """
+        builder = CmdBuilder() \
+            .set_model_dir()
+        self.run_cmd(builder, 'boomer_model_persistence_train_test')
+
+    def test_model_persistence_cross_validation(self):
+        """
+        Tests the functionality to store BOOMER models and load them afterwards when using a cross validation.
+        """
+        builder = CmdBuilder() \
+            .cross_validation() \
+            .set_model_dir()
+        self.run_cmd(builder, 'boomer_model_persistence_cross_validation')
+
+    def test_model_persistence_single_fold(self):
+        """
+        Tests the functionality to store BOOMER models and load them afterwards when using a single fold of a cross
+        validation.
+        """
+        builder = CmdBuilder() \
+            .cross_validation(current_fold=1) \
+            .set_model_dir()
+        self.run_cmd(builder, 'boomer_model_persistence_single_fold')
+
 
 if __name__ == '__main__':
     main()

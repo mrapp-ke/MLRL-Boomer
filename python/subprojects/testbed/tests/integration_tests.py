@@ -1,10 +1,11 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+import shutil
 import subprocess
 from abc import ABC
-from os import path
-from typing import List
+from os import path, makedirs
+from typing import List, Optional
 from unittest import TestCase
 
 CMD_BOOMER = 'boomer'
@@ -14,6 +15,8 @@ DIR_RES = 'python/subprojects/testbed/tests/res'
 DIR_DATA = path.join(DIR_RES, 'data')
 
 DIR_OUT = path.join(DIR_RES, 'out')
+
+DIR_MODELS = path.join(path.join(DIR_RES, 'tmp'), 'models')
 
 DATASET_EMOTIONS = 'emotions'
 
@@ -29,7 +32,27 @@ class CmdBuilder:
         :param data_dir:    The path of the directory that stores the dataset files
         :param dataset:     The name of the dataset
         """
+        self.cmd = cmd
+        self.model_dir = None
+        self.folds = 0
+        self.current_fold = 0
         self.args = [cmd, '--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset]
+        self.tmp_dirs = set()
+
+    def set_model_dir(self, model_dir: Optional[str] = DIR_MODELS):
+        """
+        Configures the rule learner to store models in a given directory or load them, if available.
+
+        :param model_dir:   The path of the directory where models should be stored
+        :return:            The builder itself
+        """
+        self.model_dir = model_dir
+
+        if model_dir is not None:
+            self.args.append('--model-dir')
+            self.args.append(model_dir)
+            self.tmp_dirs.add(model_dir)
+        return self
 
     def cross_validation(self, folds: int = 10, current_fold: int = 0):
         """
@@ -39,6 +62,8 @@ class CmdBuilder:
         :param current_fold:    The fold to be run or 0, if all folds should be run
         :return:                The builder itself
         """
+        self.folds = folds
+        self.current_fold = current_fold
         self.args.append('--folds')
         self.args.append(str(folds))
         self.args.append('--current-fold')
@@ -72,6 +97,74 @@ class IntegrationTests(ABC, TestCase):
     An abstract base class for all integration tests.
     """
 
+    @staticmethod
+    def __get_file_name(name: str, suffix: str, fold: Optional[int] = None):
+        """
+        Returns the name of an output file.
+
+        :param name:    The name of the file
+        :param suffix:  The suffix of the file
+        :param fold:    The fold, the file corresponds to or None, if it does not correspond to a specific fold
+        :return:        The name of the output file
+        """
+        if fold is not None:
+            return name + '_fold-' + str(fold) + '.' + suffix
+        else:
+            return name + '.' + suffix
+
+    def __assert_file_exists(self, directory: str, file_name: str):
+        """
+        Asserts that a specific file exists.
+
+        :param directory:   The path of the directory where the file should be located
+        :param file_name:   The name of the file
+        """
+        file = path.join(directory, file_name)
+        self.assertTrue(path.isfile(file), 'File ' + str(file) + ' does not exist')
+
+    def __assert_model_files_exist(self, builder: CmdBuilder):
+        """
+        Asserts that the model files that should be created by a command exist.
+
+        :param builder: The builder
+        """
+        model_dir = builder.model_dir
+
+        if model_dir is not None:
+            cmd = builder.cmd
+
+            if builder.folds > 0:
+                current_fold = builder.current_fold
+
+                if current_fold > 0:
+                    self.__assert_file_exists(model_dir, self.__get_file_name(cmd, 'model', current_fold))
+                else:
+                    for i in range(builder.folds):
+                        self.__assert_file_exists(model_dir, self.__get_file_name(cmd, 'model', i + 1))
+            else:
+                self.__assert_file_exists(model_dir, self.__get_file_name(cmd, 'model'))
+
+    @staticmethod
+    def __remove_tmp_dirs(builder: CmdBuilder):
+        """
+        Removes the temporary directories that have been used by a command.
+
+        :param builder: The builder
+        """
+        for tmp_dir in builder.tmp_dirs:
+            shutil.rmtree(tmp_dir)
+
+    def __run_cmd(self, args: List[str]):
+        """
+        Runs a given command.
+
+        :param args:    A list that stores the command, as well as its arguments
+        :return:        The output of the command
+        """
+        out = subprocess.run(args, capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0, 'Command terminated with non-zero exit code')
+        return out
+
     def run_cmd(self, builder: CmdBuilder, expected_output_file_name: str = None, expected_output_dir: str = DIR_OUT):
         """
         Runs a command that has been configured via a builder.
@@ -80,9 +173,14 @@ class IntegrationTests(ABC, TestCase):
         :param expected_output_file_name:   The name of the text file that contains the expected output of the command
         :param expected_output_dir:         The path of the directory that contains the file with the expected output
         """
+        for tmp_dir in builder.tmp_dirs:
+            makedirs(tmp_dir, exist_ok=True)
+
         args = builder.build()
-        out = subprocess.run(args, capture_output=True, text=True)
-        self.assertEqual(out.returncode, 0, 'Command terminated with non-zero exit code')
+        out = self.__run_cmd(args)
+
+        if builder.model_dir is not None:
+            out = self.__run_cmd(args)
 
         if expected_output_file_name is not None:
             stdout = str(out.stdout).splitlines()
@@ -93,3 +191,6 @@ class IntegrationTests(ABC, TestCase):
 
                     if not line.startswith('INFO Configuration:') and not line.endswith('seconds'):
                         self.assertEqual(stdout[i], line, 'Output differs at line ' + str(i + 1))
+
+        self.__assert_model_files_exist(builder)
+        self.__remove_tmp_dirs(builder)
