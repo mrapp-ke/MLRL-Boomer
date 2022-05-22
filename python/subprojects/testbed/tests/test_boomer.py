@@ -11,7 +11,7 @@ class BoostingIntegrationTests(IntegrationTests):
     Defines a series of integration tests that run the BOOMER algorithm.
     """
 
-    def test_train_test_split(self):
+    def test_train_test(self):
         """
         Tests the default configuration of the BOOMER algorithm using a predefined split of the dataset into training
         and test data.
