@@ -16,6 +16,8 @@ DIR_DATA = path.join(DIR_RES, 'data')
 
 DIR_OUT = path.join(DIR_RES, 'out')
 
+DIR_RESULTS = path.join(path.join(DIR_RES, 'tmp'), 'results')
+
 DIR_MODELS = path.join(path.join(DIR_RES, 'tmp'), 'models')
 
 DATASET_EMOTIONS = 'emotions'
@@ -33,11 +35,29 @@ class CmdBuilder:
         :param dataset:     The name of the dataset
         """
         self.cmd = cmd
+        self.output_dir = None
         self.model_dir = None
         self.folds = 0
         self.current_fold = 0
+        self.training_data_evaluated = False
+        self.predictions_stored = False
         self.args = [cmd, '--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset]
-        self.tmp_dirs = set()
+        self.tmp_dirs = []
+
+    def set_output_dir(self, output_dir: Optional[str] = DIR_RESULTS):
+        """
+        Configures the rule learner to store output files in a given directory.
+
+        :param output_dir:  The path of the directory where output files should be stored
+        :return:            The builder itself
+        """
+        self.output_dir = output_dir
+
+        if output_dir is not None:
+            self.args.append('--output-dir')
+            self.args.append(output_dir)
+            self.tmp_dirs.append(output_dir)
+        return self
 
     def set_model_dir(self, model_dir: Optional[str] = DIR_MODELS):
         """
@@ -51,7 +71,7 @@ class CmdBuilder:
         if model_dir is not None:
             self.args.append('--model-dir')
             self.args.append(model_dir)
-            self.tmp_dirs.add(model_dir)
+            self.tmp_dirs.append(model_dir)
         return self
 
     def cross_validation(self, folds: int = 10, current_fold: int = 0):
@@ -78,8 +98,32 @@ class CmdBuilder:
                                         otherwise
         :return:                        The builder itself
         """
+        self.training_data_evaluated = evaluate_training_data
         self.args.append('--evaluate-training-data')
         self.args.append(str(evaluate_training_data).lower())
+        return self
+
+    def print_predictions(self, print_predictions: bool = True):
+        """
+        Configures whether the predictions of the rule learner should be printed on the console or not.
+
+        :param print_predictions:   True, if the predictions should be printed, False otherwise
+        :return:                    The builder itself
+        """
+        self.args.append('--print-predictions')
+        self.args.append(str(print_predictions).lower())
+        return self
+
+    def store_predictions(self, store_predictions: bool = True):
+        """
+        Configures whether the predictions of the rule learner should be written into output files or not.
+
+        :param store_predictions:   True, if the predictions should be stored into output files, False otherwise
+        :return:                    The builder itself
+        """
+        self.predictions_stored = store_predictions
+        self.args.append('--store-predictions')
+        self.args.append(str(store_predictions).lower())
         return self
 
     def build(self) -> List[str]:
@@ -108,9 +152,23 @@ class IntegrationTests(ABC, TestCase):
         :return:        The name of the output file
         """
         if fold is not None:
-            return name + '_fold-' + str(fold) + '.' + suffix
+            return name + '_fold_' + str(fold) + '.' + suffix
         else:
             return name + '.' + suffix
+
+    @staticmethod
+    def __get_model_name(name: str, fold: Optional[int] = None):
+        """
+        Returns the name of a model file.
+
+        :param name:    The name of the file
+        :param fold:    The fold, the file corresponds to or None, if it does not correspond to a specific fold
+        :return:        The name of the model file
+        """
+        if fold is not None:
+            return name + '_fold-' + str(fold) + '.model'
+        else:
+            return name + '.model'
 
     def __assert_file_exists(self, directory: str, file_name: str):
         """
@@ -137,12 +195,47 @@ class IntegrationTests(ABC, TestCase):
                 current_fold = builder.current_fold
 
                 if current_fold > 0:
-                    self.__assert_file_exists(model_dir, self.__get_file_name(cmd, 'model', current_fold))
+                    self.__assert_file_exists(model_dir, self.__get_model_name(cmd, current_fold))
                 else:
                     for i in range(builder.folds):
-                        self.__assert_file_exists(model_dir, self.__get_file_name(cmd, 'model', i + 1))
+                        self.__assert_file_exists(model_dir, self.__get_model_name(cmd, i + 1))
             else:
-                self.__assert_file_exists(model_dir, self.__get_file_name(cmd, 'model'))
+                self.__assert_file_exists(model_dir, self.__get_model_name(cmd))
+
+    def __assert_output_files_exist(self, builder: CmdBuilder, file_name: str, suffix: str):
+        """
+        Asserts that output files that should be created by a command exist.
+
+        :param builder: The builder
+        """
+        output_dir = builder.output_dir
+
+        if output_dir is not None:
+            cmd = builder.cmd
+            file_name = file_name + '_' + cmd
+
+            if builder.folds > 0:
+                current_fold = builder.current_fold
+
+                if current_fold > 0:
+                    self.__assert_file_exists(output_dir, self.__get_file_name(file_name, suffix, current_fold))
+                else:
+                    for i in range(builder.folds):
+                        self.__assert_file_exists(output_dir, self.__get_file_name(file_name, suffix, i + 1))
+            else:
+                self.__assert_file_exists(output_dir, self.__get_file_name(file_name + '_overall', suffix))
+
+    def __assert_prediction_files_exist(self, builder: CmdBuilder):
+        """
+        Asserts that the prediction files that should be created by a command exist.
+
+        :param builder: The builder
+        """
+        if builder.predictions_stored:
+            self.__assert_output_files_exist(builder, 'predictions_test', 'arff')
+
+            if builder.training_data_evaluated:
+                self.__assert_output_files_exist(builder, 'predictions_train', 'arff')
 
     @staticmethod
     def __remove_tmp_dirs(builder: CmdBuilder):
@@ -193,4 +286,5 @@ class IntegrationTests(ABC, TestCase):
                         self.assertEqual(stdout[i], line, 'Output differs at line ' + str(i + 1))
 
         self.__assert_model_files_exist(builder)
+        self.__assert_prediction_files_exist(builder)
         self.__remove_tmp_dirs(builder)
