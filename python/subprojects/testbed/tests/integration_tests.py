@@ -14,6 +14,8 @@ DIR_RES = 'python/subprojects/testbed/tests/res'
 
 DIR_DATA = path.join(DIR_RES, 'data')
 
+DIR_IN = path.join(DIR_RES, 'in')
+
 DIR_OUT = path.join(DIR_RES, 'out')
 
 DIR_RESULTS = path.join(path.join(DIR_RES, 'tmp'), 'results')
@@ -81,6 +83,18 @@ class CmdBuilder:
             self.args.append('--model-dir')
             self.args.append(model_dir)
             self.tmp_dirs.append(model_dir)
+        return self
+
+    def set_parameter_dir(self, parameter_dir: Optional[str] = DIR_IN):
+        """
+        Configures the rule learner to load parameter settings from a given directory, if available.
+
+        :param parameter_dir:   The path of the directory, where parameter settings are stored
+        :return:                The builder itself
+        """
+        if parameter_dir is not None:
+            self.args.append('--parameter-dir')
+            self.args.append(parameter_dir)
         return self
 
     def cross_validation(self, folds: int = 10, current_fold: int = 0):
