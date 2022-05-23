@@ -50,7 +50,7 @@ def get_file_name_per_fold(name: str, suffix: str, fold: int):
                     specific fold
     :return:        The file name
     """
-    return get_file_name(name + '_' + ('overall' if fold is None else 'fold_' + str(fold + 1)), suffix)
+    return get_file_name(name + '_' + ('overall' if fold is None else 'fold-' + str(fold + 1)), suffix)
 
 
 def open_writable_txt_file(directory: str, file_name: str, fold: int = None, append: bool = False):
