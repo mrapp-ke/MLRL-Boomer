@@ -1,0 +1,34 @@
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dataset='enron', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='dense', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning=None, label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Starting experiment "boomer_feature-format=dense"...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/enron.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/enron-train.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/enron-test.arff"...
+INFO Fitting model to 1123 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.6942235610003991 seconds
+INFO Predicting for 579 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.017883557999084587 seconds
+INFO Overall evaluation result for experiment "test_boomer_feature-format=dense":
+
+Ex.-based F1: 0.43871392472428744
+Ex.-based Jacc.: 0.3217959262000713
+Ex.-based Prec.: 0.6243523316062176
+Ex.-based Rec.: 0.3685418208734271
+Hamm. Acc.: 0.9471437416495585
+Hamm. Loss: 0.052856258350441554
+Ma. F1: 0.08324852156634752
+Ma. Jacc.: 0.058826445626545515
+Ma. Prec.: 0.931769128300726
+Ma. Rec.: 0.07542352279255839
+Mi. F1: 0.47371836469824796
+Mi. Jacc.: 0.31037414965986393
+Mi. Prec.: 0.6431718061674009
+Mi. Rec.: 0.37493579866461224
+Subs. 0/1 Loss: 0.9602763385146805
+Subs. Acc.: 0.039723661485319514
+
+INFO Successfully finished after 1.0923547530001088 seconds

@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from unittest import main
 
-from integration_tests import IntegrationTests, CmdBuilder
+from integration_tests import IntegrationTests, CmdBuilder, DATASET_ENRON, DATASET_LANGLOG
 
 
 class BoostingIntegrationTests(IntegrationTests):
@@ -311,6 +311,38 @@ class BoostingIntegrationTests(IntegrationTests):
             .print_rules() \
             .store_rules()
         self.run_cmd(builder, 'boomer_rules_single-fold')
+
+    def test_numeric_features_dense(self):
+        """
+        Tests the BOOMER algorithm on a dataset with numerical attributes when using a dense feature representation.
+        """
+        builder = CmdBuilder(dataset=DATASET_LANGLOG) \
+            .sparse_feature_format(False)
+        self.run_cmd(builder, 'boomer_numeric-features_dense')
+
+    def test_numeric_features_sparse(self):
+        """
+        Tests the BOOMER algorithm on a dataset with numerical attributes when using a sparse feature representation.
+        """
+        builder = CmdBuilder(dataset=DATASET_LANGLOG) \
+            .sparse_feature_format(True)
+        self.run_cmd(builder, 'boomer_numeric-features_sparse')
+
+    def test_nominal_features_dense(self):
+        """
+        Tests the BOOMER algorithm on a dataset with nominal attributes when using a dense feature representation.
+        """
+        builder = CmdBuilder(dataset=DATASET_ENRON) \
+            .sparse_feature_format(False)
+        self.run_cmd(builder, 'boomer_nominal-features_dense')
+
+    def test_nominal_features_sparse(self):
+        """
+        Tests the BOOMER algorithm on a dataset with nominal attributes when using a sparse feature representation.
+        """
+        builder = CmdBuilder(dataset=DATASET_ENRON) \
+            .sparse_feature_format(True)
+        self.run_cmd(builder, 'boomer_nominal-features_sparse')
 
 
 if __name__ == '__main__':
