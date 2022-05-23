@@ -453,66 +453,65 @@ class RuleModelCharacteristicsCsvOutput(RuleModelCharacteristicsOutput):
 
     def write_model_characteristics(self, experiment_name: str, characteristics: RuleModelCharacteristics,
                                     total_folds: int, fold: int = None):
-        if fold is not None:
-            header = [
-                RuleModelCharacteristicsCsvOutput.COL_RULE_NAME,
-                RuleModelCharacteristicsCsvOutput.COL_CONDITIONS,
-                RuleModelCharacteristicsCsvOutput.COL_NUMERICAL_CONDITIONS,
-                RuleModelCharacteristicsCsvOutput.COL_LEQ_CONDITIONS,
-                RuleModelCharacteristicsCsvOutput.COL_GR_CONDITIONS,
-                RuleModelCharacteristicsCsvOutput.COL_NOMINAL_CONDITIONS,
-                RuleModelCharacteristicsCsvOutput.COL_EQ_CONDITIONS,
-                RuleModelCharacteristicsCsvOutput.COL_NEQ_CONDITIONS,
-                RuleModelCharacteristicsCsvOutput.COL_PREDICTIONS,
-                RuleModelCharacteristicsCsvOutput.COL_POS_PREDICTIONS,
-                RuleModelCharacteristicsCsvOutput.COL_NEG_PREDICTIONS
-            ]
-            default_rule_index = characteristics.default_rule_index
-            num_rules = len(characteristics.num_pos_predictions)
-            num_total_rules = num_rules if default_rule_index is None else num_rules + 1
+        header = [
+            RuleModelCharacteristicsCsvOutput.COL_RULE_NAME,
+            RuleModelCharacteristicsCsvOutput.COL_CONDITIONS,
+            RuleModelCharacteristicsCsvOutput.COL_NUMERICAL_CONDITIONS,
+            RuleModelCharacteristicsCsvOutput.COL_LEQ_CONDITIONS,
+            RuleModelCharacteristicsCsvOutput.COL_GR_CONDITIONS,
+            RuleModelCharacteristicsCsvOutput.COL_NOMINAL_CONDITIONS,
+            RuleModelCharacteristicsCsvOutput.COL_EQ_CONDITIONS,
+            RuleModelCharacteristicsCsvOutput.COL_NEQ_CONDITIONS,
+            RuleModelCharacteristicsCsvOutput.COL_PREDICTIONS,
+            RuleModelCharacteristicsCsvOutput.COL_POS_PREDICTIONS,
+            RuleModelCharacteristicsCsvOutput.COL_NEG_PREDICTIONS
+        ]
+        default_rule_index = characteristics.default_rule_index
+        num_rules = len(characteristics.num_pos_predictions)
+        num_total_rules = num_rules if default_rule_index is None else num_rules + 1
 
-            with open_writable_csv_file(self.output_dir, 'model_characteristics', fold) as csv_file:
-                csv_writer = create_csv_dict_writer(csv_file, header)
-                n = 0
+        with open_writable_csv_file(self.output_dir, 'model_characteristics_' + experiment_name, fold) as csv_file:
+            csv_writer = create_csv_dict_writer(csv_file, header)
+            n = 0
 
-                for i in range(num_total_rules):
-                    rule_name = 'Rule ' + str(i + 1)
+            for i in range(num_total_rules):
+                rule_name = 'Rule ' + str(i + 1)
 
-                    if i == default_rule_index:
-                        rule_name += ' (Default rule)'
-                        num_leq = 0
-                        num_gr = 0
-                        num_eq = 0
-                        num_neq = 0
-                        num_pos_predictions = characteristics.default_rule_pos_predictions
-                        num_neg_predictions = characteristics.default_rule_neg_predictions
-                    else:
-                        num_leq = characteristics.num_leq[n]
-                        num_gr = characteristics.num_gr[n]
-                        num_eq = characteristics.num_eq[n]
-                        num_neq = characteristics.num_neq[n]
-                        num_pos_predictions = characteristics.num_pos_predictions[n]
-                        num_neg_predictions = characteristics.num_neg_predictions[n]
-                        n += 1
+                if i == default_rule_index:
+                    rule_name += ' (Default rule)'
+                    num_leq = 0
+                    num_gr = 0
+                    num_eq = 0
+                    num_neq = 0
+                    num_pos_predictions = characteristics.default_rule_pos_predictions
+                    num_neg_predictions = characteristics.default_rule_neg_predictions
+                else:
+                    num_leq = characteristics.num_leq[n]
+                    num_gr = characteristics.num_gr[n]
+                    num_eq = characteristics.num_eq[n]
+                    num_neq = characteristics.num_neq[n]
+                    num_pos_predictions = characteristics.num_pos_predictions[n]
+                    num_neg_predictions = characteristics.num_neg_predictions[n]
+                    n += 1
 
-                    num_numerical = num_leq + num_gr
-                    num_nominal = num_eq + num_neq
-                    num_conditions = num_numerical + num_nominal
-                    num_predictions = num_pos_predictions + num_neg_predictions
-                    columns = {
-                        RuleModelCharacteristicsCsvOutput.COL_RULE_NAME: rule_name,
-                        RuleModelCharacteristicsCsvOutput.COL_CONDITIONS: num_conditions,
-                        RuleModelCharacteristicsCsvOutput.COL_NUMERICAL_CONDITIONS: num_numerical,
-                        RuleModelCharacteristicsCsvOutput.COL_LEQ_CONDITIONS: num_leq,
-                        RuleModelCharacteristicsCsvOutput.COL_GR_CONDITIONS: num_gr,
-                        RuleModelCharacteristicsCsvOutput.COL_NOMINAL_CONDITIONS: num_nominal,
-                        RuleModelCharacteristicsCsvOutput.COL_EQ_CONDITIONS: num_eq,
-                        RuleModelCharacteristicsCsvOutput.COL_NEQ_CONDITIONS: num_neq,
-                        RuleModelCharacteristicsCsvOutput.COL_PREDICTIONS: num_predictions,
-                        RuleModelCharacteristicsCsvOutput.COL_POS_PREDICTIONS: num_pos_predictions,
-                        RuleModelCharacteristicsCsvOutput.COL_NEG_PREDICTIONS: num_neg_predictions
-                    }
-                    csv_writer.writerow(columns)
+                num_numerical = num_leq + num_gr
+                num_nominal = num_eq + num_neq
+                num_conditions = num_numerical + num_nominal
+                num_predictions = num_pos_predictions + num_neg_predictions
+                columns = {
+                    RuleModelCharacteristicsCsvOutput.COL_RULE_NAME: rule_name,
+                    RuleModelCharacteristicsCsvOutput.COL_CONDITIONS: num_conditions,
+                    RuleModelCharacteristicsCsvOutput.COL_NUMERICAL_CONDITIONS: num_numerical,
+                    RuleModelCharacteristicsCsvOutput.COL_LEQ_CONDITIONS: num_leq,
+                    RuleModelCharacteristicsCsvOutput.COL_GR_CONDITIONS: num_gr,
+                    RuleModelCharacteristicsCsvOutput.COL_NOMINAL_CONDITIONS: num_nominal,
+                    RuleModelCharacteristicsCsvOutput.COL_EQ_CONDITIONS: num_eq,
+                    RuleModelCharacteristicsCsvOutput.COL_NEQ_CONDITIONS: num_neq,
+                    RuleModelCharacteristicsCsvOutput.COL_PREDICTIONS: num_predictions,
+                    RuleModelCharacteristicsCsvOutput.COL_POS_PREDICTIONS: num_pos_predictions,
+                    RuleModelCharacteristicsCsvOutput.COL_NEG_PREDICTIONS: num_neg_predictions
+                }
+                csv_writer.writerow(columns)
 
 
 class ModelCharacteristicsPrinter(ABC):
