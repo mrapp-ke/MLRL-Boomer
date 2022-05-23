@@ -318,7 +318,7 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder(dataset=DATASET_LANGLOG) \
             .sparse_feature_format(False)
-        self.run_cmd(builder, 'boomer_numeric-features_dense')
+        self.run_cmd(builder, 'boomer_numeric-features-dense')
 
     def test_numeric_features_sparse(self):
         """
@@ -326,7 +326,7 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder(dataset=DATASET_LANGLOG) \
             .sparse_feature_format(True)
-        self.run_cmd(builder, 'boomer_numeric-features_sparse')
+        self.run_cmd(builder, 'boomer_numeric-features-sparse')
 
     def test_nominal_features_dense(self):
         """
@@ -334,7 +334,7 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder(dataset=DATASET_ENRON) \
             .sparse_feature_format(False)
-        self.run_cmd(builder, 'boomer_nominal-features_dense')
+        self.run_cmd(builder, 'boomer_nominal-features-dense')
 
     def test_nominal_features_sparse(self):
         """
@@ -342,7 +342,7 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder(dataset=DATASET_ENRON) \
             .sparse_feature_format(True)
-        self.run_cmd(builder, 'boomer_nominal-features_sparse')
+        self.run_cmd(builder, 'boomer_nominal-features-sparse')
 
     def test_labels_dense(self):
         """
