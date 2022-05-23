@@ -22,6 +22,10 @@ DIR_MODELS = path.join(path.join(DIR_RES, 'tmp'), 'models')
 
 DATASET_EMOTIONS = 'emotions'
 
+DATASET_ENRON = 'enron'
+
+DATASET_LANGLOG = 'langlog'
+
 
 class CmdBuilder:
     """
@@ -249,6 +253,19 @@ class CmdBuilder:
         self.rules_stored = store_rules
         self.args.append('--store-rules')
         self.args.append(str(store_rules).lower())
+        return self
+
+    def sparse_feature_format(self, sparse: bool = True):
+        """
+        Configures whether sparse data structures should be used to represent the feature values of training examples or
+        not.
+
+        :param sparse:  True, if sparse data structures should be used to represent the feature values of training
+                        examples, False otherwise
+        :return:        The builder itself
+        """
+        self.args.append('--feature-format')
+        self.args.append('sparse' if sparse else 'dense')
         return self
 
     def build(self) -> List[str]:
