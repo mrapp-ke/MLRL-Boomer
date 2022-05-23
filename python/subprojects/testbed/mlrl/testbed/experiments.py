@@ -127,7 +127,7 @@ class Experiment(CrossValidation, ABC):
         parameter_input = self.parameter_input
 
         if parameter_input is not None:
-            params = parameter_input.read_parameters(current_fold)
+            params = parameter_input.read_parameters(current_fold if num_folds > 1 else None)
             current_learner.set_params(**params)
             log.info('Successfully applied parameter setting: %s', params)
 
