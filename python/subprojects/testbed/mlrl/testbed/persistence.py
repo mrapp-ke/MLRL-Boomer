@@ -7,6 +7,10 @@ import _pickle as pickle
 import logging as log
 import os.path as path
 
+from mlrl.testbed.io import get_file_name_per_fold
+
+SUFFIX_MODEL = 'model'
+
 
 class ModelPersistence:
     """
@@ -28,7 +32,7 @@ class ModelPersistence:
         :param fold:        The fold, the model corresponds to, or None if no cross validation is used
         """
 
-        file_path = path.join(self.model_dir, ModelPersistence.__get_file_name(model_name, fold))
+        file_path = path.join(self.model_dir, get_file_name_per_fold(model_name, SUFFIX_MODEL, fold))
         log.debug('Saving model to file \"%s\"...', file_path)
 
         try:
@@ -49,7 +53,7 @@ class ModelPersistence:
         :return:                The loaded model
         """
 
-        file_path = path.join(self.model_dir, ModelPersistence.__get_file_name(model_name, fold))
+        file_path = path.join(self.model_dir, get_file_name_per_fold(model_name, SUFFIX_MODEL, fold))
         log.debug("Loading model from file \"%s\"...", file_path)
 
         try:
@@ -64,19 +68,3 @@ class ModelPersistence:
                 raise e
             else:
                 return None
-
-    @staticmethod
-    def __get_file_name(model_name: str, fold: int):
-        """
-        Returns the name of the file that is used to persist a model.
-
-        :param model_name:          The name of the model to be persisted
-        :param fold:                The fold, the model corresponds to, or None if no cross validation is used
-        :return:                    The name of the file
-        """
-        file_name = model_name
-
-        if fold is not None:
-            file_name += ('_fold-' + str(fold + 1))
-
-        return file_name + '.model'
