@@ -43,6 +43,7 @@ class CmdBuilder:
         self.evaluation_stored = True
         self.predictions_stored = False
         self.prediction_characteristics_stored = False
+        self.data_characteristics_stored = False
         self.args = [cmd, '--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset]
         self.tmp_dirs = []
 
@@ -176,6 +177,30 @@ class CmdBuilder:
         self.args.append(str(store_prediction_characteristics).lower())
         return self
 
+    def print_data_characteristics(self, print_data_characteristics: bool = True):
+        """
+        Configures whether the characteristics of datasets should be printed on the console or not.
+
+        :param print_data_characteristics:  True, if the characteristics of datasets should be printed, False otherwise
+        :return:                            The builder itself
+        """
+        self.args.append('--print-data-characteristics')
+        self.args.append(str(print_data_characteristics).lower())
+        return self
+
+    def store_data_characteristics(self, store_data_characteristics: bool = True):
+        """
+        Configures whether the characteristics of datasets should be written into output files or not.
+
+        :param store_data_characteristics:  True, if the characteristics of datasets should be written into output
+                                            files, False otherwise
+        :return:                            The builder itself
+        """
+        self.data_characteristics_stored = store_data_characteristics
+        self.args.append('--store-data-characteristics')
+        self.args.append(str(store_data_characteristics).lower())
+        return self
+
     def build(self) -> List[str]:
         """
         Returns a list of strings that contains the command that has been configured using the builder, as well as all
@@ -218,7 +243,7 @@ class IntegrationTests(ABC, TestCase):
 
     def __assert_files_exist(self, builder: CmdBuilder, directory: str, file_name: str, suffix: str):
         """
-        Asserts that the files that should be created by a command exist.
+        Asserts that the files, which should be created by a command, exist.
 
         :param directory:   The directory where the files should be located
         :param file_name:   The name of the files
@@ -239,7 +264,7 @@ class IntegrationTests(ABC, TestCase):
 
     def __assert_model_files_exist(self, builder: CmdBuilder):
         """
-        Asserts that the model files that should be created by a command exist.
+        Asserts that the model files, which should be created by a command, exist.
 
         :param builder: The builder
         """
@@ -247,7 +272,7 @@ class IntegrationTests(ABC, TestCase):
 
     def __assert_output_files_exist(self, builder: CmdBuilder, file_name: str, suffix: str):
         """
-        Asserts that output files that should be created by a command exist.
+        Asserts that output files, which should be created by a command, exist.
 
         :param builder: The builder
         """
@@ -267,7 +292,7 @@ class IntegrationTests(ABC, TestCase):
 
     def __assert_evaluation_files_exist(self, builder: CmdBuilder):
         """
-        Asserts that the evaluation files that should be created by a command exist.
+        Asserts that the evaluation files, which should be created by a command, exist.
 
         :param builder: The builder
         """
@@ -281,7 +306,7 @@ class IntegrationTests(ABC, TestCase):
 
     def __assert_prediction_files_exist(self, builder: CmdBuilder):
         """
-        Asserts that the prediction files that should be created by a command exist.
+        Asserts that the prediction files, which should be created by a command, exist.
 
         :param builder: The builder
         """
@@ -295,7 +320,7 @@ class IntegrationTests(ABC, TestCase):
 
     def __assert_prediction_characteristic_files_exist(self, builder: CmdBuilder):
         """
-        Asserts that the prediction characteristic files that should be created by a command exist.
+        Asserts that the prediction characteristic files, which should be created by a command, exist.
 
         :param builder: The builder
         """
@@ -306,6 +331,15 @@ class IntegrationTests(ABC, TestCase):
 
             if builder.training_data_evaluated:
                 self.__assert_output_files_exist(builder, self.__get_output_name(builder, prefix, True), suffix)
+
+    def __assert_data_characteristic_files_exist(self, builder: CmdBuilder):
+        """
+        Asserts that the data characteristic files, which should be created by a command, exist.
+
+        :param builder: The builder
+        """
+        if builder.data_characteristics_stored:
+            self.__assert_output_files_exist(builder, 'data_characteristics_' + builder.cmd, 'csv')
 
     @staticmethod
     def __remove_tmp_dirs(builder: CmdBuilder):
@@ -359,4 +393,5 @@ class IntegrationTests(ABC, TestCase):
         self.__assert_evaluation_files_exist(builder)
         self.__assert_prediction_files_exist(builder)
         self.__assert_prediction_characteristic_files_exist(builder)
+        self.__assert_data_characteristic_files_exist(builder)
         self.__remove_tmp_dirs(builder)
