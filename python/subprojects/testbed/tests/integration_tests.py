@@ -253,6 +253,17 @@ class IntegrationTests(ABC, TestCase):
         """
         self.__assert_files_exist(builder, builder.output_dir, file_name, suffix)
 
+    def __get_output_name(self, builder: CmdBuilder, prefix: str, training_data: bool = False):
+        """
+        Returns the name of an output file (without suffix).
+
+        :param builder:         The builder
+        :param prefix:          The prefix of the file name
+        :param training_data:   True, if the output file corresponds to the training data, False otherwise
+        :return:                The name of the output file
+        """
+        return prefix + '_' + ('train' if training_data else 'test') + '_' + builder.cmd
+
     def __assert_evaluation_files_exist(self, builder: CmdBuilder):
         """
         Asserts that the evaluation files that should be created by a command exist.
@@ -260,10 +271,12 @@ class IntegrationTests(ABC, TestCase):
         :param builder: The builder
         """
         if builder.evaluation_stored:
-            self.__assert_output_files_exist(builder, 'evaluation_test_' + builder.cmd, 'csv')
+            prefix = 'evaluation'
+            suffix = 'csv'
+            self.__assert_output_files_exist(builder, self.__get_output_name(builder, prefix), suffix)
 
             if builder.training_data_evaluated:
-                self.__assert_output_files_exist(builder, 'evaluation_train_' + builder.cmd, 'csv')
+                self.__assert_output_files_exist(builder, self.__get_output_name(builder, prefix, True), suffix)
 
     def __assert_prediction_files_exist(self, builder: CmdBuilder):
         """
@@ -272,10 +285,12 @@ class IntegrationTests(ABC, TestCase):
         :param builder: The builder
         """
         if builder.predictions_stored:
-            self.__assert_output_files_exist(builder, 'predictions_test_' + builder.cmd, 'arff')
+            prefix = 'predictions'
+            suffix = 'arff'
+            self.__assert_output_files_exist(builder, self.__get_output_name(builder, prefix), suffix)
 
             if builder.training_data_evaluated:
-                self.__assert_output_files_exist(builder, 'predictions_train_' + builder.cmd, 'arff')
+                self.__assert_output_files_exist(builder, self.__get_output_name(builder, prefix, True), suffix)
 
     def __assert_prediction_characteristic_files_exist(self, builder: CmdBuilder):
         """
@@ -284,10 +299,12 @@ class IntegrationTests(ABC, TestCase):
         :param builder: The builder
         """
         if builder.prediction_characteristics_stored:
-            self.__assert_output_files_exist(builder, 'prediction_characteristics_test_' + builder.cmd, 'csv')
+            prefix = 'prediction_characteristics'
+            suffix = 'csv'
+            self.__assert_output_files_exist(builder, self.__get_output_name(builder, prefix), suffix)
 
             if builder.training_data_evaluated:
-                self.__assert_output_files_exist(builder, 'prediction_characteristics_train_' + builder.cmd, 'csv')
+                self.__assert_output_files_exist(builder, self.__get_output_name(builder, prefix, True), suffix)
 
     @staticmethod
     def __remove_tmp_dirs(builder: CmdBuilder):
