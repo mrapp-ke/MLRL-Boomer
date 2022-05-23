@@ -44,6 +44,7 @@ class CmdBuilder:
         self.predictions_stored = False
         self.prediction_characteristics_stored = False
         self.data_characteristics_stored = False
+        self.model_characteristics_stored = False
         self.args = [cmd, '--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset]
         self.tmp_dirs = []
 
@@ -201,6 +202,30 @@ class CmdBuilder:
         self.args.append(str(store_data_characteristics).lower())
         return self
 
+    def print_model_characteristics(self, print_model_characteristics: bool = True):
+        """
+        Configures whether the characteristics of models should be printed on the console or not.
+
+        :param print_model_characteristics: True, if the characteristics of models should be printed, False otherwise
+        :return:                            The builder itself
+        """
+        self.args.append('--print-model-characteristics')
+        self.args.append(str(print_model_characteristics).lower())
+        return self
+
+    def store_model_characteristics(self, store_model_characteristics: bool = True):
+        """
+        Configures whether the characteristics of models should be written into output files or not.
+
+        :param store_model_characteristics: True, if the characteristics of models should be written into output files,
+                                            False otherwise
+        :return:                            The builder itself
+        """
+        self.model_characteristics_stored = store_model_characteristics
+        self.args.append('--store-model-characteristics')
+        self.args.append(str(store_model_characteristics).lower())
+        return self
+
     def build(self) -> List[str]:
         """
         Returns a list of strings that contains the command that has been configured using the builder, as well as all
@@ -341,6 +366,15 @@ class IntegrationTests(ABC, TestCase):
         if builder.data_characteristics_stored:
             self.__assert_output_files_exist(builder, 'data_characteristics_' + builder.cmd, 'csv')
 
+    def __assert_model_characteristic_files_exist(self, builder: CmdBuilder):
+        """
+        Asserts that the model characteristic files, which should be created by a command, exist.
+
+        :param builder: The builder
+        """
+        if builder.model_characteristics_stored:
+            self.__assert_output_files_exist(builder, 'model_characteristics_' + builder.cmd, 'csv')
+
     @staticmethod
     def __remove_tmp_dirs(builder: CmdBuilder):
         """
@@ -394,4 +428,5 @@ class IntegrationTests(ABC, TestCase):
         self.__assert_prediction_files_exist(builder)
         self.__assert_prediction_characteristic_files_exist(builder)
         self.__assert_data_characteristic_files_exist(builder)
+        self.__assert_model_characteristic_files_exist(builder)
         self.__remove_tmp_dirs(builder)

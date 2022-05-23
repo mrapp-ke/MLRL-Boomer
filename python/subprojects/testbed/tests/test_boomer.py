@@ -231,6 +231,46 @@ class BoostingIntegrationTests(IntegrationTests):
             .store_data_characteristics()
         self.run_cmd(builder, 'boomer_data-characteristics_single-fold')
 
+    def test_model_characteristics_train_test(self):
+        """
+        Tests the functionality to store the characteristics of BOOMER models when using a predefined split of the
+        dataset into training and test data.
+        """
+        builder = CmdBuilder() \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
+            .set_output_dir() \
+            .print_model_characteristics() \
+            .store_model_characteristics()
+        self.run_cmd(builder, 'boomer_model-characteristics_train-test')
+
+    def test_model_characteristics_cross_validation(self):
+        """
+        Tests the functionality to store the characteristics of BOOMER models when using a cross validation.
+        """
+        builder = CmdBuilder() \
+            .cross_validation() \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
+            .set_output_dir() \
+            .print_model_characteristics() \
+            .store_model_characteristics()
+        self.run_cmd(builder, 'boomer_model-characteristics_cross-validation')
+
+    def test_model_characteristics_single_fold(self):
+        """
+        Tests the functionality to store the characteristics of BOOMER models when using a single fold of a cross
+        validation.
+        """
+        builder = CmdBuilder() \
+            .cross_validation(current_fold=1) \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
+            .set_output_dir() \
+            .print_model_characteristics() \
+            .store_model_characteristics()
+        self.run_cmd(builder, 'boomer_model-characteristics_single-fold')
+
 
 if __name__ == '__main__':
     main()

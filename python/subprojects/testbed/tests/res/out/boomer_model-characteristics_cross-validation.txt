@@ -1,0 +1,136 @@
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dataset='emotions', folds=10, current_fold=-1, print_evaluation=False, store_evaluation=False, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=True, store_model_characteristics=True, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning=None, label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Starting experiment "boomer"...
+INFO Performing full 10-fold cross validation...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fold 1 / 10:
+INFO Fitting model to 533 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.3680890969999382 seconds
+INFO Model characteristics for experiment "boomer" (Fold 1):
+
+Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 5.857857857857858, min. 1, max. 18
+Conditions total: 5852 (49.98291182501709% use <= operator, 50.017088174982916% use > operator, 0.0% use == operator, -7.105427357601002e-15% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 999 (46.346346346346344% positive, 53.653653653653656% negative)
+
+INFO Fold 2 / 10:
+INFO Fitting model to 533 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.3298365589998866 seconds
+INFO Model characteristics for experiment "boomer" (Fold 2):
+
+Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 6.073073073073073, min. 1, max. 19
+Conditions total: 6067 (49.563210812592715% use <= operator, 50.436789187407285% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 999 (46.046046046046044% positive, 53.953953953953956% negative)
+
+INFO Fold 3 / 10:
+INFO Fitting model to 533 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.3168201520002185 seconds
+INFO Model characteristics for experiment "boomer" (Fold 3):
+
+Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 6.122122122122122, min. 1, max. 19
+Conditions total: 6116 (50.52321778940484% use <= operator, 49.47678221059516% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 999 (45.94594594594595% positive, 54.05405405405405% negative)
+
+INFO Fold 4 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.31798178999997617 seconds
+INFO Model characteristics for experiment "boomer" (Fold 4):
+
+Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 5.974974974974975, min. 1, max. 19
+Conditions total: 5969 (49.69006533757748% use <= operator, 50.30993466242252% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 999 (45.94594594594595% positive, 54.05405405405405% negative)
+
+INFO Fold 5 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.302799404000325 seconds
+INFO Model characteristics for experiment "boomer" (Fold 5):
+
+Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 5.97997997997998, min. 1, max. 19
+Conditions total: 5974 (49.564780716437895% use <= operator, 50.435219283562105% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 999 (45.14514514514514% positive, 54.85485485485486% negative)
+
+INFO Fold 6 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.3087182479994226 seconds
+INFO Model characteristics for experiment "boomer" (Fold 6):
+
+Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 5.937937937937938, min. 1, max. 17
+Conditions total: 5932 (49.46055293324342% use <= operator, 50.53944706675657% use > operator, 0.0% use == operator, 7.105427357601002e-15% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 999 (45.645645645645644% positive, 54.354354354354356% negative)
+
+INFO Fold 7 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.2966097689995877 seconds
+INFO Model characteristics for experiment "boomer" (Fold 7):
+
+Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 5.926926926926927, min. 1, max. 21
+Conditions total: 5921 (49.299104880932276% use <= operator, 50.700895119067724% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 999 (46.94694694694695% positive, 53.05305305305305% negative)
+
+INFO Fold 8 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.31435690600028465 seconds
+INFO Model characteristics for experiment "boomer" (Fold 8):
+
+Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 5.915915915915916, min. 1, max. 18
+Conditions total: 5910 (50.38917089678511% use <= operator, 49.61082910321489% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 999 (45.44544544544545% positive, 54.55455455455455% negative)
+
+INFO Fold 9 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.41830164900056843 seconds
+INFO Model characteristics for experiment "boomer" (Fold 9):
+
+Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 5.930930930930931, min. 1, max. 20
+Conditions total: 5925 (50.16033755274262% use <= operator, 49.83966244725738% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 999 (46.846846846846844% positive, 53.153153153153156% negative)
+
+INFO Fold 10 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.29819799799952307 seconds
+INFO Model characteristics for experiment "boomer" (Fold 10):
+
+Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 5.887887887887888, min. 1, max. 19
+Conditions total: 5882 (50.57803468208093% use <= operator, 49.421965317919074% use > operator, 0.0% use == operator, -7.105427357601002e-15% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 999 (45.94594594594595% positive, 54.05405405405405% negative)
+
+INFO Successfully finished after 3.617049754000618 seconds
