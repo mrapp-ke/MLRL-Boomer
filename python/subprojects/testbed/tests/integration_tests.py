@@ -42,6 +42,7 @@ class CmdBuilder:
         self.training_data_evaluated = False
         self.evaluation_stored = True
         self.predictions_stored = False
+        self.prediction_characteristics_stored = False
         self.args = [cmd, '--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset]
         self.tmp_dirs = []
 
@@ -150,6 +151,31 @@ class CmdBuilder:
         self.args.append(str(store_predictions).lower())
         return self
 
+    def print_prediction_characteristics(self, print_prediction_characteristics: bool = True):
+        """
+        Configures whether the characteristics of predictions should be printed on the console or not.
+
+        :param print_prediction_characteristics:    True, if the characteristics of predictions should be printed, False
+                                                    otherwise
+        :return:                                    The builder itself
+        """
+        self.args.append('--print-prediction-characteristics')
+        self.args.append(str(print_prediction_characteristics).lower())
+        return self
+
+    def store_prediction_characteristics(self, store_prediction_characteristics: bool = True):
+        """
+        Configures whether the characteristics of predictions should be written into output files or not.
+
+        :param store_prediction_characteristics:    True, if the characteristics of predictions should be written into
+                                                    output files, False otherwise
+        :return:                                    The builder itself
+        """
+        self.prediction_characteristics_stored = store_prediction_characteristics
+        self.args.append('--store-prediction-characteristics')
+        self.args.append(str(store_prediction_characteristics).lower())
+        return self
+
     def build(self) -> List[str]:
         """
         Returns a list of strings that contains the command that has been configured using the builder, as well as all
@@ -252,6 +278,18 @@ class IntegrationTests(ABC, TestCase):
             if builder.training_data_evaluated:
                 self.__assert_output_files_exist(builder, 'predictions_train_' + builder.cmd, 'arff')
 
+    def __assert_prediction_characteristic_files_exist(self, builder: CmdBuilder):
+        """
+        Asserts that the prediction characteristic files that should be created by a command exist.
+
+        :param builder: The builder
+        """
+        if builder.prediction_characteristics_stored:
+            self.__assert_output_files_exist(builder, 'prediction_characteristics_test_' + builder.cmd, 'csv')
+
+            if builder.training_data_evaluated:
+                self.__assert_output_files_exist(builder, 'prediction_characteristics_train_' + builder.cmd, 'csv')
+
     @staticmethod
     def __remove_tmp_dirs(builder: CmdBuilder):
         """
@@ -303,4 +341,5 @@ class IntegrationTests(ABC, TestCase):
         self.__assert_model_files_exist(builder)
         self.__assert_evaluation_files_exist(builder)
         self.__assert_prediction_files_exist(builder)
+        self.__assert_prediction_characteristic_files_exist(builder)
         self.__remove_tmp_dirs(builder)
