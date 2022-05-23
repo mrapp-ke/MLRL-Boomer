@@ -253,7 +253,8 @@ class IntegrationTests(ABC, TestCase):
         """
         self.__assert_files_exist(builder, builder.output_dir, file_name, suffix)
 
-    def __get_output_name(self, builder: CmdBuilder, prefix: str, training_data: bool = False):
+    @staticmethod
+    def __get_output_name(builder: CmdBuilder, prefix: str, training_data: bool = False):
         """
         Returns the name of an output file (without suffix).
 
