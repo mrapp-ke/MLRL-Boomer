@@ -1,0 +1,34 @@
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dataset='langlog', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='sparse', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning=None, label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Starting experiment "boomer_feature-format=sparse"...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/langlog.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/langlog-train.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/langlog-test.arff"...
+INFO Fitting model to 979 training examples...
+DEBUG A sparse matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.3578273220009578 seconds
+INFO Predicting for 481 test examples...
+DEBUG A sparse matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.02385188300104346 seconds
+INFO Overall evaluation result for experiment "test_boomer_feature-format=sparse":
+
+Ex.-based F1: 0.1683991683991684
+Ex.-based Jacc.: 0.16735966735966737
+Ex.-based Prec.: 0.9833679833679834
+Ex.-based Rec.: 0.16735966735966737
+Hamm. Acc.: 0.983922383922384
+Hamm. Loss: 0.016077616077616076
+Ma. F1: 0.19376853837833874
+Ma. Jacc.: 0.19063363691560414
+Ma. Prec.: 0.9767272727272727
+Ma. Rec.: 0.19084175084175084
+Mi. F1: 0.03333333333333333
+Mi. Jacc.: 0.01694915254237288
+Mi. Prec.: 0.5555555555555556
+Mi. Rec.: 0.01718213058419244
+Subs. 0/1 Loss: 0.8357588357588357
+Subs. Acc.: 0.16424116424116425
+
+INFO Successfully finished after 0.7628160819986078 seconds

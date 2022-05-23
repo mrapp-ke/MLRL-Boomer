@@ -1,0 +1,285 @@
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dataset='emotions', folds=10, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir='python/subprojects/testbed/tests/res/tmp/models', parameter_dir=None, output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning=None, label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Starting experiment "boomer"...
+INFO Performing full 10-fold cross validation...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fold 1 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-1.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-1.model"
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0059845540090464056 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 1):
+
+Ex.-based F1: 0.6488888888888888
+Ex.-based Jacc.: 0.5694444444444445
+Ex.-based Prec.: 0.7944444444444444
+Ex.-based Rec.: 0.6611111111111111
+Hamm. Acc.: 0.8277777777777777
+Hamm. Loss: 0.17222222222222222
+Ma. F1: 0.683234126984127
+Ma. Jacc.: 0.5383507698226825
+Ma. Prec.: 0.7596313798139356
+Ma. Rec.: 0.6489337822671156
+Mi. F1: 0.7155963302752293
+Mi. Jacc.: 0.5571428571428572
+Mi. Prec.: 0.7722772277227723
+Mi. Rec.: 0.6666666666666666
+Subs. 0/1 Loss: 0.6666666666666667
+Subs. Acc.: 0.3333333333333333
+
+INFO Fold 2 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-2.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-2.model"
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.002033681026659906 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 2):
+
+Ex.-based F1: 0.6594444444444444
+Ex.-based Jacc.: 0.5833333333333334
+Ex.-based Prec.: 0.8333333333333334
+Ex.-based Rec.: 0.6333333333333334
+Hamm. Acc.: 0.8222222222222222
+Hamm. Loss: 0.17777777777777778
+Ma. F1: 0.6852776127285932
+Ma. Jacc.: 0.5323652955231902
+Ma. Prec.: 0.7999377528789293
+Ma. Rec.: 0.6061785479742136
+Mi. F1: 0.6981132075471699
+Mi. Jacc.: 0.5362318840579711
+Mi. Prec.: 0.8043478260869565
+Mi. Rec.: 0.6166666666666667
+Subs. 0/1 Loss: 0.6666666666666667
+Subs. Acc.: 0.3333333333333333
+
+INFO Fold 3 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-3.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-3.model"
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0023766880040057003 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 3):
+
+Ex.-based F1: 0.5549999999999999
+Ex.-based Jacc.: 0.48333333333333334
+Ex.-based Prec.: 0.7611111111111111
+Ex.-based Rec.: 0.5444444444444444
+Hamm. Acc.: 0.7944444444444445
+Hamm. Loss: 0.20555555555555555
+Ma. F1: 0.6122115384615384
+Ma. Jacc.: 0.44637912303816196
+Ma. Prec.: 0.725909090909091
+Ma. Rec.: 0.5367997540146662
+Mi. F1: 0.6299999999999999
+Mi. Jacc.: 0.45985401459854014
+Mi. Prec.: 0.7325581395348837
+Mi. Rec.: 0.5526315789473685
+Subs. 0/1 Loss: 0.7333333333333334
+Subs. Acc.: 0.26666666666666666
+
+INFO Fold 4 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-4.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-4.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0042389919981360435 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 4):
+
+Ex.-based F1: 0.619774011299435
+Ex.-based Jacc.: 0.5409604519774012
+Ex.-based Prec.: 0.7231638418079096
+Ex.-based Rec.: 0.6242937853107345
+Hamm. Acc.: 0.807909604519774
+Hamm. Loss: 0.192090395480226
+Ma. F1: 0.6331648796642403
+Ma. Jacc.: 0.4821241830065359
+Ma. Prec.: 0.6866161616161617
+Ma. Rec.: 0.6050582606646681
+Mi. F1: 0.6530612244897959
+Mi. Jacc.: 0.48484848484848486
+Mi. Prec.: 0.6808510638297872
+Mi. Rec.: 0.6274509803921569
+Subs. 0/1 Loss: 0.6949152542372881
+Subs. Acc.: 0.3050847457627119
+
+INFO Fold 5 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-5.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-5.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0021340909879654646 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 5):
+
+Ex.-based F1: 0.6548022598870057
+Ex.-based Jacc.: 0.5734463276836158
+Ex.-based Prec.: 0.8022598870056498
+Ex.-based Rec.: 0.652542372881356
+Hamm. Acc.: 0.8305084745762712
+Hamm. Loss: 0.1694915254237288
+Ma. F1: 0.7057719344737601
+Ma. Jacc.: 0.5602761694697179
+Ma. Prec.: 0.8230463980463981
+Ma. Rec.: 0.6543842244500139
+Mi. F1: 0.7169811320754716
+Mi. Jacc.: 0.5588235294117647
+Mi. Prec.: 0.7835051546391752
+Mi. Rec.: 0.6608695652173913
+Subs. 0/1 Loss: 0.6779661016949152
+Subs. Acc.: 0.3220338983050847
+
+INFO Fold 6 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-6.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-6.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0018781590042635798 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 6):
+
+Ex.-based F1: 0.5542372881355931
+Ex.-based Jacc.: 0.4971751412429378
+Ex.-based Prec.: 0.7033898305084746
+Ex.-based Rec.: 0.5564971751412429
+Hamm. Acc.: 0.8022598870056497
+Hamm. Loss: 0.1977401129943503
+Ma. F1: 0.6169493362828233
+Ma. Jacc.: 0.4563837819886207
+Ma. Prec.: 0.7226673598732423
+Ma. Rec.: 0.5763341903804954
+Mi. F1: 0.6236559139784946
+Mi. Jacc.: 0.453125
+Mi. Prec.: 0.7073170731707317
+Mi. Rec.: 0.5576923076923077
+Subs. 0/1 Loss: 0.6779661016949152
+Subs. Acc.: 0.3220338983050847
+
+INFO Fold 7 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-7.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-7.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0021111550158821046 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 7):
+
+Ex.-based F1: 0.6310734463276836
+Ex.-based Jacc.: 0.5564971751412429
+Ex.-based Prec.: 0.7457627118644068
+Ex.-based Rec.: 0.6497175141242939
+Hamm. Acc.: 0.8220338983050848
+Hamm. Loss: 0.17796610169491525
+Ma. F1: 0.6495634703671883
+Ma. Jacc.: 0.49997406369955394
+Ma. Prec.: 0.7166250416250417
+Ma. Rec.: 0.6052166224580018
+Mi. F1: 0.6834170854271355
+Mi. Jacc.: 0.5190839694656488
+Mi. Prec.: 0.7311827956989247
+Mi. Rec.: 0.6415094339622641
+Subs. 0/1 Loss: 0.6779661016949152
+Subs. Acc.: 0.3220338983050847
+
+INFO Fold 8 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-8.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-8.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.004935388977173716 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 8):
+
+Ex.-based F1: 0.684180790960452
+Ex.-based Jacc.: 0.5988700564971752
+Ex.-based Prec.: 0.7457627118644068
+Ex.-based Rec.: 0.7203389830508474
+Hamm. Acc.: 0.8333333333333334
+Hamm. Loss: 0.16666666666666666
+Ma. F1: 0.7110713654831301
+Ma. Jacc.: 0.5654330572808833
+Ma. Prec.: 0.7165945652787759
+Ma. Rec.: 0.7305852190863633
+Mi. F1: 0.728110599078341
+Mi. Jacc.: 0.572463768115942
+Mi. Prec.: 0.7181818181818181
+Mi. Rec.: 0.7383177570093458
+Subs. 0/1 Loss: 0.6779661016949152
+Subs. Acc.: 0.3220338983050847
+
+INFO Fold 9 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-9.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-9.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.002106649975758046 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 9):
+
+Ex.-based F1: 0.5661016949152542
+Ex.-based Jacc.: 0.481638418079096
+Ex.-based Prec.: 0.7683615819209039
+Ex.-based Rec.: 0.5621468926553672
+Hamm. Acc.: 0.7994350282485876
+Hamm. Loss: 0.20056497175141244
+Ma. F1: 0.6044301661176962
+Ma. Jacc.: 0.44962301587301584
+Ma. Prec.: 0.7192892755392756
+Ma. Rec.: 0.5477914181649326
+Mi. F1: 0.6536585365853659
+Mi. Jacc.: 0.4855072463768116
+Mi. Prec.: 0.7282608695652174
+Mi. Rec.: 0.5929203539823009
+Subs. 0/1 Loss: 0.7966101694915254
+Subs. Acc.: 0.2033898305084746
+
+INFO Fold 10 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-10.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-10.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.002395640010945499 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 10):
+
+Ex.-based F1: 0.5531073446327683
+Ex.-based Jacc.: 0.48022598870056493
+Ex.-based Prec.: 0.8022598870056497
+Ex.-based Rec.: 0.5480225988700564
+Hamm. Acc.: 0.8050847457627118
+Hamm. Loss: 0.19491525423728814
+Ma. F1: 0.6126054887664795
+Ma. Jacc.: 0.45894731314086146
+Ma. Prec.: 0.7362563543936093
+Ma. Rec.: 0.543324549846289
+Mi. F1: 0.6387434554973823
+Mi. Jacc.: 0.46923076923076923
+Mi. Prec.: 0.7530864197530864
+Mi. Rec.: 0.5545454545454546
+Subs. 0/1 Loss: 0.711864406779661
+Subs. Acc.: 0.288135593220339
+
+INFO Overall evaluation result for experiment "test_boomer":
+
+Ex.-based F1: 0.6126610169491525 ±0.048201927126853054
+Ex.-based Jacc.: 0.5364924670433144 ±0.04416246275395923
+Ex.-based Prec.: 0.7679849340866289 ±0.038126850268402235
+Ex.-based Rec.: 0.6152448210922787 ±0.056514819121867774
+Hamm. Acc.: 0.8145009416195856 ±0.013471216685361902
+Hamm. Loss: 0.1854990583804143 ±0.013471216685361909
+Ma. F1: 0.6514279919329576 ±0.03930360182785209
+Ma. Jacc.: 0.49898567728432236 ±0.04443308343945879
+Ma. Prec.: 0.740657337997446 ±0.03969416703575611
+Ma. Rec.: 0.6054606569306759 ±0.057174844581758026
+Mi. F1: 0.6741337484954386 ±0.037069255604001566
+Mi. Jacc.: 0.5096311523248789 ±0.042333423481129
+Mi. Prec.: 0.7411568388183353 ±0.035421416162375284
+Mi. Rec.: 0.6209270765081923 ±0.05639701893564118
+Subs. 0/1 Loss: 0.6981920903954802 ±0.03839630489632225
+Subs. Acc.: 0.30180790960451975 ±0.038396304896322245
+
+INFO Successfully finished after 0.5631252689636312 seconds

@@ -1,0 +1,39 @@
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dataset='enron', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=True, model_dir=None, parameter_dir=None, output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning=None, label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Starting experiment "boomer"...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/enron.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/enron-train.arff"...
+INFO Data set contains 1001 nominal and 0 numerical attributes.
+INFO Applying one-hot encoding...
+INFO Original data set contained 1001 attributes, one-hot encoded data set contains 2002 attributes
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/enron-test.arff"...
+INFO Data set contains 1001 nominal and 0 numerical attributes.
+INFO Original data set contained 1001 attributes, one-hot encoded data set contains 2002 attributes
+INFO Fitting model to 1123 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.5664446479986509 seconds
+INFO Predicting for 579 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.007983872999830055 seconds
+INFO Overall evaluation result for experiment "test_boomer":
+
+Ex.-based F1: 0.4250221089599328
+Ex.-based Jacc.: 0.3080454807138745
+Ex.-based Prec.: 0.610391479562464
+Ex.-based Rec.: 0.35398675877950486
+Hamm. Acc.: 0.946817870759605
+Hamm. Loss: 0.053182129240394956
+Ma. F1: 0.08144084984602104
+Ma. Jacc.: 0.057596103592283815
+Ma. Prec.: 0.9148072482424378
+Ma. Rec.: 0.07370376948232545
+Mi. F1: 0.46909564085881583
+Mi. Jacc.: 0.30641733956651085
+Mi. Prec.: 0.639751552795031
+Mi. Rec.: 0.37031330251669237
+Subs. 0/1 Loss: 0.9827288428324698
+Subs. Acc.: 0.017271157167530225
+
+INFO Successfully finished after 1.1988725579994934 seconds
