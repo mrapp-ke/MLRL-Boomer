@@ -20,7 +20,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
-        self.run_cmd(builder, 'boomer_evaluation_train_test')
+        self.run_cmd(builder, 'boomer_evaluation_train-test')
 
     def test_evaluation_cross_validation(self):
         """
@@ -31,7 +31,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
-        self.run_cmd(builder, 'boomer_evaluation_cross_validation')
+        self.run_cmd(builder, 'boomer_evaluation_cross-validation')
 
     def test_evaluation_single_fold(self):
         """
@@ -42,7 +42,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
-        self.run_cmd(builder, 'boomer_evaluation_single_fold')
+        self.run_cmd(builder, 'boomer_evaluation_single-fold')
 
     def test_evaluation_training_data(self):
         """
@@ -53,7 +53,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
-        self.run_cmd(builder, 'boomer_evaluation_training_data')
+        self.run_cmd(builder, 'boomer_evaluation_training-data')
 
     def test_model_persistence_train_test(self):
         """
@@ -62,7 +62,7 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder() \
             .set_model_dir()
-        self.run_cmd(builder, 'boomer_model_persistence_train_test')
+        self.run_cmd(builder, 'boomer_model-persistence_train-test')
 
     def test_model_persistence_cross_validation(self):
         """
@@ -71,7 +71,7 @@ class BoostingIntegrationTests(IntegrationTests):
         builder = CmdBuilder() \
             .cross_validation() \
             .set_model_dir()
-        self.run_cmd(builder, 'boomer_model_persistence_cross_validation')
+        self.run_cmd(builder, 'boomer_model-persistence_cross-validation')
 
     def test_model_persistence_single_fold(self):
         """
@@ -81,7 +81,7 @@ class BoostingIntegrationTests(IntegrationTests):
         builder = CmdBuilder() \
             .cross_validation(current_fold=1) \
             .set_model_dir()
-        self.run_cmd(builder, 'boomer_model_persistence_single_fold')
+        self.run_cmd(builder, 'boomer_model-persistence_single-fold')
 
     def test_predictions_train_test(self):
         """
@@ -94,7 +94,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_predictions() \
             .store_predictions()
-        self.run_cmd(builder, 'boomer_predictions_train_test')
+        self.run_cmd(builder, 'boomer_predictions_train-test')
 
     def test_predictions_cross_validation(self):
         """
@@ -107,7 +107,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_predictions() \
             .store_predictions()
-        self.run_cmd(builder, 'boomer_predictions_cross_validation')
+        self.run_cmd(builder, 'boomer_predictions_cross-validation')
 
     def test_predictions_single_fold(self):
         """
@@ -121,7 +121,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_predictions() \
             .store_predictions()
-        self.run_cmd(builder, 'boomer_predictions_single_fold')
+        self.run_cmd(builder, 'boomer_predictions_single-fold')
 
     def test_predictions_training_data(self):
         """
@@ -134,7 +134,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_predictions() \
             .store_predictions()
-        self.run_cmd(builder, 'boomer_predictions_training_data')
+        self.run_cmd(builder, 'boomer_predictions_training-data')
 
     def test_prediction_characteristics_train_test(self):
         """
@@ -147,7 +147,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        self.run_cmd(builder, 'boomer_prediction_characteristics_train_test')
+        self.run_cmd(builder, 'boomer_prediction-characteristics_train-test')
 
     def test_prediction_characteristics_cross_validation(self):
         """
@@ -161,7 +161,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        self.run_cmd(builder, 'boomer_prediction_characteristics_cross_validation')
+        self.run_cmd(builder, 'boomer_prediction-characteristics_cross-validation')
 
     def test_prediction_characteristics_single_fold(self):
         """
@@ -175,7 +175,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        self.run_cmd(builder, 'boomer_prediction_characteristics_single_fold')
+        self.run_cmd(builder, 'boomer_prediction-characteristics_single-fold')
 
     def test_prediction_characteristics_training_data(self):
         """
@@ -188,7 +188,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        self.run_cmd(builder, 'boomer_prediction_characteristics_training_data')
+        self.run_cmd(builder, 'boomer_prediction-characteristics_training-data')
 
     def test_data_characteristics_train_test(self):
         """
@@ -201,7 +201,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_data_characteristics() \
             .store_data_characteristics()
-        self.run_cmd(builder, 'boomer_data_characteristics_train_test')
+        self.run_cmd(builder, 'boomer_data-characteristics_train-test')
 
     def test_data_characteristics_cross_validation(self):
         """
@@ -215,7 +215,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_data_characteristics() \
             .store_data_characteristics()
-        self.run_cmd(builder, 'boomer_data_characteristics_cross_validation')
+        self.run_cmd(builder, 'boomer_data-characteristics_cross-validation')
 
     def test_data_characteristics_single_fold(self):
         """
@@ -229,7 +229,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .set_output_dir() \
             .print_data_characteristics() \
             .store_data_characteristics()
-        self.run_cmd(builder, 'boomer_data_characteristics_single_fold')
+        self.run_cmd(builder, 'boomer_data-characteristics_single-fold')
 
 
 if __name__ == '__main__':
