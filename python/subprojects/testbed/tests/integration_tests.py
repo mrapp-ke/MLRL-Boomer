@@ -40,6 +40,7 @@ class CmdBuilder:
         self.folds = 0
         self.current_fold = 0
         self.training_data_evaluated = False
+        self.evaluation_stored = True
         self.predictions_stored = False
         self.args = [cmd, '--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset]
         self.tmp_dirs = []
@@ -101,6 +102,29 @@ class CmdBuilder:
         self.training_data_evaluated = evaluate_training_data
         self.args.append('--evaluate-training-data')
         self.args.append(str(evaluate_training_data).lower())
+        return self
+
+    def print_evaluation(self, print_evaluation: bool = True):
+        """
+        Configures whether the evaluation results of the rule learner should be printed on the console or not.
+
+        :param print_evaluation:    True, if the evaluation results should be printed, False otherwise
+        :return:                    The builder self
+        """
+        self.args.append('--print-evaluation')
+        self.args.append(str(print_evaluation).lower())
+        return self
+
+    def store_evaluation(self, store_evaluation: bool = True):
+        """
+        Configures whether the evaluation results of the rule learner should be written into output files or not.
+
+        :param store_evaluation:    True, if the evaluation results should be written into output files or not
+        :return:                    The builder itself
+        """
+        self.evaluation_stored = store_evaluation
+        self.args.append('--store-evaluation')
+        self.args.append(str(store_evaluation).lower())
         return self
 
     def print_predictions(self, print_predictions: bool = True):
@@ -212,7 +236,6 @@ class IntegrationTests(ABC, TestCase):
 
         if output_dir is not None:
             cmd = builder.cmd
-            file_name = file_name + '_' + cmd
 
             if builder.folds > 0:
                 current_fold = builder.current_fold
@@ -225,6 +248,19 @@ class IntegrationTests(ABC, TestCase):
             else:
                 self.__assert_file_exists(output_dir, self.__get_file_name(file_name + '_overall', suffix))
 
+    def __assert_evaluation_files_exist(self, builder: CmdBuilder):
+        """
+        Asserts that the evaluation files that should be created by a command exist.
+
+        :param builder: The builder
+        """
+        if builder.evaluation_stored:
+            self.__assert_output_files_exist(builder, 'evaluation', 'csv')
+
+            if builder.training_data_evaluated:
+                # TODO self.__assert_output_files_exist(builder, 'evaluation_train', 'csv')
+                return
+
     def __assert_prediction_files_exist(self, builder: CmdBuilder):
         """
         Asserts that the prediction files that should be created by a command exist.
@@ -232,10 +268,10 @@ class IntegrationTests(ABC, TestCase):
         :param builder: The builder
         """
         if builder.predictions_stored:
-            self.__assert_output_files_exist(builder, 'predictions_test', 'arff')
+            self.__assert_output_files_exist(builder, 'predictions_test_' + builder.cmd, 'arff')
 
             if builder.training_data_evaluated:
-                self.__assert_output_files_exist(builder, 'predictions_train', 'arff')
+                self.__assert_output_files_exist(builder, 'predictions_train_' + builder.cmd, 'arff')
 
     @staticmethod
     def __remove_tmp_dirs(builder: CmdBuilder):
@@ -286,5 +322,6 @@ class IntegrationTests(ABC, TestCase):
                         self.assertEqual(stdout[i], line, 'Output differs at line ' + str(i + 1))
 
         self.__assert_model_files_exist(builder)
+        self.__assert_evaluation_files_exist(builder)
         self.__assert_prediction_files_exist(builder)
         self.__remove_tmp_dirs(builder)

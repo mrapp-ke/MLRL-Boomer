@@ -11,37 +11,49 @@ class BoostingIntegrationTests(IntegrationTests):
     Defines a series of integration tests that run the BOOMER algorithm.
     """
 
-    def test_default_train_test(self):
+    def test_evaluation_train_test(self):
         """
-        Tests the default configuration of the BOOMER algorithm using a predefined split of the dataset into training
-        and test data.
-        """
-        builder = CmdBuilder()
-        self.run_cmd(builder, 'boomer_default_train_test')
-
-    def test_default_cross_validation(self):
-        """
-        Tests the default configuration of the BOOMER algorithm using a cross validation.
+        Tests the evaluation of the BOOMER algorithm when using a predefined split of the dataset into training and test
+        data.
         """
         builder = CmdBuilder() \
-            .cross_validation()
-        self.run_cmd(builder, 'boomer_default_cross_validation')
+            .set_output_dir() \
+            .print_evaluation() \
+            .store_evaluation()
+        self.run_cmd(builder, 'boomer_evaluation_train_test')
 
-    def test_default_single_fold(self):
+    def test_evaluation_cross_validation(self):
         """
-        Tests the default configuration of the BOOMER algorithm using a single fold of a cross validation.
+        Tests the evaluation of the BOOMER algorithm using a cross validation.
         """
         builder = CmdBuilder() \
-            .cross_validation(current_fold=1)
-        self.run_cmd(builder, 'boomer_default_single_fold')
+            .cross_validation() \
+            .set_output_dir() \
+            .print_evaluation() \
+            .store_evaluation()
+        self.run_cmd(builder, 'boomer_evaluation_cross_validation')
 
-    def test_default_training_data(self):
+    def test_evaluation_single_fold(self):
         """
-        Tests the default configuration of the BOOMER algorithm when evaluated on the training data.
+        Tests the evaluation of the BOOMER algorithm when using a single fold of a cross validation.
         """
         builder = CmdBuilder() \
-            .evaluate_training_data()
-        self.run_cmd(builder, 'boomer_default_training_data')
+            .cross_validation(current_fold=1) \
+            .set_output_dir() \
+            .print_evaluation() \
+            .store_evaluation()
+        self.run_cmd(builder, 'boomer_evaluation_single_fold')
+
+    def test_evaluation_training_data(self):
+        """
+        Tests the evaluation of the BOOMER algorithm on the training data.
+        """
+        builder = CmdBuilder() \
+            .evaluate_training_data() \
+            .set_output_dir() \
+            .print_evaluation() \
+            .store_evaluation()
+        self.run_cmd(builder, 'boomer_evaluation_training_data')
 
     def test_model_persistence_train_test(self):
         """
@@ -107,8 +119,7 @@ class BoostingIntegrationTests(IntegrationTests):
 
     def test_predictions_training_data(self):
         """
-        Tests the functionality to store the predictions of the BOOMER algorithm when using a single fold of a cross
-        validation.
+        Tests the functionality to store the predictions of the BOOMER algorithm for the training data.
         """
         builder = CmdBuilder() \
             .evaluate_training_data() \
