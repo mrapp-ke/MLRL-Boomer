@@ -45,6 +45,7 @@ class CmdBuilder:
         self.prediction_characteristics_stored = False
         self.data_characteristics_stored = False
         self.model_characteristics_stored = False
+        self.rules_stored = False
         self.args = [cmd, '--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset]
         self.tmp_dirs = []
 
@@ -226,6 +227,30 @@ class CmdBuilder:
         self.args.append(str(store_model_characteristics).lower())
         return self
 
+    def print_rules(self, print_rules: bool = True):
+        """
+        Configures whether textual representations of the rules in a model should be printed on the console or not.
+
+        :param print_rules: True, if textual representations of rules should be printed, False otherwise
+        :return:            The builder itself
+        """
+        self.args.append('--print-rules')
+        self.args.append(str(print_rules).lower())
+        return self
+
+    def store_rules(self, store_rules: bool = True):
+        """
+        Configures whether textual representations of the rules in a model should be written into output files or not.
+
+        :param store_rules: True, if textual representations of rules should be written into output files, False
+                            otherwise
+        :return:            The builder itself
+        """
+        self.rules_stored = store_rules
+        self.args.append('--store-rules')
+        self.args.append(str(store_rules).lower())
+        return self
+
     def build(self) -> List[str]:
         """
         Returns a list of strings that contains the command that has been configured using the builder, as well as all
@@ -375,6 +400,15 @@ class IntegrationTests(ABC, TestCase):
         if builder.model_characteristics_stored:
             self.__assert_output_files_exist(builder, 'model_characteristics_' + builder.cmd, 'csv')
 
+    def __assert_rule_files_exist(self, builder: CmdBuilder):
+        """
+        Assert that the rule files, which shouldbe created by a command, exist.
+
+        :param builder: The builder
+        """
+        if builder.rules_stored:
+            self.__assert_output_files_exist(builder, 'rules_' + builder.cmd, 'txt')
+
     @staticmethod
     def __remove_tmp_dirs(builder: CmdBuilder):
         """
@@ -429,4 +463,5 @@ class IntegrationTests(ABC, TestCase):
         self.__assert_prediction_characteristic_files_exist(builder)
         self.__assert_data_characteristic_files_exist(builder)
         self.__assert_model_characteristic_files_exist(builder)
+        self.__assert_rule_files_exist(builder)
         self.__remove_tmp_dirs(builder)
