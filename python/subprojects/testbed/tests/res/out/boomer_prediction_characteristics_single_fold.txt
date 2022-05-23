@@ -12,25 +12,6 @@ INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.002598227991256863 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 1):
-
-Ex.-based F1: 0.6488888888888888
-Ex.-based Jacc.: 0.5694444444444445
-Ex.-based Prec.: 0.7944444444444444
-Ex.-based Rec.: 0.6611111111111111
-Hamm. Acc.: 0.8277777777777777
-Hamm. Loss: 0.17222222222222222
-Ma. F1: 0.683234126984127
-Ma. Jacc.: 0.5383507698226825
-Ma. Prec.: 0.7596313798139356
-Ma. Rec.: 0.6489337822671156
-Mi. F1: 0.7155963302752293
-Mi. Jacc.: 0.5571428571428572
-Mi. Prec.: 0.7722772277227723
-Mi. Rec.: 0.6666666666666666
-Subs. 0/1 Loss: 0.6666666666666667
-Subs. Acc.: 0.3333333333333333
-
 INFO Prediction characteristics for experiment "test_boomer" (Fold 1):
 
 Labels: 6

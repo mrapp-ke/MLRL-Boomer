@@ -89,6 +89,8 @@ class BoostingIntegrationTests(IntegrationTests):
         dataset into training and test data.
         """
         builder = CmdBuilder() \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
             .set_output_dir() \
             .print_predictions() \
             .store_predictions()
@@ -100,6 +102,8 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder() \
             .cross_validation() \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
             .set_output_dir() \
             .print_predictions() \
             .store_predictions()
@@ -112,6 +116,8 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder() \
             .cross_validation(current_fold=1) \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
             .set_output_dir() \
             .print_predictions() \
             .store_predictions()
@@ -123,6 +129,8 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder() \
             .evaluate_training_data() \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
             .set_output_dir() \
             .print_predictions() \
             .store_predictions()
@@ -134,6 +142,8 @@ class BoostingIntegrationTests(IntegrationTests):
         split of the dataset into training and test data.
         """
         builder = CmdBuilder() \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
             .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
@@ -146,6 +156,8 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder() \
             .cross_validation() \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
             .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
@@ -158,6 +170,8 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder() \
             .cross_validation(current_fold=1) \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
             .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
@@ -169,6 +183,8 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder() \
             .evaluate_training_data() \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
             .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
