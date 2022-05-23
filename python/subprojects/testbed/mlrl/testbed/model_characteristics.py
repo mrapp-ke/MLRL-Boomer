@@ -241,7 +241,7 @@ class ModelPrinterTxtOutput(ModelPrinterOutput):
         self.output_dir = output_dir
 
     def write_model(self, experiment_name: str, model: str, total_folds: int, fold: int = None):
-        with open_writable_txt_file(self.output_dir, 'rules', fold, append=False) as text_file:
+        with open_writable_txt_file(self.output_dir, 'rules_' + experiment_name, fold, append=False) as text_file:
             text_file.write(model)
 
 
