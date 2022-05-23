@@ -344,6 +344,24 @@ class BoostingIntegrationTests(IntegrationTests):
             .sparse_feature_format(True)
         self.run_cmd(builder, 'boomer_nominal-features_sparse')
 
+    def test_one_hot_encoding_train_test(self):
+        """
+        Tests the BOOMER algorithm on a dataset with one-hot-encoded nominal attributes when using a predefined split of
+        the dataset into training and test data.
+        """
+        builder = CmdBuilder(dataset=DATASET_ENRON) \
+            .one_hot_encoding()
+        self.run_cmd(builder, 'boomer_one-hot-encoding_train-test')
+
+    def test_one_hot_encoding_cross_validation(self):
+        """
+        Tests the BOOMER algorithm on a dataset with one-hot-encoded nominal attributes when using a cross validation.
+        """
+        builder = CmdBuilder(dataset=DATASET_ENRON) \
+            .cross_validation() \
+            .one_hot_encoding()
+        self.run_cmd(builder, 'boomer_one-hot-encoding_cross-validation')
+
 
 if __name__ == '__main__':
     main()

@@ -1,0 +1,308 @@
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dataset='enron', folds=10, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=True, model_dir=None, parameter_dir=None, output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning=None, label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Starting experiment "boomer"...
+INFO Performing full 10-fold cross validation...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/enron.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/enron.arff"...
+INFO Data set contains 1001 nominal and 0 numerical attributes.
+INFO Applying one-hot encoding...
+INFO Original data set contained 1001 attributes, one-hot encoded data set contains 2002 attributes
+INFO Fold 1 / 10:
+INFO Fitting model to 1531 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.7720194419998734 seconds
+INFO Predicting for 171 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0028308290002314607 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 1):
+
+Ex.-based F1: 0.40580618212197156
+Ex.-based Jacc.: 0.2836814257866889
+Ex.-based Prec.: 0.6052631578947368
+Ex.-based Rec.: 0.33315232525758837
+Hamm. Acc.: 0.9446099525543419
+Hamm. Loss: 0.05539004744565817
+Ma. F1: 0.21982289318563425
+Ma. Jacc.: 0.1979204873726937
+Ma. Prec.: 0.9409242339551285
+Ma. Rec.: 0.21302171249072302
+Mi. F1: 0.44956140350877194
+Mi. Jacc.: 0.28995756718529
+Mi. Prec.: 0.6231003039513677
+Mi. Rec.: 0.3516295025728988
+Subs. 0/1 Loss: 0.9883040935672515
+Subs. Acc.: 0.011695906432748537
+
+INFO Fold 2 / 10:
+INFO Fitting model to 1531 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.7930052489991795 seconds
+INFO Predicting for 171 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0029462170004990185 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 2):
+
+Ex.-based F1: 0.46368374964866194
+Ex.-based Jacc.: 0.3415715213960828
+Ex.-based Prec.: 0.6170565302144251
+Ex.-based Rec.: 0.41057736934929917
+Hamm. Acc.: 0.9482511309720842
+Hamm. Loss: 0.0517488690279157
+Ma. F1: 0.23042274864403683
+Ma. Jacc.: 0.2089033533577261
+Ma. Prec.: 0.9683904823852447
+Ma. Rec.: 0.22542626824311335
+Mi. F1: 0.494066882416397
+Mi. Jacc.: 0.32808022922636104
+Mi. Prec.: 0.6414565826330533
+Mi. Rec.: 0.4017543859649123
+Subs. 0/1 Loss: 0.9707602339181287
+Subs. Acc.: 0.029239766081871343
+
+INFO Fold 3 / 10:
+INFO Fitting model to 1532 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.8463567070011777 seconds
+INFO Predicting for 170 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0029433039999275934 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 3):
+
+Ex.-based F1: 0.4187861811391223
+Ex.-based Jacc.: 0.30126050420168066
+Ex.-based Prec.: 0.746078431372549
+Ex.-based Rec.: 0.33787114845938376
+Hamm. Acc.: 0.9480577136514984
+Hamm. Loss: 0.05194228634850166
+Ma. F1: 0.2511931090204335
+Ma. Jacc.: 0.22720492315726631
+Ma. Prec.: 0.9256632757926796
+Ma. Rec.: 0.2385283133553859
+Mi. F1: 0.4657534246575343
+Mi. Jacc.: 0.30357142857142855
+Mi. Prec.: 0.7083333333333334
+Mi. Rec.: 0.3469387755102041
+Subs. 0/1 Loss: 0.9705882352941176
+Subs. Acc.: 0.029411764705882353
+
+INFO Fold 4 / 10:
+INFO Fitting model to 1532 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.8201136240004416 seconds
+INFO Predicting for 170 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0029042109999863897 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 4):
+
+Ex.-based F1: 0.4681792717086834
+Ex.-based Jacc.: 0.3468347338935574
+Ex.-based Prec.: 0.6230392156862744
+Ex.-based Rec.: 0.4118347338935574
+Hamm. Acc.: 0.9500554938956715
+Hamm. Loss: 0.049944506104328525
+Ma. F1: 0.2409967876115752
+Ma. Jacc.: 0.21269067185532067
+Ma. Prec.: 0.9404656164304533
+Ma. Rec.: 0.22903010021779543
+Mi. F1: 0.5000000000000001
+Mi. Jacc.: 0.3333333333333333
+Mi. Prec.: 0.6428571428571429
+Mi. Rec.: 0.4090909090909091
+Subs. 0/1 Loss: 0.9705882352941176
+Subs. Acc.: 0.029411764705882353
+
+INFO Fold 5 / 10:
+INFO Fitting model to 1532 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.8075330690007831 seconds
+INFO Predicting for 170 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0029626760006067343 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 5):
+
+Ex.-based F1: 0.41247177658942363
+Ex.-based Jacc.: 0.29211251167133523
+Ex.-based Prec.: 0.625
+Ex.-based Rec.: 0.3376867413632119
+Hamm. Acc.: 0.9452830188679245
+Hamm. Loss: 0.05471698113207547
+Ma. F1: 0.2628255616676667
+Ma. Jacc.: 0.2418063414878393
+Ma. Prec.: 0.9338021180437958
+Ma. Rec.: 0.27583904769013423
+Mi. F1: 0.45524861878453043
+Mi. Jacc.: 0.2947067238912732
+Mi. Prec.: 0.6377708978328174
+Mi. Rec.: 0.3539518900343643
+Subs. 0/1 Loss: 0.9882352941176471
+Subs. Acc.: 0.011764705882352941
+
+INFO Fold 6 / 10:
+INFO Fitting model to 1532 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.8148865929997555 seconds
+INFO Predicting for 170 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.00295687200014072 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 6):
+
+Ex.-based F1: 0.4028618113912231
+Ex.-based Jacc.: 0.28542717086834735
+Ex.-based Prec.: 0.5887254901960783
+Ex.-based Rec.: 0.335532212885154
+Hamm. Acc.: 0.9471698113207547
+Hamm. Loss: 0.052830188679245285
+Ma. F1: 0.22501948951007467
+Ma. Jacc.: 0.2013946634809042
+Ma. Prec.: 0.9550447031823089
+Ma. Rec.: 0.22106440257536744
+Mi. F1: 0.45785876993166286
+Mi. Jacc.: 0.2968980797636632
+Mi. Prec.: 0.6090909090909091
+Mi. Rec.: 0.36678832116788324
+Subs. 0/1 Loss: 0.9882352941176471
+Subs. Acc.: 0.011764705882352941
+
+INFO Fold 7 / 10:
+INFO Fitting model to 1532 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.7370251410011406 seconds
+INFO Predicting for 170 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.002846987999873818 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 7):
+
+Ex.-based F1: 0.4250522026992615
+Ex.-based Jacc.: 0.30667133520074696
+Ex.-based Prec.: 0.5676470588235294
+Ex.-based Rec.: 0.38122315592903827
+Hamm. Acc.: 0.9459489456159822
+Hamm. Loss: 0.054051054384017756
+Ma. F1: 0.24069962723448063
+Ma. Jacc.: 0.21695550778498948
+Ma. Prec.: 0.9496691987258025
+Ma. Rec.: 0.23751035915000834
+Mi. F1: 0.4746494066882417
+Mi. Jacc.: 0.31117397454031115
+Mi. Prec.: 0.6162464985994398
+Mi. Rec.: 0.38596491228070173
+Subs. 0/1 Loss: 0.9823529411764705
+Subs. Acc.: 0.01764705882352941
+
+INFO Fold 8 / 10:
+INFO Fitting model to 1532 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.7892195589993207 seconds
+INFO Predicting for 170 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.00289493099990068 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 8):
+
+Ex.-based F1: 0.4029785247432306
+Ex.-based Jacc.: 0.3003246753246753
+Ex.-based Prec.: 0.8083333333333335
+Ex.-based Rec.: 0.3213891010949834
+Hamm. Acc.: 0.948834628190899
+Hamm. Loss: 0.051165371809100996
+Ma. F1: 0.2706451632048412
+Ma. Jacc.: 0.24741113325278205
+Ma. Prec.: 0.9552309245044446
+Ma. Rec.: 0.2574266210593845
+Mi. F1: 0.45955451348182885
+Mi. Jacc.: 0.2983257229832572
+Mi. Prec.: 0.7716535433070866
+Mi. Rec.: 0.327212020033389
+Subs. 0/1 Loss: 0.9588235294117647
+Subs. Acc.: 0.041176470588235294
+
+INFO Fold 9 / 10:
+INFO Fitting model to 1532 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.8167340719992353 seconds
+INFO Predicting for 170 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0029043880003882805 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 9):
+
+Ex.-based F1: 0.4030782616076733
+Ex.-based Jacc.: 0.28939775910364146
+Ex.-based Prec.: 0.563529411764706
+Ex.-based Rec.: 0.3463865546218487
+Hamm. Acc.: 0.9435072142064374
+Hamm. Loss: 0.056492785793562705
+Ma. F1: 0.22328140569796182
+Ma. Jacc.: 0.2005300440095113
+Ma. Prec.: 0.9371223965491206
+Ma. Rec.: 0.21863199827354796
+Mi. F1: 0.4424972617743702
+Mi. Jacc.: 0.2841068917018284
+Mi. Prec.: 0.5787965616045845
+Mi. Rec.: 0.35815602836879434
+Subs. 0/1 Loss: 0.9705882352941176
+Subs. Acc.: 0.029411764705882353
+
+INFO Fold 10 / 10:
+INFO Fitting model to 1532 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.8285513480004738 seconds
+INFO Predicting for 170 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0029437560006044805 seconds
+INFO Evaluation result for experiment "test_boomer" (Fold 10):
+
+Ex.-based F1: 0.37475766064001353
+Ex.-based Jacc.: 0.26805322128851533
+Ex.-based Prec.: 0.7931372549019609
+Ex.-based Rec.: 0.2869187675070028
+Hamm. Acc.: 0.9473917869034406
+Hamm. Loss: 0.05260821309655938
+Ma. F1: 0.26093672150063163
+Ma. Jacc.: 0.2399780546293697
+Ma. Prec.: 0.9507767885871163
+Ma. Rec.: 0.24751719045867482
+Mi. F1: 0.4275362318840579
+Mi. Jacc.: 0.271889400921659
+Mi. Prec.: 0.7629310344827587
+Mi. Rec.: 0.29697986577181207
+Subs. 0/1 Loss: 0.9764705882352941
+Subs. Acc.: 0.023529411764705882
+
+INFO Overall evaluation result for experiment "test_boomer":
+
+Ex.-based F1: 0.4177655622289264 ±0.027168703384451563
+Ex.-based Jacc.: 0.30153348587352713 ±0.023702845328245643
+Ex.-based Prec.: 0.6537809884187593 ±0.08780552412112495
+Ex.-based Rec.: 0.35025721103610674 ±0.037510191530613954
+Hamm. Acc.: 0.9469109696179034 ±0.0019352952775863192
+Hamm. Loss: 0.05308903038209656 ±0.0019352952775863355
+Ma. F1: 0.24258435072773366 ±0.01720821065629167
+Ma. Jacc.: 0.21947951803884025 ±0.017532212392166586
+Ma. Prec.: 0.9457089738156096 ±0.011837902734743666
+Ma. Rec.: 0.2363996013514135 ±0.018436585327075775
+Mi. F1: 0.46267265131273955 ±0.02105562672795699
+Mi. Jacc.: 0.3012043352118405 ±0.017907568159755388
+Mi. Prec.: 0.6592236807692494 ±0.06243793338019102
+Mi. Rec.: 0.3598466610795869 ±0.031938375936746186
+Subs. 0/1 Loss: 0.9764946680426556 ±0.00948302586263332
+Subs. Acc.: 0.02350533195734434 ±0.009483025862633322
+
+INFO Successfully finished after 8.924344366998412 seconds
