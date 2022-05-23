@@ -17,7 +17,7 @@ class BoostingIntegrationTests(IntegrationTests):
         and test data.
         """
         builder = CmdBuilder()
-        self.run_cmd(builder, 'boomer_train_test')
+        self.run_cmd(builder, 'boomer_default_train_test')
 
     def test_default_cross_validation(self):
         """
@@ -25,7 +25,7 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder() \
             .cross_validation()
-        self.run_cmd(builder, 'boomer_cross_validation')
+        self.run_cmd(builder, 'boomer_default_cross_validation')
 
     def test_default_single_fold(self):
         """
@@ -33,7 +33,7 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder() \
             .cross_validation(current_fold=1)
-        self.run_cmd(builder, 'boomer_single_fold')
+        self.run_cmd(builder, 'boomer_default_single_fold')
 
     def test_default_training_data(self):
         """
@@ -41,7 +41,7 @@ class BoostingIntegrationTests(IntegrationTests):
         """
         builder = CmdBuilder() \
             .evaluate_training_data()
-        self.run_cmd(builder, 'boomer_evaluate_training_data')
+        self.run_cmd(builder, 'boomer_default_training_data')
 
     def test_model_persistence_train_test(self):
         """
