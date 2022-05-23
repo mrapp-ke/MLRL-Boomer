@@ -260,11 +260,10 @@ class IntegrationTests(ABC, TestCase):
         :param builder: The builder
         """
         if builder.evaluation_stored:
-            self.__assert_output_files_exist(builder, 'evaluation', 'csv')
+            self.__assert_output_files_exist(builder, 'evaluation_test_' + builder.cmd, 'csv')
 
             if builder.training_data_evaluated:
-                # TODO self.__assert_output_files_exist(builder, 'evaluation_train', 'csv')
-                return
+                self.__assert_output_files_exist(builder, 'evaluation_train_' + builder.cmd, 'csv')
 
     def __assert_prediction_files_exist(self, builder: CmdBuilder):
         """
