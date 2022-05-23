@@ -92,27 +92,26 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
 
     def write_data_characteristics(self, experiment_name: str, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics, total_folds: int, fold: int = None):
-        if fold is not None:
-            columns = {
-                'Examples': feature_characteristics.num_examples,
-                'Features': feature_characteristics.num_features,
-                'Numerical features': feature_characteristics.num_numerical_features,
-                'Nominal features': feature_characteristics.num_nominal_features,
-                'Feature density': feature_characteristics.feature_density,
-                'Feature sparsity': 1 - feature_characteristics.feature_density,
-                'Labels': label_characteristics.num_labels,
-                'Label density': label_characteristics.label_density,
-                'Label sparsity': 1 - label_characteristics.label_density,
-                'Label imbalance ratio': label_characteristics.avg_label_imbalance_ratio,
-                'Label cardinality': label_characteristics.avg_label_cardinality,
-                'Distinct label vectors': label_characteristics.num_distinct_label_vectors
-            }
-            header = sorted(columns.keys())
-            header.insert(0, 'Approach')
-            columns['Approach'] = experiment_name
-            with open_writable_csv_file(self.output_dir, 'data_characteristics', fold) as csv_file:
-                csv_writer = create_csv_dict_writer(csv_file, header)
-                csv_writer.writerow(columns)
+        columns = {
+            'Examples': feature_characteristics.num_examples,
+            'Features': feature_characteristics.num_features,
+            'Numerical features': feature_characteristics.num_numerical_features,
+            'Nominal features': feature_characteristics.num_nominal_features,
+            'Feature density': feature_characteristics.feature_density,
+            'Feature sparsity': 1 - feature_characteristics.feature_density,
+            'Labels': label_characteristics.num_labels,
+            'Label density': label_characteristics.label_density,
+            'Label sparsity': 1 - label_characteristics.label_density,
+            'Label imbalance ratio': label_characteristics.avg_label_imbalance_ratio,
+            'Label cardinality': label_characteristics.avg_label_cardinality,
+            'Distinct label vectors': label_characteristics.num_distinct_label_vectors
+        }
+        header = sorted(columns.keys())
+        header.insert(0, 'Approach')
+        columns['Approach'] = experiment_name
+        with open_writable_csv_file(self.output_dir, 'data_characteristics_' + experiment_name, fold) as csv_file:
+            csv_writer = create_csv_dict_writer(csv_file, header)
+            csv_writer.writerow(columns)
 
 
 class DataCharacteristicsPrinter:
