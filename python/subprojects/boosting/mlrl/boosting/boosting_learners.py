@@ -17,7 +17,7 @@ from mlrl.common.rule_learners import configure_rule_model_assemblage, configure
     configure_partition_sampling, configure_pruning, configure_post_optimization, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
     configure_time_stopping_criterion
-from mlrl.common.rule_learners import parse_param, parse_param_and_options
+from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int, get_float
 from sklearn.base import ClassifierMixin
 
 EARLY_STOPPING_LOSS = 'loss'
@@ -356,20 +356,20 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_learner(self) -> RuleLearnerWrapper:
         config = BoostingRuleLearnerConfig()
         self.__configure_default_rule(config)
-        configure_rule_model_assemblage(config, self.rule_model_assemblage)
-        configure_rule_induction(config, self.rule_induction)
+        configure_rule_model_assemblage(config, get_string(self.rule_model_assemblage))
+        configure_rule_induction(config, get_string(self.rule_induction))
         self.__configure_feature_binning(config)
-        configure_label_sampling(config, self.label_sampling)
-        configure_instance_sampling(config, self.instance_sampling)
-        configure_feature_sampling(config, self.feature_sampling)
-        configure_partition_sampling(config, self.holdout)
-        configure_pruning(config, self.pruning)
-        configure_post_optimization(config, self.post_optimization)
+        configure_label_sampling(config, get_string(self.label_sampling))
+        configure_instance_sampling(config, get_string(self.instance_sampling))
+        configure_feature_sampling(config, get_string(self.feature_sampling))
+        configure_partition_sampling(config, get_string(self.holdout))
+        configure_pruning(config, get_string(self.pruning))
+        configure_post_optimization(config, get_string(self.post_optimization))
         self.__configure_parallel_rule_refinement(config)
         self.__configure_parallel_statistic_update(config)
-        configure_parallel_prediction(config, self.parallel_prediction)
-        configure_size_stopping_criterion(config, max_rules=self.max_rules)
-        configure_time_stopping_criterion(config, time_limit=self.time_limit)
+        configure_parallel_prediction(config, get_string(self.parallel_prediction))
+        configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
+        configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
         self.__configure_measure_stopping_criterion(config)
         self.__configure_post_processor(config)
         self.__configure_head_type(config)
@@ -383,7 +383,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         return BoostingRuleLearnerWrapper(config)
 
     def __configure_default_rule(self, config: BoostingRuleLearnerConfig):
-        default_rule = self.default_rule
+        default_rule = get_string(self.default_rule)
 
         if default_rule is not None:
             value = parse_param('pruning', default_rule, DEFAULT_RULE_VALUES)
@@ -396,7 +396,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_no_default_rule()
 
     def __configure_feature_binning(self, config: BoostingRuleLearnerConfig):
-        feature_binning = self.feature_binning
+        feature_binning = get_string(self.feature_binning)
 
         if feature_binning is not None:
             if feature_binning == AUTOMATIC:
@@ -405,7 +405,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 configure_feature_binning(config, feature_binning)
 
     def __configure_parallel_rule_refinement(self, config: BoostingRuleLearnerConfig):
-        parallel_rule_refinement = self.parallel_rule_refinement
+        parallel_rule_refinement = get_string(self.parallel_rule_refinement)
 
         if parallel_rule_refinement is not None:
             if parallel_rule_refinement == AUTOMATIC:
@@ -414,7 +414,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 configure_parallel_rule_refinement(config, parallel_rule_refinement)
 
     def __configure_parallel_statistic_update(self, config: BoostingRuleLearnerConfig):
-        parallel_statistic_update = self.parallel_statistic_update
+        parallel_statistic_update = get_string(self.parallel_statistic_update)
 
         if parallel_statistic_update is not None:
             if parallel_statistic_update == AUTOMATIC:
@@ -423,7 +423,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 configure_parallel_statistic_update(config, parallel_statistic_update)
 
     def __configure_measure_stopping_criterion(self, config: RuleLearnerConfig):
-        early_stopping = self.early_stopping
+        early_stopping = get_string(self.early_stopping)
 
         if early_stopping is not None:
             value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
@@ -457,7 +457,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             return AggregationFunction.ARITHMETIC_MEAN
 
     def __configure_post_processor(self, config: BoostingRuleLearnerConfig):
-        shrinkage = self.shrinkage
+        shrinkage = get_float(self.shrinkage)
 
         if shrinkage is not None:
             if shrinkage == 1:
@@ -466,7 +466,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_constant_shrinkage_post_processor().set_shrinkage(shrinkage)
 
     def __configure_head_type(self, config: BoostingRuleLearnerConfig):
-        head_type = self.head_type
+        head_type = get_string(self.head_type)
 
         if head_type is not None:
             value, options = parse_param_and_options("head_type", head_type, HEAD_TYPE_VALUES)
@@ -488,7 +488,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_complete_heads()
 
     def __configure_statistics(self, config: BoostingRuleLearnerConfig):
-        statistic_format = self.statistic_format
+        statistic_format = get_string(self.statistic_format)
 
         if statistic_format is not None:
             value = parse_param("statistic_format", statistic_format, STATISTIC_FORMAT_VALUES)
@@ -501,7 +501,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_sparse_statistics()
 
     def __configure_l1_regularization(self, config: BoostingRuleLearnerConfig):
-        l1_regularization_weight = self.l1_regularization_weight
+        l1_regularization_weight = get_float(self.l1_regularization_weight)
 
         if l1_regularization_weight is not None:
             if l1_regularization_weight == 0:
@@ -510,7 +510,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_l1_regularization().set_regularization_weight(l1_regularization_weight)
 
     def __configure_l2_regularization(self, config: BoostingRuleLearnerConfig):
-        l2_regularization_weight = self.l2_regularization_weight
+        l2_regularization_weight = get_float(self.l2_regularization_weight)
 
         if l2_regularization_weight is not None:
             if l2_regularization_weight == 0:
@@ -519,7 +519,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_l2_regularization().set_regularization_weight(l2_regularization_weight)
 
     def __configure_loss(self, config: BoostingRuleLearnerConfig):
-        loss = self.loss
+        loss = get_string(self.loss)
 
         if loss is not None:
             value = parse_param("loss", loss, LOSS_VALUES)
@@ -534,7 +534,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_example_wise_logistic_loss()
 
     def __configure_label_binning(self, config: BoostingRuleLearnerConfig):
-        label_binning = self.label_binning
+        label_binning = get_string(self.label_binning)
 
         if label_binning is not None:
             value, options = parse_param_and_options('label_binning', label_binning, LABEL_BINNING_VALUES)
@@ -550,7 +550,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
 
     def __configure_classification_predictor(self, config: BoostingRuleLearnerConfig):
-        classification_predictor = self.classification_predictor
+        classification_predictor = get_string(self.classification_predictor)
 
         if classification_predictor is not None:
             value = parse_param('classification_predictor', classification_predictor, CLASSIFICATION_PREDICTOR_VALUES)
@@ -563,7 +563,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_example_wise_classification_predictor()
 
     def __configure_probability_predictor(self, config: BoostingRuleLearnerConfig):
-        probability_predictor = self.probability_predictor
+        probability_predictor = get_string(self.probability_predictor)
 
         if probability_predictor is not None:
             value = parse_param('probability_predictor', probability_predictor, PROBABILITY_PREDICTOR_VALUES)

@@ -12,7 +12,7 @@ from mlrl.common.rule_learners import configure_rule_model_assemblage, configure
     configure_pruning, configure_post_optimization, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
     configure_time_stopping_criterion
-from mlrl.common.rule_learners import parse_param, parse_param_and_options
+from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int
 from mlrl.seco.cython.learner import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
 
@@ -217,19 +217,19 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
 
     def _create_learner(self) -> RuleLearnerWrapper:
         config = SeCoRuleLearnerConfig()
-        configure_rule_model_assemblage(config, self.rule_model_assemblage)
-        configure_rule_induction(config, self.rule_induction)
-        configure_label_sampling(config, self.label_sampling)
-        configure_instance_sampling(config, self.instance_sampling)
-        configure_feature_sampling(config, self.feature_sampling)
-        configure_partition_sampling(config, self.holdout)
-        configure_pruning(config, self.pruning)
-        configure_post_optimization(config, self.post_optimization)
-        configure_parallel_rule_refinement(config, self.parallel_rule_refinement)
-        configure_parallel_statistic_update(config, self.parallel_statistic_update)
-        configure_parallel_prediction(config, self.parallel_prediction)
-        configure_size_stopping_criterion(config, max_rules=self.max_rules)
-        configure_time_stopping_criterion(config, time_limit=self.time_limit)
+        configure_rule_model_assemblage(config, get_string(self.rule_model_assemblage))
+        configure_rule_induction(config, get_string(self.rule_induction))
+        configure_label_sampling(config, get_string(self.label_sampling))
+        configure_instance_sampling(config, get_string(self.instance_sampling))
+        configure_feature_sampling(config, get_string(self.feature_sampling))
+        configure_partition_sampling(config, get_string(self.holdout))
+        configure_pruning(config, get_string(self.pruning))
+        configure_post_optimization(config, get_string(self.post_optimization))
+        configure_parallel_rule_refinement(config, get_string(self.parallel_rule_refinement))
+        configure_parallel_statistic_update(config, get_string(self.parallel_statistic_update))
+        configure_parallel_prediction(config, get_string(self.parallel_prediction))
+        configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
+        configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
         self.__configure_head_type(config)
         self.__configure_heuristic(config)
         self.__configure_pruning_heuristic(config)
@@ -237,7 +237,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         return SeCoRuleLearnerWrapper(config)
 
     def __configure_head_type(self, config: SeCoRuleLearnerConfig):
-        head_type = self.head_type
+        head_type = get_string(self.head_type)
 
         if head_type is not None:
             value = parse_param('head_type', head_type, HEAD_TYPE_VALUES)
@@ -248,7 +248,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                 config.use_partial_heads()
 
     def __configure_heuristic(self, config: SeCoRuleLearnerConfig):
-        heuristic = self.heuristic
+        heuristic = get_string(self.heuristic)
 
         if heuristic is not None:
             value, options = parse_param_and_options('heuristic', heuristic, HEURISTIC_VALUES)
@@ -271,7 +271,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                 c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
 
     def __configure_pruning_heuristic(self, config: SeCoRuleLearnerConfig):
-        pruning_heuristic = self.pruning_heuristic
+        pruning_heuristic = get_string(self.pruning_heuristic)
 
         if pruning_heuristic is not None:
             value, options = parse_param_and_options('pruning_heuristic', pruning_heuristic, HEURISTIC_VALUES)
@@ -294,7 +294,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                 c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
 
     def __configure_lift_function(self, config: SeCoRuleLearnerConfig):
-        lift_function = self.lift_function
+        lift_function = get_string(self.lift_function)
 
         if lift_function is not None:
             value, options = parse_param_and_options('lift_function', lift_function, LIFT_FUNCTION_VALUES)
