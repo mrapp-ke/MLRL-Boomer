@@ -255,6 +255,17 @@ class CmdBuilder:
         self.args.append(str(store_rules).lower())
         return self
 
+    def one_hot_encoding(self, one_hot_encoding: bool = True):
+        """
+        Configures whether one-hot-encoding should be used to encode nominal feature values or not.
+
+        :param one_hot_encoding:    True, if one-hot-encoding should be used, False otherwise
+        :return:                    The builder itself
+        """
+        self.args.append('--one-hot-encoding')
+        self.args.append(str(one_hot_encoding).lower())
+        return self
+
     def sparse_feature_format(self, sparse: bool = True):
         """
         Configures whether sparse data structures should be used to represent the feature values of training examples or
