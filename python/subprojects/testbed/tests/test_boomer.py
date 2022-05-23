@@ -11,7 +11,7 @@ class BoostingIntegrationTests(IntegrationTests):
     Defines a series of integration tests that run the BOOMER algorithm.
     """
 
-    def test_train_test(self):
+    def test_default_train_test(self):
         """
         Tests the default configuration of the BOOMER algorithm using a predefined split of the dataset into training
         and test data.
@@ -19,7 +19,7 @@ class BoostingIntegrationTests(IntegrationTests):
         builder = CmdBuilder()
         self.run_cmd(builder, 'boomer_train_test')
 
-    def test_cross_validation(self):
+    def test_default_cross_validation(self):
         """
         Tests the default configuration of the BOOMER algorithm using a cross validation.
         """
@@ -27,7 +27,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .cross_validation()
         self.run_cmd(builder, 'boomer_cross_validation')
 
-    def test_single_fold(self):
+    def test_default_single_fold(self):
         """
         Tests the default configuration of the BOOMER algorithm using a single fold of a cross validation.
         """
@@ -35,7 +35,7 @@ class BoostingIntegrationTests(IntegrationTests):
             .cross_validation(current_fold=1)
         self.run_cmd(builder, 'boomer_single_fold')
 
-    def test_evaluate_training_data(self):
+    def test_default_training_data(self):
         """
         Tests the default configuration of the BOOMER algorithm when evaluated on the training data.
         """
