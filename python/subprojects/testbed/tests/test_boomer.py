@@ -344,6 +344,22 @@ class BoostingIntegrationTests(IntegrationTests):
             .sparse_feature_format(True)
         self.run_cmd(builder, 'boomer_nominal-features_sparse')
 
+    def test_labels_dense(self):
+        """
+        Tests the BOOMER algorithm when using a dense label representation.
+        """
+        builder = CmdBuilder() \
+            .sparse_label_format(False)
+        self.run_cmd(builder, 'boomer_labels-dense')
+
+    def test_labels_sparse(self):
+        """
+        Tests the BOOMER algorithm when using a sparse label representation.
+        """
+        builder = CmdBuilder() \
+            .sparse_label_format(True)
+        self.run_cmd(builder, 'boomer_labels-sparse')
+
     def test_one_hot_encoding_train_test(self):
         """
         Tests the BOOMER algorithm on a dataset with one-hot-encoded nominal attributes when using a predefined split of
