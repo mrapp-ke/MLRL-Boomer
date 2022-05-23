@@ -290,7 +290,8 @@ class EvaluationCsvOutput(EvaluationOutput):
             header.insert(0, 'Approach')
             columns['Approach'] = experiment_name
 
-            with open_writable_csv_file(self.output_dir, 'evaluation', fold, append=True) as csv_file:
+            with open_writable_csv_file(self.output_dir, 'evaluation_' + experiment_name, fold,
+                                        append=True) as csv_file:
                 csv_writer = create_csv_dict_writer(csv_file, header)
                 csv_writer.writerow(columns)
 
