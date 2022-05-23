@@ -63,21 +63,20 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
 
     def write_prediction_characteristics(self, experiment_name: str, characteristics: LabelCharacteristics,
                                          total_folds: int, fold: int = None):
-        if fold is not None:
-            columns = {
-                'Labels': characteristics.num_labels,
-                'Label density': characteristics.label_density,
-                'Label sparsity': 1 - characteristics.label_density,
-                'Label imbalance ratio': characteristics.avg_label_imbalance_ratio,
-                'Label cardinality': characteristics.avg_label_cardinality,
-                'Distinct label vectors': characteristics.num_distinct_label_vectors
-            }
-            header = sorted(columns.keys())
-            header.insert(0, 'Approach')
-            columns['Approach'] = experiment_name
-            with open_writable_csv_file(self.output_dir, 'prediction_characteristics', fold) as csv_file:
-                csv_writer = create_csv_dict_writer(csv_file, header)
-                csv_writer.writerow(columns)
+        columns = {
+            'Labels': characteristics.num_labels,
+            'Label density': characteristics.label_density,
+            'Label sparsity': 1 - characteristics.label_density,
+            'Label imbalance ratio': characteristics.avg_label_imbalance_ratio,
+            'Label cardinality': characteristics.avg_label_cardinality,
+            'Distinct label vectors': characteristics.num_distinct_label_vectors
+        }
+        header = sorted(columns.keys())
+        header.insert(0, 'Approach')
+        columns['Approach'] = experiment_name
+        with open_writable_csv_file(self.output_dir, 'prediction_characteristics_' + experiment_name, fold) as csv_file:
+            csv_writer = create_csv_dict_writer(csv_file, header)
+            csv_writer.writerow(columns)
 
 
 class PredictionCharacteristicsPrinter:
