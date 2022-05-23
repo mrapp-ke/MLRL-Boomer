@@ -378,6 +378,41 @@ class BoostingIntegrationTests(IntegrationTests):
             .one_hot_encoding()
         self.run_cmd(builder, 'boomer_one-hot-encoding_cross-validation')
 
+    def test_parameters_train_test(self):
+        """
+        Tests the functionality to configure the BOOMER algorithm according to parameter settings that are loaded from
+        input files when using a predefined split of the dataset into training and test data.
+        """
+        builder = CmdBuilder() \
+            .print_evaluation(False) \
+            .print_model_characteristics(True) \
+            .set_parameter_dir()
+        self.run_cmd(builder, 'boomer_parameters_train-test')
+
+    def test_parameters_cross_validation(self):
+        """
+        Tests the functionality to configure the BOOMER algorithm according to parameter settings that are loaded from
+        input files when using a cross validation.
+        """
+        builder = CmdBuilder() \
+            .cross_validation() \
+            .print_evaluation(False) \
+            .print_model_characteristics(True) \
+            .set_parameter_dir()
+        self.run_cmd(builder, 'boomer_parameters_cross-validation')
+
+    def test_parameters_single_fold(self):
+        """
+        Tests the functionality to configure the BOOMER algorithm according to parameter settings that are loaded from
+        input files when using a single fold of a cross validation.
+        """
+        builder = CmdBuilder() \
+            .cross_validation(current_fold=1) \
+            .print_evaluation(False) \
+            .print_model_characteristics(True) \
+            .set_parameter_dir()
+        self.run_cmd(builder, 'boomer_parameters_single-fold')
+
 
 if __name__ == '__main__':
     main()
