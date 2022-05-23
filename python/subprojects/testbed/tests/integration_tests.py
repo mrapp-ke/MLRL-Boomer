@@ -176,23 +176,9 @@ class IntegrationTests(ABC, TestCase):
         :return:        The name of the output file
         """
         if fold is not None:
-            return name + '_fold_' + str(fold) + '.' + suffix
+            return name + '_fold-' + str(fold) + '.' + suffix
         else:
-            return name + '.' + suffix
-
-    @staticmethod
-    def __get_model_name(name: str, fold: Optional[int] = None):
-        """
-        Returns the name of a model file.
-
-        :param name:    The name of the file
-        :param fold:    The fold, the file corresponds to or None, if it does not correspond to a specific fold
-        :return:        The name of the model file
-        """
-        if fold is not None:
-            return name + '_fold-' + str(fold) + '.model'
-        else:
-            return name + '.model'
+            return name + '_overall.' + suffix
 
     def __assert_file_exists(self, directory: str, file_name: str):
         """
@@ -204,27 +190,34 @@ class IntegrationTests(ABC, TestCase):
         file = path.join(directory, file_name)
         self.assertTrue(path.isfile(file), 'File ' + str(file) + ' does not exist')
 
+    def __assert_files_exist(self, builder: CmdBuilder, directory: str, file_name: str, suffix: str):
+        """
+        Asserts that the files that should be created by a command exist.
+
+        :param directory:   The directory where the files should be located
+        :param file_name:   The name of the files
+        :param suffix:      The suffix of the files
+        :param builder:     The builder
+        """
+        if directory is not None:
+            if builder.folds > 0:
+                current_fold = builder.current_fold
+
+                if current_fold > 0:
+                    self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix, current_fold))
+                else:
+                    for i in range(builder.folds):
+                        self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix, i + 1))
+            else:
+                self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix))
+
     def __assert_model_files_exist(self, builder: CmdBuilder):
         """
         Asserts that the model files that should be created by a command exist.
 
         :param builder: The builder
         """
-        model_dir = builder.model_dir
-
-        if model_dir is not None:
-            cmd = builder.cmd
-
-            if builder.folds > 0:
-                current_fold = builder.current_fold
-
-                if current_fold > 0:
-                    self.__assert_file_exists(model_dir, self.__get_model_name(cmd, current_fold))
-                else:
-                    for i in range(builder.folds):
-                        self.__assert_file_exists(model_dir, self.__get_model_name(cmd, i + 1))
-            else:
-                self.__assert_file_exists(model_dir, self.__get_model_name(cmd))
+        self.__assert_files_exist(builder, builder.model_dir, builder.cmd, 'model')
 
     def __assert_output_files_exist(self, builder: CmdBuilder, file_name: str, suffix: str):
         """
@@ -232,21 +225,7 @@ class IntegrationTests(ABC, TestCase):
 
         :param builder: The builder
         """
-        output_dir = builder.output_dir
-
-        if output_dir is not None:
-            cmd = builder.cmd
-
-            if builder.folds > 0:
-                current_fold = builder.current_fold
-
-                if current_fold > 0:
-                    self.__assert_file_exists(output_dir, self.__get_file_name(file_name, suffix, current_fold))
-                else:
-                    for i in range(builder.folds):
-                        self.__assert_file_exists(output_dir, self.__get_file_name(file_name, suffix, i + 1))
-            else:
-                self.__assert_file_exists(output_dir, self.__get_file_name(file_name + '_overall', suffix))
+        self.__assert_files_exist(builder, builder.output_dir, file_name, suffix)
 
     def __assert_evaluation_files_exist(self, builder: CmdBuilder):
         """
