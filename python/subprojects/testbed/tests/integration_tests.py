@@ -106,7 +106,7 @@ class CmdBuilder:
 
     def print_evaluation(self, print_evaluation: bool = True):
         """
-        Configures whether the evaluation results of the rule learner should be printed on the console or not.
+        Configures whether the evaluation results should be printed on the console or not.
 
         :param print_evaluation:    True, if the evaluation results should be printed, False otherwise
         :return:                    The builder self
@@ -117,7 +117,7 @@ class CmdBuilder:
 
     def store_evaluation(self, store_evaluation: bool = True):
         """
-        Configures whether the evaluation results of the rule learner should be written into output files or not.
+        Configures whether the evaluation results should be written into output files or not.
 
         :param store_evaluation:    True, if the evaluation results should be written into output files or not
         :return:                    The builder itself
@@ -129,7 +129,7 @@ class CmdBuilder:
 
     def print_predictions(self, print_predictions: bool = True):
         """
-        Configures whether the predictions of the rule learner should be printed on the console or not.
+        Configures whether the predictions should be printed on the console or not.
 
         :param print_predictions:   True, if the predictions should be printed, False otherwise
         :return:                    The builder itself
@@ -140,9 +140,9 @@ class CmdBuilder:
 
     def store_predictions(self, store_predictions: bool = True):
         """
-        Configures whether the predictions of the rule learner should be written into output files or not.
+        Configures whether the predictions should be written into output files or not.
 
-        :param store_predictions:   True, if the predictions should be stored into output files, False otherwise
+        :param store_predictions:   True, if the predictions should be written into output files, False otherwise
         :return:                    The builder itself
         """
         self.predictions_stored = store_predictions
