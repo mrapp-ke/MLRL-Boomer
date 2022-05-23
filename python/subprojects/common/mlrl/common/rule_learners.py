@@ -309,6 +309,18 @@ def configure_time_stopping_criterion(config: RuleLearnerConfig, time_limit: Opt
             config.use_time_stopping_criterion().set_time_limit(time_limit)
 
 
+def get_int(value) -> Optional[int]:
+    return int(value) if value is not None else None
+
+
+def get_float(value) -> Optional[float]:
+    return float(value) if value is not None else None
+
+
+def get_string(value) -> Optional[str]:
+    return str(value) if value is not None else None
+
+
 def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:
     if value in allowed_values:
         return value
