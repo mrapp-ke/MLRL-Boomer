@@ -41,6 +41,7 @@ class Experiment(CrossValidation, ABC):
 
     def __init__(self,
                  base_learner: Learner,
+                 learner_name: str,
                  data_set: DataSet,
                  random_state: int = 1,
                  num_folds: int = 1,
@@ -60,6 +61,7 @@ class Experiment(CrossValidation, ABC):
                  persistence: Optional[ModelPersistence] = None):
         """
         :param base_learner:                                The classifier or ranker to be trained
+        :param learner_name:                                The name of the classifier or ranker
         :param pre_execution_hook:                          An operation that should be executed before the experiment
         :param predict_probabilities:                       True, if probabilities should be predicted rather than
                                                             binary labels, False otherwise
@@ -96,6 +98,7 @@ class Experiment(CrossValidation, ABC):
         """
         super(Experiment, self).__init__(data_set, num_folds, current_fold, random_state)
         self.base_learner = base_learner
+        self.learner_name = learner_name
         self.pre_execution_hook = pre_execution_hook
         self.predict_probabilities = predict_probabilities
         self.train_evaluation = train_evaluation
@@ -145,7 +148,7 @@ class Experiment(CrossValidation, ABC):
             current_learner.nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
 
         # Load model from disc, if possible, otherwise train a new model...
-        loaded_learner = self.__load_model(learner_name, data_partition)
+        loaded_learner = self.__load_model(data_partition)
 
         if isinstance(loaded_learner, Learner):
             current_learner = loaded_learner
@@ -260,18 +263,17 @@ class Experiment(CrossValidation, ABC):
 
         return predictions, predict_time
 
-    def __load_model(self, model_name: str, data_partition: DataPartition):
+    def __load_model(self, data_partition: DataPartition):
         """
         Loads the model from disk, if available.
 
-        :param model_name:      The name of the model to be loaded
         :param data_partition:  Information about the partition of data, the model corresponds to
         :return:                The loaded model
         """
         persistence = self.persistence
 
         if persistence is not None:
-            return persistence.load_model(model_name, data_partition)
+            return persistence.load_model(self.learner_name, data_partition)
 
         return None
 
@@ -285,4 +287,4 @@ class Experiment(CrossValidation, ABC):
         persistence = self.persistence
 
         if persistence is not None:
-            persistence.save_model(model, model.get_name(), data_partition)
+            persistence.save_model(model, self.learner_name, data_partition)
