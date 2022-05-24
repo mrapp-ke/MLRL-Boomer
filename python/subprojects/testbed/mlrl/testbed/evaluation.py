@@ -296,7 +296,7 @@ class EvaluationCsvOutput(EvaluationOutput):
                 csv_writer.writerow(columns)
 
 
-class AbstractEvaluation(Evaluation):
+class AbstractEvaluation(Evaluation, ABC):
     """
     An abstract base class for all classes that evaluate the predictions provided by a classifier or ranker and allow to
     write the results to one or several outputs.
