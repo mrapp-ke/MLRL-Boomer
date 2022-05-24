@@ -149,10 +149,11 @@ class Experiment(CrossValidation, ABC):
 
         if isinstance(loaded_learner, Learner):
             current_learner = loaded_learner
+            train_time = 0
         else:
             log.info('Fitting model to %s training examples...', train_x.shape[0])
-            current_learner.fit(train_x, train_y)
-            log.info('Successfully fit model in %s seconds', current_learner.train_time_)
+            train_time = self.__train(current_learner, train_x, train_y)
+            log.info('Successfully fit model in %s seconds', train_time)
 
             # Save model to disk...
             self.__save_model(current_learner, current_fold=current_fold, num_folds=num_folds)
@@ -172,7 +173,7 @@ class Experiment(CrossValidation, ABC):
                 if evaluation is not None:
                     evaluation.evaluate(experiment_name, meta_data, predictions, train_y, first_fold=first_fold,
                                         current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
-                                        train_time=current_learner.train_time_, predict_time=predict_time)
+                                        train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
                     prediction_printer.print(experiment_name, meta_data, predictions, train_y,
@@ -198,7 +199,7 @@ class Experiment(CrossValidation, ABC):
                 if evaluation is not None:
                     evaluation.evaluate(experiment_name, meta_data, predictions, test_y, first_fold=first_fold,
                                         current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
-                                        train_time=current_learner.train_time_, predict_time=predict_time)
+                                        train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
                     prediction_printer.print(experiment_name, meta_data, predictions, test_y, current_fold=current_fold,
@@ -221,6 +222,23 @@ class Experiment(CrossValidation, ABC):
         if model_printer is not None:
             model_printer.print(learner_name, meta_data, current_learner, current_fold=current_fold,
                                 num_folds=num_folds)
+
+    @staticmethod
+    def __train(learner, x, y):
+        """
+        Fits a learner to training data.
+
+        :param learner: The learner
+        :param x:       A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores
+                        the feature values of the training examples
+        :param y:       A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
+                        labels of the training examples according to the ground truth
+        :return:        The time needed for training
+        """
+        start_time = timer()
+        learner.fit(x, y)
+        end_time = timer()
+        return end_time - start_time
 
     def __predict(self, learner, x):
         """
