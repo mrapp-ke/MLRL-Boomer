@@ -284,7 +284,7 @@ class Experiment(CrossValidation, ABC):
 
         return None
 
-    def __save_model(self, model: Learner, current_fold: int, num_folds: int):
+    def __save_model(self, model, current_fold: int, num_folds: int):
         """
         Saves a model to disk.
 
