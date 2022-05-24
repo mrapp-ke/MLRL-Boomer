@@ -15,8 +15,7 @@ Most notably, the package includes command line APIs that allow to configure the
 * The package supports **multi-label datasets in the [Mulan format](http://mulan.sourceforge.net/format.html)**.
 * The predictive performance of algorithms can be evaluated using **predefined splits of a dataset** into training and test data or using **cross validation**.
 * **Models can be saved into files** and reloaded for later use.
-* **Parameter tuning can be used** to determine the optimal configuration of an algorithm and write it into a configuration file, which can afterwards be used for training a model.  
-* **[Bootstrap Bias-corrected Cross Validation (BBC-CV)](https://arxiv.org/pdf/1708.07180v2.pdf)** can be used to incorporate parameter tuning and evaluation of an algorithm  in a computationally efficient way.
+* Instead of providing algorithmic parameters as command line arguments, **parameters can also be loaded from or saved to configuration files**.
 * **Textual representations of rule models**, as well as the **characteristics of models, datasets or predictions** can be written into output files.
 
 ## License
