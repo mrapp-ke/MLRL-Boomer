@@ -18,7 +18,7 @@ class NominalAttributeLearner(ABC):
     nominal_attribute_indices: List[int] = None
 
 
-class Learner(BaseEstimator):
+class Learner(ABC, BaseEstimator):
     """
     A base class for all single- or multi-label classifiers or rankers.
     """
