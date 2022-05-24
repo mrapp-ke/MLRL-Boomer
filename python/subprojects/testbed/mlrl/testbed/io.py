@@ -7,7 +7,7 @@ import os
 import os.path as path
 import xml.etree.ElementTree as XmlTree
 from csv import DictReader, DictWriter, QUOTE_MINIMAL
-
+from typing import Optional
 from xml.dom import minidom
 
 # The delimiter used to separate the columns in a CSV file
@@ -29,7 +29,7 @@ SUFFIX_ARFF = 'arff'
 SUFFIX_XML = 'xml'
 
 
-def get_file_name(name: str, suffix: str):
+def get_file_name(name: str, suffix: str) -> str:
     """
     Returns a file name, including a suffix.
 
@@ -40,7 +40,7 @@ def get_file_name(name: str, suffix: str):
     return name + '.' + suffix
 
 
-def get_file_name_per_fold(name: str, suffix: str, fold: int):
+def get_file_name_per_fold(name: str, suffix: str, fold: Optional[int]) -> str:
     """
     Returns a file name, including a suffix, that corresponds to a certain fold.
 
@@ -53,7 +53,7 @@ def get_file_name_per_fold(name: str, suffix: str, fold: int):
     return get_file_name(name + '_' + ('overall' if fold is None else 'fold-' + str(fold + 1)), suffix)
 
 
-def open_writable_txt_file(directory: str, file_name: str, fold: int = None, append: bool = False):
+def open_writable_txt_file(directory: str, file_name: str, fold: Optional[int] = None, append: bool = False):
     """
     Opens a text file to be written to.
 
@@ -69,7 +69,7 @@ def open_writable_txt_file(directory: str, file_name: str, fold: int = None, app
     return open(file, mode=write_mode)
 
 
-def open_readable_csv_file(directory: str, file_name: str, fold: int):
+def open_readable_csv_file(directory: str, file_name: str, fold: Optional[int] = None):
     """
     Opens a CSV file to be read from.
 
@@ -83,7 +83,7 @@ def open_readable_csv_file(directory: str, file_name: str, fold: int):
     return open(file, mode='r', newline='')
 
 
-def open_writable_csv_file(directory: str, file_name: str, fold: int = None, append: bool = False):
+def open_writable_csv_file(directory: str, file_name: str, fold: Optional[int] = None, append: bool = False):
     """
     Opens a CSV file to be written to.
 
