@@ -42,6 +42,7 @@ class Experiment(CrossValidation, ABC):
     def __init__(self,
                  base_learner: Learner,
                  data_set: DataSet,
+                 random_state: int = 1,
                  num_folds: int = 1,
                  current_fold: int = -1,
                  pre_execution_hook: Optional[ExecutionHook] = None,
@@ -93,7 +94,7 @@ class Experiment(CrossValidation, ABC):
         :param persistence:                                 The `ModelPersistence` that should be used for loading and
                                                             saving models
         """
-        super(Experiment, self).__init__(data_set, num_folds, current_fold)
+        super(Experiment, self).__init__(data_set, num_folds, current_fold, random_state)
         self.base_learner = base_learner
         self.pre_execution_hook = pre_execution_hook
         self.predict_probabilities = predict_probabilities
