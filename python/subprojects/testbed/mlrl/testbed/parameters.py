@@ -4,22 +4,21 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for parameter tuning.
 """
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from mlrl.testbed.io import create_csv_dict_reader
 from mlrl.testbed.io import open_readable_csv_file
+from mlrl.testbed.training import DataPartition
 
 
 class ParameterInput(ABC):
 
     @abstractmethod
-    def read_parameters(self, fold: Optional[int] = None) -> dict:
+    def read_parameters(self, data_partition: DataPartition) -> dict:
         """
         Reads a parameter setting from the input.
 
-        :param fold:    The fold, the parameter setting corresponds to, or None, if the parameter setting does not
-                        correspond to a specific fold
-        :return:        A dictionary that stores the parameters
+        :param data_partition:  Information about the partition of data, the parameter setting corresponds to
+        :return:                A dictionary that stores the parameters
         """
         pass
 
@@ -35,7 +34,7 @@ class ParameterCsvInput(ParameterInput):
         """
         self.input_dir = input_dir
 
-    def read_parameters(self, fold: int = None) -> dict:
-        with open_readable_csv_file(self.input_dir, 'parameters', fold) as csv_file:
+    def read_parameters(self, data_partition: DataPartition) -> dict:
+        with open_readable_csv_file(self.input_dir, 'parameters', data_partition.get_fold()) as csv_file:
             csv_reader = create_csv_dict_reader(csv_file)
             return dict(next(csv_reader))

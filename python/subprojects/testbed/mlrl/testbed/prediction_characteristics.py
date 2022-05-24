@@ -10,6 +10,7 @@ from typing import List
 
 from mlrl.testbed.characteristics import LabelCharacteristics
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
+from mlrl.testbed.training import DataPartition
 
 
 class PredictionCharacteristicsOutput(ABC):
@@ -18,16 +19,14 @@ class PredictionCharacteristicsOutput(ABC):
     """
 
     @abstractmethod
-    def write_prediction_characteristics(self, experiment_name: str, characteristics: LabelCharacteristics,
-                                         total_folds: int, fold: int = None):
+    def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition,
+                                         characteristics: LabelCharacteristics):
         """
         Writes the characteristics of a data set to the output.
 
         :param experiment_name: The name of the experiment
+        :param data_partition:  The partition of data, the characteristics correspond to
         :param characteristics: The characteristics of the predictions
-        :param total_folds:     The total number of folds
-        :param fold:            The fold for which the characteristics should be written or None, if no cross validation
-                                is used
         """
         pass
 
@@ -37,10 +36,14 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
     Outputs the characteristics of binary predictions using the logger.
     """
 
-    def write_prediction_characteristics(self, experiment_name: str, characteristics: LabelCharacteristics,
-                                         total_folds: int, fold: int = None):
-        msg = 'Prediction characteristics for experiment \"' + experiment_name + '\"' + (
-            ' (Fold ' + str(fold + 1) + ')' if fold is not None else '') + ':\n\n'
+    def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition,
+                                         characteristics: LabelCharacteristics):
+        msg = 'Prediction characteristics for experiment \"' + experiment_name + '\"'
+
+        if data_partition.is_cross_validation_used():
+            msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
+
+        msg += ':\n\n'
         msg += 'Labels: ' + str(characteristics.num_labels) + '\n'
         msg += 'Label density: ' + str(characteristics.label_density) + '\n'
         msg += 'Label sparsity: ' + str(1 - characteristics.label_density) + '\n'
@@ -61,8 +64,8 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
         """
         self.output_dir = output_dir
 
-    def write_prediction_characteristics(self, experiment_name: str, characteristics: LabelCharacteristics,
-                                         total_folds: int, fold: int = None):
+    def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition,
+                                         characteristics: LabelCharacteristics):
         columns = {
             'Labels': characteristics.num_labels,
             'Label density': characteristics.label_density,
@@ -74,7 +77,8 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
         header = sorted(columns.keys())
         header.insert(0, 'Approach')
         columns['Approach'] = experiment_name
-        with open_writable_csv_file(self.output_dir, 'prediction_characteristics_' + experiment_name, fold) as csv_file:
+        with open_writable_csv_file(self.output_dir, 'prediction_characteristics_' + experiment_name,
+                                    data_partition.get_fold()) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
@@ -90,17 +94,15 @@ class PredictionCharacteristicsPrinter:
         """
         self.outputs = outputs
 
-    def print(self, experiment_name: str, y, current_fold: int, num_folds: int):
+    def print(self, experiment_name: str, data_partition: DataPartition, y):
         """
         :param experiment_name: The name of the experiment
+        :param data_partition:  The partition of data, the characteristics correspond to
         :param y:               A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
                                 stores the predictions
-        :param current_fold:    The current fold
-        :param num_folds:       The total number of folds
         """
         if len(self.outputs) > 0:
             characteristics = LabelCharacteristics(y)
 
             for output in self.outputs:
-                output.write_prediction_characteristics(experiment_name, characteristics, num_folds,
-                                                        current_fold if num_folds > 1 else None)
+                output.write_prediction_characteristics(experiment_name, data_partition, characteristics)

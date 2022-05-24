@@ -15,6 +15,7 @@ from mlrl.common.learners import Learner
 from mlrl.common.options import Options
 from mlrl.testbed.data import Attribute, MetaData
 from mlrl.testbed.io import open_writable_txt_file, open_writable_csv_file, create_csv_dict_writer
+from mlrl.testbed.training import DataPartition
 
 ARGUMENT_PRINT_FEATURE_NAMES = 'print_feature_names'
 
@@ -160,15 +161,13 @@ class ModelPrinterOutput(ABC):
     """
 
     @abstractmethod
-    def write_model(self, experiment_name: str, model: str, total_folds: int, fold: int = None):
+    def write_model(self, experiment_name: str, data_partition: DataPartition, model: str):
         """
         Write a textual representation of a model to the output.
 
-        :param experiment_name:     The name of the experiment
-        :param model:               The textual representation of the model
-        :param total_folds:         The total number of folds
-        :param fold:                The fold for which the results should be written or None, if no cross validation is
-                                    used or if the overall results, averaged over all folds, should be written
+        :param experiment_name: The name of the experiment
+        :param data_partition:  The partition of data, the model corresponds to
+        :param model:           The textual representation of the model
         """
         pass
 
@@ -190,21 +189,20 @@ class ModelPrinter(ABC):
         except ValueError as e:
             raise ValueError('Invalid value given for parameter "print_options". ' + str(e))
 
-    def print(self, experiment_name: str, meta_data: MetaData, learner: Learner, current_fold: int, num_folds: int):
+    def print(self, experiment_name: str, meta_data: MetaData, data_partition: DataPartition, learner: Learner):
         """
         Prints a textual representation of a `Learner`'s model.
 
         :param experiment_name: The name of the experiment
         :param meta_data:       The meta data of the training data set
+        :param data_partition:  The partition of data, the model corresponds to
         :param learner:         The learner
-        :param current_fold:    The current cross validation fold starting at 0, or 0 if no cross validation is used
-        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
         """
         model = learner.model_
         text = self._format_model(meta_data, model)
 
         for output in self.outputs:
-            output.write_model(experiment_name, text, num_folds, current_fold if num_folds > 1 else None)
+            output.write_model(experiment_name, data_partition, text)
 
     @abstractmethod
     def _format_model(self, meta_data: MetaData, model) -> str:
@@ -223,9 +221,13 @@ class ModelPrinterLogOutput(ModelPrinterOutput):
     Outputs the textual representation of a model using the logger.
     """
 
-    def write_model(self, experiment_name: str, model: str, total_folds: int, fold: int = None):
-        msg = 'Model for experiment \"' + experiment_name + '\"' + (
-            ' (Fold ' + str(fold + 1) + ')' if fold is not None else '') + ':\n\n%s'
+    def write_model(self, experiment_name: str, data_partition: DataPartition, model: str):
+        msg = 'Model for experiment \"' + experiment_name + '\"'
+
+        if data_partition.is_cross_validation_used():
+            msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
+
+        msg += ':\n\n%s'
         log.info(msg, model)
 
 
@@ -240,8 +242,9 @@ class ModelPrinterTxtOutput(ModelPrinterOutput):
         """
         self.output_dir = output_dir
 
-    def write_model(self, experiment_name: str, model: str, total_folds: int, fold: int = None):
-        with open_writable_txt_file(self.output_dir, 'rules_' + experiment_name, fold, append=False) as text_file:
+    def write_model(self, experiment_name: str, data_partition: DataPartition, model: str):
+        with open_writable_txt_file(self.output_dir, 'rules_' + experiment_name,
+                                    data_partition.get_fold()) as text_file:
             text_file.write(model)
 
 
@@ -307,16 +310,14 @@ class RuleModelCharacteristicsOutput(ABC):
     """
 
     @abstractmethod
-    def write_model_characteristics(self, experiment_name: str, characteristics: RuleModelCharacteristics,
-                                    total_folds: int, fold: int = None):
+    def write_model_characteristics(self, experiment_name: str, data_partition: DataPartition,
+                                    characteristics: RuleModelCharacteristics):
         """
         Writes the characteristics of a `RuleModel` to the output.
 
         :param experiment_name: The name of the experiment
         :param characteristics: The characteristics of the model
-        :param total_folds:     The total number of folds
-        :param fold:            The fold for which the characteristics should be written or None, if no cross validation
-                                is used
+        :param data_partition:  The partition of data, the characteristics correspond to
         """
         pass
 
@@ -377,8 +378,8 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
     Outputs the characteristics of a `RuleModel` using the logger.
     """
 
-    def write_model_characteristics(self, experiment_name: str, characteristics: RuleModelCharacteristics,
-                                    total_folds: int, fold: int = None):
+    def write_model_characteristics(self, experiment_name: str, data_partition: DataPartition,
+                                    characteristics: RuleModelCharacteristics):
         default_rule_index = characteristics.default_rule_index
         num_pos_predictions = characteristics.num_pos_predictions
         num_neg_predictions = characteristics.num_neg_predictions
@@ -397,8 +398,12 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
         frac_pos = np.sum(num_pos_predictions) / num_total_predictions * 100
         frac_neg = 100 - frac_pos
         num_rules = num_predictions.shape[0]
-        msg = 'Model characteristics for experiment \"' + experiment_name + '\"' + (
-            ' (Fold ' + str(fold + 1) + ')' if fold is not None else '') + ':\n\n'
+        msg = 'Model characteristics for experiment \"' + experiment_name + '\"'
+
+        if data_partition.is_cross_validation_used():
+            msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
+
+        msg += ':\n\n'
         msg += 'Rules: ' + str(num_rules)
         if default_rule_index is not None:
             msg += ' (plus a default rule with ' + str(
@@ -451,8 +456,8 @@ class RuleModelCharacteristicsCsvOutput(RuleModelCharacteristicsOutput):
         """
         self.output_dir = output_dir
 
-    def write_model_characteristics(self, experiment_name: str, characteristics: RuleModelCharacteristics,
-                                    total_folds: int, fold: int = None):
+    def write_model_characteristics(self, experiment_name: str, data_partition: DataPartition,
+                                    characteristics: RuleModelCharacteristics):
         header = [
             RuleModelCharacteristicsCsvOutput.COL_RULE_NAME,
             RuleModelCharacteristicsCsvOutput.COL_CONDITIONS,
@@ -470,7 +475,8 @@ class RuleModelCharacteristicsCsvOutput(RuleModelCharacteristicsOutput):
         num_rules = len(characteristics.num_pos_predictions)
         num_total_rules = num_rules if default_rule_index is None else num_rules + 1
 
-        with open_writable_csv_file(self.output_dir, 'model_characteristics_' + experiment_name, fold) as csv_file:
+        with open_writable_csv_file(self.output_dir, 'model_characteristics_' + experiment_name,
+                                    data_partition.get_fold()) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             n = 0
 
@@ -516,18 +522,21 @@ class RuleModelCharacteristicsCsvOutput(RuleModelCharacteristicsOutput):
 
 class ModelCharacteristicsPrinter(ABC):
     """
-    A class that allows to print the characteristics of a `Learner`'s model.
+    A class that allows to print the characteristics of a learner's model.
     """
 
-    def print(self, experiment_name: str, learner: Learner, current_fold: int, num_folds: int):
-        model = learner.model_
-        self._print_model(experiment_name, current_fold, num_folds, model)
-
-    def _print_model(self, experiment_name: str, current_fold: int, num_folds: int, model):
+    def print(self, experiment_name: str, data_partition: DataPartition, learner: Learner):
         """
         :param experiment_name: The name of the experiment
-        :param current_fold:    The current fold
-        :param num_folds:       The total number of folds
+        :param data_partition:  The partition of data, the model corresponds to
+        :param learner:         The learner
+        """
+        self._print_model_characteristics(experiment_name, data_partition, learner.model_)
+
+    def _print_model_characteristics(self, experiment_name: str, data_partition: DataPartition, model):
+        """
+        :param experiment_name: The name of the experiment
+        :param data_partition:  The partition of data, the model corresponds to
         :param model:           The model
         """
         pass
@@ -544,7 +553,7 @@ class RuleModelCharacteristicsPrinter(ModelCharacteristicsPrinter):
         """
         self.outputs = outputs
 
-    def _print_model(self, experiment_name: str, current_fold: int, num_folds: int, model):
+    def _print_model_characteristics(self, experiment_name: str, data_partition: DataPartition, model):
         if len(self.outputs) > 0:
             visitor = RuleModelCharacteristicsVisitor()
             model.visit(visitor)
@@ -557,5 +566,4 @@ class RuleModelCharacteristicsPrinter(ModelCharacteristicsPrinter):
                 num_neg_predictions=np.asarray(visitor.num_neg_predictions))
 
             for output in self.outputs:
-                output.write_model_characteristics(experiment_name, characteristics, num_folds,
-                                                   current_fold if num_folds > 1 else None)
+                output.write_model_characteristics(experiment_name, data_partition, characteristics)
