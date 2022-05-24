@@ -171,6 +171,7 @@ class LearnerRunnable(Runnable, ABC):
 
         # Configure experiment...
         experiment = Experiment(base_learner=self._create_learner(args),
+                                learner_name=self._get_learner_name(),
                                 random_state=args.random_state,
                                 pre_execution_hook=self.__create_pre_execution_hook(args),
                                 predict_probabilities=args.predict_probabilities,
@@ -221,6 +222,15 @@ class LearnerRunnable(Runnable, ABC):
 
         :param args:    The command line arguments
         :return:        The learner that has been created
+        """
+        pass
+
+    @abstractmethod
+    def _get_learner_name(self) -> str:
+        """
+        Must be implemented by subclasses in order to provide the name of the learner.
+
+        :return: The name of the learner
         """
         pass
 
