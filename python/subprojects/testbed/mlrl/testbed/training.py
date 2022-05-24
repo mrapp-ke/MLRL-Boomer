@@ -8,6 +8,7 @@ import logging as log
 import os.path as path
 from abc import ABC, abstractmethod
 from timeit import default_timer as timer
+from typing import Optional
 
 from mlrl.testbed.data import MetaData, load_data_set_and_meta_data, load_data_set, one_hot_encode
 from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
@@ -29,6 +30,78 @@ class DataSet:
         self.data_dir = data_dir
         self.data_set_name = data_set_name
         self.use_one_hot_encoding = use_one_hot_encoding
+
+
+class DataPartition(ABC):
+    """
+    Provides information about a partition of the available data that is used for training and testing.
+    """
+
+    @abstractmethod
+    def get_num_folds(self) -> int:
+        """
+        Returns the total number of cross validation folds.
+
+        :return: The total number of cross validation folds or 1, if no cross validation is used
+        """
+        pass
+
+    @abstractmethod
+    def get_fold(self) -> Optional[int]:
+        """
+        Returns the cross validation fold, the partition of data corresponds to.
+
+        :return: The cross validation fold, starting at 0, or None, if no cross validation is used
+        """
+        pass
+
+    def is_cross_validation_used(self) -> bool:
+        """
+        Returns whether cross validation is used or not.
+
+        :return: True, if cross validation is used, False otherwise
+        """
+        return self.get_num_folds() > 1
+
+    def is_last_fold(self) -> bool:
+        """
+        Returns whether this is the last fold or not.
+
+        :return: True, if this is the last fold, False otherwise
+        """
+        return not self.is_cross_validation_used() or self.get_fold() == self.get_num_folds() - 1
+
+
+class TrainingTestSplit(DataPartition):
+    """
+    Provides information about a predefined partition of the available data into training and test data.
+    """
+
+    def get_num_folds(self) -> int:
+        return 1
+
+    def get_fold(self) -> Optional[int]:
+        return None
+
+
+class CrossValidationFold(DataPartition):
+    """
+    Provides information a partition of the available data that is used by a single fold of a cross validation.
+    """
+
+    def __init__(self, num_folds: int, fold: int):
+        """
+        :param num_folds:   The total number of folds
+        :param fold:        The fold, starting at 0
+        """
+        self.num_folds = num_folds
+        self.fold = fold
+
+    def get_num_folds(self) -> int:
+        return self.num_folds
+
+    def get_fold(self) -> Optional[int]:
+        return self.fold
 
 
 class CrossValidation(ABC):
@@ -84,13 +157,6 @@ class CrossValidation(ABC):
             encoded_meta_data = None
 
         # Cross validate
-        if current_fold < 0:
-            first_fold = 0
-            last_fold = num_folds - 1
-        else:
-            first_fold = current_fold
-            last_fold = current_fold
-
         i = 0
         k_fold = KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True)
 
@@ -107,10 +173,9 @@ class CrossValidation(ABC):
                 test_y = y[test_indices]
 
                 # Train & evaluate classifier
+                data_partition = CrossValidationFold(num_folds=num_folds, fold=i)
                 self._train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data,
-                                         train_indices, train_x, train_y, test_indices, test_x, test_y,
-                                         first_fold=first_fold, current_fold=i, last_fold=last_fold,
-                                         num_folds=num_folds)
+                                         data_partition, train_indices, train_x, train_y, test_indices, test_x, test_y)
 
             i += 1
 
@@ -157,26 +222,25 @@ class CrossValidation(ABC):
             test_y = train_y
 
         # Train and evaluate classifier
-        self._train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, None, train_x,
-                                 train_y, None, test_x, test_y, first_fold=0, current_fold=0, last_fold=0, num_folds=1)
+        data_partition = TrainingTestSplit()
+        self._train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_partition,
+                                 None, train_x, train_y, None, test_x, test_y)
 
     @abstractmethod
-    def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
-                            first_fold: int, current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, meta_data: MetaData, data_partition: DataPartition, train_indices, train_x, train_y,
+                            test_indices, test_x, test_y):
         """
         The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it on a
         test set.
 
         :param meta_data:       The meta data of the training data set
+        :param data_partition:  Information about the partition of data that should be used for building and evaluating
+                                a classifier or ranker
         :param train_indices:   The indices of the training examples or None, if no cross validation is used
         :param train_x:         The feature matrix of the training examples
         :param train_y:         The label matrix of the training examples
         :param test_indices:    The indices of the test examples or None, if no cross validation is used
         :param test_x:          The feature matrix of the test examples
         :param test_y:          The label matrix of the test examples
-        :param first_fold:      The first fold or 0, if no cross validation is used
-        :param current_fold:    The current fold starting at 0, or 0 if no cross validation is used
-        :param last_fold:       The last fold or 0, if no cross validation is used
-        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
         """
         pass
