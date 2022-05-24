@@ -7,7 +7,7 @@ import numpy as np
 from scipy.sparse import issparse
 
 
-def enforce_dense(a, order: str, dtype):
+def enforce_dense(a, order: str, dtype) -> np.ndarray:
     """
     Converts a given array into a `np.ndarray`, if necessary, and enforces a specific memory layout and data type to be
     used.
