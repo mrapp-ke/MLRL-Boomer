@@ -146,17 +146,11 @@ def optional_string(s):
     return s
 
 
-def add_log_level_argument(parser: ArgumentParser):
+def add_rule_learner_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_LOG_LEVEL, type=log_level, default=LogLevel.INFO.value,
                         help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
-
-
-def add_random_state_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_RANDOM_STATE, type=int, default=1,
                         help='The seed to be used by random number generators. Must be at least 1.')
-
-
-def add_learner_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_DATA_DIR, type=str, required=True,
                         help='The path of the directory where the data set files are located.')
     parser.add_argument(PARAM_DATASET, type=str, required=True,
@@ -215,12 +209,6 @@ def add_learner_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_PREDICT_PROBABILITIES, type=boolean_string, default=False,
                         help='Whether probabilities should be predicted rather than binary labels or not. Must be one '
                              + 'of ' + format_enum_values(BooleanOption) + '.')
-
-
-def add_rule_learner_arguments(parser: ArgumentParser):
-    add_log_level_argument(parser)
-    add_random_state_argument(parser)
-    add_learner_arguments(parser)
     parser.add_argument(PARAM_PRINT_MODEL_CHARACTERISTICS, type=boolean_string, default=False,
                         help='Whether the characteristics of models should be printed on the console or not. Must be '
                              + 'one of ' + format_enum_values(BooleanOption) + '.')
