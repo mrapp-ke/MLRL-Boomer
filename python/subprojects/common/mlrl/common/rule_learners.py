@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for implementing single- or multi-label rule learning algorithms.
 """
 import logging as log
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Dict, Set, Optional
 
@@ -415,7 +415,7 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
         'Matrix of type ' + type(m).__name__ + ' cannot be converted to format "' + str(sparse_format) + '""')
 
 
-class MLRuleLearner(Learner, NominalAttributeLearner):
+class MLRuleLearner(ABC, Learner, NominalAttributeLearner):
     """
     A scikit-learn implementation of a rule learning algorithm for multi-label classification or ranking.
     """
