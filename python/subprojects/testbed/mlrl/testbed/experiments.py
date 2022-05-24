@@ -17,7 +17,7 @@ from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
 from mlrl.testbed.predictions import PredictionPrinter
-from mlrl.testbed.training import CrossValidation, DataSet
+from mlrl.testbed.training import CrossValidation, DataSet, DataPartition
 from sklearn.base import clone
 
 
@@ -119,8 +119,8 @@ class Experiment(CrossValidation, ABC):
 
         super(Experiment, self).run()
 
-    def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
-                            first_fold: int, current_fold: int, last_fold: int, num_folds: int):
+    def _train_and_evaluate(self, meta_data: MetaData, data_partition: DataPartition, train_indices, train_x, train_y,
+                            test_indices, test_x, test_y):
         base_learner = self.base_learner
         current_learner = clone(base_learner)
 
@@ -128,7 +128,7 @@ class Experiment(CrossValidation, ABC):
         parameter_input = self.parameter_input
 
         if parameter_input is not None:
-            params = parameter_input.read_parameters(current_fold if num_folds > 1 else None)
+            params = parameter_input.read_parameters(data_partition)
             current_learner.set_params(**params)
             log.info('Successfully applied parameter setting: %s', params)
 
@@ -138,15 +138,14 @@ class Experiment(CrossValidation, ABC):
         data_characteristics_printer = self.data_characteristics_printer
 
         if data_characteristics_printer is not None:
-            data_characteristics_printer.print(learner_name, train_x, train_y, meta_data, current_fold=current_fold,
-                                               num_folds=num_folds)
+            data_characteristics_printer.print(learner_name, meta_data, data_partition, train_x, train_y)
 
         # Set the indices of nominal attributes, if supported...
         if isinstance(current_learner, NominalAttributeLearner):
             current_learner.nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
 
         # Load model from disc, if possible, otherwise train a new model...
-        loaded_learner = self.__load_model(model_name=learner_name, current_fold=current_fold, num_folds=num_folds)
+        loaded_learner = self.__load_model(learner_name, data_partition)
 
         if isinstance(loaded_learner, Learner):
             current_learner = loaded_learner
@@ -157,7 +156,7 @@ class Experiment(CrossValidation, ABC):
             log.info('Successfully fit model in %s seconds', train_time)
 
             # Save model to disk...
-            self.__save_model(current_learner, current_fold=current_fold, num_folds=num_folds)
+            self.__save_model(current_learner, data_partition)
 
         # Obtain and evaluate predictions for training data, if necessary...
         evaluation = self.train_evaluation
@@ -172,17 +171,14 @@ class Experiment(CrossValidation, ABC):
             if predictions is not None:
                 experiment_name = 'train_' + learner_name
                 if evaluation is not None:
-                    evaluation.evaluate(experiment_name, meta_data, predictions, train_y, first_fold=first_fold,
-                                        current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
+                    evaluation.evaluate(experiment_name, meta_data, data_partition, predictions, train_y,
                                         train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
-                    prediction_printer.print(experiment_name, meta_data, predictions, train_y,
-                                             current_fold=current_fold, num_folds=num_folds)
+                    prediction_printer.print(experiment_name, meta_data, data_partition, predictions, train_y)
 
                 if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(experiment_name, predictions, current_fold=current_fold,
-                                                             num_folds=num_folds)
+                    prediction_characteristics_printer.print(experiment_name, data_partition, predictions)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
@@ -198,31 +194,26 @@ class Experiment(CrossValidation, ABC):
                 experiment_name = 'test_' + learner_name
 
                 if evaluation is not None:
-                    evaluation.evaluate(experiment_name, meta_data, predictions, test_y, first_fold=first_fold,
-                                        current_fold=current_fold, last_fold=last_fold, num_folds=num_folds,
+                    evaluation.evaluate(experiment_name, meta_data, data_partition, predictions, test_y,
                                         train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
-                    prediction_printer.print(experiment_name, meta_data, predictions, test_y, current_fold=current_fold,
-                                             num_folds=num_folds)
+                    prediction_printer.print(experiment_name, meta_data, data_partition, predictions, test_y)
 
                 if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(experiment_name, predictions, current_fold=current_fold,
-                                                             num_folds=num_folds)
+                    prediction_characteristics_printer.print(experiment_name, data_partition, predictions)
 
         # Print model characteristics, if necessary...
         model_characteristics_printer = self.model_characteristics_printer
 
         if model_characteristics_printer is not None:
-            model_characteristics_printer.print(learner_name, current_learner, current_fold=current_fold,
-                                                num_folds=num_folds)
+            model_characteristics_printer.print(learner_name, data_partition, current_learner)
 
         # Print model, if necessary...
         model_printer = self.model_printer
 
         if model_printer is not None:
-            model_printer.print(learner_name, meta_data, current_learner, current_fold=current_fold,
-                                num_folds=num_folds)
+            model_printer.print(learner_name, meta_data, data_partition, current_learner)
 
     @staticmethod
     def __train(learner, x, y):
@@ -269,31 +260,29 @@ class Experiment(CrossValidation, ABC):
 
         return predictions, predict_time
 
-    def __load_model(self, model_name: str, current_fold: int, num_folds: int):
+    def __load_model(self, model_name: str, data_partition: DataPartition):
         """
         Loads the model from disk, if available.
 
         :param model_name:      The name of the model to be loaded
-        :param current_fold:    The current fold starting at 0, or 0 if no cross validation is used
-        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
-        :return: The loaded model
+        :param data_partition:  Information about the partition of data, the model corresponds to
+        :return:                The loaded model
         """
         persistence = self.persistence
 
         if persistence is not None:
-            return persistence.load_model(model_name=model_name, fold=(current_fold if num_folds > 1 else None))
+            return persistence.load_model(model_name, data_partition)
 
         return None
 
-    def __save_model(self, model, current_fold: int, num_folds: int):
+    def __save_model(self, model, data_partition: DataPartition):
         """
         Saves a model to disk.
 
         :param model:           The model to be saved
-        :param current_fold:    The current fold starting at 0, or 0 if no cross validation is used
-        :param num_folds:       The total number of cross validation folds or 1, if no cross validation is used
+        :param data_partition:  Information about the partition of data, the model corresponds to
         """
         persistence = self.persistence
 
         if persistence is not None:
-            persistence.save_model(model, model_name=model.get_name(), fold=(current_fold if num_folds > 1 else None))
+            persistence.save_model(model, model.get_name(), data_partition)
