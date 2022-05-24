@@ -251,7 +251,7 @@ class RulePrinter(ModelPrinter):
     """
 
     def __init__(self, print_options: str, outputs: List[ModelPrinterOutput]):
-        super().__init__(print_options, outputs)
+        super(RulePrinter, self).__init__(print_options, outputs)
 
     def _format_model(self, meta_data: MetaData, model) -> str:
         print_options = self.print_options
