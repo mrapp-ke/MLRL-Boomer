@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for implementing single- or multi-label classifiers or rankers.
 """
 from abc import ABC, abstractmethod
-from timeit import default_timer as timer
 from typing import List
 
 from sklearn.base import BaseEstimator
@@ -34,12 +33,7 @@ class Learner(BaseEstimator):
                     labels of the training examples according to the ground truth
         :return:    The fitted learner
         """
-        start_time = timer()
-        model = self._fit(x, y)
-        end_time = timer()
-        run_time = end_time - start_time
-        self.model_ = model
-        self.train_time_ = run_time
+        self.model_ = self._fit(x, y)
         return self
 
     def predict(self, x):
