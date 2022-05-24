@@ -247,7 +247,7 @@ class Experiment(CrossValidation, ABC):
         :param learner: The learner
         :param x:       A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores
                         the feature values of the query examples
-        :return:        The predictions, as well as the time needed
+        :return:        The predictions, as well as the time needed to obtain them
         """
         start_time = timer()
 
