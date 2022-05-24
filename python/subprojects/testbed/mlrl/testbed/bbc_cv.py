@@ -30,7 +30,7 @@ class BbcCvAdapter(CrossValidation):
         """
         :param model_dir: The path of the directory where the models are stored
         """
-        super().__init__(data_set, num_folds, -1)
+        super(BbcCvAdapter, self).__init__(data_set, num_folds, -1)
         self.persistence = ModelPersistence(model_dir=model_dir)
         self.learner = None
         self.configuration = None
@@ -78,7 +78,7 @@ class BbcCvAdapter(CrossValidation):
         self.configurations = []
         self.true_labels = None
         self.meta_data = None
-        super().run()
+        super(BbcCvAdapter, self).run()
 
     @abstractmethod
     def _store_predictions(self, model, test_indices, test_x, train_y, num_total_examples: int, num_labels: int,
@@ -193,7 +193,7 @@ class BbcCv(Randomized):
         :param adapter:         The `BbcCvAdapter` to be used
         :param learner:         The learner to be evaluated
         """
-        super().__init__()
+        super(BbcCv, self).__init__()
         self.configurations = configurations
         self.adapter = adapter
         self.bootstrapping = bootstrapping
@@ -264,7 +264,7 @@ class CV(CrossValidation):
 
     def __init__(self, data_set: DataSet, num_folds: int, prediction_matrix, ground_truth_matrix,
                  configurations: List[dict], observer: BbcCvObserver):
-        super().__init__(data_set, num_folds, -1)
+        super(CV, self).__init__(data_set, num_folds, -1)
         self.prediction_matrix = prediction_matrix
         self.ground_truth_matrix = ground_truth_matrix
         self.configurations = configurations

@@ -93,7 +93,7 @@ class Experiment(CrossValidation, ABC):
         :param persistence:                                 The `ModelPersistence` that should be used for loading and
                                                             saving models
         """
-        super().__init__(data_set, num_folds, current_fold)
+        super(Experiment, self).__init__(data_set, num_folds, current_fold)
         self.base_learner = base_learner
         self.pre_execution_hook = pre_execution_hook
         self.predict_probabilities = predict_probabilities
@@ -116,7 +116,7 @@ class Experiment(CrossValidation, ABC):
         if self.pre_execution_hook is not None:
             self.pre_execution_hook.execute()
 
-        super().run()
+        super(Experiment, self).run()
 
     def _train_and_evaluate(self, meta_data: MetaData, train_indices, train_x, train_y, test_indices, test_x, test_y,
                             first_fold: int, current_fold: int, last_fold: int, num_folds: int):

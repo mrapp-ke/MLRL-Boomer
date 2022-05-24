@@ -351,7 +351,7 @@ class ClassificationEvaluation(AbstractEvaluation):
     """
 
     def __init__(self, *args: EvaluationOutput):
-        super().__init__(*args)
+        super(ClassificationEvaluation, self).__init__(*args)
 
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
         if is_multilabel(ground_truth):
@@ -406,7 +406,7 @@ class RankingEvaluation(AbstractEvaluation):
     """
 
     def __init__(self, *args: EvaluationOutput):
-        super().__init__(*args)
+        super(RankingEvaluation, self).__init__(*args)
 
     def _populate_result(self, result: EvaluationResult, predictions, ground_truth, current_fold: int, num_folds: int):
         if is_multilabel(ground_truth):

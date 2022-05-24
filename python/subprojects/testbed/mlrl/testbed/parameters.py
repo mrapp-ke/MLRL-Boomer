@@ -217,7 +217,7 @@ class ParameterTuning(CrossValidation):
         :param parameter_search:    The strategy to be used to search for optimal parameters
         :param args:                The outputs, the parameter settings should be written to
         """
-        super().__init__(data_set, num_folds, current_fold)
+        super(ParameterTuning, self).__init__(data_set, num_folds, current_fold)
         self.parameter_search = parameter_search
         self.outputs = args
 
