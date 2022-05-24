@@ -171,6 +171,7 @@ class LearnerRunnable(Runnable, ABC):
 
         # Configure experiment...
         experiment = Experiment(base_learner=self._create_learner(args),
+                                random_state=args.random_state,
                                 pre_execution_hook=self.__create_pre_execution_hook(args),
                                 predict_probabilities=args.predict_probabilities,
                                 test_evaluation=test_evaluation,
@@ -187,7 +188,6 @@ class LearnerRunnable(Runnable, ABC):
                                 model_characteristics_printer=model_characteristics_printer,
                                 data_characteristics_printer=data_characteristics_printer,
                                 persistence=self.__create_persistence(args))
-        experiment.random_state = args.random_state
         experiment.run()
 
     def _create_model_printer(self, args) -> Optional[ModelPrinter]:

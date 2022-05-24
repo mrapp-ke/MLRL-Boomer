@@ -10,7 +10,6 @@ from abc import ABC, abstractmethod
 from timeit import default_timer as timer
 
 from mlrl.testbed.data import MetaData, load_data_set_and_meta_data, load_data_set, one_hot_encode
-from mlrl.testbed.interfaces import Randomized
 from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
 from sklearn.model_selection import KFold
 
@@ -32,22 +31,24 @@ class DataSet:
         self.use_one_hot_encoding = use_one_hot_encoding
 
 
-class CrossValidation(Randomized, ABC):
+class CrossValidation(ABC):
     """
     A base class for all classes that use cross validation or a train-test split to train and evaluate a multi-label
     classifier or ranker.
     """
 
-    def __init__(self, data_set: DataSet, num_folds: int, current_fold: int):
+    def __init__(self, data_set: DataSet, num_folds: int, current_fold: int, random_state: int):
         """
         :param data_set:        The properties of the data set to be used
         :param num_folds:       The total number of folds to be used by cross validation or 1, if separate training and
                                 test sets should be used
         :param current_fold:    The cross validation fold to be performed or -1, if all folds should be performed
+        :param random_state:    The seed to be used by RNGs. Must be at least 1
         """
         self.data_set = data_set
         self.num_folds = num_folds
         self.current_fold = current_fold
+        self.random_state = random_state
 
     def run(self):
         start_time = timer()
