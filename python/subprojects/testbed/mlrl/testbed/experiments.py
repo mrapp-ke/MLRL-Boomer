@@ -17,7 +17,7 @@ from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
 from mlrl.testbed.predictions import PredictionPrinter
-from mlrl.testbed.training import CrossValidation, DataSet, DataPartition
+from mlrl.testbed.training import CrossValidation, DataSet, DataPartition, DataType
 from sklearn.base import clone
 
 
@@ -173,15 +173,18 @@ class Experiment(CrossValidation, ABC):
 
             if predictions is not None:
                 experiment_name = 'train_' + learner_name
+                data_type = DataType.TRAINING
+
                 if evaluation is not None:
-                    evaluation.evaluate(experiment_name, meta_data, data_partition, predictions, train_y,
+                    evaluation.evaluate(experiment_name, meta_data, data_partition, data_type, predictions, train_y,
                                         train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
-                    prediction_printer.print(experiment_name, meta_data, data_partition, predictions, train_y)
+                    prediction_printer.print(experiment_name, meta_data, data_partition, data_type, predictions,
+                                             train_y)
 
                 if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(experiment_name, data_partition, predictions)
+                    prediction_characteristics_printer.print(experiment_name, data_partition, data_type, predictions)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
@@ -195,16 +198,17 @@ class Experiment(CrossValidation, ABC):
 
             if predictions is not None:
                 experiment_name = 'test_' + learner_name
+                data_type = DataType.TEST
 
                 if evaluation is not None:
-                    evaluation.evaluate(experiment_name, meta_data, data_partition, predictions, test_y,
+                    evaluation.evaluate(experiment_name, meta_data, data_partition, data_type, predictions, test_y,
                                         train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
-                    prediction_printer.print(experiment_name, meta_data, data_partition, predictions, test_y)
+                    prediction_printer.print(experiment_name, meta_data, data_partition, data_type, predictions, test_y)
 
                 if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(experiment_name, data_partition, predictions)
+                    prediction_characteristics_printer.print(experiment_name, data_partition, data_type, predictions)
 
         # Print model characteristics, if necessary...
         model_characteristics_printer = self.model_characteristics_printer

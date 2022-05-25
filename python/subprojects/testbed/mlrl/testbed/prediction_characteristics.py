@@ -10,7 +10,7 @@ from typing import List
 
 from mlrl.testbed.characteristics import LabelCharacteristics
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.training import DataPartition
+from mlrl.testbed.training import DataPartition, DataType
 
 
 class PredictionCharacteristicsOutput(ABC):
@@ -19,13 +19,14 @@ class PredictionCharacteristicsOutput(ABC):
     """
 
     @abstractmethod
-    def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition,
+    def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition, data_type: DataType,
                                          characteristics: LabelCharacteristics):
         """
         Writes the characteristics of a data set to the output.
 
         :param experiment_name: The name of the experiment
         :param data_partition:  The partition of data, the characteristics correspond to
+        :param data_type:       Specifies whether the predictions correspond to the training or test data
         :param characteristics: The characteristics of the predictions
         """
         pass
@@ -36,7 +37,7 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
     Outputs the characteristics of binary predictions using the logger.
     """
 
-    def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition,
+    def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition, data_type: DataType,
                                          characteristics: LabelCharacteristics):
         msg = 'Prediction characteristics for experiment \"' + experiment_name + '\"'
 
@@ -64,7 +65,7 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
         """
         self.output_dir = output_dir
 
-    def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition,
+    def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition, data_type: DataType,
                                          characteristics: LabelCharacteristics):
         columns = {
             'Labels': characteristics.num_labels,
@@ -94,10 +95,11 @@ class PredictionCharacteristicsPrinter:
         """
         self.outputs = outputs
 
-    def print(self, experiment_name: str, data_partition: DataPartition, y):
+    def print(self, experiment_name: str, data_partition: DataPartition, data_type: DataType, y):
         """
         :param experiment_name: The name of the experiment
         :param data_partition:  The partition of data, the characteristics correspond to
+        :param data_type:       Specifies whether the predictions correspond to the training or test data
         :param y:               A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
                                 stores the predictions
         """
@@ -105,4 +107,4 @@ class PredictionCharacteristicsPrinter:
             characteristics = LabelCharacteristics(y)
 
             for output in self.outputs:
-                output.write_prediction_characteristics(experiment_name, data_partition, characteristics)
+                output.write_prediction_characteristics(experiment_name, data_partition, data_type, characteristics)
