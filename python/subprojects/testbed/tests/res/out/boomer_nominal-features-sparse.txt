@@ -12,7 +12,7 @@ INFO Predicting for 579 test examples...
 DEBUG A sparse matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.017633598999964306 seconds
-INFO Overall evaluation result for experiment "test_boomer_feature-format=sparse":
+INFO Overall evaluation result on test data:
 
 Ex.-based F1: 0.4316953052704348
 Ex.-based Jacc.: 0.313207637689503

@@ -8,7 +8,7 @@ INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.29367149700010486 seconds
-INFO Model for experiment "boomer" (Fold 1):
+INFO Model (Fold 1):
 
 {} => (amazed-suprised = -0.86, happy-pleased = -0.86, relaxing-calm = -0.22, quiet-still = -0.99, sad-lonely = -0.88, angry-aggresive = -0.71)
 {Std_Acc1298_Mean_Mem40_MFCC_9 <= 0.20559001 & Std_Acc1298_Std_Mem40_MFCC_4 <= 0.231167 & Std_Acc1298_Std_Mem40_MFCC_10 <= 0.1012425 & Mean_Acc1298_Std_Mem40_MFCC_2 <= 1.559073 & Mean_Acc1298_Mean_Mem40_MFCC_10 > 0.25111002} => (relaxing-calm = -0.51)

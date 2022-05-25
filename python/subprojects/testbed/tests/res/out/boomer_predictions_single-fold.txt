@@ -12,7 +12,7 @@ INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0028963880031369627 seconds
-INFO Predictions for experiment "test_boomer" (Fold 1):
+INFO Predictions for test data (Fold 1):
 
 Ground truth:
 
@@ -140,6 +140,6 @@ Predictions:
  [0 0 1 1 1 0]
  [0 0 1 1 1 0]]
 
-DEBUG Saving data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_boomer_fold-1.arff'...
-INFO Successfully saved data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_boomer_fold-1.arff'.
+DEBUG Saving data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_fold-1.arff'...
+INFO Successfully saved data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_fold-1.arff'.
 INFO Successfully finished after 0.5715843479847535 seconds

@@ -12,7 +12,7 @@ INFO Predicting for 391 training examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.012410861963871866 seconds
-INFO Prediction characteristics for experiment "train_boomer":
+INFO Prediction characteristics for training data:
 
 Labels: 6
 Label density: 0.30221653878942883
@@ -25,7 +25,7 @@ INFO Predicting for 202 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0053924230160191655 seconds
-INFO Prediction characteristics for experiment "test_boomer":
+INFO Prediction characteristics for test data:
 
 Labels: 6
 Label density: 0.2731023102310231

@@ -15,7 +15,7 @@ INFO Predicting for 171 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0028308290002314607 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 1):
+INFO Evaluation result on test data (Fold 1):
 
 Ex.-based F1: 0.40580618212197156
 Ex.-based Jacc.: 0.2836814257866889
@@ -43,7 +43,7 @@ INFO Predicting for 171 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0029462170004990185 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 2):
+INFO Evaluation result on test data (Fold 2):
 
 Ex.-based F1: 0.46368374964866194
 Ex.-based Jacc.: 0.3415715213960828
@@ -71,7 +71,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0029433039999275934 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 3):
+INFO Evaluation result on test data (Fold 3):
 
 Ex.-based F1: 0.4187861811391223
 Ex.-based Jacc.: 0.30126050420168066
@@ -99,7 +99,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0029042109999863897 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 4):
+INFO Evaluation result on test data (Fold 4):
 
 Ex.-based F1: 0.4681792717086834
 Ex.-based Jacc.: 0.3468347338935574
@@ -127,7 +127,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0029626760006067343 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 5):
+INFO Evaluation result on test data (Fold 5):
 
 Ex.-based F1: 0.41247177658942363
 Ex.-based Jacc.: 0.29211251167133523
@@ -155,7 +155,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.00295687200014072 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 6):
+INFO Evaluation result on test data (Fold 6):
 
 Ex.-based F1: 0.4028618113912231
 Ex.-based Jacc.: 0.28542717086834735
@@ -183,7 +183,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.002846987999873818 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 7):
+INFO Evaluation result on test data (Fold 7):
 
 Ex.-based F1: 0.4250522026992615
 Ex.-based Jacc.: 0.30667133520074696
@@ -211,7 +211,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.00289493099990068 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 8):
+INFO Evaluation result on test data (Fold 8):
 
 Ex.-based F1: 0.4029785247432306
 Ex.-based Jacc.: 0.3003246753246753
@@ -239,7 +239,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0029043880003882805 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 9):
+INFO Evaluation result on test data (Fold 9):
 
 Ex.-based F1: 0.4030782616076733
 Ex.-based Jacc.: 0.28939775910364146
@@ -267,7 +267,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0029437560006044805 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 10):
+INFO Evaluation result on test data (Fold 10):
 
 Ex.-based F1: 0.37475766064001353
 Ex.-based Jacc.: 0.26805322128851533
@@ -286,7 +286,7 @@ Mi. Rec.: 0.29697986577181207
 Subs. 0/1 Loss: 0.9764705882352941
 Subs. Acc.: 0.023529411764705882
 
-INFO Overall evaluation result for experiment "test_boomer":
+INFO Overall evaluation result on test data:
 
 Ex.-based F1: 0.4177655622289264 ±0.027168703384451563
 Ex.-based Jacc.: 0.30153348587352713 ±0.023702845328245643
