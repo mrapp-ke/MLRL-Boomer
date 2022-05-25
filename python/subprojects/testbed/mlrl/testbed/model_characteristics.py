@@ -190,7 +190,8 @@ class ModelPrinter(ABC):
 
     def print(self, meta_data: MetaData, data_partition: DataPartition, learner):
         """
-        Prints a textual representation of a learner's model.
+        Prints a textual representation of a learner's model. If the learner does not support to create a textual
+        representation of the model, a `ValueError` is raised.
 
         :param meta_data:       The meta data of the training data set
         :param data_partition:  The partition of data, the model corresponds to
@@ -522,6 +523,9 @@ class ModelCharacteristicsPrinter(ABC):
 
     def print(self, data_partition: DataPartition, learner):
         """
+        Prints the characteristics of a learner's model. If the learner does not support to obtain the characteristics
+        of the model, a `ValueError` is raised.
+
         :param data_partition:  The partition of data, the model corresponds to
         :param learner:         The learner
         """
