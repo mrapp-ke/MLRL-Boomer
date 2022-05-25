@@ -13,4 +13,4 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         :param methodName: The name of the test method to be executed
         """
-        super(BoostingIntegrationTests, self).__init__('boomer', methodName)
+        super(BoostingIntegrationTests, self).__init__('boomer', methodName=methodName)
