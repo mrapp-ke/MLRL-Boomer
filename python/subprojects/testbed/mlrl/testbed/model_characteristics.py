@@ -173,7 +173,7 @@ class ModelPrinterOutput(ABC):
 
 class ModelPrinter(ABC):
     """
-    An abstract base class for all classes that allow to print a textual representation of a `Learner`'s model.
+    An abstract base class for all classes that allow to print a textual representation of a learner's model.
     """
 
     def __init__(self, print_options: str, outputs: List[ModelPrinterOutput]):
@@ -188,14 +188,17 @@ class ModelPrinter(ABC):
         except ValueError as e:
             raise ValueError('Invalid value given for parameter "print_options". ' + str(e))
 
-    def print(self, meta_data: MetaData, data_partition: DataPartition, learner: Learner):
+    def print(self, meta_data: MetaData, data_partition: DataPartition, learner):
         """
-        Prints a textual representation of a `Learner`'s model.
+        Prints a textual representation of a learner's model.
 
         :param meta_data:       The meta data of the training data set
         :param data_partition:  The partition of data, the model corresponds to
         :param learner:         The learner
         """
+        if not isinstance(learner, Learner):
+            raise ValueError('Cannot create textual representation of ' + type(learner).__name__)
+
         model = learner.model_
         text = self._format_model(meta_data, model)
 
@@ -517,11 +520,14 @@ class ModelCharacteristicsPrinter(ABC):
     A class that allows to print the characteristics of a learner's model.
     """
 
-    def print(self, data_partition: DataPartition, learner: Learner):
+    def print(self, data_partition: DataPartition, learner):
         """
         :param data_partition:  The partition of data, the model corresponds to
         :param learner:         The learner
         """
+        if not isinstance(learner, Learner):
+            raise ValueError('Cannot obtain model characteristics of ' + type(learner.__name__))
+
         self._print_model_characteristics(data_partition, learner.model_)
 
     def _print_model_characteristics(self, data_partition: DataPartition, model):
