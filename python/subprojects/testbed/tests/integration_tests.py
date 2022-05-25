@@ -8,8 +8,6 @@ from os import path, makedirs
 from typing import List, Optional
 from unittest import TestCase
 
-CMD_BOOMER = 'boomer'
-
 DIR_RES = 'python/subprojects/testbed/tests/res'
 
 DIR_DATA = path.join(DIR_RES, 'data')
@@ -34,7 +32,7 @@ class CmdBuilder:
     A builder that allows to configure the command for running a rule learner.
     """
 
-    def __init__(self, cmd: str = CMD_BOOMER, data_dir: str = DIR_DATA, dataset: str = DATASET_EMOTIONS):
+    def __init__(self, cmd: str, data_dir: str = DIR_DATA, dataset: str = DATASET_EMOTIONS):
         """
         :param cmd:         The command to be run
         :param data_dir:    The path of the directory that stores the dataset files
@@ -319,6 +317,12 @@ class IntegrationTests(ABC, TestCase):
     """
     An abstract base class for all integration tests.
     """
+
+    def __init__(self, methodName='runTest'):
+        """
+        :param methodName: The name of the test method to be executed
+        """
+        super(IntegrationTests, self).__init__(methodName)
 
     @staticmethod
     def __get_file_name(name: str, suffix: str, fold: Optional[int] = None):
