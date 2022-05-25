@@ -291,68 +291,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
 
-    def get_name(self) -> str:
-        name = 'boomer'
-        if self.random_state != 1:
-            name += '_random-state=' + str(self.random_state)
-        if self.feature_format != SparsePolicy.AUTO.value:
-            name += '_feature-format=' + str(self.feature_format)
-        if self.label_format != SparsePolicy.AUTO.value:
-            name += '_label-format=' + str(self.label_format)
-        if self.predicted_label_format != SparsePolicy.AUTO.value:
-            name += '_predicted-label-format=' + str(self.predicted_label_format)
-        if self.statistic_format is not None:
-            name += '_statistic-format=' + str(self.statistic_format)
-        if self.default_rule is not None:
-            name += '_default-rule=' + str(self.default_rule)
-        if self.rule_model_assemblage is not None:
-            name += '_rule-model-assemblage=' + str(self.rule_model_assemblage)
-        if self.rule_induction is not None:
-            name += '_rule-induction=' + str(self.rule_induction)
-        if self.max_rules is not None:
-            name += '_max-rules=' + str(self.max_rules)
-        if self.time_limit is not None:
-            name += '_time-limit=' + str(self.time_limit)
-        if self.early_stopping is not None:
-            name += '_early-stopping=' + str(self.early_stopping)
-        if self.head_type is not None:
-            name += '_head-type=' + str(self.head_type)
-        if self.loss is not None:
-            name += '_loss=' + str(self.loss)
-        if self.classification_predictor is not None:
-            name += '_classification_predictor=' + str(self.classification_predictor)
-        if self.probability_predictor is not None:
-            name += '_probability_predictor=' + str(self.probability_predictor)
-        if self.label_sampling is not None:
-            name += '_label-sampling=' + str(self.label_sampling)
-        if self.instance_sampling is not None:
-            name += '_instance-sampling=' + str(self.instance_sampling)
-        if self.feature_sampling is not None:
-            name += '_feature-sampling=' + str(self.feature_sampling)
-        if self.holdout is not None:
-            name += '_holdout=' + str(self.holdout)
-        if self.feature_binning is not None:
-            name += '_feature-binning=' + str(self.feature_binning)
-        if self.label_binning is not None:
-            name += '_label-binning=' + str(self.label_binning)
-        if self.pruning is not None:
-            name += '_pruning=' + str(self.pruning)
-        if self.post_optimization is not None:
-            name += '_post-optimization=' + str(self.post_optimization)
-        if self.shrinkage is not None:
-            name += '_shrinkage=' + str(self.shrinkage)
-        if self.l1_regularization_weight is not None:
-            name += '_l1=' + str(self.l1_regularization_weight)
-        if self.l2_regularization_weight is not None:
-            name += '_l2=' + str(self.l2_regularization_weight)
-        if self.parallel_rule_refinement is not None:
-            name += '_parallel-rule-refinement=' + str(self.parallel_rule_refinement)
-        if self.parallel_statistic_update is not None:
-            name += '_parallel-statistic-update=' + str(self.parallel_statistic_update)
-        if self.parallel_prediction is not None:
-            name += '_parallel-prediction=' + str(self.parallel_prediction)
-        return name
-
     def _create_learner(self) -> RuleLearnerWrapper:
         config = BoostingRuleLearnerConfig()
         self.__configure_default_rule(config)

@@ -61,15 +61,6 @@ class Learner(BaseEstimator, ABC):
         return self._predict_proba(x)
 
     @abstractmethod
-    def get_name(self) -> str:
-        """
-        Returns a human-readable name that allows to identify the configuration used by the classifier or ranker.
-
-        :return: The name of the classifier or ranker
-        """
-        pass
-
-    @abstractmethod
     def _fit(self, x, y):
         """
         Trains a new model on the given training data.
