@@ -1,0 +1,146 @@
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=10, current_fold=-1, print_evaluation=False, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir='python/subprojects/testbed/tests/res/in', output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=True, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Starting experiment...
+INFO Performing full 10-fold cross validation...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fold 1 / 10:
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down{max_conditions=1}'}
+INFO Fitting model to 533 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.028841039005783387 seconds
+INFO Model characteristics (Fold 1):
+
+Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 1.0, min. 1, max. 1
+Conditions total: 9 (55.55555555555556% use <= operator, 44.44444444444444% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 9 (100.0% positive, 0.0% negative)
+
+INFO Fold 2 / 10:
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down{max_conditions=1}'}
+INFO Fitting model to 533 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.027870670994161628 seconds
+INFO Model characteristics (Fold 2):
+
+Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 1.0, min. 1, max. 1
+Conditions total: 9 (55.55555555555556% use <= operator, 44.44444444444444% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 9 (100.0% positive, 0.0% negative)
+
+INFO Fold 3 / 10:
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down{max_conditions=1}'}
+INFO Fitting model to 533 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.02908635200583376 seconds
+INFO Model characteristics (Fold 3):
+
+Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 1.0, min. 1, max. 1
+Conditions total: 9 (44.44444444444444% use <= operator, 55.55555555555556% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 9 (100.0% positive, 0.0% negative)
+
+INFO Fold 4 / 10:
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down{max_conditions=1}'}
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.03071795598953031 seconds
+INFO Model characteristics (Fold 4):
+
+Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 1.0, min. 1, max. 1
+Conditions total: 9 (55.55555555555556% use <= operator, 44.44444444444444% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 9 (100.0% positive, 0.0% negative)
+
+INFO Fold 5 / 10:
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down{max_conditions=1}'}
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.03020027700404171 seconds
+INFO Model characteristics (Fold 5):
+
+Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 1.0, min. 1, max. 1
+Conditions total: 9 (55.55555555555556% use <= operator, 44.44444444444444% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 9 (100.0% positive, 0.0% negative)
+
+INFO Fold 6 / 10:
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down{max_conditions=1}'}
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.031353209997178055 seconds
+INFO Model characteristics (Fold 6):
+
+Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 1.0, min. 1, max. 1
+Conditions total: 9 (66.66666666666666% use <= operator, 33.33333333333333% use > operator, 0.0% use == operator, 1.4210854715202004e-14% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 9 (100.0% positive, 0.0% negative)
+
+INFO Fold 7 / 10:
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down{max_conditions=1}'}
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.030272845004219562 seconds
+INFO Model characteristics (Fold 7):
+
+Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 1.0, min. 1, max. 1
+Conditions total: 9 (66.66666666666666% use <= operator, 33.33333333333333% use > operator, 0.0% use == operator, 1.4210854715202004e-14% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 9 (100.0% positive, 0.0% negative)
+
+INFO Fold 8 / 10:
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down{max_conditions=1}'}
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.028110875995480455 seconds
+INFO Model characteristics (Fold 8):
+
+Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 1.0, min. 1, max. 1
+Conditions total: 9 (44.44444444444444% use <= operator, 55.55555555555556% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 9 (100.0% positive, 0.0% negative)
+
+INFO Fold 9 / 10:
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down{max_conditions=1}'}
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.029141095001250505 seconds
+INFO Model characteristics (Fold 9):
+
+Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 1.0, min. 1, max. 1
+Conditions total: 9 (55.55555555555556% use <= operator, 44.44444444444444% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 9 (100.0% positive, 0.0% negative)
+
+INFO Fold 10 / 10:
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down{max_conditions=1}'}
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.028989355996600352 seconds
+INFO Model characteristics (Fold 10):
+
+Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 1.0, min. 1, max. 1
+Conditions total: 9 (66.66666666666666% use <= operator, 33.33333333333333% use > operator, 0.0% use == operator, 1.4210854715202004e-14% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 9 (100.0% positive, 0.0% negative)
+
+INFO Successfully finished after 0.366807525002514 seconds

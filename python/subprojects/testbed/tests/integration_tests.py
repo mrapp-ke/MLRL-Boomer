@@ -26,6 +26,8 @@ DATASET_ENRON = 'enron'
 
 DATASET_LANGLOG = 'langlog'
 
+DATASET_WEATHER = 'weather'
+
 
 class CmdBuilder:
     """

@@ -1,0 +1,34 @@
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='enron', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='sparse', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Starting experiment...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/enron.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/enron-train.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/enron-test.arff"...
+INFO Fitting model to 1123 training examples...
+DEBUG A sparse matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 1.6153806499933125 seconds
+INFO Predicting for 579 test examples...
+DEBUG A sparse matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0045532319927588105 seconds
+INFO Overall evaluation result on test data:
+
+Ex.-based F1: 0.5094206732783707
+Ex.-based Jacc.: 0.3684713985879789
+Ex.-based Prec.: 0.4499165606030891
+Ex.-based Rec.: 0.6651862817665926
+Hamm. Acc.: 0.9258969596245967
+Hamm. Loss: 0.07410304037540326
+Ma. F1: 0.1342934690602498
+Ma. Jacc.: 0.09151065361022771
+Ma. Prec.: 0.7363446991715566
+Ma. Rec.: 0.18678057919781205
+Mi. F1: 0.5282157676348548
+Mi. Jacc.: 0.3588948407104595
+Mi. Prec.: 0.44309084580577796
+Mi. Rec.: 0.6538263995891115
+Subs. 0/1 Loss: 0.998272884283247
+Subs. Acc.: 0.0017271157167530224
+
+INFO Successfully finished after 1.8646689420129405 seconds

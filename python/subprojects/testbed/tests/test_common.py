@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from abc import ABC
 from unittest import SkipTest
 
-from integration_tests import IntegrationTests, CmdBuilder, DATASET_ENRON, DATASET_LANGLOG
+from integration_tests import IntegrationTests, CmdBuilder, DATASET_EMOTIONS, DATASET_ENRON, DATASET_LANGLOG
 
 
 class CommonIntegrationTests(IntegrationTests, ABC):
@@ -12,13 +12,23 @@ class CommonIntegrationTests(IntegrationTests, ABC):
     Defines a series of integration tests for any type of rule learning algorithm.
     """
 
-    def __init__(self, cmd: str, methodName='runTest'):
+    def __init__(self, cmd: str, dataset_default: str = DATASET_EMOTIONS, dataset_numerical: str = DATASET_LANGLOG,
+                 dataset_nominal: str = DATASET_ENRON, dataset_one_hot_encoding: str = DATASET_ENRON,
+                 methodName='runTest'):
         """
-        :param cmd:         The command to be run by the integration tests
-        :param methodName:  The name of the test method to be executed
+        :param cmd:                         The command to be run by the integration tests
+        :param dataset_default:             The name of the dataset that should be used by default
+        :param dataset_numerical:           The name of a dataset with numerical features
+        :param dataset_nominal:             The name of a dataset with nominal features
+        :param dataset_one_hot_encoding:    The name of the dataset that should be used for one-hot-encoding
+        :param methodName:                  The name of the test method to be executed
         """
         super(CommonIntegrationTests, self).__init__(methodName)
         self.cmd = cmd
+        self.dataset_default = dataset_default
+        self.dataset_numerical = dataset_numerical
+        self.dataset_nominal = dataset_nominal
+        self.dataset_one_hot_encoding = dataset_one_hot_encoding
 
     @classmethod
     def setUpClass(cls):
@@ -32,7 +42,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the evaluation of the rule learning algorithm when using a predefined split of the dataset into training
         and test data.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
@@ -42,7 +52,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         Tests the evaluation of the rule learning algorithm when using a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation() \
             .set_output_dir() \
             .print_evaluation() \
@@ -53,7 +63,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         Tests the evaluation of the rule learning algorithm when using a single fold of a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .set_output_dir() \
             .print_evaluation() \
@@ -64,7 +74,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         Tests the evaluation of the rule learning algorithm on the training data.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .evaluate_training_data() \
             .set_output_dir() \
             .print_evaluation() \
@@ -76,7 +86,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store models and load them afterward when using a predefined split of the dataset
         into training and test data.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .set_model_dir()
         self.run_cmd(builder, self.cmd + '_model-persistence_train-test')
 
@@ -84,7 +94,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         Tests the functionality to store models and load them afterward when using a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation() \
             .set_model_dir()
         self.run_cmd(builder, self.cmd + '_model-persistence_cross-validation')
@@ -93,7 +103,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         Tests the functionality to store models and load them afterward when using a single fold of a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .set_model_dir()
         self.run_cmd(builder, self.cmd + '_model-persistence_single-fold')
@@ -103,7 +113,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store the predictions of the rule learning algorithm when using a predefined split of
         the dataset into training and test data.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .set_output_dir() \
@@ -115,7 +125,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         Tests the functionality to store the predictions of the rule learning algorithm when using a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -129,7 +139,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store the predictions of the rule learning algorithm when using a single fold of a
         cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -142,7 +152,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         Tests the functionality to store the predictions of the rule learning algorithm for the training data.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .evaluate_training_data() \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -156,7 +166,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store the prediction characteristics of the rule learning algorithm when using a
         predefined split of the dataset into training and test data.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .set_output_dir() \
@@ -169,7 +179,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store the prediction characteristics of the rule learning algorithm when using a
         cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -183,7 +193,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store the prediction characteristics of the rule learning algorithm when using a
         single fold of a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -197,7 +207,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store the prediction characteristics of the rule learning algorithm for the training
         data.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .evaluate_training_data() \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -211,7 +221,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store the characteristics of the data used for training by the rule learning
         algorithm when using a predefined split of the dataset into training and test data.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .set_output_dir() \
@@ -224,7 +234,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store the characteristics of the data used for training by the rule learning
         algorithm when using a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -238,7 +248,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store the characteristics of the data used for training by the rule learning
         algorithm when using a single fold of a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -252,7 +262,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store the characteristics of models when using a predefined split of the dataset into
         training and test data.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .set_output_dir() \
@@ -264,7 +274,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         Tests the functionality to store the characteristics of models when using a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -277,7 +287,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         Tests the functionality to store the characteristics of models when using a single fold of a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -291,7 +301,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store textual representations of the rules in a model when using a predefined split
         of the dataset into training and test data.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .set_output_dir() \
@@ -303,7 +313,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         Tests the functionality to store textual representations of the rules in a model when using a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -317,7 +327,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to store textual representations of the rules in a model when using a single fold of a
         cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -331,7 +341,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the rule learning algorithm on a dataset with numerical attributes when using a dense feature
         representation.
         """
-        builder = CmdBuilder(self.cmd, dataset=DATASET_LANGLOG) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical) \
             .sparse_feature_format(False)
         self.run_cmd(builder, self.cmd + '_numeric-features-dense')
 
@@ -340,7 +350,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the rule learning algorithm on a dataset with numerical attributes when using a sparse feature
         representation.
         """
-        builder = CmdBuilder(self.cmd, dataset=DATASET_LANGLOG) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical) \
             .sparse_feature_format(True)
         self.run_cmd(builder, self.cmd + '_numeric-features-sparse')
 
@@ -349,7 +359,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the rule learning algorithm on a dataset with nominal attributes when using a dense feature
         representation.
         """
-        builder = CmdBuilder(self.cmd, dataset=DATASET_ENRON) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
             .sparse_feature_format(False)
         self.run_cmd(builder, self.cmd + '_nominal-features-dense')
 
@@ -358,7 +368,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the rule learning algorithm on a dataset with nominal attributes when using a sparse feature
         representation.
         """
-        builder = CmdBuilder(self.cmd, dataset=DATASET_ENRON) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
             .sparse_feature_format(True)
         self.run_cmd(builder, self.cmd + '_nominal-features-sparse')
 
@@ -366,7 +376,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         Tests the rule learning algorithm when using a dense label representation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .sparse_label_format(False)
         self.run_cmd(builder, self.cmd + '_labels-dense')
 
@@ -374,7 +384,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         Tests the rule learning algorithm when using a sparse label representation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .sparse_label_format(True)
         self.run_cmd(builder, self.cmd + '_labels-sparse')
 
@@ -383,7 +393,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the rule learning algorithm on a dataset with one-hot-encoded nominal attributes when using a predefined
         split of the dataset into training and test data.
         """
-        builder = CmdBuilder(self.cmd, dataset=DATASET_ENRON) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_one_hot_encoding) \
             .one_hot_encoding()
         self.run_cmd(builder, self.cmd + '_one-hot-encoding_train-test')
 
@@ -392,7 +402,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the rule learning algorithm on a dataset with one-hot-encoded nominal attributes when using a cross
         validation.
         """
-        builder = CmdBuilder(self.cmd, dataset=DATASET_ENRON) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_one_hot_encoding) \
             .cross_validation() \
             .one_hot_encoding()
         self.run_cmd(builder, self.cmd + '_one-hot-encoding_cross-validation')
@@ -402,7 +412,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to configure the rule learning algorithm according to parameter settings that are loaded
         from input files when using a predefined split of the dataset into training and test data.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
             .print_model_characteristics(True) \
             .set_parameter_dir()
@@ -413,7 +423,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to configure the rule learning algorithm according to parameter settings that are loaded
         from input files when using a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
             .print_model_characteristics(True) \
@@ -425,7 +435,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the functionality to configure the rule learning algorithm according to parameter settings that are loaded
         from input files when using a single fold of a cross validation.
         """
-        builder = CmdBuilder(self.cmd) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .print_model_characteristics(True) \
