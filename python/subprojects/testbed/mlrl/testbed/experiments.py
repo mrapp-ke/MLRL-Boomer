@@ -114,7 +114,7 @@ class Experiment(CrossValidation, ABC):
         self.persistence = persistence
 
     def run(self):
-        log.info('Starting experiment \"' + self.base_learner.get_name() + '\"...')
+        log.info('Starting experiment...')
 
         # Run pre-execution hook, if necessary...
         if self.pre_execution_hook is not None:
