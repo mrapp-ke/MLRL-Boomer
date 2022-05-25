@@ -68,6 +68,9 @@ class BoomerRunnable(RuleLearnerRunnable):
                       parallel_statistic_update=args.parallel_statistic_update,
                       parallel_prediction=args.parallel_prediction)
 
+    def _get_learner_name(self) -> str:
+        return "boomer"
+
 
 def __add_arguments(parser: ArgumentParser):
     add_rule_learner_arguments(parser)

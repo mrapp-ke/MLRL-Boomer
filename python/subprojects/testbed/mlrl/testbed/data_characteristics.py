@@ -41,13 +41,11 @@ class DataCharacteristicsOutput(ABC):
     """
 
     @abstractmethod
-    def write_data_characteristics(self, experiment_name: str, data_partition: DataPartition,
-                                   feature_characteristics: FeatureCharacteristics,
+    def write_data_characteristics(self, data_partition: DataPartition, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
         """
         Writes the characteristics of a data set to the output.
 
-        :param experiment_name:         The name of the experiment
         :param data_partition:          Information about the partition of data, the characteristics correspond to
         :param feature_characteristics: The characteristics of the feature matrix
         :param label_characteristics:   The characteristics of the label matrix
@@ -60,10 +58,9 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
     Outputs the characteristics of a data set using the logger.
     """
 
-    def write_data_characteristics(self, experiment_name: str, data_partition: DataPartition,
-                                   feature_characteristics: FeatureCharacteristics,
+    def write_data_characteristics(self, data_partition: DataPartition, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
-        msg = 'Data characteristics for experiment \"' + experiment_name + '\"'
+        msg = 'Data characteristics'
 
         if data_partition.is_cross_validation_used():
             msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
@@ -95,8 +92,7 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
         """
         self.output_dir = output_dir
 
-    def write_data_characteristics(self, experiment_name: str, data_partition: DataPartition,
-                                   feature_characteristics: FeatureCharacteristics,
+    def write_data_characteristics(self, data_partition: DataPartition, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
         columns = {
             'Examples': feature_characteristics.num_examples,
@@ -113,10 +109,7 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
             'Distinct label vectors': label_characteristics.num_distinct_label_vectors
         }
         header = sorted(columns.keys())
-        header.insert(0, 'Approach')
-        columns['Approach'] = experiment_name
-        with open_writable_csv_file(self.output_dir, 'data_characteristics_' + experiment_name,
-                                    data_partition.get_fold()) as csv_file:
+        with open_writable_csv_file(self.output_dir, 'data_characteristics', data_partition.get_fold()) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
@@ -132,9 +125,8 @@ class DataCharacteristicsPrinter:
         """
         self.outputs = outputs
 
-    def print(self, experiment_name: str, meta_data: MetaData, data_partition: DataPartition, x, y):
+    def print(self, meta_data: MetaData, data_partition: DataPartition, x, y):
         """
-        :param experiment_name: The name of the experiment
         :param meta_data:       The meta data of the data set
         :param data_partition:  Information about the partition of data, the characteristics correspond to
         :param x:               A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that
@@ -147,5 +139,4 @@ class DataCharacteristicsPrinter:
             label_characteristics = LabelCharacteristics(y)
 
             for output in self.outputs:
-                output.write_data_characteristics(experiment_name, data_partition, feature_characteristics,
-                                                  label_characteristics)
+                output.write_data_characteristics(data_partition, feature_characteristics, label_characteristics)

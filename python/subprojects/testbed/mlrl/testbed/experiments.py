@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from timeit import default_timer as timer
 from typing import Optional
 
-from mlrl.common.learners import Learner, NominalAttributeLearner
+from mlrl.common.learners import NominalAttributeLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.evaluation import Evaluation
@@ -17,8 +17,8 @@ from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
 from mlrl.testbed.predictions import PredictionPrinter
-from mlrl.testbed.training import CrossValidation, DataSet, DataPartition
-from sklearn.base import clone
+from mlrl.testbed.training import CrossValidation, DataSet, DataPartition, DataType
+from sklearn.base import BaseEstimator, clone
 
 
 class Experiment(CrossValidation, ABC):
@@ -40,7 +40,8 @@ class Experiment(CrossValidation, ABC):
             pass
 
     def __init__(self,
-                 base_learner: Learner,
+                 base_learner: BaseEstimator,
+                 learner_name: str,
                  data_set: DataSet,
                  random_state: int = 1,
                  num_folds: int = 1,
@@ -60,6 +61,7 @@ class Experiment(CrossValidation, ABC):
                  persistence: Optional[ModelPersistence] = None):
         """
         :param base_learner:                                The classifier or ranker to be trained
+        :param learner_name:                                The name of the classifier or ranker
         :param pre_execution_hook:                          An operation that should be executed before the experiment
         :param predict_probabilities:                       True, if probabilities should be predicted rather than
                                                             binary labels, False otherwise
@@ -96,6 +98,7 @@ class Experiment(CrossValidation, ABC):
         """
         super(Experiment, self).__init__(data_set, num_folds, current_fold, random_state)
         self.base_learner = base_learner
+        self.learner_name = learner_name
         self.pre_execution_hook = pre_execution_hook
         self.predict_probabilities = predict_probabilities
         self.train_evaluation = train_evaluation
@@ -111,7 +114,7 @@ class Experiment(CrossValidation, ABC):
         self.persistence = persistence
 
     def run(self):
-        log.info('Starting experiment \"' + self.base_learner.get_name() + '\"...')
+        log.info('Starting experiment...')
 
         # Run pre-execution hook, if necessary...
         if self.pre_execution_hook is not None:
@@ -132,22 +135,20 @@ class Experiment(CrossValidation, ABC):
             current_learner.set_params(**params)
             log.info('Successfully applied parameter setting: %s', params)
 
-        learner_name = current_learner.get_name()
-
         # Print data characteristics, if necessary...
         data_characteristics_printer = self.data_characteristics_printer
 
         if data_characteristics_printer is not None:
-            data_characteristics_printer.print(learner_name, meta_data, data_partition, train_x, train_y)
+            data_characteristics_printer.print(meta_data, data_partition, train_x, train_y)
 
         # Set the indices of nominal attributes, if supported...
         if isinstance(current_learner, NominalAttributeLearner):
             current_learner.nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
 
         # Load model from disc, if possible, otherwise train a new model...
-        loaded_learner = self.__load_model(learner_name, data_partition)
+        loaded_learner = self.__load_model(data_partition)
 
-        if isinstance(loaded_learner, Learner):
+        if isinstance(loaded_learner, BaseEstimator):
             current_learner = loaded_learner
             train_time = 0
         else:
@@ -169,16 +170,17 @@ class Experiment(CrossValidation, ABC):
             predictions, predict_time = self.__predict(current_learner, train_x)
 
             if predictions is not None:
-                experiment_name = 'train_' + learner_name
+                data_type = DataType.TRAINING
+
                 if evaluation is not None:
-                    evaluation.evaluate(experiment_name, meta_data, data_partition, predictions, train_y,
+                    evaluation.evaluate(meta_data, data_partition, data_type, predictions, train_y,
                                         train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
-                    prediction_printer.print(experiment_name, meta_data, data_partition, predictions, train_y)
+                    prediction_printer.print(meta_data, data_partition, data_type, predictions, train_y)
 
                 if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(experiment_name, data_partition, predictions)
+                    prediction_characteristics_printer.print(data_partition, data_type, predictions)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
@@ -191,29 +193,29 @@ class Experiment(CrossValidation, ABC):
             predictions, predict_time = self.__predict(current_learner, test_x)
 
             if predictions is not None:
-                experiment_name = 'test_' + learner_name
+                data_type = DataType.TEST
 
                 if evaluation is not None:
-                    evaluation.evaluate(experiment_name, meta_data, data_partition, predictions, test_y,
+                    evaluation.evaluate(meta_data, data_partition, data_type, predictions, test_y,
                                         train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
-                    prediction_printer.print(experiment_name, meta_data, data_partition, predictions, test_y)
+                    prediction_printer.print(meta_data, data_partition, data_type, predictions, test_y)
 
                 if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(experiment_name, data_partition, predictions)
+                    prediction_characteristics_printer.print(data_partition, data_type, predictions)
 
         # Print model characteristics, if necessary...
         model_characteristics_printer = self.model_characteristics_printer
 
         if model_characteristics_printer is not None:
-            model_characteristics_printer.print(learner_name, data_partition, current_learner)
+            model_characteristics_printer.print(data_partition, current_learner)
 
         # Print model, if necessary...
         model_printer = self.model_printer
 
         if model_printer is not None:
-            model_printer.print(learner_name, meta_data, data_partition, current_learner)
+            model_printer.print(meta_data, data_partition, current_learner)
 
     @staticmethod
     def __train(learner, x, y):
@@ -260,18 +262,17 @@ class Experiment(CrossValidation, ABC):
 
         return predictions, predict_time
 
-    def __load_model(self, model_name: str, data_partition: DataPartition):
+    def __load_model(self, data_partition: DataPartition):
         """
         Loads the model from disk, if available.
 
-        :param model_name:      The name of the model to be loaded
         :param data_partition:  Information about the partition of data, the model corresponds to
         :return:                The loaded model
         """
         persistence = self.persistence
 
         if persistence is not None:
-            return persistence.load_model(model_name, data_partition)
+            return persistence.load_model(self.learner_name, data_partition)
 
         return None
 
@@ -285,4 +286,4 @@ class Experiment(CrossValidation, ABC):
         persistence = self.persistence
 
         if persistence is not None:
-            persistence.save_model(model, model.get_name(), data_partition)
+            persistence.save_model(model, self.learner_name, data_partition)

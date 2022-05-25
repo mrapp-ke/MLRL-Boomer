@@ -14,7 +14,7 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.training import DataPartition
+from mlrl.testbed.training import DataPartition, DataType
 from sklearn.utils.multiclass import is_multilabel
 
 # The name of the accuracy metric
@@ -111,14 +111,15 @@ class Evaluation(ABC):
     """
 
     @abstractmethod
-    def evaluate(self, experiment_name: str, meta_data: MetaData, data_partition: DataPartition, predictions,
+    def evaluate(self, meta_data: MetaData, data_partition: DataPartition, data_type: DataType, predictions,
                  ground_truth, train_time: float, predict_time: float):
         """
         Evaluates the predictions provided by a classifier or ranker.
 
-        :param experiment_name: The name of the experiment
         :param meta_data:       The meta data of the data set
         :param data_partition:  The partition of data, the predictions and ground truth labels correspond to
+        :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
+                                test data
         :param predictions:     The predictions provided by the classifier
         :param ground_truth:    The ground truth
         :param train_time:      The time needed to train the model
@@ -218,11 +219,11 @@ class EvaluationOutput(ABC):
     """
 
     @abstractmethod
-    def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, fold: Optional[int]):
+    def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
         """
         Writes the evaluation results for a single fold to the output.
 
-        :param experiment_name:     The name of the experiment
+        :param data_type:           Specifies whether the evaluation results correspond to the training or test data
         :param evaluation_result:   The evaluation result to be written
         :param fold:                The fold for which the results should be written or None, if no cross validation is
                                     used
@@ -230,12 +231,12 @@ class EvaluationOutput(ABC):
         pass
 
     @abstractmethod
-    def write_overall_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult,
+    def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
                                          num_folds: int):
         """
         Writes the overall evaluation results, averaged across all folds, to the output.
 
-        :param experiment_name:     The name of the experiment
+        :param data_type:           Specifies whether the evaluation results correspond to the training or test data
         :param evaluation_result:   The evaluation result to be written
         :param num_folds:           The total number of folds
         """
@@ -247,7 +248,7 @@ class EvaluationLogOutput(EvaluationOutput):
     Outputs evaluation result using the logger.
     """
 
-    def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, fold: Optional[int]):
+    def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
         text = ''
 
         for measure in sorted(evaluation_result.measures):
@@ -258,10 +259,9 @@ class EvaluationLogOutput(EvaluationOutput):
                 score = evaluation_result.get(measure, fold)
                 text += measure + ': ' + str(score)
 
-        log.info('Evaluation result for experiment \"' + experiment_name + '\" (Fold ' + str(fold + 1) + '):\n\n%s\n',
-                 text)
+        log.info('Evaluation result on ' + data_type.value + ' data (Fold ' + str(fold + 1) + '):\n\n%s\n', text)
 
-    def write_overall_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult,
+    def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
                                          num_folds: int):
         text = ''
 
@@ -276,7 +276,7 @@ class EvaluationLogOutput(EvaluationOutput):
                 if num_folds > 1:
                     text += (' ±' + str(std_dev))
 
-        log.info('Overall evaluation result for experiment \"' + experiment_name + '\":\n\n%s\n', text)
+        log.info('Overall evaluation result on ' + data_type.value + ' data:\n\n%s\n', text)
 
 
 class EvaluationCsvOutput(EvaluationOutput):
@@ -290,24 +290,20 @@ class EvaluationCsvOutput(EvaluationOutput):
         """
         self.output_dir = output_dir
 
-    def write_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult, fold: Optional[int]):
+    def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
         columns = evaluation_result.dict(fold)
         header = sorted(columns.keys())
-        header.insert(0, 'Approach')
-        columns['Approach'] = experiment_name
 
-        with open_writable_csv_file(self.output_dir, 'evaluation_' + experiment_name, fold) as csv_file:
+        with open_writable_csv_file(self.output_dir, 'evaluation_' + data_type.value, fold) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
-    def write_overall_evaluation_results(self, experiment_name: str, evaluation_result: EvaluationResult,
+    def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
                                          num_folds: int):
         columns = evaluation_result.avg_dict() if num_folds > 1 else evaluation_result.dict(0)
         header = sorted(columns.keys())
-        header.insert(0, 'Approach')
-        columns['Approach'] = experiment_name
 
-        with open_writable_csv_file(self.output_dir, 'evaluation_' + experiment_name) as csv_file:
+        with open_writable_csv_file(self.output_dir, 'evaluation_' + data_type.value) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
@@ -325,21 +321,21 @@ class AbstractEvaluation(Evaluation, ABC):
         self.outputs = outputs
         self.results: Dict[str, EvaluationResult] = {}
 
-    def evaluate(self, experiment_name: str, meta_data: MetaData, data_partition: DataPartition, predictions,
+    def evaluate(self, meta_data: MetaData, data_partition: DataPartition, data_type: DataType, predictions,
                  ground_truth, train_time: float, predict_time: float):
-        result = self.results[experiment_name] if experiment_name in self.results else EvaluationResult()
-        self.results[experiment_name] = result
+        result = self.results[data_type] if data_type in self.results else EvaluationResult()
+        self.results[data_type] = result
         result.put(TIME_TRAIN, train_time, data_partition.get_num_folds(), data_partition.get_fold())
         result.put(TIME_PREDICT, predict_time, data_partition.get_num_folds(), data_partition.get_fold())
         self._populate_result(data_partition, result, predictions, ground_truth)
 
         if data_partition.is_cross_validation_used():
             for output in self.outputs:
-                output.write_evaluation_results(experiment_name, result, data_partition.get_fold())
+                output.write_evaluation_results(data_type, result, data_partition.get_fold())
 
         if data_partition.is_last_fold():
             for output in self.outputs:
-                output.write_overall_evaluation_results(experiment_name, result, data_partition.get_num_folds())
+                output.write_overall_evaluation_results(data_type, result, data_partition.get_num_folds())
 
     @abstractmethod
     def _populate_result(self, data_partition: DataPartition, result: EvaluationResult, predictions, ground_truth):

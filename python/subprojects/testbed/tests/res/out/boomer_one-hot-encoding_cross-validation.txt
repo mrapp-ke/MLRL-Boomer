@@ -1,5 +1,5 @@
 INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dataset='enron', folds=10, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=True, model_dir=None, parameter_dir=None, output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning=None, label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
-INFO Starting experiment "boomer"...
+INFO Starting experiment...
 INFO Performing full 10-fold cross validation...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/enron.xml"...
 DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/enron.arff"...
@@ -15,7 +15,7 @@ INFO Predicting for 171 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0028308290002314607 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 1):
+INFO Evaluation result on test data (Fold 1):
 
 Ex.-based F1: 0.40580618212197156
 Ex.-based Jacc.: 0.2836814257866889
@@ -43,7 +43,7 @@ INFO Predicting for 171 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0029462170004990185 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 2):
+INFO Evaluation result on test data (Fold 2):
 
 Ex.-based F1: 0.46368374964866194
 Ex.-based Jacc.: 0.3415715213960828
@@ -71,7 +71,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0029433039999275934 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 3):
+INFO Evaluation result on test data (Fold 3):
 
 Ex.-based F1: 0.4187861811391223
 Ex.-based Jacc.: 0.30126050420168066
@@ -99,7 +99,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0029042109999863897 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 4):
+INFO Evaluation result on test data (Fold 4):
 
 Ex.-based F1: 0.4681792717086834
 Ex.-based Jacc.: 0.3468347338935574
@@ -127,7 +127,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0029626760006067343 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 5):
+INFO Evaluation result on test data (Fold 5):
 
 Ex.-based F1: 0.41247177658942363
 Ex.-based Jacc.: 0.29211251167133523
@@ -155,7 +155,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.00295687200014072 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 6):
+INFO Evaluation result on test data (Fold 6):
 
 Ex.-based F1: 0.4028618113912231
 Ex.-based Jacc.: 0.28542717086834735
@@ -183,7 +183,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.002846987999873818 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 7):
+INFO Evaluation result on test data (Fold 7):
 
 Ex.-based F1: 0.4250522026992615
 Ex.-based Jacc.: 0.30667133520074696
@@ -211,7 +211,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.00289493099990068 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 8):
+INFO Evaluation result on test data (Fold 8):
 
 Ex.-based F1: 0.4029785247432306
 Ex.-based Jacc.: 0.3003246753246753
@@ -239,7 +239,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0029043880003882805 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 9):
+INFO Evaluation result on test data (Fold 9):
 
 Ex.-based F1: 0.4030782616076733
 Ex.-based Jacc.: 0.28939775910364146
@@ -267,7 +267,7 @@ INFO Predicting for 170 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0029437560006044805 seconds
-INFO Evaluation result for experiment "test_boomer" (Fold 10):
+INFO Evaluation result on test data (Fold 10):
 
 Ex.-based F1: 0.37475766064001353
 Ex.-based Jacc.: 0.26805322128851533
@@ -286,7 +286,7 @@ Mi. Rec.: 0.29697986577181207
 Subs. 0/1 Loss: 0.9764705882352941
 Subs. Acc.: 0.023529411764705882
 
-INFO Overall evaluation result for experiment "test_boomer":
+INFO Overall evaluation result on test data:
 
 Ex.-based F1: 0.4177655622289264 ±0.027168703384451563
 Ex.-based Jacc.: 0.30153348587352713 ±0.023702845328245643

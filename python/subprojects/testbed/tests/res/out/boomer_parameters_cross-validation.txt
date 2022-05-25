@@ -1,5 +1,5 @@
 INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dataset='emotions', folds=10, current_fold=-1, print_evaluation=False, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir='python/subprojects/testbed/tests/res/in', output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=True, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning=None, label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
-INFO Starting experiment "boomer"...
+INFO Starting experiment...
 INFO Performing full 10-fold cross validation...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
 DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
@@ -9,7 +9,7 @@ INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.012381698999888613 seconds
-INFO Model characteristics for experiment "boomer_rule-induction=top-down{max_conditions=1}_max-rules=10" (Fold 1):
+INFO Model characteristics (Fold 1):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
@@ -23,7 +23,7 @@ INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.017677951000223402 seconds
-INFO Model characteristics for experiment "boomer_rule-induction=top-down{max_conditions=1}_max-rules=10" (Fold 2):
+INFO Model characteristics (Fold 2):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
@@ -37,7 +37,7 @@ INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.011279626000032295 seconds
-INFO Model characteristics for experiment "boomer_rule-induction=top-down{max_conditions=1}_max-rules=10" (Fold 3):
+INFO Model characteristics (Fold 3):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
@@ -51,7 +51,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.012725573000352597 seconds
-INFO Model characteristics for experiment "boomer_rule-induction=top-down{max_conditions=1}_max-rules=10" (Fold 4):
+INFO Model characteristics (Fold 4):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
@@ -65,7 +65,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.011400606999814045 seconds
-INFO Model characteristics for experiment "boomer_rule-induction=top-down{max_conditions=1}_max-rules=10" (Fold 5):
+INFO Model characteristics (Fold 5):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
@@ -79,7 +79,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.013796507999359164 seconds
-INFO Model characteristics for experiment "boomer_rule-induction=top-down{max_conditions=1}_max-rules=10" (Fold 6):
+INFO Model characteristics (Fold 6):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
@@ -93,7 +93,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.011503302999699372 seconds
-INFO Model characteristics for experiment "boomer_rule-induction=top-down{max_conditions=1}_max-rules=10" (Fold 7):
+INFO Model characteristics (Fold 7):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
@@ -107,7 +107,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.014367532001415384 seconds
-INFO Model characteristics for experiment "boomer_rule-induction=top-down{max_conditions=1}_max-rules=10" (Fold 8):
+INFO Model characteristics (Fold 8):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
@@ -121,7 +121,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.011320986999635352 seconds
-INFO Model characteristics for experiment "boomer_rule-induction=top-down{max_conditions=1}_max-rules=10" (Fold 9):
+INFO Model characteristics (Fold 9):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
@@ -135,7 +135,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.01343492299929494 seconds
-INFO Model characteristics for experiment "boomer_rule-induction=top-down{max_conditions=1}_max-rules=10" (Fold 10):
+INFO Model characteristics (Fold 10):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
