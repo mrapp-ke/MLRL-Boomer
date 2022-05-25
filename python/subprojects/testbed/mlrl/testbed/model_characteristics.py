@@ -161,11 +161,10 @@ class ModelPrinterOutput(ABC):
     """
 
     @abstractmethod
-    def write_model(self, experiment_name: str, data_partition: DataPartition, model: str):
+    def write_model(self, data_partition: DataPartition, model: str):
         """
         Write a textual representation of a model to the output.
 
-        :param experiment_name: The name of the experiment
         :param data_partition:  The partition of data, the model corresponds to
         :param model:           The textual representation of the model
         """
@@ -174,7 +173,7 @@ class ModelPrinterOutput(ABC):
 
 class ModelPrinter(ABC):
     """
-    An abstract base class for all classes that allow to print a textual representation of a `Learner`'s model.
+    An abstract base class for all classes that allow to print a textual representation of a learner's model.
     """
 
     def __init__(self, print_options: str, outputs: List[ModelPrinterOutput]):
@@ -189,20 +188,22 @@ class ModelPrinter(ABC):
         except ValueError as e:
             raise ValueError('Invalid value given for parameter "print_options". ' + str(e))
 
-    def print(self, experiment_name: str, meta_data: MetaData, data_partition: DataPartition, learner: Learner):
+    def print(self, meta_data: MetaData, data_partition: DataPartition, learner):
         """
-        Prints a textual representation of a `Learner`'s model.
+        Prints a textual representation of a learner's model.
 
-        :param experiment_name: The name of the experiment
         :param meta_data:       The meta data of the training data set
         :param data_partition:  The partition of data, the model corresponds to
         :param learner:         The learner
         """
+        if not isinstance(learner, Learner):
+            raise ValueError('Cannot create textual representation of ' + type(learner).__name__)
+
         model = learner.model_
         text = self._format_model(meta_data, model)
 
         for output in self.outputs:
-            output.write_model(experiment_name, data_partition, text)
+            output.write_model(data_partition, text)
 
     @abstractmethod
     def _format_model(self, meta_data: MetaData, model) -> str:
@@ -221,8 +222,8 @@ class ModelPrinterLogOutput(ModelPrinterOutput):
     Outputs the textual representation of a model using the logger.
     """
 
-    def write_model(self, experiment_name: str, data_partition: DataPartition, model: str):
-        msg = 'Model for experiment \"' + experiment_name + '\"'
+    def write_model(self, data_partition: DataPartition, model: str):
+        msg = 'Model'
 
         if data_partition.is_cross_validation_used():
             msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
@@ -242,9 +243,8 @@ class ModelPrinterTxtOutput(ModelPrinterOutput):
         """
         self.output_dir = output_dir
 
-    def write_model(self, experiment_name: str, data_partition: DataPartition, model: str):
-        with open_writable_txt_file(self.output_dir, 'rules_' + experiment_name,
-                                    data_partition.get_fold()) as text_file:
+    def write_model(self, data_partition: DataPartition, model: str):
+        with open_writable_txt_file(self.output_dir, 'rules', data_partition.get_fold()) as text_file:
             text_file.write(model)
 
 
@@ -310,12 +310,10 @@ class RuleModelCharacteristicsOutput(ABC):
     """
 
     @abstractmethod
-    def write_model_characteristics(self, experiment_name: str, data_partition: DataPartition,
-                                    characteristics: RuleModelCharacteristics):
+    def write_model_characteristics(self, data_partition: DataPartition, characteristics: RuleModelCharacteristics):
         """
         Writes the characteristics of a `RuleModel` to the output.
 
-        :param experiment_name: The name of the experiment
         :param characteristics: The characteristics of the model
         :param data_partition:  The partition of data, the characteristics correspond to
         """
@@ -378,8 +376,7 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
     Outputs the characteristics of a `RuleModel` using the logger.
     """
 
-    def write_model_characteristics(self, experiment_name: str, data_partition: DataPartition,
-                                    characteristics: RuleModelCharacteristics):
+    def write_model_characteristics(self, data_partition: DataPartition, characteristics: RuleModelCharacteristics):
         default_rule_index = characteristics.default_rule_index
         num_pos_predictions = characteristics.num_pos_predictions
         num_neg_predictions = characteristics.num_neg_predictions
@@ -398,7 +395,7 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
         frac_pos = np.sum(num_pos_predictions) / num_total_predictions * 100
         frac_neg = 100 - frac_pos
         num_rules = num_predictions.shape[0]
-        msg = 'Model characteristics for experiment \"' + experiment_name + '\"'
+        msg = 'Model characteristics'
 
         if data_partition.is_cross_validation_used():
             msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
@@ -456,8 +453,7 @@ class RuleModelCharacteristicsCsvOutput(RuleModelCharacteristicsOutput):
         """
         self.output_dir = output_dir
 
-    def write_model_characteristics(self, experiment_name: str, data_partition: DataPartition,
-                                    characteristics: RuleModelCharacteristics):
+    def write_model_characteristics(self, data_partition: DataPartition, characteristics: RuleModelCharacteristics):
         header = [
             RuleModelCharacteristicsCsvOutput.COL_RULE_NAME,
             RuleModelCharacteristicsCsvOutput.COL_CONDITIONS,
@@ -475,8 +471,7 @@ class RuleModelCharacteristicsCsvOutput(RuleModelCharacteristicsOutput):
         num_rules = len(characteristics.num_pos_predictions)
         num_total_rules = num_rules if default_rule_index is None else num_rules + 1
 
-        with open_writable_csv_file(self.output_dir, 'model_characteristics_' + experiment_name,
-                                    data_partition.get_fold()) as csv_file:
+        with open_writable_csv_file(self.output_dir, 'model_characteristics', data_partition.get_fold()) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             n = 0
 
@@ -525,17 +520,18 @@ class ModelCharacteristicsPrinter(ABC):
     A class that allows to print the characteristics of a learner's model.
     """
 
-    def print(self, experiment_name: str, data_partition: DataPartition, learner: Learner):
+    def print(self, data_partition: DataPartition, learner):
         """
-        :param experiment_name: The name of the experiment
         :param data_partition:  The partition of data, the model corresponds to
         :param learner:         The learner
         """
-        self._print_model_characteristics(experiment_name, data_partition, learner.model_)
+        if not isinstance(learner, Learner):
+            raise ValueError('Cannot obtain model characteristics of ' + type(learner.__name__))
 
-    def _print_model_characteristics(self, experiment_name: str, data_partition: DataPartition, model):
+        self._print_model_characteristics(data_partition, learner.model_)
+
+    def _print_model_characteristics(self, data_partition: DataPartition, model):
         """
-        :param experiment_name: The name of the experiment
         :param data_partition:  The partition of data, the model corresponds to
         :param model:           The model
         """
@@ -553,7 +549,7 @@ class RuleModelCharacteristicsPrinter(ModelCharacteristicsPrinter):
         """
         self.outputs = outputs
 
-    def _print_model_characteristics(self, experiment_name: str, data_partition: DataPartition, model):
+    def _print_model_characteristics(self, data_partition: DataPartition, model):
         if len(self.outputs) > 0:
             visitor = RuleModelCharacteristicsVisitor()
             model.visit(visitor)
@@ -566,4 +562,4 @@ class RuleModelCharacteristicsPrinter(ModelCharacteristicsPrinter):
                 num_neg_predictions=np.asarray(visitor.num_neg_predictions))
 
             for output in self.outputs:
-                output.write_model_characteristics(experiment_name, data_partition, characteristics)
+                output.write_model_characteristics(data_partition, characteristics)

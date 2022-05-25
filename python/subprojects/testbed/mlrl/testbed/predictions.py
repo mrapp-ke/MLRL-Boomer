@@ -12,7 +12,7 @@ from typing import List
 import numpy as np
 from mlrl.testbed.data import MetaData, Label, save_arff_file
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
-from mlrl.testbed.training import DataPartition
+from mlrl.testbed.training import DataPartition, DataType
 
 
 class PredictionOutput(ABC):
@@ -21,14 +21,15 @@ class PredictionOutput(ABC):
     """
 
     @abstractmethod
-    def write_predictions(self, experiment_name: str, meta_data: MetaData, data_partition: DataPartition, predictions,
+    def write_predictions(self, meta_data: MetaData, data_partition: DataPartition, data_type: DataType, predictions,
                           ground_truth):
         """
         Writes predictions to the output.
 
-        :param experiment_name: The name of the experiment
         :param meta_data:       The meta data of the data set
         :param data_partition:  The partition of data, the predictions and ground truth labels correspond to
+        :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
+                                test data
         :param predictions:     The predictions
         :param ground_truth:    The ground truth
         """
@@ -40,11 +41,11 @@ class PredictionLogOutput(PredictionOutput):
     Outputs predictions and ground truth labels using the logger.
     """
 
-    def write_predictions(self, experiment_name: str, meta_data: MetaData, data_partition: DataPartition, predictions,
+    def write_predictions(self, meta_data: MetaData, data_partition: DataPartition, data_type: DataType, predictions,
                           ground_truth):
         text = 'Ground truth:\n\n' + np.array2string(ground_truth, threshold=sys.maxsize) + '\n\nPredictions:\n\n' \
                + np.array2string(predictions, threshold=sys.maxsize)
-        msg = 'Predictions for experiment \"' + experiment_name + '\"'
+        msg = 'Predictions for ' + data_type.value + ' data'
 
         if data_partition.is_cross_validation_used():
             msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
@@ -64,9 +65,9 @@ class PredictionArffOutput(PredictionOutput):
         """
         self.output_dir = output_dir
 
-    def write_predictions(self, experiment_name: str, meta_data: MetaData, data_partition: DataPartition, predictions,
+    def write_predictions(self, meta_data: MetaData, data_partition: DataPartition, data_type: DataType, predictions,
                           ground_truth):
-        file_name = get_file_name_per_fold('predictions_' + experiment_name, SUFFIX_ARFF, data_partition.get_fold())
+        file_name = get_file_name_per_fold('predictions_' + data_type.value, SUFFIX_ARFF, data_partition.get_fold())
         attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
         labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
         prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
@@ -84,16 +85,16 @@ class PredictionPrinter:
         """
         self.outputs = outputs
 
-    def print(self, experiment_name: str, meta_data: MetaData, data_partition: DataPartition, predictions,
-              ground_truth):
+    def print(self, meta_data: MetaData, data_partition: DataPartition, data_type: DataType, predictions, ground_truth):
         """
-        :param experiment_name: The name of the experiment
         :param meta_data:       The meta data of the data set
         :param data_partition:  The partition of data, the predictions and ground truth labels correspond to
+        :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
+                                test data
         :param predictions:     A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
                                 stores the predictions
         :param ground_truth:    A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
                                 stores the ground truth labels
         """
         for output in self.outputs:
-            output.write_predictions(experiment_name, meta_data, data_partition, predictions, ground_truth)
+            output.write_predictions(meta_data, data_partition, data_type, predictions, ground_truth)
