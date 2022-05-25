@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from timeit import default_timer as timer
 from typing import Optional
 
-from mlrl.common.learners import Learner, NominalAttributeLearner
+from mlrl.common.learners import NominalAttributeLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.evaluation import Evaluation
@@ -18,7 +18,7 @@ from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
 from mlrl.testbed.predictions import PredictionPrinter
 from mlrl.testbed.training import CrossValidation, DataSet, DataPartition, DataType
-from sklearn.base import clone
+from sklearn.base import BaseEstimator, clone
 
 
 class Experiment(CrossValidation, ABC):
@@ -40,7 +40,7 @@ class Experiment(CrossValidation, ABC):
             pass
 
     def __init__(self,
-                 base_learner: Learner,
+                 base_learner: BaseEstimator,
                  learner_name: str,
                  data_set: DataSet,
                  random_state: int = 1,
@@ -148,7 +148,7 @@ class Experiment(CrossValidation, ABC):
         # Load model from disc, if possible, otherwise train a new model...
         loaded_learner = self.__load_model(data_partition)
 
-        if isinstance(loaded_learner, Learner):
+        if isinstance(loaded_learner, BaseEstimator):
             current_learner = loaded_learner
             train_time = 0
         else:
