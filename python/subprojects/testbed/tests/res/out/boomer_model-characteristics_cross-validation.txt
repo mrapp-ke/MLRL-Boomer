@@ -8,7 +8,7 @@ INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.3680890969999382 seconds
-INFO Model characteristics for experiment "boomer" (Fold 1):
+INFO Model characteristics (Fold 1):
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 5.857857857857858, min. 1, max. 18
@@ -21,7 +21,7 @@ INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.3298365589998866 seconds
-INFO Model characteristics for experiment "boomer" (Fold 2):
+INFO Model characteristics (Fold 2):
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 6.073073073073073, min. 1, max. 19
@@ -34,7 +34,7 @@ INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.3168201520002185 seconds
-INFO Model characteristics for experiment "boomer" (Fold 3):
+INFO Model characteristics (Fold 3):
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 6.122122122122122, min. 1, max. 19
@@ -47,7 +47,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.31798178999997617 seconds
-INFO Model characteristics for experiment "boomer" (Fold 4):
+INFO Model characteristics (Fold 4):
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 5.974974974974975, min. 1, max. 19
@@ -60,7 +60,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.302799404000325 seconds
-INFO Model characteristics for experiment "boomer" (Fold 5):
+INFO Model characteristics (Fold 5):
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 5.97997997997998, min. 1, max. 19
@@ -73,7 +73,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.3087182479994226 seconds
-INFO Model characteristics for experiment "boomer" (Fold 6):
+INFO Model characteristics (Fold 6):
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 5.937937937937938, min. 1, max. 17
@@ -86,7 +86,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.2966097689995877 seconds
-INFO Model characteristics for experiment "boomer" (Fold 7):
+INFO Model characteristics (Fold 7):
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 5.926926926926927, min. 1, max. 21
@@ -99,7 +99,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.31435690600028465 seconds
-INFO Model characteristics for experiment "boomer" (Fold 8):
+INFO Model characteristics (Fold 8):
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 5.915915915915916, min. 1, max. 18
@@ -112,7 +112,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.41830164900056843 seconds
-INFO Model characteristics for experiment "boomer" (Fold 9):
+INFO Model characteristics (Fold 9):
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 5.930930930930931, min. 1, max. 20
@@ -125,7 +125,7 @@ INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.29819799799952307 seconds
-INFO Model characteristics for experiment "boomer" (Fold 10):
+INFO Model characteristics (Fold 10):
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 5.887887887887888, min. 1, max. 19

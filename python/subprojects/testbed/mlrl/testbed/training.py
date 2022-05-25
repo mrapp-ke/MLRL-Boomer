@@ -109,7 +109,7 @@ class DataType(Enum):
     """
     Characterizes data as either training or test data.
     """
-    TRAINING = 'train'
+    TRAINING = 'training'
     TEST = 'test'
 
 

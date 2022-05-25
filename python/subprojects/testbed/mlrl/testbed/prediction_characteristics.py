@@ -19,12 +19,11 @@ class PredictionCharacteristicsOutput(ABC):
     """
 
     @abstractmethod
-    def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition, data_type: DataType,
+    def write_prediction_characteristics(self, data_partition: DataPartition, data_type: DataType,
                                          characteristics: LabelCharacteristics):
         """
         Writes the characteristics of a data set to the output.
 
-        :param experiment_name: The name of the experiment
         :param data_partition:  The partition of data, the characteristics correspond to
         :param data_type:       Specifies whether the predictions correspond to the training or test data
         :param characteristics: The characteristics of the predictions
@@ -37,9 +36,9 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
     Outputs the characteristics of binary predictions using the logger.
     """
 
-    def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition, data_type: DataType,
+    def write_prediction_characteristics(self, data_partition: DataPartition, data_type: DataType,
                                          characteristics: LabelCharacteristics):
-        msg = 'Prediction characteristics for experiment \"' + data_type.value + '_' + experiment_name + '\"'
+        msg = 'Prediction characteristics for ' + data_type.value + ' data'
 
         if data_partition.is_cross_validation_used():
             msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
@@ -65,7 +64,7 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
         """
         self.output_dir = output_dir
 
-    def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition, data_type: DataType,
+    def write_prediction_characteristics(self, data_partition: DataPartition, data_type: DataType,
                                          characteristics: LabelCharacteristics):
         columns = {
             'Labels': characteristics.num_labels,
@@ -76,10 +75,7 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
             'Distinct label vectors': characteristics.num_distinct_label_vectors
         }
         header = sorted(columns.keys())
-        header.insert(0, 'Approach')
-        columns['Approach'] = data_type.value + '_' + experiment_name
-        with open_writable_csv_file(self.output_dir,
-                                    'prediction_characteristics_' + data_type.value + '_' + experiment_name,
+        with open_writable_csv_file(self.output_dir, 'prediction_characteristics_' + data_type.value,
                                     data_partition.get_fold()) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
@@ -96,9 +92,8 @@ class PredictionCharacteristicsPrinter:
         """
         self.outputs = outputs
 
-    def print(self, experiment_name: str, data_partition: DataPartition, data_type: DataType, y):
+    def print(self, data_partition: DataPartition, data_type: DataType, y):
         """
-        :param experiment_name: The name of the experiment
         :param data_partition:  The partition of data, the characteristics correspond to
         :param data_type:       Specifies whether the predictions correspond to the training or test data
         :param y:               A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
@@ -108,4 +103,4 @@ class PredictionCharacteristicsPrinter:
             characteristics = LabelCharacteristics(y)
 
             for output in self.outputs:
-                output.write_prediction_characteristics(experiment_name, data_partition, data_type, characteristics)
+                output.write_prediction_characteristics(data_partition, data_type, characteristics)

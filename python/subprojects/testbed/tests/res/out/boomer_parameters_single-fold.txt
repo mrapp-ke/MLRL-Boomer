@@ -9,7 +9,7 @@ INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.013850071998604108 seconds
-INFO Model characteristics for experiment "boomer_rule-induction=top-down{max_conditions=1}_max-rules=10" (Fold 1):
+INFO Model characteristics (Fold 1):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1

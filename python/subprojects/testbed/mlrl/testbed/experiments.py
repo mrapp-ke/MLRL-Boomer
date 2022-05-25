@@ -135,13 +135,11 @@ class Experiment(CrossValidation, ABC):
             current_learner.set_params(**params)
             log.info('Successfully applied parameter setting: %s', params)
 
-        learner_name = current_learner.get_name()
-
         # Print data characteristics, if necessary...
         data_characteristics_printer = self.data_characteristics_printer
 
         if data_characteristics_printer is not None:
-            data_characteristics_printer.print(learner_name, meta_data, data_partition, train_x, train_y)
+            data_characteristics_printer.print(meta_data, data_partition, train_x, train_y)
 
         # Set the indices of nominal attributes, if supported...
         if isinstance(current_learner, NominalAttributeLearner):
@@ -175,14 +173,14 @@ class Experiment(CrossValidation, ABC):
                 data_type = DataType.TRAINING
 
                 if evaluation is not None:
-                    evaluation.evaluate(learner_name, meta_data, data_partition, data_type, predictions, train_y,
+                    evaluation.evaluate(meta_data, data_partition, data_type, predictions, train_y,
                                         train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
-                    prediction_printer.print(learner_name, meta_data, data_partition, data_type, predictions, train_y)
+                    prediction_printer.print(meta_data, data_partition, data_type, predictions, train_y)
 
                 if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(learner_name, data_partition, data_type, predictions)
+                    prediction_characteristics_printer.print(data_partition, data_type, predictions)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
@@ -198,26 +196,26 @@ class Experiment(CrossValidation, ABC):
                 data_type = DataType.TEST
 
                 if evaluation is not None:
-                    evaluation.evaluate(learner_name, meta_data, data_partition, data_type, predictions, test_y,
+                    evaluation.evaluate(meta_data, data_partition, data_type, predictions, test_y,
                                         train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
-                    prediction_printer.print(learner_name, meta_data, data_partition, data_type, predictions, test_y)
+                    prediction_printer.print(meta_data, data_partition, data_type, predictions, test_y)
 
                 if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(learner_name, data_partition, data_type, predictions)
+                    prediction_characteristics_printer.print(data_partition, data_type, predictions)
 
         # Print model characteristics, if necessary...
         model_characteristics_printer = self.model_characteristics_printer
 
         if model_characteristics_printer is not None:
-            model_characteristics_printer.print(learner_name, data_partition, current_learner)
+            model_characteristics_printer.print(data_partition, current_learner)
 
         # Print model, if necessary...
         model_printer = self.model_printer
 
         if model_printer is not None:
-            model_printer.print(learner_name, meta_data, data_partition, current_learner)
+            model_printer.print(meta_data, data_partition, current_learner)
 
     @staticmethod
     def __train(learner, x, y):

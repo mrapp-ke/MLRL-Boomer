@@ -12,7 +12,7 @@ INFO Predicting for 481 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.029129980999641703 seconds
-INFO Overall evaluation result for experiment "test_boomer_feature-format=dense":
+INFO Overall evaluation result on test data:
 
 Ex.-based F1: 0.1683991683991684
 Ex.-based Jacc.: 0.16735966735966737

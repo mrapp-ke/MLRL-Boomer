@@ -12,7 +12,7 @@ INFO Predicting for 391 training examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.01236077700741589 seconds
-INFO Predictions for experiment "train_boomer":
+INFO Predictions for training data:
 
 Ground truth:
 
@@ -802,13 +802,13 @@ Predictions:
  [0 0 0 1 1 0]
  [0 1 1 0 0 0]]
 
-DEBUG Saving data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_train_boomer_overall.arff'...
-INFO Successfully saved data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_train_boomer_overall.arff'.
+DEBUG Saving data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_training_overall.arff'...
+INFO Successfully saved data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_training_overall.arff'.
 INFO Predicting for 202 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.010414479009341449 seconds
-INFO Predictions for experiment "test_boomer":
+INFO Predictions for test data:
 
 Ground truth:
 
@@ -1220,6 +1220,6 @@ Predictions:
  [0 0 1 0 0 0]
  [0 1 1 0 0 0]]
 
-DEBUG Saving data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_boomer_overall.arff'...
-INFO Successfully saved data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_boomer_overall.arff'.
+DEBUG Saving data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_overall.arff'...
+INFO Successfully saved data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_overall.arff'.
 INFO Successfully finished after 0.6569092079880647 seconds

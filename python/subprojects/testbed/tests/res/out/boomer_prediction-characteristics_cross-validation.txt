@@ -12,7 +12,7 @@ INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.002518242981750518 seconds
-INFO Prediction characteristics for experiment "test_boomer" (Fold 1):
+INFO Prediction characteristics for test data (Fold 1):
 
 Labels: 6
 Label density: 0.28055555555555556
@@ -30,7 +30,7 @@ INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.002555716026108712 seconds
-INFO Prediction characteristics for experiment "test_boomer" (Fold 2):
+INFO Prediction characteristics for test data (Fold 2):
 
 Labels: 6
 Label density: 0.25555555555555554
@@ -48,7 +48,7 @@ INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0038132789777591825 seconds
-INFO Prediction characteristics for experiment "test_boomer" (Fold 3):
+INFO Prediction characteristics for test data (Fold 3):
 
 Labels: 6
 Label density: 0.2388888888888889
@@ -66,7 +66,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0026796250022016466 seconds
-INFO Prediction characteristics for experiment "test_boomer" (Fold 4):
+INFO Prediction characteristics for test data (Fold 4):
 
 Labels: 6
 Label density: 0.2655367231638418
@@ -84,7 +84,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0027334109763614833 seconds
-INFO Prediction characteristics for experiment "test_boomer" (Fold 5):
+INFO Prediction characteristics for test data (Fold 5):
 
 Labels: 6
 Label density: 0.2740112994350282
@@ -102,7 +102,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0026479230145923793 seconds
-INFO Prediction characteristics for experiment "test_boomer" (Fold 6):
+INFO Prediction characteristics for test data (Fold 6):
 
 Labels: 6
 Label density: 0.23163841807909605
@@ -120,7 +120,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0026972880004905164 seconds
-INFO Prediction characteristics for experiment "test_boomer" (Fold 7):
+INFO Prediction characteristics for test data (Fold 7):
 
 Labels: 6
 Label density: 0.2627118644067797
@@ -138,7 +138,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0026415250031277537 seconds
-INFO Prediction characteristics for experiment "test_boomer" (Fold 8):
+INFO Prediction characteristics for test data (Fold 8):
 
 Labels: 6
 Label density: 0.3107344632768362
@@ -156,7 +156,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.002693945018108934 seconds
-INFO Prediction characteristics for experiment "test_boomer" (Fold 9):
+INFO Prediction characteristics for test data (Fold 9):
 
 Labels: 6
 Label density: 0.2598870056497175
@@ -174,7 +174,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0041892859735526145 seconds
-INFO Prediction characteristics for experiment "test_boomer" (Fold 10):
+INFO Prediction characteristics for test data (Fold 10):
 
 Labels: 6
 Label density: 0.2288135593220339
