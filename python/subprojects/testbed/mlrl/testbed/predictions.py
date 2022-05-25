@@ -46,7 +46,7 @@ class PredictionLogOutput(PredictionOutput):
                           data_type: DataType, predictions, ground_truth):
         text = 'Ground truth:\n\n' + np.array2string(ground_truth, threshold=sys.maxsize) + '\n\nPredictions:\n\n' \
                + np.array2string(predictions, threshold=sys.maxsize)
-        msg = 'Predictions for experiment \"' + experiment_name + '\"'
+        msg = 'Predictions for experiment \"' + data_type.value + '_' + experiment_name + '\"'
 
         if data_partition.is_cross_validation_used():
             msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
@@ -68,7 +68,8 @@ class PredictionArffOutput(PredictionOutput):
 
     def write_predictions(self, experiment_name: str, meta_data: MetaData, data_partition: DataPartition,
                           data_type: DataType, predictions, ground_truth):
-        file_name = get_file_name_per_fold('predictions_' + experiment_name, SUFFIX_ARFF, data_partition.get_fold())
+        file_name = get_file_name_per_fold('predictions_' + data_type.value + '_' + experiment_name, SUFFIX_ARFF,
+                                           data_partition.get_fold())
         attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
         labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
         prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)

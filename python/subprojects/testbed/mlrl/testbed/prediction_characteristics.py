@@ -39,7 +39,7 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
 
     def write_prediction_characteristics(self, experiment_name: str, data_partition: DataPartition, data_type: DataType,
                                          characteristics: LabelCharacteristics):
-        msg = 'Prediction characteristics for experiment \"' + experiment_name + '\"'
+        msg = 'Prediction characteristics for experiment \"' + data_type.value + '_' + experiment_name + '\"'
 
         if data_partition.is_cross_validation_used():
             msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
@@ -77,8 +77,9 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
         }
         header = sorted(columns.keys())
         header.insert(0, 'Approach')
-        columns['Approach'] = experiment_name
-        with open_writable_csv_file(self.output_dir, 'prediction_characteristics_' + experiment_name,
+        columns['Approach'] = data_type.value + '_' + experiment_name
+        with open_writable_csv_file(self.output_dir,
+                                    'prediction_characteristics_' + data_type.value + '_' + experiment_name,
                                     data_partition.get_fold()) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
