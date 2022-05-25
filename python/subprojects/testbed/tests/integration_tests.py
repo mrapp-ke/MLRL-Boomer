@@ -31,7 +31,7 @@ DATASET_WEATHER = 'weather'
 
 class CmdBuilder:
     """
-    A builder that allows to configure the command for running a rule learner.
+    A builder that allows to configure a command for running a rule learner.
     """
 
     def __init__(self, cmd: str, data_dir: str = DIR_DATA, dataset: str = DATASET_EMOTIONS):
