@@ -264,8 +264,8 @@ class EvaluationLogOutput(EvaluationOutput):
                 score = evaluation_result.get(measure, fold)
                 text += measure + ': ' + str(score)
 
-        log.info('Evaluation result for experiment \"' + experiment_name + '\" (Fold ' + str(fold + 1) + '):\n\n%s\n',
-                 text)
+        log.info('Evaluation result for experiment \"' + data_type.value + '_' + experiment_name + '\" (Fold ' + str(
+            fold + 1) + '):\n\n%s\n', text)
 
     def write_overall_evaluation_results(self, experiment_name: str, data_type: DataType,
                                          evaluation_result: EvaluationResult, num_folds: int):
@@ -282,7 +282,9 @@ class EvaluationLogOutput(EvaluationOutput):
                 if num_folds > 1:
                     text += (' ±' + str(std_dev))
 
-        log.info('Overall evaluation result for experiment \"' + experiment_name + '\":\n\n%s\n', text)
+        log.info(
+            'Overall evaluation result for experiment \"' + data_type.value + '_' + experiment_name + '\":\n\n%s\n',
+            text)
 
 
 class EvaluationCsvOutput(EvaluationOutput):
@@ -301,9 +303,10 @@ class EvaluationCsvOutput(EvaluationOutput):
         columns = evaluation_result.dict(fold)
         header = sorted(columns.keys())
         header.insert(0, 'Approach')
-        columns['Approach'] = experiment_name
+        columns['Approach'] = data_type.value + '_' + experiment_name
 
-        with open_writable_csv_file(self.output_dir, 'evaluation_' + experiment_name, fold) as csv_file:
+        with open_writable_csv_file(self.output_dir, 'evaluation_' + data_type.value + '_' + experiment_name,
+                                    fold) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
@@ -312,9 +315,10 @@ class EvaluationCsvOutput(EvaluationOutput):
         columns = evaluation_result.avg_dict() if num_folds > 1 else evaluation_result.dict(0)
         header = sorted(columns.keys())
         header.insert(0, 'Approach')
-        columns['Approach'] = experiment_name
+        columns['Approach'] = data_type.value + '_' + experiment_name
 
-        with open_writable_csv_file(self.output_dir, 'evaluation_' + experiment_name) as csv_file:
+        with open_writable_csv_file(self.output_dir,
+                                    'evaluation_' + data_type.value + '_' + experiment_name) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
