@@ -209,13 +209,19 @@ class Experiment(CrossValidation, ABC):
         model_characteristics_printer = self.model_characteristics_printer
 
         if model_characteristics_printer is not None:
-            model_characteristics_printer.print(data_partition, current_learner)
+            try:
+                model_characteristics_printer.print(data_partition, current_learner)
+            except ValueError:
+                log.error('The learner does not support to obtain model characteristics')
 
         # Print model, if necessary...
         model_printer = self.model_printer
 
         if model_printer is not None:
-            model_printer.print(meta_data, data_partition, current_learner)
+            try:
+                model_printer.print(meta_data, data_partition, current_learner)
+            except ValueError:
+                log.error('The learner does not support to create a textual representation of the model')
 
     @staticmethod
     def __train(learner, x, y):
