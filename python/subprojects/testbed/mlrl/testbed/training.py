@@ -7,6 +7,7 @@ and test sets.
 import logging as log
 import os.path as path
 from abc import ABC, abstractmethod
+from enum import Enum
 from timeit import default_timer as timer
 from typing import Optional
 
@@ -102,6 +103,14 @@ class CrossValidationFold(DataPartition):
 
     def get_fold(self) -> Optional[int]:
         return self.fold
+
+
+class DataType(Enum):
+    """
+    Characterizes data as either training or test data.
+    """
+    TRAINING = 'train'
+    TEST = 'test'
 
 
 class CrossValidation(ABC):
