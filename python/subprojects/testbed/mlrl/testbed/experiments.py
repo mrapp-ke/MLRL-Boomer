@@ -13,7 +13,7 @@ from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.evaluation import Evaluation
 from mlrl.testbed.model_characteristics import ModelPrinter, ModelCharacteristicsPrinter
-from mlrl.testbed.parameters import ParameterInput
+from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
 from mlrl.testbed.predictions import PredictionPrinter
@@ -54,7 +54,7 @@ class Experiment(CrossValidation, ABC):
                  test_prediction_printer: Optional[PredictionPrinter] = None,
                  train_prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter] = None,
                  test_prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter] = None,
-                 parameter_input: Optional[ParameterInput] = None,
+                 parameter_input: Optional[ParameterInput] = None, parameter_printer: Optional[ParameterPrinter] = None,
                  model_printer: Optional[ModelPrinter] = None,
                  model_characteristics_printer: Optional[ModelCharacteristicsPrinter] = None,
                  data_characteristics_printer: Optional[DataCharacteristicsPrinter] = None,
@@ -84,6 +84,7 @@ class Experiment(CrossValidation, ABC):
                                                             of binary predictions for the test data or None, if the
                                                             characteristics should not be printed
         :param parameter_input:                             The input that should be used to read the parameter settings
+        :param parameter_printer:                           The printer that should be used to print parameter settings
         :param model_printer:                               The printer that should be used to print textual
                                                             representations of models or None, if no textual
                                                             representations should be printed
@@ -108,6 +109,7 @@ class Experiment(CrossValidation, ABC):
         self.train_prediction_characteristics_printer = train_prediction_characteristics_printer
         self.test_prediction_characteristics_printer = test_prediction_characteristics_printer
         self.parameter_input = parameter_input
+        self.parameter_printer = parameter_printer
         self.model_printer = model_printer
         self.model_characteristics_printer = model_characteristics_printer
         self.data_characteristics_printer = data_characteristics_printer
@@ -134,6 +136,12 @@ class Experiment(CrossValidation, ABC):
             params = parameter_input.read_parameters(data_partition)
             current_learner.set_params(**params)
             log.info('Successfully applied parameter setting: %s', params)
+
+        # Print parameter setting, if necessary...
+        parameter_printer = self.parameter_printer
+
+        if parameter_printer is not None:
+            parameter_printer.print(data_partition, current_learner)
 
         # Print data characteristics, if necessary...
         data_characteristics_printer = self.data_characteristics_printer

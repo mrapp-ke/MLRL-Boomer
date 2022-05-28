@@ -432,7 +432,11 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
+            .store_evaluation(False) \
             .print_model_characteristics(True) \
+            .print_parameters(True) \
+            .store_parameters(True) \
+            .set_output_dir() \
             .set_parameter_dir()
         self.run_cmd(builder, self.cmd + '_parameters_train-test')
 
@@ -444,7 +448,11 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
+            .store_evaluation(False) \
             .print_model_characteristics(True) \
+            .print_parameters(True) \
+            .store_parameters(True) \
+            .set_output_dir() \
             .set_parameter_dir()
         self.run_cmd(builder, self.cmd + '_parameters_cross-validation')
 
@@ -456,6 +464,10 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
+            .store_evaluation(False) \
             .print_model_characteristics(True) \
+            .print_parameters(True) \
+            .store_parameters(True) \
+            .set_output_dir() \
             .set_parameter_dir()
         self.run_cmd(builder, self.cmd + '_parameters_single-fold')
