@@ -306,6 +306,17 @@ class CmdBuilder:
         self.args.append('sparse' if sparse else 'dense')
         return self
 
+    def sparse_predicted_label_format(self, sparse: bool = True):
+        """
+        Configures whether sparse data structures should be used to represent predicted labels or not.
+
+        :param sparse:  True, if sparse data structures should be used to represent predicted labels, False otherwise
+        :return:        The builder itself
+        """
+        self.args.append('--predicted-label-format')
+        self.args.append('sparse' if sparse else 'dense')
+        return self
+
     def build(self) -> List[str]:
         """
         Returns a list of strings that contains the command that has been configured using the builder, as well as all
