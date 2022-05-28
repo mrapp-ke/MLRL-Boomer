@@ -388,6 +388,24 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .sparse_label_format(True)
         self.run_cmd(builder, self.cmd + '_labels-sparse')
 
+    def test_predicted_labels_dense(self):
+        """
+        Tests the rule learning algorithm when using a dense representation of predicted labels
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .sparse_predicted_label_format(False) \
+            .print_predictions(True)
+        self.run_cmd(builder, self.cmd + '_predicted-labels-dense')
+
+    def test_predicted_labels_sparse(self):
+        """
+        Tests the rule learning algorithm when using a sparse representation of predicted labels
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .sparse_predicted_label_format(True) \
+            .print_predictions(True)
+        self.run_cmd(builder, self.cmd + '_predicted-labels-sparse')
+
     def test_one_hot_encoding_train_test(self):
         """
         Tests the rule learning algorithm on a dataset with one-hot-encoded nominal attributes when using a predefined
