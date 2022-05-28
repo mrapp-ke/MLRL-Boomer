@@ -5,10 +5,10 @@
 
 
 /**
- * An entry that is stored in the cache. It contains the result of a binning method and an unique pointer to an
- * histogram, well as to a vector that stores the weights of individual bins.
+ * An entry that is stored in the cache. It contains an unique pointer to an histogram, as well as to a vector that
+ * stores the weights of individual bins.
  */
-struct CacheEntry : public IFeatureBinning::Result {
+struct HistogramCacheEntry {
 
     /**
      * An unique pointer to an object of type `IHistogram` that provides access to the values stored in a histogram.
@@ -187,8 +187,9 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                         std::unique_ptr<Result> get() override {
                             auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
-                            ThresholdVector* thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
-                            IBinIndexVector* binIndices = cacheIterator->second.binIndicesPtr.get();
+                            IFeatureBinning::Result& cacheEntry = cacheIterator->second;
+                            ThresholdVector* thresholdVector = cacheEntry.thresholdVectorPtr.get();
+                            IBinIndexVector* binIndices = cacheEntry.binIndicesPtr.get();
 
                             if (!thresholdVector) {
                                 // Fetch feature vector...
@@ -203,21 +204,26 @@ class ApproximateThresholds final : public AbstractThresholds {
                                     nominal_ ? *thresholdsSubset_.thresholds_.nominalFeatureBinningPtr_
                                              : *thresholdsSubset_.thresholds_.numericalFeatureBinningPtr_;
                                 IFeatureBinning::Result result = binning.createBins(*featureVectorPtr, numExamples);
-                                cacheIterator->second.thresholdVectorPtr = std::move(result.thresholdVectorPtr);
-                                thresholdVector = cacheIterator->second.thresholdVectorPtr.get();
-                                cacheIterator->second.binIndicesPtr = std::move(result.binIndicesPtr);
-                                binIndices = cacheIterator->second.binIndicesPtr.get();
+                                cacheEntry.thresholdVectorPtr = std::move(result.thresholdVectorPtr);
+                                thresholdVector = cacheEntry.thresholdVectorPtr.get();
+                                cacheEntry.binIndicesPtr = std::move(result.binIndicesPtr);
+                                binIndices = cacheEntry.binIndicesPtr.get();
+                            }
 
+                            auto cacheHistogramIterator = thresholdsSubset_.cacheHistogram_.find(featureIndex_);
+                            HistogramCacheEntry& histogramCacheEntry = cacheHistogramIterator->second;
+
+                            if (!histogramCacheEntry.histogramPtr) {
                                 // Create histogram and weight vector...
                                 uint32 numBins = thresholdVector->getNumElements();
-                                cacheIterator->second.histogramPtr =
+                                histogramCacheEntry.histogramPtr =
                                     thresholdsSubset_.weightedStatisticsPtr_->createHistogram(numBins);
-                                cacheIterator->second.weightVectorPtr = std::make_unique<BinWeightVector>(numBins);
+                                histogramCacheEntry.weightVectorPtr = std::make_unique<BinWeightVector>(numBins);
                             }
 
                             // Rebuild histogram...
-                            IHistogram& histogram = *cacheIterator->second.histogramPtr;
-                            BinWeightVector& binWeights = *cacheIterator->second.weightVectorPtr;
+                            IHistogram& histogram = *histogramCacheEntry.histogramPtr;
+                            BinWeightVector& binWeights = *histogramCacheEntry.weightVectorPtr;
                             rebuildHistogram(*thresholdVector, *binIndices, binWeights, histogram,
                                              thresholdsSubset_.weights_, thresholdsSubset_.coverageSet_);
 
@@ -234,10 +240,22 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 CoverageSet coverageSet_;
 
+                std::unordered_map<uint32, HistogramCacheEntry> cacheHistogram_;
+
                 template<typename T>
                 std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices,
                                                                                  uint32 featureIndex) {
-                    thresholds_.cache_.emplace(featureIndex, CacheEntry());
+                    // Retrieve the `HistogramCacheEntry` from the cache, or insert a new one if it does not already
+                    // exist...
+                    auto cacheHistogramIterator = cacheHistogram_.emplace(featureIndex, HistogramCacheEntry()).first;
+                    IHistogram* histogram = cacheHistogramIterator->second.histogramPtr.get();
+
+                    // If the `HistogramCacheEntry` in the cache does not refer to an `IHistogram`, add an empty
+                    // `IFeatureBinning::Result` to the cache...
+                    if (!histogram) {
+                        thresholds_.cache_.emplace(featureIndex, IFeatureBinning::Result());
+                    }
+
                     bool nominal = thresholds_.nominalFeatureMask_.isNominal(featureIndex);
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
                     return std::make_unique<ApproximateRuleRefinement<T>>(labelIndices, featureIndex, nominal, weights_,
@@ -370,7 +388,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
         uint32 numThreads_;
 
-        std::unordered_map<uint32, CacheEntry> cache_;
+        std::unordered_map<uint32, IFeatureBinning::Result> cache_;
 
     public:
 
