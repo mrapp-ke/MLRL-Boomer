@@ -486,7 +486,7 @@ class IntegrationTests(ABC, TestCase):
         :return:        The output of the command
         """
         out = subprocess.run(args, capture_output=True, text=True)
-        self.assertEqual(out.returncode, 0, 'Command terminated with non-zero exit code')
+        self.assertEqual(out.returncode, 0, 'Command terminated with non-zero exit code\n\n' + str(out.stderr))
         return out
 
     def run_cmd(self, builder: CmdBuilder, expected_output_file_name: str = None, expected_output_dir: str = DIR_OUT):
