@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 import shutil
 import subprocess
 from abc import ABC
+from functools import reduce
 from os import path, makedirs
 from typing import List, Optional
 from unittest import TestCase
@@ -31,7 +32,7 @@ DATASET_WEATHER = 'weather'
 
 class CmdBuilder:
     """
-    A builder that allows to configure the command for running a rule learner.
+    A builder that allows to configure a command for running a rule learner.
     """
 
     def __init__(self, cmd: str, data_dir: str = DIR_DATA, dataset: str = DATASET_EMOTIONS):
@@ -478,6 +479,10 @@ class IntegrationTests(ABC, TestCase):
         for tmp_dir in builder.tmp_dirs:
             shutil.rmtree(tmp_dir)
 
+    @staticmethod
+    def __format_cmd(args: List[str]):
+        return reduce(lambda txt, arg: txt + (' ' + arg if len(txt) > 0 else arg), args, '')
+
     def __run_cmd(self, args: List[str]):
         """
         Runs a given command.
@@ -486,7 +491,9 @@ class IntegrationTests(ABC, TestCase):
         :return:        The output of the command
         """
         out = subprocess.run(args, capture_output=True, text=True)
-        self.assertEqual(out.returncode, 0, 'Command terminated with non-zero exit code')
+        self.assertEqual(out.returncode, 0,
+                         'Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code\n\n' + str(
+                             out.stderr))
         return out
 
     def run_cmd(self, builder: CmdBuilder, expected_output_file_name: str = None, expected_output_dir: str = DIR_OUT):
