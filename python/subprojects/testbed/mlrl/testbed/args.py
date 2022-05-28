@@ -41,6 +41,8 @@ PARAM_OUTPUT_DIR = '--output-dir'
 
 PARAM_PRINT_PARAMETERS = '--print-parameters'
 
+PARAM_STORE_PARAMETERS = '--store-parameters'
+
 PARAM_PRINT_PREDICTIONS = '--print-predictions'
 
 PARAM_STORE_PREDICTIONS = '--store-predictions'
@@ -204,6 +206,10 @@ def add_rule_learner_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_PRINT_PARAMETERS, type=boolean_string, default=False,
                         help='Whether the parameter setting should be printed on the console or not. Must be one of '
                              + format_enum_values(BooleanOption) + '.')
+    parser.add_argument(PARAM_STORE_PARAMETERS, type=boolean_string, default=False,
+                        help='Whether the parameter setting should be written into output files or not. Must be one of '
+                             + format_enum_values(BooleanOption) + '. Does only have an effect, if the parameter '
+                             + PARAM_OUTPUT_DIR + ' is specified.')
     parser.add_argument(PARAM_PRINT_PREDICTIONS, type=boolean_string, default=False,
                         help='Whether the predictions for individual examples and labels should be printed on the ' +
                              'console or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
