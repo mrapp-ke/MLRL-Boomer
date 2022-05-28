@@ -18,7 +18,8 @@ from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ModelPrinter, RulePrinter, ModelPrinterLogOutput, \
     ModelPrinterTxtOutput, ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, \
     RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
-from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput
+from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterPrinter, ParameterLogOutput, \
+    ParameterCsvOutput
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter, \
     PredictionCharacteristicsLogOutput, PredictionCharacteristicsCsvOutput
@@ -88,6 +89,18 @@ class LearnerRunnable(Runnable, ABC):
         return None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
 
     @staticmethod
+    def __create_parameter_printer(args) -> Optional[ParameterPrinter]:
+        outputs = []
+
+        if args.print_parameters:
+            outputs.append(ParameterLogOutput())
+
+        if args.store_parameters and args.output_dir is not None:
+            outputs.append(ParameterCsvOutput(output_dir=args.output_dir))
+
+        return ParameterPrinter(outputs) if len(outputs) > 0 else None
+
+    @staticmethod
     def __create_persistence(args) -> Optional[ModelPersistence]:
         return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
 
@@ -121,8 +134,7 @@ class LearnerRunnable(Runnable, ABC):
         if args.store_predictions and args.output_dir is not None:
             outputs.append(PredictionArffOutput(output_dir=args.output_dir))
 
-        printer = PredictionPrinter(outputs) if len(outputs) > 0 else None
-        return printer
+        return PredictionPrinter(outputs) if len(outputs) > 0 else None
 
     @staticmethod
     def __create_prediction_characteristics_printer(args) -> Optional[PredictionCharacteristicsPrinter]:
@@ -134,8 +146,7 @@ class LearnerRunnable(Runnable, ABC):
         if args.store_prediction_characteristics and args.output_dir is not None:
             outputs.append(PredictionCharacteristicsCsvOutput(output_dir=args.output_dir))
 
-        printer = PredictionCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
-        return printer
+        return PredictionCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
 
     @staticmethod
     def __create_data_characteristics_printer(args) -> (Optional[DataCharacteristicsPrinter], bool):
@@ -147,13 +158,10 @@ class LearnerRunnable(Runnable, ABC):
         if args.store_data_characteristics and args.output_dir is not None:
             outputs.append(DataCharacteristicsCsvOutput(output_dir=args.output_dir))
 
-        printer = DataCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
-        return printer
+        return DataCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
 
     def _run(self, args):
         # Create outputs...
-        data_characteristics_printer = self.__create_data_characteristics_printer(args)
-
         if args.evaluate_training_data:
             train_evaluation = self.__create_evaluation(args)
             train_prediction_printer = self.__create_prediction_printer(args)
@@ -163,11 +171,7 @@ class LearnerRunnable(Runnable, ABC):
             train_prediction_printer = None
             train_prediction_characteristics_printer = None
 
-        test_evaluation = self.__create_evaluation(args)
-        test_prediction_printer = self.__create_prediction_printer(args)
         test_prediction_characteristics_printer = self.__create_prediction_characteristics_printer(args)
-        model_characteristics_printer = self._create_model_characteristics_printer(args)
-        model_printer = self._create_model_printer(args)
 
         # Configure experiment...
         experiment = Experiment(base_learner=self._create_learner(args),
@@ -175,19 +179,20 @@ class LearnerRunnable(Runnable, ABC):
                                 random_state=args.random_state,
                                 pre_execution_hook=self.__create_pre_execution_hook(args),
                                 predict_probabilities=args.predict_probabilities,
-                                test_evaluation=test_evaluation,
+                                test_evaluation=self.__create_evaluation(args),
                                 train_evaluation=train_evaluation,
                                 train_prediction_printer=train_prediction_printer,
-                                test_prediction_printer=test_prediction_printer,
+                                test_prediction_printer=self.__create_prediction_printer(args),
                                 train_prediction_characteristics_printer=train_prediction_characteristics_printer,
                                 test_prediction_characteristics_printer=test_prediction_characteristics_printer,
                                 data_set=self.__create_data_set(args),
                                 num_folds=args.folds,
                                 current_fold=args.current_fold,
                                 parameter_input=self.__create_parameter_input(args),
-                                model_printer=model_printer,
-                                model_characteristics_printer=model_characteristics_printer,
-                                data_characteristics_printer=data_characteristics_printer,
+                                parameter_printer=self.__create_parameter_printer(args),
+                                model_printer=self._create_model_printer(args),
+                                model_characteristics_printer=self._create_model_characteristics_printer(args),
+                                data_characteristics_printer=self.__create_data_characteristics_printer(args),
                                 persistence=self.__create_persistence(args))
         experiment.run()
 
@@ -249,8 +254,7 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
         if args.store_rules and args.output_dir is not None:
             outputs.append(ModelPrinterTxtOutput(output_dir=args.output_dir))
 
-        printer = RulePrinter(args.print_options, outputs) if len(outputs) > 0 else None
-        return printer
+        return RulePrinter(args.print_options, outputs) if len(outputs) > 0 else None
 
     def _create_model_characteristics_printer(self, args) -> Optional[ModelCharacteristicsPrinter]:
         outputs = []
@@ -261,5 +265,4 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
         if args.store_model_characteristics and args.output_dir is not None:
             outputs.append(RuleModelCharacteristicsCsvOutput(output_dir=args.output_dir))
 
-        printer = RuleModelCharacteristicsPrinter(outputs) if len(outputs) > 0 else None
-        return printer
+        return RuleModelCharacteristicsPrinter(outputs) if len(outputs) > 0 else None
