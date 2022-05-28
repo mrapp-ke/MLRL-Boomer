@@ -48,6 +48,7 @@ class CmdBuilder:
         self.current_fold = 0
         self.training_data_evaluated = False
         self.evaluation_stored = True
+        self.parameters_stored = False
         self.predictions_stored = False
         self.prediction_characteristics_stored = False
         self.data_characteristics_stored = False
@@ -148,6 +149,29 @@ class CmdBuilder:
         self.evaluation_stored = store_evaluation
         self.args.append('--store-evaluation')
         self.args.append(str(store_evaluation).lower())
+        return self
+
+    def print_parameters(self, print_parameters: bool = True):
+        """
+        Configures whether the parameters should be printed on the console or not.
+
+        :param print_parameters:    True, if the parameters should be printed, False otherwise
+        :return:                    The builder itself
+        """
+        self.args.append('--print-parameters')
+        self.args.append(str(print_parameters).lower())
+        return self
+
+    def store_parameters(self, store_parameters: bool = True):
+        """
+        Configures whether the parameters should be written into output files or not.
+
+        :param store_parameters:    True, if the parameters should be written into output files, False otherwise
+        :return:                    The builder itself
+        """
+        self.parameters_stored = store_parameters
+        self.args.append('--store-parameters')
+        self.args.append(str(store_parameters).lower())
         return self
 
     def print_predictions(self, print_predictions: bool = True):
@@ -425,6 +449,15 @@ class IntegrationTests(ABC, TestCase):
             if builder.training_data_evaluated:
                 self.__assert_output_files_exist(builder, self.__get_output_name(prefix, True), suffix)
 
+    def __assert_parameter_files_exist(self, builder: CmdBuilder):
+        """
+        Asserts that the parameter files, which should be created by a command, exist.
+
+        :param builder: The builder
+        """
+        if builder.parameters_stored:
+            self.__assert_output_files_exist(builder, 'parameters', 'csv')
+
     def __assert_prediction_files_exist(self, builder: CmdBuilder):
         """
         Asserts that the prediction files, which should be created by a command, exist.
@@ -536,6 +569,7 @@ class IntegrationTests(ABC, TestCase):
 
         self.__assert_model_files_exist(builder)
         self.__assert_evaluation_files_exist(builder)
+        self.__assert_parameter_files_exist(builder)
         self.__assert_prediction_files_exist(builder)
         self.__assert_prediction_characteristic_files_exist(builder)
         self.__assert_data_characteristic_files_exist(builder)
