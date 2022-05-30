@@ -169,6 +169,36 @@ namespace boosting {
                         return ruleEvaluationPtr_->evaluate(sumsOfStatistics);
                     }
 
+                    /**
+                     * @see `IStatisticsSubset::evaluate`
+                     */
+                    const IScoreVector& evaluate() override final {
+                        return ruleEvaluationPtr_->evaluate(sumVector_);
+                    }
+
+                    /**
+                     * @see `IStatisticsSubset::evaluateAccumulated`
+                     */
+                    const IScoreVector& evaluateAccumulated() override final {
+                        return ruleEvaluationPtr_->evaluate(*accumulatedSumVectorPtr_);
+                    }
+
+                    /**
+                     * @see `IStatisticsSubset::evaluateUncovered`
+                     */
+                    const IScoreVector& evaluateUncovered() override final {
+                        tmpVector_.difference(*totalSumVector_, labelIndices_, sumVector_);
+                        return ruleEvaluationPtr_->evaluate(tmpVector_);
+                    }
+
+                    /**
+                     * @see `IStatisticsSubset::evaluateUncoveredAccumulated`
+                     */
+                    const IScoreVector& evaluateUncoveredAccumulated() override final {
+                        tmpVector_.difference(*totalSumVector_, labelIndices_, *accumulatedSumVectorPtr_);
+                        return ruleEvaluationPtr_->evaluate(tmpVector_);
+                    }
+
             };
 
         protected:
