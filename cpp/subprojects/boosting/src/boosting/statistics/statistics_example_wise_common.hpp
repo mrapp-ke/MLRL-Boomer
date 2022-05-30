@@ -464,10 +464,10 @@ namespace boosting {
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
                         const StatisticView& statisticView = this->getStatisticView();
-                        totalCoverableSumVectorPtr_->add(statisticView.gradients_row_cbegin(statisticIndex),
-                                                         statisticView.gradients_row_cend(statisticIndex),
-                                                         statisticView.hessians_row_cbegin(statisticIndex),
-                                                         statisticView.hessians_row_cend(statisticIndex), -weight);
+                        totalCoverableSumVectorPtr_->remove(statisticView.gradients_row_cbegin(statisticIndex),
+                                                            statisticView.gradients_row_cend(statisticIndex),
+                                                            statisticView.hessians_row_cbegin(statisticIndex),
+                                                            statisticView.hessians_row_cend(statisticIndex), weight);
                     }
 
             };
