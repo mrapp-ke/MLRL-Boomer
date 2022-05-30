@@ -156,20 +156,6 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::calculatePrediction`
-                     */
-                    const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override final {
-                        StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVectorPtr_ : sumVector_;
-
-                        if (uncovered) {
-                            tmpVector_.difference(*totalSumVector_, labelIndices_, sumsOfStatistics);
-                            return ruleEvaluationPtr_->evaluate(tmpVector_);
-                        }
-
-                        return ruleEvaluationPtr_->evaluate(sumsOfStatistics);
-                    }
-
-                    /**
                      * @see `IStatisticsSubset::evaluate`
                      */
                     const IScoreVector& evaluate() override final {

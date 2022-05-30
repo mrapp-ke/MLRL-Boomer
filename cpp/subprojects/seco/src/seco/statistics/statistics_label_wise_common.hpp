@@ -193,24 +193,6 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::calculatePrediction`
-                     */
-                    const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override {
-                        const ConfusionMatrixVector& sumsOfConfusionMatrices =
-                            accumulated ? *accumulatedSumVectorPtr_ : sumVector_;
-
-                        if (uncovered) {
-                            tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
-                                                  sumsOfConfusionMatrices.cbegin(), sumsOfConfusionMatrices.cend());
-                            return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
-                                                                statistics_.totalSumVector_, tmpVector_);
-                        }
-
-                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
-                                                            statistics_.totalSumVector_, sumsOfConfusionMatrices);
-                    }
-
-                    /**
                      * @see `IStatisticsSubset::evaluate`
                      */
                     const IScoreVector& evaluate() override final {
