@@ -53,8 +53,8 @@ class IStatisticsSubset {
          *
          * This function is supposed to reset the internal state of the subset to the state when the subset was created
          * via the function `IImmutableWeightedStatistics::createSubset`. When calling this function, the current state
-         * must not be purged entirely, but it must be cached and made available for use by the function
-         * `calculatePrediction` (if the function argument `accumulated` is set accordingly).
+         * must not be purged entirely, but it must be cached and made available for use by the functions
+         * `evaluateAccumulated` and `evaluateUncoveredAccumulated`.
          *
          * This function may be invoked multiple times with one or several calls to `addToSubset` in between, which is
          * supposed to update the previously cached state by accumulating the current one, i.e., the accumulated cached
