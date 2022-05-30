@@ -4,17 +4,12 @@
  */
 #pragma once
 
-#include "common/data/vector_bit.hpp"
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/rule_refinement/rule_refinement_callback.hpp"
+#include "common/binning/bin_weight_vector.hpp"
 #include "common/binning/threshold_vector.hpp"
 #include "common/sampling/weight_vector.hpp"
 
-
-/**
- * A vector that stores the weights of individual bins.
- */
-typedef BitVector BinWeightVector;
 
 /**
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
