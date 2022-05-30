@@ -47,6 +47,10 @@ FEATURE_SAMPLING_NO = 'none'
 
 FEATURE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
+LABEL_SAMPLING_NO = 'none'
+
+LABEL_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
+
 
 class CmdBuilder:
     """
@@ -379,6 +383,17 @@ class CmdBuilder:
         """
         self.args.append('--feature-sampling')
         self.args.append(feature_sampling)
+        return self
+
+    def label_sampling(self, label_sampling: str = LABEL_SAMPLING_WITHOUT_REPLACEMENT):
+        """
+        Configures the rule learner to sample from the available labels.
+
+        :param label_sampling:  The name of the sampling method that should be used
+        :return:                The builder itself
+        """
+        self.args.append('--label-sampling')
+        self.args.append(label_sampling)
         return self
 
     def pruning(self, pruning: str = PRUNING_IREP):

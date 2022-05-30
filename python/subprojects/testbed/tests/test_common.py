@@ -7,7 +7,8 @@ from unittest import SkipTest
 from integration_tests import IntegrationTests, CmdBuilder, DATASET_EMOTIONS, DATASET_ENRON, DATASET_LANGLOG, \
     PRUNING_IREP, PRUNING_NO, INSTANCE_SAMPLING_NO, INSTANCE_SAMPLING_WITHOUT_REPLACEMENT, \
     INSTANCE_SAMPLING_WITH_REPLACEMENT, INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE, \
-    INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE, FEATURE_SAMPLING_NO, FEATURE_SAMPLING_WITHOUT_REPLACEMENT
+    INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE, FEATURE_SAMPLING_NO, FEATURE_SAMPLING_WITHOUT_REPLACEMENT, \
+    LABEL_SAMPLING_NO, LABEL_SAMPLING_WITHOUT_REPLACEMENT
 
 
 class CommonIntegrationTests(IntegrationTests, ABC):
@@ -534,6 +535,22 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .feature_sampling(FEATURE_SAMPLING_WITHOUT_REPLACEMENT)
         self.run_cmd(builder, self.cmd + '_feature-sampling-without-replacement')
+
+    def test_label_sampling_no(self):
+        """
+        Tests the rule learning algorithm when not using a method to sample from the available labels.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .label_sampling(LABEL_SAMPLING_NO)
+        self.run_cmd(builder, self.cmd + '_label-sampling-no')
+
+    def test_label_sampling_without_replacement(self):
+        """
+        Tests the rule learning algorithm when using a method to sample from the available labels without replacement.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .label_sampling(LABEL_SAMPLING_WITHOUT_REPLACEMENT)
+        self.run_cmd(builder, self.cmd + '_label-sampling-without-replacement')
 
     def test_pruning_no(self):
         """
