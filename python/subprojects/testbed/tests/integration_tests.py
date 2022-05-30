@@ -43,6 +43,10 @@ INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 
 INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
+FEATURE_SAMPLING_NO = 'none'
+
+FEATURE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
+
 
 class CmdBuilder:
     """
@@ -364,6 +368,17 @@ class CmdBuilder:
         """
         self.args.append('--instance-sampling')
         self.args.append(instance_sampling)
+        return self
+
+    def feature_sampling(self, feature_sampling: str = FEATURE_SAMPLING_WITHOUT_REPLACEMENT):
+        """
+        Configures the rule learner to sample from the available features.
+
+        :param feature_sampling:    The name of the sampling method that should be used
+        :return:                    The builder itself
+        """
+        self.args.append('--feature-sampling')
+        self.args.append(feature_sampling)
         return self
 
     def pruning(self, pruning: str = PRUNING_IREP):
