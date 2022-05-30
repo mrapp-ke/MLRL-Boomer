@@ -1,0 +1,34 @@
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling='without-replacement', instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Starting experiment...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-train.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-test.arff"...
+INFO Fitting model to 391 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.05958929201005958 seconds
+INFO Predicting for 202 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.004315272002713755 seconds
+INFO Overall evaluation result on test data:
+
+Ex.-based F1: 0.4896746817538897
+Ex.-based Jacc.: 0.4015676567656765
+Ex.-based Prec.: 0.6203795379537954
+Ex.-based Rec.: 0.5387788778877888
+Hamm. Acc.: 0.7202970297029703
+Hamm. Loss: 0.27970297029702973
+Ma. F1: 0.5580078818320109
+Ma. Jacc.: 0.39322254694679654
+Ma. Prec.: 0.5758368121124589
+Ma. Rec.: 0.5429252652527498
+Mi. F1: 0.5659411011523688
+Mi. Jacc.: 0.39464285714285713
+Mi. Prec.: 0.5785340314136126
+Mi. Rec.: 0.5538847117794486
+Subs. 0/1 Loss: 0.8564356435643564
+Subs. Acc.: 0.14356435643564355
+
+INFO Successfully finished after 0.119177922984818 seconds
