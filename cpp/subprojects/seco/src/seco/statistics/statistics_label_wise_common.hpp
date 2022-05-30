@@ -202,13 +202,12 @@ namespace seco {
                         if (uncovered) {
                             tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
                                                   sumsOfConfusionMatrices.cbegin(), sumsOfConfusionMatrices.cend());
-                            return ruleEvaluationPtr_->calculatePrediction(statistics_.majorityLabelVector_,
-                                                                           statistics_.totalSumVector_, tmpVector_);
+                            return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
+                                                                statistics_.totalSumVector_, tmpVector_);
                         }
 
-                        return ruleEvaluationPtr_->calculatePrediction(statistics_.majorityLabelVector_,
-                                                                       statistics_.totalSumVector_,
-                                                                       sumsOfConfusionMatrices);
+                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
+                                                            statistics_.totalSumVector_, sumsOfConfusionMatrices);
                     }
 
             };
