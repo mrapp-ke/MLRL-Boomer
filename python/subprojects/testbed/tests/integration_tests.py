@@ -401,6 +401,7 @@ class CmdBuilder:
         """
         return self.args
 
+
 class IntegrationTests(ABC, TestCase):
     """
     An abstract base class for all integration tests.
