@@ -171,22 +171,41 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::calculatePrediction`
+                     * @see `IStatisticsSubset::evaluate`
                      */
-                    const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override final {
-                        StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVectorPtr_ : sumVector_;
+                    const IScoreVector& evaluate() override final {
+                        return ruleEvaluationPtr_->evaluate(sumVector_);
+                    }
 
-                        if (uncovered) {
-                            tmpVector_.difference(totalSumVector_->gradients_cbegin(),
-                                                  totalSumVector_->gradients_cend(), totalSumVector_->hessians_cbegin(),
-                                                  totalSumVector_->hessians_cend(), labelIndices_,
-                                                  sumsOfStatistics.gradients_cbegin(),
-                                                  sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
-                                                  sumsOfStatistics.hessians_cend());
-                            return ruleEvaluationPtr_->calculatePrediction(tmpVector_);
-                        }
+                    /**
+                     * @see `IStatisticsSubset::evaluateAccumulated`
+                     */
+                    const IScoreVector& evaluateAccumulated() override final {
+                        return ruleEvaluationPtr_->evaluate(*accumulatedSumVectorPtr_);
+                    }
 
-                        return ruleEvaluationPtr_->calculatePrediction(sumsOfStatistics);
+                    /**
+                     * @see `IStatisticsSubset::evaluateUncovered`
+                     */
+                    const IScoreVector& evaluateUncovered() override final {
+                        tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
+                                              totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
+                                              labelIndices_, sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
+                                              sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
+                        return ruleEvaluationPtr_->evaluate(tmpVector_);
+                    }
+
+                    /**
+                     * @see `IStatisticsSubset::evaluateUncoveredAccumulated`
+                     */
+                    const IScoreVector& evaluateUncoveredAccumulated() override final {
+                        tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
+                                              totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
+                                              labelIndices_, accumulatedSumVectorPtr_->gradients_cbegin(),
+                                              accumulatedSumVectorPtr_->gradients_cend(),
+                                              accumulatedSumVectorPtr_->hessians_cbegin(),
+                                              accumulatedSumVectorPtr_->hessians_cend());
+                        return ruleEvaluationPtr_->evaluate(tmpVector_);
                     }
 
             };

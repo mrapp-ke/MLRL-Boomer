@@ -91,7 +91,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 if (previousThreshold != currentThreshold) {
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the == operator in case of a nominal feature) is used...
-                    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+                    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
                     float64 qualityScore = scoreVector.overallQualityScore;
 
                     // If the refinement is better than the current rule...
@@ -115,7 +115,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
                     // Find and evaluate the best head for the current refinement, if a condition that uses the >
                     // operator (or the != operator in case of a nominal feature) is used...
-                    const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, false);
+                    const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
                     qualityScore = scoreVector2.overallQualityScore;
 
                     // If the refinement is better than the current rule...
@@ -163,7 +163,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                                             || accumulatedNumExamples < numExamples_)) {
             // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
             // used...
-            const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
             float64 qualityScore = scoreVector.overallQualityScore;
 
             // If the refinement is better than the current rule...
@@ -181,7 +181,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
             // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
             // used...
-            const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, false);
+            const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
             qualityScore = scoreVector2.overallQualityScore;
 
             // If the refinement is better than the current rule...
@@ -242,7 +242,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 if (previousThreshold != currentThreshold) {
                     // Find and evaluate the best head for the current refinement, if a condition that uses the
                     // > operator (or the == operator in case of a nominal feature) is used...
-                    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+                    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
                     float64 qualityScore = scoreVector.overallQualityScore;
 
                     // If the refinement is better than the current rule...
@@ -266,7 +266,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the != operator in case of a nominal feature) is used...
-                    const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, false);
+                    const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
                     qualityScore = scoreVector2.overallQualityScore;
 
                     // If the refinement is better than the current rule...
@@ -314,7 +314,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     if (nominal_ && numExamples > 0 && numExamples < accumulatedNumExamples) {
         // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
         // used...
-        const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+        const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
         float64 qualityScore = scoreVector.overallQualityScore;
 
         // If the refinement is better than the current rule...
@@ -332,7 +332,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
         // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
         // used...
-        const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, false);
+        const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
         qualityScore = scoreVector2.overallQualityScore;
 
         // If the refinement is better than the current rule...
@@ -365,7 +365,8 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
         // Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
         // the condition `f != 0` in case of a nominal feature) is used...
-        const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, nominal_);
+        const IScoreVector& scoreVector =
+            nominal_? statisticsSubsetPtr->evaluateAccumulated() : statisticsSubsetPtr->evaluate();
         float64 qualityScore = scoreVector.overallQualityScore;
 
         // If the refinement is better than the current rule...
@@ -392,7 +393,8 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
         // Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2`
         // (or `f == 0` in case of a nominal feature) is used...
-        const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, nominal_);
+        const IScoreVector& scoreVector2 =
+            nominal_ ? statisticsSubsetPtr->evaluateUncoveredAccumulated() : statisticsSubsetPtr->evaluateUncovered();
         qualityScore = scoreVector2.overallQualityScore;
 
         // If the refinement is better than the current rule...
@@ -426,7 +428,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     if (!nominal_ && accumulatedNumExamplesNegative > 0 && accumulatedNumExamplesNegative < numExamples_) {
         // Find and evaluate the best head for the current refinement, if the condition that uses the <= operator is
         // used...
-        const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, true);
+        const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateAccumulated();
         float64 qualityScore = scoreVector.overallQualityScore;
 
         // If the refinement is better than the current rule...
@@ -452,7 +454,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
         // Find and evaluate the best head for the current refinement, if the condition that uses the > operator is
         // used...
-        const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculatePrediction(true, true);
+        const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncoveredAccumulated();
         qualityScore = scoreVector2.overallQualityScore;
 
         // If the refinement is better than the current rule...

@@ -56,7 +56,7 @@ namespace boosting {
 
             }
 
-            const IScoreVector& calculatePrediction(StatisticVector& statisticVector) override {
+            const IScoreVector& evaluate(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 const std::pair<float64, float64> pair = getMinAndMaxScore(statisticIterator, numElements,

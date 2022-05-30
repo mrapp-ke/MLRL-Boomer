@@ -126,9 +126,9 @@ namespace boosting {
             }
 
             /**
-             * @see `IRuleEvaluation::calculatePrediction`
+             * @see `IRuleEvaluation::evaluate`
              */
-            const IScoreVector& calculatePrediction(StatisticVector& statisticVector) override final {
+            const IScoreVector& evaluate(StatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
                 uint32 numCriteria = this->calculateLabelWiseCriteria(statisticVector, criteria_,
                                                                       scoreVector_.getNumElements(),

@@ -193,22 +193,39 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::calculatePrediction`
+                     * @see `IStatisticsSubset::evaluate`
                      */
-                    const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override {
-                        const ConfusionMatrixVector& sumsOfConfusionMatrices =
-                            accumulated ? *accumulatedSumVectorPtr_ : sumVector_;
+                    const IScoreVector& evaluate() override final {
+                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
+                                                            statistics_.totalSumVector_, sumVector_);
+                    }
 
-                        if (uncovered) {
-                            tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
-                                                  sumsOfConfusionMatrices.cbegin(), sumsOfConfusionMatrices.cend());
-                            return ruleEvaluationPtr_->calculatePrediction(statistics_.majorityLabelVector_,
-                                                                           statistics_.totalSumVector_, tmpVector_);
-                        }
+                    /**
+                     * @see `IStatisticsSubset::evaluateAccumulated`
+                     */
+                    const IScoreVector& evaluateAccumulated() override final {
+                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
+                                                            statistics_.totalSumVector_, *accumulatedSumVectorPtr_);
+                    }
 
-                        return ruleEvaluationPtr_->calculatePrediction(statistics_.majorityLabelVector_,
-                                                                       statistics_.totalSumVector_,
-                                                                       sumsOfConfusionMatrices);
+                    /**
+                     * @see `IStatisticsSubset::evaluateUncovered`
+                     */
+                    const IScoreVector& evaluateUncovered() override final {
+                        tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
+                                              sumVector_.cbegin(), sumVector_.cend());
+                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
+                                                            statistics_.totalSumVector_, tmpVector_);
+                    }
+
+                    /**
+                     * @see `IStatisticsSubset::evaluateUncoveredAccumulated`
+                     */
+                    const IScoreVector& evaluateUncoveredAccumulated() override final {
+                        tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
+                                              accumulatedSumVectorPtr_->cbegin(), accumulatedSumVectorPtr_->cend());
+                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
+                                                            statistics_.totalSumVector_, tmpVector_);
                     }
 
             };
