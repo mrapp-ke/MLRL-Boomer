@@ -24,7 +24,7 @@ static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExampl
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
     return scoreVector.overallQualityScore;
 }
 
@@ -43,7 +43,7 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
     return scoreVector.overallQualityScore;
 }
 
@@ -63,7 +63,7 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
     return scoreVector.overallQualityScore;
 }
 
@@ -81,7 +81,7 @@ static inline void recalculatePredictionInternally(T iterator, uint32 numExample
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
     scoreVector.updatePrediction(head);
 }
 
@@ -97,7 +97,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
         statisticsSubsetPtr->addToSubset(exampleIndex, 1);
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
     scoreVector.updatePrediction(head);
 }
 
@@ -117,7 +117,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(false, false);
+    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
     scoreVector.updatePrediction(head);
 }
 
