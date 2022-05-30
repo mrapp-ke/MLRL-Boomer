@@ -5,7 +5,9 @@ from abc import ABC
 from unittest import SkipTest
 
 from integration_tests import IntegrationTests, CmdBuilder, DATASET_EMOTIONS, DATASET_ENRON, DATASET_LANGLOG, \
-    PRUNING_IREP, PRUNING_NO
+    PRUNING_IREP, PRUNING_NO, INSTANCE_SAMPLING_NO, INSTANCE_SAMPLING_WITHOUT_REPLACEMENT, \
+    INSTANCE_SAMPLING_WITH_REPLACEMENT, INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE, \
+    INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE
 
 
 class CommonIntegrationTests(IntegrationTests, ABC):
@@ -472,6 +474,50 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .set_parameter_dir()
         self.run_cmd(builder, self.cmd + '_parameters_single-fold')
+
+    def test_instance_sampling_no(self):
+        """
+        Tests the rule learning algorithm when not using a method to sample from the available training examples.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .instance_sampling(INSTANCE_SAMPLING_NO)
+        self.run_cmd(builder, self.cmd + '_instance-sampling-no')
+
+    def test_instance_sampling_with_replacement(self):
+        """
+        Tests the rule learning algorithm when using a method to sample from the available training examples with
+        replacement.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .instance_sampling(INSTANCE_SAMPLING_WITH_REPLACEMENT)
+        self.run_cmd(builder, self.cmd + '_instance-sampling-with-replacement')
+
+    def test_instance_sampling_without_replacement(self):
+        """
+        Tests the rule learning algorithm when using a method to sample from the available training examples without
+        replacement.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .instance_sampling(INSTANCE_SAMPLING_WITHOUT_REPLACEMENT)
+        self.run_cmd(builder, self.cmd + '_instance-sampling-without-replacement')
+
+    def test_instance_sampling_stratified_label_wise(self):
+        """
+        Tests the rule learning algorithm when using a method to sample from the available training examples using
+        label-wise stratification.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE)
+        self.run_cmd(builder, self.cmd + '_instance-sampling-stratified-label-wise')
+
+    def test_instance_sampling_stratified_example_wise(self):
+        """
+        Tests the rule learning algorithm when using a method to sample from the available training examples using
+        example-wise stratification.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE)
+        self.run_cmd(builder, self.cmd + '_instance-sampling-stratified-example-wise')
 
     def test_pruning_no(self):
         """
