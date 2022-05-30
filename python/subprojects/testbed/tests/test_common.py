@@ -4,7 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from abc import ABC
 from unittest import SkipTest
 
-from integration_tests import IntegrationTests, CmdBuilder, DATASET_EMOTIONS, DATASET_ENRON, DATASET_LANGLOG
+from integration_tests import IntegrationTests, CmdBuilder, DATASET_EMOTIONS, DATASET_ENRON, DATASET_LANGLOG, \
+    PRUNING_IREP, PRUNING_NO
 
 
 class CommonIntegrationTests(IntegrationTests, ABC):
@@ -471,3 +472,20 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .set_parameter_dir()
         self.run_cmd(builder, self.cmd + '_parameters_single-fold')
+
+    def test_pruning_no(self):
+        """
+        Tests the rule learning algorithm when not using a pruning method.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .pruning(PRUNING_NO)
+        self.run_cmd(builder, self.cmd + '_pruning-no')
+
+    def test_pruning_irep(self):
+        """
+        Tests the rule learning algorithm when using the IREP pruning method.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .instance_sampling() \
+            .pruning(PRUNING_IREP)
+        self.run_cmd(builder, self.cmd + '_pruning-irep')
