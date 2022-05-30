@@ -183,10 +183,10 @@ namespace boosting {
                                                   sumsOfStatistics.gradients_cbegin(),
                                                   sumsOfStatistics.gradients_cend(), sumsOfStatistics.hessians_cbegin(),
                                                   sumsOfStatistics.hessians_cend());
-                            return ruleEvaluationPtr_->calculatePrediction(tmpVector_);
+                            return ruleEvaluationPtr_->evaluate(tmpVector_);
                         }
 
-                        return ruleEvaluationPtr_->calculatePrediction(sumsOfStatistics);
+                        return ruleEvaluationPtr_->evaluate(sumsOfStatistics);
                     }
 
             };
