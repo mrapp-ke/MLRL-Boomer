@@ -163,10 +163,10 @@ namespace boosting {
 
                         if (uncovered) {
                             tmpVector_.difference(*totalSumVector_, labelIndices_, sumsOfStatistics);
-                            return ruleEvaluationPtr_->calculatePrediction(tmpVector_);
+                            return ruleEvaluationPtr_->evaluate(tmpVector_);
                         }
 
-                        return ruleEvaluationPtr_->calculatePrediction(sumsOfStatistics);
+                        return ruleEvaluationPtr_->evaluate(sumsOfStatistics);
                     }
 
             };

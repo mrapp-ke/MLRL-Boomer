@@ -181,9 +181,9 @@ namespace boosting {
             }
 
             /**
-             * @see `IRuleEvaluation::calculatePrediction`
+             * @see `IRuleEvaluation::evaluate`
              */
-            const IScoreVector& calculatePrediction(DenseExampleWiseStatisticVector& statisticVector) override {
+            const IScoreVector& evaluate(DenseExampleWiseStatisticVector& statisticVector) override {
                 uint32 numPredictions = scoreVector_.getNumElements();
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
