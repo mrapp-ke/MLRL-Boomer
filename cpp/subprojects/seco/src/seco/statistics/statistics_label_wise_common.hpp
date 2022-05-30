@@ -162,9 +162,9 @@ namespace seco {
 
                         // For each label, subtract the confusion matrices of the example at the given index (weighted
                         // by the given weight) from the total sum of confusion matrices...
-                        totalCoverableSumVectorPtr_->add(statisticIndex, statistics_.labelMatrix_,
-                                                         statistics_.majorityLabelVector_, statistics_.coverageMatrix_,
-                                                         -weight);
+                        totalCoverableSumVectorPtr_->remove(statisticIndex, statistics_.labelMatrix_,
+                                                            statistics_.majorityLabelVector_,
+                                                            statistics_.coverageMatrix_, weight);
                     }
 
                     /**
