@@ -29,6 +29,20 @@ DATASET_LANGLOG = 'langlog'
 
 DATASET_WEATHER = 'weather'
 
+PRUNING_NO = 'none'
+
+PRUNING_IREP = 'irep'
+
+INSTANCE_SAMPLING_NO = 'none'
+
+INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
+
+INSTANCE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
+
+INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
+
+INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
+
 
 class CmdBuilder:
     """
@@ -341,6 +355,28 @@ class CmdBuilder:
         self.args.append('sparse' if sparse else 'dense')
         return self
 
+    def instance_sampling(self, instance_sampling: str = INSTANCE_SAMPLING_WITHOUT_REPLACEMENT):
+        """
+        Configures the rule learner to sample from the available training examples.
+
+        :param instance_sampling:   The name of the sampling method that should be used
+        :return:                    The builder itself
+        """
+        self.args.append('--instance-sampling')
+        self.args.append(instance_sampling)
+        return self
+
+    def pruning(self, pruning: str = PRUNING_IREP):
+        """
+        Configures the rule learner to use a specific pruning method.
+
+        :param pruning: The name of the pruning method that should be used
+        :return:        The builder itself
+        """
+        self.args.append('--pruning')
+        self.args.append(pruning)
+        return self
+
     def build(self) -> List[str]:
         """
         Returns a list of strings that contains the command that has been configured using the builder, as well as all
@@ -349,7 +385,6 @@ class CmdBuilder:
         :return: The command that has been configured
         """
         return self.args
-
 
 class IntegrationTests(ABC, TestCase):
     """
