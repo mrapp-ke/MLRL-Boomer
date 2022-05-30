@@ -10,6 +10,14 @@ FEATURE_BINNING_EQUAL_WIDTH = 'equal-width'
 
 FEATURE_BINNING_EQUAL_FREQUENCY = 'equal-frequency'
 
+LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
+
+LOSS_LOGISTIC_EXAMPLE_WISE = 'logistic-example-wise'
+
+LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
+
+LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
+
 
 class BoostingCmdBuilder(CmdBuilder):
     """
@@ -28,6 +36,17 @@ class BoostingCmdBuilder(CmdBuilder):
         """
         self.args.append('--feature-binning')
         self.args.append(feature_binning)
+        return self
+
+    def loss(self, loss: str = LOSS_LOGISTIC_LABEL_WISE):
+        """
+        Configures the algorithm to use a specific loss function.
+
+        :param loss:    The name of the loss function that should be used
+        :return:        The builder itself
+        """
+        self.args.append('--loss')
+        self.args.append(loss)
         return self
 
 
@@ -121,3 +140,35 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(True)
         self.run_cmd(builder, self.cmd + '_feature-binning-equal-frequency_numerical-features-sparse')
+
+    def test_loss_logistic_label_wise(self):
+        """
+        Tests the BOOMER algorithm when using the label-wise logistic loss function.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_LABEL_WISE)
+        self.run_cmd(builder, self.cmd + '_loss-logistic-label-wise')
+
+    def test_loss_logistic_example_wise(self):
+        """
+        Tests the BOOMER algorithm when using the example-wise logistic loss function.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_EXAMPLE_WISE)
+        self.run_cmd(builder, self.cmd + '_loss-logistic-example-wise')
+
+    def test_loss_squared_hinge_label_wise(self):
+        """
+        Tests the BOOMER algorithm when using the label-wise squared hinge loss function.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_SQUARED_HINGE_LABEL_WISE)
+        self.run_cmd(builder, self.cmd + '_loss-squared-hinge-label-wise')
+
+    def test_loss_squared_error_label_wise(self):
+        """
+        Tests the BOOMER algorithm when using the label-wise squared error loss function.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_SQUARED_ERROR_LABEL_WISE)
+        self.run_cmd(builder, self.cmd + '_loss-squared-error-label-wise')
