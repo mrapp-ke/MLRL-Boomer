@@ -54,7 +54,7 @@ class TopDownRuleInduction final : public IRuleInduction {
                 statistics.createWeightedStatistics(weightVector);
             CompleteIndexVector labelIndices(numLabels);
             std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices.createSubset(*weightedStatisticsPtr);
-            const IScoreVector& scoreVector = statisticsSubsetPtr->calculatePrediction(true, false);
+            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateUncovered();
             ScoreProcessor scoreProcessor;
             scoreProcessor.processScores(scoreVector);
             std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr = scoreProcessor.pollHead();

@@ -156,17 +156,33 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::calculatePrediction`
+                     * @see `IStatisticsSubset::evaluate`
                      */
-                    const IScoreVector& calculatePrediction(bool uncovered, bool accumulated) override final {
-                        StatisticVector& sumsOfStatistics = accumulated ? *accumulatedSumVectorPtr_ : sumVector_;
+                    const IScoreVector& evaluate() override final {
+                        return ruleEvaluationPtr_->evaluate(sumVector_);
+                    }
 
-                        if (uncovered) {
-                            tmpVector_.difference(*totalSumVector_, labelIndices_, sumsOfStatistics);
-                            return ruleEvaluationPtr_->calculatePrediction(tmpVector_);
-                        }
+                    /**
+                     * @see `IStatisticsSubset::evaluateAccumulated`
+                     */
+                    const IScoreVector& evaluateAccumulated() override final {
+                        return ruleEvaluationPtr_->evaluate(*accumulatedSumVectorPtr_);
+                    }
 
-                        return ruleEvaluationPtr_->calculatePrediction(sumsOfStatistics);
+                    /**
+                     * @see `IStatisticsSubset::evaluateUncovered`
+                     */
+                    const IScoreVector& evaluateUncovered() override final {
+                        tmpVector_.difference(*totalSumVector_, labelIndices_, sumVector_);
+                        return ruleEvaluationPtr_->evaluate(tmpVector_);
+                    }
+
+                    /**
+                     * @see `IStatisticsSubset::evaluateUncoveredAccumulated`
+                     */
+                    const IScoreVector& evaluateUncoveredAccumulated() override final {
+                        tmpVector_.difference(*totalSumVector_, labelIndices_, *accumulatedSumVectorPtr_);
+                        return ruleEvaluationPtr_->evaluate(tmpVector_);
                     }
 
             };
