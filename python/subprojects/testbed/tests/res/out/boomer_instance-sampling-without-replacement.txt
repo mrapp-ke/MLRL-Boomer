@@ -1,0 +1,34 @@
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling='without-replacement', feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning=None, label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Starting experiment...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-train.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-test.arff"...
+INFO Fitting model to 391 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.26367923099314794 seconds
+INFO Predicting for 202 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.00601097900653258 seconds
+INFO Overall evaluation result on test data:
+
+Ex.-based F1: 0.5764026402640264
+Ex.-based Jacc.: 0.5
+Ex.-based Prec.: 0.7318481848184819
+Ex.-based Rec.: 0.5684818481848185
+Hamm. Acc.: 0.7912541254125413
+Hamm. Loss: 0.20874587458745875
+Ma. F1: 0.6359461794567434
+Ma. Jacc.: 0.4760084829973843
+Ma. Prec.: 0.7312669376693767
+Ma. Rec.: 0.5750831302498146
+Mi. F1: 0.6461538461538463
+Mi. Jacc.: 0.4772727272727273
+Mi. Prec.: 0.7310126582278481
+Mi. Rec.: 0.5789473684210527
+Subs. 0/1 Loss: 0.7376237623762376
+Subs. Acc.: 0.2623762376237624
+
+INFO Successfully finished after 0.3296351960161701 seconds
