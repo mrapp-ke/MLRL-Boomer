@@ -210,6 +210,42 @@ namespace seco {
                                                             statistics_.totalSumVector_, sumsOfConfusionMatrices);
                     }
 
+                    /**
+                     * @see `IStatisticsSubset::evaluate`
+                     */
+                    const IScoreVector& evaluate() override final {
+                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
+                                                            statistics_.totalSumVector_, sumVector_);
+                    }
+
+                    /**
+                     * @see `IStatisticsSubset::evaluateAccumulated`
+                     */
+                    const IScoreVector& evaluateAccumulated() override final {
+                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
+                                                            statistics_.totalSumVector_, *accumulatedSumVectorPtr_);
+                    }
+
+                    /**
+                     * @see `IStatisticsSubset::evaluateUncovered`
+                     */
+                    const IScoreVector& evaluateUncovered() override final {
+                        tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
+                                              sumVector_.cbegin(), sumVector_.cend());
+                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
+                                                            statistics_.totalSumVector_, tmpVector_);
+                    }
+
+                    /**
+                     * @see `IStatisticsSubset::evaluateUncoveredAccumulated`
+                     */
+                    const IScoreVector& evaluateUncoveredAccumulated() override final {
+                        tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
+                                              accumulatedSumVectorPtr_->cbegin(), accumulatedSumVectorPtr_->cend());
+                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
+                                                            statistics_.totalSumVector_, tmpVector_);
+                    }
+
             };
 
             const WeightVector& weights_;

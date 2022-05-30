@@ -189,6 +189,44 @@ namespace boosting {
                         return ruleEvaluationPtr_->evaluate(sumsOfStatistics);
                     }
 
+                    /**
+                     * @see `IStatisticsSubset::evaluate`
+                     */
+                    const IScoreVector& evaluate() override final {
+                        return ruleEvaluationPtr_->evaluate(sumVector_);
+                    }
+
+                    /**
+                     * @see `IStatisticsSubset::evaluateAccumulated`
+                     */
+                    const IScoreVector& evaluateAccumulated() override final {
+                        return ruleEvaluationPtr_->evaluate(*accumulatedSumVectorPtr_);
+                    }
+
+                    /**
+                     * @see `IStatisticsSubset::evaluateUncovered`
+                     */
+                    const IScoreVector& evaluateUncovered() override final {
+                        tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
+                                              totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
+                                              labelIndices_, sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
+                                              sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
+                        return ruleEvaluationPtr_->evaluate(tmpVector_);
+                    }
+
+                    /**
+                     * @see `IStatisticsSubset::evaluateUncoveredAccumulated`
+                     */
+                    const IScoreVector& evaluateUncoveredAccumulated() override final {
+                        tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
+                                              totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
+                                              labelIndices_, accumulatedSumVectorPtr_->gradients_cbegin(),
+                                              accumulatedSumVectorPtr_->gradients_cend(),
+                                              accumulatedSumVectorPtr_->hessians_cbegin(),
+                                              accumulatedSumVectorPtr_->hessians_cend());
+                        return ruleEvaluationPtr_->evaluate(tmpVector_);
+                    }
+
             };
 
         protected:
