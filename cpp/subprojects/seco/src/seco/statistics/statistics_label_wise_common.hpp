@@ -142,9 +142,10 @@ namespace seco {
                     /**
                      * @param statistics            A reference to an object of type `LabelWiseWeightedStatistics` that
                      *                              stores the confusion matrices
-                     * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows
-                     *                              to create instances of the class that should be used for calculating
-                     *                              the predictions of rules, as well as corresponding quality scores
+                     * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`
+                     *                              that allows to create instances of the class that should be used for
+                     *                              calculating the predictions of rules, as well as corresponding
+                     *                              quality scores
                      * @param labelIndices          A reference to an object of template type `IndexVector` that
                      *                              provides access to the indices of the labels that are included in
                      *                              the subset
