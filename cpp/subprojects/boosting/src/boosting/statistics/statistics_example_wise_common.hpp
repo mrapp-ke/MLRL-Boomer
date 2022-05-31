@@ -61,6 +61,85 @@ namespace boosting {
     }
 
     /**
+     *  A subset of gradients and Hessians that are calculated according to a differentiable loss function that is
+     * applied example-wise and are accessible via a view.
+     *
+     * @tparam StatisticVector          The type of the vector that is used to store the sums of gradients and Hessians
+     * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
+     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
+     *                                  used for calculating the predictions of rules, as well as corresponding quality
+     *                                  scores
+     * @tparam IndexVector              The type of the vector that provides access to the indices of the labels that
+     *                                  are included in the subset
+     */
+    template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename IndexVector>
+    class ExampleWiseStatisticsSubset : virtual public IStatisticsSubset {
+
+        protected:
+
+            /**
+             * An object of template type `StatisticVector` that stores the sums of gradients and Hessians.
+             */
+            StatisticVector sumVector_;
+
+            /**
+             * A reference to an object of template type `StatisticView` that provides access to the gradients and
+             * Hessians.
+             */
+            const StatisticView& statisticView_;
+
+            /**
+             * A reference to an object of template type `IndexVector` that provides access to the indices of the labels
+             * that are included in the subset.
+             */
+            const IndexVector& labelIndices_;
+
+            /**
+             * An unique pointer to an object of type `IRuleEvaluation` that is used to calculate the predictions of
+             * rules, as well as corresponding quality scores.
+             */
+            std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
+
+        public:
+
+            /**
+             * @param statisticView         A reference to an object of template type `StatisticView` that provides
+             *                              access to the gradients and Hessians
+             * @param labelIndices          A reference to an object of template type `IndexVector` that provides access
+             *                              to the indices of the labels that are included in the subset
+             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
+             *                              allows to create instances of the class that should be used for calculating
+             *                              the predictions of rules, as well as corresponding quality scores
+             */
+            ExampleWiseStatisticsSubset(const StatisticView& statisticView,
+                                        const RuleEvaluationFactory& ruleEvaluationFactory,
+                                        const IndexVector& labelIndices)
+                : sumVector_(StatisticVector(labelIndices.getNumElements(), true)), statisticView_(statisticView),
+                  labelIndices_(labelIndices),
+                  ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)) {
+
+            }
+
+            /**
+             * @see `IStatisticsSubset::addToSubset`
+             */
+            void addToSubset(uint32 statisticIndex, float64 weight) override final {
+                sumVector_.addToSubset(statisticView_.gradients_row_cbegin(statisticIndex),
+                                       statisticView_.gradients_row_cend(statisticIndex),
+                                       statisticView_.hessians_row_cbegin(statisticIndex),
+                                       statisticView_.hessians_row_cend(statisticIndex), labelIndices_, weight);
+            }
+
+            /**
+             * @see `IStatisticsSubset::evaluate`
+             */
+            const IScoreVector& evaluate() override final {
+                return ruleEvaluationPtr_->evaluate(sumVector_);
+            }
+
+    };
+
+    /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
      * according to a differentiable loss function that is applied example-wise.
      *
@@ -83,27 +162,18 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class AbstractWeightedStatisticsSubset : public IWeightedStatisticsSubset {
+            class AbstractWeightedStatisticsSubset : public ExampleWiseStatisticsSubset<StatisticVector, StatisticView,
+                                                                                        RuleEvaluationFactory,
+                                                                                        IndexVector>,
+                                                     virtual public IWeightedStatisticsSubset {
 
                 private:
-
-                    const IndexVector& labelIndices_;
-
-                    StatisticVector sumVector_;
 
                     StatisticVector tmpVector_;
 
                     std::unique_ptr<StatisticVector> accumulatedSumVectorPtr_;
 
-                    std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
-
                 protected:
-
-                    /**
-                     * A reference to an object of template type `StatisticView` that provides access to the gradients
-                     * and Hessians.
-                     */
-                    const StatisticView& statisticView_;
 
                     /**
                      * A pointer to an object of template type `StatisticVector` that stores the total sum of all
@@ -131,21 +201,11 @@ namespace boosting {
                                                      const StatisticVector& totalSumVector,
                                                      const RuleEvaluationFactory& ruleEvaluationFactory,
                                                      const IndexVector& labelIndices)
-                        : labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
-                          tmpVector_(StatisticVector(labelIndices.getNumElements())),
-                          ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)),
-                          statisticView_(statistics.statisticView_), totalSumVector_(&totalSumVector) {
+                        : ExampleWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                      IndexVector>(statistics.statisticView_, ruleEvaluationFactory,
+                                                                   labelIndices),
+                          tmpVector_(StatisticVector(labelIndices.getNumElements())), totalSumVector_(&totalSumVector) {
 
-                    }
-
-                    /**
-                     * @see `IStatisticsSubset::addToSubset`
-                     */
-                    void addToSubset(uint32 statisticIndex, float64 weight) override final {
-                        sumVector_.addToSubset(statisticView_.gradients_row_cbegin(statisticIndex),
-                                               statisticView_.gradients_row_cend(statisticIndex),
-                                               statisticView_.hessians_row_cbegin(statisticIndex),
-                                               statisticView_.hessians_row_cend(statisticIndex), labelIndices_, weight);
                     }
 
                     /**
@@ -155,30 +215,25 @@ namespace boosting {
                         if (!accumulatedSumVectorPtr_) {
                             // Create a vector for storing the accumulated sums of gradients and Hessians, if
                             // necessary...
-                            accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(sumVector_);
+                            accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(this->sumVector_);
                         } else {
                             // Add the sum of gradients and Hessians to the accumulated sums of gradients and
                             // Hessians...
-                            accumulatedSumVectorPtr_->add(sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
-                                                          sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
+                            accumulatedSumVectorPtr_->add(this->sumVector_.gradients_cbegin(),
+                                                          this->sumVector_.gradients_cend(),
+                                                          this->sumVector_.hessians_cbegin(),
+                                                          this->sumVector_.hessians_cend());
                         }
 
                         // Reset the sum of gradients and Hessians to zero...
-                        sumVector_.clear();
-                    }
-
-                    /**
-                     * @see `IStatisticsSubset::evaluate`
-                     */
-                    const IScoreVector& evaluate() override final {
-                        return ruleEvaluationPtr_->evaluate(sumVector_);
+                        this->sumVector_.clear();
                     }
 
                     /**
                      * @see `IWeightedStatisticsSubset::evaluateAccumulated`
                      */
                     const IScoreVector& evaluateAccumulated() override final {
-                        return ruleEvaluationPtr_->evaluate(*accumulatedSumVectorPtr_);
+                        return this->ruleEvaluationPtr_->evaluate(*accumulatedSumVectorPtr_);
                     }
 
                     /**
@@ -187,9 +242,10 @@ namespace boosting {
                     const IScoreVector& evaluateUncovered() override final {
                         tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
                                               totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
-                                              labelIndices_, sumVector_.gradients_cbegin(), sumVector_.gradients_cend(),
-                                              sumVector_.hessians_cbegin(), sumVector_.hessians_cend());
-                        return ruleEvaluationPtr_->evaluate(tmpVector_);
+                                              this->labelIndices_, this->sumVector_.gradients_cbegin(),
+                                              this->sumVector_.gradients_cend(), this->sumVector_.hessians_cbegin(),
+                                              this->sumVector_.hessians_cend());
+                        return this->ruleEvaluationPtr_->evaluate(tmpVector_);
                     }
 
                     /**
@@ -198,11 +254,11 @@ namespace boosting {
                     const IScoreVector& evaluateUncoveredAccumulated() override final {
                         tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
                                               totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
-                                              labelIndices_, accumulatedSumVectorPtr_->gradients_cbegin(),
+                                              this->labelIndices_, accumulatedSumVectorPtr_->gradients_cbegin(),
                                               accumulatedSumVectorPtr_->gradients_cend(),
                                               accumulatedSumVectorPtr_->hessians_cbegin(),
                                               accumulatedSumVectorPtr_->hessians_cend());
-                        return ruleEvaluationPtr_->evaluate(tmpVector_);
+                        return this->ruleEvaluationPtr_->evaluate(tmpVector_);
                     }
 
             };
@@ -410,17 +466,17 @@ namespace boosting {
      * function that is applied example-wise and allows to update the gradients and Hessians after a new rule has been
      * learned.
      *
-     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
-     *                                  statistics
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
      * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
+     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
+     *                                  statistics
      */
-    template<typename WeightVector, typename StatisticVector, typename StatisticView, typename Histogram,
-             typename RuleEvaluationFactory>
+    template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
+             typename WeightVector>
     class ExampleWiseWeightedStatistics :
             public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
                                                                   RuleEvaluationFactory>,
@@ -498,16 +554,17 @@ namespace boosting {
         public:
 
             /**
-             * @param weights               A reference to an object of template type `WeightVector` that provides
-             *                              access to the weights of individual statistics
              * @param statisticView         A reference to an object of template type `StatisticView` that provides
              *                              access to the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as corresponding quality scores
+             * @param weights               A reference to an object of template type `WeightVector` that provides
+             *                              access to the weights of individual statistics
              */
-            ExampleWiseWeightedStatistics(const WeightVector& weights, const StatisticView& statisticView,
-                                          const RuleEvaluationFactory& ruleEvaluationFactory)
+            ExampleWiseWeightedStatistics(const StatisticView& statisticView,
+                                          const RuleEvaluationFactory& ruleEvaluationFactory,
+                                          const WeightVector& weights)
                 : AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory>(
                       statisticView, ruleEvaluationFactory),
                   weights_(weights),
@@ -719,9 +776,10 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
                     const EqualWeightVector& weights) const override final {
-                return std::make_unique<ExampleWiseWeightedStatistics<EqualWeightVector, StatisticVector, StatisticView,
-                                                                      Histogram, ExampleWiseRuleEvaluationFactory>>(
-                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
+                return std::make_unique<ExampleWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
+                                                                      ExampleWiseRuleEvaluationFactory,
+                                                                      EqualWeightVector>>(
+                    *statisticViewPtr_, *ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -729,9 +787,10 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
                     const BitWeightVector& weights) const override final {
-                return std::make_unique<ExampleWiseWeightedStatistics<BitWeightVector, StatisticVector, StatisticView,
-                                                                      Histogram, ExampleWiseRuleEvaluationFactory>>(
-                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
+                return std::make_unique<ExampleWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
+                                                                      ExampleWiseRuleEvaluationFactory,
+                                                                      BitWeightVector>>(
+                    *statisticViewPtr_, *ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -739,10 +798,10 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
                     const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<ExampleWiseWeightedStatistics<DenseWeightVector<uint32>, StatisticVector,
-                                                                      StatisticView, Histogram,
-                                                                      ExampleWiseRuleEvaluationFactory>>(
-                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
+                return std::make_unique<ExampleWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
+                                                                      ExampleWiseRuleEvaluationFactory,
+                                                                      DenseWeightVector<uint32>>>(
+                    *statisticViewPtr_, *ruleEvaluationFactory_, weights);
             }
 
     };
