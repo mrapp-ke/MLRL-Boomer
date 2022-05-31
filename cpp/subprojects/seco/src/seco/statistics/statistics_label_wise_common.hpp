@@ -117,7 +117,7 @@ namespace seco {
 
                     const LabelWiseWeightedStatistics& statistics_;
 
-                    const ConfusionMatrixVector* totalSumVector_;
+                    const ConfusionMatrixVector* subsetSumVector_;
 
                     std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr_;
 
@@ -145,7 +145,7 @@ namespace seco {
                     StatisticsSubset(const LabelWiseWeightedStatistics& statistics,
                                      std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr,
                                      const IndexVector& labelIndices)
-                        : statistics_(statistics), totalSumVector_(&statistics_.subsetSumVector_),
+                        : statistics_(statistics), subsetSumVector_(&statistics_.subsetSumVector_),
                           ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
                           sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)),
                           tmpVector_(ConfusionMatrixVector(labelIndices.getNumElements())) {
@@ -158,8 +158,8 @@ namespace seco {
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
                         if (!totalCoverableSumVectorPtr_) {
-                            totalCoverableSumVectorPtr_ = std::make_unique<ConfusionMatrixVector>(*totalSumVector_);
-                            totalSumVector_ = totalCoverableSumVectorPtr_.get();
+                            totalCoverableSumVectorPtr_ = std::make_unique<ConfusionMatrixVector>(*subsetSumVector_);
+                            subsetSumVector_ = totalCoverableSumVectorPtr_.get();
                         }
 
                         // For each label, subtract the confusion matrices of the example at the given index (weighted
@@ -214,7 +214,7 @@ namespace seco {
                      * @see `IStatisticsSubset::evaluateUncovered`
                      */
                     const IScoreVector& evaluateUncovered() override final {
-                        tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
+                        tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), labelIndices_,
                                               sumVector_.cbegin(), sumVector_.cend());
                         return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
                                                             statistics_.totalSumVector_, tmpVector_);
@@ -224,7 +224,7 @@ namespace seco {
                      * @see `IStatisticsSubset::evaluateUncoveredAccumulated`
                      */
                     const IScoreVector& evaluateUncoveredAccumulated() override final {
-                        tmpVector_.difference(totalSumVector_->cbegin(), totalSumVector_->cend(), labelIndices_,
+                        tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), labelIndices_,
                                               accumulatedSumVectorPtr_->cbegin(), accumulatedSumVectorPtr_->cend());
                         return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
                                                             statistics_.totalSumVector_, tmpVector_);
