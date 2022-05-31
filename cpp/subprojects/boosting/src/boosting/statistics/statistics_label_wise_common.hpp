@@ -380,17 +380,17 @@ namespace boosting {
      * according to a differentiable loss function that is applied label-wise and allows to update the gradients and
      * Hessians after a new rule has been learned.
      *
-     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
-     *                                  statistics
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
      * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
+     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
+     *                                  statistics
      */
-    template<typename WeightVector, typename StatisticVector, typename StatisticView, typename Histogram,
-             typename RuleEvaluationFactory>
+    template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
+             typename WeightVector>
     class LabelWiseWeightedStatistics :
             public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory>,
             virtual public IWeightedStatistics {
@@ -461,16 +461,17 @@ namespace boosting {
         public:
 
             /**
-             * @param weights               A reference to an object of template type `WeightVector` that provides
-             *                              access to the weights of individual statistics
              * @param statisticView         A reference to an object of template type `StatisticView` that provides
              *                              access to the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows to
              *                              create instances of the class that should be used for calculating the
              *                              predictions of rules, as well as corresponding quality scores
+             * @param weights               A reference to an object of template type `WeightVector` that provides
+             *                              access to the weights of individual statistics
              */
-            LabelWiseWeightedStatistics(const WeightVector& weights, const StatisticView& statisticView,
-                                        const RuleEvaluationFactory& ruleEvaluationFactory)
+            LabelWiseWeightedStatistics(const StatisticView& statisticView,
+                                        const RuleEvaluationFactory& ruleEvaluationFactory,
+                                        const WeightVector& weights)
                 : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory>(
                       statisticView, ruleEvaluationFactory),
                   weights_(weights),
@@ -655,9 +656,9 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
                     const EqualWeightVector& weights) const override final {
-                return std::make_unique<LabelWiseWeightedStatistics<EqualWeightVector, StatisticVector, StatisticView,
-                                                                    Histogram, RuleEvaluationFactory>>(
-                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
+                return std::make_unique<LabelWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
+                                                                    RuleEvaluationFactory, EqualWeightVector>>(
+                    *statisticViewPtr_, *ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -665,9 +666,9 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
                     const BitWeightVector& weights) const override final {
-                return std::make_unique<LabelWiseWeightedStatistics<BitWeightVector, StatisticVector, StatisticView,
-                                                                    Histogram, RuleEvaluationFactory>>(
-                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
+                return std::make_unique<LabelWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
+                                                                    RuleEvaluationFactory, BitWeightVector>>(
+                    *statisticViewPtr_, *ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -675,9 +676,9 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
                     const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<LabelWiseWeightedStatistics<DenseWeightVector<uint32>, StatisticVector,
-                                                                    StatisticView, Histogram, RuleEvaluationFactory>>(
-                    weights, *statisticViewPtr_, *ruleEvaluationFactory_);
+                return std::make_unique<LabelWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
+                                                                    RuleEvaluationFactory, DenseWeightVector<uint32>>>(
+                    *statisticViewPtr_, *ruleEvaluationFactory_, weights);
             }
 
     };
