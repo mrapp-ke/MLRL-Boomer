@@ -77,8 +77,6 @@ namespace boosting {
 
                 private:
 
-                    const AbstractLabelWiseImmutableWeightedStatistics& statistics_;
-
                     const IndexVector& labelIndices_;
 
                     StatisticVector sumVector_;
@@ -92,20 +90,16 @@ namespace boosting {
                 protected:
 
                     /**
+                     * A reference to an object of template type `StatisticView` that provides access to the gradients
+                     * and Hessians.
+                     */
+                    const StatisticView& statisticView_;
+
+                    /**
                      * A pointer to an object of template type `StatisticVector` that stores the total sum of all
                      * gradients and Hessians.
                      */
                     const StatisticVector* totalSumVector_;
-
-                    /**
-                     * Returns the view that provides access to the gradients and Hessians.
-                     *
-                     * @return A reference to an object of template type `StatisticView` that provides access to the
-                     *         gradient and Hessians
-                     */
-                    const StatisticView& getStatisticView() {
-                        return statistics_.statisticView_;
-                    }
 
                 public:
 
@@ -127,11 +121,10 @@ namespace boosting {
                                                      const StatisticVector& totalSumVector,
                                                      const RuleEvaluationFactory& ruleEvaluationFactory,
                                                      const IndexVector& labelIndices)
-                        : statistics_(statistics), labelIndices_(labelIndices),
-                          sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
+                        : labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
                           tmpVector_(StatisticVector(labelIndices.getNumElements())),
                           ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)),
-                          totalSumVector_(&totalSumVector) {
+                          statisticView_(statistics.statisticView_), totalSumVector_(&totalSumVector) {
 
                     }
 
@@ -139,7 +132,7 @@ namespace boosting {
                      * @see `IStatisticsSubset::addToSubset`
                      */
                     void addToSubset(uint32 statisticIndex, float64 weight) override final {
-                        sumVector_.addToSubset(statistics_.statisticView_, statisticIndex, labelIndices_, weight);
+                        sumVector_.addToSubset(statisticView_, statisticIndex, labelIndices_, weight);
                     }
 
                     /**
@@ -456,8 +449,7 @@ namespace boosting {
 
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
-                        const StatisticView& statisticView = this->getStatisticView();
-                        totalCoverableSumVectorPtr_->remove(statisticView, statisticIndex, weight);
+                        totalCoverableSumVectorPtr_->remove(this->statisticView_, statisticIndex, weight);
                     }
 
             };

@@ -115,7 +115,13 @@ namespace seco {
 
                 private:
 
-                    const LabelWiseWeightedStatistics& statistics_;
+                    const LabelMatrix& labelMatrix_;
+
+                    const CoverageMatrix& coverageMatrix_;
+
+                    const BinarySparseArrayVector& majorityLabelVector_;
+
+                    const ConfusionMatrixVector& totalSumVector_;
 
                     const ConfusionMatrixVector* subsetSumVector_;
 
@@ -146,7 +152,9 @@ namespace seco {
                     WeightedStatisticsSubset(const LabelWiseWeightedStatistics& statistics,
                                              const RuleEvaluationFactory& ruleEvaluationFactory,
                                              const IndexVector& labelIndices)
-                        : statistics_(statistics), subsetSumVector_(&statistics_.subsetSumVector_),
+                        : labelMatrix_(statistics.labelMatrix_), coverageMatrix_(statistics.coverageMatrix_),
+                          majorityLabelVector_(statistics.majorityLabelVector_),
+                          totalSumVector_(statistics.totalSumVector_), subsetSumVector_(&statistics.subsetSumVector_),
                           labelIndices_(labelIndices),
                           sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)),
                           tmpVector_(ConfusionMatrixVector(labelIndices.getNumElements())),
@@ -166,17 +174,15 @@ namespace seco {
 
                         // For each label, subtract the confusion matrices of the example at the given index (weighted
                         // by the given weight) from the total sum of confusion matrices...
-                        totalCoverableSumVectorPtr_->remove(statisticIndex, statistics_.labelMatrix_,
-                                                            statistics_.majorityLabelVector_,
-                                                            statistics_.coverageMatrix_, weight);
+                        totalCoverableSumVectorPtr_->remove(statisticIndex, labelMatrix_, majorityLabelVector_,
+                                                            coverageMatrix_, weight);
                     }
 
                     /**
                      * @see `IStatisticsSubset::addToSubset`
                      */
                     void addToSubset(uint32 statisticIndex, float64 weight) override {
-                        sumVector_.addToSubset(statisticIndex, statistics_.labelMatrix_,
-                                               statistics_.majorityLabelVector_, statistics_.coverageMatrix_,
+                        sumVector_.addToSubset(statisticIndex, labelMatrix_, majorityLabelVector_, coverageMatrix_,
                                                labelIndices_, weight);
                     }
 
@@ -200,16 +206,15 @@ namespace seco {
                      * @see `IStatisticsSubset::evaluate`
                      */
                     const IScoreVector& evaluate() override final {
-                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
-                                                            statistics_.totalSumVector_, sumVector_);
+                        return ruleEvaluationPtr_->evaluate(majorityLabelVector_, totalSumVector_, sumVector_);
                     }
 
                     /**
                      * @see `IWeightedStatisticsSubset::evaluateAccumulated`
                      */
                     const IScoreVector& evaluateAccumulated() override final {
-                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
-                                                            statistics_.totalSumVector_, *accumulatedSumVectorPtr_);
+                        return ruleEvaluationPtr_->evaluate(majorityLabelVector_, totalSumVector_,
+                                                            *accumulatedSumVectorPtr_);
                     }
 
                     /**
@@ -218,8 +223,7 @@ namespace seco {
                     const IScoreVector& evaluateUncovered() override final {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), labelIndices_,
                                               sumVector_.cbegin(), sumVector_.cend());
-                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
-                                                            statistics_.totalSumVector_, tmpVector_);
+                        return ruleEvaluationPtr_->evaluate(majorityLabelVector_, totalSumVector_, tmpVector_);
                     }
 
                     /**
@@ -228,8 +232,7 @@ namespace seco {
                     const IScoreVector& evaluateUncoveredAccumulated() override final {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), labelIndices_,
                                               accumulatedSumVectorPtr_->cbegin(), accumulatedSumVectorPtr_->cend());
-                        return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
-                                                            statistics_.totalSumVector_, tmpVector_);
+                        return ruleEvaluationPtr_->evaluate(majorityLabelVector_, totalSumVector_, tmpVector_);
                     }
 
             };
