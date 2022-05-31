@@ -83,7 +83,7 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class AbstractStatisticsSubset : public IStatisticsSubset {
+            class AbstractStatisticsSubset : public IWeightedStatisticsSubset {
 
                 private:
 
@@ -153,7 +153,7 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::resetSubset`
+                     * @see `IWeightedStatisticsSubset::resetSubset`
                      */
                     void resetSubset() override final {
                         if (!accumulatedSumVectorPtr_) {
@@ -179,14 +179,14 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::evaluateAccumulated`
+                     * @see `IWeightedStatisticsSubset::evaluateAccumulated`
                      */
                     const IScoreVector& evaluateAccumulated() override final {
                         return ruleEvaluationPtr_->evaluate(*accumulatedSumVectorPtr_);
                     }
 
                     /**
-                     * @see `IStatisticsSubset::evaluateUncovered`
+                     * @see `IWeightedStatisticsSubset::evaluateUncovered`
                      */
                     const IScoreVector& evaluateUncovered() override final {
                         tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
@@ -197,7 +197,7 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::evaluateUncoveredAccumulated`
+                     * @see `IWeightedStatisticsSubset::evaluateUncoveredAccumulated`
                      */
                     const IScoreVector& evaluateUncoveredAccumulated() override final {
                         tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
@@ -316,7 +316,7 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::addToMissing`
+                     * @see `IWeightedStatisticsSubset::addToMissing`
                      */
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
@@ -387,7 +387,7 @@ namespace boosting {
             /**
              * @see `IImmutableWeightedStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(
+            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
                 std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     this->ruleEvaluationFactory_.create(totalSumVector_, labelIndices);
@@ -399,7 +399,7 @@ namespace boosting {
             /**
              * @see `IImmutableWeightedStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(
+            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
                 std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     this->ruleEvaluationFactory_.create(totalSumVector_, labelIndices);
@@ -474,7 +474,7 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::addToMissing`
+                     * @see `IWeightedStatisticsSubset::addToMissing`
                      */
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
@@ -560,7 +560,7 @@ namespace boosting {
             /**
              * @see `IImmutableWeightedStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(
+            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
                 std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     this->ruleEvaluationFactory_.create(*totalSumVectorPtr_, labelIndices);
@@ -572,7 +572,7 @@ namespace boosting {
             /**
              * @see `IImmutableWeightedStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(
+            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
                 std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     this->ruleEvaluationFactory_.create(*totalSumVectorPtr_, labelIndices);

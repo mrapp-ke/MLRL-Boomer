@@ -10,7 +10,7 @@
 class IRuleRefinement;
 class IThresholdsSubset;
 class IImmutableWeightedStatistics;
-class IStatisticsSubset;
+class IWeightedStatisticsSubset;
 
 
 /**
@@ -51,9 +51,9 @@ class IIndexVector {
          *
          * @param statistics    A reference to an object of type `IImmutableWeightedStatistics` that should be used to
          *                      create the subset
-         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(
+        virtual std::unique_ptr<IWeightedStatisticsSubset> createSubset(
             const IImmutableWeightedStatistics& statistics) const = 0;
 
         /**

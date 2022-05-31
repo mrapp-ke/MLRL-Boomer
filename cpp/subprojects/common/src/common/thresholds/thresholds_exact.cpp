@@ -87,9 +87,10 @@ static inline int64 adjustSplit(FeatureVector& featureVector, int64 conditionEnd
  * @param vector                A reference to an object of type `FeatureVector` that should be filtered
  * @param cacheEntry            A reference to a struct of type `FilteredCacheEntry` that should be used to store the
  *                              filtered feature vector
- * @param conditionStart        The element in `vector` that corresponds to the first statistic (inclusive) included in
- *                              the `IStatisticsSubset` that is covered by the new condition
- * @param conditionEnd          The element in `vector` that corresponds to the last statistic (exclusive)
+ * @param conditionStart        The element in `vector` that corresponds to the first statistic (inclusive) that is
+ *                              covered by the new condition
+ * @param conditionEnd          The element in `vector` that corresponds to the last statistic (exclusive) that is
+ *                              covered by the new condition
  * @param conditionComparator   The type of the operator that is used by the new condition
  * @param covered               True, if the elements in range [conditionStart, conditionEnd) are covered by the new
  *                              condition and the remaining ones are not, false, if the elements in said range are not
