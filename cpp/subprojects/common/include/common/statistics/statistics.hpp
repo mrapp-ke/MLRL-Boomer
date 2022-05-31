@@ -71,6 +71,26 @@ class IStatistics {
         virtual float64 evaluatePrediction(uint32 statisticIndex) const = 0;
 
         /**
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * are provided by a specific `CompleteIndexVector`.
+         *
+         * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the labels that should be included in the subset
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * are provided by a specific `PartialIndexVector`.
+         *
+         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the labels that should be included in the subset
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const = 0;
+
+        /**
          * Creates and returns a new object of type `IWeightedStatistics`.
          *
          * @param weights   A reference to an object of type `EqualWeightVector` that provides access to the weights of

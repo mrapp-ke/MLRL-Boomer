@@ -49,13 +49,14 @@ class TopDownRuleInduction final : public IRuleInduction {
         void induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const override {
             uint32 numStatistics = statistics.getNumStatistics();
             uint32 numLabels = statistics.getNumLabels();
-            EqualWeightVector weightVector(numStatistics);
-            std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr =
-                statistics.createWeightedStatistics(weightVector);
             CompleteIndexVector labelIndices(numLabels);
-            std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr =
-                labelIndices.createSubset(*weightedStatisticsPtr);
-            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateUncovered();
+            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices.createSubset(statistics);
+
+            for (uint32 i = 0; i < numStatistics; i++) {
+                statisticsSubsetPtr->addToSubset(i, 1);
+            }
+
+            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
             ScoreProcessor scoreProcessor;
             scoreProcessor.processScores(scoreVector);
             std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr = scoreProcessor.pollHead();
