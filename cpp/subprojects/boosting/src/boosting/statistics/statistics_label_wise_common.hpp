@@ -708,8 +708,10 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
-                // TODO Implement
-                return nullptr;
+                return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                                  CompleteIndexVector>>(*statisticViewPtr_,
+                                                                                        *ruleEvaluationFactory_,
+                                                                                        labelIndices);
             }
 
             /**
@@ -717,8 +719,10 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
-                // TODO Implement
-                return nullptr;
+                return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                                  PartialIndexVector>>(*statisticViewPtr_,
+                                                                                       *ruleEvaluationFactory_,
+                                                                                       labelIndices);
             }
 
             /**
