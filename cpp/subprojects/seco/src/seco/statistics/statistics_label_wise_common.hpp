@@ -310,8 +310,8 @@ namespace seco {
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
             void removeCoveredStatistic(uint32 statisticIndex) override final {
-                removeLabelWiseStatistic(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_, subsetSumVector_,
-                                         statisticIndex);
+                removeLabelWiseStatistic(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_,
+                                         subsetSumVector_, statisticIndex);
             }
 
             /**
