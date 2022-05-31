@@ -56,8 +56,9 @@ namespace boosting {
      *
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
-     * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
-     *                                  well as corresponding quality scores, of rules
+     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
+     *                                  used for calculating the predictions of rules, as well as corresponding quality
+     *                                  scores
      */
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory>
     class AbstractLabelWiseImmutableWeightedStatistics : virtual public IImmutableWeightedStatistics {
@@ -195,8 +196,8 @@ namespace boosting {
             const StatisticView& statisticView_;
 
             /**
-             * A reference to an object of template type `RuleEvaluationFactory` that is used for calculating the
-             * predictions, as well as corresponding quality scores, of rules.
+             * A reference to an object of template type `RuleEvaluationFactory` that is used to create instances of the
+             * class that is used for calculating the predictions of rules, as well as corresponding quality scores.
              */
             const RuleEvaluationFactory& ruleEvaluationFactory_;
 
@@ -206,8 +207,8 @@ namespace boosting {
              * @param statisticView         A reference to an object of template type `StatisticView` that provides
              *                              access to the the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`, that
-             *                              allows to create instances of the class that is used for calculating the
-             *                              predictions, as well as corresponding quality scores, of rules
+             *                              allows to create instances of the class that should be used for calculating
+             *                              the predictions of rules, as well as corresponding quality scores
              */
             AbstractLabelWiseImmutableWeightedStatistics(const StatisticView& statisticView,
                                                          const RuleEvaluationFactory& ruleEvaluationFactory)
@@ -238,8 +239,9 @@ namespace boosting {
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the original gradients and Hessians
      * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
-     * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
-     *                                  well as corresponding quality scores, of rules
+     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
+     *                                  used for calculating the predictions of rules, as well as corresponding quality
+     *                                  scores
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory>
     class LabelWiseHistogram final : public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
@@ -322,9 +324,9 @@ namespace boosting {
              *                              from
              * @param totalSumVector        A reference to an object of template type `StatisticVector` that stores the
              *                              total sums of gradients and Hessians
-             * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory`, that allows to
-             *                              create instances of the class that is used for calculating the predictions,
-             *                              as well as corresponding quality scores, of rules
+             * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows to
+             *                              create instances of the class that should be used for calculating the
+             *                              predictions of rules, as well as corresponding quality scores
              */
             LabelWiseHistogram(std::unique_ptr<Histogram> histogramPtr, const StatisticView& originalStatisticView,
                                const StatisticVector& totalSumVector,
@@ -385,8 +387,9 @@ namespace boosting {
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
      * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
-     * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
-     *                                  well as corresponding quality scores, of rules
+     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
+     *                                  used for calculating the predictions of rules, as well as corresponding quality
+     *                                  scores
      */
     template<typename WeightVector, typename StatisticVector, typename StatisticView, typename Histogram,
              typename RuleEvaluationFactory>
@@ -464,9 +467,9 @@ namespace boosting {
              *                              access to the weights of individual statistics
              * @param statisticView         A reference to an object of template type `StatisticView` that provides
              *                              access to the gradients and Hessians
-             * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory`, that allows to
-             *                              create instances of the class that is used for calculating the
-             *                              predictions, as well as corresponding quality scores, of rules
+             * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows to
+             *                              create instances of the class that should be used for calculating the
+             *                              predictions of rules, as well as corresponding quality scores
              */
             LabelWiseWeightedStatistics(const WeightVector& weights, const StatisticView& statisticView,
                                         const RuleEvaluationFactory& ruleEvaluationFactory)
@@ -555,8 +558,9 @@ namespace boosting {
      * @tparam LossFunction             The type of the loss function that is used to calculate gradients and Hessians
      * @tparam EvaluationMeasure        The type of the evaluation measure that is used to assess the quality of
      *                                  predictions for a specific statistic
-     * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
-     *                                  well as corresponding quality scores, of rules
+     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
+     *                                  used for calculating the predictions of rules, as well as corresponding quality
+     *                                  scores
      */
     template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename Histogram,
              typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
@@ -585,9 +589,9 @@ namespace boosting {
              * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
              *                              implements the evaluation measure that should be used to assess the quality
              *                              of predictions for a specific statistic
-             * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory`, that allows to
-             *                              create instances of the class that is used for calculating the
-             *                              predictions, as well as corresponding quality scores, of rules
+             * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows to
+             *                              create instances of the class that should be used for calculating the
+             *                              predictions of rules, as well as corresponding quality scores
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
              *                              to the labels of the training examples
              * @param statisticViewPtr      An unique pointer to an object of template type `StatisticView` that
