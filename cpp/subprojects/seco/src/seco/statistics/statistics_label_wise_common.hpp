@@ -93,8 +93,9 @@ namespace seco {
      * @tparam CoverageMatrix           The type of the matrix that is used to store how often individual examples and
      *                                  labels have been covered
      * @tparam ConfusionMatrixVector    The type of the vector that is used to store confusion matrices
-     * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
-     *                                  well as corresponding quality scores, of rules
+     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
+     *                                  used for calculating the predictions of rules, as well as corresponding quality
+     *                                  scores
      */
     template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory>
@@ -257,7 +258,7 @@ namespace seco {
              *                              access to the weights of individual statistics
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that is used for calculating the
-             *                              predictions, as well as corresponding quality scores, of rules
+             *                              predictions of rules, as well as corresponding quality scores
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
              *                              to the labels of the training examples
              * @param coverageMatrix        A reference to an object of template type `CoverageMatrix` that stores how
@@ -353,8 +354,9 @@ namespace seco {
      * @tparam CoverageMatrix           The type of the matrix that is used to store how often individual examples and
      *                                  labels have been covered
      * @tparam ConfusionMatrixVector    The type of the vector that is used to store confusion matrices
-     * @tparam RuleEvaluationFactory    The type of the classes that may be used for calculating the predictions, as
-     *                                  well as corresponding quality scores, of rules
+     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
+     *                                  used for calculating the predictions of rules, as well as corresponding quality
+     *                                  scores
      */
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory>
@@ -374,8 +376,9 @@ namespace seco {
 
             /**
              * @param ruleEvaluationFactory     A reference to an object of template type `RuleEvaluationFactory` that
-             *                                  allows to create instances of the class that is used for calculating the
-             *                                  predictions, as well as corresponding quality scores, of rules
+             *                                  allows to create instances of the class that should be used for
+             *                                  calculating the predictions of rules, as well as corresponding quality
+             *                                  scores
              * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
              *                                  access to the labels of the training examples
              * @param coverageMatrixPtr         An unique pointer to an object of template type `CoverageMatrix` that
