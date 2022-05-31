@@ -18,24 +18,24 @@ namespace seco {
         public:
 
             /**
-             * @param ruleEvaluationFactory     A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
-             *                                  allows to create instances of the class that is used for calculating the
-             *                                  predictions, as well as corresponding quality scores, of rules
              * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
              *                                  access to the labels of the training examples
              * @param coverageMatrixPtr         An unique pointer to an object of type `DenseCoverageMatrix` that stores
              *                                  how often individual examples and labels have been covered
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
+             * @param ruleEvaluationFactory     A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
+             *                                  allows to create instances of the class that is used for calculating the
+             *                                  predictions, as well as corresponding quality scores, of rules
              */
-            DenseLabelWiseStatistics(const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
-                                     const LabelMatrix& labelMatrix,
+            DenseLabelWiseStatistics(const LabelMatrix& labelMatrix,
                                      std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr,
-                                     std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
+                                     std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
+                                     const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractLabelWiseStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector,
                                               ILabelWiseRuleEvaluationFactory>(
-                      ruleEvaluationFactory, labelMatrix, std::move(coverageMatrixPtr),
-                      std::move(majorityLabelVectorPtr)) {
+                      labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr),
+                      ruleEvaluationFactory) {
 
             }
 
@@ -74,7 +74,7 @@ namespace seco {
         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr =
             std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
         return std::make_unique<DenseLabelWiseStatistics<CContiguousConstView<const uint8>>>(
-            ruleEvaluationFactory, labelMatrix,  std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr));
+            labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr), ruleEvaluationFactory);
     }
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
@@ -114,9 +114,9 @@ namespace seco {
         majorityLabelVectorPtr->setNumElements(n, true);
         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr =
             std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
-        return std::make_unique<DenseLabelWiseStatistics<BinaryCsrConstView>>(ruleEvaluationFactory, labelMatrix,
-                                                                              std::move(coverageMatrixPtr),
-                                                                              std::move(majorityLabelVectorPtr));
+        return std::make_unique<DenseLabelWiseStatistics<BinaryCsrConstView>>(labelMatrix, std::move(coverageMatrixPtr),
+                                                                              std::move(majorityLabelVectorPtr),
+                                                                              ruleEvaluationFactory);
     }
 
 

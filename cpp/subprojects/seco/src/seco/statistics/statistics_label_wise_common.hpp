@@ -83,11 +83,8 @@ namespace seco {
     }
 
     /**
-     * An abstract base class for all statistics that provide access to the elements of weighted confusion matrices that
-     * are computed independently for each label.
+     * An abstract base class for all subsets of confusion matrices that are computed independently for each label.
      *
-     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
-     *                                  statistics
      * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
      *                                  examples
      * @tparam CoverageMatrix           The type of the matrix that is used to store how often individual examples and
@@ -96,9 +93,120 @@ namespace seco {
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
+     * @tparam IndexVector              The type of the vector that provides access to the indices of the labels that
+     *                                  are included in the subset
      */
-    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
-             typename RuleEvaluationFactory>
+    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
+             typename RuleEvaluationFactory, typename IndexVector>
+    class AbstractLabelWiseStatisticsSubset : virtual public IStatisticsSubset {
+
+        protected:
+
+            /**
+             * An object of type `ConfusionMatrixVector` that stores the sums of confusion matrix elements.
+             */
+            ConfusionMatrixVector sumVector_;
+
+            /**
+             * A reference to an object of template type `LabelMatrix` that provides access to the labels of the
+             * training examples.
+             */
+            const LabelMatrix& labelMatrix_;
+
+            /**
+             * A reference to an object of template type `CoverageMatrix` that stores how often individual examples and
+             * labels have been covered.
+             */
+            const CoverageMatrix& coverageMatrix_;
+
+            /**
+             * A reference to an object of type `BinarySparseArrayVector` that stores the predictions of the default
+             * rule.
+             */
+            const BinarySparseArrayVector& majorityLabelVector_;
+
+            /**
+             * A reference to an object of template type `ConfusionMatrixVector` that stores the total sums of confusion
+             * matrix elements.
+             */
+            const ConfusionMatrixVector& totalSumVector_;
+
+            /**
+             * A reference to an object of template type `IndexVector` that provides access to the indices of the labels
+             * that are included in the subset.
+             */
+            const IndexVector& labelIndices_;
+
+            /**
+             * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
+             * rules, as well as corresponding quality scores.
+             */
+            std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr_;
+
+        public:
+
+            /**
+             * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
+             *                              to the labels of the training examples
+             * @param coverageMatrix        A reference to an object of template type `CoverageMatrix` that stores how
+             *                              often individual examples and labels have been covered
+             * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
+             *                              predictions of the default rule
+             * @param totalSumVector        A reference to an object of template type `ConfusionMatrixVector` that
+             *                              stores the total sums of confusion matrix elements
+             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
+             *                              allows to create instances of the class that should be used for calculating
+             *                              the predictions of rules, as well as corresponding quality scores
+             * @param labelIndices          A reference to an object of template type `IndexVector` that
+             *                              provides access to the indices of the labels that are included in
+             *                              the subset
+             */
+            AbstractLabelWiseStatisticsSubset(const LabelMatrix& labelMatrix, const CoverageMatrix& coverageMatrix,
+                                              const BinarySparseArrayVector& majorityLabelVector,
+                                              const ConfusionMatrixVector& totalSumVector,
+                                              const RuleEvaluationFactory& ruleEvaluationFactory,
+                                              const IndexVector& labelIndices)
+                : sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)), labelMatrix_(labelMatrix),
+                  coverageMatrix_(coverageMatrix), majorityLabelVector_(majorityLabelVector),
+                  totalSumVector_(totalSumVector), labelIndices_(labelIndices),
+                  ruleEvaluationPtr_(ruleEvaluationFactory.create(labelIndices)) {
+
+            }
+
+            /**
+             * @see `IStatisticsSubset::addToSubset`
+             */
+            void addToSubset(uint32 statisticIndex, float64 weight) override {
+                sumVector_.addToSubset(statisticIndex, labelMatrix_, majorityLabelVector_, coverageMatrix_,
+                                       labelIndices_, weight);
+            }
+
+            /**
+             * @see `IStatisticsSubset::evaluate`
+             */
+            const IScoreVector& evaluate() override final {
+                return ruleEvaluationPtr_->evaluate(majorityLabelVector_, totalSumVector_, sumVector_);
+            }
+
+    };
+
+    /**
+     * An abstract base class for all statistics that provide access to the elements of weighted confusion matrices that
+     * are computed independently for each label.
+     *
+     * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
+     *                                  examples
+     * @tparam CoverageMatrix           The type of the matrix that is used to store how often individual examples and
+     *                                  labels have been covered
+     * @tparam ConfusionMatrixVector    The type of the vector that is used to store confusion matrices
+     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
+     *                                  used for calculating the predictions of rules, as well as corresponding quality
+     *                                  scores
+     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
+     *                                  statistics
+     */
+    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
+             typename RuleEvaluationFactory, typename WeightVector>
     class LabelWiseWeightedStatistics : public IWeightedStatistics {
 
         private:
@@ -111,23 +219,15 @@ namespace seco {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class WeightedStatisticsSubset final : public IWeightedStatisticsSubset {
+            class WeightedStatisticsSubset final : public AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix,
+                                                                                            ConfusionMatrixVector,
+                                                                                            RuleEvaluationFactory,
+                                                                                            IndexVector>,
+                                                   virtual public IWeightedStatisticsSubset {
 
                 private:
 
-                    const LabelMatrix& labelMatrix_;
-
-                    const CoverageMatrix& coverageMatrix_;
-
-                    const BinarySparseArrayVector& majorityLabelVector_;
-
-                    const ConfusionMatrixVector& totalSumVector_;
-
                     const ConfusionMatrixVector* subsetSumVector_;
-
-                    const IndexVector& labelIndices_;
-
-                    ConfusionMatrixVector sumVector_;
 
                     ConfusionMatrixVector tmpVector_;
 
@@ -135,16 +235,15 @@ namespace seco {
 
                     std::unique_ptr<ConfusionMatrixVector> totalCoverableSumVectorPtr_;
 
-                    std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr_;
-
                 public:
 
                     /**
                      * @param statistics            A reference to an object of type `LabelWiseWeightedStatistics` that
                      *                              stores the confusion matrices
-                     * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows
-                     *                              to create instances of the class that should be used for calculating
-                     *                              the predictions of rules, as well as corresponding quality scores
+                     * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`
+                     *                              that allows to create instances of the class that should be used for
+                     *                              calculating the predictions of rules, as well as corresponding
+                     *                              quality scores
                      * @param labelIndices          A reference to an object of template type `IndexVector` that
                      *                              provides access to the indices of the labels that are included in
                      *                              the subset
@@ -152,13 +251,12 @@ namespace seco {
                     WeightedStatisticsSubset(const LabelWiseWeightedStatistics& statistics,
                                              const RuleEvaluationFactory& ruleEvaluationFactory,
                                              const IndexVector& labelIndices)
-                        : labelMatrix_(statistics.labelMatrix_), coverageMatrix_(statistics.coverageMatrix_),
-                          majorityLabelVector_(statistics.majorityLabelVector_),
-                          totalSumVector_(statistics.totalSumVector_), subsetSumVector_(&statistics.subsetSumVector_),
-                          labelIndices_(labelIndices),
-                          sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)),
-                          tmpVector_(ConfusionMatrixVector(labelIndices.getNumElements())),
-                          ruleEvaluationPtr_(ruleEvaluationFactory.create(labelIndices)) {
+                        : AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                            RuleEvaluationFactory, IndexVector>(
+                              statistics.labelMatrix_, statistics.coverageMatrix_, statistics.majorityLabelVector_,
+                              statistics.totalSumVector_, ruleEvaluationFactory, labelIndices),
+                          subsetSumVector_(&statistics.subsetSumVector_),
+                          tmpVector_(ConfusionMatrixVector(labelIndices.getNumElements())) {
 
                     }
 
@@ -174,16 +272,8 @@ namespace seco {
 
                         // For each label, subtract the confusion matrices of the example at the given index (weighted
                         // by the given weight) from the total sum of confusion matrices...
-                        totalCoverableSumVectorPtr_->remove(statisticIndex, labelMatrix_, majorityLabelVector_,
-                                                            coverageMatrix_, weight);
-                    }
-
-                    /**
-                     * @see `IStatisticsSubset::addToSubset`
-                     */
-                    void addToSubset(uint32 statisticIndex, float64 weight) override {
-                        sumVector_.addToSubset(statisticIndex, labelMatrix_, majorityLabelVector_, coverageMatrix_,
-                                               labelIndices_, weight);
+                        totalCoverableSumVectorPtr_->remove(statisticIndex, this->labelMatrix_,
+                                                            this->majorityLabelVector_, this->coverageMatrix_, weight);
                     }
 
                     /**
@@ -192,47 +282,42 @@ namespace seco {
                     void resetSubset() override {
                         if (!accumulatedSumVectorPtr_) {
                             // Allocate a vector for storing the accumulated confusion matrices, if necessary...
-                            accumulatedSumVectorPtr_ = std::make_unique<ConfusionMatrixVector>(sumVector_);
+                            accumulatedSumVectorPtr_ = std::make_unique<ConfusionMatrixVector>(this->sumVector_);
                         } else {
                             // Add the confusion matrix for each label to the accumulated confusion matrix...
-                            accumulatedSumVectorPtr_->add(sumVector_.cbegin(), sumVector_.cend());
+                            accumulatedSumVectorPtr_->add(this->sumVector_.cbegin(), this->sumVector_.cend());
                         }
 
                         // Reset the confusion matrix for each label to zero...
-                        sumVector_.clear();
-                    }
-
-                    /**
-                     * @see `IStatisticsSubset::evaluate`
-                     */
-                    const IScoreVector& evaluate() override final {
-                        return ruleEvaluationPtr_->evaluate(majorityLabelVector_, totalSumVector_, sumVector_);
+                        this->sumVector_.clear();
                     }
 
                     /**
                      * @see `IWeightedStatisticsSubset::evaluateAccumulated`
                      */
                     const IScoreVector& evaluateAccumulated() override final {
-                        return ruleEvaluationPtr_->evaluate(majorityLabelVector_, totalSumVector_,
-                                                            *accumulatedSumVectorPtr_);
+                        return this->ruleEvaluationPtr_->evaluate(this->majorityLabelVector_, this->totalSumVector_,
+                                                                  *accumulatedSumVectorPtr_);
                     }
 
                     /**
                      * @see `IWeightedStatisticsSubset::evaluateUncovered`
                      */
                     const IScoreVector& evaluateUncovered() override final {
-                        tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), labelIndices_,
-                                              sumVector_.cbegin(), sumVector_.cend());
-                        return ruleEvaluationPtr_->evaluate(majorityLabelVector_, totalSumVector_, tmpVector_);
+                        tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), this->labelIndices_,
+                                              this->sumVector_.cbegin(), this->sumVector_.cend());
+                        return this->ruleEvaluationPtr_->evaluate(this->majorityLabelVector_, this->totalSumVector_,
+                                                                  tmpVector_);
                     }
 
                     /**
                      * @see `IWeightedStatisticsSubset::evaluateUncoveredAccumulated`
                      */
                     const IScoreVector& evaluateUncoveredAccumulated() override final {
-                        tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), labelIndices_,
+                        tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), this->labelIndices_,
                                               accumulatedSumVectorPtr_->cbegin(), accumulatedSumVectorPtr_->cend());
-                        return ruleEvaluationPtr_->evaluate(majorityLabelVector_, totalSumVector_, tmpVector_);
+                        return this->ruleEvaluationPtr_->evaluate(this->majorityLabelVector_, this->totalSumVector_,
+                                                                  tmpVector_);
                     }
 
             };
@@ -260,21 +345,21 @@ namespace seco {
         public:
 
             /**
-             * @param weights               A reference to an object of template type `WeightVector` that provides
-             *                              access to the weights of individual statistics
-             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
-             *                              allows to create instances of the class that is used for calculating the
-             *                              predictions of rules, as well as corresponding quality scores
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
              *                              to the labels of the training examples
              * @param coverageMatrix        A reference to an object of template type `CoverageMatrix` that stores how
              *                              often individual examples and labels have been covered
              * @param majorityLabelVector   A reference to an object of type `BinarySparseArrayVector` that stores the
              *                              predictions of the default rule
+             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
+             *                              allows to create instances of the class that is used for calculating the
+             *                              predictions of rules, as well as corresponding quality scores
+             * @param weights               A reference to an object of template type `WeightVector` that provides
+             *                              access to the weights of individual statistics
              */
-            LabelWiseWeightedStatistics(const WeightVector& weights, const RuleEvaluationFactory& ruleEvaluationFactory,
-                                        const LabelMatrix& labelMatrix, const CoverageMatrix& coverageMatrix,
-                                        const BinarySparseArrayVector& majorityLabelVector)
+            LabelWiseWeightedStatistics(const LabelMatrix& labelMatrix, const CoverageMatrix& coverageMatrix,
+                                        const BinarySparseArrayVector& majorityLabelVector,
+                                        const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights)
                 : weights_(weights), ruleEvaluationFactory_(ruleEvaluationFactory), labelMatrix_(labelMatrix),
                   majorityLabelVector_(majorityLabelVector),
                   totalSumVector_(ConfusionMatrixVector(labelMatrix.getNumCols(), true)),
@@ -379,21 +464,21 @@ namespace seco {
         public:
 
             /**
-             * @param ruleEvaluationFactory     A reference to an object of template type `RuleEvaluationFactory` that
-             *                                  allows to create instances of the class that should be used for
-             *                                  calculating the predictions of rules, as well as corresponding quality
-             *                                  scores
              * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
              *                                  access to the labels of the training examples
              * @param coverageMatrixPtr         An unique pointer to an object of template type `CoverageMatrix` that
              *                                  stores how often individual examples and labels have been covered
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
+             * @param ruleEvaluationFactory     A reference to an object of template type `RuleEvaluationFactory` that
+             *                                  allows to create instances of the class that should be used for
+             *                                  calculating the predictions of rules, as well as corresponding quality
+             *                                  scores
              */
-            AbstractLabelWiseStatistics(const RuleEvaluationFactory& ruleEvaluationFactory,
-                                        const LabelMatrix& labelMatrix,
+            AbstractLabelWiseStatistics(const LabelMatrix& labelMatrix,
                                         std::unique_ptr<CoverageMatrix> coverageMatrixPtr,
-                                        std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
+                                        std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
+                                        const RuleEvaluationFactory& ruleEvaluationFactory)
                 : ruleEvaluationFactory_(&ruleEvaluationFactory), labelMatrix_(labelMatrix),
                   majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)),
                   coverageMatrixPtr_(std::move(coverageMatrixPtr)) {
@@ -459,9 +544,9 @@ namespace seco {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
                     const EqualWeightVector& weights) const override final {
-                return std::make_unique<LabelWiseWeightedStatistics<EqualWeightVector, LabelMatrix, CoverageMatrix,
-                                                                    ConfusionMatrixVector, RuleEvaluationFactory>>(
-                    weights, *ruleEvaluationFactory_, labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_);
+                return std::make_unique<LabelWiseWeightedStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                                    RuleEvaluationFactory, EqualWeightVector>>(
+                    labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -469,9 +554,9 @@ namespace seco {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
                     const BitWeightVector& weights) const override final {
-                return std::make_unique<LabelWiseWeightedStatistics<BitWeightVector, LabelMatrix, CoverageMatrix,
-                                                                    ConfusionMatrixVector, RuleEvaluationFactory>>(
-                    weights, *ruleEvaluationFactory_, labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_);
+                return std::make_unique<LabelWiseWeightedStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                                    RuleEvaluationFactory, BitWeightVector>>(
+                    labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -479,10 +564,9 @@ namespace seco {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
                     const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<LabelWiseWeightedStatistics<DenseWeightVector<uint32>, LabelMatrix,
-                                                                    CoverageMatrix, ConfusionMatrixVector,
-                                                                    RuleEvaluationFactory>>(
-                    weights, *ruleEvaluationFactory_, labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_);
+                return std::make_unique<LabelWiseWeightedStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                                    RuleEvaluationFactory, DenseWeightVector<uint32>>>(
+                    labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, weights);
             }
 
     };
