@@ -51,6 +51,82 @@ namespace boosting {
     }
 
     /**
+     * A subset of gradients and Hessians that are calculated according to a differentiable loss function that is
+     * applied label-wise and are accessible via a view.
+     *
+     * @tparam StatisticVector          The type of the vector that is used to store the sums of gradients and Hessians
+     * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
+     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
+     *                                  used for calculating the predictions of rules, as well as corresponding quality
+     *                                  scores
+     * @tparam IndexVector              The type of the vector that provides access to the indices of the labels that
+     *                                  are included in the subset
+     */
+    template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename IndexVector>
+    class LabelWiseStatisticsSubset : virtual public IStatisticsSubset {
+
+        protected:
+
+            /**
+             * An object of template type `StatisticVector` that stores the sums of gradients and Hessians.
+             */
+            StatisticVector sumVector_;
+
+            /**
+             * A reference to an object of template type `StatisticView` that provides access to the gradients and
+             * Hessians.
+             */
+            const StatisticView& statisticView_;
+
+            /**
+             * A reference to an object of template type `IndexVector` that provides access to the indices of the labels
+             * that are included in the subset.
+             */
+            const IndexVector& labelIndices_;
+
+            /**
+             * An unique pointer to an object of type `IRuleEvaluation` that is used to calculate the predictions of
+             * rules, as well as corresponding quality scores.
+             */
+            std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
+
+        public:
+
+            /**
+             * @param statisticView         A reference to an object of template type `StatisticView` that provides
+             *                              access to the gradients and Hessians
+             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
+             *                              allows to create instances of the class that is used for calculating the
+             *                              predictions of rules, as well as corresponding quality scores
+             * @param labelIndices          A reference to an object of template type `IndexVector` that provides access
+             *                              to the indices of the labels that are included in the subset
+             */
+            LabelWiseStatisticsSubset(const StatisticView& statisticView,
+                                      const RuleEvaluationFactory& ruleEvaluationFactory,
+                                      const IndexVector& labelIndices)
+                : sumVector_(StatisticVector(labelIndices.getNumElements(), true)), statisticView_(statisticView),
+                  labelIndices_(labelIndices),
+                  ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)) {
+
+            }
+
+            /**
+             * @see `IStatisticsSubset::addToSubset`
+             */
+            void addToSubset(uint32 statisticIndex, float64 weight) override final {
+                sumVector_.addToSubset(statisticView_, statisticIndex, labelIndices_, weight);
+            }
+
+            /**
+             * @see `IStatisticsSubset::evaluate`
+             */
+            const IScoreVector& evaluate() override final {
+                return ruleEvaluationPtr_->evaluate(sumVector_);
+            }
+
+    };
+
+    /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
      * according to a differentiable loss function that is applied label-wise.
      *
@@ -73,27 +149,18 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class AbstractWeightedStatisticsSubset : public IWeightedStatisticsSubset {
+            class AbstractWeightedStatisticsSubset : public LabelWiseStatisticsSubset<StatisticVector, StatisticView,
+                                                                                      RuleEvaluationFactory,
+                                                                                      IndexVector>,
+                                                     virtual public IWeightedStatisticsSubset {
 
                 private:
-
-                    const IndexVector& labelIndices_;
-
-                    StatisticVector sumVector_;
 
                     StatisticVector tmpVector_;
 
                     std::unique_ptr<StatisticVector> accumulatedSumVectorPtr_;
 
-                    std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
-
                 protected:
-
-                    /**
-                     * A reference to an object of template type `StatisticView` that provides access to the gradients
-                     * and Hessians.
-                     */
-                    const StatisticView& statisticView_;
 
                     /**
                      * A pointer to an object of template type `StatisticVector` that stores the total sum of all
@@ -121,18 +188,10 @@ namespace boosting {
                                                      const StatisticVector& totalSumVector,
                                                      const RuleEvaluationFactory& ruleEvaluationFactory,
                                                      const IndexVector& labelIndices)
-                        : labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
-                          tmpVector_(StatisticVector(labelIndices.getNumElements())),
-                          ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)),
-                          statisticView_(statistics.statisticView_), totalSumVector_(&totalSumVector) {
+                        : LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory, IndexVector>(
+                              statistics.statisticView_, ruleEvaluationFactory, labelIndices),
+                          tmpVector_(StatisticVector(labelIndices.getNumElements())), totalSumVector_(&totalSumVector) {
 
-                    }
-
-                    /**
-                     * @see `IStatisticsSubset::addToSubset`
-                     */
-                    void addToSubset(uint32 statisticIndex, float64 weight) override final {
-                        sumVector_.addToSubset(statisticView_, statisticIndex, labelIndices_, weight);
                     }
 
                     /**
@@ -142,45 +201,38 @@ namespace boosting {
                         if (!accumulatedSumVectorPtr_) {
                             // Create a vector for storing the accumulated sums of gradients and Hessians, if
                             // necessary...
-                            accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(sumVector_);
+                            accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(this->sumVector_);
                         } else {
                             // Add the sums of gradients and Hessians to the accumulated sums of gradients and
                             // Hessians...
-                            accumulatedSumVectorPtr_->add(sumVector_);
+                            accumulatedSumVectorPtr_->add(this->sumVector_);
                         }
 
                         // Reset the sums of gradients and Hessians to zero...
-                        sumVector_.clear();
-                    }
-
-                    /**
-                     * @see `IStatisticsSubset::evaluate`
-                     */
-                    const IScoreVector& evaluate() override final {
-                        return ruleEvaluationPtr_->evaluate(sumVector_);
+                        this->sumVector_.clear();
                     }
 
                     /**
                      * @see `IWeightedStatisticsSubset::evaluateAccumulated`
                      */
                     const IScoreVector& evaluateAccumulated() override final {
-                        return ruleEvaluationPtr_->evaluate(*accumulatedSumVectorPtr_);
+                        return this->ruleEvaluationPtr_->evaluate(*accumulatedSumVectorPtr_);
                     }
 
                     /**
                      * @see `IWeightedStatisticsSubset::evaluateUncovered`
                      */
                     const IScoreVector& evaluateUncovered() override final {
-                        tmpVector_.difference(*totalSumVector_, labelIndices_, sumVector_);
-                        return ruleEvaluationPtr_->evaluate(tmpVector_);
+                        tmpVector_.difference(*totalSumVector_, this->labelIndices_, this->sumVector_);
+                        return this->ruleEvaluationPtr_->evaluate(tmpVector_);
                     }
 
                     /**
                      * @see `IWeightedStatisticsSubset::evaluateUncoveredAccumulated`
                      */
                     const IScoreVector& evaluateUncoveredAccumulated() override final {
-                        tmpVector_.difference(*totalSumVector_, labelIndices_, *accumulatedSumVectorPtr_);
-                        return ruleEvaluationPtr_->evaluate(tmpVector_);
+                        tmpVector_.difference(*totalSumVector_, this->labelIndices_, *accumulatedSumVectorPtr_);
+                        return this->ruleEvaluationPtr_->evaluate(tmpVector_);
                     }
 
             };
