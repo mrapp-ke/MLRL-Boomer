@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_subset.hpp"
+#include "common/statistics/statistics_subset_weighted.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include <memory>
@@ -34,33 +34,25 @@ class IImmutableWeightedStatistics {
         virtual uint32 getNumLabels() const = 0;
 
         /**
-         * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
-         * a specific `CompleteIndexVector`. Individual statistics that are covered by a refinement of a rule can be
-         * added to the subset via subsequent calls to the function `IStatisticsSubset::addToSubset`.
-         *
-         * This function, or the function `createSubset(PartialIndexVector&)` must be called each time a new refinement
-         * is considered, unless the refinement covers all statistics previously provided via calls to the function
-         * `IStatisticsSubset::addToSubset`.
+         * Creates and returns a new object of type `IWeightedStatisticsSubset` that includes only those labels, whose
+         * indices are provided by a specific `CompleteIndexVector`.
          *
          * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
          *                      indices of the labels that should be included in the subset
-         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices) const = 0;
+        virtual std::unique_ptr<IWeightedStatisticsSubset> createSubset(
+            const CompleteIndexVector& labelIndices) const = 0;
 
         /**
-         * Creates a new, empty subset of the statistics that includes only those labels, whose indices are provided by
-         * a specific `PartialIndexVector`. Individual statistics that are covered by a refinement of a rule can be
-         * added to the subset via subsequent calls to the function `IStatisticsSubset::addToSubset`.
-         *
-         * This function, or the function `createSubset(CompleteIndexVector&)` must be called each time a new refinement
-         * is considered, unless the refinement covers all statistics previously provided via calls to the function
-         * `IStatisticsSubset::addToSubset`.
+         * Creates and returns a new object of type `IWeightedStatisticsSubset` that includes only those labels, whose
+         * indices are provided by a specific `PartialIndexVector`.
          *
          * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
          *                      indices of the labels that should be included in the subset
-         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices) const = 0;
+        virtual std::unique_ptr<IWeightedStatisticsSubset> createSubset(
+            const PartialIndexVector& labelIndices) const = 0;
 
 };

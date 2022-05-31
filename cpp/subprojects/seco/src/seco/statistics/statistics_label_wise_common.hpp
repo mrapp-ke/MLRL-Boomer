@@ -111,7 +111,7 @@ namespace seco {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class StatisticsSubset final : public IStatisticsSubset {
+            class WeightedStatisticsSubset final : public IWeightedStatisticsSubset {
 
                 private:
 
@@ -142,9 +142,9 @@ namespace seco {
                      * @param labelIndices      A reference to an object of template type `IndexVector` that provides
                      *                          access to the indices of the labels that are included in the subset
                      */
-                    StatisticsSubset(const LabelWiseWeightedStatistics& statistics,
-                                     std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr,
-                                     const IndexVector& labelIndices)
+                    WeightedStatisticsSubset(const LabelWiseWeightedStatistics& statistics,
+                                             std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr,
+                                             const IndexVector& labelIndices)
                         : statistics_(statistics), subsetSumVector_(&statistics_.subsetSumVector_),
                           ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
                           sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)),
@@ -153,7 +153,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::addToMissing`
+                     * @see `IWeightedStatisticsSubset::addToMissing`
                      */
                     void addToMissing(uint32 statisticIndex, float64 weight) override {
                         // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
@@ -179,7 +179,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::resetSubset`
+                     * @see `IWeightedStatisticsSubset::resetSubset`
                      */
                     void resetSubset() override {
                         if (!accumulatedSumVectorPtr_) {
@@ -203,7 +203,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::evaluateAccumulated`
+                     * @see `IWeightedStatisticsSubset::evaluateAccumulated`
                      */
                     const IScoreVector& evaluateAccumulated() override final {
                         return ruleEvaluationPtr_->evaluate(statistics_.majorityLabelVector_,
@@ -211,7 +211,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::evaluateUncovered`
+                     * @see `IWeightedStatisticsSubset::evaluateUncovered`
                      */
                     const IScoreVector& evaluateUncovered() override final {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), labelIndices_,
@@ -221,7 +221,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IStatisticsSubset::evaluateUncoveredAccumulated`
+                     * @see `IWeightedStatisticsSubset::evaluateUncoveredAccumulated`
                      */
                     const IScoreVector& evaluateUncoveredAccumulated() override final {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), labelIndices_,
@@ -319,21 +319,23 @@ namespace seco {
             /**
              * @see `IImmutableWeightedStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(
+            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
                 std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactory_.create(labelIndices);
-                return std::make_unique<StatisticsSubset<CompleteIndexVector>>(*this, std::move(ruleEvaluationPtr),
-                                                                               labelIndices);
+                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this,
+                                                                                       std::move(ruleEvaluationPtr),
+                                                                                       labelIndices);
             }
 
             /**
              * @see `IImmutableWeightedStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(
+            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
                 std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactory_.create(labelIndices);
-                return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, std::move(ruleEvaluationPtr),
-                                                                              labelIndices);
+                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this,
+                                                                                      std::move(ruleEvaluationPtr),
+                                                                                      labelIndices);
             }
 
             /**
