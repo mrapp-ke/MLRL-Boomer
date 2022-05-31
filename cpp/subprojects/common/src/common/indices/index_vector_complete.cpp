@@ -31,6 +31,10 @@ CompleteIndexVector::const_iterator CompleteIndexVector::cend() const {
     return IndexIterator(numElements_);
 }
 
+std::unique_ptr<IStatisticsSubset> CompleteIndexVector::createSubset(const IStatistics& statistics) const {
+    return statistics.createSubset(*this);
+}
+
 std::unique_ptr<IWeightedStatisticsSubset> CompleteIndexVector::createSubset(
         const IImmutableWeightedStatistics& statistics) const {
     return statistics.createSubset(*this);
