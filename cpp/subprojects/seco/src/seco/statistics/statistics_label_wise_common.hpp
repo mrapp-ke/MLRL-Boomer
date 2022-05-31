@@ -540,6 +540,24 @@ namespace seco {
             }
 
             /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+                    const CompleteIndexVector& labelIndices) const override final {
+                // TODO Implement
+                return nullptr;
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+                    const PartialIndexVector& labelIndices) const override final {
+                // TODO Implement
+                return nullptr;
+            }
+
+            /**
              * @see `IStatistics::createWeightedStatistics`
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
