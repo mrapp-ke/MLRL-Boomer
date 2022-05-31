@@ -111,7 +111,7 @@ namespace seco {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class StatisticsSubset final : public IWeightedStatisticsSubset {
+            class WeightedStatisticsSubset final : public IWeightedStatisticsSubset {
 
                 private:
 
@@ -142,9 +142,9 @@ namespace seco {
                      * @param labelIndices      A reference to an object of template type `IndexVector` that provides
                      *                          access to the indices of the labels that are included in the subset
                      */
-                    StatisticsSubset(const LabelWiseWeightedStatistics& statistics,
-                                     std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr,
-                                     const IndexVector& labelIndices)
+                    WeightedStatisticsSubset(const LabelWiseWeightedStatistics& statistics,
+                                             std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr,
+                                             const IndexVector& labelIndices)
                         : statistics_(statistics), subsetSumVector_(&statistics_.subsetSumVector_),
                           ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
                           sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)),
@@ -322,8 +322,9 @@ namespace seco {
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
                 std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactory_.create(labelIndices);
-                return std::make_unique<StatisticsSubset<CompleteIndexVector>>(*this, std::move(ruleEvaluationPtr),
-                                                                               labelIndices);
+                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this,
+                                                                                       std::move(ruleEvaluationPtr),
+                                                                                       labelIndices);
             }
 
             /**
@@ -332,8 +333,9 @@ namespace seco {
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
                 std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr = ruleEvaluationFactory_.create(labelIndices);
-                return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, std::move(ruleEvaluationPtr),
-                                                                              labelIndices);
+                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this,
+                                                                                      std::move(ruleEvaluationPtr),
+                                                                                      labelIndices);
             }
 
             /**

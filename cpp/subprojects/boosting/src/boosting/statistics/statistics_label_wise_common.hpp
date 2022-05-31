@@ -73,7 +73,7 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class AbstractStatisticsSubset : public IWeightedStatisticsSubset {
+            class AbstractWeightedStatisticsSubset : public IWeightedStatisticsSubset {
 
                 private:
 
@@ -121,10 +121,11 @@ namespace boosting {
                      * @param labelIndices      A reference to an object of template type `IndexVector` that provides
                      *                          access to the indices of the labels that are included in the subset
                      */
-                    AbstractStatisticsSubset(const AbstractLabelWiseImmutableWeightedStatistics& statistics,
-                                             const StatisticVector& totalSumVector,
-                                             std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
-                                             const IndexVector& labelIndices)
+                    AbstractWeightedStatisticsSubset(
+                            const AbstractLabelWiseImmutableWeightedStatistics& statistics,
+                            const StatisticVector& totalSumVector,
+                            std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
+                            const IndexVector& labelIndices)
                         : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
                           labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
                           tmpVector_(StatisticVector(labelIndices.getNumElements())), totalSumVector_(&totalSumVector) {
@@ -258,9 +259,9 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class StatisticsSubset final :
+            class WeightedStatisticsSubset final :
                     public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
-                                                                        RuleEvaluationFactory>::template AbstractStatisticsSubset<IndexVector> {
+                                                                        RuleEvaluationFactory>::template AbstractWeightedStatisticsSubset<IndexVector> {
 
                 private:
 
@@ -281,11 +282,11 @@ namespace boosting {
                      * @param labelIndices      A reference to an object of template type `IndexVector` that provides
                      *                          access to the indices of the labels that are included in the subset
                      */
-                    StatisticsSubset(const LabelWiseHistogram& histogram, const StatisticVector& totalSumVector,
-                            std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
-                            const IndexVector& labelIndices)
+                    WeightedStatisticsSubset(const LabelWiseHistogram& histogram, const StatisticVector& totalSumVector,
+                                             std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
+                                             const IndexVector& labelIndices)
                         : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
-                                                                       RuleEvaluationFactory>::template AbstractStatisticsSubset<IndexVector>(
+                                                                       RuleEvaluationFactory>::template AbstractWeightedStatisticsSubset<IndexVector>(
                               histogram, totalSumVector, std::move(ruleEvaluationPtr), labelIndices),
                           histogram_(histogram) {
 
@@ -361,9 +362,9 @@ namespace boosting {
                     const CompleteIndexVector& labelIndices) const override {
                 std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     this->ruleEvaluationFactory_.create(totalSumVector_, labelIndices);
-                return std::make_unique<StatisticsSubset<CompleteIndexVector>>(*this, totalSumVector_,
-                                                                               std::move(ruleEvaluationPtr),
-                                                                               labelIndices);
+                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, totalSumVector_,
+                                                                                       std::move(ruleEvaluationPtr),
+                                                                                       labelIndices);
             }
 
             /**
@@ -373,9 +374,9 @@ namespace boosting {
                     const PartialIndexVector& labelIndices) const override {
                 std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     this->ruleEvaluationFactory_.create(totalSumVector_, labelIndices);
-                return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, totalSumVector_,
-                                                                              std::move(ruleEvaluationPtr),
-                                                                              labelIndices);
+                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, totalSumVector_,
+                                                                                      std::move(ruleEvaluationPtr),
+                                                                                      labelIndices);
             }
 
     };
@@ -410,9 +411,9 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class StatisticsSubset final :
+            class WeightedStatisticsSubset final :
                     public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
-                                                                        RuleEvaluationFactory>::template AbstractStatisticsSubset<IndexVector> {
+                                                                        RuleEvaluationFactory>::template AbstractWeightedStatisticsSubset<IndexVector> {
 
                 private:
 
@@ -431,12 +432,12 @@ namespace boosting {
                      * @param labelIndices      A reference to an object of template type `IndexVector` that provides
                      *                          access to the indices of the labels that are included in the subset
                      */
-                    StatisticsSubset(const LabelWiseWeightedStatistics& statistics,
-                                     const StatisticVector& totalSumVector,
-                                     std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
-                                     const IndexVector& labelIndices)
+                    WeightedStatisticsSubset(const LabelWiseWeightedStatistics& statistics,
+                                             const StatisticVector& totalSumVector,
+                                             std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
+                                             const IndexVector& labelIndices)
                         : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
-                                                                       RuleEvaluationFactory>::template AbstractStatisticsSubset<IndexVector>(
+                                                                       RuleEvaluationFactory>::template AbstractWeightedStatisticsSubset<IndexVector>(
                               statistics, totalSumVector, std::move(ruleEvaluationPtr), labelIndices) {
 
                     }
@@ -529,9 +530,9 @@ namespace boosting {
                     const CompleteIndexVector& labelIndices) const override final {
                 std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     this->ruleEvaluationFactory_.create(*totalSumVectorPtr_, labelIndices);
-                return std::make_unique<StatisticsSubset<CompleteIndexVector>>(*this, *totalSumVectorPtr_,
-                                                                               std::move(ruleEvaluationPtr),
-                                                                               labelIndices);
+                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, *totalSumVectorPtr_,
+                                                                                       std::move(ruleEvaluationPtr),
+                                                                                       labelIndices);
             }
 
             /**
@@ -541,9 +542,9 @@ namespace boosting {
                     const PartialIndexVector& labelIndices) const override final {
                 std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
                     this->ruleEvaluationFactory_.create(*totalSumVectorPtr_, labelIndices);
-                return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, *totalSumVectorPtr_,
-                                                                              std::move(ruleEvaluationPtr),
-                                                                              labelIndices);
+                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, *totalSumVectorPtr_,
+                                                                                      std::move(ruleEvaluationPtr),
+                                                                                      labelIndices);
             }
 
     };
