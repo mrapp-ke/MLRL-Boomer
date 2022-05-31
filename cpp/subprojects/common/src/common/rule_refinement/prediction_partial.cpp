@@ -44,7 +44,7 @@ uint32 PartialPrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
 }
 
-std::unique_ptr<IStatisticsSubset> PartialPrediction::createSubset(
+std::unique_ptr<IWeightedStatisticsSubset> PartialPrediction::createSubset(
         const IImmutableWeightedStatistics& statistics) const {
     return indexVector_.createSubset(statistics);
 }

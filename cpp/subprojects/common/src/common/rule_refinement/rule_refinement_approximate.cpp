@@ -32,7 +32,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     bool sparse = sparseBinIndex < numBins && weights[sparseBinIndex];
 
     // Create a new, empty subset of the statistics...
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(statistics);
+    std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = labelIndices_.createSubset(statistics);
 
     for (auto it = thresholdVector.missing_indices_cbegin(); it != thresholdVector.missing_indices_cend(); it++) {
         uint32 i = *it;
