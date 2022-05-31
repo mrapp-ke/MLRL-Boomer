@@ -107,10 +107,10 @@ namespace seco {
              * Provides access to a subset of the confusion matrices that are stored by an instance of the class
              * `LabelWiseWeightedStatistics`.
              *
-             * @tparam T The type of the vector that provides access to the indices of the labels that are included in
-             *           the subset
+             * @tparam IndexVector The type of the vector that provides access to the indices of the labels that are
+             *                     included in the subset
              */
-            template<typename T>
+            template<typename IndexVector>
             class StatisticsSubset final : public IStatisticsSubset {
 
                 private:
@@ -121,7 +121,7 @@ namespace seco {
 
                     std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr_;
 
-                    const T& labelIndices_;
+                    const IndexVector& labelIndices_;
 
                     ConfusionMatrixVector sumVector_;
 
@@ -139,11 +139,12 @@ namespace seco {
                      * @param ruleEvaluationPtr An unique pointer to an object of type `IRuleEvaluation` that should be
                      *                          used to calculate the predictions, as well as corresponding quality
                      *                          scores, of rules
-                     * @param labelIndices      A reference to an object of template type `T` that provides access to
-                     *                          the indices of the labels that are included in the subset
+                     * @param labelIndices      A reference to an object of template type `IndexVector` that provides
+                     *                          access to the indices of the labels that are included in the subset
                      */
                     StatisticsSubset(const LabelWiseWeightedStatistics& statistics,
-                                     std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr, const T& labelIndices)
+                                     std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr,
+                                     const IndexVector& labelIndices)
                         : statistics_(statistics), totalSumVector_(&statistics_.subsetSumVector_),
                           ruleEvaluationPtr_(std::move(ruleEvaluationPtr)), labelIndices_(labelIndices),
                           sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)),
