@@ -9,6 +9,8 @@
 // Forward declarations
 class IRuleRefinement;
 class IThresholdsSubset;
+class IStatistics;
+class IStatisticsSubset;
 class IImmutableWeightedStatistics;
 class IWeightedStatisticsSubset;
 
@@ -44,6 +46,15 @@ class IIndexVector {
          * @return      The index at the given position
          */
         virtual uint32 getIndex(uint32 pos) const = 0;
+
+        /**
+         * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
+         * stored in this vector.
+         *
+         * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const IStatistics& statistics) const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the labels whose indices are

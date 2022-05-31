@@ -479,49 +479,51 @@ class ExactThresholds final : public AbstractThresholds {
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
                         partition.cbegin(), partition.getNumElements(), weights_, coverageState,
-                        *weightedStatisticsPtr_, head);
+                        thresholds_.statisticsProvider_.get(), head);
                 }
 
                 float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
                         partition.first_cbegin(), partition.getNumFirst(), weights_, coverageState,
-                        *weightedStatisticsPtr_, head);
+                        thresholds_.statisticsProvider_.get(), head);
                 }
 
                 float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const override {
-                    return evaluateOutOfSampleInternally(weights_, coverageState, *weightedStatisticsPtr_, head);
+                    return evaluateOutOfSampleInternally(weights_, coverageState, thresholds_.statisticsProvider_.get(),
+                                                         head);
                 }
 
                 float64 evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const override {
-                    return evaluateOutOfSampleInternally(weights_, coverageState, partition, *weightedStatisticsPtr_,
-                                                         head);
+                    return evaluateOutOfSampleInternally(weights_, coverageState, partition,
+                                                         thresholds_.statisticsProvider_.get(), head);
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
-                        partition.cbegin(), partition.getNumElements(), coverageState, *weightedStatisticsPtr_,
-                        refinement);
+                        partition.cbegin(), partition.getNumElements(), coverageState,
+                        thresholds_.statisticsProvider_.get(), refinement);
                 }
 
                 void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
                                            Refinement& refinement) const override {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
-                        partition.first_cbegin(), partition.getNumFirst(), coverageState, *weightedStatisticsPtr_,
-                        refinement);
+                        partition.first_cbegin(), partition.getNumFirst(), coverageState,
+                        thresholds_.statisticsProvider_.get(), refinement);
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
                                            Refinement& refinement) const override {
-                    recalculatePredictionInternally(coverageState, *weightedStatisticsPtr_, refinement);
+                    recalculatePredictionInternally(coverageState, thresholds_.statisticsProvider_.get(), refinement);
                 }
 
                 void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
                                            Refinement& refinement) const override {
-                    recalculatePredictionInternally(coverageState, partition, *weightedStatisticsPtr_, refinement);
+                    recalculatePredictionInternally(coverageState, partition, thresholds_.statisticsProvider_.get(),
+                                                    refinement);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {
