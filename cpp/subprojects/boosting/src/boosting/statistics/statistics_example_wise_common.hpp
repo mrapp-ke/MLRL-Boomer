@@ -89,8 +89,6 @@ namespace boosting {
 
                     const AbstractExampleWiseImmutableWeightedStatistics& statistics_;
 
-                    std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
-
                     const IndexVector& labelIndices_;
 
                     StatisticVector sumVector_;
@@ -98,6 +96,8 @@ namespace boosting {
                     StatisticVector tmpVector_;
 
                     std::unique_ptr<StatisticVector> accumulatedSumVectorPtr_;
+
+                    std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
 
                 protected:
 
@@ -120,25 +120,28 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type
-                     *                          `AbstractExampleWiseImmutableWeightedStatistics` that stores the
-                     *                          gradients and Hessians
-                     * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
-                     *                          the total sums of gradients and Hessians
-                     * @param ruleEvaluationPtr An unique pointer to an object of type `IRuleEvaluation` that should be
-                     *                          used to calculate the predictions, as well as corresponding quality
-                     *                          scores, of rules
-                     * @param labelIndices      A reference to an object of template type `IndexVector` that provides
-                     *                          access to the indices of the labels that are included in the subset
+                     * @param statistics            A reference to an object of type
+                     *                              `AbstractExampleWiseImmutableWeightedStatistics` that stores the
+                     *                              gradients and Hessians
+                     * @param totalSumVector        A reference to an object of template type `StatisticVector` that
+                     *                              stores the total sums of gradients and Hessians
+                     * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`
+                     *                              that allows to create instances of the class that should be used for
+                     *                              calculating the predictions of rules, as well as corresponding
+                     *                              quality scores
+                     * @param labelIndices          A reference to an object of template type `IndexVector` that
+                     *                              provides access to the indices of the labels that are included in
+                     *                              the subset
                      */
-                    AbstractWeightedStatisticsSubset(
-                            const AbstractExampleWiseImmutableWeightedStatistics& statistics,
-                            const StatisticVector& totalSumVector,
-                            std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
-                            const IndexVector& labelIndices)
-                        : statistics_(statistics), ruleEvaluationPtr_(std::move(ruleEvaluationPtr)),
-                          labelIndices_(labelIndices), sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
-                          tmpVector_(StatisticVector(labelIndices.getNumElements())), totalSumVector_(&totalSumVector) {
+                    AbstractWeightedStatisticsSubset(const AbstractExampleWiseImmutableWeightedStatistics& statistics,
+                                                     const StatisticVector& totalSumVector,
+                                                     const RuleEvaluationFactory& ruleEvaluationFactory,
+                                                     const IndexVector& labelIndices)
+                        : statistics_(statistics), labelIndices_(labelIndices),
+                          sumVector_(StatisticVector(labelIndices.getNumElements(), true)),
+                          tmpVector_(StatisticVector(labelIndices.getNumElements())),
+                          ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)),
+                          totalSumVector_(&totalSumVector) {
 
                     }
 
@@ -296,23 +299,25 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param histogram         A reference to an object of type `ExampleWiseHistogram` that stores the
-                     *                          gradients and Hessians
-                     * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
-                     *                          the total sums of gradients and Hessians
-                     * @param ruleEvaluationPtr An unique pointer to an object of type `IRuleEvaluation` that should be
-                     *                          used to calculate the predictions, as well as corresponding quality
-                     *                          scores, of rules
-                     * @param labelIndices      A reference to an object of template type `IndexVector` that provides
-                     *                          access to the indices of the labels that are included in the subset
+                     * @param histogram             A reference to an object of type `ExampleWiseHistogram` that stores
+                     *                              the gradients and Hessians
+                     * @param totalSumVector        A reference to an object of template type `StatisticVector` that
+                     *                              stores the total sums of gradients and Hessians
+                     * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`
+                     *                              that allows to create instances of the class that should be used for
+                     *                              calculating the predictions of rules, as well as corresponding
+                     *                              quality scores
+                     * @param labelIndices          A reference to an object of template type `IndexVector` that
+                     *                              provides access to the indices of the labels that are included in
+                     *                              the subset
                      */
                     WeightedStatisticsSubset(const ExampleWiseHistogram& histogram,
                                              const StatisticVector& totalSumVector,
-                                             std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
+                                             const RuleEvaluationFactory& ruleEvaluationFactory,
                                              const IndexVector& labelIndices)
                         : AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, Histogram,
                                                                          RuleEvaluationFactory>::template AbstractWeightedStatisticsSubset<IndexVector>(
-                              histogram, totalSumVector, std::move(ruleEvaluationPtr), labelIndices),
+                              histogram, totalSumVector, ruleEvaluationFactory, labelIndices),
                           histogram_(histogram) {
 
                     }
@@ -391,10 +396,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
-                std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
-                    this->ruleEvaluationFactory_.create(totalSumVector_, labelIndices);
                 return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, totalSumVector_,
-                                                                                       std::move(ruleEvaluationPtr),
+                                                                                       this->ruleEvaluationFactory_,
                                                                                        labelIndices);
             }
 
@@ -403,10 +406,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
-                std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
-                    this->ruleEvaluationFactory_.create(totalSumVector_, labelIndices);
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, totalSumVector_,
-                                                                                      std::move(ruleEvaluationPtr),
+                                                                                      this->ruleEvaluationFactory_,
                                                                                       labelIndices);
             }
 
@@ -455,23 +456,25 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `ExampleWiseWeightedStatistics` that
-                     *                          stores the gradients and Hessians
-                     * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
-                     *                          the total sums of gradients and Hessians
-                     * @param ruleEvaluationPtr An unique pointer to an object of type `IRuleEvaluation` that should be
-                     *                          used to calculate the predictions, as well as corresponding quality
-                     *                          scores, of rules
-                     * @param labelIndices      A reference to an object of template type `IndexVector` that provides
-                     *                          access to the indices of the labels that are included in the subset
+                     * @param statistics            A reference to an object of type `ExampleWiseWeightedStatistics`
+                     *                              that stores the gradients and Hessians
+                     * @param totalSumVector        A reference to an object of template type `StatisticVector` that
+                     *                              stores the total sums of gradients and Hessians
+                     * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`
+                     *                              that allows to create instances of the class that should be used for
+                     *                              calculating the predictions of rules, as well as corresponding
+                     *                              quality scores
+                     * @param labelIndices          A reference to an object of template type `IndexVector` that
+                     *                              provides access to the indices of the labels that are included in
+                     *                              the subset
                      */
                     WeightedStatisticsSubset(const ExampleWiseWeightedStatistics& statistics,
                                              const StatisticVector& totalSumVector,
-                                             std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr,
+                                             const RuleEvaluationFactory& ruleEvaluationFactory,
                                              const IndexVector& labelIndices)
                         : AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
                                                                          RuleEvaluationFactory>::template AbstractWeightedStatisticsSubset<IndexVector>(
-                              statistics, totalSumVector, std::move(ruleEvaluationPtr), labelIndices) {
+                              statistics, totalSumVector, ruleEvaluationFactory, labelIndices) {
 
                     }
 
@@ -564,10 +567,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
-                std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
-                    this->ruleEvaluationFactory_.create(*totalSumVectorPtr_, labelIndices);
                 return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, *totalSumVectorPtr_,
-                                                                                       std::move(ruleEvaluationPtr),
+                                                                                       this->ruleEvaluationFactory_,
                                                                                        labelIndices);
             }
 
@@ -576,10 +577,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
-                std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr =
-                    this->ruleEvaluationFactory_.create(*totalSumVectorPtr_, labelIndices);
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, *totalSumVectorPtr_,
-                                                                                      std::move(ruleEvaluationPtr),
+                                                                                      this->ruleEvaluationFactory_,
                                                                                       labelIndices);
             }
 
