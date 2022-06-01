@@ -9,48 +9,6 @@
 
 namespace boosting {
 
-    template<typename StatisticView, typename StatisticVector>
-    static inline void addLabelWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                             StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.add(statisticView, statisticIndex);
-    }
-
-    template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void addLabelWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
-                                             StatisticVector& statisticVector, uint32 statisticIndex) {
-        float64 weight = weights.getWeight(statisticIndex);
-        statisticVector.add(statisticView, statisticIndex, weight);
-    }
-
-    template<typename StatisticView, typename StatisticVector>
-    static inline void removeLabelWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                                StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.remove(statisticView, statisticIndex);
-    }
-
-    template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void removeLabelWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
-                                                StatisticVector& statisticVector, uint32 statisticIndex) {
-        float64 weight = weights.getWeight(statisticIndex);
-        statisticVector.remove(statisticView, statisticIndex, weight);
-    }
-
-    template<typename Prediction, typename ScoreMatrix>
-    static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                          ScoreMatrix& scoreMatrix) {
-        scoreMatrix.addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
-                                       prediction.indices_cbegin(), prediction.indices_cend());
-    }
-
-    template<typename Prediction, typename LabelMatrix, typename StatisticView, typename ScoreMatrix,
-             typename LossFunction>
-    static inline void updateLabelWiseStatisticsInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                           const LabelMatrix& labelMatrix, StatisticView& statisticView,
-                                                           ScoreMatrix& scoreMatrix, const LossFunction& lossFunction) {
-        lossFunction.updateLabelWiseStatistics(statisticIndex, labelMatrix, scoreMatrix, prediction.indices_cbegin(),
-                                               prediction.indices_cend(), statisticView);
-    }
-
     /**
      * A subset of gradients and Hessians that are calculated according to a differentiable loss function that is
      * applied label-wise and are accessible via a view.
@@ -441,6 +399,32 @@ namespace boosting {
 
     };
 
+    template<typename StatisticView, typename StatisticVector>
+    static inline void addLabelWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                             StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.add(statisticView, statisticIndex);
+    }
+
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void addLabelWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                             StatisticVector& statisticVector, uint32 statisticIndex) {
+        float64 weight = weights.getWeight(statisticIndex);
+        statisticVector.add(statisticView, statisticIndex, weight);
+    }
+
+    template<typename StatisticView, typename StatisticVector>
+    static inline void removeLabelWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                                StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.remove(statisticView, statisticIndex);
+    }
+
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void removeLabelWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                                StatisticVector& statisticVector, uint32 statisticIndex) {
+        float64 weight = weights.getWeight(statisticIndex);
+        statisticVector.remove(statisticView, statisticIndex, weight);
+    }
+
     /**
      * An abstract base class for all classes that provide access to weighted gradients and Hessians that are calculated
      * according to a differentiable loss function that is applied label-wise and allows to update the gradients and
@@ -614,6 +598,22 @@ namespace boosting {
             }
 
     };
+
+    template<typename Prediction, typename ScoreMatrix>
+    static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                          ScoreMatrix& scoreMatrix) {
+        scoreMatrix.addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
+                                       prediction.indices_cbegin(), prediction.indices_cend());
+    }
+
+    template<typename Prediction, typename LabelMatrix, typename StatisticView, typename ScoreMatrix,
+             typename LossFunction>
+    static inline void updateLabelWiseStatisticsInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                           const LabelMatrix& labelMatrix, StatisticView& statisticView,
+                                                           ScoreMatrix& scoreMatrix, const LossFunction& lossFunction) {
+        lossFunction.updateLabelWiseStatistics(statisticIndex, labelMatrix, scoreMatrix, prediction.indices_cbegin(),
+                                               prediction.indices_cend(), statisticView);
+    }
 
     /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
