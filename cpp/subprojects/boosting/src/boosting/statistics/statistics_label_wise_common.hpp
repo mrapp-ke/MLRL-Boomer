@@ -4,6 +4,7 @@
 #pragma once
 
 #include "boosting/statistics/statistics_label_wise.hpp"
+#include "common/binning/bin_weight_vector.hpp"
 
 
 namespace boosting {
@@ -135,8 +136,10 @@ namespace boosting {
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
+     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
+     *                                  statistics
      */
-    template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory>
+    template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector>
     class AbstractLabelWiseImmutableWeightedStatistics : virtual public IImmutableWeightedStatistics {
 
         protected:
@@ -295,7 +298,8 @@ namespace boosting {
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory>
     class LabelWiseHistogram final : virtual public IHistogram,
                                      public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
-                                                                                         RuleEvaluationFactory> {
+                                                                                         RuleEvaluationFactory,
+                                                                                         BinWeightVector> {
 
         private:
 
@@ -309,7 +313,7 @@ namespace boosting {
             template<typename IndexVector>
             class WeightedStatisticsSubset final :
                     public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
-                                                                        RuleEvaluationFactory>::template AbstractWeightedStatisticsSubset<IndexVector> {
+                                                                        RuleEvaluationFactory, BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
 
                 private:
 
@@ -336,7 +340,7 @@ namespace boosting {
                                              const RuleEvaluationFactory& ruleEvaluationFactory,
                                              const IndexVector& labelIndices)
                         : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
-                                                                       RuleEvaluationFactory>::template AbstractWeightedStatisticsSubset<IndexVector>(
+                                                                       RuleEvaluationFactory, BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(
                               histogram, totalSumVector, ruleEvaluationFactory, labelIndices),
                           histogram_(histogram) {
 
@@ -383,8 +387,8 @@ namespace boosting {
             LabelWiseHistogram(std::unique_ptr<Histogram> histogramPtr, const StatisticView& originalStatisticView,
                                const StatisticVector& totalSumVector,
                                const RuleEvaluationFactory& ruleEvaluationFactory)
-                : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram, RuleEvaluationFactory>(
-                      *histogramPtr, ruleEvaluationFactory),
+                : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram, RuleEvaluationFactory,
+                                                               BinWeightVector>(*histogramPtr, ruleEvaluationFactory),
                   histogramPtr_(std::move(histogramPtr)), originalStatisticView_(originalStatisticView),
                   totalSumVector_(totalSumVector) {
 
@@ -446,7 +450,8 @@ namespace boosting {
     class LabelWiseWeightedStatistics : virtual public IWeightedStatistics,
                                         public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector,
                                                                                             StatisticView,
-                                                                                            RuleEvaluationFactory> {
+                                                                                            RuleEvaluationFactory,
+                                                                                            WeightVector> {
 
         private:
 
@@ -460,7 +465,7 @@ namespace boosting {
             template<typename IndexVector>
             class WeightedStatisticsSubset final :
                     public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
-                                                                        RuleEvaluationFactory>::template AbstractWeightedStatisticsSubset<IndexVector> {
+                                                                        RuleEvaluationFactory, WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
 
                 private:
 
@@ -485,7 +490,7 @@ namespace boosting {
                                              const RuleEvaluationFactory& ruleEvaluationFactory,
                                              const IndexVector& labelIndices)
                         : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
-                                                                       RuleEvaluationFactory>::template AbstractWeightedStatisticsSubset<IndexVector>(
+                                                                       RuleEvaluationFactory, WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(
                               statistics, totalSumVector, ruleEvaluationFactory, labelIndices) {
 
                     }
@@ -525,8 +530,8 @@ namespace boosting {
             LabelWiseWeightedStatistics(const StatisticView& statisticView,
                                         const RuleEvaluationFactory& ruleEvaluationFactory,
                                         const WeightVector& weights)
-                : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory>(
-                      statisticView, ruleEvaluationFactory),
+                : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                               WeightVector>(statisticView, ruleEvaluationFactory),
                   weights_(weights),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.getNumCols(), true)) {
                 uint32 numStatistics = weights.getNumElements();
