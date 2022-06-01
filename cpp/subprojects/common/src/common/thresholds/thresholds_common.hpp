@@ -9,9 +9,10 @@
 #include "omp.h"
 
 
-template<typename T>
-static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExamples, const IWeightVector& weights,
-                                                    const CoverageMask& coverageMask, const IStatistics& statistics,
+template<typename IndexIterator>
+static inline float64 evaluateOutOfSampleInternally(IndexIterator iterator, uint32 numExamples,
+                                                    const IWeightVector& weights, const CoverageMask& coverageMask,
+                                                    const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics);
 
@@ -66,9 +67,10 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
     return scoreVector.overallQualityScore;
 }
 
-template<typename T>
-static inline void recalculatePredictionInternally(T iterator, uint32 numExamples, const CoverageMask& coverageMask,
-                                                   const IStatistics& statistics, Refinement& refinement) {
+template<typename IndexIterator>
+static inline void recalculatePredictionInternally(IndexIterator iterator, uint32 numExamples,
+                                                   const CoverageMask& coverageMask, const IStatistics& statistics,
+                                                   Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createStatisticsSubset(statistics);
 
