@@ -1,5 +1,5 @@
 #include "common/indices/index_vector_partial.hpp"
-#include "common/statistics/statistics_weighted_immutable.hpp"
+#include "common/statistics/statistics.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
 
@@ -46,11 +46,6 @@ PartialIndexVector::const_iterator PartialIndexVector::cend() const {
 }
 
 std::unique_ptr<IStatisticsSubset> PartialIndexVector::createStatisticsSubset(const IStatistics& statistics) const {
-    return statistics.createSubset(*this);
-}
-
-std::unique_ptr<IWeightedStatisticsSubset> PartialIndexVector::createWeightedStatisticsSubset(
-        const IImmutableWeightedStatistics& statistics) const {
     return statistics.createSubset(*this);
 }
 
