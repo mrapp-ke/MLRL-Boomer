@@ -294,8 +294,11 @@ namespace boosting {
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
+     * @tparam BinIndexVector           The type of the vector that stores the indices of the bins, individual examples
+     *                                  have been assigned to
      */
-    template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory>
+    template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
+             typename BinIndexVector>
     class LabelWiseHistogram final : virtual public IHistogram,
                                      public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
                                                                                          RuleEvaluationFactory,
@@ -571,10 +574,8 @@ namespace boosting {
                 std::unique_ptr<Histogram> histogramPtr =
                     std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
                 return std::make_unique<LabelWiseHistogram<StatisticVector, StatisticView, Histogram,
-                                                           RuleEvaluationFactory>>(std::move(histogramPtr),
-                                                                                   originalStatisticView,
-                                                                                   *totalSumVectorPtr_,
-                                                                                   this->ruleEvaluationFactory_);
+                                                           RuleEvaluationFactory, DenseBinIndexVector>>(
+                    std::move(histogramPtr), originalStatisticView, *totalSumVectorPtr_, this->ruleEvaluationFactory_);
             }
 
             /**
@@ -586,10 +587,8 @@ namespace boosting {
                 std::unique_ptr<Histogram> histogramPtr =
                     std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
                 return std::make_unique<LabelWiseHistogram<StatisticVector, StatisticView, Histogram,
-                                                           RuleEvaluationFactory>>(std::move(histogramPtr),
-                                                                                   originalStatisticView,
-                                                                                   *totalSumVectorPtr_,
-                                                                                   this->ruleEvaluationFactory_);
+                                                           RuleEvaluationFactory, DokBinIndexVector>>(
+                    std::move(histogramPtr), originalStatisticView, *totalSumVectorPtr_, this->ruleEvaluationFactory_);
             }
 
             /**
