@@ -636,9 +636,11 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
                                                             const EqualWeightVector& weights) const override final {
                 return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                        RuleEvaluationFactory, EqualWeightVector, CompleteIndexVector>(
-                    labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, weights,
-                    labelIndices);
+                                                        RuleEvaluationFactory, EqualWeightVector,
+                                                        CompleteIndexVector>(labelMatrix_, *coverageMatrixPtr_,
+                                                                             *majorityLabelVectorPtr_,
+                                                                             *ruleEvaluationFactory_, weights,
+                                                                             labelIndices);
             }
 
             /**
@@ -647,9 +649,11 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
                                                             const EqualWeightVector& weights) const override final {
                 return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                        RuleEvaluationFactory, EqualWeightVector, PartialIndexVector>(
-                    labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, weights,
-                    labelIndices);
+                                                        RuleEvaluationFactory, EqualWeightVector,
+                                                        PartialIndexVector>(labelMatrix_, *coverageMatrixPtr_,
+                                                                            *majorityLabelVectorPtr_,
+                                                                            *ruleEvaluationFactory_, weights,
+                                                                            labelIndices);
             }
 
             /**
@@ -658,9 +662,11 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
                                                             const BitWeightVector& weights) const override final {
                 return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                        RuleEvaluationFactory, BitWeightVector, CompleteIndexVector>(
-                    labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, weights,
-                    labelIndices);
+                                                        RuleEvaluationFactory, BitWeightVector,
+                                                        CompleteIndexVector>(labelMatrix_, *coverageMatrixPtr_,
+                                                                             *majorityLabelVectorPtr_,
+                                                                             *ruleEvaluationFactory_, weights,
+                                                                             labelIndices);
             }
 
             /**
@@ -669,9 +675,11 @@ namespace seco {
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
                                                             const BitWeightVector& weights) const override final {
                 return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                        RuleEvaluationFactory, BitWeightVector, PartialIndexVector>(
-                    labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, weights,
-                    labelIndices);
+                                                        RuleEvaluationFactory, BitWeightVector,
+                                                        PartialIndexVector>(labelMatrix_, *coverageMatrixPtr_,
+                                                                            *majorityLabelVectorPtr_,
+                                                                            *ruleEvaluationFactory_, weights,
+                                                                            labelIndices);
             }
 
             /**
@@ -696,6 +704,94 @@ namespace seco {
                     const DenseWeightVector<uint32>& weights) const override final {
                 return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                         RuleEvaluationFactory, DenseWeightVector<uint32>,
+                                                        PartialIndexVector>(labelMatrix_, *coverageMatrixPtr_,
+                                                                            *majorityLabelVectorPtr_,
+                                                                            *ruleEvaluationFactory_, weights,
+                                                                            labelIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+                    const CompleteIndexVector& labelIndices,
+                    const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
+                return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                        RuleEvaluationFactory,
+                                                        OutOfSampleWeightVector<EqualWeightVector>,
+                                                        CompleteIndexVector>(labelMatrix_, *coverageMatrixPtr_,
+                                                                             *majorityLabelVectorPtr_,
+                                                                             *ruleEvaluationFactory_, weights,
+                                                                             labelIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+                    const PartialIndexVector& labelIndices,
+                    const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
+                return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                        RuleEvaluationFactory,
+                                                        OutOfSampleWeightVector<EqualWeightVector>,
+                                                        PartialIndexVector>(labelMatrix_, *coverageMatrixPtr_,
+                                                                            *majorityLabelVectorPtr_,
+                                                                            *ruleEvaluationFactory_, weights,
+                                                                            labelIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+                    const CompleteIndexVector& labelIndices,
+                    const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
+                return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                        RuleEvaluationFactory, OutOfSampleWeightVector<BitWeightVector>,
+                                                        CompleteIndexVector>(labelMatrix_, *coverageMatrixPtr_,
+                                                                             *majorityLabelVectorPtr_,
+                                                                             *ruleEvaluationFactory_, weights,
+                                                                             labelIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+                    const PartialIndexVector& labelIndices,
+                    const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
+                return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                        RuleEvaluationFactory, OutOfSampleWeightVector<BitWeightVector>,
+                                                        PartialIndexVector>(labelMatrix_, *coverageMatrixPtr_,
+                                                                            *majorityLabelVectorPtr_,
+                                                                            *ruleEvaluationFactory_, weights,
+                                                                            labelIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+                    const CompleteIndexVector& labelIndices,
+                    const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
+                return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                        RuleEvaluationFactory,
+                                                        OutOfSampleWeightVector<DenseWeightVector<uint32>>,
+                                                        CompleteIndexVector>(labelMatrix_, *coverageMatrixPtr_,
+                                                                             *majorityLabelVectorPtr_,
+                                                                             *ruleEvaluationFactory_, weights,
+                                                                             labelIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+                    const PartialIndexVector& labelIndices,
+                    const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
+                return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                        RuleEvaluationFactory,
+                                                        OutOfSampleWeightVector<DenseWeightVector<uint32>>,
                                                         PartialIndexVector>(labelMatrix_, *coverageMatrixPtr_,
                                                                             *majorityLabelVectorPtr_,
                                                                             *ruleEvaluationFactory_, weights,
