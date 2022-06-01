@@ -45,8 +45,22 @@ PartialIndexVector::const_iterator PartialIndexVector::cend() const {
     return vector_.cend();
 }
 
-std::unique_ptr<IStatisticsSubset> PartialIndexVector::createStatisticsSubset(const IStatistics& statistics) const {
-    return statistics.createSubset(*this);
+std::unique_ptr<IStatisticsSubset> PartialIndexVector::createStatisticsSubset(const IStatistics& statistics,
+                                                                              const EqualWeightVector& weights,
+                                                                              bool outOfSample) const {
+    return statistics.createSubset(*this, weights, outOfSample);
+}
+
+std::unique_ptr<IStatisticsSubset> PartialIndexVector::createStatisticsSubset(const IStatistics& statistics,
+                                                                              const BitWeightVector& weights,
+                                                                              bool outOfSample) const {
+    return statistics.createSubset(*this, weights, outOfSample);
+}
+
+std::unique_ptr<IStatisticsSubset> PartialIndexVector::createStatisticsSubset(const IStatistics& statistics,
+                                                                              const DenseWeightVector<uint32>& weights,
+                                                                              bool outOfSample) const {
+    return statistics.createSubset(*this, weights, outOfSample);
 }
 
 std::unique_ptr<IRuleRefinement> PartialIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,

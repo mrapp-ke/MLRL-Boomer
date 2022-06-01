@@ -46,7 +46,17 @@ class CompletePrediction final : public AbstractEvaluatedPrediction {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics) const override;
+        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics,
+                                                                  const EqualWeightVector& weights,
+                                                                  bool outOfSample) const override;
+
+        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics,
+                                                                  const BitWeightVector& weights,
+                                                                  bool outOfSample) const override;
+
+        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics,
+                                                                  const DenseWeightVector<uint32>& weights,
+                                                                  bool outOfSample) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;

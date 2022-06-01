@@ -14,7 +14,8 @@ static inline float64 evaluateOutOfSampleInternally(IndexIterator indexIterator,
                                                     const WeightVector& weights, const CoverageMask& coverageMask,
                                                     const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
+        prediction.createStatisticsSubset(statistics, weights, true);
 
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indexIterator[i];
@@ -32,7 +33,8 @@ template<typename WeightVector>
 static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
                                                     const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
+        prediction.createStatisticsSubset(statistics, weights, true);
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
 
@@ -52,7 +54,8 @@ template<typename WeightVector>
 static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
                                                     BiPartition& partition, const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
+        prediction.createStatisticsSubset(statistics, weights, true);
     const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
@@ -74,7 +77,8 @@ static inline void recalculatePredictionInternally(IndexIterator indexIterator, 
                                                    const CoverageMask& coverageMask, const IStatistics& statistics,
                                                    Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createStatisticsSubset(statistics);
+    EqualWeightVector weights(numExamples);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createStatisticsSubset(statistics, weights, false);
 
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indexIterator[i];
@@ -91,7 +95,9 @@ static inline void recalculatePredictionInternally(IndexIterator indexIterator, 
 static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, const IStatistics& statistics,
                                                    Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createStatisticsSubset(statistics);
+    uint32 numStatistics = statistics.getNumStatistics();
+    EqualWeightVector weights(numStatistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createStatisticsSubset(statistics, weights, false);
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
 
@@ -107,7 +113,9 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
 static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, BiPartition& partition,
                                                    const IStatistics& statistics, Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createStatisticsSubset(statistics);
+    uint32 numStatistics = statistics.getNumStatistics();
+    EqualWeightVector weights(numStatistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createStatisticsSubset(statistics, weights, false);
     const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
