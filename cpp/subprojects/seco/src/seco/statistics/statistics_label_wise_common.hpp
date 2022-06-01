@@ -487,7 +487,17 @@ namespace seco {
             /**
              * @see `IWeightedStatistics::createHistogram`
              */
-            std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override final {
+            std::unique_ptr<IHistogram> createHistogram(const DenseBinIndexVector& binIndexVector,
+                                                        uint32 numBins) const override final {
+                //TODO Support creation of histograms
+                return nullptr;
+            }
+
+            /**
+             * @see `IWeightedStatistics::createHistogram`
+             */
+            std::unique_ptr<IHistogram> createHistogram(const DokBinIndexVector& binIndexVector,
+                                                        uint32 numBins) const override final {
                 //TODO Support creation of histograms
                 return nullptr;
             }

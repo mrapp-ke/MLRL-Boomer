@@ -599,7 +599,23 @@ namespace boosting {
             /**
              * @see `IWeightedStatistics::createHistogram`
              */
-            std::unique_ptr<IHistogram> createHistogram(uint32 numBins) const override final {
+            std::unique_ptr<IHistogram> createHistogram(const DenseBinIndexVector& binIndexVector,
+                                                        uint32 numBins) const override final {
+                const StatisticView& originalStatisticView = this->statisticView_;
+                std::unique_ptr<Histogram> histogramPtr =
+                    std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
+                return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, Histogram,
+                                                             RuleEvaluationFactory>>(std::move(histogramPtr),
+                                                                                     originalStatisticView,
+                                                                                     *totalSumVectorPtr_,
+                                                                                     this->ruleEvaluationFactory_);
+            }
+
+            /**
+             * @see `IWeightedStatistics::createHistogram`
+             */
+            std::unique_ptr<IHistogram> createHistogram(const DokBinIndexVector& binIndexVector,
+                                                        uint32 numBins) const override final {
                 const StatisticView& originalStatisticView = this->statisticView_;
                 std::unique_ptr<Histogram> histogramPtr =
                     std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
