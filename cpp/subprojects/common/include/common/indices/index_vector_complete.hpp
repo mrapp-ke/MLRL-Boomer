@@ -56,15 +56,6 @@ class CompleteIndexVector final : public IIndexVector {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics,
-                                                                  const EqualWeightVector& weights) const override;
-
-        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics,
-                                                                  const BitWeightVector& weights) const override;
-
-        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const override;
-
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;
 

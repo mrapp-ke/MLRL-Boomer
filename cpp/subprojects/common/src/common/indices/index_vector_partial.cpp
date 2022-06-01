@@ -1,5 +1,4 @@
 #include "common/indices/index_vector_partial.hpp"
-#include "common/statistics/statistics.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
 
@@ -43,21 +42,6 @@ PartialIndexVector::const_iterator PartialIndexVector::cbegin() const {
 
 PartialIndexVector::const_iterator PartialIndexVector::cend() const {
     return vector_.cend();
-}
-
-std::unique_ptr<IStatisticsSubset> PartialIndexVector::createStatisticsSubset(const IStatistics& statistics,
-                                                                              const EqualWeightVector& weights) const {
-    return statistics.createSubset(*this, weights);
-}
-
-std::unique_ptr<IStatisticsSubset> PartialIndexVector::createStatisticsSubset(const IStatistics& statistics,
-                                                                              const BitWeightVector& weights) const {
-    return statistics.createSubset(*this, weights);
-}
-
-std::unique_ptr<IStatisticsSubset> PartialIndexVector::createStatisticsSubset(
-        const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const {
-    return statistics.createSubset(*this, weights);
 }
 
 std::unique_ptr<IRuleRefinement> PartialIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
