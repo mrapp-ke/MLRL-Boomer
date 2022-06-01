@@ -14,8 +14,9 @@ static inline float64 evaluateOutOfSampleInternally(IndexIterator indexIterator,
                                                     const WeightVector& weights, const CoverageMask& coverageMask,
                                                     const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
-    // TODO use out-of-sample weights
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
+    OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
+        prediction.createStatisticsSubset(statistics, outOfSampleWeights);
 
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indexIterator[i];
@@ -33,8 +34,9 @@ template<typename WeightVector>
 static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
                                                     const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
-    // TODO use out-of-sample weights
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
+    OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
+        prediction.createStatisticsSubset(statistics, outOfSampleWeights);
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
 
