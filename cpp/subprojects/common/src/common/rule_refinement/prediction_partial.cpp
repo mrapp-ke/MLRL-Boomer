@@ -45,7 +45,7 @@ uint32 PartialPrediction::getIndex(uint32 pos) const {
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(const IStatistics& statistics) const {
-    return indexVector_.createStatisticsSubset(statistics);
+    return statistics.createSubset(indexVector_);
 }
 
 std::unique_ptr<IRuleRefinement> PartialPrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
