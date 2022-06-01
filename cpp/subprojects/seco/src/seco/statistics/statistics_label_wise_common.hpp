@@ -504,6 +504,21 @@ namespace seco {
                                         prediction.indices_cend());
     }
 
+    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
+             typename RuleEvaluationFactory, typename IndexVector>
+    static inline std::unique_ptr<IStatisticsSubset> createStatisticsSubsetInternally(
+            const LabelMatrix& labelMatrix, const CoverageMatrix& coverageMatrix,
+            const BinarySparseArrayVector& majorityLabelVector, const RuleEvaluationFactory& ruleEvaluationFactory,
+            const IndexVector& labelIndices) {
+        std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr =
+            std::make_unique<ConfusionMatrixVector>(labelMatrix.getNumRows(), true);
+        // TODO Populate totalSumVectorPtr
+        return std::make_unique<LabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                          RuleEvaluationFactory, IndexVector>>(
+            std::move(totalSumVectorPtr), labelMatrix, coverageMatrix, majorityLabelVector, ruleEvaluationFactory,
+            labelIndices);
+    }
+
     /**
      * An abstract base class for all statistics that provide access to the elements of confusion matrices that are
      * computed independently for each label.
@@ -614,13 +629,9 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
-                std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr =
-                    std::make_unique<ConfusionMatrixVector>(this->getNumLabels(), true);
-                 // TODO Populate totalSumVectorPtr
-                return std::make_unique<LabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                                  RuleEvaluationFactory, CompleteIndexVector>>(
-                    std::move(totalSumVectorPtr), labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_,
-                    *ruleEvaluationFactory_, labelIndices);
+                return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                        RuleEvaluationFactory, CompleteIndexVector>(
+                    labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, labelIndices);
             }
 
             /**
@@ -628,13 +639,9 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
-                std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr =
-                    std::make_unique<ConfusionMatrixVector>(this->getNumLabels(), true);
-                // TODO Populate totalSumVectorPtr
-                return std::make_unique<LabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                                  RuleEvaluationFactory, PartialIndexVector>>(
-                    std::move(totalSumVectorPtr), labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_,
-                    *ruleEvaluationFactory_, labelIndices);
+                return createStatisticsSubsetInternally<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                        RuleEvaluationFactory, PartialIndexVector>(
+                    labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, labelIndices);
             }
 
             /**
