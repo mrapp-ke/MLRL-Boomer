@@ -293,9 +293,9 @@ namespace boosting {
      *                                  scores
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory>
-    class LabelWiseHistogram final : public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
-                                                                                         RuleEvaluationFactory>,
-                                     virtual public IHistogram {
+    class LabelWiseHistogram final : virtual public IHistogram,
+                                     public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
+                                                                                         RuleEvaluationFactory> {
 
         private:
 
@@ -443,9 +443,10 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
              typename WeightVector>
-    class LabelWiseWeightedStatistics :
-            public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory>,
-            virtual public IWeightedStatistics {
+    class LabelWiseWeightedStatistics : virtual public IWeightedStatistics,
+                                        public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector,
+                                                                                            StatisticView,
+                                                                                            RuleEvaluationFactory> {
 
         private:
 

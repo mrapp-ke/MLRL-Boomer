@@ -162,10 +162,10 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class AbstractWeightedStatisticsSubset : public ExampleWiseStatisticsSubset<StatisticVector, StatisticView,
+            class AbstractWeightedStatisticsSubset : virtual public IWeightedStatisticsSubset,
+                                                     public ExampleWiseStatisticsSubset<StatisticVector, StatisticView,
                                                                                         RuleEvaluationFactory,
-                                                                                        IndexVector>,
-                                                     virtual public IWeightedStatisticsSubset {
+                                                                                        IndexVector> {
 
                 private:
 
@@ -319,10 +319,9 @@ namespace boosting {
      *                                  scores
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory>
-    class ExampleWiseHistogram final : public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector,
-                                                                                             Histogram,
-                                                                                             RuleEvaluationFactory>,
-                                       virtual public IHistogram {
+    class ExampleWiseHistogram final : virtual public IHistogram,
+                                       public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, Histogram,
+                                                                                             RuleEvaluationFactory> {
 
         private:
 
@@ -477,10 +476,10 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
              typename WeightVector>
-    class ExampleWiseWeightedStatistics :
-            public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
-                                                                  RuleEvaluationFactory>,
-            virtual public IWeightedStatistics {
+    class ExampleWiseWeightedStatistics : virtual public IWeightedStatistics,
+                                          public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector,
+                                                                                                StatisticView,
+                                                                                                RuleEvaluationFactory> {
 
         private:
 
@@ -657,8 +656,8 @@ namespace boosting {
     template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename Histogram,
              typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure,
              typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
-    class AbstractExampleWiseStatistics :
-            virtual public IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory> {
+    class AbstractExampleWiseStatistics : virtual public IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory,
+                                                                                LabelWiseRuleEvaluationFactory> {
 
         private:
 

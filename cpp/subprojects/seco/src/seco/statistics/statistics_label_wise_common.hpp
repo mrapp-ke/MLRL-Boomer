@@ -279,11 +279,11 @@ namespace seco {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class WeightedStatisticsSubset final : public AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix,
+            class WeightedStatisticsSubset final : virtual public IWeightedStatisticsSubset,
+                                                   public AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix,
                                                                                             ConfusionMatrixVector,
                                                                                             RuleEvaluationFactory,
-                                                                                            IndexVector>,
-                                                   virtual public IWeightedStatisticsSubset {
+                                                                                            IndexVector> {
 
                 private:
 
