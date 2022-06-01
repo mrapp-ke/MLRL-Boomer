@@ -10,6 +10,7 @@
 #include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/weight_vector_dense.hpp"
 #include "common/sampling/weight_vector_equal.hpp"
+#include "common/sampling/weight_vector_out_of_sample.hpp"
 
 
 /**
@@ -147,6 +148,88 @@ class IStatistics {
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
                                                                 const DenseWeightVector<uint32>& weights) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * are provided by a specific `CompleteIndexVector`.
+         *
+         * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the labels that should be included in the subset
+         * @param weights       A reference to an object of type `OutOfSampleWeightVector<EqualWeightVector>` that
+         *                      provides access to the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(
+            const CompleteIndexVector& labelIndices,
+            const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * are provided by a specific `PartialIndexVector`.
+         *
+         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the labels that should be included in the subset
+         * @param weights       A reference to an object of type `OutOfSampleWeightVector<EqualWeightVector>` that
+         *                      provides access to the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(
+            const PartialIndexVector& labelIndices,
+            const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * are provided by a specific `CompleteIndexVector`.
+         *
+         * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the labels that should be included in the subset
+         * @param weights       A reference to an object of type `OutOfSampleWeightVector<BitWeightVector>` that
+         *                      provides access to the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(
+            const CompleteIndexVector& labelIndices, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * are provided by a specific `PartialIndexVector`.
+         *
+         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the labels that should be included in the subset
+         * @param weights       A reference to an object of type `OutOfSampleWeightVector<BitWeightVector>` that
+         *                      provides access to the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(
+            const PartialIndexVector& labelIndices, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * are provided by a specific `CompleteIndexVector`.
+         *
+         * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the labels that should be included in the subset
+         * @param weights       A reference to an object of type `OutOfSampleWeightVector<DenseWeightVector<uint32>>`
+         *                      that provides access to the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(
+            const CompleteIndexVector& labelIndices,
+            const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * are provided by a specific `PartialIndexVector`.
+         *
+         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the labels that should be included in the subset
+         * @param weights       A reference to an object of type `OutOfSampleWeightVector<DenseWeightVector<uint32>>`
+         *                      that provides access to the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(
+            const PartialIndexVector& labelIndices,
+            const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
 
         /**
          * Creates and returns a new object of type `IWeightedStatistics`.
