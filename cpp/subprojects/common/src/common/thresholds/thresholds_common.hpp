@@ -10,14 +10,14 @@
 
 
 template<typename IndexIterator>
-static inline float64 evaluateOutOfSampleInternally(IndexIterator iterator, uint32 numExamples,
+static inline float64 evaluateOutOfSampleInternally(IndexIterator indexIterator, uint32 numExamples,
                                                     const IWeightVector& weights, const CoverageMask& coverageMask,
                                                     const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics);
 
     for (uint32 i = 0; i < numExamples; i++) {
-        uint32 exampleIndex = iterator[i];
+        uint32 exampleIndex = indexIterator[i];
 
         if (weights.getWeight(exampleIndex) == 0 && coverageMask.isCovered(exampleIndex)) {
             statisticsSubsetPtr->addToSubset(exampleIndex, 1);
@@ -68,14 +68,14 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
 }
 
 template<typename IndexIterator>
-static inline void recalculatePredictionInternally(IndexIterator iterator, uint32 numExamples,
+static inline void recalculatePredictionInternally(IndexIterator indexIterator, uint32 numExamples,
                                                    const CoverageMask& coverageMask, const IStatistics& statistics,
                                                    Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createStatisticsSubset(statistics);
 
     for (uint32 i = 0; i < numExamples; i++) {
-        uint32 exampleIndex = iterator[i];
+        uint32 exampleIndex = indexIterator[i];
 
         if (coverageMask.isCovered(exampleIndex)) {
             statisticsSubsetPtr->addToSubset(exampleIndex, 1);
