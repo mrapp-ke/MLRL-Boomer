@@ -31,8 +31,22 @@ CompleteIndexVector::const_iterator CompleteIndexVector::cend() const {
     return IndexIterator(numElements_);
 }
 
-std::unique_ptr<IStatisticsSubset> CompleteIndexVector::createStatisticsSubset(const IStatistics& statistics) const {
-    return statistics.createSubset(*this);
+std::unique_ptr<IStatisticsSubset> CompleteIndexVector::createStatisticsSubset(const IStatistics& statistics,
+                                                                               const EqualWeightVector& weights,
+                                                                               bool outOfSample) const {
+    return statistics.createSubset(*this, weights, outOfSample);
+}
+
+std::unique_ptr<IStatisticsSubset> CompleteIndexVector::createStatisticsSubset(const IStatistics& statistics,
+                                                                               const BitWeightVector& weights,
+                                                                               bool outOfSample) const {
+    return statistics.createSubset(*this, weights, outOfSample);
+}
+
+std::unique_ptr<IStatisticsSubset> CompleteIndexVector::createStatisticsSubset(const IStatistics& statistics,
+                                                                               const DenseWeightVector<uint32>& weights,
+                                                                               bool outOfSample) const {
+    return statistics.createSubset(*this, weights, outOfSample);
 }
 
 std::unique_ptr<IRuleRefinement> CompleteIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,

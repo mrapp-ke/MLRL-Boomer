@@ -734,8 +734,9 @@ namespace boosting {
             /**
              * @see `IStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices) const override final {
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
+                                                            const EqualWeightVector& weights,
+                                                            bool outOfSample) const override final {
                 return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
                                                                   CompleteIndexVector>>(*statisticViewPtr_,
                                                                                         *ruleEvaluationFactory_,
@@ -745,8 +746,57 @@ namespace boosting {
             /**
              * @see `IStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices) const override final {
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
+                                                            const EqualWeightVector& weights,
+                                                            bool outOfSample) const override final {
+                return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                                  PartialIndexVector>>(*statisticViewPtr_,
+                                                                                       *ruleEvaluationFactory_,
+                                                                                       labelIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
+                                                            const BitWeightVector& weights,
+                                                            bool outOfSample) const override final {
+                return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                                  CompleteIndexVector>>(*statisticViewPtr_,
+                                                                                        *ruleEvaluationFactory_,
+                                                                                        labelIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
+                                                            const BitWeightVector& weights,
+                                                            bool outOfSample) const override final {
+                return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                                  PartialIndexVector>>(*statisticViewPtr_,
+                                                                                       *ruleEvaluationFactory_,
+                                                                                       labelIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
+                                                            const DenseWeightVector<uint32>& weights,
+                                                            bool outOfSample) const override final {
+                return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                                  CompleteIndexVector>>(*statisticViewPtr_,
+                                                                                        *ruleEvaluationFactory_,
+                                                                                        labelIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
+                                                            const DenseWeightVector<uint32>& weights,
+                                                            bool outOfSample) const override final {
                 return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
                                                                   PartialIndexVector>>(*statisticViewPtr_,
                                                                                        *ruleEvaluationFactory_,
