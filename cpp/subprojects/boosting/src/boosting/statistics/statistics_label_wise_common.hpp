@@ -425,6 +425,21 @@ namespace boosting {
         statisticVector.remove(statisticView, statisticIndex, weight);
     }
 
+    template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
+             typename BinIndexVector>
+    static inline std::unique_ptr<IHistogram> createLabelWiseHistogramInternally(
+            const BinIndexVector& binIndexVector, const StatisticView& originalStatisticView,
+            const StatisticVector& totalSumVector, const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins) {
+        std::unique_ptr<Histogram> histogramPtr =
+            std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
+        std::unique_ptr<BinWeightVector> binWeightVectorPtr = std::make_unique<BinWeightVector>(numBins);
+        return std::make_unique<LabelWiseHistogram<StatisticVector, StatisticView, Histogram, RuleEvaluationFactory,
+                                                   BinIndexVector>>(std::move(histogramPtr),
+                                                                    std::move(binWeightVectorPtr), binIndexVector,
+                                                                    originalStatisticView, totalSumVector,
+                                                                    ruleEvaluationFactory);
+    }
+
     /**
      * An abstract base class for all classes that provide access to weighted gradients and Hessians that are calculated
      * according to a differentiable loss function that is applied label-wise and allows to update the gradients and
@@ -554,14 +569,9 @@ namespace boosting {
              */
             std::unique_ptr<IHistogram> createHistogram(const DenseBinIndexVector& binIndexVector,
                                                         uint32 numBins) const override final {
-                const StatisticView& originalStatisticView = this->statisticView_;
-                std::unique_ptr<Histogram> histogramPtr =
-                    std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
-                std::unique_ptr<BinWeightVector> binWeightVectorPtr = std::make_unique<BinWeightVector>(numBins);
-                return std::make_unique<LabelWiseHistogram<StatisticVector, StatisticView, Histogram,
-                                                           RuleEvaluationFactory, DenseBinIndexVector>>(
-                    std::move(histogramPtr), std::move(binWeightVectorPtr), binIndexVector, originalStatisticView,
-                    *totalSumVectorPtr_, this->ruleEvaluationFactory_);
+                return createLabelWiseHistogramInternally<StatisticVector, StatisticView, Histogram,
+                                                          RuleEvaluationFactory, DenseBinIndexVector>(
+                    binIndexVector, this->statisticView_, *totalSumVectorPtr_, this->ruleEvaluationFactory_, numBins);
             }
 
             /**
@@ -569,14 +579,9 @@ namespace boosting {
              */
             std::unique_ptr<IHistogram> createHistogram(const DokBinIndexVector& binIndexVector,
                                                         uint32 numBins) const override final {
-                const StatisticView& originalStatisticView = this->statisticView_;
-                std::unique_ptr<Histogram> histogramPtr =
-                    std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
-                std::unique_ptr<BinWeightVector> binWeightVectorPtr = std::make_unique<BinWeightVector>(numBins);
-                return std::make_unique<LabelWiseHistogram<StatisticVector, StatisticView, Histogram,
-                                                           RuleEvaluationFactory, DokBinIndexVector>>(
-                    std::move(histogramPtr), std::move(binWeightVectorPtr), binIndexVector, originalStatisticView,
-                    *totalSumVectorPtr_, this->ruleEvaluationFactory_);
+                return createLabelWiseHistogramInternally<StatisticVector, StatisticView, Histogram,
+                                                          RuleEvaluationFactory, DokBinIndexVector>(
+                    binIndexVector, this->statisticView_, *totalSumVectorPtr_, this->ruleEvaluationFactory_, numBins);
             }
 
             /**
