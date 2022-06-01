@@ -10,6 +10,7 @@
 
 // Forward declarations
 class IStatistics;
+class IStatisticsSubset;
 class IHead;
 
 
@@ -106,6 +107,15 @@ class AbstractPrediction : public IIndexVector {
          * @return An unique pointer to an object of type `IHead` that has been created
          */
         virtual std::unique_ptr<IHead> createHead() const = 0;
+
+        /**
+         * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
+         * stored in this vector.
+         *
+         * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics) const = 0;
 
         uint32 getNumElements() const override;
 

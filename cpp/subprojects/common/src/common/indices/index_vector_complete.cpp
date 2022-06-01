@@ -1,5 +1,4 @@
 #include "common/indices/index_vector_complete.hpp"
-#include "common/statistics/statistics.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
 
@@ -29,10 +28,6 @@ CompleteIndexVector::const_iterator CompleteIndexVector::cbegin() const {
 
 CompleteIndexVector::const_iterator CompleteIndexVector::cend() const {
     return IndexIterator(numElements_);
-}
-
-std::unique_ptr<IStatisticsSubset> CompleteIndexVector::createStatisticsSubset(const IStatistics& statistics) const {
-    return statistics.createSubset(*this);
 }
 
 std::unique_ptr<IRuleRefinement> CompleteIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
