@@ -11,8 +11,6 @@ class IRuleRefinement;
 class IThresholdsSubset;
 class IStatistics;
 class IStatisticsSubset;
-class IImmutableWeightedStatistics;
-class IWeightedStatisticsSubset;
 
 
 /**
@@ -54,18 +52,7 @@ class IIndexVector {
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const IStatistics& statistics) const = 0;
-
-        /**
-         * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
-         * stored in this vector.
-         *
-         * @param statistics    A reference to an object of type `IImmutableWeightedStatistics` that should be used to
-         *                      create the subset
-         * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
-         */
-        virtual std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-            const IImmutableWeightedStatistics& statistics) const = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics) const = 0;
 
         /**
          * Creates and return a new instance of type `IRuleRefinement` that allows to search for the best refinement of
