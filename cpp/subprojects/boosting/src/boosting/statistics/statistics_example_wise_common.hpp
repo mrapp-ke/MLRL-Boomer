@@ -400,6 +400,8 @@ namespace boosting {
 
             std::unique_ptr<Histogram> histogramPtr_;
 
+            const BinIndexVector& binIndexVector_;
+
             const StatisticView& originalStatisticView_;
 
             const StatisticVector& totalSumVector_;
@@ -409,6 +411,8 @@ namespace boosting {
             /**
              * @param histogramPtr          An unique pointer to an object of template type `Histogram` that stores the
              *                              gradients and Hessians in the histogram
+             * @param binIndexVector        A reference to an object of template type `BinIndexVector` that stores the
+             *                              indices of the bins, individual examples have been assigned to
              * @param originalStatisticView A reference to an object of template type `StatisticView` that provides
              *                              access to the original gradients and Hessians, the histogram was created
              *                              from
@@ -418,13 +422,13 @@ namespace boosting {
              *                              create instances of the class that should be used for calculating the
              *                              predictions of rules, as well as corresponding quality scores
              */
-            ExampleWiseHistogram(std::unique_ptr<Histogram> histogramPtr, const StatisticView& originalStatisticView,
-                                 const StatisticVector& totalSumVector,
+            ExampleWiseHistogram(std::unique_ptr<Histogram> histogramPtr, const BinIndexVector& binIndexVector,
+                                 const StatisticView& originalStatisticView, const StatisticVector& totalSumVector,
                                  const RuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, Histogram, RuleEvaluationFactory,
                                                                  BinWeightVector>(*histogramPtr, ruleEvaluationFactory),
-                  histogramPtr_(std::move(histogramPtr)), originalStatisticView_(originalStatisticView),
-                  totalSumVector_(totalSumVector) {
+                  histogramPtr_(std::move(histogramPtr)), binIndexVector_(binIndexVector),
+                  originalStatisticView_(originalStatisticView), totalSumVector_(totalSumVector) {
 
             }
 
@@ -614,7 +618,8 @@ namespace boosting {
                     std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
                 return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, Histogram,
                                                              RuleEvaluationFactory, DenseBinIndexVector>>(
-                    std::move(histogramPtr), originalStatisticView, *totalSumVectorPtr_, this->ruleEvaluationFactory_);
+                    std::move(histogramPtr), binIndexVector, originalStatisticView, *totalSumVectorPtr_,
+                    this->ruleEvaluationFactory_);
             }
 
             /**
@@ -627,7 +632,8 @@ namespace boosting {
                     std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
                 return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, Histogram,
                                                              RuleEvaluationFactory, DokBinIndexVector>>(
-                    std::move(histogramPtr), originalStatisticView, *totalSumVectorPtr_, this->ruleEvaluationFactory_);
+                    std::move(histogramPtr), binIndexVector, originalStatisticView, *totalSumVectorPtr_,
+                    this->ruleEvaluationFactory_);
             }
 
             /**
