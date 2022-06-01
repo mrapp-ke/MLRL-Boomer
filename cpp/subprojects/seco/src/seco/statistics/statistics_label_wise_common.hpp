@@ -127,6 +127,32 @@ namespace seco {
 
     };
 
+    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
+    static inline void initializeLabelWiseStatisticVector(const EqualWeightVector& weights,
+                                                          const LabelMatrix& labelMatrix,
+                                                          const BinarySparseArrayVector& majorityLabelVector,
+                                                          const CoverageMatrix& coverageMatrix,
+                                                          ConfusionMatrixVector& statisticVector) {
+        uint32 numStatistics = weights.getNumElements();
+
+        for (uint32 i = 0; i < numStatistics; i++) {
+            statisticVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, 1);
+        }
+    }
+
+    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
+    static inline void initializeLabelWiseStatisticVector(const WeightVector& weights, const LabelMatrix& labelMatrix,
+                                                          const BinarySparseArrayVector& majorityLabelVector,
+                                                          const CoverageMatrix& coverageMatrix,
+                                                          ConfusionMatrixVector& statisticVector) {
+        uint32 numStatistics = weights.getNumElements();
+
+        for (uint32 i = 0; i < numStatistics; i++) {
+            float64 weight = weights.getWeight(i);
+            statisticVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, weight);
+        }
+    }
+
     /**
      * A subset of confusion matrices that are computed independently for each label.
      *
@@ -184,40 +210,11 @@ namespace seco {
                       labelMatrix, coverageMatrix, majorityLabelVector, *totalSumVectorPtr, ruleEvaluationFactory,
                       weights, labelIndices),
                   totalSumVectorPtr_(std::move(totalSumVectorPtr)) {
-
+                initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
+                                                   *totalSumVectorPtr_);
             }
 
     };
-
-    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void initializeLabelWiseSampledStatistics(const EqualWeightVector& weights,
-                                                            const LabelMatrix& labelMatrix,
-                                                            const BinarySparseArrayVector& majorityLabelVector,
-                                                            const CoverageMatrix& coverageMatrix,
-                                                            ConfusionMatrixVector& totalSumVector,
-                                                            ConfusionMatrixVector& subsetSumVector) {
-        uint32 numStatistics = weights.getNumElements();
-
-        for (uint32 i = 0; i < numStatistics; i++) {
-            totalSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, 1);
-            subsetSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, 1);
-        }
-    }
-
-    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void initializeLabelWiseSampledStatistics(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                                            const BinarySparseArrayVector& majorityLabelVector,
-                                                            const CoverageMatrix& coverageMatrix,
-                                                            ConfusionMatrixVector& totalSumVector,
-                                                            ConfusionMatrixVector& subsetSumVector) {
-        uint32 numStatistics = weights.getNumElements();
-
-        for (uint32 i = 0; i < numStatistics; i++) {
-            float64 weight = weights.getWeight(i);
-            totalSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, weight);
-            subsetSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, weight);
-        }
-    }
 
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
     static inline void addLabelWiseStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
@@ -424,8 +421,11 @@ namespace seco {
                   totalSumVector_(ConfusionMatrixVector(labelMatrix.getNumCols(), true)),
                   subsetSumVector_(ConfusionMatrixVector(labelMatrix.getNumCols(), true)),
                   coverageMatrix_(coverageMatrix) {
-                initializeLabelWiseSampledStatistics(weights, labelMatrix, majorityLabelVector, coverageMatrix,
-                                                     totalSumVector_, subsetSumVector_);
+                initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
+                                                   totalSumVector_);
+                initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
+                                                   subsetSumVector_);
+
             }
 
             /**
@@ -518,7 +518,6 @@ namespace seco {
             const WeightVector& weights, const IndexVector& labelIndices) {
         std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr =
             std::make_unique<ConfusionMatrixVector>(labelMatrix.getNumRows(), true);
-        // TODO Populate totalSumVectorPtr
         return std::make_unique<LabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                           RuleEvaluationFactory, WeightVector, IndexVector>>(
             std::move(totalSumVectorPtr), labelMatrix, coverageMatrix, majorityLabelVector, ruleEvaluationFactory,
