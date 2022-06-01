@@ -217,7 +217,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 // Create histogram and weight vector...
                                 uint32 numBins = thresholdVector->getNumElements();
                                 histogramCacheEntry.histogramPtr =
-                                    thresholdsSubset_.weightedStatisticsPtr_->createHistogram(numBins);
+                                    binIndices->createHistogram(*thresholdsSubset_.weightedStatisticsPtr_, numBins);
                                 histogramCacheEntry.weightVectorPtr = std::make_unique<BinWeightVector>(numBins);
                             }
 
