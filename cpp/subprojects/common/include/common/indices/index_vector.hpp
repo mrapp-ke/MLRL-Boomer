@@ -54,7 +54,7 @@ class IIndexVector {
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const IStatistics& statistics) const = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics) const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
@@ -64,7 +64,7 @@ class IIndexVector {
          *                      create the subset
          * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IWeightedStatisticsSubset> createSubset(
+        virtual std::unique_ptr<IWeightedStatisticsSubset> createWeightedStatisticsSubset(
             const IImmutableWeightedStatistics& statistics) const = 0;
 
         /**

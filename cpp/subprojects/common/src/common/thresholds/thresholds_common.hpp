@@ -13,7 +13,7 @@ template<typename T>
 static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExamples, const IWeightVector& weights,
                                                     const CoverageMask& coverageMask, const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics);
 
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = iterator[i];
@@ -30,7 +30,7 @@ static inline float64 evaluateOutOfSampleInternally(T iterator, uint32 numExampl
 static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
                                                     const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics);
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
 
@@ -49,7 +49,7 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
 static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
                                                     BiPartition& partition, const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createSubset(statistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics);
     const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
@@ -70,7 +70,7 @@ template<typename T>
 static inline void recalculatePredictionInternally(T iterator, uint32 numExamples, const CoverageMask& coverageMask,
                                                    const IStatistics& statistics, Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createStatisticsSubset(statistics);
 
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = iterator[i];
@@ -87,7 +87,7 @@ static inline void recalculatePredictionInternally(T iterator, uint32 numExample
 static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, const IStatistics& statistics,
                                                    Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createStatisticsSubset(statistics);
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
 
@@ -103,7 +103,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
 static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, BiPartition& partition,
                                                    const IStatistics& statistics, Refinement& refinement) {
     AbstractPrediction& head = *refinement.headPtr;
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createSubset(statistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = head.createStatisticsSubset(statistics);
     const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
