@@ -27,21 +27,18 @@ uint32 CompletePrediction::getIndex(uint32 pos) const {
 }
 
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(const IStatistics& statistics,
-                                                                              const EqualWeightVector& weights,
-                                                                              bool outOfSample) const {
-    return indexVector_.createStatisticsSubset(statistics, weights, outOfSample);
+                                                                              const EqualWeightVector& weights) const {
+    return indexVector_.createStatisticsSubset(statistics, weights);
 }
 
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(const IStatistics& statistics,
-                                                                              const BitWeightVector& weights,
-                                                                              bool outOfSample) const {
-    return indexVector_.createStatisticsSubset(statistics, weights, outOfSample);
+                                                                              const BitWeightVector& weights) const {
+    return indexVector_.createStatisticsSubset(statistics, weights);
 }
 
-std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(const IStatistics& statistics,
-                                                                              const DenseWeightVector<uint32>& weights,
-                                                                              bool outOfSample) const {
-    return indexVector_.createStatisticsSubset(statistics, weights, outOfSample);
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+        const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const {
+    return indexVector_.createStatisticsSubset(statistics, weights);
 }
 
 std::unique_ptr<IRuleRefinement> CompletePrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,

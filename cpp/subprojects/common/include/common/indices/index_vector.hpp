@@ -53,13 +53,10 @@ class IIndexVector {
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
          * @param weights       A reference to an object of type `EqualWeightVector` that provides access to the weights
          *                      of individual training examples
-         * @param outOfSample   True, if only training examples with zero weights should be included in the subset,
-         *                      false otherwise
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics,
-                                                                          const EqualWeightVector& weights,
-                                                                          bool outOfSample) const = 0;
+                                                                          const EqualWeightVector& weights) const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
@@ -68,13 +65,10 @@ class IIndexVector {
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
          * @param weights       A reference to an object of type `BitWeightVector` that provides access to the weights
          *                      of individual training examples
-         * @param outOfSample   True, if only training examples with zero weights should be included in the subset,
-         *                      false otherwise
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics,
-                                                                          const BitWeightVector& weights,
-                                                                          bool outOfSample) const = 0;
+                                                                          const BitWeightVector& weights) const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
@@ -83,13 +77,10 @@ class IIndexVector {
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
          * @param weights       A reference to an object of type `DenseWeightVector<uint32>` that provides access to the
          *                      weights of individual training examples
-         * @param outOfSample   True, if only training examples with zero weights should be included in the subset,
-         *                      false otherwise
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics,
-                                                                          const DenseWeightVector<uint32>& weights,
-                                                                          bool outOfSample) const = 0;
+        virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+            const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const = 0;
 
         /**
          * Creates and return a new instance of type `IRuleRefinement` that allows to search for the best refinement of

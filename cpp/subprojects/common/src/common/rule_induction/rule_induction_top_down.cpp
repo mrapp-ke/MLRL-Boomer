@@ -51,8 +51,7 @@ class TopDownRuleInduction final : public IRuleInduction {
             uint32 numLabels = statistics.getNumLabels();
             CompleteIndexVector labelIndices(numLabels);
             EqualWeightVector weights(numStatistics);
-            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
-                statistics.createSubset(labelIndices, weights, false);
+            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices, weights);
 
             for (uint32 i = 0; i < numStatistics; i++) {
                 statisticsSubsetPtr->addToSubset(i, 1);
