@@ -8,58 +8,6 @@
 
 namespace boosting {
 
-    template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void addExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
-                                               StatisticVector& statisticVector, uint32 statisticIndex) {
-        float64 weight = weights.getWeight(statisticIndex);
-        statisticVector.add(statisticView.gradients_row_cbegin(statisticIndex),
-                            statisticView.gradients_row_cend(statisticIndex),
-                            statisticView.hessians_row_cbegin(statisticIndex),
-                            statisticView.hessians_row_cend(statisticIndex), weight);
-    }
-
-    template<typename StatisticView, typename StatisticVector>
-    static inline void addExampleWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                               StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.add(statisticView.gradients_row_cbegin(statisticIndex),
-                            statisticView.gradients_row_cend(statisticIndex),
-                            statisticView.hessians_row_cbegin(statisticIndex),
-                            statisticView.hessians_row_cend(statisticIndex));
-    }
-
-    template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void removeExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
-                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
-        float64 weight = weights.getWeight(statisticIndex);
-        statisticVector.remove(statisticView.gradients_row_cbegin(statisticIndex),
-                               statisticView.gradients_row_cend(statisticIndex),
-                               statisticView.hessians_row_cbegin(statisticIndex),
-                               statisticView.hessians_row_cend(statisticIndex), weight);
-    }
-
-    template<typename StatisticView, typename StatisticVector>
-    static inline void removeExampleWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.remove(statisticView.gradients_row_cbegin(statisticIndex),
-                               statisticView.gradients_row_cend(statisticIndex),
-                               statisticView.hessians_row_cbegin(statisticIndex),
-                               statisticView.hessians_row_cend(statisticIndex));
-    }
-
-    template<typename Prediction, typename ScoreMatrix>
-    static inline void applyExampleWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                            ScoreMatrix& scoreMatrix) {
-        scoreMatrix.addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
-                                       prediction.indices_cbegin(), prediction.indices_cend());
-    }
-
-    template<typename LabelMatrix, typename StatisticView, typename ScoreMatrix, typename LossFunction>
-    static inline void updateExampleWiseStatisticsInternally(uint32 statisticIndex, const LabelMatrix& labelMatrix,
-                                                             StatisticView& statisticView, ScoreMatrix& scoreMatrix,
-                                                             const LossFunction& lossFunction) {
-        lossFunction.updateExampleWiseStatistics(statisticIndex, labelMatrix, scoreMatrix, statisticView);
-    }
-
     /**
      *  A subset of gradients and Hessians that are calculated according to a differentiable loss function that is
      * applied example-wise and are accessible via a view.
@@ -446,6 +394,44 @@ namespace boosting {
 
     };
 
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void addExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                               StatisticVector& statisticVector, uint32 statisticIndex) {
+        float64 weight = weights.getWeight(statisticIndex);
+        statisticVector.add(statisticView.gradients_row_cbegin(statisticIndex),
+                            statisticView.gradients_row_cend(statisticIndex),
+                            statisticView.hessians_row_cbegin(statisticIndex),
+                            statisticView.hessians_row_cend(statisticIndex), weight);
+    }
+
+    template<typename StatisticView, typename StatisticVector>
+    static inline void addExampleWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                               StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.add(statisticView.gradients_row_cbegin(statisticIndex),
+                            statisticView.gradients_row_cend(statisticIndex),
+                            statisticView.hessians_row_cbegin(statisticIndex),
+                            statisticView.hessians_row_cend(statisticIndex));
+    }
+
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void removeExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
+        float64 weight = weights.getWeight(statisticIndex);
+        statisticVector.remove(statisticView.gradients_row_cbegin(statisticIndex),
+                               statisticView.gradients_row_cend(statisticIndex),
+                               statisticView.hessians_row_cbegin(statisticIndex),
+                               statisticView.hessians_row_cend(statisticIndex), weight);
+    }
+
+    template<typename StatisticView, typename StatisticVector>
+    static inline void removeExampleWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.remove(statisticView.gradients_row_cbegin(statisticIndex),
+                               statisticView.gradients_row_cend(statisticIndex),
+                               statisticView.hessians_row_cbegin(statisticIndex),
+                               statisticView.hessians_row_cend(statisticIndex));
+    }
+
     /**
      * Provides access to weighted gradients and Hessians that are calculated according to a differentiable loss
      * function that is applied example-wise and allows to update the gradients and Hessians after a new rule has been
@@ -609,6 +595,20 @@ namespace boosting {
             }
 
     };
+
+    template<typename Prediction, typename ScoreMatrix>
+    static inline void applyExampleWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                            ScoreMatrix& scoreMatrix) {
+        scoreMatrix.addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
+                                       prediction.indices_cbegin(), prediction.indices_cend());
+    }
+
+    template<typename LabelMatrix, typename StatisticView, typename ScoreMatrix, typename LossFunction>
+    static inline void updateExampleWiseStatisticsInternally(uint32 statisticIndex, const LabelMatrix& labelMatrix,
+                                                             StatisticView& statisticView, ScoreMatrix& scoreMatrix,
+                                                             const LossFunction& lossFunction) {
+        lossFunction.updateExampleWiseStatistics(statisticIndex, labelMatrix, scoreMatrix, statisticView);
+    }
 
     /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated

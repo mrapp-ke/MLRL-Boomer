@@ -9,79 +9,6 @@
 
 namespace seco {
 
-    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void initializeLabelWiseSampledStatistics(const EqualWeightVector& weights,
-                                                            const LabelMatrix& labelMatrix,
-                                                            const BinarySparseArrayVector& majorityLabelVector,
-                                                            const CoverageMatrix& coverageMatrix,
-                                                            ConfusionMatrixVector& totalSumVector,
-                                                            ConfusionMatrixVector& subsetSumVector) {
-        uint32 numStatistics = weights.getNumElements();
-
-        for (uint32 i = 0; i < numStatistics; i++) {
-            totalSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, 1);
-            subsetSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, 1);
-        }
-    }
-
-    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void initializeLabelWiseSampledStatistics(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                                            const BinarySparseArrayVector& majorityLabelVector,
-                                                            const CoverageMatrix& coverageMatrix,
-                                                            ConfusionMatrixVector& totalSumVector,
-                                                            ConfusionMatrixVector& subsetSumVector) {
-        uint32 numStatistics = weights.getNumElements();
-
-        for (uint32 i = 0; i < numStatistics; i++) {
-            float64 weight = weights.getWeight(i);
-            totalSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, weight);
-            subsetSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, weight);
-        }
-    }
-
-    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void addLabelWiseStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
-                                             const BinarySparseArrayVector& majorityLabelVector,
-                                             const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
-                                             uint32 statisticIndex) {
-        vector.add(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, 1);
-    }
-
-    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void addLabelWiseStatistic(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                             const BinarySparseArrayVector& majorityLabelVector,
-                                             const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
-                                             uint32 statisticIndex) {
-        float64 weight = weights.getWeight(statisticIndex);
-        vector.add(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, weight);
-    }
-
-    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void removeLabelWiseStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
-                                                const BinarySparseArrayVector& majorityLabelVector,
-                                                const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
-                                                uint32 statisticIndex) {
-        vector.remove(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, 1);
-    }
-
-    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void removeLabelWiseStatistic(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                                const BinarySparseArrayVector& majorityLabelVector,
-                                                const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
-                                                uint32 statisticIndex) {
-        float64 weight = weights.getWeight(statisticIndex);
-        vector.remove(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, weight);
-    }
-
-    template<typename Prediction, typename CoverageMatrix>
-    static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                          CoverageMatrix& coverageMatrix,
-                                                          const VectorConstView<uint32>& majorityLabelIndices) {
-        coverageMatrix.increaseCoverage(statisticIndex, majorityLabelIndices, prediction.scores_cbegin(),
-                                        prediction.scores_cend(), prediction.indices_cbegin(),
-                                        prediction.indices_cend());
-    }
-
     /**
      * An abstract base class for all subsets of confusion matrices that are computed independently for each label.
      *
@@ -249,6 +176,70 @@ namespace seco {
             }
 
     };
+
+    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
+    static inline void initializeLabelWiseSampledStatistics(const EqualWeightVector& weights,
+                                                            const LabelMatrix& labelMatrix,
+                                                            const BinarySparseArrayVector& majorityLabelVector,
+                                                            const CoverageMatrix& coverageMatrix,
+                                                            ConfusionMatrixVector& totalSumVector,
+                                                            ConfusionMatrixVector& subsetSumVector) {
+        uint32 numStatistics = weights.getNumElements();
+
+        for (uint32 i = 0; i < numStatistics; i++) {
+            totalSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, 1);
+            subsetSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, 1);
+        }
+    }
+
+    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
+    static inline void initializeLabelWiseSampledStatistics(const WeightVector& weights, const LabelMatrix& labelMatrix,
+                                                            const BinarySparseArrayVector& majorityLabelVector,
+                                                            const CoverageMatrix& coverageMatrix,
+                                                            ConfusionMatrixVector& totalSumVector,
+                                                            ConfusionMatrixVector& subsetSumVector) {
+        uint32 numStatistics = weights.getNumElements();
+
+        for (uint32 i = 0; i < numStatistics; i++) {
+            float64 weight = weights.getWeight(i);
+            totalSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, weight);
+            subsetSumVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, weight);
+        }
+    }
+
+    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
+    static inline void addLabelWiseStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
+                                             const BinarySparseArrayVector& majorityLabelVector,
+                                             const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
+                                             uint32 statisticIndex) {
+        vector.add(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, 1);
+    }
+
+    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
+    static inline void addLabelWiseStatistic(const WeightVector& weights, const LabelMatrix& labelMatrix,
+                                             const BinarySparseArrayVector& majorityLabelVector,
+                                             const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
+                                             uint32 statisticIndex) {
+        float64 weight = weights.getWeight(statisticIndex);
+        vector.add(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, weight);
+    }
+
+    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
+    static inline void removeLabelWiseStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
+                                                const BinarySparseArrayVector& majorityLabelVector,
+                                                const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
+                                                uint32 statisticIndex) {
+        vector.remove(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, 1);
+    }
+
+    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
+    static inline void removeLabelWiseStatistic(const WeightVector& weights, const LabelMatrix& labelMatrix,
+                                                const BinarySparseArrayVector& majorityLabelVector,
+                                                const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
+                                                uint32 statisticIndex) {
+        float64 weight = weights.getWeight(statisticIndex);
+        vector.remove(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, weight);
+    }
 
     /**
      * An abstract base class for all statistics that provide access to the elements of weighted confusion matrices that
@@ -493,6 +484,15 @@ namespace seco {
             }
 
     };
+
+    template<typename Prediction, typename CoverageMatrix>
+    static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                          CoverageMatrix& coverageMatrix,
+                                                          const VectorConstView<uint32>& majorityLabelIndices) {
+        coverageMatrix.increaseCoverage(statisticIndex, majorityLabelIndices, prediction.scores_cbegin(),
+                                        prediction.scores_cend(), prediction.indices_cbegin(),
+                                        prediction.indices_cend());
+    }
 
     /**
      * An abstract base class for all statistics that provide access to the elements of confusion matrices that are
