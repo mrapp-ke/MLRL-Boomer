@@ -83,9 +83,6 @@ class PartialIndexVector final : public IIndexVector {
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics) const override;
 
-        std::unique_ptr<IWeightedStatisticsSubset> createWeightedStatisticsSubset(
-            const IImmutableWeightedStatistics& statistics) const override;
-
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;
 

@@ -30,11 +30,6 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(co
     return indexVector_.createStatisticsSubset(statistics);
 }
 
-std::unique_ptr<IWeightedStatisticsSubset> CompletePrediction::createWeightedStatisticsSubset(
-        const IImmutableWeightedStatistics& statistics) const {
-    return indexVector_.createWeightedStatisticsSubset(statistics);
-}
-
 std::unique_ptr<IRuleRefinement> CompletePrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                                           uint32 featureIndex) const {
     return indexVector_.createRuleRefinement(thresholdsSubset, featureIndex);

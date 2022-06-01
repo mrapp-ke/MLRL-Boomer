@@ -6,9 +6,6 @@
 #include "common/rule_refinement/prediction_evaluated.hpp"
 #include "common/indices/index_vector_complete.hpp"
 
-// Forward declarations
-class IImmutableWeightedStatistics;
-
 
 /**
  * Stores the scores that are predicted by a rule that predicts for all available labels.
@@ -50,9 +47,6 @@ class CompletePrediction final : public AbstractEvaluatedPrediction {
         uint32 getIndex(uint32 pos) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics) const override;
-
-        std::unique_ptr<IWeightedStatisticsSubset> createWeightedStatisticsSubset(
-            const IImmutableWeightedStatistics& statistics) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;
