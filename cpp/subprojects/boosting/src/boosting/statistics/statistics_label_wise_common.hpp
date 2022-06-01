@@ -253,6 +253,12 @@ namespace boosting {
              */
             const RuleEvaluationFactory& ruleEvaluationFactory_;
 
+            /**
+             * A reference to an object of template type `WeightVector` that provides access to the weights of
+             * individual statistics.
+             */
+            const WeightVector& weights_;
+
         public:
 
             /**
@@ -261,10 +267,13 @@ namespace boosting {
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`, that
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as corresponding quality scores
+             * @param weights               A reference to an object of template type `WeightVector` that provides
+             *                              access to the weights of individual statistics
              */
             AbstractLabelWiseImmutableWeightedStatistics(const StatisticView& statisticView,
-                                                         const RuleEvaluationFactory& ruleEvaluationFactory)
-                : statisticView_(statisticView), ruleEvaluationFactory_(ruleEvaluationFactory) {
+                                                         const RuleEvaluationFactory& ruleEvaluationFactory,
+                                                         const WeightVector& weights)
+                : statisticView_(statisticView), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {
 
             }
 
@@ -401,7 +410,8 @@ namespace boosting {
                                const StatisticVector& totalSumVector,
                                const RuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram, RuleEvaluationFactory,
-                                                               BinWeightVector>(*histogramPtr, ruleEvaluationFactory),
+                                                               BinWeightVector>(*histogramPtr, ruleEvaluationFactory,
+                                                                                *binWeightVectorPtr),
                   histogramPtr_(std::move(histogramPtr)), binWeightVectorPtr_(std::move(binWeightVectorPtr)),
                   binIndexVector_(binIndexVector), originalStatisticView_(originalStatisticView),
                   totalSumVector_(totalSumVector) {
@@ -526,8 +536,6 @@ namespace boosting {
 
             };
 
-            const WeightVector& weights_;
-
             std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
         public:
@@ -545,8 +553,8 @@ namespace boosting {
                                         const RuleEvaluationFactory& ruleEvaluationFactory,
                                         const WeightVector& weights)
                 : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                               WeightVector>(statisticView, ruleEvaluationFactory),
-                  weights_(weights),
+                                                               WeightVector>(statisticView, ruleEvaluationFactory,
+                                                                             weights),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.getNumCols(), true)) {
                 uint32 numStatistics = weights.getNumElements();
 
@@ -566,14 +574,14 @@ namespace boosting {
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
             void addCoveredStatistic(uint32 statisticIndex) override final {
-                addLabelWiseStatistic(weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
+                addLabelWiseStatistic(this->weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
             }
 
             /**
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
             void removeCoveredStatistic(uint32 statisticIndex) override final {
-                removeLabelWiseStatistic(weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
+                removeLabelWiseStatistic(this->weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
             }
 
             /**
