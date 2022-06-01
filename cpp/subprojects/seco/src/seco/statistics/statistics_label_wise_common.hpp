@@ -291,21 +291,16 @@ namespace seco {
                     /**
                      * @param statistics            A reference to an object of type `LabelWiseWeightedStatistics` that
                      *                              stores the confusion matrices
-                     * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`
-                     *                              that allows to create instances of the class that should be used for
-                     *                              calculating the predictions of rules, as well as corresponding
-                     *                              quality scores
                      * @param labelIndices          A reference to an object of template type `IndexVector` that
                      *                              provides access to the indices of the labels that are included in
                      *                              the subset
                      */
                     WeightedStatisticsSubset(const LabelWiseWeightedStatistics& statistics,
-                                             const RuleEvaluationFactory& ruleEvaluationFactory,
                                              const IndexVector& labelIndices)
                         : AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                             RuleEvaluationFactory, IndexVector>(
                               statistics.labelMatrix_, statistics.coverageMatrix_, statistics.majorityLabelVector_,
-                              statistics.totalSumVector_, ruleEvaluationFactory, labelIndices),
+                              statistics.totalSumVector_, statistics.ruleEvaluationFactory_, labelIndices),
                           subsetSumVector_(&statistics.subsetSumVector_),
                           tmpVector_(ConfusionMatrixVector(labelIndices.getNumElements())) {
 
@@ -462,8 +457,7 @@ namespace seco {
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const CompleteIndexVector& labelIndices) const override final {
-                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, ruleEvaluationFactory_,
-                                                                                       labelIndices);
+                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, labelIndices);
             }
 
             /**
@@ -471,8 +465,7 @@ namespace seco {
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
                     const PartialIndexVector& labelIndices) const override final {
-                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, ruleEvaluationFactory_,
-                                                                                      labelIndices);
+                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, labelIndices);
             }
 
             /**
