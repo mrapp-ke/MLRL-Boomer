@@ -9,9 +9,9 @@
 #include "omp.h"
 
 
-template<typename IndexIterator>
+template<typename IndexIterator, typename WeightVector>
 static inline float64 evaluateOutOfSampleInternally(IndexIterator indexIterator, uint32 numExamples,
-                                                    const IWeightVector& weights, const CoverageMask& coverageMask,
+                                                    const WeightVector& weights, const CoverageMask& coverageMask,
                                                     const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics);
@@ -28,7 +28,8 @@ static inline float64 evaluateOutOfSampleInternally(IndexIterator indexIterator,
     return scoreVector.overallQualityScore;
 }
 
-static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
+template<typename WeightVector>
+static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
                                                     const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics);
@@ -47,7 +48,8 @@ static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights
     return scoreVector.overallQualityScore;
 }
 
-static inline float64 evaluateOutOfSampleInternally(const IWeightVector& weights, const CoverageSet& coverageSet,
+template<typename WeightVector>
+static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
                                                     BiPartition& partition, const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics);
