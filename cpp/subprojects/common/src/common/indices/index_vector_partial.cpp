@@ -45,11 +45,11 @@ PartialIndexVector::const_iterator PartialIndexVector::cend() const {
     return vector_.cend();
 }
 
-std::unique_ptr<IStatisticsSubset> PartialIndexVector::createSubset(const IStatistics& statistics) const {
+std::unique_ptr<IStatisticsSubset> PartialIndexVector::createStatisticsSubset(const IStatistics& statistics) const {
     return statistics.createSubset(*this);
 }
 
-std::unique_ptr<IWeightedStatisticsSubset> PartialIndexVector::createSubset(
+std::unique_ptr<IWeightedStatisticsSubset> PartialIndexVector::createWeightedStatisticsSubset(
         const IImmutableWeightedStatistics& statistics) const {
     return statistics.createSubset(*this);
 }

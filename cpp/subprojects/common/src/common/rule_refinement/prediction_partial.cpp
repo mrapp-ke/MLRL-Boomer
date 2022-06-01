@@ -44,13 +44,13 @@ uint32 PartialPrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
 }
 
-std::unique_ptr<IStatisticsSubset> PartialPrediction::createSubset(const IStatistics& statistics) const {
-    return indexVector_.createSubset(statistics);
+std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(const IStatistics& statistics) const {
+    return indexVector_.createStatisticsSubset(statistics);
 }
 
-std::unique_ptr<IWeightedStatisticsSubset> PartialPrediction::createSubset(
+std::unique_ptr<IWeightedStatisticsSubset> PartialPrediction::createWeightedStatisticsSubset(
         const IImmutableWeightedStatistics& statistics) const {
-    return indexVector_.createSubset(statistics);
+    return indexVector_.createWeightedStatisticsSubset(statistics);
 }
 
 std::unique_ptr<IRuleRefinement> PartialPrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
