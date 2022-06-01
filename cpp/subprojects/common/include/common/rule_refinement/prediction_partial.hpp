@@ -6,9 +6,6 @@
 #include "common/rule_refinement/prediction_evaluated.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
-// Forward declarations
-class IImmutableWeightedStatistics;
-
 
 /**
  * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
@@ -89,10 +86,7 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IStatisticsSubset> createSubset(const IStatistics& statistics) const override;
-
-        std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-            const IImmutableWeightedStatistics& statistics) const override;
+        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;

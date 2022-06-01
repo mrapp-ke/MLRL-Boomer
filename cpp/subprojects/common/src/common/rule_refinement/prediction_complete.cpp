@@ -26,13 +26,8 @@ uint32 CompletePrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
 }
 
-std::unique_ptr<IStatisticsSubset> CompletePrediction::createSubset(const IStatistics& statistics) const {
-    return indexVector_.createSubset(statistics);
-}
-
-std::unique_ptr<IWeightedStatisticsSubset> CompletePrediction::createSubset(
-        const IImmutableWeightedStatistics& statistics) const {
-    return indexVector_.createSubset(statistics);
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(const IStatistics& statistics) const {
+    return indexVector_.createStatisticsSubset(statistics);
 }
 
 std::unique_ptr<IRuleRefinement> CompletePrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
