@@ -33,4 +33,11 @@ class OutOfSampleWeightVector final {
          */
         float64 getWeight(uint32 pos) const;
 
+        /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements
+         */
+        uint32 getNumElements() const;
+
 };
