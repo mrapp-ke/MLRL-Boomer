@@ -878,7 +878,8 @@ namespace boosting {
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices, const DenseWeightVector<uint32>& weights) const override final {
+                    const CompleteIndexVector& labelIndices,
+                    const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<ExampleWiseStatisticsSubset<StatisticVector, StatisticView,
                                                                     ExampleWiseRuleEvaluationFactory,
                                                                     DenseWeightVector<uint32>,
