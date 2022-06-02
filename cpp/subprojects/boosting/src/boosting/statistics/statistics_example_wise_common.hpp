@@ -432,7 +432,7 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices) const override final {
+                    const CompleteIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, totalSumVector_,
                                                                                        labelIndices);
             }
@@ -441,7 +441,7 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices) const override final {
+                    const PartialIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, totalSumVector_,
                                                                                       labelIndices);
             }
@@ -614,21 +614,21 @@ namespace boosting {
             /**
              * @see `IWeightedStatistics::resetCoveredStatistics`
              */
-            void resetCoveredStatistics() override final {
+            void resetCoveredStatistics() override {
                 totalSumVectorPtr_->clear();
             }
 
             /**
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
-            void addCoveredStatistic(uint32 statisticIndex) override final {
+            void addCoveredStatistic(uint32 statisticIndex) override {
                 addExampleWiseStatistic(this->weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
             }
 
             /**
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
-            void removeCoveredStatistic(uint32 statisticIndex) override final {
+            void removeCoveredStatistic(uint32 statisticIndex) override {
                 removeExampleWiseStatistic(this->weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
             }
 
@@ -636,7 +636,7 @@ namespace boosting {
              * @see `IWeightedStatistics::createHistogram`
              */
             std::unique_ptr<IHistogram> createHistogram(const DenseBinIndexVector& binIndexVector,
-                                                        uint32 numBins) const override final {
+                                                        uint32 numBins) const override {
                 return createExampleWiseHistogramInternally<StatisticVector, StatisticView, Histogram,
                                                             RuleEvaluationFactory, DenseBinIndexVector, WeightVector>(
                     binIndexVector, this->statisticView_, this->weights_, *totalSumVectorPtr_,
@@ -647,7 +647,7 @@ namespace boosting {
              * @see `IWeightedStatistics::createHistogram`
              */
             std::unique_ptr<IHistogram> createHistogram(const DokBinIndexVector& binIndexVector,
-                                                        uint32 numBins) const override final {
+                                                        uint32 numBins) const override {
                 return createExampleWiseHistogramInternally<StatisticVector, StatisticView, Histogram,
                                                             RuleEvaluationFactory, DokBinIndexVector, WeightVector>(
                     binIndexVector, this->statisticView_, this->weights_, *totalSumVectorPtr_,
@@ -658,7 +658,7 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices) const override final {
+                    const CompleteIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, *totalSumVectorPtr_,
                                                                                        labelIndices);
             }
@@ -667,7 +667,7 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices) const override final {
+                    const PartialIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, *totalSumVectorPtr_,
                                                                                       labelIndices);
             }

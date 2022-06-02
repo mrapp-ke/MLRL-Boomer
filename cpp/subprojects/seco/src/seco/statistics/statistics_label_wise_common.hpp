@@ -358,7 +358,7 @@ namespace seco {
                     /**
                      * @see `IWeightedStatisticsSubset::evaluateAccumulated`
                      */
-                    const IScoreVector& evaluateAccumulated() override final {
+                    const IScoreVector& evaluateAccumulated() override {
                         return this->ruleEvaluationPtr_->evaluate(this->majorityLabelVector_, this->totalSumVector_,
                                                                   *accumulatedSumVectorPtr_);
                     }
@@ -366,7 +366,7 @@ namespace seco {
                     /**
                      * @see `IWeightedStatisticsSubset::evaluateUncovered`
                      */
-                    const IScoreVector& evaluateUncovered() override final {
+                    const IScoreVector& evaluateUncovered() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), this->labelIndices_,
                                               this->sumVector_.cbegin(), this->sumVector_.cend());
                         return this->ruleEvaluationPtr_->evaluate(this->majorityLabelVector_, this->totalSumVector_,
@@ -376,7 +376,7 @@ namespace seco {
                     /**
                      * @see `IWeightedStatisticsSubset::evaluateUncoveredAccumulated`
                      */
-                    const IScoreVector& evaluateUncoveredAccumulated() override final {
+                    const IScoreVector& evaluateUncoveredAccumulated() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), this->labelIndices_,
                                               accumulatedSumVectorPtr_->cbegin(), accumulatedSumVectorPtr_->cend());
                         return this->ruleEvaluationPtr_->evaluate(this->majorityLabelVector_, this->totalSumVector_,
@@ -438,28 +438,28 @@ namespace seco {
             /**
              * @see `IImmutableWeightedStatistics::getNumStatistics`
              */
-            uint32 getNumStatistics() const override final {
+            uint32 getNumStatistics() const override {
                 return labelMatrix_.getNumRows();
             }
 
             /**
              * @see `IImmutableWeightedStatistics::getNumLabels`
              */
-            uint32 getNumLabels() const override final {
+            uint32 getNumLabels() const override {
                 return labelMatrix_.getNumCols();
             }
 
             /**
              * @see `IWeightedStatistics::resetCoveredStatistics`
              */
-            void resetCoveredStatistics() override final {
+            void resetCoveredStatistics() override {
                 subsetSumVector_.clear();
             }
 
             /**
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
-            void addCoveredStatistic(uint32 statisticIndex) override final {
+            void addCoveredStatistic(uint32 statisticIndex) override {
                 addLabelWiseStatistic(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_, subsetSumVector_,
                                       statisticIndex);
             }
@@ -467,7 +467,7 @@ namespace seco {
             /**
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
-            void removeCoveredStatistic(uint32 statisticIndex) override final {
+            void removeCoveredStatistic(uint32 statisticIndex) override {
                 removeLabelWiseStatistic(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_,
                                          subsetSumVector_, statisticIndex);
             }
@@ -476,7 +476,7 @@ namespace seco {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices) const override final {
+                    const CompleteIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, labelIndices);
             }
 
@@ -484,7 +484,7 @@ namespace seco {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices) const override final {
+                    const PartialIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, labelIndices);
             }
 
@@ -492,7 +492,7 @@ namespace seco {
              * @see `IWeightedStatistics::createHistogram`
              */
             std::unique_ptr<IHistogram> createHistogram(const DenseBinIndexVector& binIndexVector,
-                                                        uint32 numBins) const override final {
+                                                        uint32 numBins) const override {
                 //TODO Support creation of histograms
                 return nullptr;
             }
@@ -501,7 +501,7 @@ namespace seco {
              * @see `IWeightedStatistics::createHistogram`
              */
             std::unique_ptr<IHistogram> createHistogram(const DokBinIndexVector& binIndexVector,
-                                                        uint32 numBins) const override final {
+                                                        uint32 numBins) const override {
                 //TODO Support creation of histograms
                 return nullptr;
             }
