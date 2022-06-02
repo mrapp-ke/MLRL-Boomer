@@ -21,7 +21,7 @@ static inline float64 evaluateOutOfSampleInternally(IndexIterator indexIterator,
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indexIterator[i];
 
-        if (weights.getWeight(exampleIndex) == 0 && coverageMask.isCovered(exampleIndex)) {
+        if (weights[exampleIndex] == 0 && coverageMask.isCovered(exampleIndex)) {
             statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }
@@ -43,7 +43,7 @@ static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights,
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = iterator[i];
 
-        if (weights.getWeight(exampleIndex) == 0) {
+        if (weights[exampleIndex] == 0) {
             statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }
@@ -65,7 +65,7 @@ static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights,
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = iterator[i];
 
-        if (weights.getWeight(exampleIndex) == 0 && holdoutSet[exampleIndex]) {
+        if (weights[exampleIndex] == 0 && holdoutSet[exampleIndex]) {
             statisticsSubsetPtr->addToSubset(exampleIndex, 1);
         }
     }
