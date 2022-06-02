@@ -17,6 +17,13 @@ class IStatisticsSubset {
         virtual ~IStatisticsSubset() { };
 
         /**
+         * Returns whether the statistics at a specific index have a non-zero weight or not.
+         *
+         * @return True, if the statistics at the given index have a non-zero weight, false otherwise
+         */
+        virtual bool hasNonZeroWeight(uint32 statisticIndex) const = 0;
+
+        /**
          * Adds the statistics at a specific index to the subset in order to mark it as covered by the condition that is
          * currently considered for refining a rule.
          *
