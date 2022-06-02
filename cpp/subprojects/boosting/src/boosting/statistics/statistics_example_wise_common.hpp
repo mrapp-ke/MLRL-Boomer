@@ -81,6 +81,13 @@ namespace boosting {
             }
 
             /**
+             * @see `IStatisticsSubset::hasNonZeroWeight`
+             */
+            bool hasNonZeroWeight(uint32 statisticIndex) const override final {
+                return weights_[statisticIndex] != 0;
+            }
+
+            /**
              * @see `IStatisticsSubset::addToSubset`
              */
             void addToSubset(uint32 statisticIndex, float64 weight) override final {
