@@ -108,7 +108,6 @@ static inline void rebuildHistogram(const ThresholdVector& thresholdVector, cons
     // Iterate the covered examples and add their statistics to the corresponding bin...
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
-    bool sparseBinWeight = false;
 
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = coverageSetIterator[i];
@@ -122,17 +121,9 @@ static inline void rebuildHistogram(const ThresholdVector& thresholdVector, cons
                 if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
                     binWeights.set(binIndex, true);
                     histogram.addToBin(binIndex, exampleIndex, weight);
-                } else {
-                    sparseBinWeight = true;
                 }
             }
         }
-    }
-
-    uint32 sparseBinIndex = thresholdVector.getSparseBinIndex();
-
-    if (sparseBinIndex < thresholdVector.getNumElements()) {
-        binWeights.set(sparseBinIndex, sparseBinWeight);
     }
 }
 
