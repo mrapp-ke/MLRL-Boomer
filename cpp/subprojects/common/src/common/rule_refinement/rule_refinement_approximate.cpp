@@ -29,7 +29,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     ThresholdVector::const_iterator thresholdIterator = thresholdVector.cbegin();
     uint32 numBins = thresholdVector.getNumElements();
     uint32 sparseBinIndex = thresholdVector.getSparseBinIndex();
-    bool sparse = sparseBinIndex < numBins && weights[sparseBinIndex];
+    bool sparse = sparseBinIndex < numBins;
 
     // Create a new, empty subset of the statistics...
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices_);
