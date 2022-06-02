@@ -270,9 +270,11 @@ namespace boosting {
      *                                  scores
      * @tparam BinIndexVector           The type of the vector that stores the indices of the bins, individual examples
      *                                  have been assigned to
+     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
+     *                                  statistics
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
-             typename BinIndexVector>
+             typename BinIndexVector, typename WeightVector>
     class LabelWiseHistogram final : virtual public IHistogram,
                                      public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
                                                                                          RuleEvaluationFactory,
@@ -343,6 +345,8 @@ namespace boosting {
 
             const StatisticView& originalStatisticView_;
 
+            const WeightVector& originalWeights_;
+
             const StatisticVector& totalSumVector_;
 
         public:
@@ -357,6 +361,9 @@ namespace boosting {
              * @param originalStatisticView A reference to an object of template type `StatisticView` that provides
              *                              access to the original gradients and Hessians, the histogram was created
              *                              from
+             * @param originalWeights       A reference to an object of template type `WeightVector` that provides
+             *                              access to the weights of the original statistics, the histogram was created
+             *                              from
              * @param totalSumVector        A reference to an object of template type `StatisticVector` that stores the
              *                              total sums of gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows to
@@ -366,14 +373,14 @@ namespace boosting {
             LabelWiseHistogram(std::unique_ptr<Histogram> histogramPtr,
                                std::unique_ptr<BinWeightVector> binWeightVectorPtr,
                                const BinIndexVector& binIndexVector, const StatisticView& originalStatisticView,
-                               const StatisticVector& totalSumVector,
+                               const WeightVector& originalWeights, const StatisticVector& totalSumVector,
                                const RuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram, RuleEvaluationFactory,
                                                                BinWeightVector>(*histogramPtr, ruleEvaluationFactory,
                                                                                 *binWeightVectorPtr),
                   histogramPtr_(std::move(histogramPtr)), binWeightVectorPtr_(std::move(binWeightVectorPtr)),
                   binIndexVector_(binIndexVector), originalStatisticView_(originalStatisticView),
-                  totalSumVector_(totalSumVector) {
+                  originalWeights_(originalWeights), totalSumVector_(totalSumVector) {
 
             }
 
@@ -439,18 +446,20 @@ namespace boosting {
     }
 
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
-             typename BinIndexVector>
+             typename BinIndexVector, typename WeightVector>
     static inline std::unique_ptr<IHistogram> createLabelWiseHistogramInternally(
             const BinIndexVector& binIndexVector, const StatisticView& originalStatisticView,
-            const StatisticVector& totalSumVector, const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins) {
+            const WeightVector& originalWeights, const StatisticVector& totalSumVector,
+            const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins) {
         std::unique_ptr<Histogram> histogramPtr =
             std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
         std::unique_ptr<BinWeightVector> binWeightVectorPtr = std::make_unique<BinWeightVector>(numBins);
         return std::make_unique<LabelWiseHistogram<StatisticVector, StatisticView, Histogram, RuleEvaluationFactory,
-                                                   BinIndexVector>>(std::move(histogramPtr),
-                                                                    std::move(binWeightVectorPtr), binIndexVector,
-                                                                    originalStatisticView, totalSumVector,
-                                                                    ruleEvaluationFactory);
+                                                   BinIndexVector, WeightVector>>(std::move(histogramPtr),
+                                                                                  std::move(binWeightVectorPtr),
+                                                                                  binIndexVector, originalStatisticView,
+                                                                                  originalWeights, totalSumVector,
+                                                                                  ruleEvaluationFactory);
     }
 
     /**
@@ -583,8 +592,9 @@ namespace boosting {
             std::unique_ptr<IHistogram> createHistogram(const DenseBinIndexVector& binIndexVector,
                                                         uint32 numBins) const override final {
                 return createLabelWiseHistogramInternally<StatisticVector, StatisticView, Histogram,
-                                                          RuleEvaluationFactory, DenseBinIndexVector>(
-                    binIndexVector, this->statisticView_, *totalSumVectorPtr_, this->ruleEvaluationFactory_, numBins);
+                                                          RuleEvaluationFactory, DenseBinIndexVector, WeightVector>(
+                    binIndexVector, this->statisticView_, this->weights_, *totalSumVectorPtr_,
+                    this->ruleEvaluationFactory_, numBins);
             }
 
             /**
@@ -593,8 +603,9 @@ namespace boosting {
             std::unique_ptr<IHistogram> createHistogram(const DokBinIndexVector& binIndexVector,
                                                         uint32 numBins) const override final {
                 return createLabelWiseHistogramInternally<StatisticVector, StatisticView, Histogram,
-                                                          RuleEvaluationFactory, DokBinIndexVector>(
-                    binIndexVector, this->statisticView_, *totalSumVectorPtr_, this->ruleEvaluationFactory_, numBins);
+                                                          RuleEvaluationFactory, DokBinIndexVector, WeightVector>(
+                    binIndexVector, this->statisticView_, this->weights_, *totalSumVectorPtr_,
+                    this->ruleEvaluationFactory_, numBins);
             }
 
             /**
