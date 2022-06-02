@@ -437,7 +437,7 @@ namespace boosting {
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
     static inline void addExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
                                                StatisticVector& statisticVector, uint32 statisticIndex) {
-        float64 weight = weights.getWeight(statisticIndex);
+        float64 weight = weights[statisticIndex];
         statisticVector.add(statisticView.gradients_row_cbegin(statisticIndex),
                             statisticView.gradients_row_cend(statisticIndex),
                             statisticView.hessians_row_cbegin(statisticIndex),
@@ -456,7 +456,7 @@ namespace boosting {
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
     static inline void removeExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
                                                   StatisticVector& statisticVector, uint32 statisticIndex) {
-        float64 weight = weights.getWeight(statisticIndex);
+        float64 weight = weights[statisticIndex];
         statisticVector.remove(statisticView.gradients_row_cbegin(statisticIndex),
                                statisticView.gradients_row_cend(statisticIndex),
                                statisticView.hessians_row_cbegin(statisticIndex),

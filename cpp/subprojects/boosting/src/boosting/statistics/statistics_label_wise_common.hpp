@@ -421,7 +421,7 @@ namespace boosting {
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
     static inline void addLabelWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
                                              StatisticVector& statisticVector, uint32 statisticIndex) {
-        float64 weight = weights.getWeight(statisticIndex);
+        float64 weight = weights[statisticIndex];
         statisticVector.add(statisticView, statisticIndex, weight);
     }
 
@@ -434,7 +434,7 @@ namespace boosting {
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
     static inline void removeLabelWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
                                                 StatisticVector& statisticVector, uint32 statisticIndex) {
-        float64 weight = weights.getWeight(statisticIndex);
+        float64 weight = weights[statisticIndex];
         statisticVector.remove(statisticView, statisticIndex, weight);
     }
 

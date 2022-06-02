@@ -148,7 +148,7 @@ namespace seco {
         uint32 numStatistics = weights.getNumElements();
 
         for (uint32 i = 0; i < numStatistics; i++) {
-            float64 weight = weights.getWeight(i);
+            float64 weight = weights[i];
             statisticVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, weight);
         }
     }
@@ -229,7 +229,7 @@ namespace seco {
                                              const BinarySparseArrayVector& majorityLabelVector,
                                              const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
                                              uint32 statisticIndex) {
-        float64 weight = weights.getWeight(statisticIndex);
+        float64 weight = weights[statisticIndex];
         vector.add(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, weight);
     }
 
@@ -246,7 +246,7 @@ namespace seco {
                                                 const BinarySparseArrayVector& majorityLabelVector,
                                                 const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
                                                 uint32 statisticIndex) {
-        float64 weight = weights.getWeight(statisticIndex);
+        float64 weight = weights[statisticIndex];
         vector.remove(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, weight);
     }
 
