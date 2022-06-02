@@ -80,6 +80,22 @@ class DenseWeightVector final : public IWeightVector {
         uint32 getNumElements() const;
 
         /**
+         * Returns a const reference to the weight at a specific position.
+         *
+         * @param pos   The position
+         * @return      A const reference to the specified weight
+         */
+        const T& operator[](uint32 pos) const;
+
+        /**
+         * Returns a reference to the weight at a specific position.
+         *
+         * @param pos   The position
+         * @return      A reference to the specified weight
+         */
+        T& operator[](uint32 pos);
+
+        /**
          * Sets the number of non-zero weights.
          *
          * @param numNonZeroWeights The number of non-zero weights to be set
