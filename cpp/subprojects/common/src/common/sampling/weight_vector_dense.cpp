@@ -41,6 +41,16 @@ uint32 DenseWeightVector<T>::getNumElements() const {
 }
 
 template<typename T>
+const T& DenseWeightVector<T>::operator[](uint32 pos) const {
+    return vector_[pos];
+}
+
+template<typename T>
+T& DenseWeightVector<T>::operator[](uint32 pos) {
+    return vector_[pos];
+}
+
+template<typename T>
 uint32 DenseWeightVector<T>::getNumNonZeroWeights() const {
     return numNonZeroWeights_;
 }
