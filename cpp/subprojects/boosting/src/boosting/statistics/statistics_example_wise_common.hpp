@@ -520,11 +520,10 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
              typename WeightVector>
-    class ExampleWiseWeightedStatistics : virtual public IWeightedStatistics,
-                                          public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector,
-                                                                                                StatisticView,
-                                                                                                RuleEvaluationFactory,
-                                                                                                WeightVector> {
+    class ExampleWiseWeightedStatistics final :
+            virtual public IWeightedStatistics,
+            public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                                  WeightVector> {
 
         private:
 

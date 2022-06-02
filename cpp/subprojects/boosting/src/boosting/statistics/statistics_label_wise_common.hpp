@@ -485,11 +485,11 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
              typename WeightVector>
-    class LabelWiseWeightedStatistics : virtual public IWeightedStatistics,
-                                        public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector,
-                                                                                            StatisticView,
-                                                                                            RuleEvaluationFactory,
-                                                                                            WeightVector> {
+    class LabelWiseWeightedStatistics final : virtual public IWeightedStatistics,
+                                              public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector,
+                                                                                                  StatisticView,
+                                                                                                  RuleEvaluationFactory,
+                                                                                                  WeightVector> {
 
         private:
 
