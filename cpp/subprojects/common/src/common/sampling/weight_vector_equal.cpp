@@ -12,6 +12,10 @@ uint32 EqualWeightVector::getNumElements() const {
     return numElements_;
 }
 
+uint32 EqualWeightVector::operator[](uint32 pos) const {
+    return 1;
+}
+
 uint32 EqualWeightVector::getNumNonZeroWeights() const {
     return numElements_;
 }
