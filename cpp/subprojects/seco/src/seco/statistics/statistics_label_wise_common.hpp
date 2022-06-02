@@ -120,7 +120,7 @@ namespace seco {
             /**
              * @see `IStatisticsSubset::addToSubset`
              */
-            void addToSubset(uint32 statisticIndex, float64 weight) override {
+            void addToSubset(uint32 statisticIndex, float64 weight) override final {
                 sumVector_.addToSubset(statisticIndex, labelMatrix_, majorityLabelVector_, coverageMatrix_,
                                        labelIndices_, weight);
             }
