@@ -39,6 +39,14 @@ class BitWeightVector final : public IWeightVector {
         uint32 getNumElements() const;
 
         /**
+         * Returns the weight at a specific position.
+         *
+         * @param pos   The position
+         * @return      The weight at the specified position
+         */
+        bool operator[](uint32 pos) const;
+
+        /**
          * Sets the weight at a specific position.
          *
          * @param pos       The position
