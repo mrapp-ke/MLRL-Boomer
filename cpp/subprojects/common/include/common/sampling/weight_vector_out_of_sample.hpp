@@ -26,6 +26,21 @@ class OutOfSampleWeightVector final {
         OutOfSampleWeightVector(const T& vector);
 
         /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements
+         */
+        uint32 getNumElements() const;
+
+        /**
+         * Returns the weight at a specific position.
+         *
+         * @param pos   The position
+         * @return      The weight at the specified position
+         */
+        bool operator[](uint32 pos) const;
+
+        /**
          * Returns the weight at a specific index.
          *
          * @param pos   The index
@@ -33,11 +48,5 @@ class OutOfSampleWeightVector final {
          */
         float64 getWeight(uint32 pos) const;
 
-        /**
-         * Returns the number of elements in the vector.
-         *
-         * @return The number of elements
-         */
-        uint32 getNumElements() const;
 
 };
