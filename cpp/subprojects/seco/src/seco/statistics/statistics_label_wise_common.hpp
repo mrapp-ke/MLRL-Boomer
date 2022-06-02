@@ -274,7 +274,7 @@ namespace seco {
      */
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory, typename WeightVector>
-    class LabelWiseWeightedStatistics : public IWeightedStatistics {
+    class LabelWiseWeightedStatistics final : public IWeightedStatistics {
 
         private:
 
