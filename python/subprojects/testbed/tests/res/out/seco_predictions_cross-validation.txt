@@ -1,4 +1,4 @@
-INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=10, current_fold=-1, print_evaluation=False, store_evaluation=False, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_predictions=True, store_predictions=True, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=10, current_fold=-1, print_evaluation=False, store_evaluation=False, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_parameters=False, store_parameters=False, print_predictions=True, store_predictions=True, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
 INFO Starting experiment...
 INFO Performing full 10-fold cross validation...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
@@ -7,11 +7,11 @@ INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.13730429900169838 seconds
+INFO Successfully fit model in 0.2636280099977739 seconds
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0020566669991239905 seconds
+INFO Successfully predicted in 0.0018981040338985622 seconds
 INFO Predictions for test data (Fold 1):
 
 Ground truth:
@@ -79,14 +79,14 @@ Ground truth:
 
 Predictions:
 
-[[0 0 1 1 0 0]
+[[0 0 1 0 0 0]
  [0 0 1 1 1 0]
  [0 0 0 0 0 1]
  [1 0 0 0 0 1]
- [0 0 0 1 0 0]
+ [0 0 1 1 0 0]
  [1 0 0 0 0 1]
  [1 0 0 0 0 1]
- [0 0 0 0 0 1]
+ [0 0 0 0 0 0]
  [1 0 1 1 0 1]
  [1 0 0 0 0 1]
  [0 0 0 0 0 1]
@@ -115,7 +115,7 @@ Predictions:
  [0 0 0 1 0 0]
  [0 0 0 0 0 1]
  [1 0 0 0 0 0]
- [0 0 1 1 0 0]
+ [0 0 1 0 0 0]
  [0 0 1 1 1 0]
  [0 0 1 1 1 0]
  [0 0 1 1 0 1]
@@ -146,11 +146,11 @@ INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.1331444490060676 seconds
+INFO Successfully fit model in 0.26007023599231616 seconds
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0020806539978366345 seconds
+INFO Successfully predicted in 0.0016812399844639003 seconds
 INFO Predictions for test data (Fold 2):
 
 Ground truth:
@@ -255,7 +255,7 @@ Predictions:
  [0 0 1 1 0 0]
  [0 0 1 0 0 0]
  [1 0 1 0 0 0]
- [1 0 1 0 0 1]
+ [1 0 1 0 0 0]
  [0 0 1 1 0 0]
  [1 0 1 1 0 0]
  [0 0 1 1 1 0]
@@ -285,11 +285,11 @@ INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.12287366099189967 seconds
+INFO Successfully fit model in 0.2601602490176447 seconds
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0021143649937584996 seconds
+INFO Successfully predicted in 0.003253562026657164 seconds
 INFO Predictions for test data (Fold 3):
 
 Ground truth:
@@ -359,7 +359,7 @@ Predictions:
 
 [[0 0 1 1 0 0]
  [0 0 1 1 1 0]
- [0 0 1 1 1 0]
+ [0 0 0 1 1 0]
  [0 0 1 0 0 0]
  [1 0 0 0 0 1]
  [1 0 0 0 0 1]
@@ -370,13 +370,13 @@ Predictions:
  [0 0 1 1 0 0]
  [0 0 1 0 0 0]
  [1 0 1 0 0 1]
- [0 0 1 0 0 1]
+ [0 0 0 0 0 1]
  [1 0 1 1 0 0]
- [0 0 0 1 1 1]
+ [0 0 0 1 1 0]
  [1 0 0 0 0 1]
  [0 0 1 0 0 0]
  [0 0 1 1 1 0]
- [0 0 1 0 0 0]
+ [0 0 0 0 0 0]
  [0 0 0 1 0 0]
  [0 0 1 0 0 1]
  [0 0 1 0 0 1]
@@ -384,9 +384,9 @@ Predictions:
  [1 0 0 0 0 1]
  [0 0 1 0 0 0]
  [0 0 1 1 0 0]
- [0 0 1 0 0 1]
+ [0 0 0 0 0 1]
  [0 0 1 0 0 0]
- [0 0 1 0 0 0]
+ [0 0 0 0 0 0]
  [0 0 1 0 0 1]
  [1 0 0 0 0 0]
  [1 0 1 1 1 1]
@@ -396,24 +396,24 @@ Predictions:
  [0 0 1 0 0 0]
  [0 0 1 0 0 0]
  [0 0 1 0 0 0]
- [1 0 1 0 1 1]
+ [1 0 1 0 1 0]
  [1 0 0 0 0 1]
  [1 0 0 0 0 1]
  [1 0 0 0 0 0]
- [0 0 1 1 1 1]
+ [0 0 1 0 1 1]
  [0 0 1 0 0 0]
  [1 0 0 0 0 1]
  [1 0 0 0 0 1]
  [1 0 1 0 0 1]
  [0 0 1 1 0 0]
- [0 0 1 1 1 1]
+ [0 0 0 1 1 1]
  [1 0 0 0 0 1]
  [1 0 0 0 0 0]
- [0 0 1 0 0 1]
+ [0 0 0 0 0 0]
  [1 0 0 0 0 0]
  [1 0 0 0 0 1]
  [0 0 1 1 1 1]
- [1 0 1 0 0 1]
+ [1 0 0 0 0 1]
  [0 0 0 0 0 1]
  [0 0 0 1 1 0]
  [0 0 1 1 1 0]]
@@ -424,11 +424,11 @@ INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.1348253019968979 seconds
+INFO Successfully fit model in 0.34793288697255775 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0020894199988106266 seconds
+INFO Successfully predicted in 0.0016051239799708128 seconds
 INFO Predictions for test data (Fold 4):
 
 Ground truth:
@@ -519,7 +519,7 @@ Predictions:
  [0 0 1 1 1 1]
  [0 0 0 0 0 0]
  [0 0 0 0 0 0]
- [1 0 1 0 0 1]
+ [1 0 0 0 0 1]
  [0 0 1 1 1 1]
  [0 0 0 0 0 0]
  [0 0 1 0 0 0]
@@ -528,7 +528,7 @@ Predictions:
  [0 0 1 1 0 0]
  [0 0 1 1 1 0]
  [0 0 1 0 0 0]
- [1 0 1 0 0 1]
+ [1 0 0 0 0 1]
  [0 0 0 0 0 0]
  [0 0 0 0 0 0]
  [0 0 1 1 1 0]
@@ -537,7 +537,7 @@ Predictions:
  [0 0 1 0 0 0]
  [0 0 1 1 1 0]
  [0 0 1 0 1 0]
- [1 0 0 0 0 1]
+ [0 0 0 0 0 1]
  [0 0 1 1 1 1]
  [0 0 1 0 0 0]
  [0 0 1 0 0 0]
@@ -546,7 +546,7 @@ Predictions:
  [0 0 0 0 0 1]
  [0 0 1 1 1 1]
  [0 0 1 0 0 0]
- [0 0 1 0 0 0]
+ [0 0 0 0 0 0]
  [1 0 0 0 0 1]
  [0 0 1 0 0 1]
  [0 0 0 0 0 0]
@@ -561,11 +561,11 @@ INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.11917219500173815 seconds
+INFO Successfully fit model in 0.21505136496853083 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0020830369903706014 seconds
+INFO Successfully predicted in 0.0016897759633138776 seconds
 INFO Predictions for test data (Fold 5):
 
 Ground truth:
@@ -643,20 +643,20 @@ Predictions:
  [1 0 1 0 0 1]
  [1 0 0 0 0 1]
  [1 0 0 0 0 1]
- [0 0 1 0 0 1]
+ [0 0 0 0 0 1]
  [0 0 0 0 0 1]
  [0 0 1 0 0 1]
  [0 0 1 0 0 0]
  [0 0 1 0 0 0]
  [0 0 0 0 0 1]
  [0 0 1 1 1 0]
- [1 0 1 0 0 1]
+ [1 0 0 0 0 1]
  [0 0 1 0 0 0]
  [0 0 1 0 0 1]
  [0 0 1 0 0 1]
  [1 0 0 0 0 1]
  [1 0 0 0 0 1]
- [0 0 1 0 0 0]
+ [0 0 0 0 0 0]
  [0 0 1 0 0 0]
  [1 0 0 0 0 1]
  [0 0 1 1 0 0]
@@ -673,7 +673,7 @@ Predictions:
  [0 0 0 0 0 1]
  [0 0 1 1 1 0]
  [1 0 0 0 0 1]
- [0 0 0 1 1 1]
+ [0 0 0 1 1 0]
  [0 0 0 0 0 0]
  [1 0 0 0 0 1]
  [0 0 1 1 1 0]
@@ -683,8 +683,8 @@ Predictions:
  [0 0 0 0 0 0]
  [1 0 1 0 0 1]
  [0 0 1 0 0 0]
- [0 0 1 1 1 0]
- [1 0 1 0 0 1]
+ [0 0 0 1 1 0]
+ [1 0 0 0 0 1]
  [0 0 0 0 0 0]
  [1 0 0 0 0 1]
  [0 0 1 1 0 0]
@@ -698,11 +698,11 @@ INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.13586395600577816 seconds
+INFO Successfully fit model in 0.27017462300136685 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0021140879980521277 seconds
+INFO Successfully predicted in 0.0015135029680095613 seconds
 INFO Predictions for test data (Fold 6):
 
 Ground truth:
@@ -773,7 +773,7 @@ Predictions:
  [0 0 1 0 0 1]
  [0 0 0 0 0 0]
  [1 0 1 0 0 1]
- [1 0 0 1 0 1]
+ [1 0 0 0 0 1]
  [0 0 1 1 0 0]
  [0 0 1 1 0 0]
  [1 0 0 0 0 1]
@@ -791,7 +791,7 @@ Predictions:
  [0 0 1 0 0 0]
  [0 0 1 0 0 1]
  [1 0 0 0 0 0]
- [0 0 0 1 0 0]
+ [0 0 0 0 0 0]
  [0 0 1 0 0 0]
  [1 1 1 0 0 1]
  [1 0 1 0 0 1]
@@ -810,14 +810,14 @@ Predictions:
  [0 0 1 1 1 1]
  [0 0 1 0 0 0]
  [0 0 1 1 1 0]
- [1 0 1 0 0 0]
+ [1 0 0 0 0 0]
  [1 0 1 1 0 0]
  [0 0 1 0 0 0]
  [0 0 1 0 0 0]
  [0 0 1 1 1 0]
  [0 0 0 0 0 0]
  [1 0 0 0 0 1]
- [1 0 0 1 0 0]
+ [1 0 0 0 0 0]
  [0 0 1 0 0 1]
  [1 0 0 0 0 1]
  [0 0 1 1 0 0]
@@ -835,11 +835,11 @@ INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.13357860999531113 seconds
+INFO Successfully fit model in 0.2974483479629271 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.002130737993866205 seconds
+INFO Successfully predicted in 0.0018906689947471023 seconds
 INFO Predictions for test data (Fold 7):
 
 Ground truth:
@@ -972,11 +972,11 @@ INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.15787326999998186 seconds
+INFO Successfully fit model in 0.29309473803732544 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.002115837996825576 seconds
+INFO Successfully predicted in 0.0028993909945711493 seconds
 INFO Predictions for test data (Fold 8):
 
 Ground truth:
@@ -1058,7 +1058,7 @@ Predictions:
  [0 0 0 0 0 0]
  [1 0 0 1 0 1]
  [0 0 1 0 0 0]
- [0 0 1 1 0 1]
+ [0 0 1 0 0 1]
  [0 0 0 0 0 1]
  [0 0 0 0 0 1]
  [0 0 1 1 1 0]
@@ -1069,9 +1069,9 @@ Predictions:
  [1 0 1 1 0 1]
  [1 0 0 0 0 1]
  [0 0 1 0 0 1]
- [0 0 1 0 0 1]
+ [0 0 0 0 0 1]
  [0 0 1 0 0 0]
- [1 0 1 0 0 1]
+ [1 0 0 0 0 1]
  [0 0 0 0 0 1]
  [0 0 1 1 1 0]
  [1 0 1 0 0 1]
@@ -1087,7 +1087,7 @@ Predictions:
  [1 0 1 1 0 0]
  [0 0 1 0 0 1]
  [1 0 0 0 0 1]
- [0 0 1 1 0 0]
+ [0 0 1 0 0 0]
  [0 0 1 0 0 0]
  [0 0 1 1 1 0]
  [0 0 0 0 0 0]
@@ -1097,7 +1097,7 @@ Predictions:
  [0 0 1 1 1 0]
  [0 0 1 0 0 0]
  [0 0 1 0 0 0]
- [0 0 1 1 0 1]
+ [0 0 1 0 0 1]
  [0 0 1 0 0 0]
  [0 0 1 1 1 0]
  [1 0 0 0 0 1]
@@ -1109,11 +1109,11 @@ INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.1404662250133697 seconds
+INFO Successfully fit model in 0.26045897498261184 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0020964939903933555 seconds
+INFO Successfully predicted in 0.001490277994889766 seconds
 INFO Predictions for test data (Fold 9):
 
 Ground truth:
@@ -1204,10 +1204,10 @@ Predictions:
  [0 0 1 0 0 1]
  [0 0 0 0 0 1]
  [1 0 0 0 0 1]
- [0 0 1 0 0 0]
+ [0 0 0 0 0 0]
  [1 0 1 0 0 0]
  [0 0 1 1 0 0]
- [1 0 0 0 0 1]
+ [1 0 1 0 0 1]
  [0 0 1 0 0 0]
  [1 0 0 0 0 1]
  [0 0 1 1 1 0]
@@ -1237,7 +1237,7 @@ Predictions:
  [0 0 0 0 0 0]
  [0 0 1 0 0 0]
  [0 0 0 0 0 1]
- [0 0 0 0 0 0]
+ [0 0 1 0 0 0]
  [1 0 0 0 0 1]]
 
 DEBUG Saving data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_fold-9.arff'...
@@ -1246,11 +1246,11 @@ INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.11986984200484585 seconds
+INFO Successfully fit model in 0.22967436298495159 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0020696389983640984 seconds
+INFO Successfully predicted in 0.0015152889536693692 seconds
 INFO Predictions for test data (Fold 10):
 
 Ground truth:
@@ -1320,7 +1320,7 @@ Predictions:
 [[1 0 1 0 0 1]
  [1 0 0 0 0 1]
  [0 0 0 0 0 0]
- [0 0 1 0 0 1]
+ [0 0 0 0 0 1]
  [0 0 1 0 0 0]
  [0 0 0 0 0 0]
  [1 0 1 0 0 1]
@@ -1331,19 +1331,19 @@ Predictions:
  [0 0 0 0 0 0]
  [0 0 0 0 0 0]
  [0 0 1 0 0 0]
- [1 0 1 0 0 0]
+ [0 0 0 0 0 0]
  [0 0 1 0 0 0]
  [1 0 0 0 0 1]
  [1 0 0 0 0 1]
- [0 0 1 1 0 0]
+ [0 0 1 0 0 0]
  [1 0 1 0 1 0]
  [0 0 1 1 1 0]
  [0 0 1 1 1 0]
- [0 0 1 0 0 0]
- [0 0 1 0 0 1]
+ [0 0 0 0 0 0]
+ [0 0 0 0 0 1]
  [0 0 1 1 0 0]
  [1 0 0 0 0 1]
- [1 0 1 1 0 0]
+ [1 0 0 1 0 0]
  [0 0 1 0 0 0]
  [0 0 0 0 0 1]
  [0 0 0 0 0 1]
@@ -1355,12 +1355,12 @@ Predictions:
  [1 0 1 0 0 0]
  [0 0 1 0 0 0]
  [1 0 0 0 0 1]
- [0 0 1 0 0 0]
- [1 0 0 0 0 0]
+ [0 0 0 0 0 0]
+ [0 0 0 0 0 0]
  [0 0 1 1 1 0]
  [1 0 0 0 0 1]
  [1 0 0 0 0 1]
- [0 0 1 0 0 0]
+ [0 0 0 0 0 0]
  [1 0 0 0 0 1]
  [0 0 1 1 0 0]
  [0 0 1 1 1 0]
@@ -1369,14 +1369,14 @@ Predictions:
  [0 0 0 0 0 0]
  [1 0 0 0 0 1]
  [1 0 0 0 0 1]
- [0 0 1 0 0 1]
+ [0 0 0 0 0 1]
  [1 0 0 0 0 1]
  [0 0 1 0 0 0]
  [0 0 1 0 0 0]
  [0 0 0 0 0 0]
- [1 0 1 0 0 1]
+ [0 0 1 0 0 1]
  [0 0 1 1 0 0]]
 
 DEBUG Saving data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_fold-10.arff'...
 INFO Successfully saved data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_fold-10.arff'.
-INFO Successfully finished after 1.4954237890051445 seconds
+INFO Successfully finished after 2.8644995900103822 seconds

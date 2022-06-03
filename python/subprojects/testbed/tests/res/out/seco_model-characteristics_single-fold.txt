@@ -1,4 +1,4 @@
-INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dataset='emotions', folds=10, current_fold=0, print_evaluation=False, store_evaluation=False, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=True, store_model_characteristics=True, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=10, current_fold=0, print_evaluation=False, store_evaluation=False, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=True, store_model_characteristics=True, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
 INFO Starting experiment...
 INFO Performing fold 1 of 10-fold cross validation...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
@@ -7,13 +7,13 @@ INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.14861067000310868 seconds
+INFO Successfully fit model in 0.28295642702141777 seconds
 INFO Model characteristics (Fold 1):
 
 Rules: 72 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.2083333333333333, min. 1, max. 4
-Conditions total: 87 (57.47126436781609% use <= operator, 42.5287356321839% use > operator, 0.0% use == operator, 7.105427357601002e-15% use != operator)
+Conditions per rule: avg. 1.2638888888888888, min. 1, max. 3
+Conditions total: 91 (54.94505494505495% use <= operator, 45.05494505494506% use > operator, 0.0% use == operator, -7.105427357601002e-15% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 72 (100.0% positive, 0.0% negative)
 
-INFO Successfully finished after 0.18678590400668327 seconds
+INFO Successfully finished after 0.33504665800137445 seconds

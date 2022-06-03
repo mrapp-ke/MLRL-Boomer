@@ -1,4 +1,4 @@
-INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=10, current_fold=-1, print_evaluation=False, store_evaluation=False, evaluate_training_data=False, print_prediction_characteristics=True, store_prediction_characteristics=True, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=10, current_fold=-1, print_evaluation=False, store_evaluation=False, evaluate_training_data=False, print_prediction_characteristics=True, store_prediction_characteristics=True, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
 INFO Starting experiment...
 INFO Performing full 10-fold cross validation...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
@@ -7,119 +7,119 @@ INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.13512276198889595 seconds
+INFO Successfully fit model in 0.27106327400542796 seconds
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0021472200023708865 seconds
+INFO Successfully predicted in 0.0015925809857435524 seconds
 INFO Prediction characteristics for test data (Fold 1):
 
 Labels: 6
-Label density: 0.325
-Label sparsity: 0.675
-Label imbalance ratio: 1.5999546279491832
-Label cardinality: 1.95
+Label density: 0.3194444444444444
+Label sparsity: 0.6805555555555556
+Label imbalance ratio: 1.5744178628389154
+Label cardinality: 1.9166666666666667
 Distinct label vectors: 17
 
 INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.1321413020050386 seconds
+INFO Successfully fit model in 0.26652562501840293 seconds
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0021433270012494177 seconds
+INFO Successfully predicted in 0.0015937910065986216 seconds
 INFO Prediction characteristics for test data (Fold 2):
 
 Labels: 6
-Label density: 0.3055555555555556
-Label sparsity: 0.6944444444444444
-Label imbalance ratio: 1.932987012987013
-Label cardinality: 1.8333333333333333
+Label density: 0.30277777777777776
+Label sparsity: 0.6972222222222222
+Label imbalance ratio: 1.9501298701298704
+Label cardinality: 1.8166666666666667
 Distinct label vectors: 15
 
 INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.1290494650020264 seconds
+INFO Successfully fit model in 0.24753923300886527 seconds
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.002223962001153268 seconds
+INFO Successfully predicted in 0.0021737070055678487 seconds
 INFO Prediction characteristics for test data (Fold 3):
 
 Labels: 6
-Label density: 0.3527777777777778
-Label sparsity: 0.6472222222222221
-Label imbalance ratio: 1.8417748917748917
-Label cardinality: 2.1166666666666667
-Distinct label vectors: 15
+Label density: 0.3194444444444444
+Label sparsity: 0.6805555555555556
+Label imbalance ratio: 1.5632414369256475
+Label cardinality: 1.9166666666666667
+Distinct label vectors: 17
 
 INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.13815814400732052 seconds
+INFO Successfully fit model in 0.2524995830026455 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0021529609948629513 seconds
+INFO Successfully predicted in 0.0015714479959569871 seconds
 INFO Prediction characteristics for test data (Fold 4):
 
 Labels: 6
-Label density: 0.3022598870056497
-Label sparsity: 0.6977401129943503
-Label imbalance ratio: 1.963562753036437
-Label cardinality: 1.8135593220338984
+Label density: 0.2909604519774011
+Label sparsity: 0.7090395480225988
+Label imbalance ratio: 1.8589068825910928
+Label cardinality: 1.7457627118644068
 Distinct label vectors: 13
 
 INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.12282718499773182 seconds
+INFO Successfully fit model in 0.21300166501896456 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0021340749954106286 seconds
+INFO Successfully predicted in 0.0018342459807172418 seconds
 INFO Prediction characteristics for test data (Fold 5):
 
 Labels: 6
-Label density: 0.3163841807909605
-Label sparsity: 0.6836158192090396
-Label imbalance ratio: 1.785761901437945
-Label cardinality: 1.8983050847457628
+Label density: 0.2994350282485876
+Label sparsity: 0.7005649717514124
+Label imbalance ratio: 1.5666136495083864
+Label cardinality: 1.7966101694915255
 Distinct label vectors: 10
 
 INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.14135594699473586 seconds
+INFO Successfully fit model in 0.2629550590063445 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0021547119977185503 seconds
+INFO Successfully predicted in 0.0016007510130293667 seconds
 INFO Prediction characteristics for test data (Fold 6):
 
 Labels: 6
-Label density: 0.3163841807909605
-Label sparsity: 0.6836158192090396
-Label imbalance ratio: 4.675020885547201
-Label cardinality: 1.8983050847457628
-Distinct label vectors: 18
+Label density: 0.3050847457627119
+Label sparsity: 0.6949152542372881
+Label imbalance ratio: 4.639254385964912
+Label cardinality: 1.8305084745762712
+Distinct label vectors: 15
 
 INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.13641557899245527 seconds
+INFO Successfully fit model in 0.25529535696841776 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.002227769000455737 seconds
+INFO Successfully predicted in 0.0017158889677375555 seconds
 INFO Prediction characteristics for test data (Fold 7):
 
 Labels: 6
@@ -133,54 +133,54 @@ INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.1699160129937809 seconds
+INFO Successfully fit model in 0.29139750404283404 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.002173913992010057 seconds
+INFO Successfully predicted in 0.0019535989849828184 seconds
 INFO Prediction characteristics for test data (Fold 8):
 
 Labels: 6
-Label density: 0.3333333333333333
-Label sparsity: 0.6666666666666667
-Label imbalance ratio: 2.047579240682689
-Label cardinality: 2.0
-Distinct label vectors: 12
+Label density: 0.3192090395480226
+Label sparsity: 0.6807909604519774
+Label imbalance ratio: 2.0222591021779666
+Label cardinality: 1.9152542372881356
+Distinct label vectors: 11
 
 INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.1411020550003741 seconds
+INFO Successfully fit model in 0.25662959401961416 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.00217533900286071 seconds
+INFO Successfully predicted in 0.0015919649740681052 seconds
 INFO Prediction characteristics for test data (Fold 9):
 
 Labels: 6
-Label density: 0.3192090395480226
-Label sparsity: 0.6807909604519774
-Label imbalance ratio: 2.1544835164835163
-Label cardinality: 1.9152542372881356
+Label density: 0.3220338983050847
+Label sparsity: 0.6779661016949152
+Label imbalance ratio: 2.202153846153846
+Label cardinality: 1.9322033898305084
 Distinct label vectors: 10
 
 INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.1253758149978239 seconds
+INFO Successfully fit model in 0.2370714759454131 seconds
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0024353480112040415 seconds
+INFO Successfully predicted in 0.0015581100014969707 seconds
 INFO Prediction characteristics for test data (Fold 10):
 
 Labels: 6
-Label density: 0.2994350282485876
-Label sparsity: 0.7005649717514124
-Label imbalance ratio: 2.1736583223539743
-Label cardinality: 1.7966101694915255
+Label density: 0.2655367231638418
+Label sparsity: 0.7344632768361582
+Label imbalance ratio: 1.8123665223665224
+Label cardinality: 1.5932203389830508
 Distinct label vectors: 13
 
-INFO Successfully finished after 1.4631319729960524 seconds
+INFO Successfully finished after 2.642746256024111 seconds

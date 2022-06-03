@@ -7,28 +7,28 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emot
 INFO Fitting model to 391 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.10461087198927999 seconds
+INFO Successfully fit model in 0.16409471002407372 seconds
 INFO Predicting for 202 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.005093960004160181 seconds
+INFO Successfully predicted in 0.004210406972561032 seconds
 INFO Overall evaluation result on test data:
 
 Ex.-based F1: 0.5371051390853371
 Ex.-based Jacc.: 0.44348184818481845
 Ex.-based Prec.: 0.6324257425742575
 Ex.-based Rec.: 0.5726072607260726
-Hamm. Acc.: 0.735973597359736
-Hamm. Loss: 0.264026402640264
-Ma. F1: 0.519737517499515
-Ma. Jacc.: 0.3804869781187019
-Ma. Prec.: 0.6893213776933765
+Hamm. Acc.: 0.7367986798679869
+Hamm. Loss: 0.2632013201320132
+Ma. F1: 0.520598737971956
+Ma. Jacc.: 0.3814445704579632
+Ma. Prec.: 0.6908132788016458
 Ma. Rec.: 0.558665451859779
-Mi. F1: 0.5886889460154241
-Mi. Jacc.: 0.41712204007285975
-Mi. Prec.: 0.604221635883905
+Mi. F1: 0.5894465894465896
+Mi. Jacc.: 0.41788321167883213
+Mi. Prec.: 0.6058201058201058
 Mi. Rec.: 0.5739348370927319
 Subs. 0/1 Loss: 0.8316831683168316
 Subs. Acc.: 0.16831683168316833
 
-INFO Successfully finished after 0.16745666597853415 seconds
+INFO Successfully finished after 0.22462331800488755 seconds

@@ -1,4 +1,4 @@
-INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dataset='emotions', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=True, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=True, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
 INFO Starting experiment...
 INFO Using separate training and test sets...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
@@ -7,26 +7,26 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emot
 INFO Fitting model to 391 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.10434400699159596 seconds
+INFO Successfully fit model in 0.1883604250033386 seconds
 INFO Predicting for 391 training examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.007433707010932267 seconds
+INFO Successfully predicted in 0.00852488400414586 seconds
 INFO Overall evaluation result on training data:
 
-Ex.-based F1: 0.6874193155523078
-Ex.-based Jacc.: 0.592924126172208
-Ex.-based Prec.: 0.7421142369991476
+Ex.-based F1: 0.6876750700280113
+Ex.-based Jacc.: 0.5931372549019608
+Ex.-based Prec.: 0.7433930093776642
 Ex.-based Rec.: 0.7289002557544757
-Hamm. Acc.: 0.8239556692242114
-Hamm. Loss: 0.17604433077578857
-Ma. F1: 0.622318039847494
-Ma. Jacc.: 0.5044348347764117
-Ma. Prec.: 0.7734765593680581
+Hamm. Acc.: 0.8243819266837169
+Hamm. Loss: 0.17561807331628304
+Ma. F1: 0.6230259372196408
+Ma. Jacc.: 0.5054772960019394
+Ma. Prec.: 0.7746592061893343
 Ma. Rec.: 0.6806778463812307
-Mi. F1: 0.7109867039888035
-Mi. Jacc.: 0.5515743756786102
-Mi. Prec.: 0.7055555555555556
+Mi. F1: 0.7114845938375349
+Mi. Jacc.: 0.5521739130434783
+Mi. Prec.: 0.7065368567454798
 Mi. Rec.: 0.7165021156558533
 Subs. 0/1 Loss: 0.690537084398977
 Subs. Acc.: 0.309462915601023
@@ -34,24 +34,24 @@ Subs. Acc.: 0.309462915601023
 INFO Predicting for 202 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.004275069004506804 seconds
+INFO Successfully predicted in 0.005293074995279312 seconds
 INFO Overall evaluation result on test data:
 
 Ex.-based F1: 0.5371051390853371
 Ex.-based Jacc.: 0.44348184818481845
 Ex.-based Prec.: 0.6324257425742575
 Ex.-based Rec.: 0.5726072607260726
-Hamm. Acc.: 0.735973597359736
-Hamm. Loss: 0.264026402640264
-Ma. F1: 0.519737517499515
-Ma. Jacc.: 0.3804869781187019
-Ma. Prec.: 0.6893213776933765
+Hamm. Acc.: 0.7367986798679869
+Hamm. Loss: 0.2632013201320132
+Ma. F1: 0.520598737971956
+Ma. Jacc.: 0.3814445704579632
+Ma. Prec.: 0.6908132788016458
 Ma. Rec.: 0.558665451859779
-Mi. F1: 0.5886889460154241
-Mi. Jacc.: 0.41712204007285975
-Mi. Prec.: 0.604221635883905
+Mi. F1: 0.5894465894465896
+Mi. Jacc.: 0.41788321167883213
+Mi. Prec.: 0.6058201058201058
 Mi. Rec.: 0.5739348370927319
 Subs. 0/1 Loss: 0.8316831683168316
 Subs. Acc.: 0.16831683168316833
 
-INFO Successfully finished after 0.20360261900350451 seconds
+INFO Successfully finished after 0.2957623730180785 seconds

@@ -1,4 +1,4 @@
-INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='langlog', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='dense', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='langlog', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='dense', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
 INFO Starting experiment...
 INFO Using separate training and test sets...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/langlog.xml"...
@@ -7,28 +7,28 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/lang
 INFO Fitting model to 979 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A sparse matrix is used to store the labels of the training examples
-INFO Successfully fit model in 1.7956930060026934 seconds
+INFO Successfully fit model in 2.1094401800073683 seconds
 INFO Predicting for 481 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
-INFO Successfully predicted in 0.021944569001789205 seconds
+INFO Successfully predicted in 0.02084752998780459 seconds
 INFO Overall evaluation result on test data:
 
-Ex.-based F1: 0.3372042372042372
-Ex.-based Jacc.: 0.302979902979903
-Ex.-based Prec.: 0.5704781704781704
-Ex.-based Rec.: 0.387040887040887
-Hamm. Acc.: 0.9761053361053361
-Hamm. Loss: 0.023894663894663895
-Ma. F1: 0.23598282421947592
-Ma. Jacc.: 0.21725614985410857
-Ma. Prec.: 0.8416957285131288
-Ma. Rec.: 0.2589107881225528
-Mi. F1: 0.24912891986062718
-Mi. Jacc.: 0.14228855721393036
-Mi. Prec.: 0.25265017667844525
-Mi. Rec.: 0.24570446735395188
+Ex.-based F1: 0.2708939708939709
+Ex.-based Jacc.: 0.25675675675675674
+Ex.-based Prec.: 0.825017325017325
+Ex.-based Rec.: 0.27269577269577266
+Hamm. Acc.: 0.9827581427581428
+Hamm. Loss: 0.017241857241857242
+Ma. F1: 0.22816622670783962
+Ma. Jacc.: 0.2122231204891968
+Ma. Prec.: 0.8722596407423995
+Ma. Rec.: 0.22192824169294756
+Mi. F1: 0.19430051813471502
+Mi. Jacc.: 0.10760401721664276
+Mi. Prec.: 0.39473684210526316
+Mi. Rec.: 0.12886597938144329
 Subs. 0/1 Loss: 0.7796257796257796
 Subs. Acc.: 0.2203742203742204
 
-INFO Successfully finished after 2.220572156002163 seconds
+INFO Successfully finished after 2.512341176974587 seconds

@@ -1,4 +1,4 @@
-INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dataset='emotions', folds=10, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir='python/subprojects/testbed/tests/res/tmp/models', parameter_dir=None, output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=10, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir='python/subprojects/testbed/tests/res/tmp/models', parameter_dir=None, output_dir=None, print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
 INFO Starting experiment...
 INFO Performing full 10-fold cross validation...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
@@ -9,23 +9,23 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.001999316009460017 seconds
+INFO Successfully predicted in 0.005270293971989304 seconds
 INFO Evaluation result on test data (Fold 1):
 
-Ex.-based F1: 0.601111111111111
-Ex.-based Jacc.: 0.5138888888888888
-Ex.-based Prec.: 0.6958333333333333
-Ex.-based Rec.: 0.6472222222222223
+Ex.-based F1: 0.5961111111111111
+Ex.-based Jacc.: 0.5083333333333333
+Ex.-based Prec.: 0.7125
+Ex.-based Rec.: 0.6416666666666667
 Hamm. Acc.: 0.7666666666666666
 Hamm. Loss: 0.23333333333333334
-Ma. F1: 0.5657935938603084
-Ma. Jacc.: 0.4290123456790123
-Ma. Prec.: 0.724491970521916
-Ma. Rec.: 0.6239618406285073
-Mi. F1: 0.6410256410256411
-Mi. Jacc.: 0.4716981132075472
-Mi. Prec.: 0.6410256410256411
-Mi. Rec.: 0.6410256410256411
+Ma. F1: 0.5622362638633498
+Ma. Jacc.: 0.4252581369248036
+Ma. Prec.: 0.7244799973418394
+Ma. Rec.: 0.6097643097643098
+Mi. F1: 0.6379310344827587
+Mi. Jacc.: 0.46835443037974683
+Mi. Prec.: 0.6434782608695652
+Mi. Rec.: 0.6324786324786325
 Subs. 0/1 Loss: 0.7333333333333334
 Subs. Acc.: 0.26666666666666666
 
@@ -35,22 +35,22 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0046342040004674345 seconds
+INFO Successfully predicted in 0.0036368920118547976 seconds
 INFO Evaluation result on test data (Fold 2):
 
 Ex.-based F1: 0.5127777777777778
 Ex.-based Jacc.: 0.42750000000000005
 Ex.-based Prec.: 0.6422222222222221
 Ex.-based Rec.: 0.5555555555555556
-Hamm. Acc.: 0.7166666666666667
-Hamm. Loss: 0.2833333333333333
-Ma. F1: 0.48932112890922963
-Ma. Jacc.: 0.3509610443005448
-Ma. Prec.: 0.6597162097162097
+Hamm. Acc.: 0.7194444444444444
+Hamm. Loss: 0.28055555555555556
+Ma. F1: 0.49216607912260085
+Ma. Jacc.: 0.35403796737746784
+Ma. Prec.: 0.6644781144781146
 Ma. Rec.: 0.5170413779546906
-Mi. F1: 0.5565217391304348
-Mi. Jacc.: 0.3855421686746988
-Mi. Prec.: 0.5818181818181818
+Mi. F1: 0.5589519650655023
+Mi. Jacc.: 0.3878787878787879
+Mi. Prec.: 0.5871559633027523
 Mi. Rec.: 0.5333333333333333
 Subs. 0/1 Loss: 0.8166666666666667
 Subs. Acc.: 0.18333333333333332
@@ -61,25 +61,25 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.003634049993706867 seconds
+INFO Successfully predicted in 0.0017903620027936995 seconds
 INFO Evaluation result on test data (Fold 3):
 
-Ex.-based F1: 0.5965873015873014
-Ex.-based Jacc.: 0.49194444444444446
-Ex.-based Prec.: 0.6038888888888888
-Ex.-based Rec.: 0.6777777777777777
-Hamm. Acc.: 0.7583333333333333
-Hamm. Loss: 0.24166666666666667
-Ma. F1: 0.570594904628518
-Ma. Jacc.: 0.4343240519227361
-Ma. Prec.: 0.679451307500088
-Ma. Rec.: 0.6544138123085491
-Mi. F1: 0.6390041493775934
-Mi. Jacc.: 0.4695121951219512
-Mi. Prec.: 0.6062992125984252
-Mi. Rec.: 0.6754385964912281
-Subs. 0/1 Loss: 0.8166666666666667
-Subs. Acc.: 0.18333333333333332
+Ex.-based F1: 0.5904761904761904
+Ex.-based Jacc.: 0.4955555555555556
+Ex.-based Prec.: 0.663611111111111
+Ex.-based Rec.: 0.638888888888889
+Hamm. Acc.: 0.7694444444444444
+Hamm. Loss: 0.23055555555555557
+Ma. F1: 0.5713940648723258
+Ma. Jacc.: 0.4356328721132737
+Ma. Prec.: 0.6964127490443279
+Ma. Rec.: 0.6245242736470806
+Mi. F1: 0.6375545851528385
+Mi. Jacc.: 0.46794871794871795
+Mi. Prec.: 0.6347826086956522
+Mi. Rec.: 0.6403508771929824
+Subs. 0/1 Loss: 0.7833333333333333
+Subs. Acc.: 0.21666666666666667
 
 INFO Fold 4 / 10:
 DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/seco_fold-4.model"...
@@ -87,25 +87,25 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0021576360013568774 seconds
+INFO Successfully predicted in 0.001761442981660366 seconds
 INFO Evaluation result on test data (Fold 4):
 
 Ex.-based F1: 0.4987086359967716
-Ex.-based Jacc.: 0.4121468926553672
-Ex.-based Prec.: 0.637005649717514
-Ex.-based Rec.: 0.5677966101694916
-Hamm. Acc.: 0.731638418079096
-Hamm. Loss: 0.268361581920904
-Ma. F1: 0.4776327982542672
-Ma. Jacc.: 0.33998895841001103
-Ma. Prec.: 0.6050757234967761
-Ma. Rec.: 0.5409753480691696
-Mi. F1: 0.5454545454545454
-Mi. Jacc.: 0.375
-Mi. Prec.: 0.5327102803738317
-Mi. Rec.: 0.5588235294117647
-Subs. 0/1 Loss: 0.8305084745762712
-Subs. Acc.: 0.1694915254237288
+Ex.-based Jacc.: 0.4135593220338983
+Ex.-based Prec.: 0.6624293785310734
+Ex.-based Rec.: 0.5621468926553672
+Hamm. Acc.: 0.7372881355932204
+Hamm. Loss: 0.2627118644067797
+Ma. F1: 0.4739858906525573
+Ma. Jacc.: 0.33953570795676064
+Ma. Prec.: 0.6060145994356522
+Ma. Rec.: 0.5298642369580585
+Mi. F1: 0.5463414634146341
+Mi. Jacc.: 0.37583892617449666
+Mi. Prec.: 0.5436893203883495
+Mi. Rec.: 0.5490196078431373
+Subs. 0/1 Loss: 0.8135593220338984
+Subs. Acc.: 0.1864406779661017
 
 INFO Fold 5 / 10:
 DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/seco_fold-5.model"...
@@ -113,23 +113,23 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0014497869997285306 seconds
+INFO Successfully predicted in 0.004047070979140699 seconds
 INFO Evaluation result on test data (Fold 5):
 
-Ex.-based F1: 0.6152542372881357
+Ex.-based F1: 0.6112994350282486
 Ex.-based Jacc.: 0.5240112994350282
-Ex.-based Prec.: 0.7005649717514125
-Ex.-based Rec.: 0.6581920903954802
-Hamm. Acc.: 0.7937853107344632
-Hamm. Loss: 0.2062146892655367
-Ma. F1: 0.6127848182283666
-Ma. Jacc.: 0.48795902800479457
-Ma. Prec.: 0.7552560529307352
-Ma. Rec.: 0.6584060846560846
-Mi. F1: 0.6784140969162995
-Mi. Jacc.: 0.5133333333333333
-Mi. Prec.: 0.6875
-Mi. Rec.: 0.6695652173913044
+Ex.-based Prec.: 0.7259887005649718
+Ex.-based Rec.: 0.6440677966101694
+Hamm. Acc.: 0.7994350282485876
+Hamm. Loss: 0.20056497175141244
+Ma. F1: 0.6144958056536397
+Ma. Jacc.: 0.49053731279723545
+Ma. Prec.: 0.7657103495919285
+Ma. Rec.: 0.6450727513227513
+Mi. F1: 0.6787330316742082
+Mi. Jacc.: 0.5136986301369864
+Mi. Prec.: 0.7075471698113207
+Mi. Rec.: 0.6521739130434783
 Subs. 0/1 Loss: 0.7457627118644068
 Subs. Acc.: 0.2542372881355932
 
@@ -139,25 +139,25 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0014547809987561777 seconds
+INFO Successfully predicted in 0.0032115689828060567 seconds
 INFO Evaluation result on test data (Fold 6):
 
-Ex.-based F1: 0.4907183212267958
-Ex.-based Jacc.: 0.38841807909604514
-Ex.-based Prec.: 0.5805084745762712
+Ex.-based F1: 0.49410815173527045
+Ex.-based Jacc.: 0.39406779661016944
+Ex.-based Prec.: 0.6031073446327684
 Ex.-based Rec.: 0.556497175141243
-Hamm. Acc.: 0.711864406779661
-Hamm. Loss: 0.288135593220339
-Ma. F1: 0.48925518925518924
-Ma. Jacc.: 0.3599535246077799
-Ma. Prec.: 0.5188067066892036
+Hamm. Acc.: 0.7231638418079096
+Hamm. Loss: 0.2768361581920904
+Ma. F1: 0.49926892551892554
+Ma. Jacc.: 0.36851816217090816
+Ma. Prec.: 0.5303362573099415
 Ma. Rec.: 0.5603749647699036
-Mi. F1: 0.5277777777777778
-Mi. Jacc.: 0.3584905660377358
-Mi. Prec.: 0.5089285714285714
+Mi. F1: 0.5377358490566038
+Mi. Jacc.: 0.36774193548387096
+Mi. Prec.: 0.5277777777777778
 Mi. Rec.: 0.5480769230769231
-Subs. 0/1 Loss: 0.8983050847457628
-Subs. Acc.: 0.1016949152542373
+Subs. 0/1 Loss: 0.8813559322033898
+Subs. Acc.: 0.11864406779661017
 
 INFO Fold 7 / 10:
 DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/seco_fold-7.model"...
@@ -165,7 +165,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0015440309944096953 seconds
+INFO Successfully predicted in 0.0017237330321222544 seconds
 INFO Evaluation result on test data (Fold 7):
 
 Ex.-based F1: 0.5913640032284099
@@ -191,25 +191,25 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.001654724997933954 seconds
+INFO Successfully predicted in 0.0016760089783929288 seconds
 INFO Evaluation result on test data (Fold 8):
 
-Ex.-based F1: 0.563276836158192
-Ex.-based Jacc.: 0.46892655367231634
-Ex.-based Prec.: 0.6299435028248587
+Ex.-based F1: 0.5728813559322034
+Ex.-based Jacc.: 0.48022598870056493
+Ex.-based Prec.: 0.6497175141242937
 Ex.-based Rec.: 0.6214689265536723
-Hamm. Acc.: 0.7542372881355932
-Hamm. Loss: 0.2457627118644068
-Ma. F1: 0.5458490681894937
-Ma. Jacc.: 0.40755589430894307
-Ma. Prec.: 0.6836816440264717
+Hamm. Acc.: 0.768361581920904
+Hamm. Loss: 0.23163841807909605
+Ma. F1: 0.5589247902816092
+Ma. Jacc.: 0.42214209401709396
+Ma. Prec.: 0.7046826760182157
 Ma. Rec.: 0.6251732138316807
-Mi. F1: 0.6133333333333333
-Mi. Jacc.: 0.4423076923076923
-Mi. Prec.: 0.5847457627118644
+Mi. F1: 0.6272727272727272
+Mi. Jacc.: 0.45695364238410596
+Mi. Prec.: 0.6106194690265486
 Mi. Rec.: 0.6448598130841121
-Subs. 0/1 Loss: 0.8305084745762712
-Subs. Acc.: 0.1694915254237288
+Subs. 0/1 Loss: 0.8135593220338984
+Subs. Acc.: 0.1864406779661017
 
 INFO Fold 9 / 10:
 DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/seco_fold-9.model"...
@@ -217,22 +217,22 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0015998570015653968 seconds
+INFO Successfully predicted in 0.0017551440396346152 seconds
 INFO Evaluation result on test data (Fold 9):
 
-Ex.-based F1: 0.5915254237288136
-Ex.-based Jacc.: 0.49576271186440674
-Ex.-based Prec.: 0.6751412429378532
-Ex.-based Rec.: 0.655367231638418
-Hamm. Acc.: 0.7740112994350282
-Hamm. Loss: 0.22598870056497175
-Ma. F1: 0.5566951566951567
-Ma. Jacc.: 0.4225902184235517
-Ma. Prec.: 0.7097011525060305
+Ex.-based F1: 0.5870056497175141
+Ex.-based Jacc.: 0.4915254237288135
+Ex.-based Prec.: 0.6723163841807911
+Ex.-based Rec.: 0.652542372881356
+Hamm. Acc.: 0.771186440677966
+Hamm. Loss: 0.2288135593220339
+Ma. F1: 0.5549828279280333
+Ma. Jacc.: 0.4204163053800735
+Ma. Prec.: 0.707087912087912
 Ma. Rec.: 0.5995063604571245
-Mi. F1: 0.6460176991150443
-Mi. Jacc.: 0.477124183006536
-Mi. Prec.: 0.6460176991150443
+Mi. F1: 0.6431718061674009
+Mi. Jacc.: 0.474025974025974
+Mi. Prec.: 0.6403508771929824
 Mi. Rec.: 0.6460176991150443
 Subs. 0/1 Loss: 0.7966101694915254
 Subs. Acc.: 0.2033898305084746
@@ -243,43 +243,43 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.00168072700034827 seconds
+INFO Successfully predicted in 0.004026564012747258 seconds
 INFO Evaluation result on test data (Fold 10):
 
-Ex.-based F1: 0.5673123486682808
-Ex.-based Jacc.: 0.4932203389830508
-Ex.-based Prec.: 0.6903954802259887
-Ex.-based Rec.: 0.6186440677966101
+Ex.-based F1: 0.5221146085552865
+Ex.-based Jacc.: 0.45649717514124294
+Ex.-based Prec.: 0.7384180790960453
+Ex.-based Rec.: 0.5649717514124293
 Hamm. Acc.: 0.768361581920904
 Hamm. Loss: 0.23163841807909605
-Ma. F1: 0.5381532144054701
-Ma. Jacc.: 0.40514069264069263
-Ma. Prec.: 0.6919961463439724
-Ma. Rec.: 0.5674604743083004
-Mi. F1: 0.6203703703703703
-Mi. Jacc.: 0.44966442953020136
-Mi. Prec.: 0.6320754716981132
-Mi. Rec.: 0.6090909090909091
-Subs. 0/1 Loss: 0.6949152542372881
-Subs. Acc.: 0.3050847457627119
+Ma. F1: 0.5205907037547455
+Ma. Jacc.: 0.38594470046082946
+Ma. Prec.: 0.6961378978620357
+Ma. Rec.: 0.5185474308300395
+Mi. F1: 0.5980392156862745
+Mi. Jacc.: 0.42657342657342656
+Mi. Prec.: 0.648936170212766
+Mi. Rec.: 0.5545454545454546
+Subs. 0/1 Loss: 0.711864406779661
+Subs. Acc.: 0.288135593220339
 
 INFO Overall evaluation result on test data:
 
-Ex.-based F1: 0.5628635996771589 ±0.04339131770996974
-Ex.-based Jacc.: 0.4712146892655366 ±0.04360768453027149
-Ex.-based Prec.: 0.6506633709981167 ±0.03808566739903742
-Ex.-based Rec.: 0.6216713747645951 ±0.04374286690980255
-Hamm. Acc.: 0.7538276836158192 ±0.024725862189943958
-Hamm. Loss: 0.24617231638418083 ±0.024725862189943975
-Ma. F1: 0.5368557394903523 ±0.040566689578943105
-Ma. Jacc.: 0.40253070607535146 ±0.04247896420515787
-Ma. Prec.: 0.6701544131216268 ±0.06306022966768529
-Ma. Rec.: 0.5915314999726913 ±0.045696818436090934
-Mi. F1: 0.6082598251583609 ±0.046560062294220966
-Mi. Jacc.: 0.43863812904912186 ±0.047497473091534445
-Mi. Prec.: 0.601933510648396 ±0.050868933245850886
-Mi. Rec.: 0.6158307133718373 ±0.04876961527474427
-Subs. 0/1 Loss: 0.7942937853107345 ±0.05532582332577589
-Subs. Acc.: 0.20570621468926556 ±0.055325823325775875
+Ex.-based F1: 0.5576846919558783 ±0.04295739671339173
+Ex.-based Jacc.: 0.4687603578154425 ±0.041503339335116456
+Ex.-based Prec.: 0.6721440677966102 ±0.039614689526956
+Ex.-based Rec.: 0.6095998116760828 ±0.041718627893815315
+Hamm. Acc.: 0.7586064030131827 ±0.023364822901759112
+Hamm. Loss: 0.24139359698681734 ±0.02336482290175912
+Ma. F1: 0.537052287412531 ±0.040637583062751045
+Ma. Jacc.: 0.40298445616538947 ±0.04245954005697657
+Ma. Prec.: 0.6768707770654833 ±0.06265589476735008
+Ma. Rec.: 0.5797870442278541 ±0.04506257697504425
+Mi. F1: 0.6080410577055516 ±0.04435012953365974
+Mi. Jacc.: 0.43827230802576367 ±0.04547576831223674
+Mi. Prec.: 0.6142551902992001 ±0.05032424217874724
+Mi. Rec.: 0.603293172541121 ±0.04718172951612674
+Subs. 0/1 Loss: 0.7875706214689265 ±0.04645033371791494
+Subs. Acc.: 0.21242937853107344 ±0.04645033371791494
 
-INFO Successfully finished after 0.32000172200787347 seconds
+INFO Successfully finished after 0.33950225403532386 seconds
