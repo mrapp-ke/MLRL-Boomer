@@ -22,10 +22,9 @@ class IWeightedStatisticsSubset : virtual public IStatisticsSubset {
          * following for refining a rule will be able to cover it and consequently the function `addToSubset` will never
          * be called for the given `statisticIndex`.
          *
-         * @param statisticIndex    The index of the missing statistic
-         * @param weight            The weight of the missing statistic
+         * @param statisticIndex The index of the missing statistic
          */
-        virtual void addToMissing(uint32 statisticIndex, float64 weight) = 0;
+        virtual void addToMissing(uint32 statisticIndex) = 0;
 
         /**
          * Resets the subset by removing all statistics that have been added via preceding calls to the function

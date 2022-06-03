@@ -120,7 +120,8 @@ namespace seco {
             /**
              * @see `IStatisticsSubset::addToSubset`
              */
-            void addToSubset(uint32 statisticIndex, float64 weight) override final {
+            void addToSubset(uint32 statisticIndex) override final {
+                float64 weight = weights_[statisticIndex];
                 sumVector_.addToSubset(statisticIndex, labelMatrix_, majorityLabelVector_, coverageMatrix_,
                                        labelIndices_, weight);
             }
@@ -326,7 +327,7 @@ namespace seco {
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
                      */
-                    void addToMissing(uint32 statisticIndex, float64 weight) override {
+                    void addToMissing(uint32 statisticIndex) override {
                         // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
                         if (!totalCoverableSumVectorPtr_) {
                             totalCoverableSumVectorPtr_ = std::make_unique<ConfusionMatrixVector>(*subsetSumVector_);
@@ -335,6 +336,7 @@ namespace seco {
 
                         // For each label, subtract the confusion matrices of the example at the given index (weighted
                         // by the given weight) from the total sum of confusion matrices...
+                        float64 weight = this->weights_[statisticIndex];
                         totalCoverableSumVectorPtr_->remove(statisticIndex, this->labelMatrix_,
                                                             this->majorityLabelVector_, this->coverageMatrix_, weight);
                     }

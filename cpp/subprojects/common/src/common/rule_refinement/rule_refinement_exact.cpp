@@ -5,9 +5,9 @@
 
 
 template<typename T>
-ExactRuleRefinement<T>::ExactRuleRefinement(
-        const T& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal,
-        std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>> callbackPtr)
+ExactRuleRefinement<T>::ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex,
+                                            bool nominal,
+                                            std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
     : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
       callbackPtr_(std::move(callbackPtr)) {
 
@@ -22,10 +22,8 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     ScoreProcessor scoreProcessor;
 
     // Invoke the callback...
-    std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>::Result> callbackResultPtr =
-        callbackPtr_->get();
+    std::unique_ptr<IRuleRefinementCallback<FeatureVector>::Result> callbackResultPtr = callbackPtr_->get();
     const IImmutableWeightedStatistics& statistics = callbackResultPtr->statistics_;
-    const IWeightVector& weights = callbackResultPtr->weights_;
     const FeatureVector& featureVector = callbackResultPtr->vector_;
     FeatureVector::const_iterator iterator = featureVector.cbegin();
     uint32 numElements = featureVector.getNumElements();
@@ -35,8 +33,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
     for (auto it = featureVector.missing_indices_cbegin(); it != featureVector.missing_indices_cend(); it++) {
         uint32 i = *it;
-        float64 weight = weights.getWeight(i);
-        statisticsSubsetPtr->addToMissing(i, weight);
+        statisticsSubsetPtr->addToMissing(i);
     }
 
     // In the following, we start by processing all examples with feature values < 0...
@@ -47,7 +44,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     int64 previousR = 0;
     int64 r;
 
-    // Traverse examples with feature values < 0 in ascending order until the first example with weight > 0 is
+    // Traverse examples with feature values < 0 in ascending order until the first example with non-zero weight is
     // encountered...
     for (r = 0; r < numElements; r++) {
         float32 currentThreshold = iterator[r].value;
@@ -58,11 +55,10 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
         lastNegativeR = r;
         uint32 i = iterator[r].index;
-        float64 weight = weights.getWeight(i);
 
-        if (weight > 0) {
+        if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
-            statisticsSubsetPtr->addToSubset(i, weight);
+            statisticsSubsetPtr->addToSubset(i);
             numExamples++;
             previousThreshold = currentThreshold;
             previousR = r;
@@ -83,10 +79,9 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
             lastNegativeR = r;
             uint32 i = iterator[r].index;
-            float64 weight = weights.getWeight(i);
 
             // Do only consider examples that are included in the current sub-sample...
-            if (weight > 0) {
+            if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
                 // Split points between examples with the same feature value must not be considered...
                 if (previousThreshold != currentThreshold) {
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
@@ -150,7 +145,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 previousR = r;
 
                 // Add the example to the subset to mark it as covered by upcoming refinements...
-                statisticsSubsetPtr->addToSubset(i, weight);
+                statisticsSubsetPtr->addToSubset(i);
                 numExamples++;
                 accumulatedNumExamples++;
             }
@@ -210,15 +205,14 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     numExamples = 0;
     firstR = ((int64) numElements) - 1;
 
-    // Traverse examples with feature values >= 0 in descending order until the first example with weight > 0 is
+    // Traverse examples with feature values >= 0 in descending order until the first example with non-zero weight is
     // encountered...
     for (r = firstR; r > lastNegativeR; r--) {
         uint32 i = iterator[r].index;
-        float64 weight = weights.getWeight(i);
 
-        if (weight > 0) {
+        if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
-            statisticsSubsetPtr->addToSubset(i, weight);
+            statisticsSubsetPtr->addToSubset(i);
             numExamples++;
             previousThreshold = iterator[r].value;
             previousR = r;
@@ -232,10 +226,9 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     if (numExamples > 0) {
         for (r = r - 1; r > lastNegativeR; r--) {
             uint32 i = iterator[r].index;
-            float64 weight = weights.getWeight(i);
 
             // Do only consider examples that are included in the current sub-sample...
-            if (weight > 0) {
+            if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
                 float32 currentThreshold = iterator[r].value;
 
                 // Split points between examples with the same feature value must not be considered...
@@ -301,7 +294,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                 previousR = r;
 
                 // Add the example to the subset to mark it as covered by upcoming refinements...
-                statisticsSubsetPtr->addToSubset(i, weight);
+                statisticsSubsetPtr->addToSubset(i);
                 numExamples++;
                 accumulatedNumExamples++;
             }
@@ -351,10 +344,10 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
 
     uint32 totalAccumulatedNumExamples = accumulatedNumExamplesNegative + accumulatedNumExamples;
 
-    // If the sum of weights of all examples that have been iterated so far (including those with feature values < 0 and
-    // those with feature values >= 0) is less than the sum of weights of all examples, this means that there are
-    // examples with sparse, i.e. zero, feature values. In such case, we must explicitly test conditions that separate
-    // these examples from the ones that have already been iterated...
+    // If the number of all examples that have been iterated so far (including those with feature values < 0 and those
+    // with feature values >= 0) is less than the total number of examples, this means that there are examples with
+    // sparse, i.e. zero, feature values. In such case, we must explicitly test conditions that separate these examples
+    // from the ones that have already been iterated...
     if (totalAccumulatedNumExamples > 0 && totalAccumulatedNumExamples < numExamples_) {
         // If the feature is nominal, we must reset the subset once again to ensure that the accumulated state includes
         // all examples that have been processed so far...

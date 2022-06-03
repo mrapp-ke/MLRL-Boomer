@@ -90,7 +90,8 @@ namespace boosting {
             /**
              * @see `IStatisticsSubset::addToSubset`
              */
-            void addToSubset(uint32 statisticIndex, float64 weight) override final {
+            void addToSubset(uint32 statisticIndex) override final {
+                float64 weight = weights_[statisticIndex];
                 sumVector_.addToSubset(statisticView_, statisticIndex, labelIndices_, weight);
             }
 
@@ -329,7 +330,7 @@ namespace boosting {
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
                      */
-                    void addToMissing(uint32 statisticIndex, float64 weight) override {
+                    void addToMissing(uint32 statisticIndex) override {
                         // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
                         if (!totalCoverableSumVectorPtr_) {
                             totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*this->totalSumVector_);
@@ -339,6 +340,7 @@ namespace boosting {
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
                         const StatisticView& originalStatisticView = histogram_.originalStatisticView_;
+                        float64 weight = histogram_.originalWeights_[statisticIndex];
                         totalCoverableSumVectorPtr_->remove(originalStatisticView, statisticIndex, weight);
                     }
 
@@ -396,14 +398,24 @@ namespace boosting {
              */
             void clear() override {
                 histogramPtr_->clear();
+                binWeightVectorPtr_->clear();
             }
 
             /**
              * @see `IHistogram::addToBin`
              */
-            void addToBin(uint32 binIndex, uint32 statisticIndex, float64 weight) override {
-                histogramPtr_->addToRow(binIndex, originalStatisticView_.row_cbegin(statisticIndex),
-                                        originalStatisticView_.row_cend(statisticIndex), weight);
+            void addToBin(uint32 statisticIndex) override {
+                float64 weight = originalWeights_[statisticIndex];
+
+                if (weight > 0) {
+                    uint32 binIndex = binIndexVector_.getBinIndex(statisticIndex);
+
+                    if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
+                        binWeightVectorPtr_->set(binIndex, true);
+                        histogramPtr_->addToRow(binIndex, originalStatisticView_.row_cbegin(statisticIndex),
+                                                originalStatisticView_.row_cend(statisticIndex), weight);
+                    }
+                }
             }
 
             /**
@@ -531,7 +543,7 @@ namespace boosting {
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
                      */
-                    void addToMissing(uint32 statisticIndex, float64 weight) override {
+                    void addToMissing(uint32 statisticIndex) override {
                         // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
                         if (!totalCoverableSumVectorPtr_) {
                             totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*this->totalSumVector_);
@@ -540,6 +552,7 @@ namespace boosting {
 
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
+                        float64 weight = this->weights_[statisticIndex];
                         totalCoverableSumVectorPtr_->remove(this->statisticView_, statisticIndex, weight);
                     }
 

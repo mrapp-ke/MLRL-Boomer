@@ -21,8 +21,8 @@ static inline float64 evaluateOutOfSampleInternally(IndexIterator indexIterator,
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indexIterator[i];
 
-        if (weights[exampleIndex] == 0 && coverageMask.isCovered(exampleIndex)) {
-            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+        if (statisticsSubsetPtr->hasNonZeroWeight(exampleIndex) && coverageMask.isCovered(exampleIndex)) {
+            statisticsSubsetPtr->addToSubset(exampleIndex);
         }
     }
 
@@ -43,8 +43,8 @@ static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights,
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = iterator[i];
 
-        if (weights[exampleIndex] == 0) {
-            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+        if (statisticsSubsetPtr->hasNonZeroWeight(exampleIndex)) {
+            statisticsSubsetPtr->addToSubset(exampleIndex);
         }
     }
 
@@ -56,8 +56,9 @@ template<typename WeightVector>
 static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
                                                     BiPartition& partition, const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
-    // TODO use out-of-sample weights
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
+    OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
+        prediction.createStatisticsSubset(statistics, outOfSampleWeights);
     const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
@@ -65,8 +66,8 @@ static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights,
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = iterator[i];
 
-        if (weights[exampleIndex] == 0 && holdoutSet[exampleIndex]) {
-            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+        if (statisticsSubsetPtr->hasNonZeroWeight(exampleIndex) && holdoutSet[exampleIndex]) {
+            statisticsSubsetPtr->addToSubset(exampleIndex);
         }
     }
 
@@ -86,7 +87,7 @@ static inline void recalculatePredictionInternally(IndexIterator indexIterator, 
         uint32 exampleIndex = indexIterator[i];
 
         if (coverageMask.isCovered(exampleIndex)) {
-            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+            statisticsSubsetPtr->addToSubset(exampleIndex);
         }
     }
 
@@ -105,7 +106,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
 
     for (uint32 i = 0; i < numCovered; i++) {
         uint32 exampleIndex = iterator[i];
-        statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+        statisticsSubsetPtr->addToSubset(exampleIndex);
     }
 
     const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
@@ -126,7 +127,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
         uint32 exampleIndex = iterator[i];
 
         if (holdoutSet[exampleIndex]) {
-            statisticsSubsetPtr->addToSubset(exampleIndex, 1);
+            statisticsSubsetPtr->addToSubset(exampleIndex);
         }
     }
 
