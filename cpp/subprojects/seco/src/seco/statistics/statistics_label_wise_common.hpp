@@ -345,9 +345,9 @@ namespace seco {
 
                         // For each label, subtract the confusion matrices of the example at the given index (weighted
                         // by the given weight) from the total sum of confusion matrices...
-                        float64 weight = this->weights_[statisticIndex];
-                        totalCoverableSumVectorPtr_->remove(statisticIndex, this->labelMatrix_,
-                                                            this->majorityLabelVector_, this->coverageMatrix_, weight);
+
+                        removeLabelWiseStatistic(this->weights_, this->labelMatrix_, this->majorityLabelVector_,
+                                                 this->coverageMatrix_, *totalCoverableSumVectorPtr_, statisticIndex);
                     }
 
                     /**
