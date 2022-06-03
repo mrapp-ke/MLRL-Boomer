@@ -80,17 +80,36 @@ class DenseWeightVector final : public IWeightVector {
         uint32 getNumElements() const;
 
         /**
+         * Returns a const reference to the weight at a specific position.
+         *
+         * @param pos   The position
+         * @return      A const reference to the specified weight
+         */
+        const T& operator[](uint32 pos) const;
+
+        /**
+         * Returns a reference to the weight at a specific position.
+         *
+         * @param pos   The position
+         * @return      A reference to the specified weight
+         */
+        T& operator[](uint32 pos);
+
+        /**
+         * Returns the number of non-zero weights.
+         *
+         * @return The number of non-zero weights
+         */
+        uint32 getNumNonZeroWeights() const;
+
+        /**
          * Sets the number of non-zero weights.
          *
          * @param numNonZeroWeights The number of non-zero weights to be set
          */
         void setNumNonZeroWeights(uint32 numNonZeroWeights);
 
-        uint32 getNumNonZeroWeights() const override;
-
         bool hasZeroWeights() const override;
-
-        float64 getWeight(uint32 pos) const override;
 
         std::unique_ptr<IThresholdsSubset> createThresholdsSubset(IThresholds& thresholds) const override;
 

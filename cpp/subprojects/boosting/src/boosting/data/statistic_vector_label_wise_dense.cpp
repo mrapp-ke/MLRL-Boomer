@@ -74,6 +74,17 @@ namespace boosting {
     }
 
     void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
+                                                    const CompleteIndexVector& indices) {
+        addToArray(statistics_, view.row_cbegin(row), numElements_);
+    }
+
+    void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
+                                                    const PartialIndexVector& indices) {
+        PartialIndexVector::const_iterator indexIterator = indices.cbegin();
+        addToArray(statistics_, view.row_cbegin(row), indexIterator, numElements_);
+    }
+
+    void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
                                                     const CompleteIndexVector& indices, float64 weight) {
         addToArray(statistics_, view.row_cbegin(row), numElements_, weight);
     }

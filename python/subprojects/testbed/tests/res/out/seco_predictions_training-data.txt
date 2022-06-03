@@ -1,4 +1,4 @@
-INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=1, current_fold=-1, print_evaluation=False, store_evaluation=False, evaluate_training_data=True, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_predictions=True, store_predictions=True, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=1, current_fold=-1, print_evaluation=False, store_evaluation=False, evaluate_training_data=True, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_parameters=False, store_parameters=False, print_predictions=True, store_predictions=True, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
 INFO Starting experiment...
 INFO Using separate training and test sets...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
@@ -7,11 +7,11 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emot
 INFO Fitting model to 391 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.10026910000306088 seconds
+INFO Successfully fit model in 0.16395720798755065 seconds
 INFO Predicting for 391 training examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.007192232005763799 seconds
+INFO Successfully predicted in 0.007239651051349938 seconds
 INFO Predictions for training data:
 
 Ground truth:
@@ -483,7 +483,7 @@ Predictions:
  [1 0 0 0 0 0]
  [1 0 0 0 0 1]
  [0 0 0 0 0 1]
- [0 0 1 1 0 0]
+ [0 0 1 0 0 0]
  [0 0 1 1 0 0]
  [0 0 1 0 0 1]
  [0 0 1 0 0 0]
@@ -807,7 +807,7 @@ INFO Successfully saved data set to file 'python/subprojects/testbed/tests/res/t
 INFO Predicting for 202 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.003803992993198335 seconds
+INFO Successfully predicted in 0.004050953022670001 seconds
 INFO Predictions for test data:
 
 Ground truth:
@@ -1100,7 +1100,7 @@ Predictions:
  [0 0 1 1 1 0]
  [1 0 1 1 1 0]
  [0 0 1 0 0 1]
- [0 0 1 1 0 0]
+ [0 0 1 0 0 0]
  [0 0 1 0 0 0]
  [0 0 1 0 0 0]
  [1 0 0 0 0 1]
@@ -1222,4 +1222,4 @@ Predictions:
 
 DEBUG Saving data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_overall.arff'...
 INFO Successfully saved data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_overall.arff'.
-INFO Successfully finished after 0.21053976300754584 seconds
+INFO Successfully finished after 0.2718267120071687 seconds

@@ -26,8 +26,34 @@ uint32 CompletePrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
 }
 
-std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(const IStatistics& statistics) const {
-    return statistics.createSubset(indexVector_);
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(const IStatistics& statistics,
+                                                                              const EqualWeightVector& weights) const {
+    return statistics.createSubset(indexVector_, weights);
+}
+
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(const IStatistics& statistics,
+                                                                              const BitWeightVector& weights) const {
+    return statistics.createSubset(indexVector_, weights);
+}
+
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+        const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
+}
+
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+        const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
+}
+
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+        const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
+}
+
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+        const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
 }
 
 std::unique_ptr<IRuleRefinement> CompletePrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
