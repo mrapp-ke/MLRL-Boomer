@@ -106,8 +106,6 @@ class DenseWeightVector final : public IWeightVector {
 
         bool hasZeroWeights() const override;
 
-        float64 getWeight(uint32 pos) const override;
-
         std::unique_ptr<IThresholdsSubset> createThresholdsSubset(IThresholds& thresholds) const override;
 
 };
