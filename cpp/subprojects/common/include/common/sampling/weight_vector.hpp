@@ -21,13 +21,6 @@ class IWeightVector {
         virtual ~IWeightVector() { };
 
         /**
-         * Returns the number of non-zero weights.
-         *
-         * @return The number of non-zero weights
-         */
-        virtual uint32 getNumNonZeroWeights() const = 0;
-
-        /**
          * Returns whether the vector contains any zero weights or not.
          *
          * @return True, if the vector contains any zero weights, false otherwise
