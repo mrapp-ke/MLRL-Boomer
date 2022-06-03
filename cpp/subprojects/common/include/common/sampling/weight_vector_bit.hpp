@@ -60,13 +60,18 @@ class BitWeightVector final : public IWeightVector {
         void clear();
 
         /**
+         * Returns the number of non-zero weights.
+         *
+         * @return The number of non-zero weights
+         */
+        uint32 getNumNonZeroWeights() const;
+
+        /**
          * Sets the number of non-zero weights.
          *
          * @param numNonZeroWeights The number of non-zero weights to be set
          */
         void setNumNonZeroWeights(uint32 numNonZeroWeights);
-
-        uint32 getNumNonZeroWeights() const override;
 
         bool hasZeroWeights() const override;
 

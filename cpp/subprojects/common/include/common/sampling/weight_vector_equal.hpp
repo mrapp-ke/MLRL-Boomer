@@ -30,14 +30,19 @@ class EqualWeightVector final : public IWeightVector {
         uint32 getNumElements() const;
 
         /**
+         * Returns the number of non-zero weights.
+         *
+         * @return The number of non-zero weights
+         */
+        uint32 getNumNonZeroWeights() const;
+
+        /**
          * Returns the weight at a specific position.
          *
          * @param pos   The position
          * @return      The weight at the specified position
          */
         uint32 operator[](uint32 pos) const;
-
-        uint32 getNumNonZeroWeights() const override;
 
         bool hasZeroWeights() const override;
 
