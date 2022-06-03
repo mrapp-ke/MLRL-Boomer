@@ -40,13 +40,4 @@ class OutOfSampleWeightVector final {
          */
         bool operator[](uint32 pos) const;
 
-        /**
-         * Returns the weight at a specific index.
-         *
-         * @param pos   The index
-         * @return      The weight at the given index
-         */
-        float64 getWeight(uint32 pos) const;
-
-
 };

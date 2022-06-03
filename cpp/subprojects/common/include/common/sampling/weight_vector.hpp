@@ -35,14 +35,6 @@ class IWeightVector {
         virtual bool hasZeroWeights() const = 0;
 
         /**
-         * Returns the weight at a specific index.
-         *
-         * @param pos   The index
-         * @return      The weight at the given index
-         */
-        virtual float64 getWeight(uint32 pos) const = 0;
-
-        /**
          * Creates and returns a new instance of type `IThresholdsSubset` that provides access to the statistics that
          * correspond to individual training examples whose weights are stored in this vector.
          *

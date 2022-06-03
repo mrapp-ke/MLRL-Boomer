@@ -41,10 +41,6 @@ void BitWeightVector::clear() {
     vector_.clear();
 }
 
-float64 BitWeightVector::getWeight(uint32 pos) const {
-    return (float64) vector_[pos];
-}
-
 std::unique_ptr<IThresholdsSubset> BitWeightVector::createThresholdsSubset(IThresholds& thresholds) const {
     return thresholds.createSubset(*this);
 }

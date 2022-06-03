@@ -24,10 +24,6 @@ bool EqualWeightVector::hasZeroWeights() const {
     return false;
 }
 
-float64 EqualWeightVector::getWeight(uint32 pos) const {
-    return 1;
-}
-
 std::unique_ptr<IThresholdsSubset> EqualWeightVector::createThresholdsSubset(IThresholds& thresholds) const {
     return thresholds.createSubset(*this);
 }

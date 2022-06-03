@@ -66,11 +66,6 @@ bool DenseWeightVector<T>::hasZeroWeights() const {
 }
 
 template<typename T>
-float64 DenseWeightVector<T>::getWeight(uint32 pos) const {
-    return (float64) vector_[pos];
-}
-
-template<typename T>
 std::unique_ptr<IThresholdsSubset> DenseWeightVector<T>::createThresholdsSubset(IThresholds& thresholds) const {
     return thresholds.createSubset(*this);
 }
