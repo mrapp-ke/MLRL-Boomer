@@ -209,6 +209,34 @@ namespace boosting {
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
+             * `CompleteIndexVector`, to this vector.
+             *
+             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients
+             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients
+             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians
+             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
+             * @param indices           A reference to a `CompleteIndexVector' that provides access to the indices
+             */
+            void addToSubset(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
+                             hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd,
+                             const CompleteIndexVector& indices);
+
+            /**
+             * Adds certain gradients and Hessians in another vector, whose positions are given as a
+             * `PartialIndexVector`, to this vector.
+             *
+             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients
+             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients
+             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians
+             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians
+             * @param indices           A reference to a `PartialIndexVector' that provides access to the indices
+             */
+            void addToSubset(gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
+                             hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd,
+                             const PartialIndexVector& indices);
+
+            /**
+             * Adds certain gradients and Hessians in another vector, whose positions are given as a
              * `CompleteIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a
              * specific weight.
              *
