@@ -44,4 +44,7 @@ class DokBinIndexVector final : public IBinIndexVector {
 
         void setBinIndex(uint32 exampleIndex, uint32 binIndex) override;
 
+        std::unique_ptr<IHistogram> createHistogram(const IWeightedStatistics& statistics,
+                                                    uint32 numBins) const override;
+
 };

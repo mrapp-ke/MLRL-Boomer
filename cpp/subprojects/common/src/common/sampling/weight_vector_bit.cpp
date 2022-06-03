@@ -29,16 +29,16 @@ bool BitWeightVector::hasZeroWeights() const {
     return numNonZeroWeights_ < vector_.getNumElements();
 }
 
+bool BitWeightVector::operator[](uint32 pos) const {
+    return vector_[pos];
+}
+
 void BitWeightVector::set(uint32 pos, bool weight) {
     vector_.set(pos, weight);
 }
 
 void BitWeightVector::clear() {
     vector_.clear();
-}
-
-float64 BitWeightVector::getWeight(uint32 pos) const {
-    return (float64) vector_[pos];
 }
 
 std::unique_ptr<IThresholdsSubset> BitWeightVector::createThresholdsSubset(IThresholds& thresholds) const {

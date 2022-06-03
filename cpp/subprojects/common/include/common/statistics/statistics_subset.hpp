@@ -17,6 +17,13 @@ class IStatisticsSubset {
         virtual ~IStatisticsSubset() { };
 
         /**
+         * Returns whether the statistics at a specific index have a non-zero weight or not.
+         *
+         * @return True, if the statistics at the given index have a non-zero weight, false otherwise
+         */
+        virtual bool hasNonZeroWeight(uint32 statisticIndex) const = 0;
+
+        /**
          * Adds the statistics at a specific index to the subset in order to mark it as covered by the condition that is
          * currently considered for refining a rule.
          *
@@ -31,10 +38,9 @@ class IStatisticsSubset {
          * functions that will be called later. Any information computed by this function is expected to be reset when
          * invoking the function `resetSubset` for the next time.
          *
-         * @param statisticIndex    The index of the covered statistic
-         * @param weight            The weight of the covered statistic
+         * @param statisticIndex The index of the covered statistic
          */
-        virtual void addToSubset(uint32 statisticIndex, float64 weight) = 0;
+        virtual void addToSubset(uint32 statisticIndex) = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added

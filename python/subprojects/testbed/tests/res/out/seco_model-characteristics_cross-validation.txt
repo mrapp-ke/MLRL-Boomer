@@ -1,4 +1,4 @@
-INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dataset='emotions', folds=10, current_fold=-1, print_evaluation=False, store_evaluation=False, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=True, store_model_characteristics=True, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=10, current_fold=-1, print_evaluation=False, store_evaluation=False, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=True, store_model_characteristics=True, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
 INFO Starting experiment...
 INFO Performing full 10-fold cross validation...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
@@ -7,12 +7,12 @@ INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.1340355830034241 seconds
+INFO Successfully fit model in 0.27467420598259196 seconds
 INFO Model characteristics (Fold 1):
 
 Rules: 72 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.2083333333333333, min. 1, max. 4
-Conditions total: 87 (57.47126436781609% use <= operator, 42.5287356321839% use > operator, 0.0% use == operator, 7.105427357601002e-15% use != operator)
+Conditions per rule: avg. 1.2638888888888888, min. 1, max. 3
+Conditions total: 91 (54.94505494505495% use <= operator, 45.05494505494506% use > operator, 0.0% use == operator, -7.105427357601002e-15% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 72 (100.0% positive, 0.0% negative)
 
@@ -20,12 +20,12 @@ INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.13416367799800355 seconds
+INFO Successfully fit model in 0.2766932400409132 seconds
 INFO Model characteristics (Fold 2):
 
 Rules: 70 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.2142857142857142, min. 1, max. 3
-Conditions total: 85 (56.470588235294116% use <= operator, 43.529411764705884% use > operator, 0.0% use == operator, 0.0% use != operator)
+Conditions per rule: avg. 1.2857142857142858, min. 1, max. 3
+Conditions total: 90 (56.666666666666664% use <= operator, 43.333333333333336% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 70 (100.0% positive, 0.0% negative)
 
@@ -33,12 +33,12 @@ INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.12540627500857227 seconds
+INFO Successfully fit model in 0.24668293294962496 seconds
 INFO Model characteristics (Fold 3):
 
 Rules: 64 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.125, min. 1, max. 3
-Conditions total: 72 (47.22222222222222% use <= operator, 52.77777777777778% use > operator, 0.0% use == operator, 0.0% use != operator)
+Conditions per rule: avg. 1.296875, min. 1, max. 3
+Conditions total: 83 (48.19277108433735% use <= operator, 51.80722891566265% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 64 (100.0% positive, 0.0% negative)
 
@@ -46,12 +46,12 @@ INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.13849861999915447 seconds
+INFO Successfully fit model in 0.25935673603089526 seconds
 INFO Model characteristics (Fold 4):
 
 Rules: 70 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.1285714285714286, min. 1, max. 3
-Conditions total: 79 (56.9620253164557% use <= operator, 43.037974683544306% use > operator, 0.0% use == operator, -7.105427357601002e-15% use != operator)
+Conditions per rule: avg. 1.2, min. 1, max. 3
+Conditions total: 84 (55.952380952380956% use <= operator, 44.047619047619044% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 70 (100.0% positive, 0.0% negative)
 
@@ -59,12 +59,12 @@ INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.12329514100565575 seconds
+INFO Successfully fit model in 0.21200101904105395 seconds
 INFO Model characteristics (Fold 5):
 
 Rules: 60 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.2166666666666666, min. 1, max. 2
-Conditions total: 73 (45.20547945205479% use <= operator, 54.794520547945204% use > operator, 0.0% use == operator, 7.105427357601002e-15% use != operator)
+Conditions per rule: avg. 1.2833333333333334, min. 1, max. 3
+Conditions total: 77 (44.15584415584416% use <= operator, 55.84415584415584% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 60 (100.0% positive, 0.0% negative)
 
@@ -72,12 +72,12 @@ INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.16423611200298183 seconds
+INFO Successfully fit model in 0.26457764400402084 seconds
 INFO Model characteristics (Fold 6):
 
 Rules: 70 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.1285714285714286, min. 1, max. 2
-Conditions total: 79 (45.56962025316456% use <= operator, 54.43037974683544% use > operator, 0.0% use == operator, 0.0% use != operator)
+Conditions per rule: avg. 1.3, min. 1, max. 2
+Conditions total: 91 (46.15384615384615% use <= operator, 53.84615384615385% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 70 (100.0% positive, 0.0% negative)
 
@@ -85,12 +85,12 @@ INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.14375684500555508 seconds
+INFO Successfully fit model in 0.2543779299594462 seconds
 INFO Model characteristics (Fold 7):
 
 Rules: 71 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.056338028169014, min. 1, max. 2
-Conditions total: 75 (46.666666666666664% use <= operator, 53.333333333333336% use > operator, 0.0% use == operator, 0.0% use != operator)
+Conditions per rule: avg. 1.1690140845070423, min. 1, max. 3
+Conditions total: 83 (46.98795180722892% use <= operator, 53.01204819277109% use > operator, 0.0% use == operator, -7.105427357601002e-15% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 71 (100.0% positive, 0.0% negative)
 
@@ -98,12 +98,12 @@ INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.16361333600070793 seconds
+INFO Successfully fit model in 0.2966859830194153 seconds
 INFO Model characteristics (Fold 8):
 
 Rules: 87 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.1149425287356323, min. 1, max. 2
-Conditions total: 97 (47.42268041237113% use <= operator, 52.57731958762887% use > operator, 0.0% use == operator, 0.0% use != operator)
+Conditions per rule: avg. 1.206896551724138, min. 1, max. 3
+Conditions total: 105 (47.61904761904761% use <= operator, 52.38095238095239% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 87 (100.0% positive, 0.0% negative)
 
@@ -111,12 +111,12 @@ INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.14758389801136218 seconds
+INFO Successfully fit model in 0.2603357639745809 seconds
 INFO Model characteristics (Fold 9):
 
 Rules: 75 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.1333333333333333, min. 1, max. 3
-Conditions total: 85 (49.411764705882355% use <= operator, 50.588235294117645% use > operator, 0.0% use == operator, 0.0% use != operator)
+Conditions per rule: avg. 1.2, min. 1, max. 3
+Conditions total: 90 (46.666666666666664% use <= operator, 53.333333333333336% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 75 (100.0% positive, 0.0% negative)
 
@@ -124,13 +124,13 @@ INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.12671124099870212 seconds
+INFO Successfully fit model in 0.2337954090326093 seconds
 INFO Model characteristics (Fold 10):
 
 Rules: 62 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.032258064516129, min. 1, max. 2
-Conditions total: 64 (54.6875% use <= operator, 45.3125% use > operator, 0.0% use == operator, 0.0% use != operator)
+Conditions per rule: avg. 1.2096774193548387, min. 1, max. 3
+Conditions total: 75 (52.0% use <= operator, 48.0% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 62 (100.0% positive, 0.0% negative)
 
-INFO Successfully finished after 1.487029584008269 seconds
+INFO Successfully finished after 2.6617256440222263 seconds
