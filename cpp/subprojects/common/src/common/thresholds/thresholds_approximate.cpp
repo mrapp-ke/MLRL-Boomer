@@ -5,19 +5,6 @@
 
 
 /**
- * An entry that is stored in the cache. It contains an unique pointer to an histogram.
- */
-// TODO Remove struct
-struct HistogramCacheEntry {
-
-    /**
-     * An unique pointer to an object of type `IHistogram` that provides access to the values stored in a histogram.
-     */
-    std::unique_ptr<IHistogram> histogramPtr;
-
-};
-
-/**
  * Updates a given `CoverageSet` after a new condition has been added, such that only the examples that are covered by
  * the new rule are marked es covered.
  *
@@ -177,17 +164,16 @@ class ApproximateThresholds final : public AbstractThresholds {
                             }
 
                             auto cacheHistogramIterator = thresholdsSubset_.cacheHistogram_.find(featureIndex_);
-                            HistogramCacheEntry& histogramCacheEntry = cacheHistogramIterator->second;
 
-                            if (!histogramCacheEntry.histogramPtr) {
+                            if (!cacheHistogramIterator->second) {
                                 // Create histogram and weight vector...
                                 uint32 numBins = thresholdVector->getNumElements();
-                                histogramCacheEntry.histogramPtr =
+                                cacheHistogramIterator->second =
                                     binIndices->createHistogram(*thresholdsSubset_.weightedStatisticsPtr_, numBins);
                             }
 
                             // Rebuild histogram...
-                            IHistogram& histogram = *histogramCacheEntry.histogramPtr;
+                            IHistogram& histogram = *cacheHistogramIterator->second;
                             rebuildHistogram(*thresholdVector, histogram, thresholdsSubset_.coverageSet_);
 
                             return std::make_unique<Result>(histogram, *thresholdVector);
@@ -203,19 +189,18 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 CoverageSet coverageSet_;
 
-                std::unordered_map<uint32, HistogramCacheEntry> cacheHistogram_;
+                std::unordered_map<uint32, std::unique_ptr<IHistogram>> cacheHistogram_;
 
                 template<typename T>
                 std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices,
                                                                                  uint32 featureIndex) {
-                    // Retrieve the `HistogramCacheEntry` from the cache, or insert a new one if it does not already
-                    // exist...
-                    auto cacheHistogramIterator = cacheHistogram_.emplace(featureIndex, HistogramCacheEntry()).first;
-                    IHistogram* histogram = cacheHistogramIterator->second.histogramPtr.get();
+                    // Retrieve `unique_ptr` from the cache, or insert an empty one if it does not already exist...
+                    auto cacheHistogramIterator = cacheHistogram_.emplace(featureIndex,
+                                                                          std::unique_ptr<IHistogram>()).first;
 
-                    // If the `HistogramCacheEntry` in the cache does not refer to an `IHistogram`, add an empty
+                    // If the `unique_ptr` in the cache does not refer to an `IHistogram`, add an empty
                     // `IFeatureBinning::Result` to the cache...
-                    if (!histogram) {
+                    if (!cacheHistogramIterator->second) {
                         thresholds_.cache_.emplace(featureIndex, IFeatureBinning::Result());
                     }
 
