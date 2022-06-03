@@ -117,6 +117,29 @@ namespace boosting {
                                                       gradient_const_iterator gradientsEnd,
                                                       hessian_const_iterator hessiansBegin,
                                                       hessian_const_iterator hessiansEnd,
+                                                      const CompleteIndexVector& indices) {
+        addToArray(gradients_, gradientsBegin, numGradients_);
+        addToArray(hessians_, hessiansBegin, numHessians_);
+    }
+
+    void DenseExampleWiseStatisticVector::addToSubset(gradient_const_iterator gradientsBegin,
+                                                      gradient_const_iterator gradientsEnd,
+                                                      hessian_const_iterator hessiansBegin,
+                                                      hessian_const_iterator hessiansEnd,
+                                                      const PartialIndexVector& indices) {
+        PartialIndexVector::const_iterator indexIterator = indices.cbegin();
+        addToArray(gradients_, gradientsBegin, indexIterator, numGradients_);
+
+        for (uint32 i = 0; i < numGradients_; i++) {
+            uint32 index = indexIterator[i];
+            addToArray(&hessians_[triangularNumber(i)], &hessiansBegin[triangularNumber(index)], indexIterator, i + 1);
+        }
+    }
+
+    void DenseExampleWiseStatisticVector::addToSubset(gradient_const_iterator gradientsBegin,
+                                                      gradient_const_iterator gradientsEnd,
+                                                      hessian_const_iterator hessiansBegin,
+                                                      hessian_const_iterator hessiansEnd,
                                                       const CompleteIndexVector& indices, float64 weight) {
         addToArray(gradients_, gradientsBegin, numGradients_, weight);
         addToArray(hessians_, hessiansBegin, numHessians_, weight);
