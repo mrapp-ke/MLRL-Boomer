@@ -18,6 +18,26 @@ namespace seco {
         return weights[statisticIndex] != 0;
     }
 
+    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector, typename IndexVector>
+    static inline void addLabelWiseStatisticToSubset(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
+                                                     const BinarySparseArrayVector& majorityLabelVector,
+                                                     const CoverageMatrix& coverageMatrix,
+                                                     ConfusionMatrixVector& vector, const IndexVector& labelIndices,
+                                                     uint32 statisticIndex) {
+        vector.addToSubset(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, labelIndices, 1);
+    }
+
+    template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
+             typename IndexVector>
+    static inline void addLabelWiseStatisticToSubset(const WeightVector& weights, const LabelMatrix& labelMatrix,
+                                                     const BinarySparseArrayVector& majorityLabelVector,
+                                                     const CoverageMatrix& coverageMatrix,
+                                                     ConfusionMatrixVector& vector, const IndexVector& labelIndices,
+                                                     uint32 statisticIndex) {
+        float64 weight = weights[statisticIndex];
+        vector.addToSubset(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, labelIndices, weight);
+    }
+
     /**
      * An abstract base class for all subsets of confusion matrices that are computed independently for each label.
      *
@@ -130,9 +150,8 @@ namespace seco {
              * @see `IStatisticsSubset::addToSubset`
              */
             void addToSubset(uint32 statisticIndex) override final {
-                float64 weight = weights_[statisticIndex];
-                sumVector_.addToSubset(statisticIndex, labelMatrix_, majorityLabelVector_, coverageMatrix_,
-                                       labelIndices_, weight);
+                addLabelWiseStatisticToSubset(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_, sumVector_,
+                                              labelIndices_, statisticIndex);
             }
 
             /**

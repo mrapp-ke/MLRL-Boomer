@@ -18,6 +18,21 @@ namespace boosting {
         return weights[statisticIndex] != 0;
     }
 
+    template<typename StatisticView, typename StatisticVector, typename IndexVector>
+    static inline void addLabelWiseStatisticToSubset(const EqualWeightVector& weights,
+                                                     const StatisticView& statisticView, StatisticVector& vector,
+                                                     const IndexVector& labelIndices, uint32 statisticIndex) {
+        vector.addToSubset(statisticView, statisticIndex, labelIndices);
+    }
+
+    template<typename WeightVector, typename StatisticView, typename StatisticVector, typename IndexVector>
+    static inline void addLabelWiseStatisticToSubset(const WeightVector& weights, const StatisticView& statisticView,
+                                                     StatisticVector& vector, const IndexVector& labelIndices,
+                                                     uint32 statisticIndex) {
+        float64 weight = weights[statisticIndex];
+        vector.addToSubset(statisticView, statisticIndex, labelIndices, weight);
+    }
+
     /**
      * A subset of gradients and Hessians that are calculated according to a differentiable loss function that is
      * applied label-wise and are accessible via a view.
@@ -100,8 +115,7 @@ namespace boosting {
              * @see `IStatisticsSubset::addToSubset`
              */
             void addToSubset(uint32 statisticIndex) override final {
-                float64 weight = weights_[statisticIndex];
-                sumVector_.addToSubset(statisticView_, statisticIndex, labelIndices_, weight);
+                addLabelWiseStatisticToSubset(weights_, statisticView_, sumVector_, labelIndices_, statisticIndex);
             }
 
             /**
