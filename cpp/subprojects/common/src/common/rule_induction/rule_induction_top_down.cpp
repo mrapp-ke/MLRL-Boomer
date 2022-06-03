@@ -54,7 +54,7 @@ class TopDownRuleInduction final : public IRuleInduction {
             std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices, weights);
 
             for (uint32 i = 0; i < numStatistics; i++) {
-                statisticsSubsetPtr->addToSubset(i, 1);
+                statisticsSubsetPtr->addToSubset(i);
             }
 
             const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();

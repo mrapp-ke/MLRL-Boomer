@@ -5,20 +5,15 @@
 
 
 /**
- * An entry that is stored in the cache. It contains an unique pointer to an histogram, as well as to a vector that
- * stores the weights of individual bins.
+ * An entry that is stored in the cache. It contains an unique pointer to an histogram.
  */
+// TODO Remove struct
 struct HistogramCacheEntry {
 
     /**
      * An unique pointer to an object of type `IHistogram` that provides access to the values stored in a histogram.
      */
     std::unique_ptr<IHistogram> histogramPtr;
-
-    /**
-     * An unique pointer to an object of type `BinWeightVector` that provides access to the weights of individual bins.
-     */
-    std::unique_ptr<BinWeightVector> weightVectorPtr;
 
 };
 
@@ -81,29 +76,18 @@ static inline void updateCoveredExamples(const ThresholdVector& thresholdVector,
 }
 
 /**
- * Rebuilds a given histogram such that is contains the statistics of all examples that are currently covered and
- * updates the weights of the individual bins.
+ * Rebuilds a given histogram.
  *
  * @param thresholdVector   A reference to an object of type `ThresholdVector` that stores the thresholds that result
  *                          from the boundaries of the bins
- * @param binIndices        A reference to an object of type `IBinIndexVector` that stores the indices of the bins,
- *                          individual examples belong to
- * @param binWeights        A reference to an object of type `BinWeightVector` that stores the weights of individual
- *                          bins
  * @param histogram         A reference to an object of type `IHistogram` that should be rebuild
- * @param weights           A reference to an an object of type `IWeightVector` that provides access to the weights of
- *                          the individual training examples
  * @param coverageSet       A reference to an object of type `CoverageSet` that is used to keep track of the examples
  *                          that are currently covered
  */
-static inline void rebuildHistogram(const ThresholdVector& thresholdVector, const IBinIndexVector& binIndices,
-                                    BinWeightVector& binWeights, IHistogram& histogram, const IWeightVector& weights,
+static inline void rebuildHistogram(const ThresholdVector& thresholdVector, IHistogram& histogram,
                                     const CoverageSet& coverageSet) {
     // Reset all statistics in the histogram to zero...
     histogram.clear();
-
-    // Reset the weights of all bins to zero...
-    binWeights.clear();
 
     // Iterate the covered examples and add their statistics to the corresponding bin...
     uint32 numCovered = coverageSet.getNumCovered();
@@ -113,16 +97,7 @@ static inline void rebuildHistogram(const ThresholdVector& thresholdVector, cons
         uint32 exampleIndex = coverageSetIterator[i];
 
         if (!thresholdVector.isMissing(exampleIndex)) {
-            float64 weight = weights.getWeight(exampleIndex);
-
-            if (weight > 0) {
-                uint32 binIndex = binIndices.getBinIndex(exampleIndex);
-
-                if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
-                    binWeights.set(binIndex, true);
-                    histogram.addToBin(binIndex, exampleIndex, weight);
-                }
-            }
+            histogram.addToBin(exampleIndex);
         }
     }
 }
@@ -152,7 +127,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback final : public IRuleRefinementCallback<ThresholdVector, BinWeightVector> {
+                class Callback final : public IRuleRefinementCallback<ThresholdVector> {
 
                     private:
 
@@ -209,16 +184,13 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 uint32 numBins = thresholdVector->getNumElements();
                                 histogramCacheEntry.histogramPtr =
                                     binIndices->createHistogram(*thresholdsSubset_.weightedStatisticsPtr_, numBins);
-                                histogramCacheEntry.weightVectorPtr = std::make_unique<BinWeightVector>(numBins);
                             }
 
                             // Rebuild histogram...
                             IHistogram& histogram = *histogramCacheEntry.histogramPtr;
-                            BinWeightVector& binWeights = *histogramCacheEntry.weightVectorPtr;
-                            rebuildHistogram(*thresholdVector, *binIndices, binWeights, histogram,
-                                             thresholdsSubset_.weights_, thresholdsSubset_.coverageSet_);
+                            rebuildHistogram(*thresholdVector, histogram, thresholdsSubset_.coverageSet_);
 
-                            return std::make_unique<Result>(histogram, binWeights, *thresholdVector);
+                            return std::make_unique<Result>(histogram, *thresholdVector);
                         }
 
                 };
@@ -249,7 +221,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                     bool nominal = thresholds_.nominalFeatureMask_.isNominal(featureIndex);
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
-                    return std::make_unique<ApproximateRuleRefinement<T>>(labelIndices, featureIndex, nominal, weights_,
+                    return std::make_unique<ApproximateRuleRefinement<T>>(labelIndices, featureIndex, nominal,
                                                                           std::move(callbackPtr));
                 }
 

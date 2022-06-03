@@ -12,10 +12,9 @@
  * retrieve the data, consisting of statistics, a vector, as well as corresponding weights, that is required to search
  * for potential refinements.
  *
- * @tparam Vector       The type of the vector that is returned by the callback
- * @tparam WeightVector The type of the weight vector that is returned by the callback
+ * @tparam Vector The type of the vector that is returned by the callback
  */
-template<typename Vector, typename WeightVector>
+template<typename Vector>
 class IRuleRefinementCallback {
 
     public:
@@ -30,14 +29,11 @@ class IRuleRefinementCallback {
                 /**
                  * @param statistics        A reference to an object of type `IImmutableWeightedStatistics` that should
                  *                          be used to search for potential refinements
-                 * @param weights           A reference to an object of template type `WeightVector` that provides
-                 *                          access to the weights of the elements in `vector`
                  * @param vector            A reference to an object of template type `Vector` that should be used to
                  *                          search for potential refinements
                  */
-                Result(const IImmutableWeightedStatistics& statistics, const WeightVector& weights,
-                       const Vector& vector)
-                    : statistics_(statistics), weights_(weights), vector_(vector) {
+                Result(const IImmutableWeightedStatistics& statistics, const Vector& vector)
+                    : statistics_(statistics), vector_(vector) {
 
                 }
 
@@ -46,12 +42,6 @@ class IRuleRefinementCallback {
                  * potential refinements.
                  */
                 const IImmutableWeightedStatistics& statistics_;
-
-                /**
-                 * A reference to an object of type `WeightVector` that provides access to the weights of the elements
-                 * in `vector_`.
-                 */
-                const WeightVector& weights_;
 
                 /**
                  * A reference to an object of template type `Vector` that should be used to search for potential

@@ -6,7 +6,6 @@
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/rule_refinement/rule_refinement_callback.hpp"
 #include "common/input/feature_vector.hpp"
-#include "common/sampling/weight_vector.hpp"
 
 
 /**
@@ -30,7 +29,7 @@ class ExactRuleRefinement final : public IRuleRefinement {
 
         bool nominal_;
 
-        std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>> callbackPtr_;
+        std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr_;
 
         std::unique_ptr<Refinement> refinementPtr_;
 
@@ -47,7 +46,7 @@ class ExactRuleRefinement final : public IRuleRefinement {
          *                          retrieve a feature vector for the given feature
          */
         ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal,
-                            std::unique_ptr<IRuleRefinementCallback<FeatureVector, IWeightVector>> callbackPtr);
+                            std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
         void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;
 

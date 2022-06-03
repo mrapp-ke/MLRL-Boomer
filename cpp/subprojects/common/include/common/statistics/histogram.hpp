@@ -22,12 +22,10 @@ class IHistogram : virtual public IImmutableWeightedStatistics {
         virtual void clear() = 0;
 
         /**
-         * Adds the statistic at a specific index to a specific bin.
+         * Adds the statistic at a specific index to the corresponding bin.
          *
-         * @param binIndex          The index of the bin
-         * @param statisticIndex    The index of the statistic
-         * @param weight            The weight of the statistic
+         * @param statisticIndex The index of the statistic
          */
-        virtual void addToBin(uint32 binIndex, uint32 statisticIndex, float64 weight) = 0;
+        virtual void addToBin(uint32 statisticIndex) = 0;
 
 };

@@ -5,9 +5,9 @@
 
 template<typename T>
 ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
-        const T& labelIndices, uint32 featureIndex, bool nominal, const IWeightVector& weights,
-        std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>> callbackPtr)
-    : labelIndices_(labelIndices), featureIndex_(featureIndex), nominal_(nominal), weights_(weights),
+        const T& labelIndices, uint32 featureIndex, bool nominal,
+        std::unique_ptr<IRuleRefinementCallback<ThresholdVector>> callbackPtr)
+    : labelIndices_(labelIndices), featureIndex_(featureIndex), nominal_(nominal),
       callbackPtr_(std::move(callbackPtr)) {
 
 }
@@ -21,10 +21,8 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     ScoreProcessor scoreProcessor;
 
     // Invoke the callback...
-    std::unique_ptr<IRuleRefinementCallback<ThresholdVector, BinWeightVector>::Result> callbackResultPtr =
-        callbackPtr_->get();
+    std::unique_ptr<IRuleRefinementCallback<ThresholdVector>::Result> callbackResultPtr = callbackPtr_->get();
     const IImmutableWeightedStatistics& statistics = callbackResultPtr->statistics_;
-    const BinWeightVector& weights = callbackResultPtr->weights_;
     const ThresholdVector& thresholdVector = callbackResultPtr->vector_;
     ThresholdVector::const_iterator thresholdIterator = thresholdVector.cbegin();
     uint32 numBins = thresholdVector.getNumElements();
@@ -36,8 +34,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
 
     for (auto it = thresholdVector.missing_indices_cbegin(); it != thresholdVector.missing_indices_cend(); it++) {
         uint32 i = *it;
-        float64 weight = weights_.getWeight(i);
-        statisticsSubsetPtr->addToMissing(i, weight);
+        statisticsSubsetPtr->addToMissing(i);
     }
 
     // In the following, we start by processing the bins in range [0, sparseBinIndex)...
@@ -45,11 +42,11 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     int64 firstR = 0;
     int64 r;
 
-    // Traverse bins in ascending order until the first bin with weight > 0 is encountered...
+    // Traverse bins in ascending order until the first bin with non-zero weight is encountered...
     for (r = 0; r < sparseBinIndex; r++) {
-        if (weights[r]) {
+        if (statisticsSubsetPtr->hasNonZeroWeight(r)) {
             // Add the bin to the subset to mark it as covered by upcoming refinements...
-            statisticsSubsetPtr->addToSubset(r, 1);
+            statisticsSubsetPtr->addToSubset(r);
             subsetModified = true;
             break;
         }
@@ -59,7 +56,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     if (subsetModified) {
         for (r = r + 1; r < sparseBinIndex; r++) {
             // Do only consider bins that are not empty...
-            if (weights[r]) {
+            if (statisticsSubsetPtr->hasNonZeroWeight(r)) {
                 // Find and evaluate the best head for the current refinement, if a condition that uses the <= operator
                 // (or the == operator in case of a nominal feature) is used...
                 const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
@@ -100,7 +97,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 }
 
                 // Add the bin to the subset to mark it as covered by upcoming refinements...
-                statisticsSubsetPtr->addToSubset(r, 1);
+                statisticsSubsetPtr->addToSubset(r);
             }
         }
 
@@ -150,11 +147,11 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     subsetModified = false;
     firstR = ((int64) numBins) - 1;
 
-    // Traverse bins in descending order until the first bin with weight > 0 is encountered...
+    // Traverse bins in descending order until the first bin with non-zero weight is encountered...
     for (r = firstR; r > sparseBinIndex; r--) {
-        if (weights[r]) {
+        if (statisticsSubsetPtr->hasNonZeroWeight(r)) {
             // Add the bin to the subset to mark it as covered by upcoming refinements...
-            statisticsSubsetPtr->addToSubset(r, 1);
+            statisticsSubsetPtr->addToSubset(r);
             subsetModified = true;
             break;
         }
@@ -164,7 +161,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     if (subsetModified) {
         for (r = r - 1; r > sparseBinIndex; r--) {
             // Do only consider bins that are not empty...
-            if (weights[r]) {
+            if (statisticsSubsetPtr->hasNonZeroWeight(r)) {
                 // Find and evaluate the best head for the current refinement, if a condition that uses the > operator
                 // (or the == operator in case of a nominal feature) is used..
                 const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
@@ -218,7 +215,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
                 }
 
                 // Add the bin to the subset to mark it as covered by upcoming refinements...
-                statisticsSubsetPtr->addToSubset(r, 1);
+                statisticsSubsetPtr->addToSubset(r);
             }
         }
 
