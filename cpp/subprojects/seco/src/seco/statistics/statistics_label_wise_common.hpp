@@ -9,6 +9,15 @@
 
 namespace seco {
 
+    static inline bool hasNonZeroWeightLabelWise(const EqualWeightVector& weights, uint32 statisticIndex) {
+        return true;
+    }
+
+    template<typename WeightVector>
+    static inline bool hasNonZeroWeightLabelWise(const WeightVector& weights, uint32 statisticIndex) {
+        return weights[statisticIndex] != 0;
+    }
+
     /**
      * An abstract base class for all subsets of confusion matrices that are computed independently for each label.
      *
@@ -114,7 +123,7 @@ namespace seco {
              * @see `IStatisticsSubset::hasNonZeroWeight`
              */
             bool hasNonZeroWeight(uint32 statisticIndex) const override final {
-                return weights_[statisticIndex] != 0;
+                return hasNonZeroWeightLabelWise(weights_, statisticIndex);
             }
 
             /**

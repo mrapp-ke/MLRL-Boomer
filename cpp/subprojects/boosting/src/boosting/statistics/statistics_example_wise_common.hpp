@@ -9,6 +9,15 @@
 
 namespace boosting {
 
+    static inline bool hasNonZeroWeightExampleWise(const EqualWeightVector& weights, uint32 statisticIndex) {
+        return true;
+    }
+
+    template<typename WeightVector>
+    static inline bool hasNonZeroWeightExampleWise(const WeightVector& weights, uint32 statisticIndex) {
+        return weights[statisticIndex] != 0;
+    }
+
     /**
      *  A subset of gradients and Hessians that are calculated according to a differentiable loss function that is
      * applied example-wise and are accessible via a view.
@@ -84,7 +93,7 @@ namespace boosting {
              * @see `IStatisticsSubset::hasNonZeroWeight`
              */
             bool hasNonZeroWeight(uint32 statisticIndex) const override final {
-                return weights_[statisticIndex] != 0;
+                return hasNonZeroWeightExampleWise(weights_, statisticIndex);
             }
 
             /**
