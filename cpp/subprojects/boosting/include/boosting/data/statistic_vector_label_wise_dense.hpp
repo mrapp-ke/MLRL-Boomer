@@ -145,6 +145,30 @@ namespace boosting {
 
             /**
              * Adds certain gradients and Hessians in a single row of a `DenseLabelWiseStatisticConstView`, whose
+             * positions are given as a `CompleteIndexVector`, to this vector.
+             *
+             * @param view      A reference to an object of type `DenseLabelWiseStatisticConstView` that stores the
+             *                  gradients and Hessians to be added to this vector
+             * @param row       The index of the row to be added to this vector
+             * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
+             */
+            void addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
+                             const CompleteIndexVector& indices);
+
+            /**
+             * Adds certain gradients and Hessians in single row of a `DenseLabelWiseStatisticConstView`, whose
+             * positions are given as a `PartialIndexVector`, to this vector.
+             *
+             * @param view      A reference to an object of type `DenseLabelWiseStatisticConstView` that stores the
+             *                  gradients and Hessians to be added to this vector
+             * @param row       The index of the row to be added to this vector
+             * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
+             */
+            void addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
+                             const PartialIndexVector& indices);
+
+            /**
+             * Adds certain gradients and Hessians in a single row of a `DenseLabelWiseStatisticConstView`, whose
              * positions are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added
              * are multiplied by a specific weight.
              *
