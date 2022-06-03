@@ -1,4 +1,4 @@
-INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=10, current_fold=0, print_evaluation=False, store_evaluation=False, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=True, store_rules=True, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=10, current_fold=0, print_evaluation=False, store_evaluation=False, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir='python/subprojects/testbed/tests/res/tmp/results', print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=True, store_rules=True, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
 INFO Starting experiment...
 INFO Performing fold 1 of 10-fold cross validation...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
@@ -7,10 +7,10 @@ INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.1342116680025356 seconds
+INFO Successfully fit model in 0.31902618700405583 seconds
 INFO Model (Fold 1):
 
-{Mean_Acc1298_Mean_Mem40_Rolloff <= 0.059793 & Mean_Acc1298_Mean_Mem40_MFCC_3 > 1.2900729} => (quiet-still = 1.00)
+{Mean_Acc1298_Mean_Mem40_Rolloff <= 0.059793} => (quiet-still = 1.00)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.060091} => (sad-lonely = 1.00)
 {Std_Acc1298_Std_Mem40_MFCC_9 <= 0.058476} => (angry-aggresive = 1.00)
 {Std_Acc1298_Mean_Mem40_MFCC_12 > 0.58998847} => (quiet-still = 1.00)
@@ -26,13 +26,13 @@ INFO Model (Fold 1):
 {Std_Acc1298_Std_Mem40_MFCC_12 <= 0.0599085} => (angry-aggresive = 1.00)
 {Std_Acc1298_Std_Mem40_MFCC_10 <= 0.0630635 & Mean_Acc1298_Std_Mem40_Flux <= 0.041461498} => (amazed-suprised = 1.00)
 {Mean_Acc1298_Std_Mem40_MFCC_4 > 0.9292565} => (angry-aggresive = 1.00)
-{Std_Acc1298_Std_Mem40_MFCC_6 <= 0.06868} => (amazed-suprised = 1.00)
+{Std_Acc1298_Std_Mem40_MFCC_6 <= 0.06868 & Mean_Acc1298_Mean_Mem40_Centroid > 0.0562455} => (amazed-suprised = 1.00)
 {Std_Acc1298_Mean_Mem40_MFCC_2 <= 0.31925} => (amazed-suprised = 1.00)
 {Mean_Acc1298_Mean_Mem40_MFCC_1 > 8.379964} => (quiet-still = 1.00)
 {Mean_Acc1298_Mean_Mem40_Centroid > 0.1402125} => (amazed-suprised = 1.00)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.071594} => (quiet-still = 1.00)
-{Mean_Acc1298_Mean_Mem40_Rolloff <= 0.090817} => (quiet-still = 1.00)
-{Std_Acc1298_Mean_Mem40_MFCC_4 <= 0.5990555 & Std_Acc1298_Mean_Mem40_MFCC_3 > 0.60943 & Mean_Acc1298_Std_Mem40_MFCC_3 > 0.8722855 & Std_Acc1298_Mean_Mem40_MFCC_7 > 0.237562} => (relaxing-calm = 1.00)
+{Mean_Acc1298_Mean_Mem40_Rolloff <= 0.090817 & Std_Acc1298_Std_Mem40_Centroid > 0.0282695} => (quiet-still = 1.00)
+{Std_Acc1298_Mean_Mem40_MFCC_3 > 0.60943 & Mean_Acc1298_Std_Mem40_MFCC_3 > 0.8722855 & Std_Acc1298_Mean_Mem40_MFCC_7 > 0.237562} => (relaxing-calm = 1.00)
 {Mean_Acc1298_Mean_Mem40_MFCC_5 > 1.5148495} => (relaxing-calm = 1.00)
 {Std_Acc1298_Mean_Mem40_MFCC_5 > 0.815805} => (quiet-still = 1.00)
 {Std_Acc1298_Mean_Mem40_Flux > 0.0109565} => (angry-aggresive = 1.00)
@@ -42,7 +42,7 @@ INFO Model (Fold 1):
 {Mean_Acc1298_Mean_Mem40_MFCC_8 <= -0.094245} => (quiet-still = 1.00)
 {Std_Acc1298_Mean_Mem40_MFCC_7 <= 0.1820595 & Std_Acc1298_Mean_Mem40_MFCC_7 > 0.1604075} => (angry-aggresive = 1.00)
 {Std_Acc1298_Std_Mem40_MFCC_1 <= 0.2324155} => (angry-aggresive = 1.00)
-{Mean_Acc1298_Mean_Mem40_MFCC_1 <= 2.916276} => (angry-aggresive = 1.00)
+{Mean_Acc1298_Mean_Mem40_MFCC_1 <= 2.916276 & Std_Acc1298_Std_Mem40_Flux > 0.0293445} => (angry-aggresive = 1.00)
 {Std_Acc1298_Std_Mem40_MFCC_10 <= 0.0603025} => (angry-aggresive = 1.00)
 {Std_Acc1298_Mean_Mem40_MFCC_8 <= 0.150228} => (angry-aggresive = 1.00)
 {Mean_Acc1298_Mean_Mem40_MFCC_2 <= 1.0055635 & Mean_Acc1298_Mean_Mem40_Centroid <= 0.0996565 & Std_Acc1298_Mean_Mem40_MFCC_5 > 0.45690852} => (relaxing-calm = 1.00)
@@ -76,12 +76,12 @@ INFO Model (Fold 1):
 {Std_Acc1298_Std_Mem40_MFCC_6 > 0.2215685} => (quiet-still = 1.00)
 {Mean_Acc1298_Mean_Mem40_MFCC_3 <= 0.3513495} => (amazed-suprised = 1.00)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.0981165 & Std_Acc1298_Std_Mem40_Centroid > 0.028283998} => (sad-lonely = 1.00)
-{Std_Acc1298_Std_Mem40_MFCC_4 <= 0.079885006} => (amazed-suprised = 1.00)
+{Std_Acc1298_Std_Mem40_MFCC_4 <= 0.079885006 & Mean_Acc1298_Mean_Mem40_Centroid > 0.060856} => (amazed-suprised = 1.00)
 {Std_Acc1298_Std_Mem40_Rolloff > 0.14212549} => (quiet-still = 1.00)
-{BHSUM3 <= 0.18607399} => (quiet-still = 1.00)
-{Std_Acc1298_Mean_Mem40_MFCC_4 <= 0.23966649} => (amazed-suprised = 1.00)
+{BHSUM3 <= 0.18607399 & Mean_Acc1298_Std_Mem40_MFCC_1 <= 1.3561945} => (quiet-still = 1.00)
+{Std_Acc1298_Mean_Mem40_MFCC_4 <= 0.23966649 & Mean_Acc1298_Mean_Mem40_Centroid > 0.061292} => (amazed-suprised = 1.00)
 {Mean_Acc1298_Mean_Mem40_MFCC_11 <= 0.188246 & Mean_Acc1298_Mean_Mem40_Rolloff <= 0.238965} => (relaxing-calm = 1.00)
 {Std_Acc1298_Mean_Mem40_MFCC_0 > 7.463271} => (relaxing-calm = 1.00)
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
 
-INFO Successfully finished after 0.1736651299870573 seconds
+INFO Successfully finished after 0.35801498201908544 seconds
