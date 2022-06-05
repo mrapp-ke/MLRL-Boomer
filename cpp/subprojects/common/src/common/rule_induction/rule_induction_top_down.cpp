@@ -72,8 +72,6 @@ class TopDownRuleInduction final : public IRuleInduction {
         bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
                         IPartition& partition, IFeatureSampling& featureSampling, const IPruning& pruning,
                         const IPostProcessor& postProcessor, RNG& rng, IModelBuilder& modelBuilder) const override {
-            // True, if the rule is learned on a sample of the available training examples, False otherwise
-            bool instanceSamplingUsed = weights.hasZeroWeights();
             // The label indices for which the next refinement of the rule may predict
             const IIndexVector* currentLabelIndices = &labelIndices;
             // A list that contains the conditions in the rule's body (in the order they have been learned)
@@ -157,7 +155,7 @@ class TopDownRuleInduction final : public IRuleInduction {
             }
 
             if (bestHead) {
-                if (instanceSamplingUsed) {
+                if (weights.hasZeroWeights()) {
                     // Prune rule...
                     IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
                     statisticsProvider.switchToPruningRuleEvaluation();
