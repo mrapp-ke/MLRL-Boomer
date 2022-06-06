@@ -18,7 +18,7 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
     refinementPtr->featureIndex = featureIndex_;
     float64 bestQualityScore =
         currentHead != nullptr ? currentHead->overallQualityScore : std::numeric_limits<float64>::infinity();
-    ScoreProcessor scoreProcessor;
+    ScoreProcessor scoreProcessor(refinementPtr->headPtr);
 
     // Invoke the callback...
     std::unique_ptr<IRuleRefinementCallback<ThresholdVector>::Result> callbackResultPtr = callbackPtr_->get();
@@ -306,7 +306,6 @@ void ApproximateRuleRefinement<T>::findRefinement(const AbstractEvaluatedPredict
         }
     }
 
-    refinementPtr->headPtr = scoreProcessor.pollHead();
     refinementPtr_ = std::move(refinementPtr);
 }
 
