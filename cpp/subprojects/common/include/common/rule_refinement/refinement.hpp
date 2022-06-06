@@ -10,28 +10,35 @@
 /**
  * Stores information about a potential refinement of a rule.
  */
-class Refinement final : public Condition {
+struct Refinement : public Condition {
 
-    public:
+    /**
+     * Returns whether this refinement is better than another one.
+     *
+     * @param another   A reference to an object of type `Refinement` to be compared to
+     * @return          True, if this refinement is better than the given one, false otherwise
+     */
+    bool isBetterThan(const Refinement& another) const {
+        const AbstractEvaluatedPrediction* head = headPtr.get();
 
-        /**
-         * Returns whether this refinement is better than another one.
-         *
-         * @param another   A reference to an object of type `Refinement` to be compared to
-         * @return          True, if this refinement is better than the given one, false otherwise
-         */
-        bool isBetterThan(const Refinement& another) const;
+        if (head) {
+            const AbstractEvaluatedPrediction* anotherHead = another.headPtr.get();
+            return !anotherHead || head->overallQualityScore < anotherHead->overallQualityScore;
+        }
 
-        /**
-         * An unique pointer to an object of type `AbstractEvaluatedPrediction` that stores the scores that are
-         * predicted by the refined rules, as well as a corresponding quality score.
-         */
-        std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
+        return false;
+    }
 
-        /**
-         * The index of the last element, e.g., example or bin, that has been processed when evaluating the refined
-         * rule.
-         */
-        int64 previous;
+    /**
+     * An unique pointer to an object of type `AbstractEvaluatedPrediction` that stores the scores that are
+     * predicted by the refined rules, as well as a corresponding quality score.
+     */
+    std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
+
+    /**
+     * The index of the last element, e.g., example or bin, that has been processed when evaluating the refined
+     * rule.
+     */
+    int64 previous;
 
 };
