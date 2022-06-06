@@ -74,8 +74,8 @@ class TopDownRuleInduction final : public AbstractRuleInduction {
                 std::unique_ptr<IRuleRefinement>* ruleRefinements =
                     new std::unique_ptr<IRuleRefinement>[numSampledFeatures];
 
-                for (int64 i = 0; i < numSampledFeatures; i++) {
-                    uint32 featureIndex = sampledFeatureIndices.getIndex((uint32) i);
+                for (uint32 i = 0; i < numSampledFeatures; i++) {
+                    uint32 featureIndex = sampledFeatureIndices.getIndex(i);
                     std::unique_ptr<IRuleRefinement> ruleRefinementPtr = currentLabelIndices->createRuleRefinement(
                         *thresholdsSubsetPtr, featureIndex);
                     ruleRefinements[i] = std::move(ruleRefinementPtr);
@@ -90,7 +90,7 @@ class TopDownRuleInduction final : public AbstractRuleInduction {
                 }
 
                 // Pick the best refinement among the refinements that have been found for the different features...
-                for (int64 i = 0; i < numSampledFeatures; i++) {
+                for (uint32 i = 0; i < numSampledFeatures; i++) {
                     std::unique_ptr<IRuleRefinement>& ruleRefinementPtr = ruleRefinements[i];
                     std::unique_ptr<Refinement> refinementPtr = ruleRefinementPtr->pollRefinement();
 
