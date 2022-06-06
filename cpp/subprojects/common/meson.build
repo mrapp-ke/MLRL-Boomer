@@ -64,6 +64,7 @@ source_files = [
     'src/common/rule_refinement/prediction_evaluated.cpp',
     'src/common/rule_refinement/prediction_partial.cpp',
     'src/common/rule_refinement/prediction.cpp',
+    'src/common/rule_refinement/refinement_comparator_single.cpp',
     'src/common/rule_refinement/rule_refinement_approximate.cpp',
     'src/common/rule_refinement/rule_refinement_exact.cpp',
     'src/common/rule_refinement/score_processor.cpp',
