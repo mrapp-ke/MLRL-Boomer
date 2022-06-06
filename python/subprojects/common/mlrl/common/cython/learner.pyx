@@ -71,7 +71,7 @@ cdef class RuleLearnerConfig:
 
     def use_greedy_top_down_rule_induction(self) -> GreedyTopDownRuleInductionConfig:
         """
-        Configures the algorithm to use a top-down greedy search for the induction of individual rules.
+        Configures the algorithm to use a greedy top-down search for the induction of individual rules.
 
         :return: A `GreedyTopDownRuleInductionConfig` that allows further configuration of the algorithm for the
                  induction of individual rules

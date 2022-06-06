@@ -13,7 +13,7 @@ cdef class GreedyTopDownRuleInductionConfig:
         """
         Returns the minimum number of training examples that must be covered by a rule.
 
-        :return: The minimum number of training examples that must be covered by a rule.
+        :return: The minimum number of training examples that must be covered by a rule
         """
         return self.config_ptr.getMinCoverage()
 
