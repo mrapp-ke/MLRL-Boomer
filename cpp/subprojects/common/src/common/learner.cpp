@@ -70,7 +70,7 @@ class TrainingResult final : public ITrainingResult {
 AbstractRuleLearner::Config::Config() {
     this->useDefaultRule();
     this->useSequentialRuleModelAssemblage();
-    this->useTopDownRuleInduction();
+    this->useGreedyTopDownRuleInduction();
     this->useNoFeatureBinning();
     this->useNoLabelSampling();
     this->useNoInstanceSampling();
@@ -163,10 +163,10 @@ void AbstractRuleLearner::Config::useSequentialRuleModelAssemblage() {
     ruleModelAssemblageConfigPtr_ = std::make_unique<SequentialRuleModelAssemblageConfig>(defaultRuleConfigPtr_);
 }
 
-ITopDownRuleInductionConfig& AbstractRuleLearner::Config::useTopDownRuleInduction() {
-    std::unique_ptr<TopDownRuleInductionConfig> ptr =
-        std::make_unique<TopDownRuleInductionConfig>(parallelRuleRefinementConfigPtr_);
-    ITopDownRuleInductionConfig& ref = *ptr;
+IGreedyTopDownRuleInductionConfig& AbstractRuleLearner::Config::useGreedyTopDownRuleInduction() {
+    std::unique_ptr<GreedyTopDownRuleInductionConfig> ptr =
+        std::make_unique<GreedyTopDownRuleInductionConfig>(parallelRuleRefinementConfigPtr_);
+    IGreedyTopDownRuleInductionConfig& ref = *ptr;
     ruleInductionConfigPtr_ = std::move(ptr);
     return ref;
 }

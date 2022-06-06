@@ -279,7 +279,7 @@ namespace seco {
 
                     Config();
 
-                    ITopDownRuleInductionConfig& useTopDownRuleInduction() override;
+                    IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 

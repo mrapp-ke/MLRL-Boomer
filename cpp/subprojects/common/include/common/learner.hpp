@@ -267,12 +267,12 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useSequentialRuleModelAssemblage() = 0;
 
                 /**
-                 * Configures the rule learner to use a top-down greedy search for the induction of individual rules.
+                 * Configures the rule learner to use a greedy top-down search for the induction of individual rules.
                  *
-                 * @return A reference to an object of type `ITopDownRuleInductionConfig` that allows further
+                 * @return A reference to an object of type `IGreedyTopDownRuleInductionConfig` that allows further
                  *         configuration of the algorithm for the induction of individual rules
                  */
-                virtual ITopDownRuleInductionConfig& useTopDownRuleInduction() = 0;
+                virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() = 0;
 
                 /**
                  * Configures the rule learner to not use any method for the assignment of numerical feature values to
@@ -864,7 +864,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useSequentialRuleModelAssemblage() override;
 
-                ITopDownRuleInductionConfig& useTopDownRuleInduction() override;
+                IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
                 void useNoFeatureBinning() override final;
 
