@@ -24,11 +24,6 @@ class ConditionList final {
     public:
 
         /**
-         * The type that is used to store the size of the list.
-         */
-        typedef std::list<Condition>::size_type size_type;
-
-        /**
          * An iterator that provides read-only access to the conditions in the list.
          */
         typedef std::list<Condition>::const_iterator const_iterator;
@@ -52,7 +47,7 @@ class ConditionList final {
          *
          * @return The number of conditions that are contained by the list
          */
-        size_type getNumConditions() const;
+        uint32 getNumConditions() const;
 
         /**
          * Adds a new condition to the end of the list.

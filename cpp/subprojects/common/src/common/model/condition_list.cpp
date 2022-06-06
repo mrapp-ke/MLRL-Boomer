@@ -9,8 +9,8 @@ ConditionList::const_iterator ConditionList::cend() const {
     return list_.cend();
 }
 
-ConditionList::size_type ConditionList::getNumConditions() const {
-    return list_.size();
+uint32 ConditionList::getNumConditions() const {
+    return (uint32) list_.size();
 }
 
 void ConditionList::addCondition(const Condition& condition) {
