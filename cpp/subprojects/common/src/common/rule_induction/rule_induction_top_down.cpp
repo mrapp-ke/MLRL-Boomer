@@ -51,8 +51,6 @@ class TopDownRuleInduction final : public AbstractRuleInduction {
             const IIndexVector* currentLabelIndices = &labelIndices;
             // A list that contains the conditions in the rule's body (in the order they have been learned)
             std::unique_ptr<ConditionList> conditionListPtr = std::make_unique<ConditionList>();
-            // The total number of conditions
-            uint32 numConditions = 0;
             // An unique pointer to the best refinement of the current rule
             std::unique_ptr<Refinement> bestRefinementPtr = std::make_unique<Refinement>();
             // A pointer to the head of the best rule found so far
@@ -65,7 +63,7 @@ class TopDownRuleInduction final : public AbstractRuleInduction {
 
             // Search for the best refinement until no improvement in terms of the rule's quality score is possible
             // anymore or the maximum number of conditions has been reached...
-            while (foundRefinement && (maxConditions_ == 0 || numConditions < maxConditions_)) {
+            while (foundRefinement && (maxConditions_ == 0 || conditionListPtr->getNumConditions() < maxConditions_)) {
                 foundRefinement = false;
 
                 // Sample features...
@@ -115,10 +113,9 @@ class TopDownRuleInduction final : public AbstractRuleInduction {
 
                     // Add the new condition...
                     conditionListPtr->addCondition(*bestRefinementPtr);
-                    numConditions++;
 
                     // Keep the labels for which the rule predicts, if the head should not be further refined...
-                    if (maxHeadRefinements_ > 0 && numConditions >= maxHeadRefinements_) {
+                    if (maxHeadRefinements_ > 0 && conditionListPtr->getNumConditions() >= maxHeadRefinements_) {
                         currentLabelIndices = bestHead;
                     }
 
