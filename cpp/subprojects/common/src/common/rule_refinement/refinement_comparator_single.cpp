@@ -5,7 +5,8 @@
 SingleRefinementComparator::SingleRefinementComparator(const AbstractEvaluatedPrediction* bestHead)
     : bestRefinementPtr_(std::make_unique<Refinement>()),
       bestQualityScore_(bestHead != nullptr ? bestHead->overallQualityScore
-                                            : std::numeric_limits<float64>::infinity()) {
+                                            : std::numeric_limits<float64>::infinity()),
+      scoreProcessor_(ScoreProcessor(bestRefinementPtr_->headPtr)) {
 
 }
 
@@ -28,6 +29,5 @@ void SingleRefinementComparator::pushRefinement(const Refinement& refinement, co
 }
 
 std::unique_ptr<Refinement> SingleRefinementComparator::pollRefinement() {
-    bestRefinementPtr_->headPtr = scoreProcessor_.pollHead();
     return std::move(bestRefinementPtr_);
 }
