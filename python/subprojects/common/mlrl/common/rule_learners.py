@@ -156,7 +156,7 @@ def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional
         value, options = parse_param_and_options('rule_induction', rule_induction, RULE_INDUCTION_VALUES)
 
         if value == RULE_INDUCTION_TOP_DOWN:
-            c = config.use_top_down_rule_induction()
+            c = config.use_greedy_top_down_rule_induction()
             c.set_min_coverage(options.get_int(ARGUMENT_MIN_COVERAGE, c.get_min_coverage()))
             c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
             c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))

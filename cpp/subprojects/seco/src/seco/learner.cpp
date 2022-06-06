@@ -57,8 +57,8 @@ namespace seco {
         return ref;
     }
 
-    ITopDownRuleInductionConfig& SeCoRuleLearner::Config::useTopDownRuleInduction() {
-        ITopDownRuleInductionConfig& config = AbstractRuleLearner::Config::useTopDownRuleInduction();
+    IGreedyTopDownRuleInductionConfig& SeCoRuleLearner::Config::useGreedyTopDownRuleInduction() {
+        IGreedyTopDownRuleInductionConfig& config = AbstractRuleLearner::Config::useGreedyTopDownRuleInduction();
         config.setRecalculatePredictions(false);
         return config;
     }
