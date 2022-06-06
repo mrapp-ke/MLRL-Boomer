@@ -34,6 +34,23 @@ struct Condition {
         numCovered(condition.numCovered) { };
 
     /**
+     * Assigns the properties of an existing condition to this condition.
+     *
+     * @param rhs   A reference to the existing condition
+     * @return      A reference to the modified condition
+     */
+    Condition& operator=(const Condition& condition) {
+        featureIndex = condition.featureIndex;
+        comparator = condition.comparator;
+        threshold = condition.threshold;
+        start = condition.start;
+        end = condition.end;
+        covered = condition.covered;
+        numCovered = condition.numCovered;
+        return *this;
+    }
+
+    /**
      * The index of the feature, the condition corresponds to.
      */
     uint32 featureIndex;
