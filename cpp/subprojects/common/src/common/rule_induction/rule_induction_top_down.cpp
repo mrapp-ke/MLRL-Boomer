@@ -76,9 +76,7 @@ class TopDownRuleInduction final : public AbstractRuleInduction {
 
                 for (uint32 i = 0; i < numSampledFeatures; i++) {
                     uint32 featureIndex = sampledFeatureIndices.getIndex(i);
-                    std::unique_ptr<IRuleRefinement> ruleRefinementPtr = currentLabelIndices->createRuleRefinement(
-                        *thresholdsSubsetPtr, featureIndex);
-                    ruleRefinements[i] = std::move(ruleRefinementPtr);
+                    ruleRefinements[i] = currentLabelIndices->createRuleRefinement(*thresholdsSubsetPtr, featureIndex);
                 }
 
                 // Search for the best condition among all available features to be added to the current rule...
