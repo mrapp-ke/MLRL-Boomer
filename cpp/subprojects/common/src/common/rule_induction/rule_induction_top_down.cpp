@@ -130,6 +130,8 @@ class TopDownRuleInduction final : public IRuleInduction {
 
                 if (foundRefinement) {
                     bestHead = bestRefinementPtr->headPtr.get();
+
+                    // Sort the rule's predictions by the corresponding label indices...
                     bestHead->sort();
 
                     // Filter the current subset of thresholds by applying the best refinement that has been found...
