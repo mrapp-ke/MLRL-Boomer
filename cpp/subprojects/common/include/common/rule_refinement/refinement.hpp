@@ -31,7 +31,7 @@ struct Refinement : public Condition {
 
     /**
      * An unique pointer to an object of type `AbstractEvaluatedPrediction` that stores the scores that are
-     * predicted by the refined rules, as well as a corresponding quality score.
+     * predicted by the refined rule, as well as a corresponding quality score.
      */
     std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
 
