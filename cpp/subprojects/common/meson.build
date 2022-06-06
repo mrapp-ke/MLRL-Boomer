@@ -42,7 +42,6 @@ source_files = [
     'src/common/model/body_conjunctive.cpp',
     'src/common/model/body_empty.cpp',
     'src/common/model/condition_list.cpp',
-    'src/common/model/condition.cpp',
     'src/common/model/head_complete.cpp',
     'src/common/model/head_partial.cpp',
     'src/common/model/rule_list.cpp',
