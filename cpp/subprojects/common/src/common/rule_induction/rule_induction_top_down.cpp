@@ -1,7 +1,6 @@
 #include "common/rule_induction/rule_induction_top_down.hpp"
-#include "common/rule_refinement/score_processor.hpp"
-#include "common/indices/index_vector_complete.hpp"
 #include "common/util/validation.hpp"
+#include "rule_induction_common.hpp"
 #include "omp.h"
 
 
@@ -9,7 +8,7 @@
  * An implementation of the type `IRuleInduction` that allows to induce classification rules by using a top-down greedy
  * search.
  */
-class TopDownRuleInduction final : public IRuleInduction {
+class TopDownRuleInduction final : public AbstractRuleInduction {
 
     private:
 
@@ -43,29 +42,6 @@ class TopDownRuleInduction final : public IRuleInduction {
             : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
               recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
 
-        }
-
-        void induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const override {
-            uint32 numStatistics = statistics.getNumStatistics();
-            uint32 numLabels = statistics.getNumLabels();
-            CompleteIndexVector labelIndices(numLabels);
-            EqualWeightVector weights(numStatistics);
-            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices, weights);
-
-            for (uint32 i = 0; i < numStatistics; i++) {
-                statisticsSubsetPtr->addToSubset(i);
-            }
-
-            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
-            std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr;
-            ScoreProcessor scoreProcessor(defaultPredictionPtr);
-            scoreProcessor.processScores(scoreVector);
-
-            for (uint32 i = 0; i < numStatistics; i++) {
-                defaultPredictionPtr->apply(statistics, i);
-            }
-
-            modelBuilder.setDefaultRule(defaultPredictionPtr);
         }
 
         bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
