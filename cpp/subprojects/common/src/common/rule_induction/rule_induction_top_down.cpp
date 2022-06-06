@@ -134,7 +134,6 @@ class TopDownRuleInduction final : public IRuleInduction {
 
                     // Filter the current subset of thresholds by applying the best refinement that has been found...
                     thresholdsSubsetPtr->filterThresholds(*bestRefinementPtr);
-                    uint32 numCoveredExamples = bestRefinementPtr->numCovered;
 
                     // Add the new condition...
                     conditionListPtr->addCondition(*bestRefinementPtr);
@@ -146,7 +145,7 @@ class TopDownRuleInduction final : public IRuleInduction {
                     }
 
                     // Abort refinement process if the rule is not allowed to cover less examples...
-                    if (numCoveredExamples <= minCoverage_) {
+                    if (bestRefinementPtr->numCovered <= minCoverage_) {
                         break;
                     }
                 }
