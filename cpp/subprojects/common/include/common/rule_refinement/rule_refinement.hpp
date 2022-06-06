@@ -3,8 +3,7 @@
  */
 #pragma once
 
-#include "common/rule_refinement/refinement.hpp"
-#include <memory>
+#include "common/rule_refinement/refinement_comparator_single.hpp"
 
 
 /**
@@ -19,17 +18,9 @@ class IRuleRefinement {
         /**
          * Finds the best refinement of an existing rule.
          *
-         * @param currentHead A pointer to an object of type `AbstractEvaluatedPrediction`, representing the head of the
-         *                    existing rule or a null pointer, if no rule exists yet
+         * @param comparator A reference to an object of type `SingleRefinementComparator` that is used to compare the
+         *                   potential refinements
          */
-        virtual void findRefinement(const AbstractEvaluatedPrediction* currentHead) = 0;
-
-        /**
-         * Returns the best refinement that has been found by the function `findRefinement`.
-         *
-         * @return An unique pointer to an object of type `Refinement` that stores information about the best refinement
-         *         that has been found
-         */
-        virtual std::unique_ptr<Refinement> pollRefinement() = 0;
+        virtual void findRefinement(SingleRefinementComparator& comparator) = 0;
 
 };

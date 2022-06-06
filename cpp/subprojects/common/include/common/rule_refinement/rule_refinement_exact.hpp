@@ -31,8 +31,6 @@ class ExactRuleRefinement final : public IRuleRefinement {
 
         std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr_;
 
-        std::unique_ptr<Refinement> refinementPtr_;
-
     public:
 
         /**
@@ -48,8 +46,6 @@ class ExactRuleRefinement final : public IRuleRefinement {
         ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal,
                             std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
-        void findRefinement(const AbstractEvaluatedPrediction* currentHead) override;
-
-        std::unique_ptr<Refinement> pollRefinement() override;
+        void findRefinement(SingleRefinementComparator& comparator) override;
 
 };

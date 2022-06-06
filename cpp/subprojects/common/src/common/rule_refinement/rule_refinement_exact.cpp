@@ -1,7 +1,5 @@
 #include "common/rule_refinement/rule_refinement_exact.hpp"
-#include "common/rule_refinement/score_processor.hpp"
 #include "common/math/math.hpp"
-#include <limits>
 
 
 template<typename T>
@@ -14,12 +12,9 @@ ExactRuleRefinement<T>::ExactRuleRefinement(const T& labelIndices, uint32 numExa
 }
 
 template<typename T>
-void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* currentHead) {
-    std::unique_ptr<Refinement> refinementPtr = std::make_unique<Refinement>();
-    refinementPtr->featureIndex = featureIndex_;
-    float64 bestQualityScore =
-        currentHead != nullptr ? currentHead->overallQualityScore : std::numeric_limits<float64>::infinity();
-    ScoreProcessor scoreProcessor(refinementPtr->headPtr);
+void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparator) {
+    Refinement refinement;
+    refinement.featureIndex = featureIndex_;
 
     // Invoke the callback...
     std::unique_ptr<IRuleRefinementCallback<FeatureVector>::Result> callbackResultPtr = callbackPtr_->get();
@@ -87,49 +82,47 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the == operator in case of a nominal feature) is used...
                     const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
-                    float64 qualityScore = scoreVector.overallQualityScore;
 
                     // If the refinement is better than the current rule...
-                    if (qualityScore < bestQualityScore) {
-                        bestQualityScore = qualityScore;
-                        scoreProcessor.processScores(scoreVector);
-                        refinementPtr->start = firstR;
-                        refinementPtr->end = r;
-                        refinementPtr->previous = previousR;
-                        refinementPtr->numCovered = numExamples;
-                        refinementPtr->covered = true;
+                    if (comparator.isImprovement(scoreVector)) {
+                        refinement.start = firstR;
+                        refinement.end = r;
+                        refinement.previous = previousR;
+                        refinement.numCovered = numExamples;
+                        refinement.covered = true;
 
                         if (nominal_) {
-                            refinementPtr->comparator = EQ;
-                            refinementPtr->threshold = previousThreshold;
+                            refinement.comparator = EQ;
+                            refinement.threshold = previousThreshold;
                         } else {
-                            refinementPtr->comparator = LEQ;
-                            refinementPtr->threshold = arithmeticMean(previousThreshold, currentThreshold);
+                            refinement.comparator = LEQ;
+                            refinement.threshold = arithmeticMean(previousThreshold, currentThreshold);
                         }
+
+                        comparator.pushRefinement(refinement, scoreVector);
                     }
 
                     // Find and evaluate the best head for the current refinement, if a condition that uses the >
                     // operator (or the != operator in case of a nominal feature) is used...
                     const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
-                    qualityScore = scoreVector2.overallQualityScore;
 
                     // If the refinement is better than the current rule...
-                    if (qualityScore < bestQualityScore) {
-                        bestQualityScore = qualityScore;
-                        scoreProcessor.processScores(scoreVector2);
-                        refinementPtr->start = firstR;
-                        refinementPtr->end = r;
-                        refinementPtr->previous = previousR;
-                        refinementPtr->numCovered = (numExamples_ - numExamples);
-                        refinementPtr->covered = false;
+                    if (comparator.isImprovement(scoreVector2)) {
+                        refinement.start = firstR;
+                        refinement.end = r;
+                        refinement.previous = previousR;
+                        refinement.numCovered = (numExamples_ - numExamples);
+                        refinement.covered = false;
 
                         if (nominal_) {
-                            refinementPtr->comparator = NEQ;
-                            refinementPtr->threshold = previousThreshold;
+                            refinement.comparator = NEQ;
+                            refinement.threshold = previousThreshold;
                         } else {
-                            refinementPtr->comparator = GR;
-                            refinementPtr->threshold = arithmeticMean(previousThreshold, currentThreshold);
+                            refinement.comparator = GR;
+                            refinement.threshold = arithmeticMean(previousThreshold, currentThreshold);
                         }
+
+                        comparator.pushRefinement(refinement, scoreVector2);
                     }
 
                     // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
@@ -159,37 +152,33 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
             // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
             // used...
             const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
-            float64 qualityScore = scoreVector.overallQualityScore;
 
             // If the refinement is better than the current rule...
-            if (qualityScore < bestQualityScore) {
-                bestQualityScore = qualityScore;
-                scoreProcessor.processScores(scoreVector);
-                refinementPtr->start = firstR;
-                refinementPtr->end = (lastNegativeR + 1);
-                refinementPtr->previous = previousR;
-                refinementPtr->numCovered = numExamples;
-                refinementPtr->covered = true;
-                refinementPtr->comparator = EQ;
-                refinementPtr->threshold = previousThreshold;
+            if (comparator.isImprovement(scoreVector)) {
+                refinement.start = firstR;
+                refinement.end = (lastNegativeR + 1);
+                refinement.previous = previousR;
+                refinement.numCovered = numExamples;
+                refinement.covered = true;
+                refinement.comparator = EQ;
+                refinement.threshold = previousThreshold;
+                comparator.pushRefinement(refinement, scoreVector);
             }
 
             // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
             // used...
             const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
-            qualityScore = scoreVector2.overallQualityScore;
 
             // If the refinement is better than the current rule...
-            if (qualityScore < bestQualityScore) {
-                bestQualityScore = qualityScore;
-                scoreProcessor.processScores(scoreVector2);
-                refinementPtr->start = firstR;
-                refinementPtr->end = (lastNegativeR + 1);
-                refinementPtr->previous = previousR;
-                refinementPtr->numCovered = (numExamples_ - numExamples);
-                refinementPtr->covered = false;
-                refinementPtr->comparator = NEQ;
-                refinementPtr->threshold = previousThreshold;
+            if (comparator.isImprovement(scoreVector2)) {
+                refinement.start = firstR;
+                refinement.end = (lastNegativeR + 1);
+                refinement.previous = previousR;
+                refinement.numCovered = (numExamples_ - numExamples);
+                refinement.covered = false;
+                refinement.comparator = NEQ;
+                refinement.threshold = previousThreshold;
+                comparator.pushRefinement(refinement, scoreVector2);
             }
         }
 
@@ -236,49 +225,47 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
                     // Find and evaluate the best head for the current refinement, if a condition that uses the
                     // > operator (or the == operator in case of a nominal feature) is used...
                     const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
-                    float64 qualityScore = scoreVector.overallQualityScore;
 
                     // If the refinement is better than the current rule...
-                    if (qualityScore < bestQualityScore) {
-                        bestQualityScore = qualityScore;
-                        scoreProcessor.processScores(scoreVector);
-                        refinementPtr->start = firstR;
-                        refinementPtr->end = r;
-                        refinementPtr->previous = previousR;
-                        refinementPtr->numCovered = numExamples;
-                        refinementPtr->covered = true;
+                    if (comparator.isImprovement(scoreVector)) {
+                        refinement.start = firstR;
+                        refinement.end = r;
+                        refinement.previous = previousR;
+                        refinement.numCovered = numExamples;
+                        refinement.covered = true;
 
                         if (nominal_) {
-                            refinementPtr->comparator = EQ;
-                            refinementPtr->threshold = previousThreshold;
+                            refinement.comparator = EQ;
+                            refinement.threshold = previousThreshold;
                         } else {
-                            refinementPtr->comparator = GR;
-                            refinementPtr->threshold = arithmeticMean(currentThreshold, previousThreshold);
+                            refinement.comparator = GR;
+                            refinement.threshold = arithmeticMean(currentThreshold, previousThreshold);
                         }
+
+                        comparator.pushRefinement(refinement, scoreVector);
                     }
 
                     // Find and evaluate the best head for the current refinement, if a condition that uses the <=
                     // operator (or the != operator in case of a nominal feature) is used...
                     const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
-                    qualityScore = scoreVector2.overallQualityScore;
 
                     // If the refinement is better than the current rule...
-                    if (qualityScore < bestQualityScore) {
-                        bestQualityScore = qualityScore;
-                        scoreProcessor.processScores(scoreVector2);
-                        refinementPtr->start = firstR;
-                        refinementPtr->end = r;
-                        refinementPtr->previous = previousR;
-                        refinementPtr->numCovered = (numExamples_ - numExamples);
-                        refinementPtr->covered = false;
+                    if (comparator.isImprovement(scoreVector2)) {
+                        refinement.start = firstR;
+                        refinement.end = r;
+                        refinement.previous = previousR;
+                        refinement.numCovered = (numExamples_ - numExamples);
+                        refinement.covered = false;
 
                         if (nominal_) {
-                            refinementPtr->comparator = NEQ;
-                            refinementPtr->threshold = previousThreshold;
+                            refinement.comparator = NEQ;
+                            refinement.threshold = previousThreshold;
                         } else {
-                            refinementPtr->comparator = LEQ;
-                            refinementPtr->threshold = arithmeticMean(currentThreshold, previousThreshold);
+                            refinement.comparator = LEQ;
+                            refinement.threshold = arithmeticMean(currentThreshold, previousThreshold);
                         }
+
+                        comparator.pushRefinement(refinement, scoreVector2);
                     }
 
                     // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
@@ -308,37 +295,33 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
         // used...
         const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
-        float64 qualityScore = scoreVector.overallQualityScore;
 
         // If the refinement is better than the current rule...
-        if (qualityScore < bestQualityScore) {
-            bestQualityScore = qualityScore;
-            scoreProcessor.processScores(scoreVector);
-            refinementPtr->start = firstR;
-            refinementPtr->end = lastNegativeR;
-            refinementPtr->previous = previousR;
-            refinementPtr->numCovered = numExamples;
-            refinementPtr->covered = true;
-            refinementPtr->comparator = EQ;
-            refinementPtr->threshold = previousThreshold;
+        if (comparator.isImprovement(scoreVector)) {
+            refinement.start = firstR;
+            refinement.end = lastNegativeR;
+            refinement.previous = previousR;
+            refinement.numCovered = numExamples;
+            refinement.covered = true;
+            refinement.comparator = EQ;
+            refinement.threshold = previousThreshold;
+            comparator.pushRefinement(refinement, scoreVector);
         }
 
         // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
         // used...
         const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
-        qualityScore = scoreVector2.overallQualityScore;
 
         // If the refinement is better than the current rule...
-        if (qualityScore < bestQualityScore) {
-            bestQualityScore = qualityScore;
-            scoreProcessor.processScores(scoreVector2);
-            refinementPtr->start = firstR;
-            refinementPtr->end = lastNegativeR;
-            refinementPtr->previous = previousR;
-            refinementPtr->numCovered = (numExamples_ - numExamples);
-            refinementPtr->covered = false;
-            refinementPtr->comparator = NEQ;
-            refinementPtr->threshold = previousThreshold;
+        if (comparator.isImprovement(scoreVector2)) {
+            refinement.start = firstR;
+            refinement.end = lastNegativeR;
+            refinement.previous = previousR;
+            refinement.numCovered = (numExamples_ - numExamples);
+            refinement.covered = false;
+            refinement.comparator = NEQ;
+            refinement.threshold = previousThreshold;
+            comparator.pushRefinement(refinement, scoreVector2);
         }
     }
 
@@ -360,56 +343,54 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         // the condition `f != 0` in case of a nominal feature) is used...
         const IScoreVector& scoreVector =
             nominal_? statisticsSubsetPtr->evaluateAccumulated() : statisticsSubsetPtr->evaluate();
-        float64 qualityScore = scoreVector.overallQualityScore;
 
         // If the refinement is better than the current rule...
-        if (qualityScore < bestQualityScore) {
-            bestQualityScore = qualityScore;
-            scoreProcessor.processScores(scoreVector);
-            refinementPtr->start = firstR;
-            refinementPtr->covered = true;
+        if (comparator.isImprovement(scoreVector)) {
+            refinement.start = firstR;
+            refinement.covered = true;
 
             if (nominal_) {
-                refinementPtr->end = -1;
-                refinementPtr->previous = -1;
-                refinementPtr->numCovered = totalAccumulatedNumExamples;
-                refinementPtr->comparator = NEQ;
-                refinementPtr->threshold = 0.0;
+                refinement.end = -1;
+                refinement.previous = -1;
+                refinement.numCovered = totalAccumulatedNumExamples;
+                refinement.comparator = NEQ;
+                refinement.threshold = 0.0;
             } else {
-                refinementPtr->end = lastNegativeR;
-                refinementPtr->previous = previousR;
-                refinementPtr->numCovered = accumulatedNumExamples;
-                refinementPtr->comparator = GR;
-                refinementPtr->threshold = previousThreshold * 0.5;
+                refinement.end = lastNegativeR;
+                refinement.previous = previousR;
+                refinement.numCovered = accumulatedNumExamples;
+                refinement.comparator = GR;
+                refinement.threshold = previousThreshold * 0.5;
             }
+
+            comparator.pushRefinement(refinement, scoreVector);
         }
 
         // Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2`
         // (or `f == 0` in case of a nominal feature) is used...
         const IScoreVector& scoreVector2 =
             nominal_ ? statisticsSubsetPtr->evaluateUncoveredAccumulated() : statisticsSubsetPtr->evaluateUncovered();
-        qualityScore = scoreVector2.overallQualityScore;
 
         // If the refinement is better than the current rule...
-        if (qualityScore < bestQualityScore) {
-            bestQualityScore = qualityScore;
-            scoreProcessor.processScores(scoreVector2);
-            refinementPtr->start = firstR;
-            refinementPtr->covered = false;
+        if (comparator.isImprovement(scoreVector2)) {
+            refinement.start = firstR;
+            refinement.covered = false;
 
             if (nominal_) {
-                refinementPtr->end = -1;
-                refinementPtr->previous = -1;
-                refinementPtr->numCovered = (numExamples_ - totalAccumulatedNumExamples);
-                refinementPtr->comparator = EQ;
-                refinementPtr->threshold = 0.0;
+                refinement.end = -1;
+                refinement.previous = -1;
+                refinement.numCovered = (numExamples_ - totalAccumulatedNumExamples);
+                refinement.comparator = EQ;
+                refinement.threshold = 0.0;
             } else {
-                refinementPtr->end = lastNegativeR;
-                refinementPtr->previous = previousR;
-                refinementPtr->numCovered = (numExamples_ - accumulatedNumExamples);
-                refinementPtr->comparator = LEQ;
-                refinementPtr->threshold = previousThreshold * 0.5;
+                refinement.end = lastNegativeR;
+                refinement.previous = previousR;
+                refinement.numCovered = (numExamples_ - accumulatedNumExamples);
+                refinement.comparator = LEQ;
+                refinement.threshold = previousThreshold * 0.5;
             }
+
+            comparator.pushRefinement(refinement, scoreVector2);
         }
     }
 
@@ -422,62 +403,53 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         // Find and evaluate the best head for the current refinement, if the condition that uses the <= operator is
         // used...
         const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateAccumulated();
-        float64 qualityScore = scoreVector.overallQualityScore;
 
         // If the refinement is better than the current rule...
-        if (qualityScore < bestQualityScore) {
-            bestQualityScore = qualityScore;
-            scoreProcessor.processScores(scoreVector);
-            refinementPtr->start = 0;
-            refinementPtr->end = (lastNegativeR + 1);
-            refinementPtr->previous = previousRNegative;
-            refinementPtr->numCovered = accumulatedNumExamplesNegative;
-            refinementPtr->covered = true;
-            refinementPtr->comparator = LEQ;
+        if (comparator.isImprovement(scoreVector)) {
+            refinement.start = 0;
+            refinement.end = (lastNegativeR + 1);
+            refinement.previous = previousRNegative;
+            refinement.numCovered = accumulatedNumExamplesNegative;
+            refinement.covered = true;
+            refinement.comparator = LEQ;
 
             if (totalAccumulatedNumExamples < numExamples_) {
                 // If the condition separates an example with feature value < 0 from an (sparse) example with feature
                 // value == 0
-                refinementPtr->threshold = previousThresholdNegative * 0.5;
+                refinement.threshold = previousThresholdNegative * 0.5;
             } else {
                 // If the condition separates an example with feature value < 0 from an example with feature value > 0
-                refinementPtr->threshold = arithmeticMean(previousThresholdNegative, previousThreshold);
+                refinement.threshold = arithmeticMean(previousThresholdNegative, previousThreshold);
             }
+
+            comparator.pushRefinement(refinement, scoreVector);
         }
 
         // Find and evaluate the best head for the current refinement, if the condition that uses the > operator is
         // used...
         const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncoveredAccumulated();
-        qualityScore = scoreVector2.overallQualityScore;
 
         // If the refinement is better than the current rule...
-        if (qualityScore < bestQualityScore) {
-            bestQualityScore = qualityScore;
-            scoreProcessor.processScores(scoreVector2);
-            refinementPtr->start = 0;
-            refinementPtr->end = (lastNegativeR + 1);
-            refinementPtr->previous = previousRNegative;
-            refinementPtr->numCovered = (numExamples_ - accumulatedNumExamplesNegative);
-            refinementPtr->covered = false;
-            refinementPtr->comparator = GR;
+        if (comparator.isImprovement(scoreVector2)) {
+            refinement.start = 0;
+            refinement.end = (lastNegativeR + 1);
+            refinement.previous = previousRNegative;
+            refinement.numCovered = (numExamples_ - accumulatedNumExamplesNegative);
+            refinement.covered = false;
+            refinement.comparator = GR;
 
             if (totalAccumulatedNumExamples < numExamples_) {
                 // If the condition separates an example with feature value < 0 from an (sparse) example with feature
                 // value == 0
-                refinementPtr->threshold = previousThresholdNegative * 0.5;
+                refinement.threshold = previousThresholdNegative * 0.5;
             } else {
                 // If the condition separates an example with feature value < 0 from an example with feature value > 0
-                refinementPtr->threshold = arithmeticMean(previousThresholdNegative, previousThreshold);
+                refinement.threshold = arithmeticMean(previousThresholdNegative, previousThreshold);
             }
+
+            comparator.pushRefinement(refinement, scoreVector2);
         }
     }
-
-    refinementPtr_ = std::move(refinementPtr);
-}
-
-template<typename T>
-std::unique_ptr<Refinement> ExactRuleRefinement<T>::pollRefinement() {
-    return std::move(refinementPtr_);
 }
 
 template class ExactRuleRefinement<CompleteIndexVector>;
