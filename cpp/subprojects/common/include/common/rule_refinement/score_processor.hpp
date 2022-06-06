@@ -18,9 +18,15 @@ class ScoreProcessor {
 
     private:
 
-        std::unique_ptr<AbstractEvaluatedPrediction> headPtr_;
+        std::unique_ptr<AbstractEvaluatedPrediction>& headPtr_;
 
     public:
+
+        /**
+         * @param headPtr   A reference to an unique pointer of type `AbstractEvaluatedPrediction` that should be used
+         *                  to store the rule head that is created by the processor
+         */
+        ScoreProcessor(std::unique_ptr<AbstractEvaluatedPrediction>& headPtr);
 
         /**
          * Processes the scores that are stored by a `DenseScoreVector<CompleteIndexVector>` in order to convert them
@@ -64,13 +70,5 @@ class ScoreProcessor {
          * @param scoreVector A reference to an object of type `IScoreVector` that stores the scores to be processed
          */
         void processScores(const IScoreVector& scoreVector);
-
-        /**
-         * Returns the rule head that has been created by the processor.
-         *
-         * @return An unique pointer to an object of type `AbstractEvaluatedPrediction` that has been created by the
-         *         processor
-         */
-        std::unique_ptr<AbstractEvaluatedPrediction> pollHead();
 
 };

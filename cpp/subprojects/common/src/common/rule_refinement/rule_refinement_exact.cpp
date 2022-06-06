@@ -19,7 +19,7 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
     refinementPtr->featureIndex = featureIndex_;
     float64 bestQualityScore =
         currentHead != nullptr ? currentHead->overallQualityScore : std::numeric_limits<float64>::infinity();
-    ScoreProcessor scoreProcessor;
+    ScoreProcessor scoreProcessor(refinementPtr->headPtr);
 
     // Invoke the callback...
     std::unique_ptr<IRuleRefinementCallback<FeatureVector>::Result> callbackResultPtr = callbackPtr_->get();
@@ -472,7 +472,6 @@ void ExactRuleRefinement<T>::findRefinement(const AbstractEvaluatedPrediction* c
         }
     }
 
-    refinementPtr->headPtr = scoreProcessor.pollHead();
     refinementPtr_ = std::move(refinementPtr);
 }
 
