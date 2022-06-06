@@ -1,6 +1,4 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
-#include "common/rule_refinement/score_processor.hpp"
-#include <limits>
 
 
 template<typename T>
