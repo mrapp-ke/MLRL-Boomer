@@ -79,8 +79,8 @@ class TopDownRuleInduction final : public IRuleInduction {
             // The total number of conditions
             uint32 numConditions = 0;
             // A map that stores a pointer to an object of type `IRuleRefinement` for each feature
-            std::unordered_map<uint32, std::unique_ptr<IRuleRefinement>> ruleRefinements;
-            std::unordered_map<uint32, std::unique_ptr<IRuleRefinement>>* ruleRefinementsPtr = &ruleRefinements;
+            std::unordered_map<int64, std::unique_ptr<IRuleRefinement>> ruleRefinements;
+            std::unordered_map<int64, std::unique_ptr<IRuleRefinement>>* ruleRefinementsPtr = &ruleRefinements;
             // An unique pointer to the best refinement of the current rule
             std::unique_ptr<Refinement> bestRefinementPtr = std::make_unique<Refinement>();
             // A pointer to the head of the best rule found so far
@@ -105,23 +105,20 @@ class TopDownRuleInduction final : public IRuleInduction {
                     uint32 featureIndex = sampledFeatureIndices.getIndex((uint32) i);
                     std::unique_ptr<IRuleRefinement> ruleRefinementPtr = currentLabelIndices->createRuleRefinement(
                         *thresholdsSubsetPtr, featureIndex);
-                    ruleRefinements[featureIndex] = std::move(ruleRefinementPtr);
+                    ruleRefinements[i] = std::move(ruleRefinementPtr);
                 }
 
                 // Search for the best condition among all available features to be added to the current rule...
                 #pragma omp parallel for firstprivate(numSampledFeatures) firstprivate(ruleRefinementsPtr) \
                 firstprivate(bestHead) schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numSampledFeatures; i++) {
-                    uint32 featureIndex = sampledFeatureIndices.getIndex((uint32) i);
-                    std::unique_ptr<IRuleRefinement>& ruleRefinementPtr =
-                        ruleRefinementsPtr->find(featureIndex)->second;
+                    std::unique_ptr<IRuleRefinement>& ruleRefinementPtr = ruleRefinementsPtr->find(i)->second;
                     ruleRefinementPtr->findRefinement(bestHead);
                 }
 
                 // Pick the best refinement among the refinements that have been found for the different features...
                 for (int64 i = 0; i < numSampledFeatures; i++) {
-                    uint32 featureIndex = sampledFeatureIndices.getIndex((uint32) i);
-                    std::unique_ptr<IRuleRefinement>& ruleRefinementPtr = ruleRefinements.find(featureIndex)->second;
+                    std::unique_ptr<IRuleRefinement>& ruleRefinementPtr = ruleRefinements.find(i)->second;
                     std::unique_ptr<Refinement> refinementPtr = ruleRefinementPtr->pollRefinement();
 
                     if (refinementPtr->isBetterThan(*bestRefinementPtr)) {
