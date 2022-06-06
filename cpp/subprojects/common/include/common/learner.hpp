@@ -17,7 +17,7 @@
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
 #include "common/post_optimization/post_optimization.hpp"
-#include "common/rule_induction/rule_induction_top_down.hpp"
+#include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage.hpp"
 #include "common/sampling/feature_sampling_without_replacement.hpp"

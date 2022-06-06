@@ -3,7 +3,7 @@ from mlrl.common.cython._types cimport uint32
 from libcpp cimport bool
 
 
-cdef extern from "common/rule_induction/rule_induction_top_down.hpp" nogil:
+cdef extern from "common/rule_induction/rule_induction_top_down_greedy.hpp" nogil:
 
     cdef cppclass ITopDownRuleInductionConfig:
 
