@@ -20,6 +20,18 @@ struct Refinement : public Condition {
     Refinement(const Refinement& refinement) : Condition(refinement), previous(refinement.previous) { };
 
     /**
+     * Assigns the properties of an existing refinement to this refinement.
+     *
+     * @param rhs   A reference to the existing refinement
+     * @return      A reference to the modified refinement
+     */
+    Refinement& operator=(const Refinement& refinement) {
+        Condition::operator=(refinement);
+        previous = refinement.previous;
+        return *this;
+    }
+
+    /**
      * Returns whether this refinement is better than another one.
      *
      * @param another   A reference to an object of type `Refinement` to be compared to
