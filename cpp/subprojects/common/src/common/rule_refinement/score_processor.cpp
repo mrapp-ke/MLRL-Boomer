@@ -21,7 +21,7 @@ static inline void processCompleteScores(std::unique_ptr<AbstractEvaluatedPredic
 template<typename T>
 static inline void processPartialScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,
                                         const T& scoreVector) {
-    PartialPrediction* existingHead = (PartialPrediction*) existingHeadPtr.get();
+    PartialPrediction* existingHead = dynamic_cast<PartialPrediction*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
     if (!existingHead) {
@@ -42,6 +42,11 @@ static inline void processPartialScores(std::unique_ptr<AbstractEvaluatedPredict
     existingHead->overallQualityScore = scoreVector.overallQualityScore;
 }
 
+ScoreProcessor::ScoreProcessor(std::unique_ptr<AbstractEvaluatedPrediction>& headPtr)
+    : headPtr_(headPtr) {
+
+}
+
 void ScoreProcessor::processScores(const DenseScoreVector<CompleteIndexVector>& scoreVector) {
     processCompleteScores(headPtr_, scoreVector);
 }
@@ -60,8 +65,4 @@ void ScoreProcessor::processScores(const DenseBinnedScoreVector<PartialIndexVect
 
 void ScoreProcessor::processScores(const IScoreVector& scoreVector) {
     scoreVector.processScores(*this);
-}
-
-std::unique_ptr<AbstractEvaluatedPrediction> ScoreProcessor::pollHead() {
-    return std::move(headPtr_);
 }

@@ -70,9 +70,9 @@ class TopDownRuleInduction final : public IRuleInduction {
             }
 
             const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
-            ScoreProcessor scoreProcessor;
+            std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr;
+            ScoreProcessor scoreProcessor(defaultPredictionPtr);
             scoreProcessor.processScores(scoreVector);
-            std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr = scoreProcessor.pollHead();
 
             for (uint32 i = 0; i < numStatistics; i++) {
                 defaultPredictionPtr->apply(statistics, i);
@@ -144,11 +144,12 @@ class TopDownRuleInduction final : public IRuleInduction {
 
                 if (foundRefinement) {
                     bestHead = bestRefinementPtr->headPtr.get();
+
+                    // Sort the rule's predictions by the corresponding label indices...
                     bestHead->sort();
 
                     // Filter the current subset of thresholds by applying the best refinement that has been found...
                     thresholdsSubsetPtr->filterThresholds(*bestRefinementPtr);
-                    uint32 numCoveredExamples = bestRefinementPtr->numCovered;
 
                     // Add the new condition...
                     conditionListPtr->addCondition(*bestRefinementPtr);
@@ -160,7 +161,7 @@ class TopDownRuleInduction final : public IRuleInduction {
                     }
 
                     // Abort refinement process if the rule is not allowed to cover less examples...
-                    if (numCoveredExamples <= minCoverage_) {
+                    if (bestRefinementPtr->numCovered <= minCoverage_) {
                         break;
                     }
                 }
