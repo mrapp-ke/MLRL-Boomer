@@ -17,7 +17,7 @@ enum Comparator : uint32 {
 };
 
 /**
- * Stores information about a condition of a rule. It consists of the index of the feature, the condition corresponds
+ * Stores the properties of a condition of a rule. It consists of the index of the feature, the condition corresponds
  * to, the type of the operator that is used by the condition, as well as a threshold. In addition, it stores the range
  * [start, end) that corresponds to the elements, e.g. examples or bins, that are covered (or uncovered, if
  * `covered == false`) by the condition, as well as the sum of the weights of all covered elements.
@@ -32,6 +32,23 @@ struct Condition {
     Condition(const Condition& condition) : featureIndex(condition.featureIndex), comparator(condition.comparator),
         threshold(condition.threshold), start(condition.start), end(condition.end), covered(condition.covered),
         numCovered(condition.numCovered) { };
+
+    /**
+     * Assigns the properties of an existing condition to this condition.
+     *
+     * @param rhs   A reference to the existing condition
+     * @return      A reference to the modified condition
+     */
+    Condition& operator=(const Condition& condition) {
+        featureIndex = condition.featureIndex;
+        comparator = condition.comparator;
+        threshold = condition.threshold;
+        start = condition.start;
+        end = condition.end;
+        covered = condition.covered;
+        numCovered = condition.numCovered;
+        return *this;
+    }
 
     /**
      * The index of the feature, the condition corresponds to.
