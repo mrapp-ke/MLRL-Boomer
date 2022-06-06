@@ -172,7 +172,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 };
 
 /**
- * Allows to create instances of the type `IRuleInduction` that induce classification rules by using a top-down greedy
+ * Allows to create instances of the type `IRuleInduction` that induce classification rules by using a greedy top-down
  * search, where new conditions are added iteratively to the (initially empty) body of a rule. At each iteration, the
  * refinement that improves the rule the most is chosen. The search stops if no refinement results in an improvement.
  */

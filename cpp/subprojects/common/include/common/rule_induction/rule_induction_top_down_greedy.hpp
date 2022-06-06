@@ -10,7 +10,7 @@
 
 /**
  * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules that
- * uses a top-down greedy search.
+ * uses a greedy top-down search.
  */
 class MLRLCOMMON_API IGreedyTopDownRuleInductionConfig {
 
@@ -21,7 +21,7 @@ class MLRLCOMMON_API IGreedyTopDownRuleInductionConfig {
         /**
          * Returns the minimum number of training examples that must be covered by a rule.
          *
-         * @return The minimum number of training examples that must be covered by a rule.
+         * @return The minimum number of training examples that must be covered by a rule
          */
         virtual uint32 getMinCoverage() const = 0;
 
@@ -96,7 +96,7 @@ class MLRLCOMMON_API IGreedyTopDownRuleInductionConfig {
 };
 
 /**
- * Allows to configure an algorithm for the induction of individual rules that uses a top-down greedy search.
+ * Allows to configure an algorithm for the induction of individual rules that uses a greedy top-down search.
  */
 class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig, public IGreedyTopDownRuleInductionConfig {
 
