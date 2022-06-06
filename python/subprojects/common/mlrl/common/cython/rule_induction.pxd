@@ -3,31 +3,31 @@ from mlrl.common.cython._types cimport uint32
 from libcpp cimport bool
 
 
-cdef extern from "common/rule_induction/rule_induction_top_down.hpp" nogil:
+cdef extern from "common/rule_induction/rule_induction_top_down_greedy.hpp" nogil:
 
-    cdef cppclass ITopDownRuleInductionConfig:
+    cdef cppclass IGreedyTopDownRuleInductionConfig:
 
         # Functions:
 
-        ITopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) except +
+        IGreedyTopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) except +
 
         uint32 getMinCoverage() const
 
-        ITopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) except +
+        IGreedyTopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) except +
 
         uint32 getMaxConditions() const;
 
-        ITopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) except +
+        IGreedyTopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) except +
 
         uint32 getMaxHeadRefinements() const
 
-        ITopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) except +
+        IGreedyTopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) except +
 
         bool arePredictionsRecalculated() const
 
 
-cdef class TopDownRuleInductionConfig:
+cdef class GreedyTopDownRuleInductionConfig:
 
     # Attributes:
 
-    cdef ITopDownRuleInductionConfig* config_ptr
+    cdef IGreedyTopDownRuleInductionConfig* config_ptr
