@@ -1,4 +1,4 @@
-#include "common/rule_induction/default_rule.hpp"
+#include "common/rule_model_assemblage/default_rule.hpp"
 
 
 DefaultRuleConfig::DefaultRuleConfig(bool useDefaultRule)
