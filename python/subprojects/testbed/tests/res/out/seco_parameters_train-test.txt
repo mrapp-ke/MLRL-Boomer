@@ -4,7 +4,7 @@ INFO Using separate training and test sets...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
 DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-train.arff"...
 DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-test.arff"...
-INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down{max_conditions=1}'}
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters:
 
 feature_format: auto
@@ -12,7 +12,7 @@ label_format: auto
 max_rules: 10
 predicted_label_format: auto
 random_state: 1
-rule_induction: top-down{max_conditions=1}
+rule_induction: top-down-greedy{max_conditions=1}
 
 INFO Fitting model to 391 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
