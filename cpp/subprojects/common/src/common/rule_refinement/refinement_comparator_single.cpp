@@ -2,11 +2,14 @@
 #include <limits>
 
 
-SingleRefinementComparator::SingleRefinementComparator(const AbstractEvaluatedPrediction* bestHead)
-    : bestRefinementPtr_(std::make_unique<Refinement>()),
-      bestQualityScore_(bestHead != nullptr ? bestHead->overallQualityScore
-                                            : std::numeric_limits<float64>::infinity()),
-      scoreProcessor_(ScoreProcessor(bestRefinementPtr_->headPtr)) {
+SingleRefinementComparator::SingleRefinementComparator()
+    : bestQualityScore_(std::numeric_limits<float64>::infinity()),
+      scoreProcessor_(ScoreProcessor(bestRefinement_.headPtr)) {
+
+}
+
+SingleRefinementComparator::SingleRefinementComparator(const SingleRefinementComparator& comparator)
+    : bestQualityScore_(comparator.bestQualityScore_), scoreProcessor_(ScoreProcessor(bestRefinement_.headPtr)) {
 
 }
 
@@ -15,19 +18,42 @@ bool SingleRefinementComparator::isImprovement(const IScoreVector& scoreVector) 
 }
 
 void SingleRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
-    float64 qualityScore = scoreVector.overallQualityScore;
-    bestQualityScore_ = qualityScore;
+    bestQualityScore_ = scoreVector.overallQualityScore;;
     scoreProcessor_.processScores(scoreVector);
-    bestRefinementPtr_->featureIndex = refinement.featureIndex;
-    bestRefinementPtr_->comparator = refinement.comparator;
-    bestRefinementPtr_->threshold = refinement.threshold;
-    bestRefinementPtr_->start = refinement.start;
-    bestRefinementPtr_->end = refinement.end;
-    bestRefinementPtr_->covered = refinement.covered;
-    bestRefinementPtr_->numCovered = refinement.numCovered;
-    bestRefinementPtr_->previous = refinement.previous;
+    bestRefinement_.featureIndex = refinement.featureIndex;
+    bestRefinement_.comparator = refinement.comparator;
+    bestRefinement_.threshold = refinement.threshold;
+    bestRefinement_.start = refinement.start;
+    bestRefinement_.end = refinement.end;
+    bestRefinement_.covered = refinement.covered;
+    bestRefinement_.numCovered = refinement.numCovered;
+    bestRefinement_.previous = refinement.previous;
 }
 
-std::unique_ptr<Refinement> SingleRefinementComparator::pollRefinement() {
-    return std::move(bestRefinementPtr_);
+bool SingleRefinementComparator::merge(SingleRefinementComparator& comparator) {
+    Refinement& refinement = comparator.bestRefinement_;
+
+    if (refinement.headPtr) {
+        float64 qualityScore = comparator.bestQualityScore_;
+
+        if (!bestRefinement_.headPtr || qualityScore < bestQualityScore_) {
+            bestQualityScore_ = qualityScore;
+            bestRefinement_.headPtr = std::move(refinement.headPtr);
+            bestRefinement_.featureIndex = refinement.featureIndex;
+            bestRefinement_.comparator = refinement.comparator;
+            bestRefinement_.threshold = refinement.threshold;
+            bestRefinement_.start = refinement.start;
+            bestRefinement_.end = refinement.end;
+            bestRefinement_.covered = refinement.covered;
+            bestRefinement_.numCovered = refinement.numCovered;
+            bestRefinement_.previous = refinement.previous;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+Refinement& SingleRefinementComparator::getBestRefinement() {
+    return bestRefinement_;
 }

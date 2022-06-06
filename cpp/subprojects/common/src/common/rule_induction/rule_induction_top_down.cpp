@@ -65,10 +65,8 @@ class TopDownRuleInduction final : public AbstractRuleInduction {
             const IIndexVector* currentLabelIndices = &labelIndices;
             // A list that contains the conditions in the rule's body (in the order they have been learned)
             std::unique_ptr<ConditionList> conditionListPtr = std::make_unique<ConditionList>();
-            // An unique pointer to the best refinement of the current rule
-            std::unique_ptr<Refinement> bestRefinementPtr = std::make_unique<Refinement>();
-            // A pointer to the head of the best rule found so far
-            AbstractEvaluatedPrediction* bestHead = nullptr;
+            // The comparator that is used to keep track of the best refinement of the rule
+           SingleRefinementComparator refinementComparator;
             // Whether a refinement of the current rule has been found
             bool foundRefinement = true;
 
@@ -90,7 +88,7 @@ class TopDownRuleInduction final : public AbstractRuleInduction {
                 for (uint32 i = 0; i < numSampledFeatures; i++) {
                     uint32 featureIndex = sampledFeatureIndices.getIndex(i);
                     RuleRefinement& ruleRefinement = ruleRefinements[i];
-                    ruleRefinement.comparatorPtr = std::make_unique<SingleRefinementComparator>(bestHead);
+                    ruleRefinement.comparatorPtr = std::make_unique<SingleRefinementComparator>(refinementComparator);
                     ruleRefinement.ruleRefinementPtr =
                         currentLabelIndices->createRuleRefinement(*thresholdsSubsetPtr, featureIndex);
                 }
@@ -106,65 +104,63 @@ class TopDownRuleInduction final : public AbstractRuleInduction {
                 // Pick the best refinement among the refinements that have been found for the different features...
                 for (uint32 i = 0; i < numSampledFeatures; i++) {
                     RuleRefinement& ruleRefinement = ruleRefinements[i];
-                    std::unique_ptr<Refinement> refinementPtr = ruleRefinement.comparatorPtr->pollRefinement();
-
-                    if (refinementPtr->isBetterThan(*bestRefinementPtr)) {
-                        bestRefinementPtr = std::move(refinementPtr);
-                        foundRefinement = true;
-                    }
+                    foundRefinement |= refinementComparator.merge(*ruleRefinement.comparatorPtr);
                 }
 
                 delete[] ruleRefinements;
 
                 if (foundRefinement) {
-                    bestHead = bestRefinementPtr->headPtr.get();
+                    Refinement& bestRefinement = refinementComparator.getBestRefinement();
 
                     // Sort the rule's predictions by the corresponding label indices...
-                    bestHead->sort();
+                    bestRefinement.headPtr->sort();
 
                     // Filter the current subset of thresholds by applying the best refinement that has been found...
-                    thresholdsSubsetPtr->filterThresholds(*bestRefinementPtr);
+                    thresholdsSubsetPtr->filterThresholds(bestRefinement);
 
                     // Add the new condition...
-                    conditionListPtr->addCondition(*bestRefinementPtr);
+                    conditionListPtr->addCondition(bestRefinement);
 
                     // Keep the labels for which the rule predicts, if the head should not be further refined...
                     if (maxHeadRefinements_ > 0 && conditionListPtr->getNumConditions() >= maxHeadRefinements_) {
-                        currentLabelIndices = bestHead;
+                        currentLabelIndices = bestRefinement.headPtr.get();
                     }
 
                     // Abort refinement process if the rule is not allowed to cover less examples...
-                    if (bestRefinementPtr->numCovered <= minCoverage_) {
+                    if (bestRefinement.numCovered <= minCoverage_) {
                         break;
                     }
                 }
             }
 
-            if (bestHead) {
+            Refinement& bestRefinement = refinementComparator.getBestRefinement();
+
+            if (bestRefinement.headPtr) {
                 if (weights.hasZeroWeights()) {
                     // Prune rule...
                     IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
                     statisticsProvider.switchToPruningRuleEvaluation();
                     std::unique_ptr<ICoverageState> coverageStatePtr = pruning.prune(*thresholdsSubsetPtr, partition,
-                                                                                     *conditionListPtr, *bestHead);
+                                                                                     *conditionListPtr,
+                                                                                     *bestRefinement.headPtr);
                     statisticsProvider.switchToRegularRuleEvaluation();
 
                     // Re-calculate the scores in the head based on the entire training data...
                     if (recalculatePredictions_) {
                         const ICoverageState& coverageState =
                             coverageStatePtr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
-                        partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *bestRefinementPtr);
+                        partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, bestRefinement);
                     }
                 }
 
                 // Apply post-processor...
-                postProcessor.postProcess(*bestHead);
+                postProcessor.postProcess(*bestRefinement.headPtr);
 
                 // Update the statistics by applying the predictions of the new rule...
-                thresholdsSubsetPtr->applyPrediction(*bestHead);
+                thresholdsSubsetPtr->applyPrediction(*bestRefinement.headPtr);
 
                 // Add the induced rule to the model...
-                modelBuilder.addRule(conditionListPtr, bestRefinementPtr->headPtr);
+                modelBuilder.addRule(conditionListPtr, bestRefinement.headPtr);
                 return true;
             } else {
                 // No rule could be induced, because no useful condition could be found. This might be the case, if all

@@ -14,7 +14,7 @@ class SingleRefinementComparator final {
 
     private:
 
-        std::unique_ptr<Refinement> bestRefinementPtr_;
+        Refinement bestRefinement_;
 
         float64 bestQualityScore_;
 
@@ -22,11 +22,13 @@ class SingleRefinementComparator final {
 
     public:
 
+        SingleRefinementComparator();
+
         /**
-         * @param bestHead A pointer to an object of type `AbstractEvaluatedPrediction`, representing the head of the
-         *                 best rule found so far, or a null pointer, if no such rule is available
+         * @param comparator A reference to an object of type `SingleRefinementComparator` that keeps track of the best
+         *                   refinement found so far
          */
-        SingleRefinementComparator(const AbstractEvaluatedPrediction* bestHead);
+        SingleRefinementComparator(const SingleRefinementComparator& comparator);
 
         /**
          * Returns whether the quality of a rule's predictions is considered as an improvement over the quality of the
@@ -40,7 +42,8 @@ class SingleRefinementComparator final {
         bool isImprovement(const IScoreVector& scoreVector) const;
 
         /**
-         * Keeps track of a specific refinement of a rule that is currently considered as the best one.
+         * Keeps track of a given refinement of a rule that is considered as an improvement over the best rule found so
+         * far.
          *
          * @param refinement    A reference to an object of type `Refinement` that represents the refinement of the rule
          * @param scoreVector   A reference to an object of type `IScoreVector` that stores the predictions of the rule
@@ -48,11 +51,21 @@ class SingleRefinementComparator final {
         void pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector);
 
         /**
-         * Returns the best refinement that has been passed to the function `pushRefinement`.
+         * Keeps track of the best refinement that is stored by a given `SingleRefinementComparator` if it is considered
+         * as an improvement over the best refinement that has been provided to this comparator.
          *
-         * @return An unique pointer to an object of type `Refinement` that stores information about the best refinement
-         *         that has been found
+         * @param comparator    A reference to an object of type `SingleRefinementComparator` that should be merged
+         * @return              True, if the best refinement that is stored by the given `comparator` is considered as
+         *                      an improvement over the best refinement that has been provided to this comparator
          */
-        std::unique_ptr<Refinement> pollRefinement();
+        bool merge(SingleRefinementComparator& comparator);
+
+        /**
+         * Returns the best refinement that has been provided via the function `pushRefinement` or `merge`.
+         *
+         * @return A reference to an object of type `Refinement` that represents the best refinement that has been
+         *         provided
+         */
+        Refinement& getBestRefinement();
 
 };
