@@ -16,7 +16,7 @@ from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.common.cython.nominal_feature_mask cimport NominalFeatureMask
 from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartitionSamplingConfig, \
     LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
-from mlrl.common.cython.rule_induction cimport TopDownRuleInductionConfig
+from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
 from mlrl.common.cython.stopping_criterion cimport SizeStoppingCriterionConfig, TimeStoppingCriterionConfig, \
     MeasureStoppingCriterionConfig
@@ -69,16 +69,16 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useSequentialRuleModelAssemblage()
 
-    def use_top_down_rule_induction(self) -> TopDownRuleInductionConfig:
+    def use_greedy_top_down_rule_induction(self) -> GreedyTopDownRuleInductionConfig:
         """
         Configures the algorithm to use a top-down greedy search for the induction of individual rules.
 
-        :return: A `TopDownRuleInductionConfig` that allows further configuration of the algorithm for the induction of
-                 individual rules
+        :return: A `GreedyTopDownRuleInductionConfig` that allows further configuration of the algorithm for the
+                 induction of individual rules
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef ITopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useTopDownRuleInduction()
-        cdef TopDownRuleInductionConfig config = TopDownRuleInductionConfig.__new__(TopDownRuleInductionConfig)
+        cdef IGreedyTopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useGreedyTopDownRuleInduction()
+        cdef GreedyTopDownRuleInductionConfig config = GreedyTopDownRuleInductionConfig.__new__(GreedyTopDownRuleInductionConfig)
         config.config_ptr = config_ptr
         return config
 

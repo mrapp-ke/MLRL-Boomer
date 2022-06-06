@@ -4,9 +4,9 @@
 from mlrl.common.cython._validation import assert_greater_or_equal
 
 
-cdef class TopDownRuleInductionConfig:
+cdef class GreedyTopDownRuleInductionConfig:
     """
-    Allows to configure an algorithm for the induction of individual rules that uses a top-down greedy search.
+    Allows to configure an algorithm for the induction of individual rules that uses a greedy top-down search.
     """
 
     def get_min_coverage(self) -> int:
@@ -17,14 +17,14 @@ cdef class TopDownRuleInductionConfig:
         """
         return self.config_ptr.getMinCoverage()
 
-    def set_min_coverage(self, min_coverage: int) -> TopDownRuleInductionConfig:
+    def set_min_coverage(self, min_coverage: int) -> GreedyTopDownRuleInductionConfig:
         """
         Sets the minimum number of training examples that must be covered by a rule.
 
         :param min_coverage:    The minimum number of training examples that must be covered by a rule. Must be at least
                                 1
-        :return:                A `TopDownRuleInductionConfig` that allows further configuration of the algorithm for
-                                the induction of individual rules
+        :return:                A `GreedyTopDownRuleInductionConfig` that allows further configuration of the algorithm
+                                for the induction of individual rules
         """
         assert_greater_or_equal('min_coverage', min_coverage, 1)
         self.config_ptr.setMinCoverage(min_coverage)
@@ -39,14 +39,14 @@ cdef class TopDownRuleInductionConfig:
         """
         return self.config_ptr.getMaxConditions()
 
-    def set_max_conditions(self, max_conditions: int) -> TopDownRuleInductionConfig:
+    def set_max_conditions(self, max_conditions: int) -> GreedyTopDownRuleInductionConfig:
         """
         Sets the maximum number of conditions to be included in a rule's body.
 
         :param max_conditions:  The maximum number of conditions to be included in a rule's body. Must be at least 1 or
                                 0, if the number of conditions should not be restricted
-        :return:                A `TopDownRuleInductionConfig` that allows further configuration of the algorithm for
-                                the induction of individual rules
+        :return:                A `GreedyTopDownRuleInductionConfig` that allows further configuration of the algorithm
+                                for the induction of individual rules
         """
         if max_conditions != 0:
             assert_greater_or_equal('max_conditions', max_conditions, 1)
@@ -63,14 +63,14 @@ cdef class TopDownRuleInductionConfig:
         """
         return self.config_ptr.getMaxHeadRefinements()
 
-    def set_max_head_refinements(self, max_head_refinements: int) -> TopDownRuleInductionConfig:
+    def set_max_head_refinements(self, max_head_refinements: int) -> GreedyTopDownRuleInductionConfig:
         """
         Sets the maximum number of times, the head of a rule may be refined after a new condition has been added to its
         body.
 
         :param max_head_refinements:    The maximum number of times, the head of a rule may be refined. Must be at least
                                         1 or 0, if the number of refinements should not be restricted
-        :return:                        A `TopDownRuleInductionConfig` that allows further configuration of the
+        :return:                        A `GreedyTopDownRuleInductionConfig` that allows further configuration of the
                                         algorithm for the induction of individual rules
         """
         if max_head_refinements != 0:
@@ -87,14 +87,14 @@ cdef class TopDownRuleInductionConfig:
         """
         return self.config_ptr.arePredictionsRecalculated()
 
-    def set_recalculate_predictions(self, recalculate_predictions: bool) -> TopDownRuleInductionConfig:
+    def set_recalculate_predictions(self, recalculate_predictions: bool) -> GreedyTopDownRuleInductionConfig:
         """
         Sets whether the predictions of rules should be recalculated on all training examples, if some of the examples
         have zero weights, or not.
 
         :param recalculate_predictions: True, if the predictions of rules should be recalculated on all training
                                         examples, False otherwise
-        :return:                        A `TopDownRuleInductionConfig` that allows further configuration of the
+        :return:                        A `GreedyTopDownRuleInductionConfig` that allows further configuration of the
                                         algorithm for the induction of individual rules
         """
         self.config_ptr.setRecalculatePredictions(recalculate_predictions)

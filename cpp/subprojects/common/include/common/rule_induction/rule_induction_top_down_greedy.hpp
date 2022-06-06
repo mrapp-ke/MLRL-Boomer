@@ -12,11 +12,11 @@
  * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules that
  * uses a top-down greedy search.
  */
-class MLRLCOMMON_API ITopDownRuleInductionConfig {
+class MLRLCOMMON_API IGreedyTopDownRuleInductionConfig {
 
     public:
 
-        virtual ~ITopDownRuleInductionConfig() { };
+        virtual ~IGreedyTopDownRuleInductionConfig() { };
 
         /**
          * Returns the minimum number of training examples that must be covered by a rule.
@@ -30,10 +30,10 @@ class MLRLCOMMON_API ITopDownRuleInductionConfig {
          *
          * @param minCoverage   The minimum number of training examples that must be covered by a rule. Must be at least
          *                      1
-         * @return              A reference to an object of type `ITopDownRuleInductionConfig` that allows further
+         * @return              A reference to an object of type `IGreedyTopDownRuleInductionConfig` that allows further
          *                      configuration of the algorithm for the induction of individual rules
          */
-        virtual ITopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) = 0;
+        virtual IGreedyTopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) = 0;
 
         /**
          * Returns the maximum number of conditions to be included in a rule's body.
@@ -48,10 +48,10 @@ class MLRLCOMMON_API ITopDownRuleInductionConfig {
          *
          * @param maxConditions The maximum number of conditions to be included in a rule's body. Must be at least 1 or
          *                      0, if the number of conditions should not be restricted
-         * @return              A reference to an object of type `ITopDownRuleInductionConfig` that allows further
+         * @return              A reference to an object of type `IGreedyTopDownRuleInductionConfig` that allows further
          *                      configuration of the algorithm for the induction of individual rules
          */
-        virtual ITopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) = 0;
+        virtual IGreedyTopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) = 0;
 
         /**
          * Returns the maximum number of times, the head of a rule may be refinement after a new condition has been
@@ -68,10 +68,10 @@ class MLRLCOMMON_API ITopDownRuleInductionConfig {
          *
          * @param maxHeadRefinements    The maximum number of times, the head of a rule may be refined. Must be at least
          *                              1 or 0, if the number of refinements should not be restricted
-         * @return                      A reference to an object of type `ITopDownRuleInductionConfig` that allows
+         * @return                      A reference to an object of type `IGreedyTopDownRuleInductionConfig` that allows
          *                              further configuration of the algorithm for the induction of individual rules
          */
-        virtual ITopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) = 0;
+        virtual IGreedyTopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) = 0;
 
         /**
          * Returns whether the predictions of rules are recalculated on all training examples, if some of the examples
@@ -87,17 +87,18 @@ class MLRLCOMMON_API ITopDownRuleInductionConfig {
          *
          * @param recalculatePredictions    True, if the predictions of rules should be recalculated on all training
          *                                  examples, false otherwise
-         * @return                          A reference to an object of type `ITopDownRuleInductionConfig` that allows
-         *                                  further configuration of the algorithm for the induction of individual rules
+         * @return                          A reference to an object of type `IGreedyTopDownRuleInductionConfig` that
+         *                                  allows further configuration of the algorithm for the induction of
+         *                                  individual rules
          */
-        virtual ITopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) = 0;
+        virtual IGreedyTopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) = 0;
 
 };
 
 /**
  * Allows to configure an algorithm for the induction of individual rules that uses a top-down greedy search.
  */
-class TopDownRuleInductionConfig final : public IRuleInductionConfig, public ITopDownRuleInductionConfig {
+class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig, public IGreedyTopDownRuleInductionConfig {
 
     private:
 
@@ -118,23 +119,23 @@ class TopDownRuleInductionConfig final : public IRuleInductionConfig, public ITo
          *                                multi-threading behavior that should be used for the parallel refinement of
          *                                rules
          */
-        TopDownRuleInductionConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+        GreedyTopDownRuleInductionConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
         uint32 getMinCoverage() const override;
 
-        ITopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) override;
+        IGreedyTopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) override;
 
         uint32 getMaxConditions() const override;
 
-        ITopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) override;
+        IGreedyTopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) override;
 
         uint32 getMaxHeadRefinements() const override;
 
-        ITopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) override;
+        IGreedyTopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) override;
 
         bool arePredictionsRecalculated() const override;
 
-        ITopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) override;
+        IGreedyTopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) override;
 
         std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;

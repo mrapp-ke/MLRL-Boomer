@@ -1,4 +1,4 @@
-#include "common/rule_induction/rule_induction_top_down.hpp"
+#include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/rule_refinement/refinement_comparator_single.hpp"
 #include "common/util/validation.hpp"
 #include "rule_induction_common.hpp"
@@ -19,10 +19,10 @@ struct RuleRefinement {
 };
 
 /**
- * An implementation of the type `IRuleInduction` that allows to induce classification rules by using a top-down greedy
+ * An implementation of the type `IRuleInduction` that allows to induce classification rules by using a greedy top-down
  * search.
  */
-class TopDownRuleInduction final : public AbstractRuleInduction {
+class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
     private:
 
@@ -51,8 +51,8 @@ class TopDownRuleInduction final : public AbstractRuleInduction {
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        TopDownRuleInduction(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
-                             bool recalculatePredictions, uint32 numThreads)
+        GreedyTopDownRuleInduction(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
+                                   bool recalculatePredictions, uint32 numThreads)
             : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
               recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
 
@@ -176,7 +176,7 @@ class TopDownRuleInduction final : public AbstractRuleInduction {
  * search, where new conditions are added iteratively to the (initially empty) body of a rule. At each iteration, the
  * refinement that improves the rule the most is chosen. The search stops if no refinement results in an improvement.
  */
-class TopDownRuleInductionFactory final : public IRuleInductionFactory {
+class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
 
     private:
 
@@ -205,70 +205,71 @@ class TopDownRuleInductionFactory final : public IRuleInductionFactory {
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        TopDownRuleInductionFactory(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
-                                    bool recalculatePredictions, uint32 numThreads)
+        GreedyTopDownRuleInductionFactory(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
+                                          bool recalculatePredictions, uint32 numThreads)
             : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
               recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
 
         }
 
         std::unique_ptr<IRuleInduction> create() const override {
-            return std::make_unique<TopDownRuleInduction>(minCoverage_, maxConditions_, maxHeadRefinements_,
-                                                          recalculatePredictions_, numThreads_);
+            return std::make_unique<GreedyTopDownRuleInduction>(minCoverage_, maxConditions_, maxHeadRefinements_,
+                                                                recalculatePredictions_, numThreads_);
         }
 
 };
 
 
-TopDownRuleInductionConfig::TopDownRuleInductionConfig(
+GreedyTopDownRuleInductionConfig::GreedyTopDownRuleInductionConfig(
         const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
     : minCoverage_(1), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
       multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
 }
 
-uint32 TopDownRuleInductionConfig::getMinCoverage() const {
+uint32 GreedyTopDownRuleInductionConfig::getMinCoverage() const {
     return minCoverage_;
 }
 
-ITopDownRuleInductionConfig& TopDownRuleInductionConfig::setMinCoverage(uint32 minCoverage) {
+IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMinCoverage(uint32 minCoverage) {
     assertGreaterOrEqual<uint32>("minCoverage", minCoverage, 1);
     minCoverage_ = minCoverage;
     return *this;
 }
 
-uint32 TopDownRuleInductionConfig::getMaxConditions() const {
+uint32 GreedyTopDownRuleInductionConfig::getMaxConditions() const {
     return maxConditions_;
 }
 
-ITopDownRuleInductionConfig& TopDownRuleInductionConfig::setMaxConditions(uint32 maxConditions) {
+IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMaxConditions(uint32 maxConditions) {
     if (maxConditions != 0) { assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 1); }
     maxConditions_ = maxConditions;
     return *this;
 }
 
-uint32 TopDownRuleInductionConfig::getMaxHeadRefinements() const {
+uint32 GreedyTopDownRuleInductionConfig::getMaxHeadRefinements() const {
     return maxHeadRefinements_;
 }
 
-ITopDownRuleInductionConfig& TopDownRuleInductionConfig::setMaxHeadRefinements(uint32 maxHeadRefinements) {
+IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMaxHeadRefinements(uint32 maxHeadRefinements) {
     if (maxHeadRefinements != 0) { assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1); }
     maxHeadRefinements_ = maxHeadRefinements;
     return *this;
 }
 
-bool TopDownRuleInductionConfig::arePredictionsRecalculated() const {
+bool GreedyTopDownRuleInductionConfig::arePredictionsRecalculated() const {
     return recalculatePredictions_;
 }
 
-ITopDownRuleInductionConfig& TopDownRuleInductionConfig::setRecalculatePredictions(bool recalculatePredictions) {
+IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setRecalculatePredictions(
+        bool recalculatePredictions) {
     recalculatePredictions_ = recalculatePredictions;
     return *this;
 }
 
-std::unique_ptr<IRuleInductionFactory> TopDownRuleInductionConfig::createRuleInductionFactory(
+std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createRuleInductionFactory(
         const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
     uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
-    return std::make_unique<TopDownRuleInductionFactory>(minCoverage_, maxConditions_, maxHeadRefinements_,
-                                                         recalculatePredictions_, numThreads);
+    return std::make_unique<GreedyTopDownRuleInductionFactory>(minCoverage_, maxConditions_, maxHeadRefinements_,
+                                                               recalculatePredictions_, numThreads);
 }
