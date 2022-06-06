@@ -13,19 +13,6 @@
 struct Refinement : public Condition {
 
     /**
-     * Assigns the properties of an existing refinement to this refinement.
-     *
-     * @param rhs   A reference to the existing refinement
-     * @return      A reference to the modified refinement
-     */
-    Refinement& operator=(Refinement& refinement) {
-        Condition::operator=(refinement);
-        headPtr = std::move(refinement.headPtr);
-        previous = refinement.previous;
-        return *this;
-    }
-
-    /**
      * Returns whether this refinement is better than another one.
      *
      * @param another   A reference to an object of type `Refinement` to be compared to

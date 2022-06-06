@@ -1,7 +1,7 @@
 #include "common/rule_induction/rule_induction_top_down.hpp"
 #include "common/rule_refinement/refinement_comparator_single.hpp"
-#include "common/indices/index_vector_complete.hpp"
 #include "common/util/validation.hpp"
+#include "rule_induction_common.hpp"
 #include "omp.h"
 
 
@@ -22,7 +22,7 @@ struct RuleRefinement {
  * An implementation of the type `IRuleInduction` that allows to induce classification rules by using a top-down greedy
  * search.
  */
-class TopDownRuleInduction final : public IRuleInduction {
+class TopDownRuleInduction final : public AbstractRuleInduction {
 
     private:
 
@@ -58,29 +58,6 @@ class TopDownRuleInduction final : public IRuleInduction {
 
         }
 
-        void induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const override {
-            uint32 numStatistics = statistics.getNumStatistics();
-            uint32 numLabels = statistics.getNumLabels();
-            CompleteIndexVector labelIndices(numLabels);
-            EqualWeightVector weights(numStatistics);
-            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices, weights);
-
-            for (uint32 i = 0; i < numStatistics; i++) {
-                statisticsSubsetPtr->addToSubset(i);
-            }
-
-            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
-            std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr;
-            ScoreProcessor scoreProcessor(defaultPredictionPtr);
-            scoreProcessor.processScores(scoreVector);
-
-            for (uint32 i = 0; i < numStatistics; i++) {
-                defaultPredictionPtr->apply(statistics, i);
-            }
-
-            modelBuilder.setDefaultRule(defaultPredictionPtr);
-        }
-
         bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
                         IPartition& partition, IFeatureSampling& featureSampling, const IPruning& pruning,
                         const IPostProcessor& postProcessor, RNG& rng, IModelBuilder& modelBuilder) const override {
@@ -88,8 +65,6 @@ class TopDownRuleInduction final : public IRuleInduction {
             const IIndexVector* currentLabelIndices = &labelIndices;
             // A list that contains the conditions in the rule's body (in the order they have been learned)
             std::unique_ptr<ConditionList> conditionListPtr = std::make_unique<ConditionList>();
-            // The total number of conditions
-            uint32 numConditions = 0;
             // An unique pointer to the best refinement of the current rule
             std::unique_ptr<Refinement> bestRefinementPtr = std::make_unique<Refinement>();
             // A pointer to the head of the best rule found so far
@@ -102,7 +77,7 @@ class TopDownRuleInduction final : public IRuleInduction {
 
             // Search for the best refinement until no improvement in terms of the rule's quality score is possible
             // anymore or the maximum number of conditions has been reached...
-            while (foundRefinement && (maxConditions_ == 0 || numConditions < maxConditions_)) {
+            while (foundRefinement && (maxConditions_ == 0 || conditionListPtr->getNumConditions() < maxConditions_)) {
                 foundRefinement = false;
 
                 // Sample features...
@@ -112,13 +87,12 @@ class TopDownRuleInduction final : public IRuleInduction {
                 // For each feature, create an object of type `IRuleRefinement`...
                 RuleRefinement* ruleRefinements = new RuleRefinement[numSampledFeatures];
 
-                for (int64 i = 0; i < numSampledFeatures; i++) {
-                    uint32 featureIndex = sampledFeatureIndices.getIndex((uint32) i);
-                    std::unique_ptr<IRuleRefinement> ruleRefinementPtr = currentLabelIndices->createRuleRefinement(
-                        *thresholdsSubsetPtr, featureIndex);
+                for (uint32 i = 0; i < numSampledFeatures; i++) {
+                    uint32 featureIndex = sampledFeatureIndices.getIndex(i);
                     RuleRefinement& ruleRefinement = ruleRefinements[i];
-                    ruleRefinement.ruleRefinementPtr = std::move(ruleRefinementPtr);
                     ruleRefinement.comparatorPtr = std::make_unique<SingleRefinementComparator>(bestHead);
+                    ruleRefinement.ruleRefinementPtr =
+                        currentLabelIndices->createRuleRefinement(*thresholdsSubsetPtr, featureIndex);
                 }
 
                 // Search for the best condition among all available features to be added to the current rule...
@@ -130,7 +104,7 @@ class TopDownRuleInduction final : public IRuleInduction {
                 }
 
                 // Pick the best refinement among the refinements that have been found for the different features...
-                for (int64 i = 0; i < numSampledFeatures; i++) {
+                for (uint32 i = 0; i < numSampledFeatures; i++) {
                     RuleRefinement& ruleRefinement = ruleRefinements[i];
                     std::unique_ptr<Refinement> refinementPtr = ruleRefinement.comparatorPtr->pollRefinement();
 
@@ -153,10 +127,9 @@ class TopDownRuleInduction final : public IRuleInduction {
 
                     // Add the new condition...
                     conditionListPtr->addCondition(*bestRefinementPtr);
-                    numConditions++;
 
                     // Keep the labels for which the rule predicts, if the head should not be further refined...
-                    if (maxHeadRefinements_ > 0 && numConditions >= maxHeadRefinements_) {
+                    if (maxHeadRefinements_ > 0 && conditionListPtr->getNumConditions() >= maxHeadRefinements_) {
                         currentLabelIndices = bestHead;
                     }
 
