@@ -21,7 +21,7 @@ static inline void processCompleteScores(std::unique_ptr<AbstractEvaluatedPredic
 template<typename T>
 static inline void processPartialScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,
                                         const T& scoreVector) {
-    PartialPrediction* existingHead = (PartialPrediction*) existingHeadPtr.get();
+    PartialPrediction* existingHead = dynamic_cast<PartialPrediction*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
     if (!existingHead) {
