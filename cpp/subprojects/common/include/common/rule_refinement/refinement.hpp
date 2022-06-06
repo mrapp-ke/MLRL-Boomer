@@ -8,7 +8,7 @@
 
 
 /**
- * Stores information about a potential refinement of a rule.
+ * Stores the properties of a potential refinement of a rule.
  */
 struct Refinement : public Condition {
 
