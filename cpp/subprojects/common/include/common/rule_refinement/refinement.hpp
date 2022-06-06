@@ -12,13 +12,6 @@
  */
 struct Refinement : public Condition {
 
-    Refinement() { };
-
-    /**
-     * @param refinement An existing refinement to be copied
-     */
-    Refinement(const Refinement& refinement) : Condition(refinement), previous(refinement.previous) { };
-
     /**
      * Assigns the properties of an existing refinement to this refinement.
      *
