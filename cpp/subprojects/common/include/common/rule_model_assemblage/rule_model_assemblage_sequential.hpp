@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/rule_induction/rule_model_assemblage.hpp"
-#include "common/rule_induction/default_rule.hpp"
+#include "common/rule_model_assemblage/rule_model_assemblage.hpp"
+#include "common/rule_model_assemblage/default_rule.hpp"
 
 
 /**

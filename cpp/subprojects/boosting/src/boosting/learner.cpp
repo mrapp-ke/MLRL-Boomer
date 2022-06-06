@@ -20,7 +20,7 @@
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
-#include "boosting/rule_induction/default_rule_auto.hpp"
+#include "boosting/rule_model_assemblage/default_rule_auto.hpp"
 #include "boosting/statistics/statistic_format_auto.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
 #include "boosting/statistics/statistic_format_sparse.hpp"

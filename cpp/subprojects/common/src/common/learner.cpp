@@ -5,7 +5,7 @@
 #include "common/post_processing/post_processor_no.hpp"
 #include "common/pruning/pruning_irep.hpp"
 #include "common/pruning/pruning_no.hpp"
-#include "common/rule_induction/rule_model_assemblage_sequential.hpp"
+#include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 #include "common/sampling/feature_sampling_no.hpp"
 #include "common/sampling/instance_sampling_no.hpp"
 #include "common/sampling/label_sampling_no.hpp"

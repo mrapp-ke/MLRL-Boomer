@@ -53,7 +53,7 @@ source_files = [
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_partial_fixed.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_partial_fixed_binned.cpp',
     'src/boosting/rule_evaluation/rule_evaluation_label_wise_single.cpp',
-    'src/boosting/rule_induction/default_rule_auto.cpp',
+    'src/boosting/rule_model_assemblage/default_rule_auto.cpp',
     'src/boosting/statistics/statistic_format_auto.cpp',
     'src/boosting/statistics/statistic_format_dense.cpp',
     'src/boosting/statistics/statistic_format_sparse.cpp',

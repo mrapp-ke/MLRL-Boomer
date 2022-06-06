@@ -1,4 +1,4 @@
-#include "common/rule_induction/rule_model_assemblage_sequential.hpp"
+#include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 
 
 static inline IStoppingCriterion::Result testStoppingCriteria(
