@@ -58,9 +58,9 @@ The following parameters allow to control the behavior of the algorithm:
 
   * ``'sequential'`` The rules in a model are learned sequentially, starting with a default rule.
 
-* ``rule_induction`` (Default value = ``'top-down'``)
+* ``rule_induction`` (Default value = ``'top-down-greedy'``)
 
-  * ``'top-down'`` A greedy top-down search, where rules are successively refined by adding new conditions, is used for the induction of individual rules. The following options may be provided using the bracket notation:
+  * ``'top-down-greedy'`` A greedy top-down search, where rules are successively refined by adding new conditions, is used for the induction of individual rules. The following options may be provided using the bracket notation:
 
     * ``max_conditions`` (Default value = ``0``) The maximum number of conditions to be included in a rule's body. Must be at least 1 or 0, if the number of conditions should not be restricted.
     * ``min_coverage`` (Default value = ``1``) The minimum number of examples that must be covered by a rule. Must be at least 1.

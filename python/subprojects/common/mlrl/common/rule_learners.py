@@ -27,7 +27,7 @@ AUTOMATIC = 'auto'
 
 NONE = 'none'
 
-RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down'
+RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
 
 RULE_MODEL_ASSEMBLAGE_SEQUENTIAL = 'sequential'
 
