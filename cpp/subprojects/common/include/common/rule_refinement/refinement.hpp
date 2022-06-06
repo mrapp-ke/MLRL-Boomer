@@ -18,8 +18,9 @@ struct Refinement : public Condition {
      * @param rhs   A reference to the existing refinement
      * @return      A reference to the modified refinement
      */
-    Refinement& operator=(const Refinement& refinement) {
+    Refinement& operator=(Refinement& refinement) {
         Condition::operator=(refinement);
+        headPtr = std::move(refinement.headPtr);
         previous = refinement.previous;
         return *this;
     }
