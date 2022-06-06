@@ -123,7 +123,7 @@ class TopDownRuleInduction final : public IRuleInduction {
 
                 // Search for the best condition among all available features to be added to the current rule...
                 #pragma omp parallel for firstprivate(numSampledFeatures) firstprivate(ruleRefinements) \
-                firstprivate(bestHead) schedule(dynamic) num_threads(numThreads_)
+                schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numSampledFeatures; i++) {
                     RuleRefinement& ruleRefinement = ruleRefinements[i];
                     ruleRefinement.ruleRefinementPtr->findRefinement(*ruleRefinement.comparatorPtr);
