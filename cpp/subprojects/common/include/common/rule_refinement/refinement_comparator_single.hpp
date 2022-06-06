@@ -14,11 +14,11 @@ class SingleRefinementComparator final {
 
     private:
 
-        ScoreProcessor scoreProcessor_;
-
         std::unique_ptr<Refinement> bestRefinementPtr_;
 
         float64 bestQualityScore_;
+
+        ScoreProcessor scoreProcessor_;
 
     public:
 
