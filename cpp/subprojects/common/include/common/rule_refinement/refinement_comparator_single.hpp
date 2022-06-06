@@ -29,12 +29,12 @@ class SingleRefinementComparator final {
         SingleRefinementComparator(const AbstractEvaluatedPrediction* bestHead);
 
         /**
-         * Returns whether the quality of a rule's predictions are considered as an improvement over the quality of the
+         * Returns whether the quality of a rule's predictions is considered as an improvement over the quality of the
          * best rule found so far or not.
          *
          * @param scoreVector   A reference to an object of type `IScoreVector` that stores the quality of the
          *                      predictions
-         * @return              True, if the quality of the given predictions are considered as an improvement, false
+         * @return              True, if the quality of the given predictions is considered as an improvement, false
          *                      otherwise
          */
         bool isImprovement(const IScoreVector& scoreVector) const;
