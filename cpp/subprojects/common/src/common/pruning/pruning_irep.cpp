@@ -12,7 +12,7 @@ class Irep final : public IPruning {
         std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
                                               ConditionList& conditions,
                                               const AbstractPrediction& head) const override {
-            ConditionList::size_type numConditions = conditions.getNumConditions();
+            uint32 numConditions = conditions.getNumConditions();
             std::unique_ptr<ICoverageState> bestCoverageStatePtr;
 
             // Only rules with more than one condition can be pruned...
@@ -32,9 +32,9 @@ class Irep final : public IPruning {
                 // learned. At each iteration, we calculate the quality score of a rule that only contains the
                 // conditions processed so far and keep track of the best rule...
                 ConditionList::const_iterator conditionIterator = conditions.cbegin();
-                ConditionList::size_type numPrunedConditions = 0;
+                uint32 numPrunedConditions = 0;
 
-                for (std::list<Condition>::size_type n = 1; n < numConditions; n++) {
+                for (uint32 n = 1; n < numConditions; n++) {
                     // Filter the thresholds by applying the current condition...
                     const Condition& condition = *conditionIterator;
                     thresholdsSubset.filterThresholds(condition);
