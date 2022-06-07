@@ -2,7 +2,6 @@
 #include "common/sampling/instance_sampling.hpp"
 #include "common/stopping/stopping_criterion.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
-#include "common/rule_refinement/refinement.hpp"
 #include "common/rule_refinement/prediction.hpp"
 
 
@@ -103,6 +102,6 @@ float64 BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubs
 }
 
 void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
-                                        Refinement& refinement) {
-    coverageState.recalculatePrediction(thresholdsSubset, *this, refinement);
+                                        AbstractPrediction& head) {
+    coverageState.recalculatePrediction(thresholdsSubset, *this, head);
 }

@@ -2,7 +2,6 @@
 #include "common/sampling/instance_sampling.hpp"
 #include "common/stopping/stopping_criterion.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
-#include "common/rule_refinement/refinement.hpp"
 #include "common/rule_refinement/prediction.hpp"
 
 
@@ -39,6 +38,6 @@ float64 SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholds
 }
 
 void SinglePartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset,
-                                            const ICoverageState& coverageState, Refinement& refinement) {
-    coverageState.recalculatePrediction(thresholdsSubset, *this, refinement);
+                                            const ICoverageState& coverageState, AbstractPrediction& head) {
+    coverageState.recalculatePrediction(thresholdsSubset, *this, head);
 }

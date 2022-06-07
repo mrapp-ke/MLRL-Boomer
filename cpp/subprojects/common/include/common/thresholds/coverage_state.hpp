@@ -11,7 +11,6 @@ class IThresholdsSubset;
 class SinglePartition;
 class BiPartition;
 class AbstractPrediction;
-class Refinement;
 
 
 /**
@@ -61,29 +60,29 @@ class ICoverageState {
                                             const AbstractPrediction& head) const = 0;
 
         /**
-         * Recalculates the scores to be predicted by a refinement based on all examples in the training set that are
-         * marked as covered and updates the head of the refinement accordingly.
+         * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
+         * covered.
          *
          * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to
-         *                          recalculate the scores
+         *                          recalculate the prediction
          * @param partition         A reference to an object of type `SinglePartition` that provides access to the
          *                          indices of the training examples that belong to the training set
-         * @param refinement        A reference to an object of type `Refinement`, whose head should be updated
+         * @param head              A reference to an object of type `AbstractPrediction` to be updated
          */
         virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
-                                           Refinement& refinement) const = 0;
+                                           AbstractPrediction& head) const = 0;
 
         /**
-         * Recalculates the scores to be predicted by a refinement based on all examples in the training set that are
-         * marked as covered and updates the head of the refinement accordingly.
+         * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
+         * covered.
          *
          * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to
-         *                          recalculate the scores
+         *                          recalculate the prediction
          * @param partition         A reference to an object of type `BiPartition` that provides access to the indices
          *                          of the training examples that belong to the training set
-         * @param refinement        A reference to an object of type `Refinement`, whose head should be updated
+         * @param head              A reference to an object of type `AbstractPrediction` to be updated
          */
         virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
-                                           Refinement& refinement) const = 0;
+                                           AbstractPrediction& head) const = 0;
 
 };
