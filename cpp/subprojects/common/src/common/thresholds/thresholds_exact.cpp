@@ -501,28 +501,28 @@ class ExactThresholds final : public AbstractThresholds {
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
-                                           Refinement& refinement) const override {
+                                           AbstractPrediction& head) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
                         partition.cbegin(), partition.getNumElements(), coverageState,
-                        thresholds_.statisticsProvider_.get(), refinement);
+                        thresholds_.statisticsProvider_.get(), head);
                 }
 
                 void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
-                                           Refinement& refinement) const override {
+                                           AbstractPrediction& head) const override {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
                         partition.first_cbegin(), partition.getNumFirst(), coverageState,
-                        thresholds_.statisticsProvider_.get(), refinement);
+                        thresholds_.statisticsProvider_.get(), head);
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
-                                           Refinement& refinement) const override {
-                    recalculatePredictionInternally(coverageState, thresholds_.statisticsProvider_.get(), refinement);
+                                           AbstractPrediction& head) const override {
+                    recalculatePredictionInternally(coverageState, thresholds_.statisticsProvider_.get(), head);
                 }
 
                 void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
-                                           Refinement& refinement) const override {
+                                           AbstractPrediction& head) const override {
                     recalculatePredictionInternally(coverageState, partition, thresholds_.statisticsProvider_.get(),
-                                                    refinement);
+                                                    head);
                 }
 
                 void applyPrediction(const AbstractPrediction& prediction) override {

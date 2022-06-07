@@ -1,6 +1,5 @@
 #include "common/thresholds/coverage_set.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
-#include "common/rule_refinement/refinement.hpp"
 #include "common/rule_refinement/prediction.hpp"
 #include "common/data/arrays.hpp"
 
@@ -73,11 +72,11 @@ float64 CoverageSet::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubs
 }
 
 void CoverageSet::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
-                                        Refinement& refinement) const {
-    thresholdsSubset.recalculatePrediction(partition, *this, refinement);
+                                        AbstractPrediction& head) const {
+    thresholdsSubset.recalculatePrediction(partition, *this, head);
 }
 
 void CoverageSet::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
-                                        Refinement& refinement) const {
-    thresholdsSubset.recalculatePrediction(partition, *this, refinement);
+                                        AbstractPrediction& head) const {
+    thresholdsSubset.recalculatePrediction(partition, *this, head);
 }

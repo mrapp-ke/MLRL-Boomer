@@ -60,6 +60,6 @@ class SinglePartition final : public IPartition {
                                     const AbstractPrediction& head) override;
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
-                                   Refinement& refinement) override;
+                                   AbstractPrediction& head) override;
 
 };

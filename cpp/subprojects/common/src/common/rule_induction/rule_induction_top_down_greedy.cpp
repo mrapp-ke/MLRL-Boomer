@@ -149,7 +149,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
                     if (recalculatePredictions_) {
                         const ICoverageState& coverageState =
                             coverageStatePtr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
-                        partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, bestRefinement);
+                        partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *bestRefinement.headPtr);
                     }
                 }
 
