@@ -2,12 +2,37 @@
 #include "common/math/math.hpp"
 
 
+static inline uint32 upperBound(FeatureVector::const_iterator iterator, uint32 start, uint32 end, float32 threshold) {
+    while (start < end) {
+        uint32 pivot = start + ((end - start) / 2);
+        float32 featureValue = iterator[pivot].value;
+
+        if (featureValue <= threshold) {
+            start = pivot + 1;
+        } else {
+            end = pivot;
+        }
+    }
+
+    return start;
+}
+
+static inline int64 adjustSplit(FeatureVector::const_iterator iterator, int64 conditionEnd, int64 conditionPrevious,
+                                float32 threshold) {
+    if (conditionEnd < conditionPrevious) {
+        int64 bound = upperBound(iterator, conditionEnd + 1, conditionPrevious, threshold);
+        return bound - 1;
+    } else {
+        return upperBound(iterator, conditionPrevious + 1, conditionEnd, threshold);
+    }
+}
+
 template<typename T>
 ExactRuleRefinement<T>::ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex,
-                                            bool nominal,
+                                            bool nominal, bool hasZeroWeights,
                                             std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
     : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
-      callbackPtr_(std::move(callbackPtr)) {
+      hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {
 
 }
 
@@ -448,6 +473,20 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
             }
 
             comparator.pushRefinement(refinement, scoreVector2);
+        }
+    }
+
+    // If there are examples with zero weights, those examples have not been considered when searching for potential
+    // refinements. In this case, we need to identify the examples that are covered by a refinement, including those
+    // that have previously been ignored, and adjust the value `refinement.end`, which specifies the position that
+    // separates the covered from the uncovered examples, accordingly.
+    if (hasZeroWeights_) {
+        for (auto it = comparator.begin(); it != comparator.end(); it++) {
+            Refinement& ref = *it;
+
+            if (std::abs(ref.previous - ref.end) > 1) {
+                ref.end = adjustSplit(featureVectorIterator, ref.end, ref.previous, ref.threshold);
+            }
         }
     }
 }
