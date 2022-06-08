@@ -30,29 +30,23 @@ static inline void adjustRefinement(Refinement& refinement, FeatureVector::const
     }
 }
 
-template<typename T>
-ExactRuleRefinement<T>::ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex,
-                                            bool nominal, bool hasZeroWeights,
-                                            std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
-    : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
-      hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {
-
-}
-
-template<typename T>
-void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparator) {
+template<typename IndexIterator, typename RefinementComparator>
+static inline void findRefinementInternally(const IndexIterator& labelIndices, uint32 numTotalExamples,
+                                            uint32 featureIndex, bool nominal, bool hasZeroWeights,
+                                            IRuleRefinementCallback<FeatureVector>& callback,
+                                            RefinementComparator& comparator) {
     Refinement refinement;
-    refinement.featureIndex = featureIndex_;
+    refinement.featureIndex = featureIndex;
 
     // Invoke the callback...
-    std::unique_ptr<IRuleRefinementCallback<FeatureVector>::Result> callbackResultPtr = callbackPtr_->get();
+    std::unique_ptr<IRuleRefinementCallback<FeatureVector>::Result> callbackResultPtr = callback.get();
     const IImmutableWeightedStatistics& statistics = callbackResultPtr->statistics_;
     const FeatureVector& featureVector = callbackResultPtr->vector_;
     FeatureVector::const_iterator featureVectorIterator = featureVector.cbegin();
     uint32 numFeatureValues = featureVector.getNumElements();
 
     // Create a new, empty subset of the statistics...
-    std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices_);
+    std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices);
 
     for (auto it = featureVector.missing_indices_cbegin(); it != featureVector.missing_indices_cend(); it++) {
         uint32 i = *it;
@@ -119,7 +113,7 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
                         refinement.numCovered = numExamples;
                         refinement.covered = true;
 
-                        if (nominal_) {
+                        if (nominal) {
                             refinement.comparator = EQ;
                             refinement.threshold = previousThreshold;
                         } else {
@@ -139,10 +133,10 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
                         refinement.start = firstR;
                         refinement.end = r;
                         refinement.previous = previousR;
-                        refinement.numCovered = (numExamples_ - numExamples);
+                        refinement.numCovered = (numTotalExamples - numExamples);
                         refinement.covered = false;
 
-                        if (nominal_) {
+                        if (nominal) {
                             refinement.comparator = NEQ;
                             refinement.threshold = previousThreshold;
                         } else {
@@ -155,7 +149,7 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
 
                     // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
                     // the next condition...
-                    if (nominal_) {
+                    if (nominal) {
                         statisticsSubsetPtr->resetSubset();
                         numExamples = 0;
                         firstR = r;
@@ -175,8 +169,8 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
         // If the feature is nominal and the examples that have been iterated so far do not all have the same feature
         // value, or if not all examples have been iterated so far, we must evaluate additional conditions
         // `f == previous_threshold` and `f != previous_threshold`...
-        if (nominal_ && numExamples > 0 && (numExamples < accumulatedNumExamples
-                                            || accumulatedNumExamples < numExamples_)) {
+        if (nominal && numExamples > 0 && (numExamples < accumulatedNumExamples
+                                           || accumulatedNumExamples < numTotalExamples)) {
             // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
             // used...
             const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
@@ -202,7 +196,7 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
                 refinement.start = firstR;
                 refinement.end = (lastNegativeR + 1);
                 refinement.previous = previousR;
-                refinement.numCovered = (numExamples_ - numExamples);
+                refinement.numCovered = (numTotalExamples - numExamples);
                 refinement.covered = false;
                 refinement.comparator = NEQ;
                 refinement.threshold = previousThreshold;
@@ -262,7 +256,7 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
                         refinement.numCovered = numExamples;
                         refinement.covered = true;
 
-                        if (nominal_) {
+                        if (nominal) {
                             refinement.comparator = EQ;
                             refinement.threshold = previousThreshold;
                         } else {
@@ -282,10 +276,10 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
                         refinement.start = firstR;
                         refinement.end = r;
                         refinement.previous = previousR;
-                        refinement.numCovered = (numExamples_ - numExamples);
+                        refinement.numCovered = (numTotalExamples - numExamples);
                         refinement.covered = false;
 
-                        if (nominal_) {
+                        if (nominal) {
                             refinement.comparator = NEQ;
                             refinement.threshold = previousThreshold;
                         } else {
@@ -298,7 +292,7 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
 
                     // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
                     // the next condition...
-                    if (nominal_) {
+                    if (nominal) {
                         statisticsSubsetPtr->resetSubset();
                         numExamples = 0;
                         firstR = r;
@@ -319,7 +313,7 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
     // If the feature is nominal and the examples with feature values >= 0 that have been iterated so far do not all
     // have the same feature value, we must evaluate additional conditions `f == previous_threshold` and
     // `f != previous_threshold`...
-    if (nominal_ && numExamples > 0 && numExamples < accumulatedNumExamples) {
+    if (nominal && numExamples > 0 && numExamples < accumulatedNumExamples) {
         // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
         // used...
         const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
@@ -345,7 +339,7 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
             refinement.start = firstR;
             refinement.end = lastNegativeR;
             refinement.previous = previousR;
-            refinement.numCovered = (numExamples_ - numExamples);
+            refinement.numCovered = (numTotalExamples - numExamples);
             refinement.covered = false;
             refinement.comparator = NEQ;
             refinement.threshold = previousThreshold;
@@ -359,10 +353,10 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
     // with feature values >= 0) is less than the total number of examples, this means that there are examples with
     // sparse, i.e. zero, feature values. In such case, we must explicitly test conditions that separate these examples
     // from the ones that have already been iterated...
-    if (totalAccumulatedNumExamples > 0 && totalAccumulatedNumExamples < numExamples_) {
+    if (totalAccumulatedNumExamples > 0 && totalAccumulatedNumExamples < numTotalExamples) {
         // If the feature is nominal, we must reset the subset once again to ensure that the accumulated state includes
         // all examples that have been processed so far...
-        if (nominal_) {
+        if (nominal) {
             statisticsSubsetPtr->resetSubset();
             firstR = ((int64) numFeatureValues) - 1;
         }
@@ -370,14 +364,14 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
         // Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
         // the condition `f != 0` in case of a nominal feature) is used...
         const IScoreVector& scoreVector =
-            nominal_? statisticsSubsetPtr->evaluateAccumulated() : statisticsSubsetPtr->evaluate();
+            nominal ? statisticsSubsetPtr->evaluateAccumulated() : statisticsSubsetPtr->evaluate();
 
         // If the refinement is better than the current rule...
         if (comparator.isImprovement(scoreVector)) {
             refinement.start = firstR;
             refinement.covered = true;
 
-            if (nominal_) {
+            if (nominal) {
                 refinement.end = -1;
                 refinement.previous = -1;
                 refinement.numCovered = totalAccumulatedNumExamples;
@@ -397,23 +391,23 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
         // Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2`
         // (or `f == 0` in case of a nominal feature) is used...
         const IScoreVector& scoreVector2 =
-            nominal_ ? statisticsSubsetPtr->evaluateUncoveredAccumulated() : statisticsSubsetPtr->evaluateUncovered();
+            nominal ? statisticsSubsetPtr->evaluateUncoveredAccumulated() : statisticsSubsetPtr->evaluateUncovered();
 
         // If the refinement is better than the current rule...
         if (comparator.isImprovement(scoreVector2)) {
             refinement.start = firstR;
             refinement.covered = false;
 
-            if (nominal_) {
+            if (nominal) {
                 refinement.end = -1;
                 refinement.previous = -1;
-                refinement.numCovered = (numExamples_ - totalAccumulatedNumExamples);
+                refinement.numCovered = (numTotalExamples - totalAccumulatedNumExamples);
                 refinement.comparator = EQ;
                 refinement.threshold = 0.0;
             } else {
                 refinement.end = lastNegativeR;
                 refinement.previous = previousR;
-                refinement.numCovered = (numExamples_ - accumulatedNumExamples);
+                refinement.numCovered = (numTotalExamples - accumulatedNumExamples);
                 refinement.comparator = LEQ;
                 refinement.threshold = previousThreshold * 0.5;
             }
@@ -427,7 +421,7 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
     // the remaining ones (unlike in the nominal case, these conditions cannot be evaluated earlier, because it remains
     // unclear what the thresholds of the conditions should be until the examples with feature values >= 0 have been
     // processed).
-    if (!nominal_ && accumulatedNumExamplesNegative > 0 && accumulatedNumExamplesNegative < numExamples_) {
+    if (!nominal && accumulatedNumExamplesNegative > 0 && accumulatedNumExamplesNegative < numTotalExamples) {
         // Find and evaluate the best head for the current refinement, if the condition that uses the <= operator is
         // used...
         const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateAccumulated();
@@ -441,7 +435,7 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
             refinement.covered = true;
             refinement.comparator = LEQ;
 
-            if (totalAccumulatedNumExamples < numExamples_) {
+            if (totalAccumulatedNumExamples < numTotalExamples) {
                 // If the condition separates an example with feature value < 0 from an (sparse) example with feature
                 // value == 0
                 refinement.threshold = previousThresholdNegative * 0.5;
@@ -462,11 +456,11 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
             refinement.start = 0;
             refinement.end = (lastNegativeR + 1);
             refinement.previous = previousRNegative;
-            refinement.numCovered = (numExamples_ - accumulatedNumExamplesNegative);
+            refinement.numCovered = (numTotalExamples - accumulatedNumExamplesNegative);
             refinement.covered = false;
             refinement.comparator = GR;
 
-            if (totalAccumulatedNumExamples < numExamples_) {
+            if (totalAccumulatedNumExamples < numTotalExamples) {
                 // If the condition separates an example with feature value < 0 from an (sparse) example with feature
                 // value == 0
                 refinement.threshold = previousThresholdNegative * 0.5;
@@ -483,11 +477,32 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
     // refinements. In this case, we need to identify the examples that are covered by a refinement, including those
     // that have previously been ignored, and adjust the value `refinement.end`, which specifies the position that
     // separates the covered from the uncovered examples, accordingly.
-    if (hasZeroWeights_) {
+    if (hasZeroWeights) {
         for (auto it = comparator.begin(); it != comparator.end(); it++) {
             adjustRefinement(*it, featureVectorIterator);
         }
     }
+}
+
+template<typename T>
+ExactRuleRefinement<T>::ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex,
+                                            bool nominal, bool hasZeroWeights,
+                                            std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
+    : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
+      hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {
+
+}
+
+template<typename T>
+void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparator) {
+    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, hasZeroWeights_, *callbackPtr_,
+                             comparator);
+}
+
+template<typename T>
+void ExactRuleRefinement<T>::findRefinement(FixedRefinementComparator& comparator) {
+    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, hasZeroWeights_, *callbackPtr_,
+                             comparator);
 }
 
 template class ExactRuleRefinement<CompleteIndexVector>;
