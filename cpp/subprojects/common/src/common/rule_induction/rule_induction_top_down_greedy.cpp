@@ -1,5 +1,4 @@
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
-#include "common/rule_refinement/refinement_comparator_single.hpp"
 #include "common/util/validation.hpp"
 #include "rule_induction_common.hpp"
 #include "omp.h"
