@@ -16,7 +16,7 @@ from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.common.cython.nominal_feature_mask cimport NominalFeatureMask
 from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartitionSamplingConfig, \
     LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
-from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig
+from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig, BeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
 from mlrl.common.cython.stopping_criterion cimport SizeStoppingCriterionConfig, TimeStoppingCriterionConfig, \
     MeasureStoppingCriterionConfig
@@ -79,6 +79,19 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         cdef IGreedyTopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useGreedyTopDownRuleInduction()
         cdef GreedyTopDownRuleInductionConfig config = GreedyTopDownRuleInductionConfig.__new__(GreedyTopDownRuleInductionConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_beam_search_top_down_rule_induction(self) -> BeamSearchTopDownRuleInductionConfig:
+        """
+        Configures the algorithm to use a top-down beam search for the induction of individual rules.
+
+        :return: A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of the algorithm for the
+                induction of individual rules
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        cdef IBeamSearchTopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useBeamSearchTopDownRuleInduction()
+        cdef BeamSearchTopDownRuleInductionConfig config = BeamSearchTopDownRuleInductionConfig.__new__(BeamSearchTopDownRuleInductionConfig)
         config.config_ptr = config_ptr
         return config
 
