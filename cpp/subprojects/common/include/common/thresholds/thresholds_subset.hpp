@@ -52,24 +52,9 @@ class IThresholdsSubset {
 
         /**
          * Filters the thresholds such that only those thresholds, which correspond to the instance space that is
-         * covered by a specific refinement of a rule, are included.
-         *
-         * The given refinement must have been found by an instance of type `IRuleRefinement` that was previously
-         * created via the function `createRuleRefinement`. The function function `resetThresholds` must not have been
-         * called since.
-         *
-         * @param refinement A reference to an object of type `Refinement` that stores information about the refinement
-         */
-        virtual void filterThresholds(Refinement& refinement) = 0;
-
-        /**
-         * Filters the thresholds such that only those thresholds, which correspond to the instance space that is
          * covered by specific condition of a rule, are included.
          *
-         * Unlike the function `filterThresholds(Refinement)`, the given condition must not have been found by an
-         * instance of `IRuleRefinement` and the function `resetThresholds` may have been called before.
-         *
-         * @param condition A reference to an object of type `Refinement` that stores information about the condition
+         * @param condition A reference to an object of type `Condition` that stores the properties of the condition
          */
         virtual void filterThresholds(const Condition& condition) = 0;
 

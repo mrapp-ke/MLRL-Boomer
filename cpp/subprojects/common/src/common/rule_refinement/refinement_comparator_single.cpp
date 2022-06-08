@@ -13,6 +13,18 @@ SingleRefinementComparator::SingleRefinementComparator(const SingleRefinementCom
 
 }
 
+SingleRefinementComparator::iterator SingleRefinementComparator::begin() {
+    return &bestRefinement_;
+}
+
+SingleRefinementComparator::iterator SingleRefinementComparator::end() {
+    return bestRefinement_.headPtr != nullptr ? &bestRefinement_ + 1 : &bestRefinement_;
+}
+
+uint32 SingleRefinementComparator::getNumElements() const {
+    return bestRefinement_.headPtr != nullptr ? 1 : 0;
+}
+
 bool SingleRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
     return scoreVector.overallQualityScore < bestQualityScore_;
 }
@@ -38,8 +50,4 @@ bool SingleRefinementComparator::merge(SingleRefinementComparator& comparator) {
     }
 
     return false;
-}
-
-Refinement& SingleRefinementComparator::getBestRefinement() {
-    return bestRefinement_;
 }
