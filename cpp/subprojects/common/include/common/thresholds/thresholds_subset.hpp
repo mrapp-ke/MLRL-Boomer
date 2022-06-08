@@ -27,6 +27,13 @@ class IThresholdsSubset {
         virtual ~IThresholdsSubset() { };
 
         /**
+         * Creates and returns a copy of this object.
+         *
+         * @return An unique pointer to an object of type `IThresholdsSubset` that has been created
+         */
+        virtual std::unique_ptr<IThresholdsSubset> copy() const = 0;
+
+        /**
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
          * an existing rule that predicts for all available labels.
          *
