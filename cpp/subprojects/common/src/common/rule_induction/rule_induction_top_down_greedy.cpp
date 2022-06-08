@@ -65,7 +65,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
             // A list that contains the conditions in the rule's body (in the order they have been learned)
             std::unique_ptr<ConditionList> conditionListPtr = std::make_unique<ConditionList>();
             // The comparator that is used to keep track of the best refinement of the rule
-           SingleRefinementComparator refinementComparator;
+            SingleRefinementComparator refinementComparator;
             // Whether a refinement of the current rule has been found
             bool foundRefinement = true;
 
