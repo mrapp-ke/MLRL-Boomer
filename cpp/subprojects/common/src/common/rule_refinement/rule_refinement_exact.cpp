@@ -17,13 +17,17 @@ static inline uint32 upperBound(FeatureVector::const_iterator iterator, uint32 s
     return start;
 }
 
-static inline int64 adjustSplit(FeatureVector::const_iterator iterator, int64 conditionEnd, int64 conditionPrevious,
-                                float32 threshold) {
-    if (conditionEnd < conditionPrevious) {
-        int64 bound = upperBound(iterator, conditionEnd + 1, conditionPrevious, threshold);
-        return bound - 1;
-    } else {
-        return upperBound(iterator, conditionPrevious + 1, conditionEnd, threshold);
+static inline void adjustRefinement(Refinement& refinement, FeatureVector::const_iterator iterator) {
+    int64 previous = refinement.previous;
+    int64 end = refinement.end;
+
+    if (std::abs(previous - end) > 1) {
+        if (end < previous) {
+            int64 bound = upperBound(iterator, end + 1, previous, refinement.threshold);
+            refinement.end = bound - 1;
+        } else {
+            refinement.end = upperBound(iterator, previous + 1, end, refinement.threshold);
+        }
     }
 }
 
@@ -482,11 +486,7 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
     // separates the covered from the uncovered examples, accordingly.
     if (hasZeroWeights_) {
         for (auto it = comparator.begin(); it != comparator.end(); it++) {
-            Refinement& ref = *it;
-
-            if (std::abs(ref.previous - ref.end) > 1) {
-                ref.end = adjustSplit(featureVectorIterator, ref.end, ref.previous, ref.threshold);
-            }
+            adjustRefinement(*it, featureVectorIterator);
         }
     }
 }
