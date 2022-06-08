@@ -29,7 +29,11 @@ NONE = 'none'
 
 RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
 
+RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
+
 RULE_MODEL_ASSEMBLAGE_SEQUENTIAL = 'sequential'
+
+ARGUMENT_BEAM_WIDTH = 'beam_width'
 
 ARGUMENT_MIN_COVERAGE = 'min_coverage'
 
@@ -71,7 +75,9 @@ ARGUMENT_NUM_THREADS = 'num_threads'
 
 RULE_INDUCTION_VALUES: Dict[str, Set[str]] = {
     RULE_INDUCTION_TOP_DOWN_GREEDY: {ARGUMENT_MIN_COVERAGE, ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
-                                     ARGUMENT_RECALCULATE_PREDICTIONS}
+                                     ARGUMENT_RECALCULATE_PREDICTIONS},
+    RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH: {ARGUMENT_BEAM_WIDTH, ARGUMENT_MIN_COVERAGE, ARGUMENT_MAX_CONDITIONS,
+                                          ARGUMENT_MAX_HEAD_REFINEMENTS, ARGUMENT_RECALCULATE_PREDICTIONS}
 }
 
 RULE_MODEL_ASSEMBLAGE_VALUES: Set[str] = {
@@ -157,6 +163,14 @@ def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional
 
         if value == RULE_INDUCTION_TOP_DOWN_GREEDY:
             c = config.use_greedy_top_down_rule_induction()
+            c.set_min_coverage(options.get_int(ARGUMENT_MIN_COVERAGE, c.get_min_coverage()))
+            c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
+            c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
+            c.set_recalculate_predictions(options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS,
+                                                           c.are_predictions_recalculated()))
+        elif value == RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH:
+            c = config.use_beam_search_top_down_rule_induction()
+            c.set_beam_width(options.get_int(ARGUMENT_BEAM_WIDTH, c.get_beam_width()))
             c.set_min_coverage(options.get_int(ARGUMENT_MIN_COVERAGE, c.get_min_coverage()))
             c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
             c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
