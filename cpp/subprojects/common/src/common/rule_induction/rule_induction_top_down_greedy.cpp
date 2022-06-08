@@ -1,5 +1,4 @@
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
-#include "common/rule_refinement/refinement_comparator_single.hpp"
 #include "common/util/validation.hpp"
 #include "rule_induction_common.hpp"
 #include "omp.h"
@@ -32,8 +31,6 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
         uint32 maxHeadRefinements_;
 
-        bool recalculatePredictions_;
-
         uint32 numThreads_;
 
     public:
@@ -53,20 +50,25 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
          */
         GreedyTopDownRuleInduction(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
                                    bool recalculatePredictions, uint32 numThreads)
-            : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
-              recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
+            : AbstractRuleInduction(recalculatePredictions),
+              minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
+              numThreads_(numThreads) {
 
         }
 
-        bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
-                        IPartition& partition, IFeatureSampling& featureSampling, const IPruning& pruning,
-                        const IPostProcessor& postProcessor, RNG& rng, IModelBuilder& modelBuilder) const override {
+    protected:
+
+        std::unique_ptr<IThresholdsSubset> growRule(
+                IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
+                IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
+                std::unique_ptr<ConditionList>& conditionListPtr,
+                std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const override {
             // The label indices for which the next refinement of the rule may predict
             const IIndexVector* currentLabelIndices = &labelIndices;
             // A list that contains the conditions in the rule's body (in the order they have been learned)
-            std::unique_ptr<ConditionList> conditionListPtr = std::make_unique<ConditionList>();
+            conditionListPtr = std::make_unique<ConditionList>();
             // The comparator that is used to keep track of the best refinement of the rule
-           SingleRefinementComparator refinementComparator;
+            SingleRefinementComparator refinementComparator;
             // Whether a refinement of the current rule has been found
             bool foundRefinement = true;
 
@@ -133,41 +135,9 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
                 }
             }
 
-
-            if (refinementComparator.getNumElements() > 0) {
-                Refinement& bestRefinement = *refinementComparator.begin();
-
-                if (weights.hasZeroWeights()) {
-                    // Prune rule...
-                    IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
-                    statisticsProvider.switchToPruningRuleEvaluation();
-                    std::unique_ptr<ICoverageState> coverageStatePtr = pruning.prune(*thresholdsSubsetPtr, partition,
-                                                                                     *conditionListPtr,
-                                                                                     *bestRefinement.headPtr);
-                    statisticsProvider.switchToRegularRuleEvaluation();
-
-                    // Re-calculate the scores in the head based on the entire training data...
-                    if (recalculatePredictions_) {
-                        const ICoverageState& coverageState =
-                            coverageStatePtr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
-                        partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *bestRefinement.headPtr);
-                    }
-                }
-
-                // Apply post-processor...
-                postProcessor.postProcess(*bestRefinement.headPtr);
-
-                // Update the statistics by applying the predictions of the new rule...
-                thresholdsSubsetPtr->applyPrediction(*bestRefinement.headPtr);
-
-                // Add the induced rule to the model...
-                modelBuilder.addRule(conditionListPtr, bestRefinement.headPtr);
-                return true;
-            } else {
-                // No rule could be induced, because no useful condition could be found. This might be the case, if all
-                // examples have the same values for the considered features.
-                return false;
-            }
+            Refinement& bestRefinement = *refinementComparator.begin();
+            headPtr = std::move(bestRefinement.headPtr);
+            return thresholdsSubsetPtr;
         }
 
 };
