@@ -196,7 +196,8 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param rule_model_assemblage:       The algorithm that should be used for the induction of several rules. Must
                                             be 'sequential'
         :param rule_induction:              The algorithm that should be used for the induction of individual rules.
-                                            Must be 'top-down-greedy'. For additional options refer to the documentation
+                                            Must be 'top-down-greedy' or 'top-down-beam-search'. For additional options
+                                            refer to the documentation
         :param max_rules:                   The maximum number of rules to be learned (including the default rule). Must
                                             be at least 1 or 0, if the number of rules should not be restricted.
         :param time_limit:                  The duration in seconds after which the induction of rules should be
