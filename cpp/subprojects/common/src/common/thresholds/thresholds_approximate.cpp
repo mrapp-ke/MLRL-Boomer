@@ -241,8 +241,9 @@ class ApproximateThresholds final : public AbstractThresholds {
                 void filterThresholds(const Condition& condition) override {
                     uint32 featureIndex = condition.featureIndex;
                     auto cacheIterator = thresholds_.cache_.find(featureIndex);
-                    const ThresholdVector& thresholdVector = *cacheIterator->second.thresholdVectorPtr;
-                    const IBinIndexVector& binIndices = *cacheIterator->second.binIndicesPtr;
+                    IFeatureBinning::Result& cacheEntry = cacheIterator->second;
+                    const ThresholdVector& thresholdVector = *cacheEntry.thresholdVectorPtr;
+                    const IBinIndexVector& binIndices = *cacheEntry.binIndicesPtr;
                     updateCoveredExamples(thresholdVector, binIndices, condition.start, condition.end,
                                           condition.covered, coverageSet_, *weightedStatisticsPtr_);
                 }
