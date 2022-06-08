@@ -17,6 +17,7 @@
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
 #include "common/post_optimization/post_optimization.hpp"
+#include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage.hpp"
@@ -273,6 +274,14 @@ class MLRLCOMMON_API IRuleLearner {
                  *         configuration of the algorithm for the induction of individual rules
                  */
                 virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() = 0;
+
+                /**
+                 * Configures the rule learner to use a top-down beam search for the induction of individual rules.
+                 *
+                 * @return A reference to an object of type `IBeamSearchTopDownRuleInduction` that allows further
+                 *         configuration of the algorithm for the induction of individual rules
+                 */
+                virtual IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() = 0;
 
                 /**
                  * Configures the rule learner to not use any method for the assignment of numerical feature values to
@@ -865,6 +874,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useSequentialRuleModelAssemblage() override;
 
                 IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
+
+                IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
 
                 void useNoFeatureBinning() override final;
 
