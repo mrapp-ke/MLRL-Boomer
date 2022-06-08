@@ -45,4 +45,6 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
 
         void findRefinement(SingleRefinementComparator& comparator) override;
 
+        void findRefinement(FixedRefinementComparator& comparator) override;
+
 };
