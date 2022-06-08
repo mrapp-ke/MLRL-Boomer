@@ -23,8 +23,7 @@ static inline void adjustRefinement(Refinement& refinement, FeatureVector::const
 
     if (std::abs(previous - end) > 1) {
         if (end < previous) {
-            int64 bound = upperBound(iterator, end + 1, previous, refinement.threshold);
-            refinement.end = bound - 1;
+            refinement.end = ((int64) upperBound(iterator, end + 1, previous, refinement.threshold)) - 1;
         } else {
             refinement.end = upperBound(iterator, previous + 1, end, refinement.threshold);
         }
