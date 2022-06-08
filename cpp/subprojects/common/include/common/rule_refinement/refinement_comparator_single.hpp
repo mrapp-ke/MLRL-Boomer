@@ -57,8 +57,8 @@ class SingleRefinementComparator final {
         uint32 getNumElements() const;
 
         /**
-         * Returns whether the quality of a rule's predictions is considered as an improvement over the quality of the
-         * best rule found so far or not.
+         * Returns whether the quality of a rule's predictions is considered as an improvement over the refinements that
+         * have been provided to this comparator so far.
          *
          * @param scoreVector   A reference to an object of type `IScoreVector` that stores the quality of the
          *                      predictions
@@ -68,8 +68,8 @@ class SingleRefinementComparator final {
         bool isImprovement(const IScoreVector& scoreVector) const;
 
         /**
-         * Keeps track of a given refinement of a rule that is considered as an improvement over the best rule found so
-         * far.
+         * Keeps track of a given refinement of a rule that is considered as an improvement over the refinements that
+         * have been provided to this comparator so far.
          *
          * @param refinement    A reference to an object of type `Refinement` that represents the refinement of the rule
          * @param scoreVector   A reference to an object of type `IScoreVector` that stores the predictions of the rule
