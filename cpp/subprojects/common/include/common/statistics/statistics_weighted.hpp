@@ -20,6 +20,13 @@ class IWeightedStatistics : virtual public IImmutableWeightedStatistics {
         virtual ~IWeightedStatistics() override { };
 
         /**
+         * Creates and returns a copy of this object.
+         *
+         * @return An unique pointer to an object of type `IWeightedStatistics` that has been created
+         */
+        virtual std::unique_ptr<IWeightedStatistics> copy() const = 0;
+
+        /**
          * Resets the statistics which should be considered in the following for refining an existing rule. The indices
          * of the respective statistics must be provided via subsequent calls to the function `addCoveredStatistic`.
          *

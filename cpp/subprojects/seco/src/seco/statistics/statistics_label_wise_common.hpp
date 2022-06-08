@@ -466,6 +466,18 @@ namespace seco {
             }
 
             /**
+             * @param statistics A reference to an object of type `LabelWiseWeightedStatistics` to be copied
+             */
+            LabelWiseWeightedStatistics(const LabelWiseWeightedStatistics& statistics)
+                : weights_(statistics.weights_), ruleEvaluationFactory_(statistics.ruleEvaluationFactory_),
+                  labelMatrix_(statistics.labelMatrix_), majorityLabelVector_(statistics.majorityLabelVector_),
+                  totalSumVector_(ConfusionMatrixVector(statistics.totalSumVector_)),
+                  subsetSumVector_(ConfusionMatrixVector(statistics.subsetSumVector_)),
+                  coverageMatrix_(statistics.coverageMatrix_) {
+
+            }
+
+            /**
              * @see `IImmutableWeightedStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override {
@@ -477,6 +489,14 @@ namespace seco {
              */
             uint32 getNumLabels() const override {
                 return labelMatrix_.getNumCols();
+            }
+
+            /**
+             * @see `IWeightedStatistics::copy`
+             */
+            std::unique_ptr<IWeightedStatistics> copy() const override {
+                return std::make_unique<LabelWiseWeightedStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                                    RuleEvaluationFactory, WeightVector>>(*this);
             }
 
             /**
