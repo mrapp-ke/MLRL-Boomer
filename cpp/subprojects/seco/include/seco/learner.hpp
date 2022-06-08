@@ -281,6 +281,8 @@ namespace seco {
 
                     IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
+                    IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
+
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
                     void useNoCoverageStoppingCriterion() override;
