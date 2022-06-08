@@ -27,58 +27,6 @@ struct FilteredCacheEntry {
 };
 
 /**
- * Uses a binary search to search for the index of the first feature value that is greater than a given threshold.
- *
- * @param iterator  An iterator of type `FeatureVector::const_iterator` that provides access to the feature values
- * @param start     The first index to be considered by the search (inclusive)
- * @param end       The last index to be considered by the search (exclusive)
- * @param threshold The threshold
- * @return          The index of the first feature value that is greater than the given threshold
- */
-static inline uint32 upperBound(FeatureVector::const_iterator iterator, uint32 start, uint32 end, float32 threshold) {
-    while (start < end) {
-        uint32 pivot = start + ((end - start) / 2);
-        float32 featureValue = iterator[pivot].value;
-
-        if (featureValue <= threshold) {
-            start = pivot + 1;
-        } else {
-            end = pivot;
-        }
-    }
-
-    return start;
-}
-
-/**
- * Adjusts the position that separates the examples that are covered by a condition from the ones that are not covered,
- * with respect to those examples that are not contained in the current sub-sample. This requires to look back a certain
- * number of examples to see if they satisfy the new condition or not. I.e., to traverse the examples in ascending or
- * descending order, depending on whether `conditionEnd` is smaller than `conditionPrevious` or vice versa, until the
- * next example that is contained in the current sub-sampling is encountered.
- *
- * @param featureVector     A reference to an object of type `FeatureVector` that stores the indices and feature values
- *                          of the training examples
- * @param conditionEnd      The position that separates the covered from the uncovered examples when only taking into
- *                          account the examples that are contained in the current sub-sample
- * @param conditionPrevious The position to stop at (exclusive)
- * @param threshold         The threshold of the condition
- * @return                  The adjusted position that separates the covered from the uncovered examples with respect to
- *                          the examples that are not contained in the current sub-sample
- */
-static inline int64 adjustSplit(FeatureVector& featureVector, int64 conditionEnd, int64 conditionPrevious,
-                                float32 threshold) {
-    FeatureVector::const_iterator iterator = featureVector.cbegin();
-
-    if (conditionEnd < conditionPrevious) {
-        int64 bound = upperBound(iterator, conditionEnd + 1, conditionPrevious, threshold);
-        return bound - 1;
-    } else {
-        return upperBound(iterator, conditionPrevious + 1, conditionEnd, threshold);
-    }
-}
-
-/**
  * Filters a given feature vector, which contains the elements for a certain feature that are covered by the previous
  * rule, after a new condition that corresponds to said feature has been added, such that the filtered vector does only
  * contain the elements that are covered by the new rule. The filtered vector is stored in a given struct of type
@@ -373,7 +321,8 @@ class ExactThresholds final : public AbstractThresholds {
                     bool nominal = thresholds_.nominalFeatureMask_.isNominal(featureIndex);
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
                     return std::make_unique<ExactRuleRefinement<T>>(labelIndices, numCoveredExamples_, featureIndex,
-                                                                    nominal, std::move(callbackPtr));
+                                                                    nominal, weights_.hasZeroWeights(),
+                                                                    std::move(callbackPtr));
                 }
 
             public:
@@ -403,38 +352,6 @@ class ExactThresholds final : public AbstractThresholds {
                 std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& labelIndices,
                                                                       uint32 featureIndex) override {
                     return createExactRuleRefinement(labelIndices, featureIndex);
-                }
-
-                void filterThresholds(Refinement& refinement) override {
-                    numModifications_++;
-                    numCoveredExamples_ = refinement.numCovered;
-
-                    uint32 featureIndex = refinement.featureIndex;
-                    auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
-                    FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
-                    FeatureVector* featureVector = cacheEntry.vectorPtr.get();
-
-                    if (!featureVector) {
-                        auto cacheIterator = thresholds_.cache_.find(featureIndex);
-                        featureVector = cacheIterator->second.get();
-                    }
-
-                    // If there are examples with zero weights, those examples have not been considered considered when
-                    // searching for the refinement. In the next step, we need to identify the examples that are covered
-                    // by the refined rule, including those that have previously been ignored, via the function
-                    // `filterCurrentVector`. Said function calculates the number of covered examples based on the
-                    // variable `refinement.end`, which represents the position that separates the covered from the
-                    // uncovered examples. However, when taking into account the examples with zero weights, this
-                    // position may differ from the current value of `refinement.end` and therefore must be adjusted...
-                    if (weights_.hasZeroWeights() && std::abs(refinement.previous - refinement.end) > 1) {
-                        refinement.end = adjustSplit(*featureVector, refinement.end, refinement.previous,
-                                                     refinement.threshold);
-                    }
-
-                    // Identify the examples that are covered by the refined rule...
-                    filterCurrentVector(*featureVector, cacheEntry, refinement.start, refinement.end,
-                                        refinement.comparator, refinement.covered, numModifications_, coverageMask_,
-                                        *weightedStatisticsPtr_);
                 }
 
                 void filterThresholds(const Condition& condition) override {

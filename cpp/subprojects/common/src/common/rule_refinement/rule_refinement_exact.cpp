@@ -2,12 +2,40 @@
 #include "common/math/math.hpp"
 
 
+static inline uint32 upperBound(FeatureVector::const_iterator iterator, uint32 start, uint32 end, float32 threshold) {
+    while (start < end) {
+        uint32 pivot = start + ((end - start) / 2);
+        float32 featureValue = iterator[pivot].value;
+
+        if (featureValue <= threshold) {
+            start = pivot + 1;
+        } else {
+            end = pivot;
+        }
+    }
+
+    return start;
+}
+
+static inline void adjustRefinement(Refinement& refinement, FeatureVector::const_iterator iterator) {
+    int64 previous = refinement.previous;
+    int64 end = refinement.end;
+
+    if (std::abs(previous - end) > 1) {
+        if (end < previous) {
+            refinement.end = ((int64) upperBound(iterator, end + 1, previous, refinement.threshold)) - 1;
+        } else {
+            refinement.end = upperBound(iterator, previous + 1, end, refinement.threshold);
+        }
+    }
+}
+
 template<typename T>
 ExactRuleRefinement<T>::ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex,
-                                            bool nominal,
+                                            bool nominal, bool hasZeroWeights,
                                             std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
     : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
-      callbackPtr_(std::move(callbackPtr)) {
+      hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {
 
 }
 
@@ -20,8 +48,8 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
     std::unique_ptr<IRuleRefinementCallback<FeatureVector>::Result> callbackResultPtr = callbackPtr_->get();
     const IImmutableWeightedStatistics& statistics = callbackResultPtr->statistics_;
     const FeatureVector& featureVector = callbackResultPtr->vector_;
-    FeatureVector::const_iterator iterator = featureVector.cbegin();
-    uint32 numElements = featureVector.getNumElements();
+    FeatureVector::const_iterator featureVectorIterator = featureVector.cbegin();
+    uint32 numFeatureValues = featureVector.getNumElements();
 
     // Create a new, empty subset of the statistics...
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices_);
@@ -41,15 +69,15 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
 
     // Traverse examples with feature values < 0 in ascending order until the first example with non-zero weight is
     // encountered...
-    for (r = 0; r < numElements; r++) {
-        float32 currentThreshold = iterator[r].value;
+    for (r = 0; r < numFeatureValues; r++) {
+        float32 currentThreshold = featureVectorIterator[r].value;
 
         if (currentThreshold >= 0) {
             break;
         }
 
         lastNegativeR = r;
-        uint32 i = iterator[r].index;
+        uint32 i = featureVectorIterator[r].index;
 
         if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
@@ -65,15 +93,15 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
 
     // Traverse the remaining examples with feature values < 0 in ascending order...
     if (numExamples > 0) {
-        for (r = r + 1; r < numElements; r++) {
-            float32 currentThreshold = iterator[r].value;
+        for (r = r + 1; r < numFeatureValues; r++) {
+            float32 currentThreshold = featureVectorIterator[r].value;
 
             if (currentThreshold >= 0) {
                 break;
             }
 
             lastNegativeR = r;
-            uint32 i = iterator[r].index;
+            uint32 i = featureVectorIterator[r].index;
 
             // Do only consider examples that are included in the current sub-sample...
             if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
@@ -192,18 +220,18 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
 
     // We continue by processing all examples with feature values >= 0...
     numExamples = 0;
-    firstR = ((int64) numElements) - 1;
+    firstR = ((int64) numFeatureValues) - 1;
 
     // Traverse examples with feature values >= 0 in descending order until the first example with non-zero weight is
     // encountered...
     for (r = firstR; r > lastNegativeR; r--) {
-        uint32 i = iterator[r].index;
+        uint32 i = featureVectorIterator[r].index;
 
         if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
             statisticsSubsetPtr->addToSubset(i);
             numExamples++;
-            previousThreshold = iterator[r].value;
+            previousThreshold = featureVectorIterator[r].value;
             previousR = r;
             break;
         }
@@ -214,11 +242,11 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
     // Traverse the remaining examples with feature values >= 0 in descending order...
     if (numExamples > 0) {
         for (r = r - 1; r > lastNegativeR; r--) {
-            uint32 i = iterator[r].index;
+            uint32 i = featureVectorIterator[r].index;
 
             // Do only consider examples that are included in the current sub-sample...
             if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
-                float32 currentThreshold = iterator[r].value;
+                float32 currentThreshold = featureVectorIterator[r].value;
 
                 // Split points between examples with the same feature value must not be considered...
                 if (previousThreshold != currentThreshold) {
@@ -336,7 +364,7 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
         // all examples that have been processed so far...
         if (nominal_) {
             statisticsSubsetPtr->resetSubset();
-            firstR = ((int64) numElements) - 1;
+            firstR = ((int64) numFeatureValues) - 1;
         }
 
         // Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
@@ -448,6 +476,16 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
             }
 
             comparator.pushRefinement(refinement, scoreVector2);
+        }
+    }
+
+    // If there are examples with zero weights, those examples have not been considered when searching for potential
+    // refinements. In this case, we need to identify the examples that are covered by a refinement, including those
+    // that have previously been ignored, and adjust the value `refinement.end`, which specifies the position that
+    // separates the covered from the uncovered examples, accordingly.
+    if (hasZeroWeights_) {
+        for (auto it = comparator.begin(); it != comparator.end(); it++) {
+            adjustRefinement(*it, featureVectorIterator);
         }
     }
 }
