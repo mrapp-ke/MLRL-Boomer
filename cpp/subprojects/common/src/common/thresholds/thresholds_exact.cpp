@@ -354,26 +354,6 @@ class ExactThresholds final : public AbstractThresholds {
                     return createExactRuleRefinement(labelIndices, featureIndex);
                 }
 
-                void filterThresholds(Refinement& refinement) override {
-                    numModifications_++;
-                    numCoveredExamples_ = refinement.numCovered;
-
-                    uint32 featureIndex = refinement.featureIndex;
-                    auto cacheFilteredIterator = cacheFiltered_.find(featureIndex);
-                    FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
-                    FeatureVector* featureVector = cacheEntry.vectorPtr.get();
-
-                    if (!featureVector) {
-                        auto cacheIterator = thresholds_.cache_.find(featureIndex);
-                        featureVector = cacheIterator->second.get();
-                    }
-
-                    // Identify the examples that are covered by the refined rule...
-                    filterCurrentVector(*featureVector, cacheEntry, refinement.start, refinement.end,
-                                        refinement.comparator, refinement.covered, numModifications_, coverageMask_,
-                                        *weightedStatisticsPtr_);
-                }
-
                 void filterThresholds(const Condition& condition) override {
                     numModifications_++;
                     numCoveredExamples_ = condition.numCovered;
