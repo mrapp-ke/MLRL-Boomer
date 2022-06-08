@@ -29,6 +29,8 @@ class ExactRuleRefinement final : public IRuleRefinement {
 
         bool nominal_;
 
+        bool hasZeroWeights_;
+
         std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr_;
 
     public:
@@ -40,11 +42,12 @@ class ExactRuleRefinement final : public IRuleRefinement {
          *                          existing rule
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
+         * @param hasZeroWeights    True, if some training examples may have zero weights, false otherwise
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback` that allows to
          *                          retrieve a feature vector for the given feature
          */
         ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal,
-                            std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
+                            bool hasZeroWeights, std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
 
         void findRefinement(SingleRefinementComparator& comparator) override;
 
