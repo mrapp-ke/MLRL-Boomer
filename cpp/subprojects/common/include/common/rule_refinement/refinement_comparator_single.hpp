@@ -31,6 +31,32 @@ class SingleRefinementComparator final {
         SingleRefinementComparator(const SingleRefinementComparator& comparator);
 
         /**
+         * An iterator that provides access to the refinements the comparator keeps track of and allows to modify them.
+         */
+        typedef Refinement* iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the refinements, starting with the best one.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin();
+
+        /**
+         * Returns an `iterator to the worst end of the refinements.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end();
+
+        /**
+         * Returns the number of refinements the comparator keeps track of.
+         *
+         * @return The number of refinements
+         */
+        uint32 getNumElements() const;
+
+        /**
          * Returns whether the quality of a rule's predictions is considered as an improvement over the quality of the
          * best rule found so far or not.
          *
@@ -59,13 +85,5 @@ class SingleRefinementComparator final {
          *                      an improvement over the best refinement that has been provided to this comparator
          */
         bool merge(SingleRefinementComparator& comparator);
-
-        /**
-         * Returns the best refinement that has been provided via the function `pushRefinement` or `merge`.
-         *
-         * @return A reference to an object of type `Refinement` that represents the best refinement that has been
-         *         provided
-         */
-        Refinement& getBestRefinement();
 
 };

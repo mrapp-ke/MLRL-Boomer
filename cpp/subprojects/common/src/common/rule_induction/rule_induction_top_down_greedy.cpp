@@ -110,7 +110,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
                 delete[] ruleRefinements;
 
                 if (foundRefinement) {
-                    Refinement& bestRefinement = refinementComparator.getBestRefinement();
+                    Refinement& bestRefinement = *refinementComparator.begin();
 
                     // Sort the rule's predictions by the corresponding label indices...
                     bestRefinement.headPtr->sort();
@@ -133,9 +133,10 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
                 }
             }
 
-            Refinement& bestRefinement = refinementComparator.getBestRefinement();
 
-            if (bestRefinement.headPtr) {
+            if (refinementComparator.getNumElements() > 0) {
+                Refinement& bestRefinement = *refinementComparator.begin();
+
                 if (weights.hasZeroWeights()) {
                     // Prune rule...
                     IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
