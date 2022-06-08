@@ -26,8 +26,42 @@ cdef extern from "common/rule_induction/rule_induction_top_down_greedy.hpp" nogi
         bool arePredictionsRecalculated() const
 
 
+cdef extern from "common/rule_induction/rule_induction_top_down_beam_search.hpp" nogil:
+
+    cdef cppclass IBeamSearchTopDownRuleInductionConfig:
+
+        # Functions:
+
+        IBeamSearchTopDownRuleInductionConfig& setBeamWidth(uint32 beamWidth) except +
+
+        uint32 getBeamWidth() const
+
+        IBeamSearchTopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) except +
+
+        uint32 getMinCoverage() const
+
+        IBeamSearchTopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) except +
+
+        uint32 getMaxConditions() const;
+
+        IBeamSearchTopDownRuleInductionConfig& setMaxHeadRefinements(uint32 maxHeadRefinements) except +
+
+        uint32 getMaxHeadRefinements() const
+
+        IBeamSearchTopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) except +
+
+        bool arePredictionsRecalculated() const
+
+
 cdef class GreedyTopDownRuleInductionConfig:
 
     # Attributes:
 
     cdef IGreedyTopDownRuleInductionConfig* config_ptr
+
+
+cdef class BeamSearchTopDownRuleInductionConfig:
+
+    # Attributes:
+
+    cdef IBeamSearchTopDownRuleInductionConfig* config_ptr

@@ -99,3 +99,120 @@ cdef class GreedyTopDownRuleInductionConfig:
         """
         self.config_ptr.setRecalculatePredictions(recalculate_predictions)
         return self
+
+
+cdef class BeamSearchTopDownRuleInductionConfig:
+    """
+    Allows to configure an algorithm for the induction of individual rules that uses a top-down beam search.
+    """
+
+    def get_beam_width(self) -> int:
+        """
+        Returns the width that is used by the beam search.
+
+        :return: The width that is used by the beam search
+        """
+        return self.config_ptr.getBeamWidth()
+
+    def set_beam_width(self, beam_width: int) -> BeamSearchTopDownRuleInductionConfig:
+        """
+        Sets the width that should be used by the beam search.
+
+        :param beam_width:  The width that should be used by the beam search. Must be at least 2
+        :return:            A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of the algorithm
+                            for the induction of individual rules
+        """
+        assert_greater_or_equal('beam_width', beam_width, 2)
+        self.config_ptr.setBeamWidth(beam_width)
+        return self
+
+    def get_min_coverage(self) -> int:
+        """
+        Returns the minimum number of training examples that must be covered by a rule.
+
+        :return: The minimum number of training examples that must be covered by a rule
+        """
+        return self.config_ptr.getMinCoverage()
+
+    def set_min_coverage(self, min_coverage: int) -> BeamSearchTopDownRuleInductionConfig:
+        """
+        Sets the minimum number of training examples that must be covered by a rule.
+
+        :param min_coverage:    The minimum number of training examples that must be covered by a rule. Must be at least
+                                1
+        :return:                A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of the
+                                algorithm for the induction of individual rules
+        """
+        assert_greater_or_equal('min_coverage', min_coverage, 1)
+        self.config_ptr.setMinCoverage(min_coverage)
+        return self
+
+    def get_max_conditions(self) -> int:
+        """
+        Returns the maximum number of conditions to be included in a rule's body.
+
+        :return: The maximum number of conditions to be included in a rule's body or 0, if the number of conditions is
+                 not restricted
+        """
+        return self.config_ptr.getMaxConditions()
+
+    def set_max_conditions(self, max_conditions: int) -> BeamSearchTopDownRuleInductionConfig:
+        """
+        Sets the maximum number of conditions to be included in a rule's body.
+
+        :param max_conditions:  The maximum number of conditions to be included in a rule's body. Must be at least 2 or
+                                0, if the number of conditions should not be restricted
+        :return:                A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of the
+                                algorithm for the induction of individual rules
+        """
+        if max_conditions != 0:
+            assert_greater_or_equal('max_conditions', max_conditions, 2)
+        self.config_ptr.setMaxConditions(max_conditions)
+        return self
+
+    def get_max_head_refinements(self) -> int:
+        """
+        Returns the maximum number of times, the head of a rule may be refinement after a new condition has been added
+        to its body.
+
+        :return: The maximum number of times, the head of a rule may be refined or 0, if the number of refinements is
+                 not restricted
+        """
+        return self.config_ptr.getMaxHeadRefinements()
+
+    def set_max_head_refinements(self, max_head_refinements: int) -> BeamSearchTopDownRuleInductionConfig:
+        """
+        Sets the maximum number of times, the head of a rule may be refined after a new condition has been added to its
+        body.
+
+        :param max_head_refinements:    The maximum number of times, the head of a rule may be refined. Must be at least
+                                        1 or 0, if the number of refinements should not be restricted
+        :return:                        A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of
+                                        the algorithm for the induction of individual rules
+        """
+        if max_head_refinements != 0:
+            assert_greater_or_equal('max_head_refinements', max_head_refinements, 1)
+        self.config_ptr.setMaxHeadRefinements(max_head_refinements)
+        return self
+
+    def are_predictions_recalculated(self) -> bool:
+        """
+        Returns whether the predictions of rules are recalculated on all training examples, if some of the examples have
+        zero weights, or not.
+
+        :return: True, if the predictions of rules are recalculated on all training examples, False otherwise
+        """
+        return self.config_ptr.arePredictionsRecalculated()
+
+    def set_recalculate_predictions(self, recalculate_predictions: bool) -> BeamSearchTopDownRuleInductionConfig:
+        """
+        Sets whether the predictions of rules should be recalculated on all training examples, if some of the examples
+        have zero weights, or not.
+
+        :param recalculate_predictions: True, if the predictions of rules should be recalculated on all training
+                                        examples, False otherwise
+        :return:                        A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of
+                                        the algorithm for the induction of individual rules
+        """
+        self.config_ptr.setRecalculatePredictions(recalculate_predictions)
+        return self
