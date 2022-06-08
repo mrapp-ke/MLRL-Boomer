@@ -1,21 +1,8 @@
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/util/validation.hpp"
 #include "rule_induction_common.hpp"
-#include "omp.h"
+#include "rule_induction_top_down_common.hpp"
 
-
-/**
- * Stores an unique pointer to an object of type `IRuleRefinement` that may be used to search for potential refinements
- * of a rule, as well as to an object of type `SingleRefinementComparator` that allows comparing different refinements
- * and keeping track of the best one.
- */
-struct RuleRefinement {
-
-    std::unique_ptr<IRuleRefinement> ruleRefinementPtr;
-
-    std::unique_ptr<SingleRefinementComparator> comparatorPtr;
-
-};
 
 /**
  * An implementation of the type `IRuleInduction` that allows to induce classification rules by using a greedy top-down
@@ -78,38 +65,12 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
             // Search for the best refinement until no improvement in terms of the rule's quality score is possible
             // anymore or the maximum number of conditions has been reached...
             while (foundRefinement && (maxConditions_ == 0 || conditionListPtr->getNumConditions() < maxConditions_)) {
-                foundRefinement = false;
-
                 // Sample features...
                 const IIndexVector& sampledFeatureIndices = featureSampling.sample(rng);
-                uint32 numSampledFeatures = sampledFeatureIndices.getNumElements();
 
-                // For each feature, create an object of type `IRuleRefinement`...
-                RuleRefinement* ruleRefinements = new RuleRefinement[numSampledFeatures];
-
-                for (uint32 i = 0; i < numSampledFeatures; i++) {
-                    uint32 featureIndex = sampledFeatureIndices.getIndex(i);
-                    RuleRefinement& ruleRefinement = ruleRefinements[i];
-                    ruleRefinement.comparatorPtr = std::make_unique<SingleRefinementComparator>(refinementComparator);
-                    ruleRefinement.ruleRefinementPtr =
-                        currentLabelIndices->createRuleRefinement(*thresholdsSubsetPtr, featureIndex);
-                }
-
-                // Search for the best condition among all available features to be added to the current rule...
-                #pragma omp parallel for firstprivate(numSampledFeatures) firstprivate(ruleRefinements) \
-                schedule(dynamic) num_threads(numThreads_)
-                for (int64 i = 0; i < numSampledFeatures; i++) {
-                    RuleRefinement& ruleRefinement = ruleRefinements[i];
-                    ruleRefinement.ruleRefinementPtr->findRefinement(*ruleRefinement.comparatorPtr);
-                }
-
-                // Pick the best refinement among the refinements that have been found for the different features...
-                for (uint32 i = 0; i < numSampledFeatures; i++) {
-                    RuleRefinement& ruleRefinement = ruleRefinements[i];
-                    foundRefinement |= refinementComparator.merge(*ruleRefinement.comparatorPtr);
-                }
-
-                delete[] ruleRefinements;
+                // Search for the best refinement...
+                foundRefinement = findRefinement(refinementComparator, *thresholdsSubsetPtr, sampledFeatureIndices,
+                                                 *currentLabelIndices, numThreads_);
 
                 if (foundRefinement) {
                     Refinement& bestRefinement = *refinementComparator.begin();
