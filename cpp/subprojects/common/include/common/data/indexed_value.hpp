@@ -12,7 +12,7 @@
  * @tparam T The type of the value
  */
 template<typename T>
-struct IndexedValue {
+struct IndexedValue final {
 
     /**
      * Allows to compare two objects of type `IndexedValue` according to the following strict weak ordering: If the
@@ -20,7 +20,7 @@ struct IndexedValue {
      * the index of the first object is smaller, it goes before the second one. Otherwise, the first object goes after
      * the second one.
      */
-    struct Compare {
+    struct Compare final {
 
         /**
          * Returns whether the a given object of type `IndexedValue` should go before a second one.
@@ -35,18 +35,26 @@ struct IndexedValue {
 
     };
 
-    IndexedValue() { };
+    IndexedValue() {
+
+    }
 
     /**
      * @param i The index
      */
-    IndexedValue(uint32 i) : index(i) { };
+    IndexedValue(uint32 i)
+        : index(i) {
+
+    }
 
     /**
      * @param i The index
      * @param v The value
      */
-    IndexedValue(uint32 i, T v) : index(i), value(v) { };
+    IndexedValue(uint32 i, T v)
+        : index(i), value(v) {
+
+    }
 
     /**
      * The index.

@@ -44,7 +44,7 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>, v
                 /**
                  * Allows to compute hash values for objects of type `CContiguousLabelMatrix::View`.
                  */
-                struct Hash {
+                struct Hash final {
 
                     /**
                      * Computes and returns a hash value for an object of type `CContiguousLabelMatrix::View`.
@@ -71,7 +71,7 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>, v
                 /**
                  * Allows to check whether two objects of type `CContiguousLabelMatrix::View` are equal or not.
                  */
-                struct Pred {
+                struct Pred final {
 
                     /**
                      * Returns whether two objects of type `CContiguousLabelMatrix::View` are equal or not.
