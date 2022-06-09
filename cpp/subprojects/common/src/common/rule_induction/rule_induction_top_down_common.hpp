@@ -15,7 +15,7 @@
  * @tparam The type of the comparator that allows comparing different refinements and keeping track of the best one(s)
  */
 template<typename RefinementComparator>
-struct RuleRefinement {
+struct RuleRefinement final {
 
     std::unique_ptr<IRuleRefinement> ruleRefinementPtr;
 
