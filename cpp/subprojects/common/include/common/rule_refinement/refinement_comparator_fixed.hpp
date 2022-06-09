@@ -22,9 +22,15 @@ class FixedRefinementComparator final {
 
         std::vector<std::reference_wrapper<Refinement>> order_;
 
-        float64 worstQualityScore_;
+        float64 minQualityScore_;
 
     public:
+
+        /**
+         * @param maxRefinements    The maximum number of refinements to keep track of
+         * @param minQualityScore   The minimum quality of a refinement to be considered as an improvement
+         */
+        FixedRefinementComparator(uint32 maxRefinements, float64 minQualityScore);
 
         /**
          * @param maxRefinements The maximum number of refinements to keep track of

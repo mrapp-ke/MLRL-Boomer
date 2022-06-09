@@ -4,16 +4,19 @@
 #include <limits>
 
 
+FixedRefinementComparator::FixedRefinementComparator(uint32 maxRefinements, float64 minQualityScore)
+    : maxRefinements_(maxRefinements), refinements_(new Refinement[maxRefinements]), minQualityScore_(minQualityScore) {
+    order_.reserve(maxRefinements);
+}
+
 FixedRefinementComparator::FixedRefinementComparator(uint32 maxRefinements)
-    : maxRefinements_(maxRefinements), refinements_(new Refinement[maxRefinements_]),
-      worstQualityScore_(std::numeric_limits<float64>::infinity()) {
-    order_.reserve(maxRefinements_);
+    : FixedRefinementComparator(maxRefinements, std::numeric_limits<float64>::infinity()) {
+
 }
 
 FixedRefinementComparator::FixedRefinementComparator(const FixedRefinementComparator& comparator)
-    : maxRefinements_(comparator.maxRefinements_), refinements_(new Refinement[maxRefinements_]),
-      worstQualityScore_(comparator.worstQualityScore_) {
-    order_.reserve(maxRefinements_);
+    : FixedRefinementComparator(comparator.maxRefinements_, comparator.minQualityScore_) {
+
 }
 
 FixedRefinementComparator::~FixedRefinementComparator() {
@@ -33,7 +36,7 @@ FixedRefinementComparator::iterator FixedRefinementComparator::end() {
 }
 
 bool FixedRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
-    return scoreVector.overallQualityScore < worstQualityScore_;
+    return scoreVector.overallQualityScore < minQualityScore_;
 }
 
 void FixedRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
@@ -57,7 +60,7 @@ void FixedRefinementComparator::pushRefinement(const Refinement& refinement, con
     });
 
     const Refinement& worstRefinement = order_.front();
-    worstQualityScore_ = worstRefinement.headPtr->overallQualityScore;
+    minQualityScore_ = worstRefinement.headPtr->overallQualityScore;
 }
 
 bool FixedRefinementComparator::merge(FixedRefinementComparator& comparator) {
@@ -113,7 +116,7 @@ bool FixedRefinementComparator::merge(FixedRefinementComparator& comparator) {
 
     if (n > 0) {
         const Refinement& worstRefinement = order_.front();
-        worstQualityScore_ = worstRefinement.headPtr->overallQualityScore;
+        minQualityScore_ = worstRefinement.headPtr->overallQualityScore;
     }
 
     delete[] refinements_;
