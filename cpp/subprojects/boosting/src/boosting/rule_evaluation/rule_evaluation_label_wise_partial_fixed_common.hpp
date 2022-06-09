@@ -16,7 +16,7 @@ namespace boosting {
      * its index, according to the following strict weak ordering: If the absolute value of the first object is greater,
      * it goes before the second one.
      */
-    struct CompareLabelWiseCriteria {
+    struct CompareLabelWiseCriteria final {
 
         /**
          * Returns whether the a given object of type `IndexedValue` that stores the optimal prediction for a label, as

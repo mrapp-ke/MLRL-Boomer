@@ -12,7 +12,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-struct Triple {
+struct Triple final {
 
     Triple() {
 

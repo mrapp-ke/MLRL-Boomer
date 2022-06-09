@@ -44,7 +44,7 @@ class CsrLabelMatrix final : public BinaryCsrConstView, virtual public ICsrLabel
                 /**
                  * Allows to compute hash values for objects of type `CsrLabelMatrix::View`.
                  */
-                struct Hash {
+                struct Hash final {
 
                     /**
                      * Computes and returns a hash value for a given object of type `CsrLabelMatrix::View`.
@@ -61,7 +61,7 @@ class CsrLabelMatrix final : public BinaryCsrConstView, virtual public ICsrLabel
                 /**
                  * Allows to check whether two objects of type `CsrLabelMatrix::View` are equal or not.
                  */
-                struct Pred {
+                struct Pred final {
 
                     /**
                      * Returns whether two objects of type `CsrLabelMatrix::View` are equal or not.
