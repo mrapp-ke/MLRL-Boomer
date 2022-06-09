@@ -5,16 +5,15 @@
 
 
 FixedRefinementComparator::FixedRefinementComparator(uint32 maxRefinements)
-    : refinements_(new Refinement[maxRefinements]), numRefinements_(0), maxRefinements_(maxRefinements),
+    : maxRefinements_(maxRefinements), refinements_(new Refinement[maxRefinements_]),
       worstQualityScore_(std::numeric_limits<float64>::infinity()) {
-
+    order_.reserve(maxRefinements_);
 }
 
-FixedRefinementComparator::FixedRefinementComparator(uint32 maxRefinements,
-                                                     const FixedRefinementComparator& comparator)
-    : refinements_(new Refinement[maxRefinements]), numRefinements_(0), maxRefinements_(maxRefinements),
+FixedRefinementComparator::FixedRefinementComparator(const FixedRefinementComparator& comparator)
+    : maxRefinements_(comparator.maxRefinements_), refinements_(new Refinement[maxRefinements_]),
       worstQualityScore_(comparator.worstQualityScore_) {
-
+    order_.reserve(maxRefinements_);
 }
 
 FixedRefinementComparator::~FixedRefinementComparator() {
@@ -22,15 +21,15 @@ FixedRefinementComparator::~FixedRefinementComparator() {
 }
 
 uint32 FixedRefinementComparator::getNumElements() const {
-    return numRefinements_;
+    return (uint32) order_.size();
 }
 
 FixedRefinementComparator::iterator FixedRefinementComparator::begin() {
-    return refinements_;
+    return order_.rbegin();
 }
 
 FixedRefinementComparator::iterator FixedRefinementComparator::end() {
-    return &refinements_[numRefinements_];
+    return order_.rend();
 }
 
 bool FixedRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
@@ -38,10 +37,86 @@ bool FixedRefinementComparator::isImprovement(const IScoreVector& scoreVector) c
 }
 
 void FixedRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
-    // TODO Implement
+    auto numRefinements = order_.size();
+
+    if (numRefinements < maxRefinements_) {
+        Refinement& newRefinement = refinements_[numRefinements];
+        newRefinement = refinement;
+        ScoreProcessor scoreProcessor(newRefinement.headPtr);
+        scoreProcessor.processScores(scoreVector);
+        order_.push_back(newRefinement);
+    } else {
+        Refinement& worstRefinement = order_.front();
+        worstRefinement = refinement;
+        ScoreProcessor scoreProcessor(worstRefinement.headPtr);
+        scoreProcessor.processScores(scoreVector);
+    }
+
+    std::sort(order_.begin(), order_.end(), [=](const Refinement& a, const Refinement& b) {
+        return a.headPtr->overallQualityScore > a.headPtr->overallQualityScore;
+    });
+
+    const Refinement& worstRefinement = order_.front();
+    worstQualityScore_ = worstRefinement.headPtr->overallQualityScore;
 }
 
 bool FixedRefinementComparator::merge(FixedRefinementComparator& comparator) {
-    // TODO Implement
-    return false;
+    bool result = false;
+    Refinement* tmp = new Refinement[maxRefinements_];
+    uint32 n = 0;
+
+    while (n < maxRefinements_ && !order_.empty() && !comparator.order_.empty()) {
+        Refinement& refinement1 = order_.back();
+        Refinement& refinement2 = comparator.order_.back();
+        Refinement& newRefinement = tmp[n];
+
+        if (refinement1.headPtr->overallQualityScore < refinement2.headPtr->overallQualityScore) {
+            newRefinement = refinement1;
+            newRefinement.headPtr = std::move(refinement1.headPtr);
+            order_.pop_back();
+        } else {
+            result = true;
+            newRefinement = refinement2;
+            newRefinement.headPtr = std::move(refinement2.headPtr);
+            comparator.order_.pop_back();
+        }
+
+        n++;
+    }
+
+    while (!order_.empty()) {
+        if (n < maxRefinements_) {
+            Refinement& refinement = order_.back();
+            Refinement& newRefinement = tmp[n];
+            newRefinement = refinement;
+            newRefinement.headPtr = std::move(refinement.headPtr);
+            n++;
+        }
+
+        order_.pop_back();
+    }
+
+    while (n < maxRefinements_ && !comparator.order_.empty()) {
+        result = true;
+        Refinement& refinement = comparator.order_.back();
+        Refinement& newRefinement = tmp[n];
+        newRefinement = refinement;
+        newRefinement.headPtr = std::move(refinement.headPtr);
+        comparator.order_.pop_back();
+        n++;
+    }
+
+    for (uint32 i = 0; i < n; i++) {
+        Refinement& newRefinement = tmp[n - i - 1];
+        order_.push_back(newRefinement);
+    }
+
+    if (n > 0) {
+        const Refinement& worstRefinement = order_.front();
+        worstQualityScore_ = worstRefinement.headPtr->overallQualityScore;
+    }
+
+    delete[] refinements_;
+    refinements_ = tmp;
+    return result;
 }
