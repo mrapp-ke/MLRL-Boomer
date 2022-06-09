@@ -25,7 +25,7 @@ class IFeatureBinning {
          * thresholds that result from the boundaries of the bins, as well as to a vector that stores the indices of the
          * bins, individual values have been assigned to.
          */
-        struct Result {
+        struct Result final {
 
             /**
              * An unique pointer to an object of type `ThresholdVector` that provides access to the thresholds that

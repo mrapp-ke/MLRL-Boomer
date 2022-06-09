@@ -12,16 +12,21 @@
  * @tparam T The type of the values
  */
 template<typename T>
-struct Triple {
+struct Triple final {
 
-    Triple() { };
+    Triple() {
+
+    }
 
     /**
      * @param f The first value
      * @param s The second value
      * @param t The third value
      */
-    Triple(T f, T s, T t) : first(f), second(s), third(t) { };
+    Triple(T f, T s, T t)
+        : first(f), second(s), third(t) {
+
+    }
 
     /**
      * The first value.

@@ -10,7 +10,7 @@
  * specifies how many conditions the rule contained when the vector was updated for the last time. It may be used to
  * check if the vector is still valid or must be updated.
  */
-struct FilteredCacheEntry {
+struct FilteredCacheEntry final {
 
     FilteredCacheEntry(): numConditions(0) { };
 

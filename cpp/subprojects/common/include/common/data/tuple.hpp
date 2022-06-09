@@ -12,15 +12,19 @@
  * @tparam T The type of the values
  */
 template<typename T>
-struct Tuple {
+struct Tuple final {
 
-    Tuple() { };
+    Tuple() {
+
+    }
 
     /**
      * @param f The first value
      * @param s The second value
      */
-    Tuple(T f, T s) : first(f), second(s) { };
+    Tuple(T f, T s) : first(f), second(s) {
+
+    }
 
     /**
      * The first value.

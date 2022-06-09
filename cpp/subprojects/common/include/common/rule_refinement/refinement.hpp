@@ -10,7 +10,7 @@
 /**
  * Stores the properties of a potential refinement of a rule.
  */
-struct Refinement : public Condition {
+struct Refinement final : public Condition {
 
     /**
      * Assigns the properties of an existing refinement, except for the scores that are predicted by the refined rule,
