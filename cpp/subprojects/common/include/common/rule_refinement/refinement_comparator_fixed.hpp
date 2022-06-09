@@ -5,6 +5,8 @@
 
 #include "common/rule_refinement/refinement.hpp"
 #include "common/rule_evaluation/score_vector.hpp"
+#include <functional>
+#include <vector>
 
 
 /**
@@ -14,11 +16,11 @@ class FixedRefinementComparator final {
 
     private:
 
+        uint32 maxRefinements_;
+
         Refinement* refinements_;
 
-        uint32 numRefinements_;
-
-        uint32 maxRefinements_;
+        std::vector<std::reference_wrapper<Refinement>> order_;
 
         float64 worstQualityScore_;
 
@@ -30,18 +32,17 @@ class FixedRefinementComparator final {
         FixedRefinementComparator(uint32 maxRefinements);
 
         /**
-         * @param maxRefinements    The maximum number of refinements to keep track of
-         * @param comparator        A reference to an object of type `FixedRefinementComparator` that keeps track of the
-         *                          best refinements found so far
+         * @param comparator A reference to an object of type `FixedRefinementComparator` that keeps track of the best
+         *                   refinements found so far
          */
-        FixedRefinementComparator(uint32 maxRefinements, const FixedRefinementComparator& comparator);
+        FixedRefinementComparator(const FixedRefinementComparator& comparator);
 
         ~FixedRefinementComparator();
 
         /**
          * An iterator that provides access to the refinements the comparator keeps track of and allows to modify them.
          */
-        typedef Refinement* iterator;
+        typedef std::vector<std::reference_wrapper<Refinement>>::reverse_iterator iterator;
 
         /**
          * Returns an `iterator` to the beginning of the refinements, starting with the best one.
