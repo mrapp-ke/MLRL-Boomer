@@ -35,18 +35,26 @@ struct IndexedValue {
 
     };
 
-    IndexedValue() { };
+    IndexedValue() {
+
+    }
 
     /**
      * @param i The index
      */
-    IndexedValue(uint32 i) : index(i) { };
+    IndexedValue(uint32 i)
+        : index(i) {
+
+    }
 
     /**
      * @param i The index
      * @param v The value
      */
-    IndexedValue(uint32 i, T v) : index(i), value(v) { };
+    IndexedValue(uint32 i, T v)
+        : index(i), value(v) {
+
+    }
 
     /**
      * The index.
