@@ -9,7 +9,7 @@
 /**
  * A confusion matrix.
  */
-struct ConfusionMatrix {
+struct ConfusionMatrix final {
 
     ConfusionMatrix()
         : in(0), ip(0), rn(0), rp(0) {

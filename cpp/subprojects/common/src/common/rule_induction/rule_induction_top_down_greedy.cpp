@@ -9,7 +9,7 @@
  * of a rule, as well as to an object of type `SingleRefinementComparator` that allows comparing different refinements
  * and keeping track of the best one.
  */
-struct RuleRefinement {
+struct RuleRefinement final {
 
     std::unique_ptr<IRuleRefinement> ruleRefinementPtr;
 

@@ -12,7 +12,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-struct Tuple {
+struct Tuple final {
 
     Tuple() {
 

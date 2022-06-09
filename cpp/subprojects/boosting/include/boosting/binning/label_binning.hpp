@@ -18,7 +18,7 @@ namespace boosting {
      * number of positive and negative bins, the labels should be assigned to, as well as the minimum and maximum
      * statistic in the vector.
      */
-    struct LabelInfo {
+    struct LabelInfo final {
 
         /**
          * The number of positive bins.
