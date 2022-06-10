@@ -5,9 +5,9 @@
 
 #include "common/model/condition.hpp"
 #include "common/model/body_conjunctive.hpp"
-#include <memory>
-#include <list>
 #include <array>
+#include <memory>
+#include <vector>
 
 
 /**
@@ -17,7 +17,7 @@ class ConditionList final {
 
     private:
 
-        std::list<Condition> list_;
+        std::vector<Condition> vector_;
 
         std::array<uint32, 4> numConditionsPerComparator_ = {0, 0, 0, 0};
 
@@ -26,7 +26,7 @@ class ConditionList final {
         /**
          * An iterator that provides read-only access to the conditions in the list.
          */
-        typedef std::list<Condition>::const_iterator const_iterator;
+        typedef std::vector<Condition>::const_iterator const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the list.
@@ -59,7 +59,7 @@ class ConditionList final {
         /**
          * Removes the last condition from the list.
          */
-        void removeLast();
+        void removeLastCondition();
 
         /**
          * Creates and returns a new object of type `ConjunctiveBody` from the conditions that contained by this list.
