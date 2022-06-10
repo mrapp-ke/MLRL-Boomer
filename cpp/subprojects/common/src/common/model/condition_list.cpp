@@ -2,26 +2,26 @@
 
 
 ConditionList::const_iterator ConditionList::cbegin() const {
-    return list_.cbegin();
+    return vector_.cbegin();
 }
 
 ConditionList::const_iterator ConditionList::cend() const {
-    return list_.cend();
+    return vector_.cend();
 }
 
 uint32 ConditionList::getNumConditions() const {
-    return (uint32) list_.size();
+    return (uint32) vector_.size();
 }
 
 void ConditionList::addCondition(const Condition& condition) {
     numConditionsPerComparator_[condition.comparator] += 1;
-    list_.emplace_back(condition);
+    vector_.emplace_back(condition);
 }
 
 void ConditionList::removeLast() {
-    Condition& condition = list_.back();
+    const Condition& condition = vector_.back();
     numConditionsPerComparator_[condition.comparator] -= 1;
-    list_.pop_back();
+    vector_.pop_back();
 };
 
 std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
@@ -33,7 +33,7 @@ std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
     uint32 eqIndex = 0;
     uint32 neqIndex = 0;
 
-    for (auto it = list_.cbegin(); it != list_.cend(); it++) {
+    for (auto it = vector_.cbegin(); it != vector_.cend(); it++) {
         const Condition& condition = *it;
         uint32 featureIndex = condition.featureIndex;
         float32 threshold = condition.threshold;
