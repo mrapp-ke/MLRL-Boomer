@@ -58,7 +58,7 @@ class Irep final : public IPruning {
 
                 // Remove the pruned conditions...
                 while (numPrunedConditions > 0) {
-                    conditions.removeLast();
+                    conditions.removeLastCondition();
                     numPrunedConditions--;
                 }
             }

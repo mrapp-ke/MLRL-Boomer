@@ -59,7 +59,7 @@ class ConditionList final {
         /**
          * Removes the last condition from the list.
          */
-        void removeLast();
+        void removeLastCondition();
 
         /**
          * Creates and returns a new object of type `ConjunctiveBody` from the conditions that contained by this list.

@@ -18,7 +18,7 @@ void ConditionList::addCondition(const Condition& condition) {
     vector_.emplace_back(condition);
 }
 
-void ConditionList::removeLast() {
+void ConditionList::removeLastCondition() {
     const Condition& condition = vector_.back();
     numConditionsPerComparator_[condition.comparator] -= 1;
     vector_.pop_back();
