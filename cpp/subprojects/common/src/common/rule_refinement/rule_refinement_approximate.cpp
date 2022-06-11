@@ -3,14 +3,14 @@
 
 template<typename IndexVector, typename RefinementComparator>
 static inline void findRefinementInternally(const IndexVector& labelIndices, uint32 featureIndex, bool nominal,
-                                            IRuleRefinementCallback<ThresholdVector>& callback,
+                                            IRuleRefinementCallback<IHistogram, ThresholdVector>& callback,
                                             RefinementComparator& comparator) {
     Refinement refinement;
     refinement.featureIndex = featureIndex;
 
     // Invoke the callback...
-    std::unique_ptr<IRuleRefinementCallback<ThresholdVector>::Result> callbackResultPtr = callback.get();
-    const IImmutableWeightedStatistics& statistics = callbackResultPtr->statistics_;
+    std::unique_ptr<IRuleRefinementCallback<IHistogram, ThresholdVector>::Result> callbackResultPtr = callback.get();
+    const IHistogram& statistics = callbackResultPtr->statistics_;
     const ThresholdVector& thresholdVector = callbackResultPtr->vector_;
     ThresholdVector::const_iterator thresholdIterator = thresholdVector.cbegin();
     uint32 numBins = thresholdVector.getNumElements();
@@ -279,9 +279,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
 }
 
 template<typename T>
-ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
-        const T& labelIndices, uint32 featureIndex, bool nominal,
-        std::unique_ptr<IRuleRefinementCallback<ThresholdVector>> callbackPtr)
+ApproximateRuleRefinement<T>::ApproximateRuleRefinement(const T& labelIndices, uint32 featureIndex, bool nominal,
+                                                        std::unique_ptr<Callback> callbackPtr)
     : labelIndices_(labelIndices), featureIndex_(featureIndex), nominal_(nominal),
       callbackPtr_(std::move(callbackPtr)) {
 
