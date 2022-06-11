@@ -452,7 +452,7 @@ namespace boosting {
                     uint32 binIndex = binIndexVector_.getBinIndex(statisticIndex);
 
                     if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
-                        binWeightVectorPtr_->set(binIndex, true);
+                        binWeightVectorPtr_->increaseWeight(binIndex);
                         histogramPtr_->addToRow(binIndex, originalStatisticView_.gradients_row_cbegin(statisticIndex),
                                                 originalStatisticView_.gradients_row_cend(statisticIndex),
                                                 originalStatisticView_.hessians_row_cbegin(statisticIndex),
