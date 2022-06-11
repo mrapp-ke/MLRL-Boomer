@@ -7,6 +7,7 @@
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/rule_refinement/rule_refinement_callback.hpp"
 #include "common/binning/threshold_vector.hpp"
+#include "common/statistics/histogram.hpp"
 
 
 /**
@@ -28,7 +29,9 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
 
         bool nominal_;
 
-        std::unique_ptr<IRuleRefinementCallback<ThresholdVector>> callbackPtr_;
+        typedef IRuleRefinementCallback<IHistogram, ThresholdVector> Callback;
+
+        std::unique_ptr<Callback> callbackPtr_;
 
     public:
 
@@ -38,10 +41,10 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
          * @param featureIndex      The index of the feature, the new condition corresponds to
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback` that allows to
-         *                          retrieve the bins for a certain feature
+         *                          retrieve the information that is required to search for potential refinements
          */
         ApproximateRuleRefinement(const T& labelIndices, uint32 featureIndex, bool nominal,
-                                  std::unique_ptr<IRuleRefinementCallback<ThresholdVector>> callbackPtr);
+                                  std::unique_ptr<Callback> callbackPtr);
 
         void findRefinement(SingleRefinementComparator& comparator) override;
 

@@ -114,7 +114,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback final : public IRuleRefinementCallback<ThresholdVector> {
+                class Callback final : public IRuleRefinementCallback<IHistogram, ThresholdVector> {
 
                     private:
 
