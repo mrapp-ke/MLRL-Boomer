@@ -424,6 +424,13 @@ namespace boosting {
             }
 
             /**
+             * @see `IHistogram::getBinWeight`
+             */
+            uint32 getBinWeight(uint32 binIndex) const override {
+                return (*binWeightVectorPtr_)[binIndex];
+            }
+
+            /**
              * @see `IHistogram::addToBin`
              */
             void addToBin(uint32 statisticIndex) override {
