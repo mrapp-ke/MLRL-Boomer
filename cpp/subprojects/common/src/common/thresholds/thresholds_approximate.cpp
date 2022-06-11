@@ -206,7 +206,8 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                     bool nominal = thresholds_.nominalFeatureMask_.isNominal(featureIndex);
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
-                    return std::make_unique<ApproximateRuleRefinement<T>>(labelIndices, featureIndex, nominal,
+                    return std::make_unique<ApproximateRuleRefinement<T>>(labelIndices, coverageSet_.getNumCovered(),
+                                                                          featureIndex, nominal,
                                                                           std::move(callbackPtr));
                 }
 
