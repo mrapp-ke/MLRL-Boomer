@@ -1,22 +1,15 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
 
 
-template<typename T>
-ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
-        const T& labelIndices, uint32 featureIndex, bool nominal,
-        std::unique_ptr<IRuleRefinementCallback<ThresholdVector>> callbackPtr)
-    : labelIndices_(labelIndices), featureIndex_(featureIndex), nominal_(nominal),
-      callbackPtr_(std::move(callbackPtr)) {
-
-}
-
-template<typename T>
-void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparator) {
+template<typename IndexVector, typename RefinementComparator>
+static inline void findRefinementInternally(const IndexVector& labelIndices, uint32 featureIndex, bool nominal,
+                                            IRuleRefinementCallback<ThresholdVector>& callback,
+                                            RefinementComparator& comparator) {
     Refinement refinement;
-    refinement.featureIndex = featureIndex_;
+    refinement.featureIndex = featureIndex;
 
     // Invoke the callback...
-    std::unique_ptr<IRuleRefinementCallback<ThresholdVector>::Result> callbackResultPtr = callbackPtr_->get();
+    std::unique_ptr<IRuleRefinementCallback<ThresholdVector>::Result> callbackResultPtr = callback.get();
     const IImmutableWeightedStatistics& statistics = callbackResultPtr->statistics_;
     const ThresholdVector& thresholdVector = callbackResultPtr->vector_;
     ThresholdVector::const_iterator thresholdIterator = thresholdVector.cbegin();
@@ -25,7 +18,7 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
     bool sparse = sparseBinIndex < numBins;
 
     // Create a new, empty subset of the statistics...
-    std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices_);
+    std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices);
 
     for (auto it = thresholdVector.missing_indices_cbegin(); it != thresholdVector.missing_indices_cend(); it++) {
         uint32 i = *it;
@@ -62,7 +55,7 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
                     refinement.end = r;
                     refinement.covered = true;
                     refinement.threshold = thresholdIterator[r - 1];
-                    refinement.comparator = nominal_ ? EQ : LEQ;
+                    refinement.comparator = nominal ? EQ : LEQ;
                     comparator.pushRefinement(refinement, scoreVector);
                 }
 
@@ -76,13 +69,13 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
                     refinement.end = r;
                     refinement.covered = false;
                     refinement.threshold = thresholdIterator[r - 1];
-                    refinement.comparator = nominal_ ? NEQ : GR;
+                    refinement.comparator = nominal ? NEQ : GR;
                     comparator.pushRefinement(refinement, scoreVector2);
                 }
 
                 // Reset the subset in case of a nominal feature, as the previous bins will not be covered by the next
                 // condition...
-                if (nominal_) {
+                if (nominal) {
                     statisticsSubsetPtr->resetSubset();
                     firstR = r;
                 }
@@ -105,7 +98,7 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
                 refinement.end = sparseBinIndex;
                 refinement.covered = true;
                 refinement.threshold = thresholdIterator[sparseBinIndex - 1];
-                refinement.comparator = nominal_ ? EQ : LEQ;
+                refinement.comparator = nominal ? EQ : LEQ;
                 comparator.pushRefinement(refinement, scoreVector);
             }
 
@@ -119,7 +112,7 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
                 refinement.end = sparseBinIndex;
                 refinement.covered = false;
                 refinement.threshold = thresholdIterator[sparseBinIndex - 1];
-                refinement.comparator = nominal_ ? NEQ : GR;
+                refinement.comparator = nominal ? NEQ : GR;
                 comparator.pushRefinement(refinement, scoreVector2);
             }
         }
@@ -159,7 +152,7 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
                     refinement.end = r;
                     refinement.covered = true;
 
-                    if (nominal_) {
+                    if (nominal) {
                         refinement.threshold = thresholdIterator[firstR];
                         refinement.comparator = EQ;
                     } else {
@@ -180,7 +173,7 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
                     refinement.end = r;
                     refinement.covered = false;
 
-                    if (nominal_) {
+                    if (nominal) {
                         refinement.threshold = thresholdIterator[firstR];
                         refinement.comparator = NEQ;
                     } else {
@@ -193,7 +186,7 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
 
                 // Reset the subset in case of a nominal feature, as the previous bins will not be covered by the next
                 // condition...
-                if (nominal_) {
+                if (nominal) {
                     statisticsSubsetPtr->resetSubset();
                     firstR = r;
                 }
@@ -215,7 +208,7 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
                 refinement.end = sparseBinIndex;
                 refinement.covered = true;
 
-                if (nominal_) {
+                if (nominal) {
                     refinement.threshold = thresholdIterator[firstR];
                     refinement.comparator = EQ;
                 } else {
@@ -235,7 +228,7 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
                 refinement.end = sparseBinIndex;
                 refinement.covered = false;
 
-                if (nominal_) {
+                if (nominal) {
                     refinement.threshold = thresholdIterator[firstR];
                     refinement.comparator = NEQ;
                 } else {
@@ -248,7 +241,7 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
 
             // If the feature is nominal and if any bins in the range [0, sparseBinIndex) have been processed earlier,
             // we must test additional conditions that separate the sparse bin from the remaining bins...
-            if (nominal_ && subsetModifiedPrevious) {
+            if (nominal && subsetModifiedPrevious) {
                 // Reset the subset once again to ensure that the accumulated state includes all bins that have been
                 // processed so far...
                 statisticsSubsetPtr->resetSubset();
@@ -283,6 +276,20 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
             }
         }
     }
+}
+
+template<typename T>
+ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
+        const T& labelIndices, uint32 featureIndex, bool nominal,
+        std::unique_ptr<IRuleRefinementCallback<ThresholdVector>> callbackPtr)
+    : labelIndices_(labelIndices), featureIndex_(featureIndex), nominal_(nominal),
+      callbackPtr_(std::move(callbackPtr)) {
+
+}
+
+template<typename T>
+void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparator) {
+    findRefinementInternally(labelIndices_, featureIndex_, nominal_, *callbackPtr_, comparator);
 }
 
 template class ApproximateRuleRefinement<CompleteIndexVector>;
