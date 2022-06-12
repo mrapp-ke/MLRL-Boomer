@@ -1,4 +1,4 @@
-INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='enron', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='sparse', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning='equal-frequency', label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='enron', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='sparse', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning='equal-width', label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
 INFO Starting experiment...
 INFO Using separate training and test sets...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/enron.xml"...
@@ -7,28 +7,28 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/enro
 INFO Fitting model to 1123 training examples...
 DEBUG A sparse matrix is used to store the feature values of the training examples
 DEBUG A sparse matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.3345347240101546 seconds
+INFO Successfully fit model in 0.5536702189128846 seconds
 INFO Predicting for 579 test examples...
 DEBUG A sparse matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
-INFO Successfully predicted in 0.014662795001640916 seconds
+INFO Successfully predicted in 0.015275593963451684 seconds
 INFO Overall evaluation result on test data:
 
-Ex.-based F1: 0.402046159559113
-Ex.-based Jacc.: 0.2874564794253913
-Ex.-based Prec.: 0.5823258491652274
-Ex.-based Rec.: 0.3331503413109631
-Hamm. Acc.: 0.9447322970639033
-Hamm. Loss: 0.055267702936096716
-Ma. F1: 0.06622039643212996
-Ma. Jacc.: 0.04804577300627558
-Ma. Prec.: 0.9325903388410917
-Ma. Rec.: 0.06403037250802805
-Mi. F1: 0.44356955380577423
-Mi. Jacc.: 0.28499156829679595
-Mi. Prec.: 0.6139872842870118
-Mi. Rec.: 0.34720082177709294
-Subs. 0/1 Loss: 0.9758203799654577
-Subs. Acc.: 0.024179620034542316
+Ex.-based F1: 0.40468629432360004
+Ex.-based Jacc.: 0.2920360775283055
+Ex.-based Prec.: 0.6196027633851469
+Ex.-based Rec.: 0.3310551854593305
+Hamm. Acc.: 0.9459706064457262
+Hamm. Loss: 0.054029393554273795
+Ma. F1: 0.06399569314405333
+Ma. Jacc.: 0.04685902696708412
+Ma. Prec.: 0.9513220485077306
+Ma. Rec.: 0.06150349329240515
+Mi. F1: 0.4451137884872825
+Mi. Jacc.: 0.2862677572105037
+Mi. Prec.: 0.6388088376560999
+Mi. Rec.: 0.3415511042629687
+Subs. 0/1 Loss: 0.9740932642487047
+Subs. Acc.: 0.025906735751295335
 
-INFO Successfully finished after 0.597132833005162 seconds
+INFO Successfully finished after 0.8258281270973384 seconds
