@@ -1,16 +1,18 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
+#include <iostream>
 
 
 template<typename IndexVector, typename RefinementComparator>
-static inline void findRefinementInternally(const IndexVector& labelIndices, uint32 featureIndex, bool nominal,
-                                            IRuleRefinementCallback<ThresholdVector>& callback,
+static inline void findRefinementInternally(const IndexVector& labelIndices, uint32 numExamples, uint32 featureIndex,
+                                            bool nominal,
+                                            IRuleRefinementCallback<IHistogram, ThresholdVector>& callback,
                                             RefinementComparator& comparator) {
     Refinement refinement;
     refinement.featureIndex = featureIndex;
 
     // Invoke the callback...
-    std::unique_ptr<IRuleRefinementCallback<ThresholdVector>::Result> callbackResultPtr = callback.get();
-    const IImmutableWeightedStatistics& statistics = callbackResultPtr->statistics_;
+    std::unique_ptr<IRuleRefinementCallback<IHistogram, ThresholdVector>::Result> callbackResultPtr = callback.get();
+    const IHistogram& statistics = callbackResultPtr->statistics_;
     const ThresholdVector& thresholdVector = callbackResultPtr->vector_;
     ThresholdVector::const_iterator thresholdIterator = thresholdVector.cbegin();
     uint32 numBins = thresholdVector.getNumElements();
@@ -26,25 +28,31 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
     }
 
     // In the following, we start by processing the bins in range [0, sparseBinIndex)...
-    bool subsetModified = false;
+    uint32 numCovered = 0;
     int64 firstR = 0;
     int64 r;
 
     // Traverse bins in ascending order until the first bin with non-zero weight is encountered...
     for (r = 0; r < sparseBinIndex; r++) {
-        if (statisticsSubsetPtr->hasNonZeroWeight(r)) {
+        uint32 weight = statistics.getBinWeight(r);
+
+        if (weight > 0) {
             // Add the bin to the subset to mark it as covered by upcoming refinements...
             statisticsSubsetPtr->addToSubset(r);
-            subsetModified = true;
+            numCovered += weight;
             break;
         }
     }
 
+    uint32 numAccumulated = numCovered;
+
     // Traverse the remaining bins in ascending order...
-    if (subsetModified) {
+    if (numCovered > 0) {
         for (r = r + 1; r < sparseBinIndex; r++) {
+            uint32 weight = statistics.getBinWeight(r);
+
             // Do only consider bins that are not empty...
-            if (statisticsSubsetPtr->hasNonZeroWeight(r)) {
+            if (weight > 0) {
                 // Find and evaluate the best head for the current refinement, if a condition that uses the <= operator
                 // (or the == operator in case of a nominal feature) is used...
                 const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
@@ -53,6 +61,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 if (comparator.isImprovement(scoreVector)) {
                     refinement.start = firstR;
                     refinement.end = r;
+                    refinement.numCovered = numCovered;
                     refinement.covered = true;
                     refinement.threshold = thresholdIterator[r - 1];
                     refinement.comparator = nominal ? EQ : LEQ;
@@ -67,6 +76,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 if (comparator.isImprovement(scoreVector2)) {
                     refinement.start = firstR;
                     refinement.end = r;
+                    refinement.numCovered = (numExamples - numCovered);
                     refinement.covered = false;
                     refinement.threshold = thresholdIterator[r - 1];
                     refinement.comparator = nominal ? NEQ : GR;
@@ -77,17 +87,20 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 // condition...
                 if (nominal) {
                     statisticsSubsetPtr->resetSubset();
+                    numCovered = 0;
                     firstR = r;
                 }
 
                 // Add the bin to the subset to mark it as covered by upcoming refinements...
                 statisticsSubsetPtr->addToSubset(r);
+                numCovered += weight;
+                numAccumulated += weight;
             }
         }
 
         // If any bins have been processed so far and if there is a sparse bin, we must evaluate additional conditions
         // that separate the bins that have been iterated from the remaining ones (including the sparse bin)...
-        if (subsetModified && sparse) {
+        if (numCovered > 0 && sparse) {
             // Find and evaluate the best head for the current refinement, if a condition that uses the <= operator (or
             // the == operator in case of nominal feature) is used...
             const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
@@ -96,6 +109,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
             if (comparator.isImprovement(scoreVector)) {
                 refinement.start = firstR;
                 refinement.end = sparseBinIndex;
+                refinement.numCovered = numCovered;
                 refinement.covered = true;
                 refinement.threshold = thresholdIterator[sparseBinIndex - 1];
                 refinement.comparator = nominal ? EQ : LEQ;
@@ -110,6 +124,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
             if (comparator.isImprovement(scoreVector2)) {
                 refinement.start = firstR;
                 refinement.end = sparseBinIndex;
+                refinement.numCovered = (numExamples - numCovered);
                 refinement.covered = false;
                 refinement.threshold = thresholdIterator[sparseBinIndex - 1];
                 refinement.comparator = nominal ? NEQ : GR;
@@ -121,27 +136,33 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
         statisticsSubsetPtr->resetSubset();
     }
 
-    bool subsetModifiedPrevious = subsetModified;
+    uint32 numAccumulatedPrevious = numAccumulated;
 
     // We continue by processing the bins in range (sparseBinIndex, numBins)...
-    subsetModified = false;
+    numCovered = 0;
     firstR = ((int64) numBins) - 1;
 
     // Traverse bins in descending order until the first bin with non-zero weight is encountered...
     for (r = firstR; r > sparseBinIndex; r--) {
-        if (statisticsSubsetPtr->hasNonZeroWeight(r)) {
+        uint32 weight = statistics.getBinWeight(r);
+
+        if (weight > 0) {
             // Add the bin to the subset to mark it as covered by upcoming refinements...
             statisticsSubsetPtr->addToSubset(r);
-            subsetModified = true;
+            numCovered += weight;
             break;
         }
     }
 
+    numAccumulated = numCovered;
+
     // Traverse the remaining bins in descending order...
-    if (subsetModified) {
+    if (numCovered > 0) {
         for (r = r - 1; r > sparseBinIndex; r--) {
+            uint32 weight = statistics.getBinWeight(r);
+
             // Do only consider bins that are not empty...
-            if (statisticsSubsetPtr->hasNonZeroWeight(r)) {
+            if (weight > 0) {
                 // Find and evaluate the best head for the current refinement, if a condition that uses the > operator
                 // (or the == operator in case of a nominal feature) is used..
                 const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
@@ -150,6 +171,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 if (comparator.isImprovement(scoreVector)) {
                     refinement.start = firstR;
                     refinement.end = r;
+                    refinement.numCovered = numCovered;
                     refinement.covered = true;
 
                     if (nominal) {
@@ -171,6 +193,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 if (comparator.isImprovement(scoreVector2)) {
                     refinement.start = firstR;
                     refinement.end = r;
+                    refinement.numCovered = (numExamples - numCovered);
                     refinement.covered = false;
 
                     if (nominal) {
@@ -188,11 +211,14 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 // condition...
                 if (nominal) {
                     statisticsSubsetPtr->resetSubset();
+                    numCovered = 0;
                     firstR = r;
                 }
 
                 // Add the bin to the subset to mark it as covered by upcoming refinements...
                 statisticsSubsetPtr->addToSubset(r);
+                numCovered += weight;
+                numAccumulated += weight;
             }
         }
 
@@ -206,6 +232,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
             if (comparator.isImprovement(scoreVector)) {
                 refinement.start = firstR;
                 refinement.end = sparseBinIndex;
+                refinement.numCovered = numCovered;
                 refinement.covered = true;
 
                 if (nominal) {
@@ -226,6 +253,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
             if (comparator.isImprovement(scoreVector2)) {
                 refinement.start = firstR;
                 refinement.end = sparseBinIndex;
+                refinement.numCovered = (numExamples - numCovered);
                 refinement.covered = false;
 
                 if (nominal) {
@@ -241,7 +269,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
 
             // If the feature is nominal and if any bins in the range [0, sparseBinIndex) have been processed earlier,
             // we must test additional conditions that separate the sparse bin from the remaining bins...
-            if (nominal && subsetModifiedPrevious) {
+            if (nominal && numAccumulatedPrevious > 0) {
                 // Reset the subset once again to ensure that the accumulated state includes all bins that have been
                 // processed so far...
                 statisticsSubsetPtr->resetSubset();
@@ -254,6 +282,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 if (comparator.isImprovement(scoreVector)) {
                     refinement.start = sparseBinIndex;
                     refinement.end = sparseBinIndex + 1;
+                    refinement.numCovered = (numExamples - numAccumulated - numAccumulatedPrevious);
                     refinement.covered = false;
                     refinement.threshold = thresholdIterator[sparseBinIndex];
                     refinement.comparator = NEQ;
@@ -268,6 +297,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 if (comparator.isImprovement(scoreVector2)) {
                     refinement.start = sparseBinIndex;
                     refinement.end = sparseBinIndex + 1;
+                    refinement.numCovered = (numAccumulated + numAccumulatedPrevious);
                     refinement.covered = true;
                     refinement.threshold = thresholdIterator[sparseBinIndex];
                     refinement.comparator = EQ;
@@ -279,17 +309,16 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
 }
 
 template<typename T>
-ApproximateRuleRefinement<T>::ApproximateRuleRefinement(
-        const T& labelIndices, uint32 featureIndex, bool nominal,
-        std::unique_ptr<IRuleRefinementCallback<ThresholdVector>> callbackPtr)
-    : labelIndices_(labelIndices), featureIndex_(featureIndex), nominal_(nominal),
+ApproximateRuleRefinement<T>::ApproximateRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex,
+                                                        bool nominal, std::unique_ptr<Callback> callbackPtr)
+    : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
       callbackPtr_(std::move(callbackPtr)) {
 
 }
 
 template<typename T>
 void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparator) {
-    findRefinementInternally(labelIndices_, featureIndex_, nominal_, *callbackPtr_, comparator);
+    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, *callbackPtr_, comparator);
 }
 
 template<typename T>
