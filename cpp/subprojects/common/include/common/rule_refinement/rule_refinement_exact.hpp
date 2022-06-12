@@ -5,6 +5,7 @@
 
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/rule_refinement/rule_refinement_callback.hpp"
+#include "common/statistics/statistics_weighted.hpp"
 #include "common/input/feature_vector.hpp"
 
 
@@ -31,7 +32,9 @@ class ExactRuleRefinement final : public IRuleRefinement {
 
         bool hasZeroWeights_;
 
-        std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr_;
+        typedef IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector> Callback;
+
+        std::unique_ptr<Callback> callbackPtr_;
 
     public:
 
@@ -44,10 +47,10 @@ class ExactRuleRefinement final : public IRuleRefinement {
          * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
          * @param hasZeroWeights    True, if some training examples may have zero weights, false otherwise
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback` that allows to
-         *                          retrieve a feature vector for the given feature
+         *                          retrieve the information that is required to search for potential refinements
          */
         ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal,
-                            bool hasZeroWeights, std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr);
+                            bool hasZeroWeights, std::unique_ptr<Callback> callbackPtr);
 
         void findRefinement(SingleRefinementComparator& comparator) override;
 
