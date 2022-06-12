@@ -3,18 +3,18 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_weighted_immutable.hpp"
 #include <memory>
 
 
 /**
  * Defines an interface for callbacks that may be invoked by subclasses of the the class `IRuleRefinement` in order to
- * retrieve the data, consisting of statistics, a vector, as well as corresponding weights, that is required to search
- * for potential refinements.
+ * retrieve the information that is required to search for potential refinements. It consists of statistics, as well as
+ * a vector that allows to determine the thresholds that may be used by potential conditions.
  *
- * @tparam Vector The type of the vector that is returned by the callback
+ * @tparam Statistics   The type of the statistics,
+ * @tparam Vector       The type of the vector that is returned by the callback
  */
-template<typename Vector>
+template<typename Statistics, typename Vector>
 class IRuleRefinementCallback {
 
     public:
@@ -27,21 +27,21 @@ class IRuleRefinementCallback {
             public:
 
                 /**
-                 * @param statistics        A reference to an object of type `IImmutableWeightedStatistics` that should
-                 *                          be used to search for potential refinements
-                 * @param vector            A reference to an object of template type `Vector` that should be used to
-                 *                          search for potential refinements
+                 * @param statistics    A reference to an object of template type `Statistics` that should be used to
+                 *                      search for potential refinements
+                 * @param vector        A reference to an object of template type `Vector` that should be used to search
+                 *                      for potential refinements
                  */
-                Result(const IImmutableWeightedStatistics& statistics, const Vector& vector)
+                Result(const Statistics& statistics, const Vector& vector)
                     : statistics_(statistics), vector_(vector) {
 
                 }
 
                 /**
-                 * A reference to an object of type `IImmutableWeightedStatistics` that should be used to search for
-                 * potential refinements.
+                 * A reference to an object of template type `Statistics` that should be used to search for potential
+                 * refinements.
                  */
-                const IImmutableWeightedStatistics& statistics_;
+                const Statistics& statistics_;
 
                 /**
                  * A reference to an object of template type `Vector` that should be used to search for potential

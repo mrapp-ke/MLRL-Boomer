@@ -1,4 +1,4 @@
-INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='sparse', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning='equal-width', label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='sparse', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, statistic_format=None, default_rule=None, early_stopping=None, feature_binning='equal-width', label_binning=None, shrinkage=None, loss=None, classification_predictor=None, probability_predictor=None, l1_regularization_weight=None, l2_regularization_weight=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
 INFO Starting experiment...
 INFO Using separate training and test sets...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
@@ -7,28 +7,28 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emot
 INFO Fitting model to 391 training examples...
 DEBUG A sparse matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.1388254220073577 seconds
+INFO Successfully fit model in 0.22161694196984172 seconds
 INFO Predicting for 202 test examples...
 DEBUG A sparse matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.004621811996912584 seconds
+INFO Successfully predicted in 0.004945316002704203 seconds
 INFO Overall evaluation result on test data:
 
-Ex.-based F1: 0.5806930693069307
-Ex.-based Jacc.: 0.49669966996699666
-Ex.-based Prec.: 0.707095709570957
-Ex.-based Rec.: 0.599009900990099
-Hamm. Acc.: 0.7838283828382838
-Hamm. Loss: 0.21617161716171618
-Ma. F1: 0.6300620661972487
-Ma. Jacc.: 0.47078342663654277
-Ma. Prec.: 0.692858429696665
-Ma. Rec.: 0.5944441930147671
-Mi. F1: 0.6478494623655914
-Mi. Jacc.: 0.47912524850894633
-Mi. Prec.: 0.6985507246376812
-Mi. Rec.: 0.6040100250626567
-Subs. 0/1 Loss: 0.7673267326732673
-Subs. Acc.: 0.23267326732673269
+Ex.-based F1: 0.5745874587458746
+Ex.-based Jacc.: 0.49504950495049505
+Ex.-based Prec.: 0.7557755775577558
+Ex.-based Rec.: 0.5643564356435643
+Hamm. Acc.: 0.7920792079207921
+Hamm. Loss: 0.2079207920792079
+Ma. F1: 0.6290303240189489
+Ma. Jacc.: 0.4661154613360496
+Ma. Prec.: 0.7495980100146767
+Ma. Rec.: 0.5565790133390425
+Mi. F1: 0.6420454545454546
+Mi. Jacc.: 0.47280334728033474
+Mi. Prec.: 0.740983606557377
+Mi. Rec.: 0.5664160401002506
+Subs. 0/1 Loss: 0.7524752475247525
+Subs. Acc.: 0.24752475247524752
 
-INFO Successfully finished after 0.20049579098122194 seconds
+INFO Successfully finished after 0.28415566904004663 seconds
