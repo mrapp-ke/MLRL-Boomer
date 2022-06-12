@@ -114,7 +114,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * statistics are retrieved from the cache. Otherwise, they are computed by fetching the feature values
                  * from the feature matrix and applying a binning method.
                  */
-                class Callback final : public IRuleRefinementCallback<ThresholdVector> {
+                class Callback final : public IRuleRefinementCallback<IHistogram, ThresholdVector> {
 
                     private:
 
@@ -206,7 +206,8 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                     bool nominal = thresholds_.nominalFeatureMask_.isNominal(featureIndex);
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
-                    return std::make_unique<ApproximateRuleRefinement<T>>(labelIndices, featureIndex, nominal,
+                    return std::make_unique<ApproximateRuleRefinement<T>>(labelIndices, coverageSet_.getNumCovered(),
+                                                                          featureIndex, nominal,
                                                                           std::move(callbackPtr));
                 }
 

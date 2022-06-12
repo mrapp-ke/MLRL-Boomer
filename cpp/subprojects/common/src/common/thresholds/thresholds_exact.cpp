@@ -238,7 +238,7 @@ class ExactThresholds final : public AbstractThresholds {
                  * A callback that allows to retrieve feature vectors. If available, the feature vectors are retrieved
                  * from the cache. Otherwise, they are fetched from the feature matrix.
                  */
-                class Callback final : public IRuleRefinementCallback<FeatureVector> {
+                class Callback final : public IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector> {
 
                     private:
 

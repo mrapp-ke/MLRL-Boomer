@@ -31,15 +31,16 @@ static inline void adjustRefinement(Refinement& refinement, FeatureVector::const
 }
 
 template<typename IndexIterator, typename RefinementComparator>
-static inline void findRefinementInternally(const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex,
-                                            bool nominal, bool hasZeroWeights,
-                                            IRuleRefinementCallback<FeatureVector>& callback,
-                                            RefinementComparator& comparator) {
+static inline void findRefinementInternally(
+        const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal, bool hasZeroWeights,
+        IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>& callback,
+        RefinementComparator& comparator) {
     Refinement refinement;
     refinement.featureIndex = featureIndex;
 
     // Invoke the callback...
-    std::unique_ptr<IRuleRefinementCallback<FeatureVector>::Result> callbackResultPtr = callback.get();
+    std::unique_ptr<IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>::Result> callbackResultPtr =
+        callback.get();
     const IImmutableWeightedStatistics& statistics = callbackResultPtr->statistics_;
     const FeatureVector& featureVector = callbackResultPtr->vector_;
     FeatureVector::const_iterator featureVectorIterator = featureVector.cbegin();
@@ -485,8 +486,7 @@ static inline void findRefinementInternally(const IndexIterator& labelIndices, u
 
 template<typename T>
 ExactRuleRefinement<T>::ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex,
-                                            bool nominal, bool hasZeroWeights,
-                                            std::unique_ptr<IRuleRefinementCallback<FeatureVector>> callbackPtr)
+                                            bool nominal, bool hasZeroWeights, std::unique_ptr<Callback> callbackPtr)
     : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
       hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {
 
