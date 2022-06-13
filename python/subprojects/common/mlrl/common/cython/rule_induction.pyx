@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython._validation import assert_greater_or_equal
+from mlrl.common.cython._validation import assert_greater, assert_less, assert_greater_or_equal
 
 
 cdef class GreedyTopDownRuleInductionConfig:
@@ -28,6 +28,29 @@ cdef class GreedyTopDownRuleInductionConfig:
         """
         assert_greater_or_equal('min_coverage', min_coverage, 1)
         self.config_ptr.setMinCoverage(min_coverage)
+        return self
+
+    def get_min_support(self) -> float:
+        """
+        Returns the minimum support, i.e., the minimum fraction of the training examples that must be covered by a rule.
+
+        :return: The minimum support or 0, if the support of rules is not restricted
+        """
+        return self.config_ptr.getMinSupport()
+
+    def set_min_support(self, min_support: float) -> GreedyTopDownRuleInductionConfig:
+        """
+        Sets the minimum support, i.e., the minimum fraction of the training examples that must be covered by a rule.
+
+        :param min_support: The minimum support. Must be in [0, 1] or 0, if the support of rules should not be
+                            restricted
+        :return:            A `GreedyTopDownRuleInductionConfig` that allows further configuration of the algorithm for
+                            the induction of individual rules
+        """
+        if min_support != 0:
+            assert_greater('min_support', min_support, 0)
+            assert_less('min_support', min_support, 1)
+        self.config_ptr.setMinSupport(min_support)
         return self
 
     def get_max_conditions(self) -> int:
