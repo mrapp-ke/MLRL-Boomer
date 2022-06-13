@@ -23,15 +23,24 @@ namespace seco {
 
             }
 
+            /**
+             * @see `IModelBuilder::setDefaultRule`
+             */
             void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
                 defaultHeadPtr_ = predictionPtr->createHead();
             }
 
+            /**
+             * @see `IModelBuilder::addRule`
+             */
             void addRule(std::unique_ptr<ConditionList>& conditionListPtr,
                          std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
                 modelPtr_->addRule(conditionListPtr->createConjunctiveBody(), predictionPtr->createHead());
             }
 
+            /**
+             * @see `IModelBuilder::buildModel`
+             */
             std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) override {
                 if (defaultHeadPtr_) {
                     modelPtr_->addDefaultRule(std::move(defaultHeadPtr_));

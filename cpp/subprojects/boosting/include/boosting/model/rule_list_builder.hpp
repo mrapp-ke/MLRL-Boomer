@@ -16,6 +16,9 @@ namespace boosting {
 
         public:
 
+            /**
+             * @see `IModelBuilderFactory::create`
+             */
             std::unique_ptr<IModelBuilder> create() const override;
 
     };
