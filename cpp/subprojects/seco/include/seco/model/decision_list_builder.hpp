@@ -16,6 +16,9 @@ namespace seco {
 
         public:
 
+            /**
+             * @see `IModelBuilderFactory::create`
+             */
             std::unique_ptr<IModelBuilder> create() const override;
 
     };
