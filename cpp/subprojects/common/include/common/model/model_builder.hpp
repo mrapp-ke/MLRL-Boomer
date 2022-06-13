@@ -30,7 +30,7 @@ class IModelBuilder {
          *
          * @param conditionListPtr  A reference to an unique pointer of type `ConditionList` that stores the rule's
          *                          conditions
-         * @param prediction        A reference to an unique pointer of type `AbstractEvaluatedPrediction` that stores
+         * @param predictionPtr     A reference to an unique pointer of type `AbstractEvaluatedPrediction` that stores
          *                          the scores that are predicted by the rule
          */
         virtual void addRule(std::unique_ptr<ConditionList>& conditionListPtr,

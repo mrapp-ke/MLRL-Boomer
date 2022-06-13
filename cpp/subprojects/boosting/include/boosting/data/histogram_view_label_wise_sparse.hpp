@@ -66,7 +66,7 @@ namespace boosting {
              */
             const_iterator row_cbegin(uint32 row) const;
 
-            /*
+            /**
              * Returns a `const_iterator` to the end of the gradients and Hessians at a specific row.
              *
              * @param row   The row
