@@ -241,6 +241,9 @@ namespace boosting {
             // Keep "evaluate" functions from the parent class rather than hiding them
             using LabelWiseLoss::evaluate;
 
+            /**
+             * @see `IEvaluationMeasure::evaluate`
+             */
             float64 evaluate(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                              const LilMatrix<float64>& scoreMatrix) const override {
                 auto indicesBegin = make_non_zero_index_forward_iterator(
@@ -252,6 +255,9 @@ namespace boosting {
                     LabelWiseLoss::evaluateFunction_, labelMatrix.getNumCols());
             }
 
+            /**
+             * @see `IEvaluationMeasure::evaluate`
+             */
             float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                              const LilMatrix<float64>& scoreMatrix) const override {
                 return evaluateInternally(

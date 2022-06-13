@@ -16,8 +16,8 @@ struct Refinement final : public Condition {
      * Assigns the properties of an existing refinement, except for the scores that are predicted by the refined rule,
      * to this refinement.
      *
-     * @param rhs   A reference to the existing refinement
-     * @return      A reference to the modified refinement
+     * @param refinement    A reference to the existing refinement
+     * @return              A reference to the modified refinement
      */
     Refinement& operator=(const Refinement& refinement) {
         Condition::operator=(refinement);

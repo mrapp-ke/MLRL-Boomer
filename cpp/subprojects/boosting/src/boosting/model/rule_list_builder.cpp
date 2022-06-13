@@ -20,15 +20,24 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IModelBuilder::setDefaultRule`
+             */
             void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
                 modelPtr_->addDefaultRule(predictionPtr->createHead());
             }
 
+            /**
+             * @see `IModelBuilder::addRule`
+             */
             void addRule(std::unique_ptr<ConditionList>& conditionListPtr,
                          std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
                 modelPtr_->addRule(conditionListPtr->createConjunctiveBody(), predictionPtr->createHead());
             }
 
+            /**
+             * @see `IModelBuilder::buildModel`
+             */
             std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) override {
                 modelPtr_->setNumUsedRules(numUsedRules);
                 return std::move(modelPtr_);

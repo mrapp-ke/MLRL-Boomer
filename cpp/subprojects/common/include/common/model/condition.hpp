@@ -29,7 +29,7 @@ struct Condition {
     }
 
     /**
-     * @param condition An existing condition to be copied
+     * @param condition A reference to an existing condition to be copied
      */
     Condition(const Condition& condition)
         : featureIndex(condition.featureIndex), comparator(condition.comparator), threshold(condition.threshold),
@@ -40,8 +40,8 @@ struct Condition {
     /**
      * Assigns the properties of an existing condition to this condition.
      *
-     * @param rhs   A reference to the existing condition
-     * @return      A reference to the modified condition
+     * @param condition A reference to the existing condition
+     * @return          A reference to the modified condition
      */
     Condition& operator=(const Condition& condition) {
         featureIndex = condition.featureIndex;

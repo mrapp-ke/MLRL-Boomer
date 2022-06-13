@@ -39,6 +39,9 @@ namespace boosting {
                                        const std::unique_ptr<ILossConfig>& lossConfigPtr,
                                        const std::unique_ptr<IHeadConfig>& headConfigPtr);
 
+            /**
+             * @see `IDefaultRuleConfig::isDefaultRuleUsed`
+             */
             bool isDefaultRuleUsed(const IRowWiseLabelMatrix& labelMatrix) const override;
 
     };
