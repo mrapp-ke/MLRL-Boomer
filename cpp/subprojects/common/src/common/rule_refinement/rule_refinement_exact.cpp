@@ -169,7 +169,7 @@ static inline void findRefinementInternally(
 
         // If the feature is nominal and the examples that have been iterated so far do not all have the same feature
         // value, or if not all examples have been iterated so far, we must evaluate additional conditions
-        // `f == previous_threshold` and `f != previous_threshold`...
+        // `f == previousThreshold` and `f != previousThreshold`...
         if (nominal && numCovered > 0 && (numCovered < numAccumulated || numAccumulated < numExamples)) {
             // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
             // used...
@@ -311,8 +311,8 @@ static inline void findRefinementInternally(
     }
 
     // If the feature is nominal and the examples with feature values >= 0 that have been iterated so far do not all
-    // have the same feature value, we must evaluate additional conditions `f == previous_threshold` and
-    // `f != previous_threshold`...
+    // have the same feature value, we must evaluate additional conditions `f == previousThreshold` and
+    // `f != previousThreshold`...
     if (nominal && numCovered > 0 && numCovered < numAccumulated) {
         // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
         // used...
@@ -361,7 +361,7 @@ static inline void findRefinementInternally(
             firstR = ((int64) numFeatureValues) - 1;
         }
 
-        // Find and evaluate the best head for the current refinement, if the condition `f > previous_threshold / 2` (or
+        // Find and evaluate the best head for the current refinement, if the condition `f > previousThreshold / 2` (or
         // the condition `f != 0` in case of a nominal feature) is used...
         const IScoreVector& scoreVector =
             nominal ? statisticsSubsetPtr->evaluateAccumulated() : statisticsSubsetPtr->evaluate();
@@ -388,7 +388,7 @@ static inline void findRefinementInternally(
             comparator.pushRefinement(refinement, scoreVector);
         }
 
-        // Find and evaluate the best head for the current refinement, if the condition `f <= previous_threshold / 2`
+        // Find and evaluate the best head for the current refinement, if the condition `f <= previousThreshold / 2`
         // (or `f == 0` in case of a nominal feature) is used...
         const IScoreVector& scoreVector2 =
             nominal ? statisticsSubsetPtr->evaluateUncoveredAccumulated() : statisticsSubsetPtr->evaluateUncovered();
