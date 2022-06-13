@@ -44,6 +44,10 @@ cdef extern from "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 
         uint32 getMinCoverage() const
 
+        IBeamSearchTopDownRuleInductionConfig& setMinSupport(float32 minSupport) except +
+
+        float32 getMinSupport() const
+
         IBeamSearchTopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) except +
 
         uint32 getMaxConditions() const;

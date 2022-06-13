@@ -32,6 +32,6 @@ class IRuleRefinement {
          *                      potential refinements
          * @param minCoverage   The minimum number of examples that must be covered by the refinements
          */
-        virtual void findRefinement(FixedRefinementComparator& comparator) = 0;
+        virtual void findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) = 0;
 
 };
