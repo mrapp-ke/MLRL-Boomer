@@ -50,6 +50,6 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
         ApproximateRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal,
                                   std::unique_ptr<Callback> callbackPtr);
 
-        void findRefinement(SingleRefinementComparator& comparator) override;
+        void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) override;
 
 };
