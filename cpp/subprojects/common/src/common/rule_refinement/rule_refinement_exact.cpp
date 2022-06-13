@@ -167,8 +167,8 @@ static inline void findRefinementInternally(
             }
         }
 
-        // If the feature is nominal and the examples that have been iterated so far do not all have the same feature
-        // value, or if not all examples have been iterated so far, we must evaluate additional conditions
+        // If the feature is nominal and the examples that have been iterated so far do not have the same feature value,
+        // or if not all examples have been iterated so far, we must evaluate additional conditions
         // `f == previousThreshold` and `f != previousThreshold`...
         if (nominal && numCovered > 0 && (numCovered < numAccumulated || numAccumulated < numExamples)) {
             // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
