@@ -54,4 +54,6 @@ class ExactRuleRefinement final : public IRuleRefinement {
 
         void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) override;
 
+        void findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) override;
+
 };

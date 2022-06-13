@@ -367,5 +367,11 @@ void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& co
                              comparator);
 }
 
+template<typename T>
+void ApproximateRuleRefinement<T>::findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) {
+    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, minCoverage, *callbackPtr_,
+                             comparator);
+}
+
 template class ApproximateRuleRefinement<CompleteIndexVector>;
 template class ApproximateRuleRefinement<PartialIndexVector>;

@@ -19,9 +19,16 @@ class ConditionList final {
 
         std::vector<Condition> vector_;
 
-        std::array<uint32, 4> numConditionsPerComparator_ = {0, 0, 0, 0};
+        std::array<uint32, 4> numConditionsPerComparator_;
 
     public:
+
+        ConditionList();
+
+        /**
+         * @param conditionList A reference to an object of type `ConditionList` to be copied
+         */
+        ConditionList(const ConditionList& conditionList);
 
         /**
          * An iterator that provides read-only access to the conditions in the list.

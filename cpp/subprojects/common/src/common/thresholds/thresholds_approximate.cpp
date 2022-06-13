@@ -229,6 +229,20 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 }
 
+                /**
+                 * @param thresholdsSubset A reference to an object of type `ThresholdsSubset` to be copied
+                 */
+                ThresholdsSubset(const ThresholdsSubset& thresholdsSubset)
+                    : thresholds_(thresholdsSubset.thresholds_),
+                      weightedStatisticsPtr_(thresholdsSubset.weightedStatisticsPtr_->copy()),
+                      weights_(thresholdsSubset.weights_), coverageSet_(CoverageSet(thresholdsSubset.coverageSet_)) {
+
+                }
+
+                std::unique_ptr<IThresholdsSubset> copy() const override {
+                    return std::make_unique<ThresholdsSubset<WeightVector>>(*this);
+                }
+
                 std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& labelIndices,
                                                                       uint32 featureIndex) override {
                     return createApproximateRuleRefinement(labelIndices, featureIndex);
