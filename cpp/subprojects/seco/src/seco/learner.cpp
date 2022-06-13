@@ -63,6 +63,13 @@ namespace seco {
         return config;
     }
 
+    IBeamSearchTopDownRuleInductionConfig& SeCoRuleLearner::Config::useBeamSearchTopDownRuleInduction() {
+        IBeamSearchTopDownRuleInductionConfig& config =
+            AbstractRuleLearner::Config::useBeamSearchTopDownRuleInduction();
+        config.setRecalculatePredictions(false);
+        return config;
+    }
+
     void SeCoRuleLearner::Config::useNoCoverageStoppingCriterion() {
         coverageStoppingCriterionConfigPtr_ = nullptr;
     }

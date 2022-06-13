@@ -615,6 +615,26 @@ namespace boosting {
             }
 
             /**
+             * @param statistics A reference to an object of type `LabelWiseWeightedStatistics` to be copied
+             */
+            LabelWiseWeightedStatistics(const LabelWiseWeightedStatistics& statistics)
+                : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                               WeightVector>(statistics.statisticView_,
+                                                                             statistics.ruleEvaluationFactory_,
+                                                                             statistics.weights_),
+                  totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {
+
+            }
+
+            /**
+             * @see `IWeightedStatistics::copy`
+             */
+            std::unique_ptr<IWeightedStatistics> copy() const override {
+                return std::make_unique<LabelWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
+                                                                    RuleEvaluationFactory, WeightVector>>(*this);
+            }
+
+            /**
              * @see `IWeightedStatistics::resetCoveredStatistic`
              */
             void resetCoveredStatistics() override {
