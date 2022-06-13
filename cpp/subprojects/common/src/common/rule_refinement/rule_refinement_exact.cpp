@@ -102,50 +102,59 @@ static inline void findRefinementInternally(
             if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
                 // Thresholds that separate between examples with the same feature value must not be considered...
                 if (previousThreshold != currentThreshold) {
-                    // Find and evaluate the best head for the current refinement, if a condition that uses the <=
-                    // operator (or the == operator in case of a nominal feature) is used...
-                    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+                    // Check if a condition that uses the <= operator (or the == operator in case of a nominal feature)
+                    // covers at least `minCoverage` examples...
+                    if (numCovered >= minCoverage) {
+                        // Determine the best prediction for the covered examples...
+                        const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
 
-                    // If the refinement is better than the current rule...
-                    if (comparator.isImprovement(scoreVector)) {
-                        refinement.start = firstR;
-                        refinement.end = r;
-                        refinement.previous = previousR;
-                        refinement.numCovered = numCovered;
-                        refinement.covered = true;
+                        // Check if the quality of the prediction is better than the quality of the current rule...
+                        if (comparator.isImprovement(scoreVector)) {
+                            refinement.start = firstR;
+                            refinement.end = r;
+                            refinement.previous = previousR;
+                            refinement.numCovered = numCovered;
+                            refinement.covered = true;
 
-                        if (nominal) {
-                            refinement.comparator = EQ;
-                            refinement.threshold = previousThreshold;
-                        } else {
-                            refinement.comparator = LEQ;
-                            refinement.threshold = arithmeticMean(previousThreshold, currentThreshold);
+                            if (nominal) {
+                                refinement.comparator = EQ;
+                                refinement.threshold = previousThreshold;
+                            } else {
+                                refinement.comparator = LEQ;
+                                refinement.threshold = arithmeticMean(previousThreshold, currentThreshold);
+                            }
+
+                            comparator.pushRefinement(refinement, scoreVector);
                         }
-
-                        comparator.pushRefinement(refinement, scoreVector);
                     }
 
-                    // Find and evaluate the best head for the current refinement, if a condition that uses the >
-                    // operator (or the != operator in case of a nominal feature) is used...
-                    const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
 
-                    // If the refinement is better than the current rule...
-                    if (comparator.isImprovement(scoreVector2)) {
-                        refinement.start = firstR;
-                        refinement.end = r;
-                        refinement.previous = previousR;
-                        refinement.numCovered = (numExamples - numCovered);
-                        refinement.covered = false;
+                    // Check if a condition that uses the > operator (or the != operator in case of a nominal feature)
+                    // covers at least `minCoverage` examples...
+                    uint32 coverage = numExamples - numCovered;
 
-                        if (nominal) {
-                            refinement.comparator = NEQ;
-                            refinement.threshold = previousThreshold;
-                        } else {
-                            refinement.comparator = GR;
-                            refinement.threshold = arithmeticMean(previousThreshold, currentThreshold);
+                    if (coverage >= minCoverage) {
+                        // Determine the best prediction for the covered examples...
+                        const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateUncovered();
+
+                        // Check if the quality of the prediction is better than the quality of the current rule...
+                        if (comparator.isImprovement(scoreVector)) {
+                            refinement.start = firstR;
+                            refinement.end = r;
+                            refinement.previous = previousR;
+                            refinement.numCovered = coverage;
+                            refinement.covered = false;
+
+                            if (nominal) {
+                                refinement.comparator = NEQ;
+                                refinement.threshold = previousThreshold;
+                            } else {
+                                refinement.comparator = GR;
+                                refinement.threshold = arithmeticMean(previousThreshold, currentThreshold);
+                            }
+
+                            comparator.pushRefinement(refinement, scoreVector);
                         }
-
-                        comparator.pushRefinement(refinement, scoreVector2);
                     }
 
                     // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
@@ -171,36 +180,42 @@ static inline void findRefinementInternally(
         // or if not all examples have been iterated so far, we must evaluate additional conditions
         // `f == previousThreshold` and `f != previousThreshold`...
         if (nominal && numCovered > 0 && (numCovered < numAccumulated || numAccumulated < numExamples)) {
-            // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
-            // used...
-            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+            // Check if a condition that uses the == operator covers at least `minCoverage` examples...
+            if (numCovered >= minCoverage) {
+                // Determine the best prediction for the covered examples...
+                const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
 
-            // If the refinement is better than the current rule...
-            if (comparator.isImprovement(scoreVector)) {
-                refinement.start = firstR;
-                refinement.end = (lastNegativeR + 1);
-                refinement.previous = previousR;
-                refinement.numCovered = numCovered;
-                refinement.covered = true;
-                refinement.comparator = EQ;
-                refinement.threshold = previousThreshold;
-                comparator.pushRefinement(refinement, scoreVector);
+                // Check if the quality of the prediction is better than the quality of the current rule...
+                if (comparator.isImprovement(scoreVector)) {
+                    refinement.start = firstR;
+                    refinement.end = (lastNegativeR + 1);
+                    refinement.previous = previousR;
+                    refinement.numCovered = numCovered;
+                    refinement.covered = true;
+                    refinement.comparator = EQ;
+                    refinement.threshold = previousThreshold;
+                    comparator.pushRefinement(refinement, scoreVector);
+                }
             }
 
-            // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
-            // used...
-            const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
+            // Check if a condition that uses the != operator covers at least `minCoverage` examples...
+            uint32 coverage = numExamples - numCovered;
 
-            // If the refinement is better than the current rule...
-            if (comparator.isImprovement(scoreVector2)) {
-                refinement.start = firstR;
-                refinement.end = (lastNegativeR + 1);
-                refinement.previous = previousR;
-                refinement.numCovered = (numExamples - numCovered);
-                refinement.covered = false;
-                refinement.comparator = NEQ;
-                refinement.threshold = previousThreshold;
-                comparator.pushRefinement(refinement, scoreVector2);
+            if (coverage >= minCoverage) {
+                // Determine the best prediction for the covered examples...
+                const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
+
+                // Check if the quality of the prediction is better than the quality of the current rule...
+                if (comparator.isImprovement(scoreVector2)) {
+                    refinement.start = firstR;
+                    refinement.end = (lastNegativeR + 1);
+                    refinement.previous = previousR;
+                    refinement.numCovered = coverage;
+                    refinement.covered = false;
+                    refinement.comparator = NEQ;
+                    refinement.threshold = previousThreshold;
+                    comparator.pushRefinement(refinement, scoreVector2);
+                }
             }
         }
 
@@ -244,50 +259,58 @@ static inline void findRefinementInternally(
 
                 // Thresholds that separate between examples with the same feature value must not be considered...
                 if (previousThreshold != currentThreshold) {
-                    // Find and evaluate the best head for the current refinement, if a condition that uses the
-                    // > operator (or the == operator in case of a nominal feature) is used...
-                    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+                    // Check if a condition that uses the > operator (or the == operator in case of a nominal feature)
+                    // covers at least `minCoverage` examples...
+                    if (numCovered >= minCoverage) {
+                        // Determine the best prediction for the covered examples...
+                        const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
 
-                    // If the refinement is better than the current rule...
-                    if (comparator.isImprovement(scoreVector)) {
-                        refinement.start = firstR;
-                        refinement.end = r;
-                        refinement.previous = previousR;
-                        refinement.numCovered = numCovered;
-                        refinement.covered = true;
+                        // Check if the quality of the prediction is better than the quality of the current rule...
+                        if (comparator.isImprovement(scoreVector)) {
+                            refinement.start = firstR;
+                            refinement.end = r;
+                            refinement.previous = previousR;
+                            refinement.numCovered = numCovered;
+                            refinement.covered = true;
 
-                        if (nominal) {
-                            refinement.comparator = EQ;
-                            refinement.threshold = previousThreshold;
-                        } else {
-                            refinement.comparator = GR;
-                            refinement.threshold = arithmeticMean(currentThreshold, previousThreshold);
+                            if (nominal) {
+                                refinement.comparator = EQ;
+                                refinement.threshold = previousThreshold;
+                            } else {
+                                refinement.comparator = GR;
+                                refinement.threshold = arithmeticMean(currentThreshold, previousThreshold);
+                            }
+
+                            comparator.pushRefinement(refinement, scoreVector);
                         }
-
-                        comparator.pushRefinement(refinement, scoreVector);
                     }
 
-                    // Find and evaluate the best head for the current refinement, if a condition that uses the <=
-                    // operator (or the != operator in case of a nominal feature) is used...
-                    const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
+                    // Check if a condition that uses the <= operator (or the != operator in case of a nominal feature)
+                    // covers at least `minCoverage` examples...
+                    uint32 coverage = numExamples - numCovered;
 
-                    // If the refinement is better than the current rule...
-                    if (comparator.isImprovement(scoreVector2)) {
-                        refinement.start = firstR;
-                        refinement.end = r;
-                        refinement.previous = previousR;
-                        refinement.numCovered = (numExamples - numCovered);
-                        refinement.covered = false;
+                    if (coverage >= minCoverage) {
+                        // Determine the best prediction for the covered examples...
+                        const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateUncovered();
 
-                        if (nominal) {
-                            refinement.comparator = NEQ;
-                            refinement.threshold = previousThreshold;
-                        } else {
-                            refinement.comparator = LEQ;
-                            refinement.threshold = arithmeticMean(currentThreshold, previousThreshold);
+                        // Check if the quality of the prediction is better than the quality of the current rule...
+                        if (comparator.isImprovement(scoreVector)) {
+                            refinement.start = firstR;
+                            refinement.end = r;
+                            refinement.previous = previousR;
+                            refinement.numCovered = coverage;
+                            refinement.covered = false;
+
+                            if (nominal) {
+                                refinement.comparator = NEQ;
+                                refinement.threshold = previousThreshold;
+                            } else {
+                                refinement.comparator = LEQ;
+                                refinement.threshold = arithmeticMean(currentThreshold, previousThreshold);
+                            }
+
+                            comparator.pushRefinement(refinement, scoreVector);
                         }
-
-                        comparator.pushRefinement(refinement, scoreVector2);
                     }
 
                     // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
@@ -314,36 +337,42 @@ static inline void findRefinementInternally(
     // have the same feature value, we must evaluate additional conditions `f == previousThreshold` and
     // `f != previousThreshold`...
     if (nominal && numCovered > 0 && numCovered < numAccumulated) {
-        // Find and evaluate the best head for the current refinement, if a condition that uses the == operator is
-        // used...
-        const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+        // Check if a condition that uses the == operator covers at least `minCoverage` examples...
+        if (numCovered >= minCoverage) {
+            // Determine the best prediction for the covered examples...
+            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
 
-        // If the refinement is better than the current rule...
-        if (comparator.isImprovement(scoreVector)) {
-            refinement.start = firstR;
-            refinement.end = lastNegativeR;
-            refinement.previous = previousR;
-            refinement.numCovered = numCovered;
-            refinement.covered = true;
-            refinement.comparator = EQ;
-            refinement.threshold = previousThreshold;
-            comparator.pushRefinement(refinement, scoreVector);
+            // Check if the quality of the prediction is better than the quality of the current rule...
+            if (comparator.isImprovement(scoreVector)) {
+                refinement.start = firstR;
+                refinement.end = lastNegativeR;
+                refinement.previous = previousR;
+                refinement.numCovered = numCovered;
+                refinement.covered = true;
+                refinement.comparator = EQ;
+                refinement.threshold = previousThreshold;
+                comparator.pushRefinement(refinement, scoreVector);
+            }
         }
 
-        // Find and evaluate the best head for the current refinement, if a condition that uses the != operator is
-        // used...
-        const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
+        // Check if a condition that uses the != operator covers at least `minCoverage` examples...
+        uint32 coverage = numExamples - numCovered;
 
-        // If the refinement is better than the current rule...
-        if (comparator.isImprovement(scoreVector2)) {
-            refinement.start = firstR;
-            refinement.end = lastNegativeR;
-            refinement.previous = previousR;
-            refinement.numCovered = (numExamples - numCovered);
-            refinement.covered = false;
-            refinement.comparator = NEQ;
-            refinement.threshold = previousThreshold;
-            comparator.pushRefinement(refinement, scoreVector2);
+        if (coverage >= minCoverage) {
+            // Determine the best prediction for the covered examples...
+            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateUncovered();
+
+            // Check if the quality of the prediction is better than the quality of the current rule...
+            if (comparator.isImprovement(scoreVector)) {
+                refinement.start = firstR;
+                refinement.end = lastNegativeR;
+                refinement.previous = previousR;
+                refinement.numCovered = coverage;
+                refinement.covered = false;
+                refinement.comparator = NEQ;
+                refinement.threshold = previousThreshold;
+                comparator.pushRefinement(refinement, scoreVector);
+            }
         }
     }
 
@@ -361,58 +390,67 @@ static inline void findRefinementInternally(
             firstR = ((int64) numFeatureValues) - 1;
         }
 
-        // Find and evaluate the best head for the current refinement, if the condition `f > previousThreshold / 2` (or
-        // the condition `f != 0` in case of a nominal feature) is used...
-        const IScoreVector& scoreVector =
-            nominal ? statisticsSubsetPtr->evaluateAccumulated() : statisticsSubsetPtr->evaluate();
+        // Check if the condition `f > previousThreshold / 2` (or `f != 0` in case of a nominal feature) covers at least
+        // `minCoverage` examples...
+        uint32 coverage = nominal ? numAccumulatedTotal : numAccumulated;
 
-        // If the refinement is better than the current rule...
-        if (comparator.isImprovement(scoreVector)) {
-            refinement.start = firstR;
-            refinement.covered = true;
+        if (coverage >= minCoverage) {
+            // Determine the best prediction for the covered examples...
+            const IScoreVector& scoreVector = nominal ? statisticsSubsetPtr->evaluateAccumulated()
+                                                      : statisticsSubsetPtr->evaluate();
 
-            if (nominal) {
-                refinement.end = -1;
-                refinement.previous = -1;
-                refinement.numCovered = numAccumulatedTotal;
-                refinement.comparator = NEQ;
-                refinement.threshold = 0.0;
-            } else {
-                refinement.end = lastNegativeR;
-                refinement.previous = previousR;
-                refinement.numCovered = numAccumulated;
-                refinement.comparator = GR;
-                refinement.threshold = previousThreshold * 0.5;
+            // Check if the quality of the prediction is better than the quality of the current rule...
+            if (comparator.isImprovement(scoreVector)) {
+                refinement.start = firstR;
+                refinement.covered = true;
+                refinement.numCovered = coverage;
+
+                if (nominal) {
+                    refinement.end = -1;
+                    refinement.previous = -1;
+                    refinement.comparator = NEQ;
+                    refinement.threshold = 0.0;
+                } else {
+                    refinement.end = lastNegativeR;
+                    refinement.previous = previousR;
+                    refinement.comparator = GR;
+                    refinement.threshold = previousThreshold * 0.5;
+                }
+
+                comparator.pushRefinement(refinement, scoreVector);
             }
-
-            comparator.pushRefinement(refinement, scoreVector);
         }
 
-        // Find and evaluate the best head for the current refinement, if the condition `f <= previousThreshold / 2`
-        // (or `f == 0` in case of a nominal feature) is used...
-        const IScoreVector& scoreVector2 =
-            nominal ? statisticsSubsetPtr->evaluateUncoveredAccumulated() : statisticsSubsetPtr->evaluateUncovered();
+        // Check if the condition `f <= previousThreshold / 2` (or `f == 0` in case of a nominal feature) covers at
+        // least `minCoverage` examples...
+        coverage = numExamples - (nominal ? numAccumulatedTotal : numAccumulated);
 
-        // If the refinement is better than the current rule...
-        if (comparator.isImprovement(scoreVector2)) {
-            refinement.start = firstR;
-            refinement.covered = false;
+        if (coverage >= minCoverage) {
+            // Determine the best prediction for the covered examples...
+            const IScoreVector& scoreVector = nominal ? statisticsSubsetPtr->evaluateUncoveredAccumulated()
+                                                      : statisticsSubsetPtr->evaluateUncovered();
 
-            if (nominal) {
-                refinement.end = -1;
-                refinement.previous = -1;
-                refinement.numCovered = (numExamples - numAccumulatedTotal);
-                refinement.comparator = EQ;
-                refinement.threshold = 0.0;
-            } else {
-                refinement.end = lastNegativeR;
-                refinement.previous = previousR;
-                refinement.numCovered = (numExamples - numAccumulated);
-                refinement.comparator = LEQ;
-                refinement.threshold = previousThreshold * 0.5;
+            // Check if the quality of the prediction is better than the quality of the current rule...
+            if (comparator.isImprovement(scoreVector)) {
+                refinement.start = firstR;
+                refinement.covered = false;
+                refinement.numCovered = coverage;
+
+                if (nominal) {
+                    refinement.end = -1;
+                    refinement.previous = -1;
+                    refinement.comparator = EQ;
+                    refinement.threshold = 0.0;
+                } else {
+                    refinement.end = lastNegativeR;
+                    refinement.previous = previousR;
+                    refinement.numCovered = (numExamples - numAccumulated);
+                    refinement.comparator = LEQ;
+                    refinement.threshold = previousThreshold * 0.5;
+                }
+
+                comparator.pushRefinement(refinement, scoreVector);
             }
-
-            comparator.pushRefinement(refinement, scoreVector2);
         }
     }
 
@@ -422,54 +460,62 @@ static inline void findRefinementInternally(
     // unclear what the thresholds of the conditions should be until the examples with feature values >= 0 have been
     // processed).
     if (!nominal && numAccumulatedNegative > 0 && numAccumulatedNegative < numExamples) {
-        // Find and evaluate the best head for the current refinement, if the condition that uses the <= operator is
-        // used...
-        const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateAccumulated();
+        // Check if a condition that uses the <= operator covers at least `minCoverage` examples...
+        if (numAccumulatedNegative >= minCoverage) {
+            // Determine the best prediction for the covered examples...
+            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateAccumulated();
 
-        // If the refinement is better than the current rule...
-        if (comparator.isImprovement(scoreVector)) {
-            refinement.start = 0;
-            refinement.end = (lastNegativeR + 1);
-            refinement.previous = previousRNegative;
-            refinement.numCovered = numAccumulatedNegative;
-            refinement.covered = true;
-            refinement.comparator = LEQ;
+            // Check if the quality of the prediction is better than the quality of the current rule...
+            if (comparator.isImprovement(scoreVector)) {
+                refinement.start = 0;
+                refinement.end = (lastNegativeR + 1);
+                refinement.previous = previousRNegative;
+                refinement.numCovered = numAccumulatedNegative;
+                refinement.covered = true;
+                refinement.comparator = LEQ;
 
-            if (numAccumulatedTotal < numExamples) {
-                // If the condition separates an example with feature value < 0 from an (sparse) example with feature
-                // value == 0
-                refinement.threshold = previousThresholdNegative * 0.5;
-            } else {
-                // If the condition separates an example with feature value < 0 from an example with feature value > 0
-                refinement.threshold = arithmeticMean(previousThresholdNegative, previousThreshold);
+                if (numAccumulatedTotal < numExamples) {
+                    // If the condition separates an example with feature value < 0 from an (sparse) example with
+                    // feature value == 0
+                    refinement.threshold = previousThresholdNegative * 0.5;
+                } else {
+                    // If the condition separates an example with feature value < 0 from an example with feature value
+                    // > 0
+                    refinement.threshold = arithmeticMean(previousThresholdNegative, previousThreshold);
+                }
+
+                comparator.pushRefinement(refinement, scoreVector);
             }
-
-            comparator.pushRefinement(refinement, scoreVector);
         }
 
-        // Find and evaluate the best head for the current refinement, if the condition that uses the > operator is
-        // used...
-        const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncoveredAccumulated();
+        // Check if a condition that uses the > operator covers at least `minCoverage` examples...
+        uint32 coverage = numExamples - numAccumulatedNegative;
 
-        // If the refinement is better than the current rule...
-        if (comparator.isImprovement(scoreVector2)) {
-            refinement.start = 0;
-            refinement.end = (lastNegativeR + 1);
-            refinement.previous = previousRNegative;
-            refinement.numCovered = (numExamples - numAccumulatedNegative);
-            refinement.covered = false;
-            refinement.comparator = GR;
+        if (coverage >= minCoverage) {
+            // Determine the best prediction for the covered examples...
+            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateUncoveredAccumulated();
 
-            if (numAccumulatedTotal < numExamples) {
-                // If the condition separates an example with feature value < 0 from an (sparse) example with feature
-                // value == 0
-                refinement.threshold = previousThresholdNegative * 0.5;
-            } else {
-                // If the condition separates an example with feature value < 0 from an example with feature value > 0
-                refinement.threshold = arithmeticMean(previousThresholdNegative, previousThreshold);
+            // Check if the quality of the prediction is better than the quality of the current rule...
+            if (comparator.isImprovement(scoreVector)) {
+                refinement.start = 0;
+                refinement.end = (lastNegativeR + 1);
+                refinement.previous = previousRNegative;
+                refinement.numCovered = coverage;
+                refinement.covered = false;
+                refinement.comparator = GR;
+
+                if (numAccumulatedTotal < numExamples) {
+                    // If the condition separates an example with feature value < 0 from an (sparse) example with
+                    // feature value == 0
+                    refinement.threshold = previousThresholdNegative * 0.5;
+                } else {
+                    // If the condition separates an example with feature value < 0 from an example with feature value
+                    // > 0
+                    refinement.threshold = arithmeticMean(previousThresholdNegative, previousThreshold);
+                }
+
+                comparator.pushRefinement(refinement, scoreVector);
             }
-
-            comparator.pushRefinement(refinement, scoreVector2);
         }
     }
 
