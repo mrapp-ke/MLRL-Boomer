@@ -52,7 +52,7 @@ class ExactRuleRefinement final : public IRuleRefinement {
         ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal,
                             bool hasZeroWeights, std::unique_ptr<Callback> callbackPtr);
 
-        void findRefinement(SingleRefinementComparator& comparator) override;
+        void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) override;
 
         void findRefinement(FixedRefinementComparator& comparator) override;
 
