@@ -545,9 +545,9 @@ void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparat
 }
 
 template<typename T>
-void ExactRuleRefinement<T>::findRefinement(FixedRefinementComparator& comparator) {
-    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, hasZeroWeights_, *callbackPtr_,
-                             comparator);
+void ExactRuleRefinement<T>::findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) {
+    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, minCoverage, hasZeroWeights_,
+                             *callbackPtr_, comparator);
 }
 
 template class ExactRuleRefinement<CompleteIndexVector>;
