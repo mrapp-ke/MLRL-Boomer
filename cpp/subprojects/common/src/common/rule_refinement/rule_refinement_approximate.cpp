@@ -4,7 +4,7 @@
 
 template<typename IndexVector, typename RefinementComparator>
 static inline void findRefinementInternally(const IndexVector& labelIndices, uint32 numExamples, uint32 featureIndex,
-                                            bool nominal,
+                                            bool nominal, uint32 minCoverage,
                                             IRuleRefinementCallback<IHistogram, ThresholdVector>& callback,
                                             RefinementComparator& comparator) {
     Refinement refinement;
@@ -317,8 +317,9 @@ ApproximateRuleRefinement<T>::ApproximateRuleRefinement(const T& labelIndices, u
 }
 
 template<typename T>
-void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparator) {
-    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, *callbackPtr_, comparator);
+void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) {
+    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, minCoverage, *callbackPtr_,
+                             comparator);
 }
 
 template class ApproximateRuleRefinement<CompleteIndexVector>;
