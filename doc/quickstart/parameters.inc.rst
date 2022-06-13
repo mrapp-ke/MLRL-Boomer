@@ -70,7 +70,7 @@ The following parameters allow to control the behavior of the algorithm:
 
   * ``'top-down-beam-search'`` A top-down beam search, where rules are successively refined by adding new conditions, is used for the induction of individual rules. The following options may be provided using the bracket notation:
 
-    * ``beam_width`` (Default value = ``2``) The width to be used by the beam search. A larger value tends to result in more accurate rules being found, but negatively affects the training time. Must be at least 2
+    * ``beam_width`` (Default value = ``4``) The width to be used by the beam search. A larger value tends to result in more accurate rules being found, but negatively affects the training time. Must be at least 2
     * ``max_conditions`` (Default value = ``0``) The maximum number of conditions to be included in a rule's body. Must be at least 2 or 0, if the number of conditions should not be restricted.
     * ``min_coverage`` (Default value = ``1``) The minimum number of examples that must be covered by a rule. Must be at least 1.
     * ``max_head_refinements`` (Default value = ``1``) The maximum number of times the head of a rule may be refined. Must be at least 1 or 0, if the number of refinements should not be restricted.
