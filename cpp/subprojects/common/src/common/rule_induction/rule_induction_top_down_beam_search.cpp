@@ -1,5 +1,6 @@
 #include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 #include "common/util/validation.hpp"
+#include "common/math/math.hpp"
 #include "rule_induction_common.hpp"
 
 
@@ -114,8 +115,8 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 
 BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
         const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : beamWidth_(2), minCoverage_(1), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
-      multiThreadingConfigPtr_(multiThreadingConfigPtr) {
+    : beamWidth_(2), minCoverage_(1), minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1),
+      recalculatePredictions_(true), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
 }
 
@@ -136,6 +137,17 @@ uint32 BeamSearchTopDownRuleInductionConfig::getMinCoverage() const {
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setMinCoverage(uint32 minCoverage) {
     assertGreaterOrEqual<uint32>("minCoverage", minCoverage, 1);
     minCoverage_ = minCoverage;
+    return *this;
+}
+
+float32 BeamSearchTopDownRuleInductionConfig::getMinSupport() const {
+    return minSupport_;
+}
+
+IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setMinSupport(float32 minSupport) {
+    if (minSupport != 0) { assertGreater<float32>("minSupport", minSupport, 0); }
+    if (minSupport != 0) { assertLess<float32>("minSupport", minSupport, 1); }
+    minSupport_ = minSupport;
     return *this;
 }
 
@@ -172,8 +184,17 @@ IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::set
 
 std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::createRuleInductionFactory(
         const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+    uint32 numExamples = featureMatrix.getNumRows();
+    uint32 minCoverage;
+
+    if (minSupport_ > 0) {
+        minCoverage = calculateBoundedFraction(numExamples, minSupport_, minCoverage_, numExamples);
+    } else {
+        minCoverage = std::min(numExamples, minCoverage_);
+    }
+
     uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
-    return std::make_unique<BeamSearchTopDownRuleInductionFactory>(beamWidth_, minCoverage_, maxConditions_,
+    return std::make_unique<BeamSearchTopDownRuleInductionFactory>(beamWidth_, minCoverage, maxConditions_,
                                                                    maxHeadRefinements_, recalculatePredictions_,
                                                                    numThreads);
 }

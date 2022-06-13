@@ -52,6 +52,24 @@ class MLRLCOMMON_API IBeamSearchTopDownRuleInductionConfig {
         virtual IBeamSearchTopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) = 0;
 
         /**
+         * Returns the minimum support, i.e., the minimum fraction of the training examples that must be covered by a
+         * rule.
+         *
+         * @return The minimum support or 0, if the support of rules is not restricted
+         */
+        virtual float32 getMinSupport() const = 0;
+
+        /**
+         * Sets the minimum support, i.e., the minimum fraction of the training examples that must be covered by a rule.
+         *
+         * @param minSupport    The minimum support. Must be in [0, 1] or 0, if the support of rules should not be
+         *                      restricted
+         * @return              A reference to an object of type `IBeamSearchTopDownRuleInductionConfig` that allows
+         *                      further configuration of the algorithm for the induction of individual rules
+         */
+        virtual IBeamSearchTopDownRuleInductionConfig& setMinSupport(float32 minSupport) = 0;
+
+        /**
          * Returns the maximum number of conditions to be included in a rule's body.
          *
          * @return The maximum number of conditions to be included in a rule's body or 0, if the number of conditions is
@@ -124,6 +142,8 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
 
         uint32 minCoverage_;
 
+        float32 minSupport_;
+
         uint32 maxConditions_;
 
         uint32 maxHeadRefinements_;
@@ -148,6 +168,10 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
         uint32 getMinCoverage() const override;
 
         IBeamSearchTopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) override;
+
+        float32 getMinSupport() const override;
+
+        IBeamSearchTopDownRuleInductionConfig& setMinSupport(float32 minSupport) override;
 
         uint32 getMaxConditions() const override;
 
