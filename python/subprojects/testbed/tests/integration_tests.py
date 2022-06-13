@@ -33,6 +33,10 @@ PRUNING_NO = 'none'
 
 PRUNING_IREP = 'irep'
 
+RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
+
+RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
+
 INSTANCE_SAMPLING_NO = 'none'
 
 INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
@@ -405,6 +409,17 @@ class CmdBuilder:
         """
         self.args.append('--pruning')
         self.args.append(pruning)
+        return self
+
+    def rule_induction(self, rule_induction=RULE_INDUCTION_TOP_DOWN_GREEDY):
+        """
+        Configures the rule learner to use a specific algorithm for the induction of individual rules.
+
+        :param rule_induction:  The name of the algorithm that should be used
+        :return:                The builder itself
+        """
+        self.args.append('--rule-induction')
+        self.args.append(rule_induction)
         return self
 
     def build(self) -> List[str]:
