@@ -35,6 +35,7 @@ struct RuleRefinement final {
  *                              the features that should be considered
  * @param labelIndices          A reference to an object of type `IIndexVector` that provides access to the indices of
  *                              the labels for which the refinement(s) may predict
+ * @param minCoverage           The minimum number of training examples that must be covered by potential refinements
  * @param numThreads            The number of CPU threads to be used to search for potential refinements across multiple
  *                              features in parallel
  * @return                      True, if at least one refinement has been found, false otherwise
@@ -42,7 +43,7 @@ struct RuleRefinement final {
 template<typename RefinementComparator>
 static inline bool findRefinement(RefinementComparator& refinementComparator, IThresholdsSubset& thresholdsSubset,
                                   const IIndexVector& featureIndices, const IIndexVector& labelIndices,
-                                  uint32 numThreads) {
+                                  uint32 minCoverage, uint32 numThreads) {
     bool foundRefinement = false;
 
     // For each feature, create an object of type `RuleRefinement<RefinementComparator>`...
@@ -57,11 +58,11 @@ static inline bool findRefinement(RefinementComparator& refinementComparator, IT
     }
 
     // Search for the best condition among all available features to be added to the current rule...
-    #pragma omp parallel for firstprivate(numFeatures) firstprivate(ruleRefinements) schedule(dynamic) \
-    num_threads(numThreads)
+    #pragma omp parallel for firstprivate(numFeatures) firstprivate(ruleRefinements) firstprivate(minCoverage) \
+    schedule(dynamic) num_threads(numThreads)
     for (int64 i = 0; i < numFeatures; i++) {
         RuleRefinement<RefinementComparator>& ruleRefinement = ruleRefinements[i];
-        ruleRefinement.ruleRefinementPtr->findRefinement(*ruleRefinement.comparatorPtr);
+        ruleRefinement.ruleRefinementPtr->findRefinement(*ruleRefinement.comparatorPtr, minCoverage);
     }
 
     // Pick the best refinement among the refinements that have been found for the different features...
