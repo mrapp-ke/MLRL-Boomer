@@ -100,7 +100,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
                 schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numSampledFeatures; i++) {
                     RuleRefinement& ruleRefinement = ruleRefinements[i];
-                    ruleRefinement.ruleRefinementPtr->findRefinement(*ruleRefinement.comparatorPtr);
+                    ruleRefinement.ruleRefinementPtr->findRefinement(*ruleRefinement.comparatorPtr, minCoverage_);
                 }
 
                 // Pick the best refinement among the refinements that have been found for the different features...

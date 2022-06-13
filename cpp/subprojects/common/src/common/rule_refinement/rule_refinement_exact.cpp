@@ -32,8 +32,8 @@ static inline void adjustRefinement(Refinement& refinement, FeatureVector::const
 
 template<typename IndexIterator, typename RefinementComparator>
 static inline void findRefinementInternally(
-        const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal, bool hasZeroWeights,
-        IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>& callback,
+        const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal, uint32 minCoverage,
+        bool hasZeroWeights, IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>& callback,
         RefinementComparator& comparator) {
     Refinement refinement;
     refinement.featureIndex = featureIndex;
@@ -493,9 +493,9 @@ ExactRuleRefinement<T>::ExactRuleRefinement(const T& labelIndices, uint32 numExa
 }
 
 template<typename T>
-void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparator) {
-    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, hasZeroWeights_, *callbackPtr_,
-                             comparator);
+void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) {
+    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, minCoverage, hasZeroWeights_,
+                             *callbackPtr_, comparator);
 }
 
 template class ExactRuleRefinement<CompleteIndexVector>;
