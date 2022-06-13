@@ -2,7 +2,277 @@
 #include "common/util/validation.hpp"
 #include "common/math/math.hpp"
 #include "rule_induction_common.hpp"
+#include "rule_induction_top_down_common.hpp"
+#include <algorithm>
 
+
+/**
+ * A single entry of a beam, corresponding to a rule that may be further refined. It stores the conditions and the head
+ * of the current rule, as well as an object of type `IThresholdsSubset` that is required to search for potential
+ * refinements of the rule and an `IIndexVector` that provides access to the indices of the labels for which these
+ * refinements may predict.
+ */
+struct BeamEntry final {
+
+    /**
+     * Allows to compare two objects of type `BeamEntry` according to the following strict weak ordering: If the quality
+     * of the rule that corresponds to the first object is better, it goes before the second one. Otherwise, the first
+     * object goes after the second one.
+     */
+    struct Compare final {
+
+        /**
+         * Returns whether the a given object of type `BeamEntry` should go before a second one.
+         *
+         * @param lhs   A reference to a first object of type `BeamEntry`
+         * @param rhs   A reference to a second object of type `BeamEntry`
+         * @return      True, if the first object should go before the second one, false otherwise
+         */
+        inline bool operator()(const BeamEntry& lhs, const BeamEntry& rhs) const {
+            return lhs.headPtr->overallQualityScore < rhs.headPtr->overallQualityScore;
+        }
+
+    };
+
+    /**
+     * An unique pointer to an object of type `ConditionList` that stores the conditions of the rule.
+     */
+    std::unique_ptr<ConditionList> conditionListPtr;
+
+    /**
+     * An unique pointer to an object of type `AbstractEvaluatedPrediction` that stores the prediction of the rule, as
+     * well as its quality.
+     */
+    std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
+
+    /**
+     * An unique pointer to an object of type `IThresholdsSubset` that may be used to search for potential refinements
+     * of the rule.
+     */
+    std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr;
+
+    /**
+     * A pointer to an object of type `IIndexVector` that provides access to the indices of the labels  for which
+     * potential refinements of the rule may predict.
+     */
+    const IIndexVector* labelIndices;
+
+};
+
+static inline void initializeEntry(BeamEntry& entry, Refinement& refinement,
+                                   std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr,
+                                   const IIndexVector& labelIndices, bool keepHead) {
+    thresholdsSubsetPtr->filterThresholds(refinement);
+    entry.thresholdsSubsetPtr = std::move(thresholdsSubsetPtr);
+    entry.conditionListPtr = std::make_unique<ConditionList>();
+    entry.conditionListPtr->addCondition(refinement);
+    entry.headPtr = std::move(refinement.headPtr);
+    entry.labelIndices = keepHead ? entry.headPtr.get() : &labelIndices;
+}
+
+static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry, Refinement& refinement,
+                             std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr,
+                             std::unique_ptr<ConditionList> conditionListPtr, bool keepHead, uint32 minCoverage) {
+    thresholdsSubsetPtr->filterThresholds(refinement);
+    newEntry.thresholdsSubsetPtr = std::move(thresholdsSubsetPtr);
+    newEntry.conditionListPtr = std::move(conditionListPtr);
+    newEntry.conditionListPtr->addCondition(refinement);
+    newEntry.headPtr = std::move(refinement.headPtr);
+
+    if (refinement.numCovered <= minCoverage) {
+        newEntry.labelIndices = nullptr;
+    } else {
+        newEntry.labelIndices =  keepHead ? newEntry.headPtr.get() : oldEntry.labelIndices;
+    }
+
+}
+
+static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry) {
+    newEntry.thresholdsSubsetPtr = std::move(oldEntry.thresholdsSubsetPtr);
+    newEntry.conditionListPtr = std::move(oldEntry.conditionListPtr);
+    newEntry.headPtr = std::move(oldEntry.headPtr);
+    newEntry.labelIndices = nullptr;
+}
+
+static inline float64 updateOrder(std::vector<std::reference_wrapper<BeamEntry>>& order, BeamEntry& entry) {
+    std::sort(order.begin(), order.end(), BeamEntry::Compare());
+    const BeamEntry& worstEntry = order.back();
+    return worstEntry.headPtr->overallQualityScore;
+}
+
+/**
+ * A beam that keeps track of several rules that may be further refined.
+ */
+class Beam final {
+
+    private:
+
+        uint32 numEntries_;
+
+        BeamEntry* entries_;
+
+        std::vector<std::reference_wrapper<BeamEntry>> order_;
+
+    public:
+
+        /**
+         * @param beamWidth The maximum number of rules to keep track of
+         */
+        Beam(uint32 beamWidth)
+            : numEntries_(beamWidth), entries_(new BeamEntry[numEntries_]) {
+            order_.reserve(numEntries_);
+        }
+
+        /**
+         * @param refinementComparator  A reference to an object of type `FixedRefinementComparator` that keeps track of
+         *                              existing refinements of rules
+         * @param thresholdsSubsetPtr   An unique pointer to an object of type `IThresholdsSubset` that has been used to
+         *                              find the existing refinements of rules
+         * @param labelIndices          A reference to an object of type `IIndexVector` that provides access to the
+         *                              indices of the labels for which further refinement may predict
+         * @param keepHeads             True, if further refinements should predict for the same labels as before, false
+         *                              otherwise
+         */
+        Beam(FixedRefinementComparator& refinementComparator, std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr,
+             const IIndexVector& labelIndices, bool keepHeads)
+            : Beam(refinementComparator.getNumElements()) {
+            FixedRefinementComparator::iterator iterator = refinementComparator.begin();
+            uint32 i = 0;
+
+            for (; i < numEntries_ - 1; i++) {
+                Refinement& refinement = iterator[i];
+                BeamEntry& entry = entries_[i];
+                initializeEntry(entry, refinement, thresholdsSubsetPtr->copy(), labelIndices, keepHeads);
+                order_.push_back(entry);
+            }
+
+            Refinement& refinement = iterator[i];
+            BeamEntry& entry = entries_[i];
+            initializeEntry(entry, refinement, std::move(thresholdsSubsetPtr), labelIndices, keepHeads);
+            order_.push_back(entry);
+        }
+
+        ~Beam() {
+            delete[] entries_;
+        }
+
+        /**
+         * Searches for the best refinements of the rules that are kept track of by a given beam and updates the beam
+         * accordingly.
+         *
+         * @param beamPtr           A reference to an unique pointer of type `Beam` that represents the beam to be
+         *                          updated
+         * @param beamWidth         The number of rules the new beam should keep track of
+         * @param featureIndices    A reference to an object of type `IIndexVector` that provides access to the indices
+         *                          of the features that should be considered
+         * @param keepHeads         True, if further refinements should predict for the same labels as before, false
+         *                          otherwise
+         * @param minCoverage       The number of training examples that must be covered by potential refinements
+         * @param numThreads        The number of CPU threads to be used to search for potential refinements of a rule
+         *                          in parallel
+         * @return                  True, if any refinements have been found, false otherwise
+         */
+        static bool refine(std::unique_ptr<Beam>& beamPtr, uint32 beamWidth, const IIndexVector& featureIndices,
+                           bool keepHeads, uint32 minCoverage, uint32 numThreads) {
+            std::vector<std::reference_wrapper<BeamEntry>>& order = beamPtr->order_;
+            std::unique_ptr<Beam> newBeamPtr = std::make_unique<Beam>(beamWidth);
+            BeamEntry* newEntries = newBeamPtr->entries_;
+            std::vector<std::reference_wrapper<BeamEntry>>& newOrder = newBeamPtr->order_;
+            const BeamEntry& worstEntry = order.back();
+            float64 minQualityScore = worstEntry.headPtr->overallQualityScore;
+            uint32 n = 0;
+            bool result = false;
+
+            // Traverse the existing beam entries....
+            for (auto it = order.begin(); it != order.end(); it++) {
+                BeamEntry& entry = *it;
+                bool foundRefinement = false;
+
+                // Check if existing beam entry can be refined...
+                if (entry.labelIndices) {
+                    // Search for refinements of the existing beam entry...
+                    FixedRefinementComparator refinementComparator(beamWidth, minQualityScore);
+                    foundRefinement = findRefinement(refinementComparator, *entry.thresholdsSubsetPtr, featureIndices,
+                                                     *entry.labelIndices, minCoverage, numThreads);
+
+                    if (foundRefinement) {
+                        result = true;
+                        uint32 numRefinements = refinementComparator.getNumElements();
+                        FixedRefinementComparator::iterator iterator = refinementComparator.begin();
+                        uint32 i = 0;
+
+                        // Include all refinements, except for the last one, in the new beam. The corresponding
+                        // `IThresholdsSubset` and `ConditionList` are copied...
+                        for (; i < numRefinements - 1; i++) {
+                            Refinement& refinement = iterator[i];
+
+                            if (n < beamWidth) {
+                                BeamEntry& newEntry = newEntries[n];
+                                copyEntry(newEntry, entry, refinement, entry.thresholdsSubsetPtr->copy(),
+                                          std::make_unique<ConditionList>(*entry.conditionListPtr), keepHeads,
+                                          minCoverage);
+                                newOrder.push_back(newEntry);
+                                n++;
+                            } else {
+                                BeamEntry& newEntry = newOrder.back();
+                                copyEntry(newEntry, entry, refinement, entry.thresholdsSubsetPtr->copy(),
+                                          std::make_unique<ConditionList>(*entry.conditionListPtr), keepHeads,
+                                          minCoverage);
+                                minQualityScore = updateOrder(newOrder, newEntry);
+                            }
+                        }
+
+                        // Include the last refinement in the beam. The corresponding `IThresholdsSubset` and
+                        // `ConditionList` are reused...
+                        Refinement& refinement = iterator[i];
+
+                        if (n < beamWidth) {
+                            BeamEntry& newEntry = newEntries[n];
+                            copyEntry(newEntry, entry, refinement, std::move(entry.thresholdsSubsetPtr),
+                                      std::move(entry.conditionListPtr), keepHeads, minCoverage);
+                            newOrder.push_back(newEntry);
+                            n++;
+                        } else {
+                            BeamEntry& newEntry = newOrder.back();
+                            copyEntry(newEntry, entry, refinement, std::move(entry.thresholdsSubsetPtr),
+                                      std::move(entry.conditionListPtr), keepHeads, minCoverage);
+                            minQualityScore = updateOrder(newOrder, newEntry);
+                        }
+                    }
+                }
+
+                // If no refinement has been found, include the existing beam entry in the new beam unless it is worse
+                // than the worst entry currently included. If there is a tie, the existing beam entry is preferred, as
+                // it corresponds to a more general rule...
+                if (!foundRefinement) {
+                    if (n < beamWidth) {
+                        BeamEntry& newEntry = newEntries[n];
+                        copyEntry(newEntry, entry);
+                        newOrder.push_back(newEntry);
+                        n++;
+                    } else if (entry.headPtr->overallQualityScore <= minQualityScore) {
+                        BeamEntry& newEntry = newOrder.back();
+                        copyEntry(newEntry, entry);
+                        minQualityScore = updateOrder(newOrder, newEntry);
+                    }
+                }
+            }
+
+            newBeamPtr->numEntries_ = n;
+            beamPtr = std::move(newBeamPtr);
+            return result;
+        }
+
+        /**
+         * Returns the entry that corresponds to the best rule that is currently kept track of by the beam.
+         *
+         * @return A reference to an object of type `BeamEntry` that corresponds to the best rule
+         */
+        BeamEntry& getBestEntry() {
+            return order_.front();
+        }
+
+};
 
 /**
  * An implementation of the type `IRuleInduction` that allows to induce classification rules by using a top-down beam
@@ -53,8 +323,43 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
                 IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
                 std::unique_ptr<ConditionList>& conditionListPtr,
                 std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const override {
-            // TODO Implement
-            return nullptr;
+            // Create a new subset of the given thresholds...
+            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(thresholds);
+
+            // Sample features...
+            const IIndexVector& sampledFeatureIndices = featureSampling.sample(rng);
+
+            // Search for the best refinements using a single condition...
+            FixedRefinementComparator refinementComparator(beamWidth_);
+            bool foundRefinement = findRefinement(refinementComparator, *thresholdsSubsetPtr, sampledFeatureIndices,
+                                                  labelIndices, minCoverage_, numThreads_);
+
+            if (foundRefinement) {
+                bool keepHeads = maxHeadRefinements_ == 1;
+                std::unique_ptr<Beam> beamPtr = std::make_unique<Beam>(refinementComparator,
+                                                                       std::move(thresholdsSubsetPtr), labelIndices,
+                                                                       keepHeads);
+                uint32 searchDepth = 1;
+
+                while (foundRefinement && (maxConditions_ == 0 || searchDepth < maxConditions_)) {
+                    searchDepth++;
+                    keepHeads = maxHeadRefinements_ > 0 && searchDepth >= maxHeadRefinements_;
+
+                    // Sample features...
+                    const IIndexVector& currentFeatureIndices = featureSampling.sample(rng);
+
+                    // Search for the best refinements within the current beam...
+                    foundRefinement = beamPtr->refine(beamPtr, beamWidth_, currentFeatureIndices, keepHeads,
+                                                      minCoverage_, numThreads_);
+                }
+
+                BeamEntry& entry = beamPtr->getBestEntry();
+                conditionListPtr = std::move(entry.conditionListPtr);
+                headPtr = std::move(entry.headPtr);
+                return std::move(entry.thresholdsSubsetPtr);
+            }
+
+            return thresholdsSubsetPtr;
         }
 
 };
