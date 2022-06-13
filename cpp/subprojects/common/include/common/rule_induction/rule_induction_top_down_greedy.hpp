@@ -36,6 +36,24 @@ class MLRLCOMMON_API IGreedyTopDownRuleInductionConfig {
         virtual IGreedyTopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) = 0;
 
         /**
+         * Returns the minimum support, i.e., the minimum fraction of the training examples that must be covered by a
+         * rule.
+         *
+         * @return The minimum support or 0, if the support of rules is not restricted
+         */
+        virtual float32 getMinSupport() const = 0;
+
+        /**
+         * Sets the minimum support, i.e., the minimum fraction of the training examples that must be covered by a rule.
+         *
+         * @param minSupport    The minimum support. Must be in [0, 1] or 0, if the support of rules should not be
+         *                      restricted
+         * @return              A reference to an object of type `IGreedyTopDownRuleInductionConfig` that allows further
+         *                      configuration of the algorithm for the induction of individual rules
+         */
+        virtual IGreedyTopDownRuleInductionConfig& setMinSupport(float32 minSupport) = 0;
+
+        /**
          * Returns the maximum number of conditions to be included in a rule's body.
          *
          * @return The maximum number of conditions to be included in a rule's body or 0, if the number of conditions is
@@ -104,6 +122,8 @@ class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig, publ
 
         uint32 minCoverage_;
 
+        float32 minSupport_;
+
         uint32 maxConditions_;
 
         uint32 maxHeadRefinements_;
@@ -124,6 +144,10 @@ class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig, publ
         uint32 getMinCoverage() const override;
 
         IGreedyTopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) override;
+
+        float32 getMinSupport() const override;
+
+        IGreedyTopDownRuleInductionConfig& setMinSupport(float32 minSupport) override;
 
         uint32 getMaxConditions() const override;
 
