@@ -115,7 +115,7 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 
 BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
         const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : beamWidth_(2), minCoverage_(1), minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1),
+    : beamWidth_(4), minCoverage_(1), minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1),
       recalculatePredictions_(true), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
 }
