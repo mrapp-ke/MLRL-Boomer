@@ -8,7 +8,7 @@ from integration_tests import IntegrationTests, CmdBuilder, DATASET_EMOTIONS, DA
     PRUNING_IREP, PRUNING_NO, INSTANCE_SAMPLING_NO, INSTANCE_SAMPLING_WITHOUT_REPLACEMENT, \
     INSTANCE_SAMPLING_WITH_REPLACEMENT, INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE, \
     INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE, FEATURE_SAMPLING_NO, FEATURE_SAMPLING_WITHOUT_REPLACEMENT, \
-    LABEL_SAMPLING_NO, LABEL_SAMPLING_WITHOUT_REPLACEMENT
+    LABEL_SAMPLING_NO, LABEL_SAMPLING_WITHOUT_REPLACEMENT, RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH
 
 
 class CommonIntegrationTests(IntegrationTests, ABC):
@@ -568,3 +568,11 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .instance_sampling() \
             .pruning(PRUNING_IREP)
         self.run_cmd(builder, self.cmd + '_pruning-irep')
+
+    def test_rule_induction_top_down_beam_search(self):
+        """
+        Tests the rule learning algorithm when using a top-down beam search.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .rule_induction(RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH)
+        self.run_cmd(builder, self.cmd + '_rule-induction-top-down-beam-search')
