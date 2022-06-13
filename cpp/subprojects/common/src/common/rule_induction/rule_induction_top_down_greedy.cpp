@@ -1,5 +1,6 @@
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/util/validation.hpp"
+#include "common/math/math.hpp"
 #include "rule_induction_common.hpp"
 #include "rule_induction_top_down_common.hpp"
 
@@ -70,7 +71,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
                 // Search for the best refinement...
                 foundRefinement = findRefinement(refinementComparator, *thresholdsSubsetPtr, sampledFeatureIndices,
-                                                 *currentLabelIndices, numThreads_);
+                                                 *currentLabelIndices, minCoverage_, numThreads_);
 
                 if (foundRefinement) {
                     Refinement& bestRefinement = *refinementComparator.begin();
@@ -154,7 +155,7 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
 
 GreedyTopDownRuleInductionConfig::GreedyTopDownRuleInductionConfig(
         const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : minCoverage_(1), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
+    : minCoverage_(1), minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
       multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
 }
@@ -166,6 +167,17 @@ uint32 GreedyTopDownRuleInductionConfig::getMinCoverage() const {
 IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMinCoverage(uint32 minCoverage) {
     assertGreaterOrEqual<uint32>("minCoverage", minCoverage, 1);
     minCoverage_ = minCoverage;
+    return *this;
+}
+
+float32 GreedyTopDownRuleInductionConfig::getMinSupport() const {
+    return minSupport_;
+}
+
+IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMinSupport(float32 minSupport) {
+    if (minSupport != 0) { assertGreater<float32>("minSupport", minSupport, 0); }
+    if (minSupport != 0) { assertLess<float32>("minSupport", minSupport, 1); }
+    minSupport_ = minSupport;
     return *this;
 }
 
@@ -201,7 +213,16 @@ IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setRecalcul
 
 std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createRuleInductionFactory(
         const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+    uint32 numExamples = featureMatrix.getNumRows();
+    uint32 minCoverage;
+
+    if (minSupport_ > 0) {
+        minCoverage = calculateBoundedFraction(numExamples, minSupport_, minCoverage_, numExamples);
+    } else {
+        minCoverage = std::min(numExamples, minCoverage_);
+    }
+
     uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
-    return std::make_unique<GreedyTopDownRuleInductionFactory>(minCoverage_, maxConditions_, maxHeadRefinements_,
+    return std::make_unique<GreedyTopDownRuleInductionFactory>(minCoverage, maxConditions_, maxHeadRefinements_,
                                                                recalculatePredictions_, numThreads);
 }

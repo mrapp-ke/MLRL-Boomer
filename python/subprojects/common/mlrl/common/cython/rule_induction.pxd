@@ -1,4 +1,4 @@
-from mlrl.common.cython._types cimport uint32
+from mlrl.common.cython._types cimport uint32, float32
 
 from libcpp cimport bool
 
@@ -12,6 +12,10 @@ cdef extern from "common/rule_induction/rule_induction_top_down_greedy.hpp" nogi
         IGreedyTopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) except +
 
         uint32 getMinCoverage() const
+
+        IGreedyTopDownRuleInductionConfig& setMinSupport(float32 minSupport) except +
+
+        float32 getMinSupport() const
 
         IGreedyTopDownRuleInductionConfig& setMaxConditions(uint32 maxConditions) except +
 
