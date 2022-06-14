@@ -2,6 +2,7 @@
 #include "common/indices/index_vector_partial.hpp"
 #include "common/iterator/index_iterator.hpp"
 #include "common/util/validation.hpp"
+#include "feature_sampling_predefined.hpp"
 #include "index_sampling.hpp"
 #include <cmath>
 
@@ -32,6 +33,10 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
             sampleIndicesWithoutReplacement<IndexIterator>(indexVector_, IndexIterator(numFeatures_), numFeatures_,
                                                            rng);
             return indexVector_;
+        }
+
+        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng) override {
+            return std::make_unique<PredefinedFeatureSampling>(this->sample(rng));
         }
 
 };
