@@ -10,7 +10,7 @@ from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.common.cython.nominal_feature_mask cimport NominalFeatureMask
 from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
-from mlrl.common.cython.stopping_criterion cimport TimeStoppingCriterionConfig, MeasureStoppingCriterionConfig
+from mlrl.common.cython.stopping_criterion cimport MeasureStoppingCriterionConfig
 
 from libcpp.utility cimport move
 
@@ -167,18 +167,6 @@ cdef class RuleLearnerConfig:
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoTimeStoppingCriterion()
-
-    def use_time_stopping_criterion(self) -> TimeStoppingCriterionConfig:
-        """
-        Configures the rule learner to use a stopping criterion that ensures that a certain time limit is not exceeded.
-
-        :return: A `TimeStoppingCriterionConfig` that allows further configuration of the stopping criterion
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef ITimeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useTimeStoppingCriterion()
-        cdef TimeStoppingCriterionConfig config = TimeStoppingCriterionConfig.__new__(TimeStoppingCriterionConfig)
-        config.config_ptr = config_ptr
-        return config
 
     def use_no_measure_stopping_criterion(self):
         """

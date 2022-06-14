@@ -349,15 +349,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoTimeStoppingCriterion() = 0;
 
                 /**
-                 * Configures the rule learner to use a stopping criterion that ensures that a certain time limit is not
-                 * exceeded.
-                 *
-                 * @return A reference to an object of type `ITimeStoppingCriterionConfig` that allows further
-                 *         configuration of the stopping criterion
-                 */
-                virtual ITimeStoppingCriterionConfig& useTimeStoppingCriterion() = 0;
-
-                /**
                  * Configures the rule learner to not use a stopping criterion that stops the induction of rules as soon
                  * as the quality of a model's predictions for the examples in a holdout set do not improve according to
                  * a certain measure.
@@ -626,6 +617,27 @@ class MLRLCOMMON_API IRuleLearner {
                  *         configuration of the stopping criterion
                  */
                 virtual ISizeStoppingCriterionConfig& useSizeStoppingCriterion() = 0;
+
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
+         * ensures that a certain time limit is not exceeded.
+         */
+        class ITimeStoppingCriterionMixin {
+
+            public:
+
+                virtual ~ITimeStoppingCriterionMixin() { };
+
+                /**
+                 * Configures the rule learner to use a stopping criterion that ensures that a certain time limit is not
+                 * exceeded.
+                 *
+                 * @return A reference to an object of type `ITimeStoppingCriterionConfig` that allows further
+                 *         configuration of the stopping criterion
+                 */
+                virtual ITimeStoppingCriterionConfig& useTimeStoppingCriterion() = 0;
 
         };
 
@@ -1001,8 +1013,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoSizeStoppingCriterion() override;
 
                 void useNoTimeStoppingCriterion() override;
-
-                ITimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
 
                 void useNoMeasureStoppingCriterion() override;
 

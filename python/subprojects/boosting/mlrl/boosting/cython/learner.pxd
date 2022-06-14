@@ -1,6 +1,7 @@
 from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IRuleLearnerConfig, RuleLearnerConfig, \
     IBeamSearchTopDownMixin, IFeatureBinningMixin, ILabelSamplingMixin, IInstanceSamplingMixin, IFeatureSamplingMixin, \
-    IPartitionSamplingMixin, IPruningMixin, IMultiThreadingMixin, ISizeStoppingCriterionMixin
+    IPartitionSamplingMixin, IPruningMixin, IMultiThreadingMixin, ISizeStoppingCriterionMixin, \
+    ITimeStoppingCriterionMixin
 from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
@@ -27,7 +28,8 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
                                                                                       IPartitionSamplingMixin,
                                                                                       IPruningMixin,
                                                                                       IMultiThreadingMixin,
-                                                                                      ISizeStoppingCriterionMixin):
+                                                                                      ISizeStoppingCriterionMixin,
+                                                                                      ITimeStoppingCriterionMixin):
 
         # Functions:
 

@@ -42,7 +42,8 @@ namespace boosting {
                             virtual public IRuleLearner::IPartitionSamplingMixin,
                             virtual public IRuleLearner::IPruningMixin,
                             virtual public IRuleLearner::IMultiThreadingMixin,
-                            virtual public IRuleLearner::ISizeStoppingCriterionMixin {
+                            virtual public IRuleLearner::ISizeStoppingCriterionMixin,
+                            virtual public IRuleLearner::ITimeStoppingCriterionMixin {
 
                 friend class BoostingRuleLearner;
 
@@ -485,9 +486,14 @@ namespace boosting {
                     IManualMultiThreadingConfig& useParallelPrediction() override;
 
                     /**
-                     * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`
+                     * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
+
+                    /**
+                     * @see `IRuleLearner::ITimeStoppingCriterionMixin::useTimeStoppingCriterion
+                     */
+                    ITimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
 
                     void useNoDefaultRule() override;
 

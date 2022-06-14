@@ -222,13 +222,6 @@ void AbstractRuleLearner::Config::useNoTimeStoppingCriterion() {
     timeStoppingCriterionConfigPtr_ = nullptr;
 }
 
-ITimeStoppingCriterionConfig& AbstractRuleLearner::Config::useTimeStoppingCriterion() {
-    std::unique_ptr<TimeStoppingCriterionConfig> ptr = std::make_unique<TimeStoppingCriterionConfig>();
-    ITimeStoppingCriterionConfig& ref = *ptr;
-    timeStoppingCriterionConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoMeasureStoppingCriterion() {
     measureStoppingCriterionConfigPtr_ = nullptr;
 }

@@ -215,6 +215,13 @@ namespace boosting {
         return ref;
     }
 
+    ITimeStoppingCriterionConfig& BoostingRuleLearner::Config::useTimeStoppingCriterion() {
+        std::unique_ptr<TimeStoppingCriterionConfig> ptr = std::make_unique<TimeStoppingCriterionConfig>();
+        ITimeStoppingCriterionConfig& ref = *ptr;
+        this->timeStoppingCriterionConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
     void BoostingRuleLearner::Config::useNoDefaultRule() {
         defaultRuleConfigPtr_ = std::make_unique<DefaultRuleConfig>(false);
     }

@@ -92,8 +92,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoTimeStoppingCriterion()
 
-        ITimeStoppingCriterionConfig& useTimeStoppingCriterion()
-
         void useNoMeasureStoppingCriterion()
 
         IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion()
@@ -175,6 +173,13 @@ cdef extern from "common/learner.hpp" nogil:
         # Functions:
 
         ISizeStoppingCriterionConfig& useSizeStoppingCriterion()
+
+
+    cdef cppclass ITimeStoppingCriterionMixin"IRuleLearner::ITimeStoppingCriterionMixin":
+
+        # Functions:
+
+        ITimeStoppingCriterionConfig& useTimeStoppingCriterion()
 
 
     cdef cppclass IRuleLearner:
