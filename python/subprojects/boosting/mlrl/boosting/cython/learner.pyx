@@ -33,13 +33,13 @@ from scipy.linalg.cython_blas cimport ddot, dspmv
 from scipy.linalg.cython_lapack cimport dsysv
 
 
-cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
+cdef class BoomerConfig(RuleLearnerConfig):
     """
     Allows to configure a rule learner that makes use of gradient boosting.
     """
 
     def __cinit__(self):
-        self.rule_learner_config_ptr = createBoostingRuleLearnerConfig()
+        self.rule_learner_config_ptr = createBoomerConfig()
 
     cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
         return self.rule_learner_config_ptr.get()
@@ -51,7 +51,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of the algorithm for the
                  induction of individual rules
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IBeamSearchTopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useBeamSearchTopDownRuleInduction()
         cdef BeamSearchTopDownRuleInductionConfig config = BeamSearchTopDownRuleInductionConfig.__new__(BeamSearchTopDownRuleInductionConfig)
         config.config_ptr = config_ptr
@@ -65,7 +65,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: An `EqualWidthFeatureBinningConfig` that allows further configuration of the method for the assignment
                  of numerical feature values to bins
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IEqualWidthFeatureBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualWidthFeatureBinning()
         cdef EqualWidthFeatureBinningConfig config = EqualWidthFeatureBinningConfig.__new__(EqualWidthFeatureBinningConfig)
         config.config_ptr = config_ptr
@@ -79,7 +79,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: An `EqualFrequencyFeatureBinningConfig` that allows further configuration of the method for the
                  assignment of numerical feature values to bins
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IEqualFrequencyFeatureBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualFrequencyFeatureBinning()
         cdef EqualFrequencyFeatureBinningConfig config = EqualFrequencyFeatureBinningConfig.__new__(EqualFrequencyFeatureBinningConfig)
         config.config_ptr = config_ptr
@@ -93,7 +93,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: A `LabelSamplingWithoutReplacementConfig` that allows further configuration of the method for sampling
                  labels
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ILabelSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useLabelSamplingWithoutReplacement()
         cdef LabelSamplingWithoutReplacementConfig config = LabelSamplingWithoutReplacementConfig.__new__(LabelSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
@@ -107,7 +107,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: An `InstanceSamplingWithReplacementConfig` that allows further configuration of the method for sampling
                  instances
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IInstanceSamplingWithReplacementConfig* config_ptr = &rule_learner_config_ptr.useInstanceSamplingWithReplacement()
         cdef InstanceSamplingWithReplacementConfig config = InstanceSamplingWithReplacementConfig.__new__(InstanceSamplingWithReplacementConfig)
         config.config_ptr = config_ptr
@@ -121,7 +121,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: An `InstanceSamplingWithoutReplacementConfig` that allows further configuration of the method for
                  sampling instances
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IInstanceSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useInstanceSamplingWithoutReplacement()
         cdef InstanceSamplingWithoutReplacementConfig config = InstanceSamplingWithoutReplacementConfig.__new__(InstanceSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
@@ -136,7 +136,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: A `LabelWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
                  sampling instances
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ILabelWiseStratifiedInstanceSamplingConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedInstanceSampling()
         cdef LabelWiseStratifiedInstanceSamplingConfig config = LabelWiseStratifiedInstanceSamplingConfig.__new__(LabelWiseStratifiedInstanceSamplingConfig)
         config.config_ptr = config_ptr
@@ -150,7 +150,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: An `ExampleWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
                  sampling instances
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IExampleWiseStratifiedInstanceSamplingConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedInstanceSampling()
         cdef ExampleWiseStratifiedInstanceSamplingConfig config = ExampleWiseStratifiedInstanceSamplingConfig.__new__(ExampleWiseStratifiedInstanceSamplingConfig)
         config.config_ptr = config_ptr
@@ -164,7 +164,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: A `FeatureSamplingWithoutReplacementConfig` that allows further configuration of the method for
                  sampling features
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IFeatureSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useFeatureSamplingWithoutReplacement()
         cdef FeatureSamplingWithoutReplacementConfig config = FeatureSamplingWithoutReplacementConfig.__new__(FeatureSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
@@ -178,7 +178,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: A `RandomBiPartitionSamplingConfig` that allows further configuration of the method for partitioning
                  the available training examples into a training set and a holdout set
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IRandomBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useRandomBiPartitionSampling()
         cdef RandomBiPartitionSamplingConfig config = RandomBiPartitionSamplingConfig.__new__(RandomBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
@@ -192,7 +192,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: A `LabelWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
                  partitioning the available training examples into a training and a holdout set
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ILabelWiseStratifiedBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedBiPartitionSampling()
         cdef LabelWiseStratifiedBiPartitionSamplingConfig config = LabelWiseStratifiedBiPartitionSamplingConfig.__new__(LabelWiseStratifiedBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
@@ -206,7 +206,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: An `ExampleWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
                  partitioning the available training examples into a training and a holdout set
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IExampleWiseStratifiedBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedBiPartitionSampling()
         cdef ExampleWiseStratifiedBiPartitionSamplingConfig config = ExampleWiseStratifiedBiPartitionSamplingConfig.__new__(ExampleWiseStratifiedBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
@@ -217,7 +217,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learner to prune classification rules by following the ideas of "incremental reduced error
         pruning" (IREP).
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useIrepPruning()
 
     def use_parallel_rule_refinement(self) -> ManualMultiThreadingConfig:
@@ -226,7 +226,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelRuleRefinement()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
@@ -238,7 +238,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelStatisticUpdate()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
@@ -250,7 +250,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelPrediction()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
@@ -263,7 +263,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `SizeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ISizeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useSizeStoppingCriterion()
         cdef SizeStoppingCriterionConfig config = SizeStoppingCriterionConfig.__new__(SizeStoppingCriterionConfig)
         config.config_ptr = config_ptr
@@ -275,7 +275,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `TimeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ITimeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useTimeStoppingCriterion()
         cdef TimeStoppingCriterionConfig config = TimeStoppingCriterionConfig.__new__(TimeStoppingCriterionConfig)
         config.config_ptr = config_ptr
@@ -288,7 +288,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IMeasureStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useMeasureStoppingCriterion()
         cdef MeasureStoppingCriterionConfig config = MeasureStoppingCriterionConfig.__new__(MeasureStoppingCriterionConfig)
         config.config_ptr = config_ptr
@@ -298,14 +298,14 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         """
         Configures the rule learner to not induce a default rule.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoDefaultRule()
 
     def use_automatic_default_rule(self):
         """
         Configures the rule learner to automatically decide whether a default rule should be induced or not.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useAutomaticDefaultRule()
 
     def use_automatic_feature_binning(self):
@@ -313,7 +313,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learning to automatically decide whether a method for the assignment of numerical feature
         values to bins should be used or not.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useAutomaticFeatureBinning()
 
     def use_constant_shrinkage_post_processor(self) -> ConstantShrinkageConfig:
@@ -323,7 +323,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `ConstantShrinkageConfig` that allows further configuration of the post-processor
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IConstantShrinkageConfig* config_ptr = &rule_learner_config_ptr.useConstantShrinkagePostProcessor()
         cdef ConstantShrinkageConfig config = ConstantShrinkageConfig.__new__(ConstantShrinkageConfig)
         config.config_ptr = config_ptr
@@ -334,7 +334,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learner to automatically decide whether multi-threading should be used for the parallel
         refinement of rules or not.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useAutomaticParallelRuleRefinement()
 
     def use_automatic_parallel_statistic_update(self):
@@ -342,21 +342,21 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learner to automatically decide whether multi-threading should be used for the parallel
         update of statistics or not.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useAutomaticParallelStatisticUpdate()
 
     def use_automatic_heads(self):
         """
         Configures the rule learner to automatically decide for the type of rule heads to be used.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useAutomaticHeads()
 
     def use_single_label_heads(self):
         """
         Configures the rule learner to induce rules with single-label heads that predict for a single label.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useSingleLabelHeads()
 
     def use_fixed_partial_heads(self) -> FixedPartialHeadConfig:
@@ -365,7 +365,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `FixedPartialHeadConfig` that allows further configuration of the rule heads
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IFixedPartialHeadConfig* config_ptr = &rule_learner_config_ptr.useFixedPartialHeads()
         cdef FixedPartialHeadConfig config = FixedPartialHeadConfig.__new__(FixedPartialHeadConfig)
         config.config_ptr = config_ptr
@@ -379,7 +379,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IDynamicPartialHeadConfig* config_ptr = &rule_learner_config_ptr.useDynamicPartialHeads()
         cdef DynamicPartialHeadConfig config = DynamicPartialHeadConfig.__new__(DynamicPartialHeadConfig)
         config.config_ptr = config_ptr
@@ -389,7 +389,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         """
         Configures the rule learner to induce rules with complete heads that predict for all available labels.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useCompleteHeads()
 
     def use_automatic_statistics(self):
@@ -397,28 +397,28 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learner to automatically decide whether a dense or sparse representation of gradients and
         Hessians should be used.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useAutomaticStatistics()
 
     def use_dense_statistics(self):
         """
         Configures the rule learner to use a dense representation of gradients and Hessians.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useDenseStatistics()
 
     def use_sparse_statistics(self):
         """
         Configures the rule learner to use a sparse representation of gradients and Hessians, if possible.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useSparseStatistics()
 
     def use_no_l1_regularization(self):
         """
         Configures the rule learner to not use L1 regularization.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoL1Regularization()
 
     def use_l1_regularization(self) -> ManualRegularizationConfig:
@@ -427,7 +427,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `ManualRegularizationConfig` that allows further configuration of the regularization term
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IManualRegularizationConfig* config_ptr = &rule_learner_config_ptr.useL1Regularization()
         cdef ManualRegularizationConfig config = ManualRegularizationConfig.__new__(ManualRegularizationConfig)
         config.config_ptr = config_ptr
@@ -437,7 +437,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         """
         Configures the rule learner to not use L2 regularization.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoL2Regularization()
 
     def use_l2_regularization(self) -> ManualRegularizationConfig:
@@ -446,7 +446,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `ManualRegularizationConfig` that allows further configuration of the regularization term
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IManualRegularizationConfig* config_ptr = &rule_learner_config_ptr.useL2Regularization()
         cdef ManualRegularizationConfig config = ManualRegularizationConfig.__new__(ManualRegularizationConfig)
         config.config_ptr = config_ptr
@@ -457,7 +457,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learner to use a loss function that implements a multi-label variant of the logistic loss
         that is applied example-wise.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useExampleWiseLogisticLoss()
 
     def use_label_wise_logistic_loss(self):
@@ -465,7 +465,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learner to use a loss function that implements a multi-label variant of the logistic loss
         that is applied label-wise.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useLabelWiseLogisticLoss()
 
     def use_label_wise_squared_error_loss(self):
@@ -473,7 +473,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learner to use a loss function that implements a multi-label variant of the squared error
         loss that is applied label-wise.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useLabelWiseSquaredErrorLoss()
 
     def use_label_wise_squared_hinge_loss(self):
@@ -481,14 +481,14 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learner to use a loss function that implements a multi-label variant of the squared hinge
         loss that is applied label-wise.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useLabelWiseSquaredHingeLoss()
 
     def use_no_label_binning(self):
         """
         Configures the rule learner to not use any method for the assignment of labels to bins.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoLabelBinning()
 
     def use_automatic_label_binning(self):
@@ -496,7 +496,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learner to automatically decide whether a method for the assignment of labels to bins should
         be used or not.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useAutomaticLabelBinning()
 
     def use_equal_width_label_binning(self) -> EqualWidthLabelBinningConfig:
@@ -507,7 +507,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         :return: A `EqualWidthLabelBinningConfig` that allows further configuration of the method for the assignment of
                  labels to bins
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IEqualWidthLabelBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualWidthLabelBinning()
         cdef EqualWidthLabelBinningConfig config = EqualWidthLabelBinningConfig.__new__(EqualWidthLabelBinningConfig)
         config.config_ptr = config_ptr
@@ -520,7 +520,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         aggregated score vector to the known label vectors according to a certain distance measure. The label vector
         that is closest to the aggregated score vector is finally predicted.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useExampleWiseClassificationPredictor()
 
     def use_label_wise_classification_predictor(self):
@@ -530,7 +530,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         and transforming them into binary values according to a certain threshold that is applied to each label
         individually.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useLabelWiseClassificationPredictor()
 
     def use_automatic_classification_predictor(self):
@@ -538,7 +538,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learner to automatically decide for a predictor for predicting whether individual labels are
         relevant or irrelevant.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useLabelWiseClassificationPredictor()
 
     def use_label_wise_regression_predictor(self):
@@ -546,7 +546,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learner to use a predictor for predicting regression scores by summing up the scores that
         are provided by the individual rules of an existing rule-based model for each label individually.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useLabelWiseRegressionPredictor()
 
     def use_label_wise_probability_predictor(self):
@@ -555,7 +555,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         that are provided by individual rules of an existing rule-based model and transforming the aggregated scores
         into probabilities according to a certain transformation function that is applied to each label individually.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useLabelWiseProbabilityPredictor()
 
     def use_marginalized_probability_predictor(self):
@@ -566,27 +566,27 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         calculates as the sum of the distances that have been obtained for all label vectors, where the respective label
         is specified to be relevant, divided by the total sum of all distances.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useMarginalizedProbabilityPredictor()
 
     def use_automatic_probability_predictor(self):
         """
         Configures the rule learner to automatically decide for a predictor for predicting probability estimates.
         """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useAutomaticProbabilityPredictor()
 
 
-cdef class BoostingRuleLearner(RuleLearner):
+cdef class Boomer(RuleLearner):
     """
     A rule learner that makes use of gradient boosting.
     """
 
-    def __cinit__(self, BoostingRuleLearnerConfig config not None):
+    def __cinit__(self, BoomerConfig config not None):
         """
         :param config: The configuration that should be used by the rule learner
         """
-        self.rule_learner_ptr = createBoostingRuleLearner(move(config.rule_learner_config_ptr), ddot, dspmv, dsysv)
+        self.rule_learner_ptr = createBoomer(move(config.rule_learner_config_ptr), ddot, dspmv, dsysv)
 
     cdef IRuleLearner* get_rule_learner_ptr(self):
         return self.rule_learner_ptr.get()
