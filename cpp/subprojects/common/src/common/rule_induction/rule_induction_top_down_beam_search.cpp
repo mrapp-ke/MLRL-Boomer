@@ -357,7 +357,7 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
                     // Create a `IFeatureSampling` to be used for refining the current beam...
                     std::unique_ptr<IFeatureSampling> beamSearchFeatureSamplingPtr =
-                        featureSampling.createBeamSearchFeatureSampling(rng);
+                        featureSampling.createBeamSearchFeatureSampling(rng, resampleFeatures_);
 
                     // Search for the best refinements within the current beam...
                     foundRefinement = beamPtr->refine(beamPtr, beamWidth_, *beamSearchFeatureSamplingPtr, keepHeads,
