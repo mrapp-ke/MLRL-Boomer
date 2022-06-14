@@ -188,6 +188,13 @@ namespace seco {
         return ref;
     }
 
+    ITimeStoppingCriterionConfig& SeCoRuleLearner::Config::useTimeStoppingCriterion() {
+        std::unique_ptr<TimeStoppingCriterionConfig> ptr = std::make_unique<TimeStoppingCriterionConfig>();
+        ITimeStoppingCriterionConfig& ref = *ptr;
+        this->timeStoppingCriterionConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
     void SeCoRuleLearner::Config::useNoCoverageStoppingCriterion() {
         coverageStoppingCriterionConfigPtr_ = nullptr;
     }
