@@ -279,10 +279,19 @@ namespace seco {
 
                     Config();
 
+                    /**
+                     * @see `IRuleLearner::IConfig::useGreedyTopDownRuleInduction`
+                     */
                     IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
+                    /**
+                     * @see `IRuleLearner::IConfig::useBeamSearchTopDownRuleInduction`
+                     */
                     IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
 
+                    /**
+                     * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`
+                     */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
                     void useNoCoverageStoppingCriterion() override;
