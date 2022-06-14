@@ -18,6 +18,7 @@ from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiParti
     LabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
     BeamSearchTopDownRuleInductionConfig
+from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, SizeStoppingCriterionConfig
 from mlrl.seco.cython.heuristic cimport FMeasureConfig, MEstimateConfig
 from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfig, KlnLiftFunctionConfig
 from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig
@@ -246,6 +247,19 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelPrediction()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_size_stopping_criterion(self) -> SizeStoppingCriterionConfig:
+        """
+        Configures the rule learner to use a stopping criterion that ensures that the number of induced rules does not
+        exceed a certain maximum.
+
+        :return: A `SizeStoppingCriterionConfig` that allows further configuration of the stopping criterion
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef ISizeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useSizeStoppingCriterion()
+        cdef SizeStoppingCriterionConfig config = SizeStoppingCriterionConfig.__new__(SizeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 

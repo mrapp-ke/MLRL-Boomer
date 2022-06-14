@@ -208,7 +208,9 @@ namespace boosting {
     }
 
     ISizeStoppingCriterionConfig& BoostingRuleLearner::Config::useSizeStoppingCriterion() {
-        ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
+        std::unique_ptr<SizeStoppingCriterionConfig> ptr = std::make_unique<SizeStoppingCriterionConfig>();
+        ISizeStoppingCriterionConfig& ref = *ptr;
+        this->sizeStoppingCriterionConfigPtr_ = std::move(ptr);
         ref.setMaxRules(1000);
         return ref;
     }

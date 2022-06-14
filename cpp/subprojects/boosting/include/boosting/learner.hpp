@@ -41,7 +41,8 @@ namespace boosting {
                             virtual public IRuleLearner::IFeatureSamplingMixin,
                             virtual public IRuleLearner::IPartitionSamplingMixin,
                             virtual public IRuleLearner::IPruningMixin,
-                            virtual public IRuleLearner::IMultiThreadingMixin {
+                            virtual public IRuleLearner::IMultiThreadingMixin,
+                            virtual public IRuleLearner::ISizeStoppingCriterionMixin {
 
                 friend class BoostingRuleLearner;
 
