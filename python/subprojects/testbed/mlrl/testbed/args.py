@@ -248,37 +248,78 @@ def add_rule_learner_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_PREDICTED_LABEL_FORMAT, type=str, default=SparsePolicy.AUTO.value,
                         help='The format to be used for the representation of predicted labels. Must be one of '
                              + format_enum_values(SparsePolicy) + '.')
+
+
+def add_max_rules_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_MAX_RULES, type=int,
                         help='The maximum number of rules to be induced. Must be at least 1 or 0, if the number of '
                              + 'rules should not be restricted.')
+
+
+def add_time_limit_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_TIME_LIMIT, type=int,
                         help='The duration in seconds after which the induction of rules should be canceled. Must be '
                              + 'at least 1 or 0, if no time limit should be set.')
+
+
+def add_label_sampling_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_LABEL_SAMPLING, type=str,
                         help='The name of the strategy to be used for label sampling. Must be one of '
                              + format_dict_keys(LABEL_SAMPLING_VALUES) + '. For additional options refer to the '
                              + 'documentation.')
+
+
+def add_instance_sampling_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_INSTANCE_SAMPLING, type=str,
                         help='The name of the strategy to be used for instance sampling. Must be one of'
                              + format_dict_keys(INSTANCE_SAMPLING_VALUES) + '. For additional options refer to the '
                              + 'documentation.')
+
+
+def add_feature_sampling_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_FEATURE_SAMPLING, type=str,
                         help='The name of the strategy to be used for feature sampling. Must be one of '
                              + format_dict_keys(FEATURE_SAMPLING_VALUES) + '. For additional options refer to the '
                              + 'documentation.')
+
+
+def add_partition_sampling_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_PARTITION_SAMPLING, type=str,
                         help='The name of the strategy to be used for creating a holdout set. Must be one of '
                              + format_dict_keys(PARTITION_SAMPLING_VALUES) + '. For additional options refer to the '
                              + 'documentation.')
+
+
+def add_pruning_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_PRUNING, type=str,
                         help='The name of the strategy to be used for pruning rules. Must be one of '
                              + format_string_set(PRUNING_VALUES) + '. Does only have an effect if the parameter '
                              + PARAM_INSTANCE_SAMPLING + ' is not set to "none".')
+
+
+def add_rule_induction_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_RULE_INDUCTION, type=str,
                         help='The name of the algorithm to be used for the induction of individual rules. Must be one '
                              + 'of ' + format_string_set(RULE_INDUCTION_VALUES) + '. For additional options refer to '
                              + 'the documentation')
+
+
+def add_parallel_prediction_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_PARALLEL_PREDICTION, type=str,
                         help='Whether predictions for different examples should be obtained in parallel or not. Must '
                              + 'be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options refer to '
                              + 'the documentation.')
+
+
+def add_parallel_rule_refinement_argument(parser: ArgumentParser):
+    parser.add_argument(PARAM_PARALLEL_RULE_REFINEMENT, type=str,
+                        help='Whether potential refinements of rules should be searched for in parallel or not. Must '
+                             + 'be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options refer to '
+                             + 'the documentation.')
+
+
+def add_parallel_statistic_update_argument(parser: ArgumentParser):
+    parser.add_argument(PARAM_PARALLEL_STATISTIC_UPDATE, type=str,
+                        help='Whether the confusion matrices for different examples should be calculated in parallel '
+                             + 'or not. Must be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional '
+                             + 'options refer to the documentation')
