@@ -41,8 +41,6 @@ namespace boosting {
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
                             virtual public IRuleLearner::IMeasureStoppingCriterionMixin {
 
-                friend class Boomer;
-
                 public:
 
                     virtual ~IConfig() override { };
