@@ -10,7 +10,7 @@ from enum import Enum
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy, RULE_INDUCTION_VALUES, \
     LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, \
-    PRUNING_VALUES, PARALLEL_VALUES
+    FEATURE_BINNING_VALUES, PRUNING_VALUES, PARALLEL_VALUES
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 
 PARAM_LOG_LEVEL = '--log-level'
@@ -82,6 +82,8 @@ PARAM_LABEL_SAMPLING = '--label-sampling'
 PARAM_FEATURE_SAMPLING = '--feature-sampling'
 
 PARAM_PARTITION_SAMPLING = '--holdout'
+
+PARAM_FEATURE_BINNING = '--feature-binning'
 
 PARAM_PRUNING = '--pruning'
 
@@ -287,6 +289,13 @@ def add_partition_sampling_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_PARTITION_SAMPLING, type=str,
                         help='The name of the strategy to be used for creating a holdout set. Must be one of '
                              + format_dict_keys(PARTITION_SAMPLING_VALUES) + '. For additional options refer to the '
+                             + 'documentation.')
+
+
+def add_feature_binning_argument(parser: ArgumentParser):
+    parser.add_argument(PARAM_FEATURE_BINNING, type=str,
+                        help='The name of the strategy to be used for feature binning. Must be one of '
+                             + format_dict_keys(FEATURE_BINNING_VALUES) + '. For additional options refer to the '
                              + 'documentation.')
 
 
