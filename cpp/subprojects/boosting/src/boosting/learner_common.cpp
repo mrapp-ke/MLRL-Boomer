@@ -103,19 +103,19 @@ namespace boosting {
             std::make_unique<LabelWiseProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
-    AbstractBoostingRuleLearner::AbstractBoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr,
+    AbstractBoostingRuleLearner::AbstractBoostingRuleLearner(const IBoostingRuleLearner::IConfig& config,
                                                              Blas::DdotFunction ddotFunction,
                                                              Blas::DspmvFunction dspmvFunction,
                                                              Lapack::DsysvFunction dsysvFunction)
-        : AbstractRuleLearner(*configPtr), configPtr_(std::move(configPtr)), blas_(Blas(ddotFunction, dspmvFunction)),
+        : AbstractRuleLearner(config), config_(config), blas_(Blas(ddotFunction, dspmvFunction)),
           lapack_(Lapack(dsysvFunction)) {
 
     }
 
     std::unique_ptr<IStatisticsProviderFactory> AbstractBoostingRuleLearner::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
-        return configPtr_->getStatisticsConfig()
-            .createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_, lapack_);
+        return config_.getStatisticsConfig().createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_,
+                                                                             lapack_);
     }
 
     std::unique_ptr<IModelBuilderFactory> AbstractBoostingRuleLearner::createModelBuilderFactory() const {
@@ -124,25 +124,25 @@ namespace boosting {
 
     std::unique_ptr<IClassificationPredictorFactory> AbstractBoostingRuleLearner::createClassificationPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        return configPtr_->getClassificationPredictorConfig()
-            .createClassificationPredictorFactory(featureMatrix, numLabels);
+        return config_.getClassificationPredictorConfig().createClassificationPredictorFactory(featureMatrix,
+                                                                                               numLabels);
     }
 
     std::unique_ptr<IRegressionPredictorFactory> AbstractBoostingRuleLearner::createRegressionPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        return configPtr_->getRegressionPredictorConfig().createRegressionPredictorFactory(featureMatrix, numLabels);
+        return config_.getRegressionPredictorConfig().createRegressionPredictorFactory(featureMatrix, numLabels);
     }
 
     std::unique_ptr<IProbabilityPredictorFactory> AbstractBoostingRuleLearner::createProbabilityPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        return configPtr_->getProbabilityPredictorConfig().createProbabilityPredictorFactory(featureMatrix, numLabels);
+        return config_.getProbabilityPredictorConfig().createProbabilityPredictorFactory(featureMatrix, numLabels);
     }
 
     std::unique_ptr<ILabelSpaceInfo> AbstractBoostingRuleLearner::createLabelSpaceInfo(
             const IRowWiseLabelMatrix& labelMatrix) const {
-        if (configPtr_->getClassificationPredictorConfig().isLabelVectorSetNeeded()
-            || configPtr_->getProbabilityPredictorConfig().isLabelVectorSetNeeded()
-            || configPtr_->getRegressionPredictorConfig().isLabelVectorSetNeeded()) {
+        if (config_.getClassificationPredictorConfig().isLabelVectorSetNeeded()
+            || config_.getProbabilityPredictorConfig().isLabelVectorSetNeeded()
+            || config_.getRegressionPredictorConfig().isLabelVectorSetNeeded()) {
             return createLabelVectorSet(labelMatrix);
         } else {
             return createNoLabelSpaceInfo();

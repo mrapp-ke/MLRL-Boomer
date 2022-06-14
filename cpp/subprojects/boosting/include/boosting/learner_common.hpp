@@ -239,25 +239,58 @@ namespace boosting {
              */
             class Config : public AbstractRuleLearner::Config, virtual public IBoostingRuleLearner::IConfig {
 
-                private:
+                protected:
 
+                    /**
+                     * An unique pointer that stores the configuration of the rule heads.
+                     */
                     std::unique_ptr<IHeadConfig> headConfigPtr_;
 
+                    /**
+                     * An unique pointer that stores the configuration of the statistics.
+                     */
                     std::unique_ptr<IStatisticsConfig> statisticsConfigPtr_;
 
+                    /**
+                     * An unique pointer that stores the configuration of the loss function.
+                     */
                     std::unique_ptr<ILossConfig> lossConfigPtr_;
 
+                    /**
+                     * An unique pointer that stores the configuration of the L1 regularization term.
+                     */
                     std::unique_ptr<IRegularizationConfig> l1RegularizationConfigPtr_;
 
+                    /**
+                     * An unique pointer that stores the configuration of the L2 regularization term.
+                     */
                     std::unique_ptr<IRegularizationConfig> l2RegularizationConfigPtr_;
 
+                    /**
+                     * An unique pointer that stores the configuration of the method that is used to assign labels to
+                     * bins.
+                     */
                     std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
 
+                    /**
+                     * An unique pointer that stores the configuration of the predictor that is used to predict binary
+                     * labels.
+                     */
                     std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
 
+                    /**
+                     * An unique pointer that stores the configuration of the predictor that is used to predict
+                     * regression scores.
+                     */
                     std::unique_ptr<IRegressionPredictorConfig> regressionPredictorConfigPtr_;
 
+                    /**
+                     * An unique pointer that stores the configuration of the predictor that is used to predict
+                     * probability estimates.
+                     */
                     std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
+
+                private:
 
                     const IHeadConfig& getHeadConfig() const override final;
 
@@ -303,7 +336,7 @@ namespace boosting {
 
         private:
 
-            std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr_;
+            const IBoostingRuleLearner::IConfig& config_;
 
             Blas blas_;
 
@@ -349,15 +382,14 @@ namespace boosting {
         public:
 
             /**
-             * @param configPtr     An unique pointer to an object of type `IBoostingRuleLearner::IConfig` that
-             *                      specifies the configuration that should be used by the rule learner
+             * @param config        A reference to an object of type `IBoostingRuleLearner::IConfig` that specifies the
+             *                      configuration that should be used by the rule learner
              * @param ddotFunction  A function pointer to BLAS' DDOT routine
              * @param dspmvFunction A function pointer to BLAS' DSPMV routine
              * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
              */
-            AbstractBoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr,
-                                        Blas::DdotFunction ddotFunction, Blas::DspmvFunction dspmvFunction,
-                                        Lapack::DsysvFunction dsysvFunction);
+            AbstractBoostingRuleLearner(const IBoostingRuleLearner::IConfig& config, Blas::DdotFunction ddotFunction,
+                                        Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
 
     };
 
