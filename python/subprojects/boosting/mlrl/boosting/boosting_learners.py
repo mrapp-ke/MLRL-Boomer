@@ -12,7 +12,7 @@ from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, NONE, ARGUMENT_BIN_RATIO, \
     ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS, BINNING_EQUAL_WIDTH, BINNING_EQUAL_FREQUENCY
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
+from mlrl.common.rule_learners import configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
     configure_partition_sampling, configure_pruning, configure_post_optimization, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
@@ -163,7 +163,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  predicted_label_format: str = SparsePolicy.AUTO.value,
                  statistic_format: Optional[str] = None,
                  default_rule: Optional[str] = None,
-                 rule_model_assemblage: Optional[str] = None,
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
                  time_limit: Optional[int] = None,
@@ -193,8 +192,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param default_rule:                Whether a default rule should be induced or not. Must be 'true', 'false' or
                                             'auto', if it should be decided automatically whether a default rule should
                                             be induced or not
-        :param rule_model_assemblage:       The algorithm that should be used for the induction of several rules. Must
-                                            be 'sequential'
         :param rule_induction:              The algorithm that should be used for the induction of individual rules.
                                             Must be 'top-down-greedy' or 'top-down-beam-search'. For additional options
                                             refer to the documentation
@@ -268,7 +265,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         super().__init__(random_state, feature_format, label_format, predicted_label_format)
         self.statistic_format = statistic_format
         self.default_rule = default_rule
-        self.rule_model_assemblage = rule_model_assemblage
         self.rule_induction = rule_induction
         self.max_rules = max_rules
         self.time_limit = time_limit
@@ -295,7 +291,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_learner(self) -> RuleLearnerWrapper:
         config = BoostingRuleLearnerConfig()
         self.__configure_default_rule(config)
-        configure_rule_model_assemblage(config, get_string(self.rule_model_assemblage))
         configure_rule_induction(config, get_string(self.rule_induction))
         self.__configure_feature_binning(config)
         configure_label_sampling(config, get_string(self.label_sampling))
