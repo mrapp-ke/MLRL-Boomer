@@ -52,7 +52,6 @@ class BoomerRunnable(RuleLearnerRunnable):
                       classification_predictor=args.classification_predictor,
                       probability_predictor=args.probability_predictor,
                       pruning=args.pruning,
-                      post_optimization=args.post_optimization,
                       label_sampling=args.label_sampling,
                       instance_sampling=args.instance_sampling,
                       shrinkage=args.shrinkage,

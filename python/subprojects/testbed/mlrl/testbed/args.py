@@ -10,7 +10,7 @@ from enum import Enum
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy, RULE_INDUCTION_VALUES, \
     LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, \
-    PRUNING_VALUES, POST_OPTIMIZATION_VALUES, PARALLEL_VALUES
+    PRUNING_VALUES, PARALLEL_VALUES
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 
 PARAM_LOG_LEVEL = '--log-level'
@@ -274,9 +274,6 @@ def add_rule_learner_arguments(parser: ArgumentParser):
                         help='The name of the strategy to be used for pruning rules. Must be one of '
                              + format_string_set(PRUNING_VALUES) + '. Does only have an effect if the parameter '
                              + PARAM_INSTANCE_SAMPLING + ' is not set to "none".')
-    parser.add_argument(PARAM_POST_OPTIMIZATION, type=str,
-                        help='The name of the strategy to be used for optimizing a model globally once it has been '
-                             + 'learned. Must be one of ' + format_string_set(POST_OPTIMIZATION_VALUES) + '.')
     parser.add_argument(PARAM_RULE_INDUCTION, type=str,
                         help='The name of the algorithm to be used for the induction of individual rules. Must be one '
                              + 'of ' + format_string_set(RULE_INDUCTION_VALUES) + '. For additional options refer to '

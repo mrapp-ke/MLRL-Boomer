@@ -14,7 +14,7 @@ from mlrl.common.rule_learners import AUTOMATIC, NONE, ARGUMENT_BIN_RATIO, \
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
-    configure_partition_sampling, configure_pruning, configure_post_optimization, configure_parallel_rule_refinement, \
+    configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
     configure_time_stopping_criterion
 from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int, get_float
@@ -178,7 +178,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  feature_binning: Optional[str] = None,
                  label_binning: Optional[str] = None,
                  pruning: Optional[str] = None,
-                 post_optimization: Optional[str] = None,
                  shrinkage: Optional[float] = 0.3,
                  l1_regularization_weight: Optional[float] = None,
                  l2_regularization_weight: Optional[float] = None,
@@ -244,8 +243,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             the documentation
         :param pruning:                     The strategy that should be used to prune individual rules. Must be 'irep'
                                             or 'none', if no pruning should be used
-        :param post_optimization:           The strategy that should be used to optimize a model globally once it has
-                                            been learned. Must be `none`, if no post-optimization should be used
         :param shrinkage:                   The shrinkage parameter, a.k.a. the "learning rate", that should be used to
                                             shrink the weight of individual rules. Must be in (0, 1]
         :param l1_regularization_weight:    The weight of the L1 regularization. Must be at least 0
@@ -280,7 +277,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.feature_binning = feature_binning
         self.label_binning = label_binning
         self.pruning = pruning
-        self.post_optimization = post_optimization
         self.shrinkage = shrinkage
         self.l1_regularization_weight = l1_regularization_weight
         self.l2_regularization_weight = l2_regularization_weight
@@ -298,7 +294,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         configure_feature_sampling(config, get_string(self.feature_sampling))
         configure_partition_sampling(config, get_string(self.holdout))
         configure_pruning(config, get_string(self.pruning))
-        configure_post_optimization(config, get_string(self.post_optimization))
         self.__configure_parallel_rule_refinement(config)
         self.__configure_parallel_statistic_update(config)
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
