@@ -3,10 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from argparse import ArgumentParser
 
-from mlrl.common.rule_learners import PARALLEL_VALUES
 from mlrl.common.strings import format_dict_keys, format_string_set
-from mlrl.testbed.args import add_rule_learner_arguments, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, \
-    PARAM_PARALLEL_STATISTIC_UPDATE
+from mlrl.testbed.args import add_rule_learner_arguments, add_max_rules_argument, add_time_limit_argument, \
+    add_label_sampling_argument, add_instance_sampling_argument, add_feature_sampling_argument, \
+    add_partition_sampling_argument, add_pruning_argument, add_rule_induction_argument, \
+    add_parallel_prediction_argument, add_parallel_statistic_update_argument, add_parallel_rule_refinement_argument, \
+    PARAM_HEAD_TYPE
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
 from mlrl.seco.seco_learners import SeCoRuleLearner, HEAD_TYPE_VALUES, HEURISTIC_VALUES, LIFT_FUNCTION_VALUES, \
@@ -48,6 +50,17 @@ class SeCoRunnable(RuleLearnerRunnable):
 
 def __add_arguments(parser: ArgumentParser):
     add_rule_learner_arguments(parser)
+    add_max_rules_argument(parser)
+    add_time_limit_argument(parser)
+    add_label_sampling_argument(parser)
+    add_instance_sampling_argument(parser)
+    add_feature_sampling_argument(parser)
+    add_partition_sampling_argument(parser)
+    add_pruning_argument(parser)
+    add_rule_induction_argument(parser)
+    add_parallel_prediction_argument(parser)
+    add_parallel_rule_refinement_argument(parser)
+    add_parallel_statistic_update_argument(parser)
     parser.add_argument(PARAM_HEURISTIC, type=str,
                         help='The name of the heuristic to be used for learning rules. Must be one of '
                              + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
@@ -63,14 +76,6 @@ def __add_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_HEAD_TYPE, type=str,
                         help='The type of the rule heads that should be used. Must be one of '
                              + format_string_set(HEAD_TYPE_VALUES) + '.')
-    parser.add_argument(PARAM_PARALLEL_RULE_REFINEMENT, type=str,
-                        help='Whether potential refinements of rules should be searched for in parallel or not. Must '
-                             + 'be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options refer to '
-                             + 'the documentation.')
-    parser.add_argument(PARAM_PARALLEL_STATISTIC_UPDATE, type=str,
-                        help='Whether the confusion matrices for different examples should be calculated in parallel '
-                             + 'or not. Must be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional '
-                             + 'options refer to the documentation')
 
 
 def main():

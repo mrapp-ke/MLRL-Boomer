@@ -8,8 +8,10 @@ from mlrl.boosting.boosting_learners import Boomer, STATISTIC_FORMAT_VALUES, DEF
     PROBABILITY_PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
 from mlrl.common.rule_learners import AUTOMATIC
 from mlrl.common.strings import format_dict_keys, format_string_set
-from mlrl.testbed.args import add_rule_learner_arguments, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, \
-    PARAM_PARALLEL_STATISTIC_UPDATE
+from mlrl.testbed.args import add_rule_learner_arguments, add_max_rules_argument, add_time_limit_argument, \
+    add_label_sampling_argument, add_instance_sampling_argument, add_feature_sampling_argument, \
+    add_partition_sampling_argument, add_pruning_argument, add_rule_induction_argument, \
+    add_parallel_prediction_argument, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
 PARAM_STATISTIC_FORMAT = '--statistic-format'
@@ -72,6 +74,15 @@ class BoomerRunnable(RuleLearnerRunnable):
 
 def __add_arguments(parser: ArgumentParser):
     add_rule_learner_arguments(parser)
+    add_max_rules_argument(parser)
+    add_time_limit_argument(parser)
+    add_label_sampling_argument(parser)
+    add_instance_sampling_argument(parser)
+    add_feature_sampling_argument(parser)
+    add_partition_sampling_argument(parser)
+    add_pruning_argument(parser)
+    add_rule_induction_argument(parser)
+    add_parallel_prediction_argument(parser)
     parser.add_argument(PARAM_STATISTIC_FORMAT, type=str,
                         help='The format to be used for the representation of gradients and Hessians. Must be one of '
                              + format_string_set(STATISTIC_FORMAT_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
