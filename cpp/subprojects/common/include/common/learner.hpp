@@ -282,24 +282,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoFeatureBinning() = 0;
 
                 /**
-                 * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
-                 * such that each bin contains values from equally sized value ranges.
-                 *
-                 * @return A reference to an object of type `IEqualWidthFeatureBinningConfig` that allows further
-                 *         configuration of the method for the assignment of numerical feature values to bins
-                 */
-                virtual IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() = 0;
-
-                /**
-                 * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
-                 * such that each bin contains approximately the same number of values.
-                 *
-                 * @return A reference to an object of type `IEqualFrequencyFeatureBinningConfig` that allows further
-                 *         configuration of the method for the assignment of numerical feature values to bins
-                 */
-                virtual IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() = 0;
-
-                /**
                  * Configures the rule learner to not sample from the available labels whenever a new rule should be
                  * learned.
                  */
@@ -520,6 +502,9 @@ class MLRLCOMMON_API IRuleLearner {
 
         };
 
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use a top-down beam search.
+         */
         class IBeamSearchTopDownMixin {
 
             public:
@@ -533,6 +518,35 @@ class MLRLCOMMON_API IRuleLearner {
                  *         configuration of the algorithm for the induction of individual rules
                  */
                 virtual IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() = 0;
+
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use feature binning.
+         */
+        class IFeatureBinningMixin {
+
+            public:
+
+                virtual ~IFeatureBinningMixin() { };
+
+                /**
+                 * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
+                 * such that each bin contains values from equally sized value ranges.
+                 *
+                 * @return A reference to an object of type `IEqualWidthFeatureBinningConfig` that allows further
+                 *         configuration of the method for the assignment of numerical feature values to bins
+                 */
+                virtual IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() = 0;
+
+                /**
+                 * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
+                 * such that each bin contains approximately the same number of values.
+                 *
+                 * @return A reference to an object of type `IEqualFrequencyFeatureBinningConfig` that allows further
+                 *         configuration of the method for the assignment of numerical feature values to bins
+                 */
+                virtual IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() = 0;
 
         };
 
@@ -884,10 +898,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
                 void useNoFeatureBinning() override;
-
-                IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
-
-                IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
 
                 void useNoLabelSampling() override;
 

@@ -3,7 +3,6 @@
 """
 from mlrl.common.cython._arrays cimport array_uint32, c_matrix_uint8, c_matrix_float64
 from mlrl.common.cython._validation import assert_greater_or_equal
-from mlrl.common.cython.feature_binning cimport EqualWidthFeatureBinningConfig, EqualFrequencyFeatureBinningConfig
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.feature_sampling cimport FeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport ExampleWiseStratifiedInstanceSamplingConfig, \
@@ -88,34 +87,6 @@ cdef class RuleLearnerConfig:
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoFeatureBinning()
-
-    def use_equal_width_feature_binning(self) -> EqualWidthFeatureBinningConfig:
-        """
-        Configures the rule learner to use a method for the assignment of numerical feature values to bins, such that
-        each bin contains values from equally sized value ranges.
-
-        :return: An `EqualWidthFeatureBinningConfig` that allows further configuration of the method for the assignment
-                 of numerical feature values to bins
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef IEqualWidthFeatureBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualWidthFeatureBinning()
-        cdef EqualWidthFeatureBinningConfig config = EqualWidthFeatureBinningConfig.__new__(EqualWidthFeatureBinningConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_equal_frequency_feature_binning(self) -> EqualFrequencyFeatureBinningConfig:
-        """
-        Configures the rule learner to use a method for the assignment of numerical feature values to bins, such that
-        each bin contains approximately the same number of values.
-
-        :return: An `EqualFrequencyFeatureBinningConfig` that allows further configuration of the method for the
-                 assignment of numerical feature values to bins
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef IEqualFrequencyFeatureBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualFrequencyFeatureBinning()
-        cdef EqualFrequencyFeatureBinningConfig config = EqualFrequencyFeatureBinningConfig.__new__(EqualFrequencyFeatureBinningConfig)
-        config.config_ptr = config_ptr
-        return config
 
     def use_no_label_sampling(self):
         """

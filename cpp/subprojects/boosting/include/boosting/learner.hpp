@@ -34,7 +34,8 @@ namespace boosting {
              * boosting.
              */
             class IConfig : virtual public IRuleLearner::IConfig,
-                            virtual public IRuleLearner::IBeamSearchTopDownMixin {
+                            virtual public IRuleLearner::IBeamSearchTopDownMixin,
+                            virtual public IRuleLearner::IFeatureBinningMixin {
 
                 friend class BoostingRuleLearner;
 
@@ -400,6 +401,16 @@ namespace boosting {
                      * @see `IRuleLearner::IBeamSearchTopDownMixin::useBeamSearchTopDownRuleInduction`
                      */
                     IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
+
+                    /**
+                     * @see `IRuleLearner::IFeatureBinningMixin::useEqualWidthFeatureBinning`
+                     */
+                    IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
+
+                    /**
+                     * @see `IRuleLearner::IFeatureBinningMixin::useEqualFrequencyFeatureBinning`
+                     */
+                    IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
 
                     /**
                      * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`

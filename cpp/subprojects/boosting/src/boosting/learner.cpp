@@ -93,6 +93,22 @@ namespace boosting {
         return ref;
     }
 
+    IEqualWidthFeatureBinningConfig& BoostingRuleLearner::Config::useEqualWidthFeatureBinning() {
+        std::unique_ptr<EqualWidthFeatureBinningConfig> ptr =
+            std::make_unique<EqualWidthFeatureBinningConfig>(this->parallelStatisticUpdateConfigPtr_);
+        IEqualWidthFeatureBinningConfig& ref = *ptr;
+        this->featureBinningConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IEqualFrequencyFeatureBinningConfig& BoostingRuleLearner::Config::useEqualFrequencyFeatureBinning() {
+        std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr =
+            std::make_unique<EqualFrequencyFeatureBinningConfig>(this->parallelStatisticUpdateConfigPtr_);
+        IEqualFrequencyFeatureBinningConfig& ref = *ptr;
+        this->featureBinningConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
     ISizeStoppingCriterionConfig& BoostingRuleLearner::Config::useSizeStoppingCriterion() {
         ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
         ref.setMaxRules(1000);

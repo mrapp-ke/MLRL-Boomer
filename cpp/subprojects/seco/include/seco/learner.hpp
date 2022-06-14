@@ -31,7 +31,8 @@ namespace seco {
              * separate-and-conquer (SeCo) paradigm.
              */
             class IConfig : virtual public IRuleLearner::IConfig,
-                            virtual public IRuleLearner::IBeamSearchTopDownMixin {
+                            virtual public IRuleLearner::IBeamSearchTopDownMixin,
+                            virtual public IRuleLearner::IFeatureBinningMixin {
 
                 friend class SeCoRuleLearner;
 
@@ -289,6 +290,16 @@ namespace seco {
                      * @see `IRuleLearner::IBeamSearchTopDownMixin::useBeamSearchTopDownRuleInduction`
                      */
                     IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
+
+                    /**
+                     * @see `IRuleLearner::IFeatureBinningMixin::useEqualWidthFeatureBinning`
+                     */
+                    IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
+
+                    /**
+                     * @see `IRuleLearner::IFeatureBinningMixin::useEqualFrequencyFeatureBinning`
+                     */
+                    IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
 
                     /**
                      * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`
