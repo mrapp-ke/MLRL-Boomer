@@ -90,6 +90,38 @@ namespace seco {
         return ref;
     }
 
+    IInstanceSamplingWithReplacementConfig& SeCoRuleLearner::Config::useInstanceSamplingWithReplacement() {
+        std::unique_ptr<InstanceSamplingWithReplacementConfig> ptr =
+            std::make_unique<InstanceSamplingWithReplacementConfig>();
+        IInstanceSamplingWithReplacementConfig& ref = *ptr;
+        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IInstanceSamplingWithoutReplacementConfig& SeCoRuleLearner::Config::useInstanceSamplingWithoutReplacement() {
+        std::unique_ptr<InstanceSamplingWithoutReplacementConfig> ptr =
+            std::make_unique<InstanceSamplingWithoutReplacementConfig>();
+        IInstanceSamplingWithoutReplacementConfig& ref = *ptr;
+        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    ILabelWiseStratifiedInstanceSamplingConfig& SeCoRuleLearner::Config::useLabelWiseStratifiedInstanceSampling() {
+        std::unique_ptr<LabelWiseStratifiedInstanceSamplingConfig> ptr =
+            std::make_unique<LabelWiseStratifiedInstanceSamplingConfig>();
+        ILabelWiseStratifiedInstanceSamplingConfig& ref = *ptr;
+        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IExampleWiseStratifiedInstanceSamplingConfig& SeCoRuleLearner::Config::useExampleWiseStratifiedInstanceSampling() {
+        std::unique_ptr<ExampleWiseStratifiedInstanceSamplingConfig> ptr =
+            std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
+        IExampleWiseStratifiedInstanceSamplingConfig& ref = *ptr;
+        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
     ISizeStoppingCriterionConfig& SeCoRuleLearner::Config::useSizeStoppingCriterion() {
         ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
         ref.setMaxRules(500);

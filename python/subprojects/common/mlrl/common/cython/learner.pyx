@@ -5,9 +5,6 @@ from mlrl.common.cython._arrays cimport array_uint32, c_matrix_uint8, c_matrix_f
 from mlrl.common.cython._validation import assert_greater_or_equal
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.feature_sampling cimport FeatureSamplingWithoutReplacementConfig
-from mlrl.common.cython.instance_sampling cimport ExampleWiseStratifiedInstanceSamplingConfig, \
-    LabelWiseStratifiedInstanceSamplingConfig, InstanceSamplingWithReplacementConfig, \
-    InstanceSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
 from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
@@ -101,63 +98,6 @@ cdef class RuleLearnerConfig:
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoInstanceSampling()
-
-    def use_instance_sampling_with_replacement(self) -> InstanceSamplingWithReplacementConfig:
-        """
-        Configures the rule learner to sample from the available training examples with replacement whenever a new rule
-        should be learned.
-
-        :return: An `InstanceSamplingWithReplacementConfig` that allows further configuration of the method for sampling
-                 instances
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef IInstanceSamplingWithReplacementConfig* config_ptr = &rule_learner_config_ptr.useInstanceSamplingWithReplacement()
-        cdef InstanceSamplingWithReplacementConfig config = InstanceSamplingWithReplacementConfig.__new__(InstanceSamplingWithReplacementConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_instance_sampling_without_replacement(self) -> InstanceSamplingWithoutReplacementConfig:
-        """
-        Configures the rule learner to sample from the available training examples without replacement whenever a new
-        rule should be learned.
-
-        :return: An `InstanceSamplingWithoutReplacementConfig` that allows further configuration of the method for
-                 sampling instances
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef IInstanceSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useInstanceSamplingWithoutReplacement()
-        cdef InstanceSamplingWithoutReplacementConfig config = InstanceSamplingWithoutReplacementConfig.__new__(InstanceSamplingWithoutReplacementConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_label_wise_stratified_instance_sampling(self) -> LabelWiseStratifiedInstanceSamplingConfig:
-        """
-        Configures the rule learner to sample from the available training examples using stratification, such that for
-        each label the proportion of relevant and irrelevant examples is maintained, whenever a new rule should be
-        learned.
-
-        :return: A `LabelWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
-                 sampling instances
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef ILabelWiseStratifiedInstanceSamplingConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedInstanceSampling()
-        cdef LabelWiseStratifiedInstanceSamplingConfig config = LabelWiseStratifiedInstanceSamplingConfig.__new__(LabelWiseStratifiedInstanceSamplingConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_example_wise_stratified_instance_sampling(self) -> ExampleWiseStratifiedInstanceSamplingConfig:
-        """
-        Configures the rule learner to sample from the available training examples using stratification, where distinct
-        label vectors are treated as individual classes, whenever a new rule should be learned.
-
-        :return: An `ExampleWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
-                 sampling instances
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef IExampleWiseStratifiedInstanceSamplingConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedInstanceSampling()
-        cdef ExampleWiseStratifiedInstanceSamplingConfig config = ExampleWiseStratifiedInstanceSamplingConfig.__new__(ExampleWiseStratifiedInstanceSamplingConfig)
-        config.config_ptr = config_ptr
-        return config
 
     def use_no_feature_sampling(self):
         """

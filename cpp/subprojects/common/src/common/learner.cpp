@@ -183,38 +183,6 @@ void AbstractRuleLearner::Config::useNoInstanceSampling() {
     instanceSamplingConfigPtr_ = std::make_unique<NoInstanceSamplingConfig>();
 }
 
-IInstanceSamplingWithReplacementConfig& AbstractRuleLearner::Config::useInstanceSamplingWithReplacement() {
-    std::unique_ptr<InstanceSamplingWithReplacementConfig> ptr =
-        std::make_unique<InstanceSamplingWithReplacementConfig>();
-    IInstanceSamplingWithReplacementConfig& ref = *ptr;
-    instanceSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
-IInstanceSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useInstanceSamplingWithoutReplacement() {
-    std::unique_ptr<InstanceSamplingWithoutReplacementConfig> ptr =
-        std::make_unique<InstanceSamplingWithoutReplacementConfig>();
-    IInstanceSamplingWithoutReplacementConfig& ref = *ptr;
-    instanceSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
-ILabelWiseStratifiedInstanceSamplingConfig& AbstractRuleLearner::Config::useLabelWiseStratifiedInstanceSampling() {
-    std::unique_ptr<LabelWiseStratifiedInstanceSamplingConfig> ptr =
-        std::make_unique<LabelWiseStratifiedInstanceSamplingConfig>();
-    ILabelWiseStratifiedInstanceSamplingConfig& ref = *ptr;
-    instanceSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
-IExampleWiseStratifiedInstanceSamplingConfig& AbstractRuleLearner::Config::useExampleWiseStratifiedInstanceSampling() {
-    std::unique_ptr<ExampleWiseStratifiedInstanceSamplingConfig> ptr =
-        std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
-    IExampleWiseStratifiedInstanceSamplingConfig& ref = *ptr;
-    instanceSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoFeatureSampling() {
     featureSamplingConfigPtr_ = std::make_unique<NoFeatureSamplingConfig>();
 }

@@ -294,44 +294,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoInstanceSampling() = 0;
 
                 /**
-                 * Configures the rule learner to sample from the available training examples with replacement whenever
-                 * a new rule should be learned.
-                 *
-                 * @return A reference to an object of type `IInstanceSamplingWithReplacementConfig` that allows further
-                 *         configuration of the method for sampling instances
-                 */
-                virtual IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() = 0;
-
-                /**
-                 * Configures the rule learner to sample from the available training examples without replacement
-                 * whenever a new rule should be learned.
-                 *
-                 * @return A reference to an object of type `IInstanceSamplingWithoutReplacementConfig` that allows
-                 *         further configuration of the method for sampling instances
-                 */
-                virtual IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() = 0;
-
-                /**
-                 * Configures the rule learner to sample from the available training examples using stratification, such
-                 * that for each label the proportion of relevant and irrelevant examples is maintained, whenever a new
-                 * rule should be learned.
-                 *
-                 * @return A reference to an object of type `ILabelWiseStratifiedInstanceSamplingConfig` that allows
-                 *         further configuration of the method for sampling instances
-                 */
-                virtual ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling() = 0;
-
-                /**
-                 * Configures the rule learner to sample from the available training examples using stratification,
-                 * where distinct label vectors are treated as individual classes, whenever a new rule should be
-                 * learned.
-                 *
-                 * @return A reference to an object of type `IExampleWiseStratifiedInstanceSamplingConfig` that allows
-                 *         further configuration of the method for sampling instances
-                 */
-                virtual IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() = 0;
-
-                /**
                  * Configures the rule learner to not sample from the available features whenever a rule should be
                  * refined.
                  */
@@ -558,6 +520,52 @@ class MLRLCOMMON_API IRuleLearner {
                  *         configuration of the method for sampling labels
                  */
                 virtual ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() = 0;
+
+        };
+
+        class IInstanceSamplingMixin {
+
+            public:
+
+                virtual ~IInstanceSamplingMixin() { };
+
+                /**
+                 * Configures the rule learner to sample from the available training examples with replacement whenever
+                 * a new rule should be learned.
+                 *
+                 * @return A reference to an object of type `IInstanceSamplingWithReplacementConfig` that allows further
+                 *         configuration of the method for sampling instances
+                 */
+                virtual IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() = 0;
+
+                /**
+                 * Configures the rule learner to sample from the available training examples without replacement
+                 * whenever a new rule should be learned.
+                 *
+                 * @return A reference to an object of type `IInstanceSamplingWithoutReplacementConfig` that allows
+                 *         further configuration of the method for sampling instances
+                 */
+                virtual IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() = 0;
+
+                /**
+                 * Configures the rule learner to sample from the available training examples using stratification, such
+                 * that for each label the proportion of relevant and irrelevant examples is maintained, whenever a new
+                 * rule should be learned.
+                 *
+                 * @return A reference to an object of type `ILabelWiseStratifiedInstanceSamplingConfig` that allows
+                 *         further configuration of the method for sampling instances
+                 */
+                virtual ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling() = 0;
+
+                /**
+                 * Configures the rule learner to sample from the available training examples using stratification,
+                 * where distinct label vectors are treated as individual classes, whenever a new rule should be
+                 * learned.
+                 *
+                 * @return A reference to an object of type `IExampleWiseStratifiedInstanceSamplingConfig` that allows
+                 *         further configuration of the method for sampling instances
+                 */
+                virtual IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() = 0;
 
         };
 
@@ -913,14 +921,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoLabelSampling() override;
 
                 void useNoInstanceSampling() override;
-
-                IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() override;
-
-                IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() override;
-
-                ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling() override;
-
-                IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() override;
 
                 void useNoFeatureSampling() override;
 

@@ -1,5 +1,5 @@
 from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IRuleLearnerConfig, RuleLearnerConfig, \
-    IBeamSearchTopDownMixin, IFeatureBinningMixin, ILabelSamplingMixin
+    IBeamSearchTopDownMixin, IFeatureBinningMixin, ILabelSamplingMixin, IInstanceSamplingMixin
 from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
@@ -20,7 +20,8 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
     cdef cppclass IBoostingRuleLearnerConfig"boosting::IBoostingRuleLearner::IConfig"(IRuleLearnerConfig,
                                                                                       IBeamSearchTopDownMixin,
                                                                                       IFeatureBinningMixin,
-                                                                                      ILabelSamplingMixin):
+                                                                                      ILabelSamplingMixin,
+                                                                                      IInstanceSamplingMixin):
 
         # Functions:
 
