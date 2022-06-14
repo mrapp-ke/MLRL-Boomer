@@ -25,7 +25,7 @@ class PredefinedFeatureSampling final : public IFeatureSampling {
             return indexVector_;
         }
 
-        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng) override {
+        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) override {
             return std::make_unique<PredefinedFeatureSampling>(indexVector_);
         }
 

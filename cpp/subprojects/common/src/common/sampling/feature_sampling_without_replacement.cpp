@@ -35,8 +35,12 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
             return indexVector_;
         }
 
-        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng) override {
-            return std::make_unique<PredefinedFeatureSampling>(this->sample(rng));
+        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) override {
+            if (resample) {
+                return std::make_unique<FeatureSamplingWithoutReplacement>(numFeatures_, indexVector_.getNumElements());
+            } else {
+                return std::make_unique<PredefinedFeatureSampling>(this->sample(rng));
+            }
         }
 
 };
