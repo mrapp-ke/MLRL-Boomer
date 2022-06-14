@@ -1,4 +1,4 @@
-#include "boosting/learner.hpp"
+#include "boosting/learner_boomer.hpp"
 #include "boosting/binning/feature_binning_auto.hpp"
 #include "boosting/binning/label_binning_auto.hpp"
 #include "boosting/losses/loss_example_wise_logistic.hpp"
