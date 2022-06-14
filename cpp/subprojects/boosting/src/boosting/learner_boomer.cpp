@@ -31,12 +31,9 @@ namespace boosting {
         this->useAutomaticParallelStatisticUpdate();
         this->useAutomaticHeads();
         this->useAutomaticStatistics();
-        this->useNoL1Regularization();
         this->useL2Regularization();
-        this->useLabelWiseLogisticLoss();
         this->useAutomaticLabelBinning();
         this->useAutomaticClassificationPredictor();
-        this->useLabelWiseRegressionPredictor();
         this->useAutomaticProbabilityPredictor();
     }
 
