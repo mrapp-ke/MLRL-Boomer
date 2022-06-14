@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 from mlrl.common.strings import format_dict_keys, format_string_set
 from mlrl.testbed.args import add_rule_learner_arguments, add_max_rules_argument, add_time_limit_argument, \
     add_label_sampling_argument, add_instance_sampling_argument, add_feature_sampling_argument, \
-    add_partition_sampling_argument, add_pruning_argument, add_rule_induction_argument, \
+    add_partition_sampling_argument, add_feature_binning_argument, add_pruning_argument, add_rule_induction_argument, \
     add_parallel_prediction_argument, add_parallel_statistic_update_argument, add_parallel_rule_refinement_argument, \
     PARAM_HEAD_TYPE
 from mlrl.testbed.runnables import RuleLearnerRunnable
@@ -38,6 +38,7 @@ class SeCoRunnable(RuleLearnerRunnable):
                                instance_sampling=args.instance_sampling,
                                feature_sampling=args.feature_sampling,
                                holdout=args.holdout,
+                               feature_binning=args.feature_binning,
                                head_type=args.head_type,
                                lift_function=args.lift_function,
                                parallel_rule_refinement=args.parallel_rule_refinement,
@@ -56,6 +57,7 @@ def __add_arguments(parser: ArgumentParser):
     add_instance_sampling_argument(parser)
     add_feature_sampling_argument(parser)
     add_partition_sampling_argument(parser)
+    add_feature_binning_argument(parser)
     add_pruning_argument(parser)
     add_rule_induction_argument(parser)
     add_parallel_prediction_argument(parser)
