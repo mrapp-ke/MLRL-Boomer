@@ -5,6 +5,8 @@ from mlrl.boosting.cython.head_type cimport FixedPartialHeadConfig, DynamicParti
 from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfig
 from mlrl.boosting.cython.regularization cimport ManualRegularizationConfig
+from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
+    BeamSearchTopDownRuleInductionConfig
 
 from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
@@ -23,6 +25,19 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
     cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
         return self.rule_learner_config_ptr.get()
+
+    def use_beam_search_top_down_rule_induction(self) -> BeamSearchTopDownRuleInductionConfig:
+        """
+        Configures the algorithm to use a top-down beam search for the induction of individual rules.
+
+        :return: A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of the algorithm for the
+                 induction of individual rules
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBeamSearchTopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useBeamSearchTopDownRuleInduction()
+        cdef BeamSearchTopDownRuleInductionConfig config = BeamSearchTopDownRuleInductionConfig.__new__(BeamSearchTopDownRuleInductionConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_no_default_rule(self):
         """

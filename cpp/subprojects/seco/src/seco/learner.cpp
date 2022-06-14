@@ -64,10 +64,12 @@ namespace seco {
     }
 
     IBeamSearchTopDownRuleInductionConfig& SeCoRuleLearner::Config::useBeamSearchTopDownRuleInduction() {
-        IBeamSearchTopDownRuleInductionConfig& config =
-            AbstractRuleLearner::Config::useBeamSearchTopDownRuleInduction();
-        config.setRecalculatePredictions(false);
-        return config;
+        std::unique_ptr<BeamSearchTopDownRuleInductionConfig> ptr =
+            std::make_unique<BeamSearchTopDownRuleInductionConfig>(this->parallelRuleRefinementConfigPtr_);
+        IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
+        this->ruleInductionConfigPtr_ = std::move(ptr);
+        ref.setRecalculatePredictions(false);
+        return ref;
     }
 
     void SeCoRuleLearner::Config::useNoCoverageStoppingCriterion() {

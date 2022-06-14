@@ -30,7 +30,8 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner that makes use of the
              * separate-and-conquer (SeCo) paradigm.
              */
-            class IConfig : virtual public IRuleLearner::IConfig {
+            class IConfig : virtual public IRuleLearner::IConfig,
+                            virtual public IRuleLearner::IBeamSearchTopDownMixin {
 
                 friend class SeCoRuleLearner;
 
@@ -285,7 +286,7 @@ namespace seco {
                     IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
                     /**
-                     * @see `IRuleLearner::IConfig::useBeamSearchTopDownRuleInduction`
+                     * @see `IRuleLearner::IBeamSearchTopDownMixin::useBeamSearchTopDownRuleInduction`
                      */
                     IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
 

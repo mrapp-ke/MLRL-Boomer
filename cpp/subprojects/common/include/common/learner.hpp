@@ -276,14 +276,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() = 0;
 
                 /**
-                 * Configures the rule learner to use a top-down beam search for the induction of individual rules.
-                 *
-                 * @return A reference to an object of type `IBeamSearchTopDownRuleInduction` that allows further
-                 *         configuration of the algorithm for the induction of individual rules
-                 */
-                virtual IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() = 0;
-
-                /**
                  * Configures the rule learner to not use any method for the assignment of numerical feature values to
                  * bins.
                  */
@@ -525,6 +517,22 @@ class MLRLCOMMON_API IRuleLearner {
                  *         configuration of the stopping criterion
                  */
                 virtual IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() = 0;
+
+        };
+
+        class IBeamSearchTopDownMixin {
+
+            public:
+
+                virtual ~IBeamSearchTopDownMixin() { };
+
+                /**
+                 * Configures the rule learner to use a top-down beam search for the induction of individual rules.
+                 *
+                 * @return A reference to an object of type `IBeamSearchTopDownRuleInduction` that allows further
+                 *         configuration of the algorithm for the induction of individual rules
+                 */
+                virtual IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() = 0;
 
         };
 
@@ -874,8 +882,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useSequentialRuleModelAssemblage() override;
 
                 IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
-
-                IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
 
                 void useNoFeatureBinning() override;
 
