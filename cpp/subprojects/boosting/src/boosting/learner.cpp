@@ -117,6 +117,38 @@ namespace boosting {
         return ref;
     }
 
+    IInstanceSamplingWithReplacementConfig& BoostingRuleLearner::Config::useInstanceSamplingWithReplacement() {
+        std::unique_ptr<InstanceSamplingWithReplacementConfig> ptr =
+            std::make_unique<InstanceSamplingWithReplacementConfig>();
+        IInstanceSamplingWithReplacementConfig& ref = *ptr;
+        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IInstanceSamplingWithoutReplacementConfig& BoostingRuleLearner::Config::useInstanceSamplingWithoutReplacement() {
+        std::unique_ptr<InstanceSamplingWithoutReplacementConfig> ptr =
+            std::make_unique<InstanceSamplingWithoutReplacementConfig>();
+        IInstanceSamplingWithoutReplacementConfig& ref = *ptr;
+        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    ILabelWiseStratifiedInstanceSamplingConfig& BoostingRuleLearner::Config::useLabelWiseStratifiedInstanceSampling() {
+        std::unique_ptr<LabelWiseStratifiedInstanceSamplingConfig> ptr =
+            std::make_unique<LabelWiseStratifiedInstanceSamplingConfig>();
+        ILabelWiseStratifiedInstanceSamplingConfig& ref = *ptr;
+        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IExampleWiseStratifiedInstanceSamplingConfig& BoostingRuleLearner::Config::useExampleWiseStratifiedInstanceSampling() {
+        std::unique_ptr<ExampleWiseStratifiedInstanceSamplingConfig> ptr =
+            std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
+        IExampleWiseStratifiedInstanceSamplingConfig& ref = *ptr;
+        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
     ISizeStoppingCriterionConfig& BoostingRuleLearner::Config::useSizeStoppingCriterion() {
         ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
         ref.setMaxRules(1000);
