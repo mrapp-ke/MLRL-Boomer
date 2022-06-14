@@ -130,6 +130,29 @@ namespace seco {
         return ref;
     }
 
+    IRandomBiPartitionSamplingConfig& SeCoRuleLearner::Config::useRandomBiPartitionSampling() {
+        std::unique_ptr<RandomBiPartitionSamplingConfig> ptr = std::make_unique<RandomBiPartitionSamplingConfig>();
+        IRandomBiPartitionSamplingConfig& ref = *ptr;
+        this->partitionSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    ILabelWiseStratifiedBiPartitionSamplingConfig& SeCoRuleLearner::Config::useLabelWiseStratifiedBiPartitionSampling() {
+        std::unique_ptr<LabelWiseStratifiedBiPartitionSamplingConfig> ptr =
+            std::make_unique<LabelWiseStratifiedBiPartitionSamplingConfig>();
+        ILabelWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
+        this->partitionSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IExampleWiseStratifiedBiPartitionSamplingConfig& SeCoRuleLearner::Config::useExampleWiseStratifiedBiPartitionSampling() {
+        std::unique_ptr<ExampleWiseStratifiedBiPartitionSamplingConfig> ptr =
+            std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
+        IExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
+        this->partitionSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
     ISizeStoppingCriterionConfig& SeCoRuleLearner::Config::useSizeStoppingCriterion() {
         ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
         ref.setMaxRules(500);

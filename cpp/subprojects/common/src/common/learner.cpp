@@ -191,29 +191,6 @@ void AbstractRuleLearner::Config::useNoPartitionSampling() {
     partitionSamplingConfigPtr_ = std::make_unique<NoPartitionSamplingConfig>();
 }
 
-IRandomBiPartitionSamplingConfig& AbstractRuleLearner::Config::useRandomBiPartitionSampling() {
-    std::unique_ptr<RandomBiPartitionSamplingConfig> ptr = std::make_unique<RandomBiPartitionSamplingConfig>();
-    IRandomBiPartitionSamplingConfig& ref = *ptr;
-    partitionSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
-ILabelWiseStratifiedBiPartitionSamplingConfig& AbstractRuleLearner::Config::useLabelWiseStratifiedBiPartitionSampling() {
-    std::unique_ptr<LabelWiseStratifiedBiPartitionSamplingConfig> ptr =
-        std::make_unique<LabelWiseStratifiedBiPartitionSamplingConfig>();
-    ILabelWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
-    partitionSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
-IExampleWiseStratifiedBiPartitionSamplingConfig& AbstractRuleLearner::Config::useExampleWiseStratifiedBiPartitionSampling() {
-    std::unique_ptr<ExampleWiseStratifiedBiPartitionSamplingConfig> ptr =
-        std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
-    IExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
-    partitionSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoPruning() {
     pruningConfigPtr_ = std::make_unique<NoPruningConfig>();
 }

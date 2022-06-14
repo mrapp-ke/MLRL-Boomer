@@ -306,37 +306,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoPartitionSampling() = 0;
 
                 /**
-                 * Configures the rule learner to partition the available training examples into a training set and a
-                 * holdout set by randomly splitting the training examples into two mutually exclusive sets.
-                 *
-                 * @return A reference to an object of type `IRandomBiPartitionSamplingConfig` that allows further
-                 *         configuration of the method for partitioning the available training examples into a training
-                 *         set and a holdout set
-                 */
-                virtual IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() = 0;
-
-                /**
-                 * Configures the rule learner to partition the available training examples into a training set and a
-                 * holdout set using stratification, such that for each label the proportion of relevant and irrelevant
-                 * examples is maintained.
-                 *
-                 * @return A reference to an object of type `ILabelWiseStratifiedBiPartitionSamplingConfig` that allows
-                 *         further configuration of the method for partitioning the available training examples into a
-                 *         training and a holdout set
-                 */
-                virtual ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() = 0;
-
-                /**
-                 * Configures the rule learner to partition the available training examples into a training set and a
-                 * holdout set using stratification, where distinct label vectors are treated as individual classes
-                 *
-                 * @return A reference to an object of type `IExampleWiseStratifiedBiPartitionSamplingConfig` that
-                 *         allows further configuration of the method for partitioning the available training examples
-                 *         into a training and a holdout set
-                 */
-                virtual IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() = 0;
-
-                /**
                  * Configures the rule learner to not prune classification rules.
                  */
                 virtual void useNoPruning() = 0;
@@ -514,6 +483,9 @@ class MLRLCOMMON_API IRuleLearner {
 
         };
 
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use instance sampling.
+         */
         class IInstanceSamplingMixin {
 
             public:
@@ -560,6 +532,9 @@ class MLRLCOMMON_API IRuleLearner {
 
         };
 
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use feature sampling.
+         */
         class IFeatureSamplingMixin {
 
             public:
@@ -574,6 +549,48 @@ class MLRLCOMMON_API IRuleLearner {
                  *         further configuration of the method for sampling features
                  */
                 virtual IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() = 0;
+
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use partition sampling.
+         */
+        class IPartitionSamplingMixin {
+
+            public:
+
+                virtual ~IPartitionSamplingMixin() { };
+
+                /**
+                 * Configures the rule learner to partition the available training examples into a training set and a
+                 * holdout set by randomly splitting the training examples into two mutually exclusive sets.
+                 *
+                 * @return A reference to an object of type `IRandomBiPartitionSamplingConfig` that allows further
+                 *         configuration of the method for partitioning the available training examples into a training
+                 *         set and a holdout set
+                 */
+                virtual IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() = 0;
+
+                /**
+                 * Configures the rule learner to partition the available training examples into a training set and a
+                 * holdout set using stratification, such that for each label the proportion of relevant and irrelevant
+                 * examples is maintained.
+                 *
+                 * @return A reference to an object of type `ILabelWiseStratifiedBiPartitionSamplingConfig` that allows
+                 *         further configuration of the method for partitioning the available training examples into a
+                 *         training and a holdout set
+                 */
+                virtual ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() = 0;
+
+                /**
+                 * Configures the rule learner to partition the available training examples into a training set and a
+                 * holdout set using stratification, where distinct label vectors are treated as individual classes
+                 *
+                 * @return A reference to an object of type `IExampleWiseStratifiedBiPartitionSamplingConfig` that
+                 *         allows further configuration of the method for partitioning the available training examples
+                 *         into a training and a holdout set
+                 */
+                virtual IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() = 0;
 
         };
 
@@ -933,12 +950,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoFeatureSampling() override;
 
                 void useNoPartitionSampling() override;
-
-                IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() override;
-
-                ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() override;
-
-                IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
 
                 void useNoPruning() override;
 

@@ -12,6 +12,9 @@ from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstance
     InstanceSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig, \
     LabelSamplingWithoutReplacementConfig
+from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
+    ExampleWiseStratifiedBiPartitionSamplingConfig, ILabelWiseStratifiedBiPartitionSamplingConfig, \
+    LabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
     BeamSearchTopDownRuleInductionConfig
 from mlrl.seco.cython.heuristic cimport FMeasureConfig, MEstimateConfig
@@ -156,6 +159,48 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IFeatureSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useFeatureSamplingWithoutReplacement()
         cdef FeatureSamplingWithoutReplacementConfig config = FeatureSamplingWithoutReplacementConfig.__new__(FeatureSamplingWithoutReplacementConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
+        """
+        Configures the rule learner to partition the available training examples into a training set and a holdout set
+        by randomly splitting the training examples into two mutually exclusive sets.
+
+        :return: A `RandomBiPartitionSamplingConfig` that allows further configuration of the method for partitioning
+                 the available training examples into a training set and a holdout set
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IRandomBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useRandomBiPartitionSampling()
+        cdef RandomBiPartitionSamplingConfig config = RandomBiPartitionSamplingConfig.__new__(RandomBiPartitionSamplingConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_label_wise_stratified_bi_partition_sampling(self) -> LabelWiseStratifiedBiPartitionSamplingConfig:
+        """
+        Configures the rule learner to partition the available training examples into a training set and a holdout set
+        using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
+
+        :return: A `LabelWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
+                 partitioning the available training examples into a training and a holdout set
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef ILabelWiseStratifiedBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedBiPartitionSampling()
+        cdef LabelWiseStratifiedBiPartitionSamplingConfig config = LabelWiseStratifiedBiPartitionSamplingConfig.__new__(LabelWiseStratifiedBiPartitionSamplingConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_example_wise_stratified_bi_partition_sampling(self) -> ExampleWiseStratifiedBiPartitionSamplingConfig:
+        """
+        Configures the rule learner to partition the available training examples into a training set and a holdout set
+        using stratification, where distinct label vectors are treated as individual classes
+
+        :return: An `ExampleWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
+                 partitioning the available training examples into a training and a holdout set
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IExampleWiseStratifiedBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedBiPartitionSampling()
+        cdef ExampleWiseStratifiedBiPartitionSamplingConfig config = ExampleWiseStratifiedBiPartitionSamplingConfig.__new__(ExampleWiseStratifiedBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
         return config
 
