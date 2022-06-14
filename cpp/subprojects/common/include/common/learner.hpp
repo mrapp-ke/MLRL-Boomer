@@ -343,15 +343,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoSizeStoppingCriterion() = 0;
 
                 /**
-                 * Configures the rule learner to use a stopping criterion that ensures that the number of induced rules
-                 * does not exceed a certain maximum.
-                 *
-                 * @return A reference to an object of type `ISizeStoppingCriterionConfig` that allows further
-                 *         configuration of the stopping criterion
-                 */
-                virtual ISizeStoppingCriterionConfig& useSizeStoppingCriterion() = 0;
-
-                /**
                  * Configures the rule learner to not use a stopping criterion that ensures that are certain time limit
                  * is not exceeded.
                  */
@@ -614,6 +605,27 @@ class MLRLCOMMON_API IRuleLearner {
                  *         configuration of the multi-threading behavior
                  */
                 virtual IManualMultiThreadingConfig& useParallelPrediction() = 0;
+
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
+         * ensures that the number of induced rules does not exceed a certain maximum.
+         */
+        class ISizeStoppingCriterionMixin {
+
+            public:
+
+                virtual ~ISizeStoppingCriterionMixin() { };
+
+                /**
+                 * Configures the rule learner to use a stopping criterion that ensures that the number of induced rules
+                 * does not exceed a certain maximum.
+                 *
+                 * @return A reference to an object of type `ISizeStoppingCriterionConfig` that allows further
+                 *         configuration of the stopping criterion
+                 */
+                virtual ISizeStoppingCriterionConfig& useSizeStoppingCriterion() = 0;
 
         };
 
@@ -987,8 +999,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoParallelPrediction() override;
 
                 void useNoSizeStoppingCriterion() override;
-
-                ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
                 void useNoTimeStoppingCriterion() override;
 

@@ -10,8 +10,7 @@ from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.common.cython.nominal_feature_mask cimport NominalFeatureMask
 from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
-from mlrl.common.cython.stopping_criterion cimport SizeStoppingCriterionConfig, TimeStoppingCriterionConfig, \
-    MeasureStoppingCriterionConfig
+from mlrl.common.cython.stopping_criterion cimport TimeStoppingCriterionConfig, MeasureStoppingCriterionConfig
 
 from libcpp.utility cimport move
 
@@ -160,19 +159,6 @@ cdef class RuleLearnerConfig:
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoSizeStoppingCriterion()
-
-    def use_size_stopping_criterion(self) -> SizeStoppingCriterionConfig:
-        """
-        Configures the rule learner to use a stopping criterion that ensures that the number of induced rules does not
-        exceed a certain maximum.
-
-        :return: A `SizeStoppingCriterionConfig` that allows further configuration of the stopping criterion
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef ISizeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useSizeStoppingCriterion()
-        cdef SizeStoppingCriterionConfig config = SizeStoppingCriterionConfig.__new__(SizeStoppingCriterionConfig)
-        config.config_ptr = config_ptr
-        return config
 
     def use_no_time_stopping_criterion(self):
         """

@@ -218,13 +218,6 @@ void AbstractRuleLearner::Config::useNoSizeStoppingCriterion() {
     sizeStoppingCriterionConfigPtr_ = nullptr;
 }
 
-ISizeStoppingCriterionConfig& AbstractRuleLearner::Config::useSizeStoppingCriterion() {
-    std::unique_ptr<SizeStoppingCriterionConfig> ptr = std::make_unique<SizeStoppingCriterionConfig>();
-    ISizeStoppingCriterionConfig& ref = *ptr;
-    sizeStoppingCriterionConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoTimeStoppingCriterion() {
     timeStoppingCriterionConfigPtr_ = nullptr;
 }

@@ -90,8 +90,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoSizeStoppingCriterion()
 
-        ISizeStoppingCriterionConfig& useSizeStoppingCriterion()
-
         void useNoTimeStoppingCriterion()
 
         ITimeStoppingCriterionConfig& useTimeStoppingCriterion()
@@ -170,6 +168,13 @@ cdef extern from "common/learner.hpp" nogil:
         IManualMultiThreadingConfig& useParallelStatisticUpdate()
 
         IManualMultiThreadingConfig& useParallelPrediction()
+
+
+    cdef cppclass ISizeStoppingCriterionMixin"IRuleLearner::ISizeStoppingCriterionMixin":
+
+        # Functions:
+
+        ISizeStoppingCriterionConfig& useSizeStoppingCriterion()
 
 
     cdef cppclass IRuleLearner:
