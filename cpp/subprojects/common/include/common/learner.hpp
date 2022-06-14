@@ -276,6 +276,97 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() = 0;
 
                 /**
+                 * Configures the rule learner to not use any method for the assignment of numerical feature values to
+                 * bins.
+                 */
+                virtual void useNoFeatureBinning() = 0;
+
+                /**
+                 * Configures the rule learner to not sample from the available labels whenever a new rule should be
+                 * learned.
+                 */
+                virtual void useNoLabelSampling() = 0;
+
+                /**
+                 * Configures the rule learner to not sample from the available training examples whenever a new rule
+                 * should be learned.
+                 */
+                virtual void useNoInstanceSampling() = 0;
+
+                /**
+                 * Configures the rule learner to not sample from the available features whenever a rule should be
+                 * refined.
+                 */
+                virtual void useNoFeatureSampling() = 0;
+
+                /**
+                 * Configures the rule learner to not partition the available training examples into a training set and
+                 * a holdout set.
+                 */
+                virtual void useNoPartitionSampling() = 0;
+
+                /**
+                 * Configures the rule learner to not prune classification rules.
+                 */
+                virtual void useNoPruning() = 0;
+
+                /**
+                 * Configures the rule learner to not use any post processor.
+                 */
+                virtual void useNoPostProcessor() = 0;
+
+                /**
+                 * Configures the rule learner to not optimize a model once it has been learned.
+                 */
+                virtual void useNoPostOptimization() = 0;
+
+                /**
+                 * Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
+                 */
+                virtual void useNoParallelRuleRefinement() = 0;
+
+                /**
+                 * Configures the rule learner to not use any multi-threading for the parallel update of statistics.
+                 */
+                virtual void useNoParallelStatisticUpdate() = 0;
+
+                /**
+                 * Configures the rule learner to not use any multi-threading to predict for several query examples in
+                 * parallel.
+                 */
+                virtual void useNoParallelPrediction() = 0;
+
+                /**
+                 * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
+                 * rules does not exceed a certain maximum.
+                 */
+                virtual void useNoSizeStoppingCriterion() = 0;
+
+                /**
+                 * Configures the rule learner to not use a stopping criterion that ensures that are certain time limit
+                 * is not exceeded.
+                 */
+                virtual void useNoTimeStoppingCriterion() = 0;
+
+                /**
+                 * Configures the rule learner to not use a stopping criterion that stops the induction of rules as soon
+                 * as the quality of a model's predictions for the examples in a holdout set do not improve according to
+                 * a certain measure.
+                 */
+                virtual void useNoMeasureStoppingCriterion() = 0;
+
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use a top-down beam search.
+         */
+        class IBeamSearchTopDownMixin {
+
+            public:
+
+                virtual ~IBeamSearchTopDownMixin() { };
+
+                /**
                  * Configures the rule learner to use a top-down beam search for the induction of individual rules.
                  *
                  * @return A reference to an object of type `IBeamSearchTopDownRuleInduction` that allows further
@@ -283,11 +374,16 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() = 0;
 
-                /**
-                 * Configures the rule learner to not use any method for the assignment of numerical feature values to
-                 * bins.
-                 */
-                virtual void useNoFeatureBinning() = 0;
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use feature binning.
+         */
+        class IFeatureBinningMixin {
+
+            public:
+
+                virtual ~IFeatureBinningMixin() { };
 
                 /**
                  * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
@@ -307,11 +403,16 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() = 0;
 
-                /**
-                 * Configures the rule learner to not sample from the available labels whenever a new rule should be
-                 * learned.
-                 */
-                virtual void useNoLabelSampling() = 0;
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use label sampling.
+         */
+        class ILabelSamplingMixin {
+
+            public:
+
+                virtual ~ILabelSamplingMixin() { };
 
                 /**
                  * Configures the rule learner to sample from the available labels with replacement whenever a new rule
@@ -322,11 +423,16 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() = 0;
 
-                /**
-                 * Configures the rule learner to not sample from the available training examples whenever a new rule
-                 * should be learned.
-                 */
-                virtual void useNoInstanceSampling() = 0;
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use instance sampling.
+         */
+        class IInstanceSamplingMixin {
+
+            public:
+
+                virtual ~IInstanceSamplingMixin() { };
 
                 /**
                  * Configures the rule learner to sample from the available training examples with replacement whenever
@@ -366,11 +472,16 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() = 0;
 
-                /**
-                 * Configures the rule learner to not sample from the available features whenever a rule should be
-                 * refined.
-                 */
-                virtual void useNoFeatureSampling() = 0;
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use feature sampling.
+         */
+        class IFeatureSamplingMixin {
+
+            public:
+
+                virtual ~IFeatureSamplingMixin() { };
 
                 /**
                  * Configures the rule learner to sample from the available features with replacement whenever a rule
@@ -381,11 +492,16 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() = 0;
 
-                /**
-                 * Configures the rule learner to not partition the available training examples into a training set and
-                 * a holdout set.
-                 */
-                virtual void useNoPartitionSampling() = 0;
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use partition sampling.
+         */
+        class IPartitionSamplingMixin {
+
+            public:
+
+                virtual ~IPartitionSamplingMixin() { };
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
@@ -418,10 +534,16 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() = 0;
 
-                /**
-                 * Configures the rule learner to not prune classification rules.
-                 */
-                virtual void useNoPruning() = 0;
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use pruning.
+         */
+        class IPruningMixin {
+
+            public:
+
+                virtual ~IPruningMixin() { };
 
                 /**
                  * Configures the rule learner to prune classification rules by following the ideas of "incremental
@@ -429,20 +551,16 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual void useIrepPruning() = 0;
 
-                /**
-                 * Configures the rule learner to not use any post processor.
-                 */
-                virtual void useNoPostProcessor() = 0;
+        };
 
-                /**
-                 * Configures the rule learner to not optimize a model once it has been learned.
-                 */
-                virtual void useNoPostOptimization() = 0;
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use multi-threading.
+         */
+        class IMultiThreadingMixin {
 
-                /**
-                 * Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
-                 */
-                virtual void useNoParallelRuleRefinement() = 0;
+            public:
+
+                virtual ~IMultiThreadingMixin() { };
 
                 /**
                  * Configures the rule learner to use multi-threading for the parallel refinement of rules.
@@ -452,10 +570,6 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IManualMultiThreadingConfig& useParallelRuleRefinement() = 0;
 
-                /**
-                 * Configures the rule learner to not use any multi-threading for the parallel update of statistics.
-                 */
-                virtual void useNoParallelStatisticUpdate() = 0;
 
                 /**
                  * Configures the rule learner to use multi-threading for the parallel update of statistics.
@@ -466,12 +580,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual IManualMultiThreadingConfig& useParallelStatisticUpdate() = 0;
 
                 /**
-                 * Configures the rule learner to not use any multi-threading to predict for several query examples in
-                 * parallel.
-                 */
-                virtual void useNoParallelPrediction() = 0;
-
-                /**
                  * Configures the rule learner to use multi-threading to predict for several query examples in parallel.
                  *
                  * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
@@ -479,11 +587,17 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IManualMultiThreadingConfig& useParallelPrediction() = 0;
 
-                /**
-                 * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
-                 * rules does not exceed a certain maximum.
-                 */
-                virtual void useNoSizeStoppingCriterion() = 0;
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
+         * ensures that the number of induced rules does not exceed a certain maximum.
+         */
+        class ISizeStoppingCriterionMixin {
+
+            public:
+
+                virtual ~ISizeStoppingCriterionMixin() { };
 
                 /**
                  * Configures the rule learner to use a stopping criterion that ensures that the number of induced rules
@@ -494,11 +608,17 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual ISizeStoppingCriterionConfig& useSizeStoppingCriterion() = 0;
 
-                /**
-                 * Configures the rule learner to not use a stopping criterion that ensures that are certain time limit
-                 * is not exceeded.
-                 */
-                virtual void useNoTimeStoppingCriterion() = 0;
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
+         * ensures that a certain time limit is not exceeded.
+         */
+        class ITimeStoppingCriterionMixin {
+
+            public:
+
+                virtual ~ITimeStoppingCriterionMixin() { };
 
                 /**
                  * Configures the rule learner to use a stopping criterion that ensures that a certain time limit is not
@@ -509,12 +629,19 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual ITimeStoppingCriterionConfig& useTimeStoppingCriterion() = 0;
 
-                /**
-                 * Configures the rule learner to not use a stopping criterion that stops the induction of rules as soon
-                 * as the quality of a model's predictions for the examples in a holdout set do not improve according to
-                 * a certain measure.
-                 */
-                virtual void useNoMeasureStoppingCriterion() = 0;
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
+         * stops the induction of rules as soon as the quality of a model's predictions for the examples in a holdout
+         * set do not improve according to a certain measure.
+         */
+        class IMeasureStoppingCriterionMixin {
+
+            public:
+
+                virtual ~IMeasureStoppingCriterionMixin() { };
+
 
                 /**
                  * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as
@@ -857,7 +984,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 const IMultiThreadingConfig& getParallelStatisticUpdateConfig() const override final;
 
-                const IMultiThreadingConfig& getParallelPredictionConfig() const override;
+                const IMultiThreadingConfig& getParallelPredictionConfig() const override final;
 
                 const SizeStoppingCriterionConfig* getSizeStoppingCriterionConfig() const override final;
 
@@ -875,71 +1002,33 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
-                IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
+                void useNoFeatureBinning() override;
 
-                void useNoFeatureBinning() override final;
+                void useNoLabelSampling() override;
 
-                IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
+                void useNoInstanceSampling() override;
 
-                IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
+                void useNoFeatureSampling() override;
 
-                void useNoLabelSampling() override final;
+                void useNoPartitionSampling() override;
 
-                ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
+                void useNoPruning() override;
 
-                void useNoInstanceSampling() override final;
+                void useNoPostProcessor() override;
 
-                IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() override;
+                void useNoPostOptimization() override;
 
-                IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() override;
+                void useNoParallelRuleRefinement() override;
 
-                ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling() override;
-
-                IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() override;
-
-                void useNoFeatureSampling() override final;
-
-                IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
-
-                void useNoPartitionSampling() override final;
-
-                IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() override;
-
-                ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() override;
-
-                IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
-
-                void useNoPruning() override final;
-
-                void useIrepPruning() override final;
-
-                void useNoPostProcessor() override final;
-
-                void useNoPostOptimization() override final;
-
-                void useNoParallelRuleRefinement() override final;
-
-                IManualMultiThreadingConfig& useParallelRuleRefinement() override;
-
-                void useNoParallelStatisticUpdate() override final;
-
-                IManualMultiThreadingConfig& useParallelStatisticUpdate() override;
+                void useNoParallelStatisticUpdate() override;
 
                 void useNoParallelPrediction() override;
 
-                IManualMultiThreadingConfig& useParallelPrediction() override;
+                void useNoSizeStoppingCriterion() override;
 
-                void useNoSizeStoppingCriterion() override final;
+                void useNoTimeStoppingCriterion() override;
 
-                ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                void useNoTimeStoppingCriterion() override final;
-
-                ITimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
-
-                void useNoMeasureStoppingCriterion() override final;
-
-                IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
+                void useNoMeasureStoppingCriterion() override;
 
         };
 

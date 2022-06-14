@@ -3,7 +3,6 @@
 #include "common/multi_threading/multi_threading_no.hpp"
 #include "common/post_optimization/post_optimization_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
-#include "common/pruning/pruning_irep.hpp"
 #include "common/pruning/pruning_no.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 #include "common/sampling/feature_sampling_no.hpp"
@@ -81,7 +80,7 @@ AbstractRuleLearner::Config::Config() {
     this->useNoPostOptimization();
     this->useNoParallelRuleRefinement();
     this->useNoParallelStatisticUpdate();
-    this->useParallelPrediction();
+    this->useNoParallelPrediction();
     this->useNoSizeStoppingCriterion();
     this->useNoTimeStoppingCriterion();
     this->useNoMeasureStoppingCriterion();
@@ -171,127 +170,28 @@ IGreedyTopDownRuleInductionConfig& AbstractRuleLearner::Config::useGreedyTopDown
     return ref;
 }
 
-IBeamSearchTopDownRuleInductionConfig& AbstractRuleLearner::Config::useBeamSearchTopDownRuleInduction() {
-    std::unique_ptr<BeamSearchTopDownRuleInductionConfig> ptr =
-        std::make_unique<BeamSearchTopDownRuleInductionConfig>(parallelRuleRefinementConfigPtr_);
-    IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
-    ruleInductionConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoFeatureBinning() {
     featureBinningConfigPtr_ = std::make_unique<NoFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
-}
-
-IEqualWidthFeatureBinningConfig& AbstractRuleLearner::Config::useEqualWidthFeatureBinning() {
-    std::unique_ptr<EqualWidthFeatureBinningConfig> ptr =
-        std::make_unique<EqualWidthFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
-    IEqualWidthFeatureBinningConfig& ref = *ptr;
-    featureBinningConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
-IEqualFrequencyFeatureBinningConfig& AbstractRuleLearner::Config::useEqualFrequencyFeatureBinning() {
-    std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr =
-        std::make_unique<EqualFrequencyFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
-    IEqualFrequencyFeatureBinningConfig& ref = *ptr;
-    featureBinningConfigPtr_ = std::move(ptr);
-    return ref;
 }
 
 void AbstractRuleLearner::Config::useNoLabelSampling() {
     labelSamplingConfigPtr_ = std::make_unique<NoLabelSamplingConfig>();
 }
 
-ILabelSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useLabelSamplingWithoutReplacement() {
-    std::unique_ptr<LabelSamplingWithoutReplacementConfig> ptr =
-        std::make_unique<LabelSamplingWithoutReplacementConfig>();
-    ILabelSamplingWithoutReplacementConfig& ref = *ptr;
-    labelSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoInstanceSampling() {
     instanceSamplingConfigPtr_ = std::make_unique<NoInstanceSamplingConfig>();
-}
-
-IInstanceSamplingWithReplacementConfig& AbstractRuleLearner::Config::useInstanceSamplingWithReplacement() {
-    std::unique_ptr<InstanceSamplingWithReplacementConfig> ptr =
-        std::make_unique<InstanceSamplingWithReplacementConfig>();
-    IInstanceSamplingWithReplacementConfig& ref = *ptr;
-    instanceSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
-IInstanceSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useInstanceSamplingWithoutReplacement() {
-    std::unique_ptr<InstanceSamplingWithoutReplacementConfig> ptr =
-        std::make_unique<InstanceSamplingWithoutReplacementConfig>();
-    IInstanceSamplingWithoutReplacementConfig& ref = *ptr;
-    instanceSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
-ILabelWiseStratifiedInstanceSamplingConfig& AbstractRuleLearner::Config::useLabelWiseStratifiedInstanceSampling() {
-    std::unique_ptr<LabelWiseStratifiedInstanceSamplingConfig> ptr =
-        std::make_unique<LabelWiseStratifiedInstanceSamplingConfig>();
-    ILabelWiseStratifiedInstanceSamplingConfig& ref = *ptr;
-    instanceSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
-IExampleWiseStratifiedInstanceSamplingConfig& AbstractRuleLearner::Config::useExampleWiseStratifiedInstanceSampling() {
-    std::unique_ptr<ExampleWiseStratifiedInstanceSamplingConfig> ptr =
-        std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
-    IExampleWiseStratifiedInstanceSamplingConfig& ref = *ptr;
-    instanceSamplingConfigPtr_ = std::move(ptr);
-    return ref;
 }
 
 void AbstractRuleLearner::Config::useNoFeatureSampling() {
     featureSamplingConfigPtr_ = std::make_unique<NoFeatureSamplingConfig>();
 }
 
-IFeatureSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useFeatureSamplingWithoutReplacement() {
-    std::unique_ptr<FeatureSamplingWithoutReplacementConfig> ptr =
-        std::make_unique<FeatureSamplingWithoutReplacementConfig>();
-    IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
-    featureSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoPartitionSampling() {
     partitionSamplingConfigPtr_ = std::make_unique<NoPartitionSamplingConfig>();
 }
 
-IRandomBiPartitionSamplingConfig& AbstractRuleLearner::Config::useRandomBiPartitionSampling() {
-    std::unique_ptr<RandomBiPartitionSamplingConfig> ptr = std::make_unique<RandomBiPartitionSamplingConfig>();
-    IRandomBiPartitionSamplingConfig& ref = *ptr;
-    partitionSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
-ILabelWiseStratifiedBiPartitionSamplingConfig& AbstractRuleLearner::Config::useLabelWiseStratifiedBiPartitionSampling() {
-    std::unique_ptr<LabelWiseStratifiedBiPartitionSamplingConfig> ptr =
-        std::make_unique<LabelWiseStratifiedBiPartitionSamplingConfig>();
-    ILabelWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
-    partitionSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
-IExampleWiseStratifiedBiPartitionSamplingConfig& AbstractRuleLearner::Config::useExampleWiseStratifiedBiPartitionSampling() {
-    std::unique_ptr<ExampleWiseStratifiedBiPartitionSamplingConfig> ptr =
-        std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
-    IExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
-    partitionSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoPruning() {
     pruningConfigPtr_ = std::make_unique<NoPruningConfig>();
-}
-
-void AbstractRuleLearner::Config::useIrepPruning() {
-    pruningConfigPtr_ = std::make_unique<IrepConfig>();
 }
 
 void AbstractRuleLearner::Config::useNoPostProcessor() {
@@ -306,66 +206,24 @@ void AbstractRuleLearner::Config::useNoParallelRuleRefinement() {
     parallelRuleRefinementConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
 }
 
-IManualMultiThreadingConfig& AbstractRuleLearner::Config::useParallelRuleRefinement() {
-    std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
-    IManualMultiThreadingConfig& ref = *ptr;
-    parallelRuleRefinementConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoParallelStatisticUpdate() {
     parallelStatisticUpdateConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
-}
-
-IManualMultiThreadingConfig& AbstractRuleLearner::Config::useParallelStatisticUpdate() {
-    std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
-    IManualMultiThreadingConfig& ref = *ptr;
-    parallelStatisticUpdateConfigPtr_ = std::move(ptr);
-    return ref;
 }
 
 void AbstractRuleLearner::Config::useNoParallelPrediction() {
     parallelPredictionConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
 }
 
-IManualMultiThreadingConfig& AbstractRuleLearner::Config::useParallelPrediction() {
-    std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
-    IManualMultiThreadingConfig& ref = *ptr;
-    parallelPredictionConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoSizeStoppingCriterion() {
     sizeStoppingCriterionConfigPtr_ = nullptr;
-}
-
-ISizeStoppingCriterionConfig& AbstractRuleLearner::Config::useSizeStoppingCriterion() {
-    std::unique_ptr<SizeStoppingCriterionConfig> ptr = std::make_unique<SizeStoppingCriterionConfig>();
-    ISizeStoppingCriterionConfig& ref = *ptr;
-    sizeStoppingCriterionConfigPtr_ = std::move(ptr);
-    return ref;
 }
 
 void AbstractRuleLearner::Config::useNoTimeStoppingCriterion() {
     timeStoppingCriterionConfigPtr_ = nullptr;
 }
 
-ITimeStoppingCriterionConfig& AbstractRuleLearner::Config::useTimeStoppingCriterion() {
-    std::unique_ptr<TimeStoppingCriterionConfig> ptr = std::make_unique<TimeStoppingCriterionConfig>();
-    ITimeStoppingCriterionConfig& ref = *ptr;
-    timeStoppingCriterionConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoMeasureStoppingCriterion() {
     measureStoppingCriterionConfigPtr_ = nullptr;
-}
-
-IMeasureStoppingCriterionConfig& AbstractRuleLearner::Config::useMeasureStoppingCriterion() {
-    std::unique_ptr<MeasureStoppingCriterionConfig> ptr = std::make_unique<MeasureStoppingCriterionConfig>();
-    IMeasureStoppingCriterionConfig& ref = *ptr;
-    measureStoppingCriterionConfigPtr_ = std::move(ptr);
-    return ref;
 }
 
 AbstractRuleLearner::AbstractRuleLearner(const IRuleLearner::IConfig& config)

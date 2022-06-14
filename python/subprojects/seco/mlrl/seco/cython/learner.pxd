@@ -1,4 +1,7 @@
-from mlrl.common.cython.learner cimport IRuleLearner, IRuleLearnerConfig, RuleLearner, RuleLearnerConfig
+from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IRuleLearnerConfig, RuleLearnerConfig, \
+    IBeamSearchTopDownMixin, IFeatureBinningMixin, ILabelSamplingMixin, IInstanceSamplingMixin, IFeatureSamplingMixin, \
+    IPartitionSamplingMixin, IPruningMixin, IMultiThreadingMixin, ISizeStoppingCriterionMixin, \
+    ITimeStoppingCriterionMixin, IMeasureStoppingCriterionMixin
 from mlrl.seco.cython.heuristic cimport IFMeasureConfig, IMEstimateConfig
 from mlrl.seco.cython.lift_function cimport IPeakLiftFunctionConfig, IKlnLiftFunctionConfig
 from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfig
@@ -8,7 +11,18 @@ from libcpp.memory cimport unique_ptr
 
 cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
-    cdef cppclass ISeCoRuleLearnerConfig"seco::ISeCoRuleLearner::IConfig"(IRuleLearnerConfig):
+    cdef cppclass ISeCoRuleLearnerConfig"seco::ISeCoRuleLearner::IConfig"(IRuleLearnerConfig,
+                                                                          IBeamSearchTopDownMixin,
+                                                                          IFeatureBinningMixin,
+                                                                          ILabelSamplingMixin,
+                                                                          IInstanceSamplingMixin,
+                                                                          IFeatureSamplingMixin,
+                                                                          IPartitionSamplingMixin,
+                                                                          IPruningMixin,
+                                                                          IMultiThreadingMixin,
+                                                                          ISizeStoppingCriterionMixin,
+                                                                          ITimeStoppingCriterionMixin,
+                                                                          IMeasureStoppingCriterionMixin):
 
         # Functions:
 

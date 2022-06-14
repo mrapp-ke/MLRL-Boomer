@@ -12,9 +12,9 @@ from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, NONE, ARGUMENT_BIN_RATIO, \
     ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS, BINNING_EQUAL_WIDTH, BINNING_EQUAL_FREQUENCY
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import configure_rule_model_assemblage, configure_rule_induction, \
+from mlrl.common.rule_learners import configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
-    configure_partition_sampling, configure_pruning, configure_post_optimization, configure_parallel_rule_refinement, \
+    configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
     configure_time_stopping_criterion
 from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int, get_float
@@ -163,7 +163,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  predicted_label_format: str = SparsePolicy.AUTO.value,
                  statistic_format: Optional[str] = None,
                  default_rule: Optional[str] = None,
-                 rule_model_assemblage: Optional[str] = None,
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
                  time_limit: Optional[int] = None,
@@ -179,7 +178,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                  feature_binning: Optional[str] = None,
                  label_binning: Optional[str] = None,
                  pruning: Optional[str] = None,
-                 post_optimization: Optional[str] = None,
                  shrinkage: Optional[float] = 0.3,
                  l1_regularization_weight: Optional[float] = None,
                  l2_regularization_weight: Optional[float] = None,
@@ -193,8 +191,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         :param default_rule:                Whether a default rule should be induced or not. Must be 'true', 'false' or
                                             'auto', if it should be decided automatically whether a default rule should
                                             be induced or not
-        :param rule_model_assemblage:       The algorithm that should be used for the induction of several rules. Must
-                                            be 'sequential'
         :param rule_induction:              The algorithm that should be used for the induction of individual rules.
                                             Must be 'top-down-greedy' or 'top-down-beam-search'. For additional options
                                             refer to the documentation
@@ -247,8 +243,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                                             the documentation
         :param pruning:                     The strategy that should be used to prune individual rules. Must be 'irep'
                                             or 'none', if no pruning should be used
-        :param post_optimization:           The strategy that should be used to optimize a model globally once it has
-                                            been learned. Must be `none`, if no post-optimization should be used
         :param shrinkage:                   The shrinkage parameter, a.k.a. the "learning rate", that should be used to
                                             shrink the weight of individual rules. Must be in (0, 1]
         :param l1_regularization_weight:    The weight of the L1 regularization. Must be at least 0
@@ -268,7 +262,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         super().__init__(random_state, feature_format, label_format, predicted_label_format)
         self.statistic_format = statistic_format
         self.default_rule = default_rule
-        self.rule_model_assemblage = rule_model_assemblage
         self.rule_induction = rule_induction
         self.max_rules = max_rules
         self.time_limit = time_limit
@@ -284,7 +277,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.feature_binning = feature_binning
         self.label_binning = label_binning
         self.pruning = pruning
-        self.post_optimization = post_optimization
         self.shrinkage = shrinkage
         self.l1_regularization_weight = l1_regularization_weight
         self.l2_regularization_weight = l2_regularization_weight
@@ -295,7 +287,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
     def _create_learner(self) -> RuleLearnerWrapper:
         config = BoostingRuleLearnerConfig()
         self.__configure_default_rule(config)
-        configure_rule_model_assemblage(config, get_string(self.rule_model_assemblage))
         configure_rule_induction(config, get_string(self.rule_induction))
         self.__configure_feature_binning(config)
         configure_label_sampling(config, get_string(self.label_sampling))
@@ -303,7 +294,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         configure_feature_sampling(config, get_string(self.feature_sampling))
         configure_partition_sampling(config, get_string(self.holdout))
         configure_pruning(config, get_string(self.pruning))
-        configure_post_optimization(config, get_string(self.post_optimization))
         self.__configure_parallel_rule_refinement(config)
         self.__configure_parallel_statistic_update(config)
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
