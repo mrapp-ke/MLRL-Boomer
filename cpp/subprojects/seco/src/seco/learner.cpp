@@ -16,6 +16,7 @@
 namespace seco {
 
     SeCoRuleLearner::Config::Config() {
+        this->useParallelPrediction();
         this->useSizeStoppingCriterion();
         this->useLabelWiseStratifiedInstanceSampling();
         this->useIrepPruning();
@@ -156,6 +157,27 @@ namespace seco {
 
     void SeCoRuleLearner::Config::useIrepPruning() {
         this->pruningConfigPtr_ = std::make_unique<IrepConfig>();
+    }
+
+    IManualMultiThreadingConfig& SeCoRuleLearner::Config::useParallelRuleRefinement() {
+        std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+        IManualMultiThreadingConfig& ref = *ptr;
+        this->parallelRuleRefinementConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IManualMultiThreadingConfig& SeCoRuleLearner::Config::useParallelStatisticUpdate() {
+        std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+        IManualMultiThreadingConfig& ref = *ptr;
+        this->parallelStatisticUpdateConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IManualMultiThreadingConfig& SeCoRuleLearner::Config::useParallelPrediction() {
+        std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+        IManualMultiThreadingConfig& ref = *ptr;
+        this->parallelPredictionConfigPtr_ = std::move(ptr);
+        return ref;
     }
 
     ISizeStoppingCriterionConfig& SeCoRuleLearner::Config::useSizeStoppingCriterion() {

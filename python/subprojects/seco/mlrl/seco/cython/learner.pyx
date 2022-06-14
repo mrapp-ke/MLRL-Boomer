@@ -12,6 +12,7 @@ from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstance
     InstanceSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig, \
     LabelSamplingWithoutReplacementConfig
+from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig, ManualMultiThreadingConfig
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ExampleWiseStratifiedBiPartitionSamplingConfig, ILabelWiseStratifiedBiPartitionSamplingConfig, \
     LabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
@@ -211,6 +212,42 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         """
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useIrepPruning()
+
+    def use_parallel_rule_refinement(self) -> ManualMultiThreadingConfig:
+        """
+        Configures the rule learner to use multi-threading for the parallel refinement of rules.
+
+        :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelRuleRefinement()
+        cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_parallel_statistic_update(self) -> ManualMultiThreadingConfig:
+        """
+        Configures the rule learner to use multi-threading for the parallel update of statistics.
+
+        :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelStatisticUpdate()
+        cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_parallel_prediction(self) -> ManualMultiThreadingConfig:
+        """
+        Configures the rule learner to use multi-threading to predict for several query examples in parallel.
+
+        :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelPrediction()
+        cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_no_coverage_stopping_criterion(self):
         """

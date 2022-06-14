@@ -326,39 +326,15 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoParallelRuleRefinement() = 0;
 
                 /**
-                 * Configures the rule learner to use multi-threading for the parallel refinement of rules.
-                 *
-                 * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
-                 *         configuration of the multi-threading behavior
-                 */
-                virtual IManualMultiThreadingConfig& useParallelRuleRefinement() = 0;
-
-                /**
                  * Configures the rule learner to not use any multi-threading for the parallel update of statistics.
                  */
                 virtual void useNoParallelStatisticUpdate() = 0;
-
-                /**
-                 * Configures the rule learner to use multi-threading for the parallel update of statistics.
-                 *
-                 * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
-                 *         configuration of the multi-threading behavior
-                 */
-                virtual IManualMultiThreadingConfig& useParallelStatisticUpdate() = 0;
 
                 /**
                  * Configures the rule learner to not use any multi-threading to predict for several query examples in
                  * parallel.
                  */
                 virtual void useNoParallelPrediction() = 0;
-
-                /**
-                 * Configures the rule learner to use multi-threading to predict for several query examples in parallel.
-                 *
-                 * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
-                 *         configuration of the multi-threading behavior
-                 */
-                virtual IManualMultiThreadingConfig& useParallelPrediction() = 0;
 
                 /**
                  * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
@@ -602,6 +578,42 @@ class MLRLCOMMON_API IRuleLearner {
                  * reduced error pruning" (IREP).
                  */
                 virtual void useIrepPruning() = 0;
+
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use multi-threading.
+         */
+        class IMultiThreadingMixin {
+
+            public:
+
+                virtual ~IMultiThreadingMixin() { };
+
+                /**
+                 * Configures the rule learner to use multi-threading for the parallel refinement of rules.
+                 *
+                 * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
+                 *         configuration of the multi-threading behavior
+                 */
+                virtual IManualMultiThreadingConfig& useParallelRuleRefinement() = 0;
+
+
+                /**
+                 * Configures the rule learner to use multi-threading for the parallel update of statistics.
+                 *
+                 * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
+                 *         configuration of the multi-threading behavior
+                 */
+                virtual IManualMultiThreadingConfig& useParallelStatisticUpdate() = 0;
+
+                /**
+                 * Configures the rule learner to use multi-threading to predict for several query examples in parallel.
+                 *
+                 * @return A reference to an object of type `IManualMultiThreadingConfig` that allows further
+                 *         configuration of the multi-threading behavior
+                 */
+                virtual IManualMultiThreadingConfig& useParallelPrediction() = 0;
 
         };
 
@@ -970,15 +982,9 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoParallelRuleRefinement() override;
 
-                IManualMultiThreadingConfig& useParallelRuleRefinement() override;
-
                 void useNoParallelStatisticUpdate() override;
 
-                IManualMultiThreadingConfig& useParallelStatisticUpdate() override;
-
                 void useNoParallelPrediction() override;
-
-                IManualMultiThreadingConfig& useParallelPrediction() override;
 
                 void useNoSizeStoppingCriterion() override;
 

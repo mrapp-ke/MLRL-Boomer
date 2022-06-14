@@ -32,6 +32,7 @@
 namespace boosting {
 
     BoostingRuleLearner::Config::Config() {
+        this->useParallelPrediction();
         this->useAutomaticDefaultRule();
         this->useAutomaticFeatureBinning();
         this->useFeatureSamplingWithoutReplacement();
@@ -183,6 +184,27 @@ namespace boosting {
 
     void BoostingRuleLearner::Config::useIrepPruning() {
         this->pruningConfigPtr_ = std::make_unique<IrepConfig>();
+    }
+
+    IManualMultiThreadingConfig& BoostingRuleLearner::Config::useParallelRuleRefinement() {
+        std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+        IManualMultiThreadingConfig& ref = *ptr;
+        this->parallelRuleRefinementConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IManualMultiThreadingConfig& BoostingRuleLearner::Config::useParallelStatisticUpdate() {
+        std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+        IManualMultiThreadingConfig& ref = *ptr;
+        this->parallelStatisticUpdateConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IManualMultiThreadingConfig& BoostingRuleLearner::Config::useParallelPrediction() {
+        std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+        IManualMultiThreadingConfig& ref = *ptr;
+        this->parallelPredictionConfigPtr_ = std::move(ptr);
+        return ref;
     }
 
     ISizeStoppingCriterionConfig& BoostingRuleLearner::Config::useSizeStoppingCriterion() {
