@@ -3,7 +3,6 @@
 #include "common/multi_threading/multi_threading_no.hpp"
 #include "common/post_optimization/post_optimization_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
-#include "common/pruning/pruning_irep.hpp"
 #include "common/pruning/pruning_no.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 #include "common/sampling/feature_sampling_no.hpp"
@@ -193,10 +192,6 @@ void AbstractRuleLearner::Config::useNoPartitionSampling() {
 
 void AbstractRuleLearner::Config::useNoPruning() {
     pruningConfigPtr_ = std::make_unique<NoPruningConfig>();
-}
-
-void AbstractRuleLearner::Config::useIrepPruning() {
-    pruningConfigPtr_ = std::make_unique<IrepConfig>();
 }
 
 void AbstractRuleLearner::Config::useNoPostProcessor() {

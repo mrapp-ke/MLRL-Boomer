@@ -311,12 +311,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoPruning() = 0;
 
                 /**
-                 * Configures the rule learner to prune classification rules by following the ideas of "incremental
-                 * reduced error pruning" (IREP).
-                 */
-                virtual void useIrepPruning() = 0;
-
-                /**
                  * Configures the rule learner to not use any post processor.
                  */
                 virtual void useNoPostProcessor() = 0;
@@ -591,6 +585,23 @@ class MLRLCOMMON_API IRuleLearner {
                  *         into a training and a holdout set
                  */
                 virtual IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() = 0;
+
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use pruning.
+         */
+        class IPruningMixin {
+
+            public:
+
+                virtual ~IPruningMixin() { };
+
+                /**
+                 * Configures the rule learner to prune classification rules by following the ideas of "incremental
+                 * reduced error pruning" (IREP).
+                 */
+                virtual void useIrepPruning() = 0;
 
         };
 
@@ -952,8 +963,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoPartitionSampling() override;
 
                 void useNoPruning() override;
-
-                void useIrepPruning() override;
 
                 void useNoPostProcessor() override;
 

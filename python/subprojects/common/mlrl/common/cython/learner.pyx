@@ -118,14 +118,6 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoPruning()
 
-    def use_irep_pruning(self):
-        """
-        Configures the rule learner to prune classification rules by following the ideas of "incremental reduced error
-        pruning" (IREP).
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useIrepPruning()
-
     def use_no_post_processor(self):
         """
         Configures the rule learner to not use any post-processor.

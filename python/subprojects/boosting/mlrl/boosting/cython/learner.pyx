@@ -208,6 +208,14 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_irep_pruning(self):
+        """
+        Configures the rule learner to prune classification rules by following the ideas of "incremental reduced error
+        pruning" (IREP).
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useIrepPruning()
+
     def use_no_default_rule(self):
         """
         Configures the rule learner to not induce a default rule.

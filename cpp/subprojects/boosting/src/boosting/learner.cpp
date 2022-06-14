@@ -26,6 +26,7 @@
 #include "boosting/statistics/statistic_format_sparse.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
 #include "common/output/label_space_info_no.hpp"
+#include "common/pruning/pruning_irep.hpp"
 
 
 namespace boosting {
@@ -178,6 +179,10 @@ namespace boosting {
         IExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
         this->partitionSamplingConfigPtr_ = std::move(ptr);
         return ref;
+    }
+
+    void BoostingRuleLearner::Config::useIrepPruning() {
+        this->pruningConfigPtr_ = std::make_unique<IrepConfig>();
     }
 
     ISizeStoppingCriterionConfig& BoostingRuleLearner::Config::useSizeStoppingCriterion() {
