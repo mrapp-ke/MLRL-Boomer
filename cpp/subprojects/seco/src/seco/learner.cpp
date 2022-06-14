@@ -195,6 +195,13 @@ namespace seco {
         return ref;
     }
 
+    IMeasureStoppingCriterionConfig& SeCoRuleLearner::Config::useMeasureStoppingCriterion() {
+        std::unique_ptr<MeasureStoppingCriterionConfig> ptr = std::make_unique<MeasureStoppingCriterionConfig>();
+        IMeasureStoppingCriterionConfig& ref = *ptr;
+        this->measureStoppingCriterionConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
     void SeCoRuleLearner::Config::useNoCoverageStoppingCriterion() {
         coverageStoppingCriterionConfigPtr_ = nullptr;
     }

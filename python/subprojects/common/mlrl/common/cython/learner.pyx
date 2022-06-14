@@ -10,7 +10,6 @@ from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.common.cython.nominal_feature_mask cimport NominalFeatureMask
 from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
-from mlrl.common.cython.stopping_criterion cimport MeasureStoppingCriterionConfig
 
 from libcpp.utility cimport move
 
@@ -176,19 +175,6 @@ cdef class RuleLearnerConfig:
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoMeasureStoppingCriterion()
-
-    def use_measure_stopping_criterion(self) -> MeasureStoppingCriterionConfig:
-        """
-        Configures the rule learner to use a stopping criterion stops the induction of rules as soon as the quality of a
-        model's predictions for the examples in a holdout set do not improve according to a certain measure.
-
-        :return: A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping criterion
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef IMeasureStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useMeasureStoppingCriterion()
-        cdef MeasureStoppingCriterionConfig config = MeasureStoppingCriterionConfig.__new__(MeasureStoppingCriterionConfig)
-        config.config_ptr = config_ptr
-        return config
 
 
 cdef class RuleLearner:

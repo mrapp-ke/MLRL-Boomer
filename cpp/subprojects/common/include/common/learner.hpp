@@ -355,16 +355,6 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual void useNoMeasureStoppingCriterion() = 0;
 
-                /**
-                 * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as
-                 * the quality of a model's predictions for the examples in a holdout set do not improve according to a
-                 * certain measure.
-                 *
-                 * @return A reference to an object of the type `IMeasureStoppingCriterionConfig` that allows further
-                 *         configuration of the stopping criterion
-                 */
-                virtual IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() = 0;
-
         };
 
         /**
@@ -638,6 +628,30 @@ class MLRLCOMMON_API IRuleLearner {
                  *         configuration of the stopping criterion
                  */
                 virtual ITimeStoppingCriterionConfig& useTimeStoppingCriterion() = 0;
+
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
+         * stops the induction of rules as soon as the quality of a model's predictions for the examples in a holdout
+         * set do not improve according to a certain measure.
+         */
+        class IMeasureStoppingCriterionMixin {
+
+            public:
+
+                virtual ~IMeasureStoppingCriterionMixin() { };
+
+
+                /**
+                 * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as
+                 * the quality of a model's predictions for the examples in a holdout set do not improve according to a
+                 * certain measure.
+                 *
+                 * @return A reference to an object of the type `IMeasureStoppingCriterionConfig` that allows further
+                 *         configuration of the stopping criterion
+                 */
+                virtual IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() = 0;
 
         };
 
@@ -1015,8 +1029,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoTimeStoppingCriterion() override;
 
                 void useNoMeasureStoppingCriterion() override;
-
-                IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
 
         };
 

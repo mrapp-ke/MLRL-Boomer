@@ -23,7 +23,8 @@ from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiParti
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
     BeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, SizeStoppingCriterionConfig, \
-    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig
+    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig, IMeasureStoppingCriterionConfig, \
+    MeasureStoppingCriterionConfig
 
 from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
@@ -277,6 +278,19 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ITimeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useTimeStoppingCriterion()
         cdef TimeStoppingCriterionConfig config = TimeStoppingCriterionConfig.__new__(TimeStoppingCriterionConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_measure_stopping_criterion(self) -> MeasureStoppingCriterionConfig:
+        """
+        Configures the rule learner to use a stopping criterion stops the induction of rules as soon as the quality of a
+        model's predictions for the examples in a holdout set do not improve according to a certain measure.
+
+        :return: A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping criterion
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMeasureStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useMeasureStoppingCriterion()
+        cdef MeasureStoppingCriterionConfig config = MeasureStoppingCriterionConfig.__new__(MeasureStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 
