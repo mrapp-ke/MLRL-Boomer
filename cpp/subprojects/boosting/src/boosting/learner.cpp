@@ -26,11 +26,13 @@
 #include "boosting/statistics/statistic_format_sparse.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
 #include "common/output/label_space_info_no.hpp"
+#include "common/pruning/pruning_irep.hpp"
 
 
 namespace boosting {
 
     BoostingRuleLearner::Config::Config() {
+        this->useParallelPrediction();
         this->useAutomaticDefaultRule();
         this->useAutomaticFeatureBinning();
         this->useFeatureSamplingWithoutReplacement();
@@ -85,9 +87,145 @@ namespace boosting {
         return *probabilityPredictorConfigPtr_;
     }
 
+    IBeamSearchTopDownRuleInductionConfig& BoostingRuleLearner::Config::useBeamSearchTopDownRuleInduction() {
+        std::unique_ptr<BeamSearchTopDownRuleInductionConfig> ptr =
+            std::make_unique<BeamSearchTopDownRuleInductionConfig>(this->parallelRuleRefinementConfigPtr_);
+        IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
+        this->ruleInductionConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IEqualWidthFeatureBinningConfig& BoostingRuleLearner::Config::useEqualWidthFeatureBinning() {
+        std::unique_ptr<EqualWidthFeatureBinningConfig> ptr =
+            std::make_unique<EqualWidthFeatureBinningConfig>(this->parallelStatisticUpdateConfigPtr_);
+        IEqualWidthFeatureBinningConfig& ref = *ptr;
+        this->featureBinningConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IEqualFrequencyFeatureBinningConfig& BoostingRuleLearner::Config::useEqualFrequencyFeatureBinning() {
+        std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr =
+            std::make_unique<EqualFrequencyFeatureBinningConfig>(this->parallelStatisticUpdateConfigPtr_);
+        IEqualFrequencyFeatureBinningConfig& ref = *ptr;
+        this->featureBinningConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    ILabelSamplingWithoutReplacementConfig& BoostingRuleLearner::Config::useLabelSamplingWithoutReplacement() {
+        std::unique_ptr<LabelSamplingWithoutReplacementConfig> ptr =
+            std::make_unique<LabelSamplingWithoutReplacementConfig>();
+        ILabelSamplingWithoutReplacementConfig& ref = *ptr;
+        this->labelSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IInstanceSamplingWithReplacementConfig& BoostingRuleLearner::Config::useInstanceSamplingWithReplacement() {
+        std::unique_ptr<InstanceSamplingWithReplacementConfig> ptr =
+            std::make_unique<InstanceSamplingWithReplacementConfig>();
+        IInstanceSamplingWithReplacementConfig& ref = *ptr;
+        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IInstanceSamplingWithoutReplacementConfig& BoostingRuleLearner::Config::useInstanceSamplingWithoutReplacement() {
+        std::unique_ptr<InstanceSamplingWithoutReplacementConfig> ptr =
+            std::make_unique<InstanceSamplingWithoutReplacementConfig>();
+        IInstanceSamplingWithoutReplacementConfig& ref = *ptr;
+        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    ILabelWiseStratifiedInstanceSamplingConfig& BoostingRuleLearner::Config::useLabelWiseStratifiedInstanceSampling() {
+        std::unique_ptr<LabelWiseStratifiedInstanceSamplingConfig> ptr =
+            std::make_unique<LabelWiseStratifiedInstanceSamplingConfig>();
+        ILabelWiseStratifiedInstanceSamplingConfig& ref = *ptr;
+        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IExampleWiseStratifiedInstanceSamplingConfig& BoostingRuleLearner::Config::useExampleWiseStratifiedInstanceSampling() {
+        std::unique_ptr<ExampleWiseStratifiedInstanceSamplingConfig> ptr =
+            std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
+        IExampleWiseStratifiedInstanceSamplingConfig& ref = *ptr;
+        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IFeatureSamplingWithoutReplacementConfig& BoostingRuleLearner::Config::useFeatureSamplingWithoutReplacement() {
+        std::unique_ptr<FeatureSamplingWithoutReplacementConfig> ptr =
+            std::make_unique<FeatureSamplingWithoutReplacementConfig>();
+        IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
+        this->featureSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IRandomBiPartitionSamplingConfig& BoostingRuleLearner::Config::useRandomBiPartitionSampling() {
+        std::unique_ptr<RandomBiPartitionSamplingConfig> ptr = std::make_unique<RandomBiPartitionSamplingConfig>();
+        IRandomBiPartitionSamplingConfig& ref = *ptr;
+        this->partitionSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    ILabelWiseStratifiedBiPartitionSamplingConfig& BoostingRuleLearner::Config::useLabelWiseStratifiedBiPartitionSampling() {
+        std::unique_ptr<LabelWiseStratifiedBiPartitionSamplingConfig> ptr =
+            std::make_unique<LabelWiseStratifiedBiPartitionSamplingConfig>();
+        ILabelWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
+        this->partitionSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IExampleWiseStratifiedBiPartitionSamplingConfig& BoostingRuleLearner::Config::useExampleWiseStratifiedBiPartitionSampling() {
+        std::unique_ptr<ExampleWiseStratifiedBiPartitionSamplingConfig> ptr =
+            std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
+        IExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
+        this->partitionSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    void BoostingRuleLearner::Config::useIrepPruning() {
+        this->pruningConfigPtr_ = std::make_unique<IrepConfig>();
+    }
+
+    IManualMultiThreadingConfig& BoostingRuleLearner::Config::useParallelRuleRefinement() {
+        std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+        IManualMultiThreadingConfig& ref = *ptr;
+        this->parallelRuleRefinementConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IManualMultiThreadingConfig& BoostingRuleLearner::Config::useParallelStatisticUpdate() {
+        std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+        IManualMultiThreadingConfig& ref = *ptr;
+        this->parallelStatisticUpdateConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IManualMultiThreadingConfig& BoostingRuleLearner::Config::useParallelPrediction() {
+        std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+        IManualMultiThreadingConfig& ref = *ptr;
+        this->parallelPredictionConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
     ISizeStoppingCriterionConfig& BoostingRuleLearner::Config::useSizeStoppingCriterion() {
-        ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
+        std::unique_ptr<SizeStoppingCriterionConfig> ptr = std::make_unique<SizeStoppingCriterionConfig>();
+        ISizeStoppingCriterionConfig& ref = *ptr;
+        this->sizeStoppingCriterionConfigPtr_ = std::move(ptr);
         ref.setMaxRules(1000);
+        return ref;
+    }
+
+    ITimeStoppingCriterionConfig& BoostingRuleLearner::Config::useTimeStoppingCriterion() {
+        std::unique_ptr<TimeStoppingCriterionConfig> ptr = std::make_unique<TimeStoppingCriterionConfig>();
+        ITimeStoppingCriterionConfig& ref = *ptr;
+        this->timeStoppingCriterionConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IMeasureStoppingCriterionConfig& BoostingRuleLearner::Config::useMeasureStoppingCriterion() {
+        std::unique_ptr<MeasureStoppingCriterionConfig> ptr = std::make_unique<MeasureStoppingCriterionConfig>();
+        IMeasureStoppingCriterionConfig& ref = *ptr;
+        this->measureStoppingCriterionConfigPtr_ = std::move(ptr);
         return ref;
     }
 

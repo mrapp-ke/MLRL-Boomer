@@ -31,8 +31,6 @@ RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
 
 RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
 
-RULE_MODEL_ASSEMBLAGE_SEQUENTIAL = 'sequential'
-
 ARGUMENT_BEAM_WIDTH = 'beam_width'
 
 ARGUMENT_MIN_COVERAGE = 'min_coverage'
@@ -78,13 +76,9 @@ ARGUMENT_NUM_THREADS = 'num_threads'
 RULE_INDUCTION_VALUES: Dict[str, Set[str]] = {
     RULE_INDUCTION_TOP_DOWN_GREEDY: {ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT, ARGUMENT_MAX_CONDITIONS,
                                      ARGUMENT_MAX_HEAD_REFINEMENTS, ARGUMENT_RECALCULATE_PREDICTIONS},
-RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH: {ARGUMENT_BEAM_WIDTH, ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT,
-                                      ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
-                                      ARGUMENT_RECALCULATE_PREDICTIONS}
-}
-
-RULE_MODEL_ASSEMBLAGE_VALUES: Set[str] = {
-    RULE_MODEL_ASSEMBLAGE_SEQUENTIAL
+    RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH: {ARGUMENT_BEAM_WIDTH, ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT,
+                                          ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
+                                          ARGUMENT_RECALCULATE_PREDICTIONS}
 }
 
 LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {
@@ -123,10 +117,6 @@ PRUNING_VALUES: Set[str] = {
     PRUNING_IREP
 }
 
-POST_OPTIMIZATION_VALUES: Set[str] = {
-    NONE
-}
-
 PARALLEL_VALUES: Dict[str, Set[str]] = {
     str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
     str(BooleanOption.FALSE.value): {}
@@ -150,14 +140,6 @@ def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
     except ValueError:
         raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
                          + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
-
-
-def configure_rule_model_assemblage(config: RuleLearnerConfig, rule_model_assemblage: Optional[str]):
-    if rule_model_assemblage is not None:
-        value = parse_param('rule_model_assemblage', rule_model_assemblage, RULE_MODEL_ASSEMBLAGE_VALUES)
-
-        if value == RULE_MODEL_ASSEMBLAGE_SEQUENTIAL:
-            config.use_sequential_rule_model_assemblage()
 
 
 def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional[str]):
@@ -268,14 +250,6 @@ def configure_pruning(config: RuleLearnerConfig, pruning: Optional[str]):
             config.use_no_pruning()
         elif value == PRUNING_IREP:
             config.use_irep_pruning()
-
-
-def configure_post_optimization(config: RuleLearnerConfig, post_optimization: Optional[str]):
-    if post_optimization is not None:
-        value = parse_param('post_optimization', post_optimization, POST_OPTIMIZATION_VALUES)
-
-        if value == NONE:
-            config.use_no_post_optimization()
 
 
 def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_refinement: Optional[str]):

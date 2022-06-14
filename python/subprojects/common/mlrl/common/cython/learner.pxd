@@ -66,19 +66,61 @@ cdef extern from "common/learner.hpp" nogil:
 
         IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction()
 
+        void useNoFeatureBinning()
+
+        void useNoLabelSampling()
+
+        void useNoInstanceSampling()
+
+        void useNoFeatureSampling()
+
+        void useNoPartitionSampling()
+
+        void useNoPruning()
+
+        void useNoPostProcessor()
+
+        void useNoPostOptimization()
+
+        void useNoParallelRuleRefinement()
+
+        void useNoParallelStatisticUpdate()
+
+        void useNoParallelPrediction()
+
+        void useNoSizeStoppingCriterion()
+
+        void useNoTimeStoppingCriterion()
+
+        void useNoMeasureStoppingCriterion()
+
+
+    cdef cppclass IBeamSearchTopDownMixin"IRuleLearner::IBeamSearchTopDownMixin":
+
+        # Functions:
+
         IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction()
 
-        void useNoFeatureBinning()
+
+    cdef cppclass IFeatureBinningMixin"IRuleLearner::IFeatureBinningMixin":
+
+        # Functions:
 
         IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning()
 
         IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning()
 
-        void useNoLabelSampling()
+
+    cdef cppclass ILabelSamplingMixin"IRuleLearner::ILabelSamplingMixin":
+
+        # Functions:
 
         ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement()
 
-        void useNoInstanceSampling()
+
+    cdef cppclass IInstanceSamplingMixin"IRuleLearner::IInstanceSamplingMixin":
+
+        # Functions:
 
         IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling()
 
@@ -88,11 +130,16 @@ cdef extern from "common/learner.hpp" nogil:
 
         IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement()
 
-        void useNoFeatureSampling()
+    cdef cppclass IFeatureSamplingMixin"IRuleLearner::IFeatureSamplingMixin":
+
+        # Functions:
 
         IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement()
 
-        void useNoPartitionSampling()
+
+    cdef cppclass IPartitionSamplingMixin"IRuleLearner::IPartitionSamplingMixin":
+
+        # Functions:
 
         IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling()
 
@@ -100,37 +147,44 @@ cdef extern from "common/learner.hpp" nogil:
 
         IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
 
-        void useNoPruning()
+
+    cdef cppclass IPruningMixin"IRuleLearner::IPruningMixin":
+
+        # Functions:
 
         void useIrepPruning()
 
-        void useNoPostProcessor()
 
-        void useNoPostOptimization()
+    cdef cppclass IMultiThreadingMixin"IRuleLearner::IMultiThreadingMixin":
 
-        void useNoParallelRuleRefinement()
+        # Functions:
 
         IManualMultiThreadingConfig& useParallelRuleRefinement()
 
-        void useNoParallelStatisticUpdate()
-
         IManualMultiThreadingConfig& useParallelStatisticUpdate()
-
-        void useNoParallelPrediction()
 
         IManualMultiThreadingConfig& useParallelPrediction()
 
-        void useNoSizeStoppingCriterion()
 
-        ISizeStoppingCriterionConfig& useSizeStoppingCriterion();
+    cdef cppclass ISizeStoppingCriterionMixin"IRuleLearner::ISizeStoppingCriterionMixin":
 
-        void useNoTimeStoppingCriterion()
+        # Functions:
 
-        ITimeStoppingCriterionConfig& useTimeStoppingCriterion();
+        ISizeStoppingCriterionConfig& useSizeStoppingCriterion()
 
-        void useNoMeasureStoppingCriterion()
 
-        IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion();
+    cdef cppclass ITimeStoppingCriterionMixin"IRuleLearner::ITimeStoppingCriterionMixin":
+
+        # Functions:
+
+        ITimeStoppingCriterionConfig& useTimeStoppingCriterion()
+
+
+    cdef cppclass IMeasureStoppingCriterionMixin"IRuleLearner::IMeasureStoppingCriterionMixin":
+
+        # Functions:
+
+        IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion()
 
 
     cdef cppclass IRuleLearner:
