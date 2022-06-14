@@ -84,15 +84,9 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoParallelRuleRefinement()
 
-        IManualMultiThreadingConfig& useParallelRuleRefinement()
-
         void useNoParallelStatisticUpdate()
 
-        IManualMultiThreadingConfig& useParallelStatisticUpdate()
-
         void useNoParallelPrediction()
-
-        IManualMultiThreadingConfig& useParallelPrediction()
 
         void useNoSizeStoppingCriterion()
 
@@ -165,6 +159,17 @@ cdef extern from "common/learner.hpp" nogil:
         # Functions:
 
         void useIrepPruning()
+
+
+    cdef cppclass IMultiThreadingMixin"IRuleLearner::IMultiThreadingMixin":
+
+        # Functions:
+
+        IManualMultiThreadingConfig& useParallelRuleRefinement()
+
+        IManualMultiThreadingConfig& useParallelStatisticUpdate()
+
+        IManualMultiThreadingConfig& useParallelPrediction()
 
 
     cdef cppclass IRuleLearner:

@@ -40,7 +40,8 @@ namespace boosting {
                             virtual public IRuleLearner::IInstanceSamplingMixin,
                             virtual public IRuleLearner::IFeatureSamplingMixin,
                             virtual public IRuleLearner::IPartitionSamplingMixin,
-                            virtual public IRuleLearner::IPruningMixin {
+                            virtual public IRuleLearner::IPruningMixin,
+                            virtual public IRuleLearner::IMultiThreadingMixin {
 
                 friend class BoostingRuleLearner;
 
@@ -466,6 +467,21 @@ namespace boosting {
                      * @see `IRuleLearner::IPruningMixin::useIrepPruning`
                      */
                     void useIrepPruning() override;
+
+                    /**
+                     * @see `IRuleLearner::IMultiThreadingMixin::useParallelRuleRefinement`
+                     */
+                    IManualMultiThreadingConfig& useParallelRuleRefinement() override;
+
+                    /**
+                     * @see `IRuleLearner::IMultiThreadingMixin::useParallelStatisticUpdate`
+                     */
+                    IManualMultiThreadingConfig& useParallelStatisticUpdate() override;
+
+                    /**
+                     * @see `IRuleLearner::IMultiThreadingMixin::useParallelPrediction`
+                     */
+                    IManualMultiThreadingConfig& useParallelPrediction() override;
 
                     /**
                      * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`
