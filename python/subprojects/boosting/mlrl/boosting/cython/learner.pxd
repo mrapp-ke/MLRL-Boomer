@@ -17,7 +17,7 @@ ctypedef void (*DspmvFunction)(char* uplo, int* n, double* alpha, double* ap, do
 ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* lda, int* ipiv, double* b, int* ldb, double* work, int* lwork, int* info)
 
 
-cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
+cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
 
     cdef cppclass IBoomerConfig"boosting::IBoomer::IConfig"(IRuleLearnerConfig,
                                                             IBeamSearchTopDownMixin,
