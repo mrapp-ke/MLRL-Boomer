@@ -1,5 +1,6 @@
 #include "common/sampling/feature_sampling_no.hpp"
 #include "common/indices/index_vector_complete.hpp"
+#include "feature_sampling_predefined.hpp"
 
 
 /**
@@ -23,6 +24,10 @@ class NoFeatureSampling final : public IFeatureSampling {
 
         const IIndexVector& sample(RNG& rng) override {
             return indexVector_;
+        }
+
+        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) override {
+            return std::make_unique<PredefinedFeatureSampling>(indexVector_);
         }
 
 };

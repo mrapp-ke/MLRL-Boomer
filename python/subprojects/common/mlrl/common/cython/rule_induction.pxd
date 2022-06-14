@@ -40,6 +40,10 @@ cdef extern from "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 
         uint32 getBeamWidth() const
 
+        IBeamSearchTopDownRuleInductionConfig& setResampleFeatures(bool resampleFeatures) except +
+
+        bool areFeaturesResampled() const
+
         IBeamSearchTopDownRuleInductionConfig& setMinCoverage(uint32 minCoverage) except +
 
         uint32 getMinCoverage() const

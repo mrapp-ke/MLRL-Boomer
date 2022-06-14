@@ -33,6 +33,8 @@ RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
 
 ARGUMENT_BEAM_WIDTH = 'beam_width'
 
+ARGUMENT_RESAMPLE_FEATURES = 'resample_features'
+
 ARGUMENT_MIN_COVERAGE = 'min_coverage'
 
 ARGUMENT_MIN_SUPPORT = 'min_support'
@@ -76,8 +78,8 @@ ARGUMENT_NUM_THREADS = 'num_threads'
 RULE_INDUCTION_VALUES: Dict[str, Set[str]] = {
     RULE_INDUCTION_TOP_DOWN_GREEDY: {ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT, ARGUMENT_MAX_CONDITIONS,
                                      ARGUMENT_MAX_HEAD_REFINEMENTS, ARGUMENT_RECALCULATE_PREDICTIONS},
-    RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH: {ARGUMENT_BEAM_WIDTH, ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT,
-                                          ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
+    RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH: {ARGUMENT_BEAM_WIDTH, ARGUMENT_RESAMPLE_FEATURES, ARGUMENT_MIN_COVERAGE,
+                                          ARGUMENT_MIN_SUPPORT, ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
                                           ARGUMENT_RECALCULATE_PREDICTIONS}
 }
 
@@ -157,6 +159,7 @@ def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional
         elif value == RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH:
             c = config.use_beam_search_top_down_rule_induction()
             c.set_beam_width(options.get_int(ARGUMENT_BEAM_WIDTH, c.get_beam_width()))
+            c.set_resample_features(options.get_bool(ARGUMENT_RESAMPLE_FEATURES, c.are_features_resampled()))
             c.set_min_coverage(options.get_int(ARGUMENT_MIN_COVERAGE, c.get_min_coverage()))
             c.set_min_support(options.get_float(ARGUMENT_MIN_SUPPORT, c.get_min_support()))
             c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
