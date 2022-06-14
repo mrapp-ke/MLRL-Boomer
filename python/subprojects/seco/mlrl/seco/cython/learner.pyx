@@ -1,6 +1,8 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
+    BeamSearchTopDownRuleInductionConfig
 from mlrl.seco.cython.heuristic cimport FMeasureConfig, MEstimateConfig
 from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfig, KlnLiftFunctionConfig
 from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig
@@ -19,6 +21,19 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
 
     cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
         return self.rule_learner_config_ptr.get()
+
+    def use_beam_search_top_down_rule_induction(self) -> BeamSearchTopDownRuleInductionConfig:
+        """
+        Configures the algorithm to use a top-down beam search for the induction of individual rules.
+
+        :return: A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of the algorithm for the
+                 induction of individual rules
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IBeamSearchTopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useBeamSearchTopDownRuleInduction()
+        cdef BeamSearchTopDownRuleInductionConfig config = BeamSearchTopDownRuleInductionConfig.__new__(BeamSearchTopDownRuleInductionConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_no_coverage_stopping_criterion(self):
         """

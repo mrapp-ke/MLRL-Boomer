@@ -171,14 +171,6 @@ IGreedyTopDownRuleInductionConfig& AbstractRuleLearner::Config::useGreedyTopDown
     return ref;
 }
 
-IBeamSearchTopDownRuleInductionConfig& AbstractRuleLearner::Config::useBeamSearchTopDownRuleInduction() {
-    std::unique_ptr<BeamSearchTopDownRuleInductionConfig> ptr =
-        std::make_unique<BeamSearchTopDownRuleInductionConfig>(parallelRuleRefinementConfigPtr_);
-    IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
-    ruleInductionConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoFeatureBinning() {
     featureBinningConfigPtr_ = std::make_unique<NoFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
 }

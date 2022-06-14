@@ -66,8 +66,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction()
 
-        IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction()
-
         void useNoFeatureBinning()
 
         IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning()
@@ -131,6 +129,13 @@ cdef extern from "common/learner.hpp" nogil:
         void useNoMeasureStoppingCriterion()
 
         IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion()
+
+
+    cdef cppclass IBeamSearchTopDownMixin"IRuleLearner::IBeamSearchTopDownMixin":
+
+        # Functions:
+
+        IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction()
 
 
     cdef cppclass IRuleLearner:

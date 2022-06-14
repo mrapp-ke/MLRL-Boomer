@@ -85,6 +85,14 @@ namespace boosting {
         return *probabilityPredictorConfigPtr_;
     }
 
+    IBeamSearchTopDownRuleInductionConfig& BoostingRuleLearner::Config::useBeamSearchTopDownRuleInduction() {
+        std::unique_ptr<BeamSearchTopDownRuleInductionConfig> ptr =
+            std::make_unique<BeamSearchTopDownRuleInductionConfig>(this->parallelRuleRefinementConfigPtr_);
+        IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
+        this->ruleInductionConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
     ISizeStoppingCriterionConfig& BoostingRuleLearner::Config::useSizeStoppingCriterion() {
         ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
         ref.setMaxRules(1000);

@@ -33,7 +33,8 @@ namespace boosting {
              * Defines an interface for all classes that allow to configure a rule learner that makes use of gradient
              * boosting.
              */
-            class IConfig : virtual public IRuleLearner::IConfig {
+            class IConfig : virtual public IRuleLearner::IConfig,
+                            virtual public IRuleLearner::IBeamSearchTopDownMixin {
 
                 friend class BoostingRuleLearner;
 
@@ -394,6 +395,11 @@ namespace boosting {
                 public:
 
                     Config();
+
+                    /**
+                     * @see `IRuleLearner::IBeamSearchTopDownMixin::useBeamSearchTopDownRuleInduction`
+                     */
+                    IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
 
                     /**
                      * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`
