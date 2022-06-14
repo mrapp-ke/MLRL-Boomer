@@ -8,7 +8,7 @@
     #pragma warning( disable : 4250 )
 #endif
 
-#include "boosting/learner_common.hpp"
+#include "boosting/learner.hpp"
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
