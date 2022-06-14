@@ -8,8 +8,6 @@ from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
 from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.common.cython.nominal_feature_mask cimport NominalFeatureMask
-from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartitionSamplingConfig, \
-    LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
 from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
 from mlrl.common.cython.stopping_criterion cimport SizeStoppingCriterionConfig, TimeStoppingCriterionConfig, \
@@ -112,48 +110,6 @@ cdef class RuleLearnerConfig:
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoPartitionSampling()
-
-    def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
-        """
-        Configures the rule learner to partition the available training examples into a training set and a holdout set
-        by randomly splitting the training examples into two mutually exclusive sets.
-
-        :return: A `RandomBiPartitionSamplingConfig` that allows further configuration of the method for partitioning
-                 the available training examples into a training set and a holdout set
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef IRandomBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useRandomBiPartitionSampling()
-        cdef RandomBiPartitionSamplingConfig config = RandomBiPartitionSamplingConfig.__new__(RandomBiPartitionSamplingConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_label_wise_stratified_bi_partition_sampling(self) -> LabelWiseStratifiedBiPartitionSamplingConfig:
-        """
-        Configures the rule learner to partition the available training examples into a training set and a holdout set
-        using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
-
-        :return: A `LabelWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
-                 partitioning the available training examples into a training and a holdout set
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef ILabelWiseStratifiedBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedBiPartitionSampling()
-        cdef LabelWiseStratifiedBiPartitionSamplingConfig config = LabelWiseStratifiedBiPartitionSamplingConfig.__new__(LabelWiseStratifiedBiPartitionSamplingConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_example_wise_stratified_bi_partition_sampling(self) -> ExampleWiseStratifiedBiPartitionSamplingConfig:
-        """
-        Configures the rule learner to partition the available training examples into a training set and a holdout set
-        using stratification, where distinct label vectors are treated as individual classes
-
-        :return: An `ExampleWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
-                 partitioning the available training examples into a training and a holdout set
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef IExampleWiseStratifiedBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedBiPartitionSampling()
-        cdef ExampleWiseStratifiedBiPartitionSamplingConfig config = ExampleWiseStratifiedBiPartitionSamplingConfig.__new__(ExampleWiseStratifiedBiPartitionSamplingConfig)
-        config.config_ptr = config_ptr
-        return config
 
     def use_no_pruning(self):
         """

@@ -38,7 +38,8 @@ namespace boosting {
                             virtual public IRuleLearner::IFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingMixin,
                             virtual public IRuleLearner::IInstanceSamplingMixin,
-                            virtual public IRuleLearner::IFeatureSamplingMixin {
+                            virtual public IRuleLearner::IFeatureSamplingMixin,
+                            virtual public IRuleLearner::IPartitionSamplingMixin {
 
                 friend class BoostingRuleLearner;
 
@@ -444,6 +445,21 @@ namespace boosting {
                      * @see `IRuleLearner::IFeatureSamplingMixin::useFeatureSamplingWithoutReplacement`
                      */
                     IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
+
+                    /**
+                     * @see `IRuleLearner::IPartitionSamplingMixin::useRandomBiPartitionSampling`
+                     */
+                    IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() override;
+
+                    /**
+                     * @see `IRuleLearner::IPartitionSamplingMixin::useLabelWiseStratifiedBiPartitionSampling`
+                     */
+                    ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() override;
+
+                    /**
+                     * @see `IRuleLearner::IPartitionSamplingMixin::useExampleWiseStratifiedBiPartitionSampling`
+                     */
+                    IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
 
                     /**
                      * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`
