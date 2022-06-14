@@ -163,17 +163,19 @@ class Beam final {
          * @param beamPtr           A reference to an unique pointer of type `Beam` that represents the beam to be
          *                          updated
          * @param beamWidth         The number of rules the new beam should keep track of
-         * @param featureIndices    A reference to an object of type `IIndexVector` that provides access to the indices
-         *                          of the features that should be considered
+         * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
+         *                          the features that may be used by potential refinements
          * @param keepHeads         True, if further refinements should predict for the same labels as before, false
          *                          otherwise
          * @param minCoverage       The number of training examples that must be covered by potential refinements
          * @param numThreads        The number of CPU threads to be used to search for potential refinements of a rule
          *                          in parallel
+         * @param rng               A reference to an object of type `RNG` that implements the random number generator
+         *                          to be used
          * @return                  True, if any refinements have been found, false otherwise
          */
-        static bool refine(std::unique_ptr<Beam>& beamPtr, uint32 beamWidth, const IIndexVector& featureIndices,
-                           bool keepHeads, uint32 minCoverage, uint32 numThreads) {
+        static bool refine(std::unique_ptr<Beam>& beamPtr, uint32 beamWidth, IFeatureSampling& featureSampling,
+                           bool keepHeads, uint32 minCoverage, uint32 numThreads, RNG& rng) {
             std::vector<std::reference_wrapper<BeamEntry>>& order = beamPtr->order_;
             std::unique_ptr<Beam> newBeamPtr = std::make_unique<Beam>(beamWidth);
             BeamEntry* newEntries = newBeamPtr->entries_;
@@ -190,6 +192,9 @@ class Beam final {
 
                 // Check if existing beam entry can be refined...
                 if (entry.labelIndices) {
+                    // Sample features...
+                    const IIndexVector& featureIndices = featureSampling.sample(rng);
+
                     // Search for refinements of the existing beam entry...
                     FixedRefinementComparator refinementComparator(beamWidth, minQualityScore);
                     foundRefinement = findRefinement(refinementComparator, *entry.thresholdsSubsetPtr, featureIndices,
@@ -345,12 +350,13 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
                     searchDepth++;
                     keepHeads = maxHeadRefinements_ > 0 && searchDepth >= maxHeadRefinements_;
 
-                    // Sample features...
-                    const IIndexVector& currentFeatureIndices = featureSampling.sample(rng);
+                    // Create a `IFeatureSampling` to be used for refining the current beam...
+                    std::unique_ptr<IFeatureSampling> beamSearchFeatureSamplingPtr =
+                        featureSampling.createBeamSearchFeatureSampling(rng);
 
                     // Search for the best refinements within the current beam...
-                    foundRefinement = beamPtr->refine(beamPtr, beamWidth_, currentFeatureIndices, keepHeads,
-                                                      minCoverage_, numThreads_);
+                    foundRefinement = beamPtr->refine(beamPtr, beamWidth_, *beamSearchFeatureSamplingPtr, keepHeads,
+                                                      minCoverage_, numThreads_, rng);
                 }
 
                 BeamEntry& entry = beamPtr->getBestEntry();
