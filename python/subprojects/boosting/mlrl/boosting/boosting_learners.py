@@ -5,8 +5,8 @@ Provides scikit-learn implementations of boosting algorithms.
 """
 from typing import Dict, Set, Optional
 
-from mlrl.boosting.cython.learner_boomer import Boomer as BoostingRuleLearnerWrapper, \
-    BoomerConfig as BoostingRuleLearnerConfig
+from mlrl.boosting.cython.learner import BoostingRuleLearnerConfig
+from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
 from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLearnerWrapper
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption
@@ -151,6 +151,30 @@ PARALLEL_VALUES: Dict[str, Set[str]] = {
 }
 
 
+def configure_post_processor(config: BoostingRuleLearnerConfig, shrinkage: Optional[float]):
+    if shrinkage is not None:
+        if shrinkage == 1:
+            config.use_no_post_processor()
+        else:
+            config.use_constant_shrinkage_post_processor().set_shrinkage(shrinkage)
+
+
+def configure_l1_regularization(config: BoostingRuleLearnerConfig, l1_regularization_weight: Optional[float]):
+    if l1_regularization_weight is not None:
+        if l1_regularization_weight == 0:
+            config.use_no_l1_regularization()
+        else:
+            config.use_l1_regularization().set_regularization_weight(l1_regularization_weight)
+
+
+def configure_l2_regularization(config: BoostingRuleLearnerConfig, l2_regularization_weight: Optional[float]):
+    if l2_regularization_weight is not None:
+        if l2_regularization_weight == 0:
+            config.use_no_l2_regularization()
+        else:
+            config.use_l2_regularization().set_regularization_weight(l2_regularization_weight)
+
+
 class Boomer(MLRuleLearner, ClassifierMixin):
     """
     A scikit-learn implementation of "BOOMER", an algorithm for learning gradient boosted multi-label classification
@@ -286,7 +310,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         self.parallel_prediction = parallel_prediction
 
     def _create_learner(self) -> RuleLearnerWrapper:
-        config = BoostingRuleLearnerConfig()
+        config = BoomerConfig()
         self.__configure_default_rule(config)
         configure_rule_induction(config, get_string(self.rule_induction))
         self.__configure_feature_binning(config)
@@ -301,18 +325,18 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
         self.__configure_measure_stopping_criterion(config)
-        self.__configure_post_processor(config)
+        configure_post_processor(config, shrinkage=get_float(self.shrinkage))
         self.__configure_head_type(config)
         self.__configure_statistics(config)
-        self.__configure_l1_regularization(config)
-        self.__configure_l2_regularization(config)
+        configure_l1_regularization(config, l1_regularization_weight=get_float(self.l1_regularization_weight))
+        configure_l2_regularization(config, l2_regularization_weight=get_float(self.l2_regularization_weight))
         self.__configure_loss(config)
         self.__configure_label_binning(config)
         self.__configure_classification_predictor(config)
         self.__configure_probability_predictor(config)
-        return BoostingRuleLearnerWrapper(config)
+        return BoomerWrapper(config)
 
-    def __configure_default_rule(self, config: BoostingRuleLearnerConfig):
+    def __configure_default_rule(self, config: BoomerConfig):
         default_rule = get_string(self.default_rule)
 
         if default_rule is not None:
@@ -325,7 +349,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             else:
                 config.use_no_default_rule()
 
-    def __configure_feature_binning(self, config: BoostingRuleLearnerConfig):
+    def __configure_feature_binning(self, config: BoomerConfig):
         feature_binning = get_string(self.feature_binning)
 
         if feature_binning is not None:
@@ -334,7 +358,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             else:
                 configure_feature_binning(config, feature_binning)
 
-    def __configure_parallel_rule_refinement(self, config: BoostingRuleLearnerConfig):
+    def __configure_parallel_rule_refinement(self, config: BoomerConfig):
         parallel_rule_refinement = get_string(self.parallel_rule_refinement)
 
         if parallel_rule_refinement is not None:
@@ -343,7 +367,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             else:
                 configure_parallel_rule_refinement(config, parallel_rule_refinement)
 
-    def __configure_parallel_statistic_update(self, config: BoostingRuleLearnerConfig):
+    def __configure_parallel_statistic_update(self, config: BoomerConfig):
         parallel_statistic_update = get_string(self.parallel_statistic_update)
 
         if parallel_statistic_update is not None:
@@ -386,16 +410,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         elif value == AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
             return AggregationFunction.ARITHMETIC_MEAN
 
-    def __configure_post_processor(self, config: BoostingRuleLearnerConfig):
-        shrinkage = get_float(self.shrinkage)
-
-        if shrinkage is not None:
-            if shrinkage == 1:
-                config.use_no_post_processor()
-            else:
-                config.use_constant_shrinkage_post_processor().set_shrinkage(shrinkage)
-
-    def __configure_head_type(self, config: BoostingRuleLearnerConfig):
+    def __configure_head_type(self, config: BoomerConfig):
         head_type = get_string(self.head_type)
 
         if head_type is not None:
@@ -417,7 +432,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             elif value == HEAD_TYPE_COMPLETE:
                 config.use_complete_heads()
 
-    def __configure_statistics(self, config: BoostingRuleLearnerConfig):
+    def __configure_statistics(self, config: BoomerConfig):
         statistic_format = get_string(self.statistic_format)
 
         if statistic_format is not None:
@@ -430,25 +445,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             elif value == STATISTIC_FORMAT_SPARSE:
                 config.use_sparse_statistics()
 
-    def __configure_l1_regularization(self, config: BoostingRuleLearnerConfig):
-        l1_regularization_weight = get_float(self.l1_regularization_weight)
-
-        if l1_regularization_weight is not None:
-            if l1_regularization_weight == 0:
-                config.use_no_l1_regularization()
-            else:
-                config.use_l1_regularization().set_regularization_weight(l1_regularization_weight)
-
-    def __configure_l2_regularization(self, config: BoostingRuleLearnerConfig):
-        l2_regularization_weight = get_float(self.l2_regularization_weight)
-
-        if l2_regularization_weight is not None:
-            if l2_regularization_weight == 0:
-                config.use_no_l2_regularization()
-            else:
-                config.use_l2_regularization().set_regularization_weight(l2_regularization_weight)
-
-    def __configure_loss(self, config: BoostingRuleLearnerConfig):
+    def __configure_loss(self, config: BoomerConfig):
         loss = get_string(self.loss)
 
         if loss is not None:
@@ -463,7 +460,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             elif value == LOSS_LOGISTIC_EXAMPLE_WISE:
                 config.use_example_wise_logistic_loss()
 
-    def __configure_label_binning(self, config: BoostingRuleLearnerConfig):
+    def __configure_label_binning(self, config: BoomerConfig):
         label_binning = get_string(self.label_binning)
 
         if label_binning is not None:
@@ -479,7 +476,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
                 c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
 
-    def __configure_classification_predictor(self, config: BoostingRuleLearnerConfig):
+    def __configure_classification_predictor(self, config: BoomerConfig):
         classification_predictor = get_string(self.classification_predictor)
 
         if classification_predictor is not None:
@@ -492,7 +489,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
             elif value == CLASSIFICATION_PREDICTOR_EXAMPLE_WISE:
                 config.use_example_wise_classification_predictor()
 
-    def __configure_probability_predictor(self, config: BoostingRuleLearnerConfig):
+    def __configure_probability_predictor(self, config: BoomerConfig):
         probability_predictor = get_string(self.probability_predictor)
 
         if probability_predictor is not None:
