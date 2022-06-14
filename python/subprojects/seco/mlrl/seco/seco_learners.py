@@ -9,9 +9,8 @@ from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_induction, \
     configure_label_sampling, configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, \
-    configure_pruning, configure_post_optimization, configure_parallel_rule_refinement, \
-    configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
-    configure_time_stopping_criterion
+    configure_pruning, configure_parallel_rule_refinement, configure_parallel_statistic_update, \
+    configure_parallel_prediction, configure_size_stopping_criterion, configure_time_stopping_criterion
 from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int
 from mlrl.seco.cython.learner import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
@@ -93,7 +92,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                  feature_sampling: Optional[str] = None,
                  holdout: Optional[str] = None,
                  pruning: Optional[str] = None,
-                 post_optimization: Optional[str] = None,
                  parallel_rule_refinement: Optional[str] = None,
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
@@ -134,8 +132,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                                             documentation
         :param pruning:                     The strategy that should be used to prune individual rules. Must be 'irep'
                                             or 'none', if no pruning should be used
-        :param post_optimization:           The strategy that should be used to optimize a model globally once it has
-                                            been learned. Must be `none`, if no post-optimization should be used
         :param parallel_rule_refinement:    Whether potential refinements of rules should be searched for in parallel or
                                             not. Must be 'true', 'false' or 'auto', if the most suitable strategy should
                                             be chosen automatically depending on the loss function. For additional
@@ -161,7 +157,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         self.feature_sampling = feature_sampling
         self.holdout = holdout
         self.pruning = pruning
-        self.post_optimization = post_optimization
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
@@ -174,7 +169,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         configure_feature_sampling(config, get_string(self.feature_sampling))
         configure_partition_sampling(config, get_string(self.holdout))
         configure_pruning(config, get_string(self.pruning))
-        configure_post_optimization(config, get_string(self.post_optimization))
         configure_parallel_rule_refinement(config, get_string(self.parallel_rule_refinement))
         configure_parallel_statistic_update(config, get_string(self.parallel_statistic_update))
         configure_parallel_prediction(config, get_string(self.parallel_prediction))

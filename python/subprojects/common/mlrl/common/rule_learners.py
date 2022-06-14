@@ -76,9 +76,9 @@ ARGUMENT_NUM_THREADS = 'num_threads'
 RULE_INDUCTION_VALUES: Dict[str, Set[str]] = {
     RULE_INDUCTION_TOP_DOWN_GREEDY: {ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT, ARGUMENT_MAX_CONDITIONS,
                                      ARGUMENT_MAX_HEAD_REFINEMENTS, ARGUMENT_RECALCULATE_PREDICTIONS},
-RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH: {ARGUMENT_BEAM_WIDTH, ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT,
-                                      ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
-                                      ARGUMENT_RECALCULATE_PREDICTIONS}
+    RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH: {ARGUMENT_BEAM_WIDTH, ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT,
+                                          ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
+                                          ARGUMENT_RECALCULATE_PREDICTIONS}
 }
 
 LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {
@@ -115,10 +115,6 @@ FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
 PRUNING_VALUES: Set[str] = {
     NONE,
     PRUNING_IREP
-}
-
-POST_OPTIMIZATION_VALUES: Set[str] = {
-    NONE
 }
 
 PARALLEL_VALUES: Dict[str, Set[str]] = {
@@ -254,14 +250,6 @@ def configure_pruning(config: RuleLearnerConfig, pruning: Optional[str]):
             config.use_no_pruning()
         elif value == PRUNING_IREP:
             config.use_irep_pruning()
-
-
-def configure_post_optimization(config: RuleLearnerConfig, post_optimization: Optional[str]):
-    if post_optimization is not None:
-        value = parse_param('post_optimization', post_optimization, POST_OPTIMIZATION_VALUES)
-
-        if value == NONE:
-            config.use_no_post_optimization()
 
 
 def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_refinement: Optional[str]):
