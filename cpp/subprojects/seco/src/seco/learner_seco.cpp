@@ -22,9 +22,11 @@ namespace seco {
         this->useIrepPruning();
         this->useParallelRuleRefinement();
         this->useCoverageStoppingCriterion();
+        this->useSingleLabelHeads();
         this->useFMeasureHeuristic();
         this->useAccuracyPruningHeuristic();
         this->usePeakLiftFunction();
+        this->useLabelWiseClassificationPredictor();
     }
 
     const CoverageStoppingCriterionConfig* SeCoRuleLearner::Config::getCoverageStoppingCriterionConfig() const {
