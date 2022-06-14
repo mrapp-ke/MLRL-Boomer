@@ -290,7 +290,7 @@ namespace boosting {
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
                     /**
-                     * @see `IRuleLearner::ITimeStoppingCriterionMixin::useTimeStoppingCriterion
+                     * @see `IRuleLearner::ITimeStoppingCriterionMixin::useTimeStoppingCriterion`
                      */
                     ITimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
 
