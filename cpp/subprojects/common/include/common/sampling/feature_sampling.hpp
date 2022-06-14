@@ -28,7 +28,7 @@ class IFeatureSampling {
         virtual const IIndexVector& sample(RNG& rng) = 0;
 
         /**
-         * Creates and returns a new object of type `IFeatureSampling` that suited for use during a beam search.
+         * Creates and returns a new object of type `IFeatureSampling` that is suited for use in a beam search.
          *
          * @param rng   A reference to an object of type `RNG`, implementing the random number generator be used
          * @return An unique pointer to an object of type `IFeatureSampling` that has been created
