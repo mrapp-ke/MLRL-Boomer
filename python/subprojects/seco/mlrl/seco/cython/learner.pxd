@@ -1,6 +1,6 @@
 from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IRuleLearnerConfig, RuleLearnerConfig, \
     IBeamSearchTopDownMixin, IFeatureBinningMixin, ILabelSamplingMixin, IInstanceSamplingMixin, IFeatureSamplingMixin, \
-    IPartitionSamplingMixin
+    IPartitionSamplingMixin, IPruningMixin
 from mlrl.seco.cython.heuristic cimport IFMeasureConfig, IMEstimateConfig
 from mlrl.seco.cython.lift_function cimport IPeakLiftFunctionConfig, IKlnLiftFunctionConfig
 from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfig
@@ -16,7 +16,8 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
                                                                           ILabelSamplingMixin,
                                                                           IInstanceSamplingMixin,
                                                                           IFeatureSamplingMixin,
-                                                                          IPartitionSamplingMixin):
+                                                                          IPartitionSamplingMixin,
+                                                                          IPruningMixin):
 
         # Functions:
 

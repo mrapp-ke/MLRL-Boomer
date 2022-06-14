@@ -36,7 +36,8 @@ namespace seco {
                             virtual public IRuleLearner::ILabelSamplingMixin,
                             virtual public IRuleLearner::IInstanceSamplingMixin,
                             virtual public IRuleLearner::IFeatureSamplingMixin,
-                            virtual public IRuleLearner::IPartitionSamplingMixin {
+                            virtual public IRuleLearner::IPartitionSamplingMixin,
+                            virtual public IRuleLearner::IPruningMixin {
 
                 friend class SeCoRuleLearner;
 
@@ -349,6 +350,11 @@ namespace seco {
                      * @see `IRuleLearner::IPartitionSamplingMixin::useExampleWiseStratifiedBiPartitionSampling`
                      */
                     IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
+
+                    /**
+                     * @see `IRuleLearner::IPruningMixin::useIrepPruning`
+                     */
+                    void useIrepPruning() override;
 
                     /**
                      * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`

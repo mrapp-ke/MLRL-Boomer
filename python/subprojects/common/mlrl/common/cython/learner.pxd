@@ -78,8 +78,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoPruning()
 
-        void useIrepPruning()
-
         void useNoPostProcessor()
 
         void useNoPostOptimization()
@@ -160,6 +158,13 @@ cdef extern from "common/learner.hpp" nogil:
         ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling()
 
         IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
+
+
+    cdef cppclass IPruningMixin"IRuleLearner::IPruningMixin":
+
+        # Functions:
+
+        void useIrepPruning()
 
 
     cdef cppclass IRuleLearner:
