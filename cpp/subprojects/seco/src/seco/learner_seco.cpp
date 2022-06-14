@@ -1,4 +1,4 @@
-#include "seco/learner.hpp"
+#include "seco/learner_seco.hpp"
 #include "seco/heuristics/heuristic_accuracy.hpp"
 #include "seco/heuristics/heuristic_laplace.hpp"
 #include "seco/heuristics/heuristic_precision.hpp"

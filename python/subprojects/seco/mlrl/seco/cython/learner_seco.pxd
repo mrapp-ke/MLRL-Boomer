@@ -9,7 +9,7 @@ from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfi
 from libcpp.memory cimport unique_ptr
 
 
-cdef extern from "seco/learner.hpp" namespace "seco" nogil:
+cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
 
     cdef cppclass ISeCoRuleLearnerConfig"seco::ISeCoRuleLearner::IConfig"(IRuleLearnerConfig,
                                                                           IBeamSearchTopDownMixin,

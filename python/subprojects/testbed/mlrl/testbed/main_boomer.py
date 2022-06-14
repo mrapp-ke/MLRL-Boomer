@@ -12,6 +12,7 @@ from mlrl.testbed.args import add_rule_learner_arguments, add_max_rules_argument
     add_label_sampling_argument, add_instance_sampling_argument, add_feature_sampling_argument, \
     add_partition_sampling_argument, add_pruning_argument, add_rule_induction_argument, \
     add_parallel_prediction_argument, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE
+from mlrl.testbed.args_boosting import add_shrinkage_argument, add_regularization_arguments
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
 PARAM_STATISTIC_FORMAT = '--statistic-format'
@@ -26,15 +27,9 @@ PARAM_LABEL_BINNING = '--label-binning'
 
 PARAM_LOSS = '--loss'
 
-PARAM_SHRINKAGE = '--shrinkage'
-
 PARAM_CLASSIFICATION_PREDICTOR = '--classification-predictor'
 
 PARAM_PROBABILITY_PREDICTOR = '--probability-predictor'
-
-PARAM_L1_REGULARIZATION_WEIGHT = '--l1-regularization-weight'
-
-PARAM_L2_REGULARIZATION_WEIGHT = '--l2-regularization-weight'
 
 
 class BoomerRunnable(RuleLearnerRunnable):
@@ -83,6 +78,8 @@ def __add_arguments(parser: ArgumentParser):
     add_pruning_argument(parser)
     add_rule_induction_argument(parser)
     add_parallel_prediction_argument(parser)
+    add_shrinkage_argument(parser)
+    add_regularization_arguments(parser)
     parser.add_argument(PARAM_STATISTIC_FORMAT, type=str,
                         help='The format to be used for the representation of gradients and Hessians. Must be one of '
                              + format_string_set(STATISTIC_FORMAT_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
@@ -106,8 +103,6 @@ def __add_arguments(parser: ArgumentParser):
                              + 'of ' + format_dict_keys(LABEL_BINNING_VALUES) + '. If set to "' + AUTOMATIC + '", the '
                              + 'most suitable strategy is chosen automatically based on the parameters ' + PARAM_LOSS
                              + ' and ' + PARAM_HEAD_TYPE + '. For additional options refer to the documentation.')
-    parser.add_argument(PARAM_SHRINKAGE, type=float,
-                        help='The shrinkage parameter, a.k.a. the learning rate, to be used. Must be in (0, 1].')
     parser.add_argument(PARAM_LOSS, type=str,
                         help='The name of the loss function to be minimized during training. Must be one of '
                              + format_string_set(LOSS_VALUES) + '.')
@@ -121,10 +116,6 @@ def __add_arguments(parser: ArgumentParser):
                              + format_string_set(PROBABILITY_PREDICTOR_VALUES) + '. If set to "' + AUTOMATIC + '", the '
                              + 'most suitable strategy is chosen automatically based on the parameter ' + PARAM_LOSS
                              + '.')
-    parser.add_argument(PARAM_L1_REGULARIZATION_WEIGHT, type=float,
-                        help='The weight of the L1 regularization. Must be at least 0.')
-    parser.add_argument(PARAM_L2_REGULARIZATION_WEIGHT, type=float,
-                        help='The weight of the L2 regularization. Must be at least 0.')
     parser.add_argument(PARAM_HEAD_TYPE, type=str,
                         help='The type of the rule heads that should be used. Must be one of '
                              + format_dict_keys(HEAD_TYPE_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
