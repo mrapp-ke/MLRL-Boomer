@@ -51,12 +51,6 @@ namespace seco {
         return *classificationPredictorConfigPtr_;
     }
 
-    ISizeStoppingCriterionConfig& SeCoRuleLearner::Config::useSizeStoppingCriterion() {
-        ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
-        ref.setMaxRules(500);
-        return ref;
-    }
-
     IGreedyTopDownRuleInductionConfig& SeCoRuleLearner::Config::useGreedyTopDownRuleInduction() {
         IGreedyTopDownRuleInductionConfig& config = AbstractRuleLearner::Config::useGreedyTopDownRuleInduction();
         config.setRecalculatePredictions(false);
@@ -69,6 +63,28 @@ namespace seco {
         IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
         this->ruleInductionConfigPtr_ = std::move(ptr);
         ref.setRecalculatePredictions(false);
+        return ref;
+    }
+
+    IEqualWidthFeatureBinningConfig& SeCoRuleLearner::Config::useEqualWidthFeatureBinning() {
+        std::unique_ptr<EqualWidthFeatureBinningConfig> ptr =
+            std::make_unique<EqualWidthFeatureBinningConfig>(this->parallelStatisticUpdateConfigPtr_);
+        IEqualWidthFeatureBinningConfig& ref = *ptr;
+        this->featureBinningConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IEqualFrequencyFeatureBinningConfig& SeCoRuleLearner::Config::useEqualFrequencyFeatureBinning() {
+        std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr =
+            std::make_unique<EqualFrequencyFeatureBinningConfig>(this->parallelStatisticUpdateConfigPtr_);
+        IEqualFrequencyFeatureBinningConfig& ref = *ptr;
+        this->featureBinningConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    ISizeStoppingCriterionConfig& SeCoRuleLearner::Config::useSizeStoppingCriterion() {
+        ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
+        ref.setMaxRules(500);
         return ref;
     }
 
