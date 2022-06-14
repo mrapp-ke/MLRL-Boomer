@@ -94,8 +94,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoMeasureStoppingCriterion()
 
-        IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion()
-
 
     cdef cppclass IBeamSearchTopDownMixin"IRuleLearner::IBeamSearchTopDownMixin":
 
@@ -180,6 +178,13 @@ cdef extern from "common/learner.hpp" nogil:
         # Functions:
 
         ITimeStoppingCriterionConfig& useTimeStoppingCriterion()
+
+
+    cdef cppclass IMeasureStoppingCriterionMixin"IRuleLearner::IMeasureStoppingCriterionMixin":
+
+        # Functions:
+
+        IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion()
 
 
     cdef cppclass IRuleLearner:

@@ -40,7 +40,8 @@ namespace seco {
                             virtual public IRuleLearner::IPruningMixin,
                             virtual public IRuleLearner::IMultiThreadingMixin,
                             virtual public IRuleLearner::ISizeStoppingCriterionMixin,
-                            virtual public IRuleLearner::ITimeStoppingCriterionMixin {
+                            virtual public IRuleLearner::ITimeStoppingCriterionMixin,
+                            virtual public IRuleLearner::IMeasureStoppingCriterionMixin {
 
                 friend class SeCoRuleLearner;
 
@@ -383,6 +384,11 @@ namespace seco {
                      * @see `IRuleLearner::ITimeStoppingCriterionMixin::useTimeStoppingCriterion
                      */
                     ITimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
+
+                    /**
+                     * @see `IRuleLearner::IMeasureStoppingCriterionMixin::useMeasureStoppingCriterion`
+                     */
+                    IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
 
                     void useNoCoverageStoppingCriterion() override;
 

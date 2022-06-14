@@ -226,13 +226,6 @@ void AbstractRuleLearner::Config::useNoMeasureStoppingCriterion() {
     measureStoppingCriterionConfigPtr_ = nullptr;
 }
 
-IMeasureStoppingCriterionConfig& AbstractRuleLearner::Config::useMeasureStoppingCriterion() {
-    std::unique_ptr<MeasureStoppingCriterionConfig> ptr = std::make_unique<MeasureStoppingCriterionConfig>();
-    IMeasureStoppingCriterionConfig& ref = *ptr;
-    measureStoppingCriterionConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 AbstractRuleLearner::AbstractRuleLearner(const IRuleLearner::IConfig& config)
     : config_(config) {
 
