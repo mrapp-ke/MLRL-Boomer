@@ -3,6 +3,8 @@
 """
 from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
     IEqualFrequencyFeatureBinningConfig, EqualFrequencyFeatureBinningConfig
+from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig, \
+    LabelSamplingWithoutReplacementConfig
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
     BeamSearchTopDownRuleInductionConfig
 from mlrl.seco.cython.heuristic cimport FMeasureConfig, MEstimateConfig
@@ -62,6 +64,20 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IEqualFrequencyFeatureBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualFrequencyFeatureBinning()
         cdef EqualFrequencyFeatureBinningConfig config = EqualFrequencyFeatureBinningConfig.__new__(EqualFrequencyFeatureBinningConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_label_sampling_without_replacement(self) -> LabelSamplingWithoutReplacementConfig:
+        """
+        Configures the rule learner to sample from the available labels with replacement whenever a new rule should be
+        learned.
+
+        :return: A `LabelSamplingWithoutReplacementConfig` that allows further configuration of the method for sampling
+                 labels
+        """
+        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef ILabelSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useLabelSamplingWithoutReplacement()
+        cdef LabelSamplingWithoutReplacementConfig config = LabelSamplingWithoutReplacementConfig.__new__(LabelSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
         return config
 
