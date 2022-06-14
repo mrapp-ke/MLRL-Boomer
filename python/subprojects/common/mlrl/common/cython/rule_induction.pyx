@@ -149,6 +149,27 @@ cdef class BeamSearchTopDownRuleInductionConfig:
         self.config_ptr.setBeamWidth(beam_width)
         return self
 
+    def are_features_resampled(self) -> bool:
+        """
+         Returns whether a new sample of the available features is created for each rule that is refined during the beam
+         search or not.
+
+        :return: True, if a new sample is created for each rule, false otherwise
+        """
+        return self.config_ptr.areFeaturesResampled()
+
+    def set_resample_features(self, resample_features: bool) -> BeamSearchTopDownRuleInductionConfig:
+        """
+        Sets whether a new sample of the available features should be created for each rule that is refined during the
+        beam search or not.
+
+        :param resample_features:   True, if a new sample should be created for each rule, false otherwise
+        :return:                    A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of the
+                                    algorithm for the induction of individual rules
+        """
+        self.config_ptr.setResampleFeatures(resample_features)
+        return self
+
     def get_min_coverage(self) -> int:
         """
         Returns the minimum number of training examples that must be covered by a rule.

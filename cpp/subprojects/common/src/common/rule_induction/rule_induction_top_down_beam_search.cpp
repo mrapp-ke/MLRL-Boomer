@@ -289,6 +289,8 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
         uint32 beamWidth_;
 
+        bool resampleFeatures_;
+
         uint32 minCoverage_;
 
         uint32 maxConditions_;
@@ -301,6 +303,8 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
         /**
          * @param beamWidth                 The width that should be used by the beam search. Must be at least 2
+         * @param resampleFeatures          True, if a new sample of the available features should be created for each
+         *                                  rule that is refined during the beam search, false otherwise
          * @param minCoverage               The minimum number of training examples that must be covered by a rule. Must
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
@@ -313,11 +317,12 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        BeamSearchTopDownRuleInduction(uint32 beamWidth, uint32 minCoverage, uint32 maxConditions,
-                                       uint32 maxHeadRefinements, bool recalculatePredictions, uint32 numThreads)
+        BeamSearchTopDownRuleInduction(uint32 beamWidth, bool resampleFeatures, uint32 minCoverage,
+                                       uint32 maxConditions, uint32 maxHeadRefinements, bool recalculatePredictions,
+                                       uint32 numThreads)
             : AbstractRuleInduction(recalculatePredictions),
-              beamWidth_(beamWidth), minCoverage_(minCoverage), maxConditions_(maxConditions),
-              maxHeadRefinements_(maxHeadRefinements), numThreads_(numThreads) {
+              beamWidth_(beamWidth), resampleFeatures_(resampleFeatures), minCoverage_(minCoverage),
+              maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements), numThreads_(numThreads) {
 
         }
 
@@ -381,6 +386,8 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 
         uint32 beamWidth_;
 
+        bool resampleFeatures_;
+
         uint32 minCoverage_;
 
         uint32 maxConditions_;
@@ -395,6 +402,8 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 
         /**
          * @param beamWidth                 The width that should be used by the beam search. Must be at least 2
+         * @param resampleFeatures          True, if a new sample of the available features should be created for each
+         *                                  rule that is refined during the beam search, false otherwise
          * @param minCoverage               The minimum number of training examples that must be covered by a rule. Must
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
@@ -407,18 +416,19 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        BeamSearchTopDownRuleInductionFactory(uint32 beamWidth, uint32 minCoverage, uint32 maxConditions,
-                                              uint32 maxHeadRefinements, bool recalculatePredictions, uint32 numThreads)
-            : beamWidth_(beamWidth), minCoverage_(minCoverage), maxConditions_(maxConditions),
-              maxHeadRefinements_(maxHeadRefinements), recalculatePredictions_(recalculatePredictions),
-              numThreads_(numThreads) {
+        BeamSearchTopDownRuleInductionFactory(uint32 beamWidth, bool resampleFeatures, uint32 minCoverage,
+                                              uint32 maxConditions, uint32 maxHeadRefinements,
+                                              bool recalculatePredictions, uint32 numThreads)
+            : beamWidth_(beamWidth), resampleFeatures_(resampleFeatures), minCoverage_(minCoverage),
+              maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
+              recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
 
         }
 
         std::unique_ptr<IRuleInduction> create() const override {
-            return std::make_unique<BeamSearchTopDownRuleInduction>(beamWidth_, minCoverage_, maxConditions_,
-                                                                    maxHeadRefinements_, recalculatePredictions_,
-                                                                    numThreads_);
+            return std::make_unique<BeamSearchTopDownRuleInduction>(beamWidth_, resampleFeatures_, minCoverage_,
+                                                                    maxConditions_, maxHeadRefinements_,
+                                                                    recalculatePredictions_, numThreads_);
         }
 
 };
@@ -426,8 +436,8 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 
 BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
         const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : beamWidth_(4), minCoverage_(1), minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1),
-      recalculatePredictions_(true), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
+    : beamWidth_(4), resampleFeatures_(false), minCoverage_(1), minSupport_(0.0f), maxConditions_(0),
+      maxHeadRefinements_(1), recalculatePredictions_(true), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
 }
 
@@ -438,6 +448,16 @@ uint32 BeamSearchTopDownRuleInductionConfig::getBeamWidth() const {
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setBeamWidth(uint32 beamWidth) {
     assertGreaterOrEqual<uint32>("beamWidth", beamWidth, 2);
     beamWidth_ = beamWidth;
+    return *this;
+}
+
+bool BeamSearchTopDownRuleInductionConfig::areFeaturesResampled() const {
+    return resampleFeatures_;
+}
+
+IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setResampleFeatures(
+        bool resampleFeatures) {
+    resampleFeatures_ = resampleFeatures;
     return *this;
 }
 
@@ -505,7 +525,7 @@ std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::cre
     }
 
     uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
-    return std::make_unique<BeamSearchTopDownRuleInductionFactory>(beamWidth_, minCoverage, maxConditions_,
-                                                                   maxHeadRefinements_, recalculatePredictions_,
-                                                                   numThreads);
+    return std::make_unique<BeamSearchTopDownRuleInductionFactory>(beamWidth_, resampleFeatures_, minCoverage,
+                                                                   maxConditions_, maxHeadRefinements_,
+                                                                   recalculatePredictions_, numThreads);
 }

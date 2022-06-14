@@ -35,6 +35,24 @@ class MLRLCOMMON_API IBeamSearchTopDownRuleInductionConfig {
         virtual IBeamSearchTopDownRuleInductionConfig& setBeamWidth(uint32 beamWidth) = 0;
 
         /**
+         * Returns whether a new sample of the available features is created for each rule that is refined during the
+         * beam search or not.
+         *
+         * @return True, if a new sample is created for each rule, false otherwise
+         */
+        virtual bool areFeaturesResampled() const = 0;
+
+        /**
+         * Sets whether a new sample of the available features should be created for each rule that is refined during
+         * the beam search or not.
+         *
+         * @param resampleFeatures  True, if a new sample should be created for each rule, false otherwise
+         * @return                  A reference to an object of type `IBeamSearchTopDownRuleInductionConfig` that allows
+         *                          further configuration of the algorithm for the induction of individual rules
+         */
+        virtual IBeamSearchTopDownRuleInductionConfig& setResampleFeatures(bool resampleFeatures) = 0;
+
+        /**
          * Returns the minimum number of training examples that must be covered by a rule.
          *
          * @return The minimum number of training examples that must be covered by a rule
@@ -140,6 +158,8 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
 
         uint32 beamWidth_;
 
+        bool resampleFeatures_;
+
         uint32 minCoverage_;
 
         float32 minSupport_;
@@ -164,6 +184,10 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
         uint32 getBeamWidth() const override;
 
         IBeamSearchTopDownRuleInductionConfig& setBeamWidth(uint32 beamWidth) override;
+
+        bool areFeaturesResampled() const override;
+
+        IBeamSearchTopDownRuleInductionConfig& setResampleFeatures(bool resampleFeatures) override;
 
         uint32 getMinCoverage() const override;
 
