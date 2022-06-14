@@ -288,15 +288,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoLabelSampling() = 0;
 
                 /**
-                 * Configures the rule learner to sample from the available labels with replacement whenever a new rule
-                 * should be learned.
-                 *
-                 * @return A reference to an object of type `ILabelSamplingWithoutReplacementConfig` that allows further
-                 *         configuration of the method for sampling labels
-                 */
-                virtual ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() = 0;
-
-                /**
                  * Configures the rule learner to not sample from the available training examples whenever a new rule
                  * should be learned.
                  */
@@ -547,6 +538,26 @@ class MLRLCOMMON_API IRuleLearner {
                  *         configuration of the method for the assignment of numerical feature values to bins
                  */
                 virtual IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() = 0;
+
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use label sampling.
+         */
+        class ILabelSamplingMixin {
+
+            public:
+
+                virtual ~ILabelSamplingMixin() { };
+
+                /**
+                 * Configures the rule learner to sample from the available labels with replacement whenever a new rule
+                 * should be learned.
+                 *
+                 * @return A reference to an object of type `ILabelSamplingWithoutReplacementConfig` that allows further
+                 *         configuration of the method for sampling labels
+                 */
+                virtual ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() = 0;
 
         };
 
@@ -900,8 +911,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoFeatureBinning() override;
 
                 void useNoLabelSampling() override;
-
-                ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
 
                 void useNoInstanceSampling() override;
 

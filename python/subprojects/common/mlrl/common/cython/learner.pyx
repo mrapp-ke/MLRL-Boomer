@@ -9,7 +9,6 @@ from mlrl.common.cython.instance_sampling cimport ExampleWiseStratifiedInstanceS
     LabelWiseStratifiedInstanceSamplingConfig, InstanceSamplingWithReplacementConfig, \
     InstanceSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
-from mlrl.common.cython.label_sampling cimport LabelSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_space_info cimport create_label_space_info
 from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.common.cython.nominal_feature_mask cimport NominalFeatureMask
@@ -94,20 +93,6 @@ cdef class RuleLearnerConfig:
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoLabelSampling()
-
-    def use_label_sampling_without_replacement(self) -> LabelSamplingWithoutReplacementConfig:
-        """
-        Configures the rule learner to sample from the available labels with replacement whenever a new rule should be
-        learned.
-
-        :return: A `LabelSamplingWithoutReplacementConfig` that allows further configuration of the method for sampling
-                 labels
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef ILabelSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useLabelSamplingWithoutReplacement()
-        cdef LabelSamplingWithoutReplacementConfig config = LabelSamplingWithoutReplacementConfig.__new__(LabelSamplingWithoutReplacementConfig)
-        config.config_ptr = config_ptr
-        return config
 
     def use_no_instance_sampling(self):
         """

@@ -179,14 +179,6 @@ void AbstractRuleLearner::Config::useNoLabelSampling() {
     labelSamplingConfigPtr_ = std::make_unique<NoLabelSamplingConfig>();
 }
 
-ILabelSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useLabelSamplingWithoutReplacement() {
-    std::unique_ptr<LabelSamplingWithoutReplacementConfig> ptr =
-        std::make_unique<LabelSamplingWithoutReplacementConfig>();
-    ILabelSamplingWithoutReplacementConfig& ref = *ptr;
-    labelSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoInstanceSampling() {
     instanceSamplingConfigPtr_ = std::make_unique<NoInstanceSamplingConfig>();
 }

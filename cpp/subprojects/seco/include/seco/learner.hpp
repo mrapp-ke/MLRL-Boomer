@@ -32,7 +32,8 @@ namespace seco {
              */
             class IConfig : virtual public IRuleLearner::IConfig,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
-                            virtual public IRuleLearner::IFeatureBinningMixin {
+                            virtual public IRuleLearner::IFeatureBinningMixin,
+                            virtual public IRuleLearner::ILabelSamplingMixin {
 
                 friend class SeCoRuleLearner;
 
@@ -300,6 +301,11 @@ namespace seco {
                      * @see `IRuleLearner::IFeatureBinningMixin::useEqualFrequencyFeatureBinning`
                      */
                     IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
+
+                    /**
+                     * @see `IRuleLearner::ILabelSamplingMixin::useLabelSamplingWithoutReplacement`
+                     */
+                    ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
 
                     /**
                      * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`

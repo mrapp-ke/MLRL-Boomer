@@ -70,8 +70,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoLabelSampling()
 
-        ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement()
-
         void useNoInstanceSampling()
 
         IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling()
@@ -141,6 +139,13 @@ cdef extern from "common/learner.hpp" nogil:
         IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning()
 
         IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning()
+
+
+    cdef cppclass ILabelSamplingMixin"IRuleLearner::ILabelSamplingMixin":
+
+        # Functions:
+
+        ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement()
 
 
     cdef cppclass IRuleLearner:
