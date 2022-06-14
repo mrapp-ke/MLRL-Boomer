@@ -44,7 +44,6 @@ class BoomerRunnable(RuleLearnerRunnable):
                       predicted_label_format=args.predicted_label_format,
                       statistic_format=args.statistic_format,
                       default_rule=args.default_rule,
-                      rule_model_assemblage=args.rule_model_assemblage,
                       rule_induction=args.rule_induction,
                       max_rules=args.max_rules,
                       time_limit=args.time_limit,

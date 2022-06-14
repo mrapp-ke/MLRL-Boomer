@@ -31,8 +31,6 @@ RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
 
 RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
 
-RULE_MODEL_ASSEMBLAGE_SEQUENTIAL = 'sequential'
-
 ARGUMENT_BEAM_WIDTH = 'beam_width'
 
 ARGUMENT_MIN_COVERAGE = 'min_coverage'
@@ -81,10 +79,6 @@ RULE_INDUCTION_VALUES: Dict[str, Set[str]] = {
 RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH: {ARGUMENT_BEAM_WIDTH, ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT,
                                       ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
                                       ARGUMENT_RECALCULATE_PREDICTIONS}
-}
-
-RULE_MODEL_ASSEMBLAGE_VALUES: Set[str] = {
-    RULE_MODEL_ASSEMBLAGE_SEQUENTIAL
 }
 
 LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {
@@ -150,14 +144,6 @@ def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
     except ValueError:
         raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
                          + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
-
-
-def configure_rule_model_assemblage(config: RuleLearnerConfig, rule_model_assemblage: Optional[str]):
-    if rule_model_assemblage is not None:
-        value = parse_param('rule_model_assemblage', rule_model_assemblage, RULE_MODEL_ASSEMBLAGE_VALUES)
-
-        if value == RULE_MODEL_ASSEMBLAGE_SEQUENTIAL:
-            config.use_sequential_rule_model_assemblage()
 
 
 def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional[str]):

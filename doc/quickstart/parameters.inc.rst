@@ -54,10 +54,6 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'true'`` A default rule that provides a default prediction for all examples is included as the first rule of a model.
   * ``'false'`` No default rule is used.
 
-* ``rule_model_assemblage`` (Default value = ``'sequential'``)
-
-  * ``'sequential'`` The rules in a model are learned sequentially, starting with a default rule.
-
 * ``rule_induction`` (Default value = ``'top-down-greedy'``)
 
   * ``'top-down-greedy'`` A greedy top-down search, where rules are successively refined by adding new conditions, is used for the induction of individual rules. The following options may be provided using the bracket notation:
