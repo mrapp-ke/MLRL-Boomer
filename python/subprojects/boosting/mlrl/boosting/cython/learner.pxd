@@ -19,18 +19,18 @@ ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* ld
 
 cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
-    cdef cppclass IBoostingRuleLearnerConfig"boosting::IBoostingRuleLearner::IConfig"(IRuleLearnerConfig,
-                                                                                      IBeamSearchTopDownMixin,
-                                                                                      IFeatureBinningMixin,
-                                                                                      ILabelSamplingMixin,
-                                                                                      IInstanceSamplingMixin,
-                                                                                      IFeatureSamplingMixin,
-                                                                                      IPartitionSamplingMixin,
-                                                                                      IPruningMixin,
-                                                                                      IMultiThreadingMixin,
-                                                                                      ISizeStoppingCriterionMixin,
-                                                                                      ITimeStoppingCriterionMixin,
-                                                                                      IMeasureStoppingCriterionMixin):
+    cdef cppclass IBoomerConfig"boosting::IBoomer::IConfig"(IRuleLearnerConfig,
+                                                            IBeamSearchTopDownMixin,
+                                                            IFeatureBinningMixin,
+                                                            ILabelSamplingMixin,
+                                                            IInstanceSamplingMixin,
+                                                            IFeatureSamplingMixin,
+                                                            IPartitionSamplingMixin,
+                                                            IPruningMixin,
+                                                            IMultiThreadingMixin,
+                                                            ISizeStoppingCriterionMixin,
+                                                            ITimeStoppingCriterionMixin,
+                                                            IMeasureStoppingCriterionMixin):
 
         # Functions:
 
@@ -97,27 +97,26 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useAutomaticProbabilityPredictor()
 
 
-    cdef cppclass IBoostingRuleLearner(IRuleLearner):
+    cdef cppclass IBoomer(IRuleLearner):
         pass
 
 
-    unique_ptr[IBoostingRuleLearnerConfig] createBoostingRuleLearnerConfig()
+    unique_ptr[IBoomerConfig] createBoomerConfig()
 
 
-    unique_ptr[IBoostingRuleLearner] createBoostingRuleLearner(unique_ptr[IBoostingRuleLearnerConfig] configPtr,
-                                                               DdotFunction ddotFunction, DspmvFunction dspmvFunction,
-                                                               DsysvFunction dsysvFunction)
+    unique_ptr[IBoomer] createBoomer(unique_ptr[IBoomerConfig] configPtr, DdotFunction ddotFunction,
+                                     DspmvFunction dspmvFunction, DsysvFunction dsysvFunction)
 
 
-cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
-
-    # Attributes:
-
-    cdef unique_ptr[IBoostingRuleLearnerConfig] rule_learner_config_ptr
-
-
-cdef class BoostingRuleLearner(RuleLearner):
+cdef class BoomerConfig(RuleLearnerConfig):
 
     # Attributes:
 
-    cdef unique_ptr[IBoostingRuleLearner] rule_learner_ptr
+    cdef unique_ptr[IBoomerConfig] rule_learner_config_ptr
+
+
+cdef class Boomer(RuleLearner):
+
+    # Attributes:
+
+    cdef unique_ptr[IBoomer] rule_learner_ptr

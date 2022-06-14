@@ -5,7 +5,8 @@ Provides scikit-learn implementations of boosting algorithms.
 """
 from typing import Dict, Set, Optional
 
-from mlrl.boosting.cython.learner import BoostingRuleLearner as BoostingRuleLearnerWrapper, BoostingRuleLearnerConfig
+from mlrl.boosting.cython.learner import Boomer as BoostingRuleLearnerWrapper, \
+    BoomerConfig as BoostingRuleLearnerConfig
 from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLearnerWrapper
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption
