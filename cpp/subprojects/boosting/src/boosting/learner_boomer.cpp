@@ -39,25 +39,25 @@ namespace boosting {
 
     IBeamSearchTopDownRuleInductionConfig& Boomer::Config::useBeamSearchTopDownRuleInduction() {
         std::unique_ptr<BeamSearchTopDownRuleInductionConfig> ptr =
-            std::make_unique<BeamSearchTopDownRuleInductionConfig>(this->parallelRuleRefinementConfigPtr_);
+            std::make_unique<BeamSearchTopDownRuleInductionConfig>(parallelRuleRefinementConfigPtr_);
         IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
-        this->ruleInductionConfigPtr_ = std::move(ptr);
+        ruleInductionConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     IEqualWidthFeatureBinningConfig& Boomer::Config::useEqualWidthFeatureBinning() {
         std::unique_ptr<EqualWidthFeatureBinningConfig> ptr =
-            std::make_unique<EqualWidthFeatureBinningConfig>(this->parallelStatisticUpdateConfigPtr_);
+            std::make_unique<EqualWidthFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
         IEqualWidthFeatureBinningConfig& ref = *ptr;
-        this->featureBinningConfigPtr_ = std::move(ptr);
+        featureBinningConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     IEqualFrequencyFeatureBinningConfig& Boomer::Config::useEqualFrequencyFeatureBinning() {
         std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr =
-            std::make_unique<EqualFrequencyFeatureBinningConfig>(this->parallelStatisticUpdateConfigPtr_);
+            std::make_unique<EqualFrequencyFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
         IEqualFrequencyFeatureBinningConfig& ref = *ptr;
-        this->featureBinningConfigPtr_ = std::move(ptr);
+        featureBinningConfigPtr_ = std::move(ptr);
         return ref;
     }
 
@@ -65,7 +65,7 @@ namespace boosting {
         std::unique_ptr<LabelSamplingWithoutReplacementConfig> ptr =
             std::make_unique<LabelSamplingWithoutReplacementConfig>();
         ILabelSamplingWithoutReplacementConfig& ref = *ptr;
-        this->labelSamplingConfigPtr_ = std::move(ptr);
+        labelSamplingConfigPtr_ = std::move(ptr);
         return ref;
     }
 
@@ -73,7 +73,7 @@ namespace boosting {
         std::unique_ptr<InstanceSamplingWithReplacementConfig> ptr =
             std::make_unique<InstanceSamplingWithReplacementConfig>();
         IInstanceSamplingWithReplacementConfig& ref = *ptr;
-        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        instanceSamplingConfigPtr_ = std::move(ptr);
         return ref;
     }
 
@@ -81,7 +81,7 @@ namespace boosting {
         std::unique_ptr<InstanceSamplingWithoutReplacementConfig> ptr =
             std::make_unique<InstanceSamplingWithoutReplacementConfig>();
         IInstanceSamplingWithoutReplacementConfig& ref = *ptr;
-        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        instanceSamplingConfigPtr_ = std::move(ptr);
         return ref;
     }
 
@@ -89,7 +89,7 @@ namespace boosting {
         std::unique_ptr<LabelWiseStratifiedInstanceSamplingConfig> ptr =
             std::make_unique<LabelWiseStratifiedInstanceSamplingConfig>();
         ILabelWiseStratifiedInstanceSamplingConfig& ref = *ptr;
-        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        instanceSamplingConfigPtr_ = std::move(ptr);
         return ref;
     }
 
@@ -97,7 +97,7 @@ namespace boosting {
         std::unique_ptr<ExampleWiseStratifiedInstanceSamplingConfig> ptr =
             std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
         IExampleWiseStratifiedInstanceSamplingConfig& ref = *ptr;
-        this->instanceSamplingConfigPtr_ = std::move(ptr);
+        instanceSamplingConfigPtr_ = std::move(ptr);
         return ref;
     }
 
@@ -105,14 +105,14 @@ namespace boosting {
         std::unique_ptr<FeatureSamplingWithoutReplacementConfig> ptr =
             std::make_unique<FeatureSamplingWithoutReplacementConfig>();
         IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
-        this->featureSamplingConfigPtr_ = std::move(ptr);
+        featureSamplingConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     IRandomBiPartitionSamplingConfig& Boomer::Config::useRandomBiPartitionSampling() {
         std::unique_ptr<RandomBiPartitionSamplingConfig> ptr = std::make_unique<RandomBiPartitionSamplingConfig>();
         IRandomBiPartitionSamplingConfig& ref = *ptr;
-        this->partitionSamplingConfigPtr_ = std::move(ptr);
+        partitionSamplingConfigPtr_ = std::move(ptr);
         return ref;
     }
 
@@ -120,7 +120,7 @@ namespace boosting {
         std::unique_ptr<LabelWiseStratifiedBiPartitionSamplingConfig> ptr =
             std::make_unique<LabelWiseStratifiedBiPartitionSamplingConfig>();
         ILabelWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
-        this->partitionSamplingConfigPtr_ = std::move(ptr);
+        partitionSamplingConfigPtr_ = std::move(ptr);
         return ref;
     }
 
@@ -128,39 +128,39 @@ namespace boosting {
         std::unique_ptr<ExampleWiseStratifiedBiPartitionSamplingConfig> ptr =
             std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
         IExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
-        this->partitionSamplingConfigPtr_ = std::move(ptr);
+        partitionSamplingConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     void Boomer::Config::useIrepPruning() {
-        this->pruningConfigPtr_ = std::make_unique<IrepConfig>();
+        pruningConfigPtr_ = std::make_unique<IrepConfig>();
     }
 
     IManualMultiThreadingConfig& Boomer::Config::useParallelRuleRefinement() {
         std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
         IManualMultiThreadingConfig& ref = *ptr;
-        this->parallelRuleRefinementConfigPtr_ = std::move(ptr);
+        parallelRuleRefinementConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     IManualMultiThreadingConfig& Boomer::Config::useParallelStatisticUpdate() {
         std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
         IManualMultiThreadingConfig& ref = *ptr;
-        this->parallelStatisticUpdateConfigPtr_ = std::move(ptr);
+        parallelStatisticUpdateConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     IManualMultiThreadingConfig& Boomer::Config::useParallelPrediction() {
         std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
         IManualMultiThreadingConfig& ref = *ptr;
-        this->parallelPredictionConfigPtr_ = std::move(ptr);
+        parallelPredictionConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     ISizeStoppingCriterionConfig& Boomer::Config::useSizeStoppingCriterion() {
         std::unique_ptr<SizeStoppingCriterionConfig> ptr = std::make_unique<SizeStoppingCriterionConfig>();
         ISizeStoppingCriterionConfig& ref = *ptr;
-        this->sizeStoppingCriterionConfigPtr_ = std::move(ptr);
+        sizeStoppingCriterionConfigPtr_ = std::move(ptr);
         ref.setMaxRules(1000);
         return ref;
     }
@@ -168,21 +168,21 @@ namespace boosting {
     ITimeStoppingCriterionConfig& Boomer::Config::useTimeStoppingCriterion() {
         std::unique_ptr<TimeStoppingCriterionConfig> ptr = std::make_unique<TimeStoppingCriterionConfig>();
         ITimeStoppingCriterionConfig& ref = *ptr;
-        this->timeStoppingCriterionConfigPtr_ = std::move(ptr);
+        timeStoppingCriterionConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     IMeasureStoppingCriterionConfig& Boomer::Config::useMeasureStoppingCriterion() {
         std::unique_ptr<MeasureStoppingCriterionConfig> ptr = std::make_unique<MeasureStoppingCriterionConfig>();
         IMeasureStoppingCriterionConfig& ref = *ptr;
-        this->measureStoppingCriterionConfigPtr_ = std::move(ptr);
+        measureStoppingCriterionConfigPtr_ = std::move(ptr);
         return ref;
     }
 
     IConstantShrinkageConfig& Boomer::Config::useConstantShrinkagePostProcessor() {
         std::unique_ptr<ConstantShrinkageConfig> ptr = std::make_unique<ConstantShrinkageConfig>();
         IConstantShrinkageConfig& ref = *ptr;
-        this->postProcessorConfigPtr_ = std::move(ptr);
+        postProcessorConfigPtr_ = std::move(ptr);
         return ref;
     }
 
