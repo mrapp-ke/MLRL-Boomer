@@ -149,6 +149,14 @@ namespace boosting {
         return ref;
     }
 
+    IFeatureSamplingWithoutReplacementConfig& BoostingRuleLearner::Config::useFeatureSamplingWithoutReplacement() {
+        std::unique_ptr<FeatureSamplingWithoutReplacementConfig> ptr =
+            std::make_unique<FeatureSamplingWithoutReplacementConfig>();
+        IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
+        this->featureSamplingConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
     ISizeStoppingCriterionConfig& BoostingRuleLearner::Config::useSizeStoppingCriterion() {
         ISizeStoppingCriterionConfig& ref = AbstractRuleLearner::Config::useSizeStoppingCriterion();
         ref.setMaxRules(1000);

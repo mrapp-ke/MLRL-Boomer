@@ -34,7 +34,8 @@ namespace seco {
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
                             virtual public IRuleLearner::IFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingMixin,
-                            virtual public IRuleLearner::IInstanceSamplingMixin {
+                            virtual public IRuleLearner::IInstanceSamplingMixin,
+                            virtual public IRuleLearner::IFeatureSamplingMixin {
 
                 friend class SeCoRuleLearner;
 
@@ -327,6 +328,11 @@ namespace seco {
                      * @see `IRuleLearner::IInstanceSamplingMixin::useExampleWiseStratifiedInstanceSampling`
                      */
                     IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() override;
+
+                    /**
+                     * @see `IRuleLearner::IFeatureSamplingMixin::useFeatureSamplingWithoutReplacement`
+                     */
+                    IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
 
                     /**
                      * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`

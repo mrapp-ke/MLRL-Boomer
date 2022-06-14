@@ -37,7 +37,8 @@ namespace boosting {
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
                             virtual public IRuleLearner::IFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingMixin,
-                            virtual public IRuleLearner::IInstanceSamplingMixin {
+                            virtual public IRuleLearner::IInstanceSamplingMixin,
+                            virtual public IRuleLearner::IFeatureSamplingMixin {
 
                 friend class BoostingRuleLearner;
 
@@ -438,6 +439,11 @@ namespace boosting {
                      * @see `IRuleLearner::IInstanceSamplingMixin::useExampleWiseStratifiedInstanceSampling`
                      */
                     IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() override;
+
+                    /**
+                     * @see `IRuleLearner::IFeatureSamplingMixin::useFeatureSamplingWithoutReplacement`
+                     */
+                    IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
 
                     /**
                      * @see `IRuleLearner::IConfig::useSizeStoppingCriterion`

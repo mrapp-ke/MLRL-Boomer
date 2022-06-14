@@ -74,8 +74,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoFeatureSampling()
 
-        IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement()
-
         void useNoPartitionSampling()
 
         IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling()
@@ -151,6 +149,12 @@ cdef extern from "common/learner.hpp" nogil:
         IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement()
 
         IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement()
+
+    cdef cppclass IFeatureSamplingMixin"IRuleLearner::IFeatureSamplingMixin":
+
+        # Functions:
+
+        IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement()
 
 
     cdef cppclass IRuleLearner:
