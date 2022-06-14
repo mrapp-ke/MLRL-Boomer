@@ -60,7 +60,8 @@ source_files = [
     'src/boosting/statistics/statistics_provider_example_wise_dense.cpp',
     'src/boosting/statistics/statistics_provider_label_wise_dense.cpp',
     'src/boosting/statistics/statistics_provider_label_wise_sparse.cpp',
-    'src/boosting/learner.cpp'
+    'src/boosting/learner.cpp',
+    'src/boosting/learner_boomer.cpp'
 ]
 
 # Dependencies

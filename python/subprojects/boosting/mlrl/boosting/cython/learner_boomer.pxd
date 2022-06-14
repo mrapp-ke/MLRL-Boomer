@@ -1,0 +1,92 @@
+from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTopDownMixin, IFeatureBinningMixin, \
+    ILabelSamplingMixin, IInstanceSamplingMixin, IFeatureSamplingMixin, IPartitionSamplingMixin, IPruningMixin, \
+    IMultiThreadingMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IMeasureStoppingCriterionMixin
+from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, IShrinkageMixin, \
+    IRegularizationMixin, DdotFunction, DspmvFunction, DsysvFunction
+from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
+from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
+
+from libcpp.memory cimport unique_ptr
+
+
+cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
+
+    cdef cppclass IBoomerConfig"boosting::IBoomer::IConfig"(IBoostingRuleLearnerConfig,
+                                                            IShrinkageMixin,
+                                                            IRegularizationMixin,
+                                                            IBeamSearchTopDownMixin,
+                                                            IFeatureBinningMixin,
+                                                            ILabelSamplingMixin,
+                                                            IInstanceSamplingMixin,
+                                                            IFeatureSamplingMixin,
+                                                            IPartitionSamplingMixin,
+                                                            IPruningMixin,
+                                                            IMultiThreadingMixin,
+                                                            ISizeStoppingCriterionMixin,
+                                                            ITimeStoppingCriterionMixin,
+                                                            IMeasureStoppingCriterionMixin):
+
+        # Functions:
+
+        void useNoDefaultRule()
+
+        void useAutomaticDefaultRule()
+
+        void useAutomaticFeatureBinning()
+
+        void useAutomaticParallelRuleRefinement()
+
+        void useAutomaticParallelStatisticUpdate()
+
+        void useAutomaticHeads()
+
+        IFixedPartialHeadConfig& useFixedPartialHeads()
+
+        IDynamicPartialHeadConfig& useDynamicPartialHeads()
+
+        void useCompleteHeads()
+
+        void useAutomaticStatistics()
+
+        void useSparseStatistics()
+
+        void useExampleWiseLogisticLoss()
+
+        void useLabelWiseSquaredErrorLoss()
+
+        void useLabelWiseSquaredHingeLoss()
+
+        void useAutomaticLabelBinning()
+
+        IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
+
+        void useExampleWiseClassificationPredictor()
+
+        void useMarginalizedProbabilityPredictor()
+
+        void useAutomaticProbabilityPredictor()
+
+
+    cdef cppclass IBoomer(IRuleLearner):
+        pass
+
+
+    unique_ptr[IBoomerConfig] createBoomerConfig()
+
+
+    unique_ptr[IBoomer] createBoomer(unique_ptr[IBoomerConfig] configPtr, DdotFunction ddotFunction,
+                                     DspmvFunction dspmvFunction, DsysvFunction dsysvFunction)
+
+
+cdef class BoomerConfig(BoostingRuleLearnerConfig):
+
+    # Attributes:
+
+    cdef unique_ptr[IBoomerConfig] rule_learner_config_ptr
+
+
+cdef class Boomer(RuleLearner):
+
+    # Attributes:
+
+    cdef unique_ptr[IBoomer] rule_learner_ptr

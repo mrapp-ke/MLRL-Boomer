@@ -9,13 +9,12 @@
 #endif
 
 #include "common/learner.hpp"
-#include "boosting/binning/label_binning_equal_width.hpp"
+#include "boosting/binning/label_binning.hpp"
 #include "boosting/losses/loss.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
-#include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
-#include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
+#include "boosting/rule_evaluation/head_type.hpp"
 #include "boosting/rule_evaluation/regularization_manual.hpp"
 #include "boosting/statistics/statistic_format.hpp"
 
@@ -33,20 +32,9 @@ namespace boosting {
              * Defines an interface for all classes that allow to configure a rule learner that makes use of gradient
              * boosting.
              */
-            class IConfig : virtual public IRuleLearner::IConfig,
-                            virtual public IRuleLearner::IBeamSearchTopDownMixin,
-                            virtual public IRuleLearner::IFeatureBinningMixin,
-                            virtual public IRuleLearner::ILabelSamplingMixin,
-                            virtual public IRuleLearner::IInstanceSamplingMixin,
-                            virtual public IRuleLearner::IFeatureSamplingMixin,
-                            virtual public IRuleLearner::IPartitionSamplingMixin,
-                            virtual public IRuleLearner::IPruningMixin,
-                            virtual public IRuleLearner::IMultiThreadingMixin,
-                            virtual public IRuleLearner::ISizeStoppingCriterionMixin,
-                            virtual public IRuleLearner::ITimeStoppingCriterionMixin,
-                            virtual public IRuleLearner::IMeasureStoppingCriterionMixin {
+            class IConfig : virtual public IRuleLearner::IConfig {
 
-                friend class BoostingRuleLearner;
+                friend class AbstractBoostingRuleLearner;
 
                 private:
 
@@ -130,85 +118,10 @@ namespace boosting {
                     virtual ~IConfig() override { };
 
                     /**
-                     * Configures the rule learner to not induce a default rule.
-                     */
-                    virtual void useNoDefaultRule() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether a default rule should be induced or
-                     * not.
-                     */
-                    virtual void useAutomaticDefaultRule() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether a method for the assignment of
-                     * numerical feature values to bins should be used or not.
-                     */
-                    virtual void useAutomaticFeatureBinning() = 0;
-
-                    /**
-                     * Configures the rule learner to use a post processor that shrinks the weights of rules by a
-                     * constant "shrinkage" parameter.
-                     *
-                     * @return A reference to an object of type `IConstantShrinkageConfig` that allows further
-                     *         configuration of the loss function
-                     */
-                    virtual IConstantShrinkageConfig& useConstantShrinkagePostProcessor() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether multi-threading should be used for
-                     * the parallel refinement of rules or not.
-                     */
-                    virtual void useAutomaticParallelRuleRefinement() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether multi-threading should be used for
-                     * the parallel update of statistics or not.
-                     */
-                    virtual void useAutomaticParallelStatisticUpdate() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide for the type of rule heads that should be
-                     * used.
-                     */
-                    virtual void useAutomaticHeads() = 0;
-
-                    /**
                      * Configures the rule learner to induce rules with single-label heads that predict for a single
                      * label.
                      */
                     virtual void useSingleLabelHeads() = 0;
-
-                    /**
-                     * Configures the rule learner to induce rules with partial heads that predict for a predefined
-                     * number of labels.
-                     *
-                     * @return A reference to an object of type `IFixedPartialHeadConfig` that allows further
-                     *         configuration of the rule heads
-                     */
-                    virtual IFixedPartialHeadConfig& useFixedPartialHeads() = 0;
-
-                    /**
-                     * Configures the rule learner to induce rules with partial heads that predict for a subset of the
-                     * available labels that is determined dynamically. Only those labels for which the square of the
-                     * predictive quality exceeds a certain threshold are included in a rule head.
-                     *
-                     * @return A reference to an object of type `IDynamicPartialHeadConfig` that allows further
-                     *         configuration of the rule heads
-                     */
-                    virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() = 0;
-
-                    /**
-                     * Configures the rule learner to induce rules with complete heads that predict for all available
-                     * labels.
-                     */
-                    virtual void useCompleteHeads() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether a dense or sparse representation of
-                     * gradients and Hessians should be used.
-                     */
-                    virtual void useAutomaticStatistics() = 0;
 
                     /**
                      * Configures the rule learner to use a dense representation of gradients and Hessians.
@@ -216,42 +129,14 @@ namespace boosting {
                     virtual void useDenseStatistics() = 0;
 
                     /**
-                     * Configures the rule learner to use a sparse representation of gradients and Hessians, if
-                     * possible.
-                     */
-                    virtual void useSparseStatistics() = 0;
-
-                    /**
                      * Configures the rule learner to not use L1 regularization.
                      */
                     virtual void useNoL1Regularization() = 0;
 
                     /**
-                     * Configures the rule learner to use L1 regularization.
-                     *
-                     * @return A reference to an object of type `IManualRegularizationConfig` that allows further
-                     *         configuration of the regularization term
-                     */
-                    virtual IManualRegularizationConfig& useL1Regularization() = 0;
-
-                    /**
                      * Configures the rule learner to not use L2 regularization.
                      */
                     virtual void useNoL2Regularization() = 0;
-
-                    /**
-                     * Configures the rule learner to use L2 regularization.
-                     *
-                     * @return A reference to an object of type `IManualRegularizationConfig` that allows further
-                     *         configuration of the regularization term
-                     */
-                    virtual IManualRegularizationConfig& useL2Regularization() = 0;
-
-                    /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * logistic loss that is applied example-wise.
-                     */
-                    virtual void useExampleWiseLogisticLoss() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -260,46 +145,9 @@ namespace boosting {
                     virtual void useLabelWiseLogisticLoss() = 0;
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * squared error loss that is applied label-wise.
-                     */
-                    virtual void useLabelWiseSquaredErrorLoss() = 0;
-
-                    /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * squared hinge loss that is applied label-wise.
-                     */
-                    virtual void useLabelWiseSquaredHingeLoss() = 0;
-
-                    /**
                      * Configures the rule learner to not use any method for the assignment of labels to bins.
                      */
                     virtual void useNoLabelBinning() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether a method for the assignment of labels
-                     * to bins should be used or not.
-                     */
-                    virtual void useAutomaticLabelBinning() = 0;
-
-                    /**
-                     * Configures the rule learner to use a method for the assignment of labels to bins in a way such
-                     * that each bin contains labels for which the predicted score is expected to belong to the same
-                     * value range.
-                     *
-                     * @return A reference to an object of type `IEqualWidthLabelBinningConfig` that allows further
-                     *         configuration of the method for the assignment of labels to bins
-                     */
-                    virtual IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() = 0;
-
-                    /**
-                     * Configures the rule learner to use a predictor for predicting whether individual labels are
-                     * relevant or irrelevant by summing up the scores that are provided by an existing rule-based model
-                     * and comparing the aggregated score vector to the known label vectors according to a certain
-                     * distance measure. The label vector that is closest to the aggregated score vector is finally
-                     * predicted.
-                     */
-                    virtual void useExampleWiseClassificationPredictor() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting whether individual labels are
@@ -308,12 +156,6 @@ namespace boosting {
                      * threshold that is applied to each label individually.
                      */
                     virtual void useLabelWiseClassificationPredictor() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide for a predictor for predicting whether
-                     * individual labels are relevant or irrelevant.
-                     */
-                    virtual void useAutomaticClassificationPredictor() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting regression scores by summing up the
@@ -330,21 +172,54 @@ namespace boosting {
                      */
                     virtual void useLabelWiseProbabilityPredictor() = 0;
 
-                    /**
-                     * Configures the rule learner to use a predictor for predicting probability estimates by summing up
-                     * the scores that are provided by individual rules of an existing rule-based model and comparing
-                     * the aggregated score vector to the known label vectors according to a certain distance measure.
-                     * The probability for an individual label calculates as the sum of the distances that have been
-                     * obtained for all label vectors, where the respective label is specified to be relevant, divided
-                     * by the total sum of all distances.
-                     */
-                    virtual void useMarginalizedProbabilityPredictor() = 0;
+            };
+
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a post processor that
+             * shrinks the weights fo rules by a "shrinkage" parameter.
+             */
+            class IShrinkageMixin {
+
+                public:
+
+                    virtual ~IShrinkageMixin() { };
 
                     /**
-                     * Configures the rule learner to automatically decide for a predictor for predicting probability
-                     * estimates.
+                     * Configures the rule learner to use a post processor that shrinks the weights of rules by a
+                     * constant "shrinkage" parameter.
+                     *
+                     * @return A reference to an object of type `IConstantShrinkageConfig` that allows further
+                     *         configuration of the loss function
                      */
-                    virtual void useAutomaticProbabilityPredictor() = 0;
+                    virtual IConstantShrinkageConfig& useConstantShrinkagePostProcessor() = 0;
+
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use regularization.
+             */
+            class IRegularizationMixin {
+
+                public:
+
+                    virtual ~IRegularizationMixin() { };
+
+                    /**
+                     * Configures the rule learner to use L1 regularization.
+                     *
+                     * @return A reference to an object of type `IManualRegularizationConfig` that allows further
+                     *         configuration of the regularization term
+                     */
+                    virtual IManualRegularizationConfig& useL1Regularization() = 0;
+
+                    /**
+                     * Configures the rule learner to use L2 regularization.
+                     *
+                     * @return A reference to an object of type `IManualRegularizationConfig` that allows further
+                     *         configuration of the regularization term
+                     */
+                    virtual IManualRegularizationConfig& useL2Regularization() = 0;
 
             };
 
@@ -353,223 +228,115 @@ namespace boosting {
     };
 
     /**
-     * A rule learner that makes use of gradient boosting.
+     * An abstract base class for all rule learners that makes use of gradient boosting.
      */
-    class BoostingRuleLearner final : public AbstractRuleLearner, virtual public IBoostingRuleLearner {
+    class AbstractBoostingRuleLearner : public AbstractRuleLearner, virtual public IBoostingRuleLearner {
 
         public:
 
             /**
              * Allows to configure a rule learner that makes use of gradient boosting.
              */
-            class Config final : public AbstractRuleLearner::Config, virtual public IBoostingRuleLearner::IConfig {
+            class Config : public AbstractRuleLearner::Config, virtual public IBoostingRuleLearner::IConfig {
+
+                protected:
+
+                    /**
+                     * An unique pointer that stores the configuration of the rule heads.
+                     */
+                    std::unique_ptr<IHeadConfig> headConfigPtr_;
+
+                    /**
+                     * An unique pointer that stores the configuration of the statistics.
+                     */
+                    std::unique_ptr<IStatisticsConfig> statisticsConfigPtr_;
+
+                    /**
+                     * An unique pointer that stores the configuration of the loss function.
+                     */
+                    std::unique_ptr<ILossConfig> lossConfigPtr_;
+
+                    /**
+                     * An unique pointer that stores the configuration of the L1 regularization term.
+                     */
+                    std::unique_ptr<IRegularizationConfig> l1RegularizationConfigPtr_;
+
+                    /**
+                     * An unique pointer that stores the configuration of the L2 regularization term.
+                     */
+                    std::unique_ptr<IRegularizationConfig> l2RegularizationConfigPtr_;
+
+                    /**
+                     * An unique pointer that stores the configuration of the method that is used to assign labels to
+                     * bins.
+                     */
+                    std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
+
+                    /**
+                     * An unique pointer that stores the configuration of the predictor that is used to predict binary
+                     * labels.
+                     */
+                    std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
+
+                    /**
+                     * An unique pointer that stores the configuration of the predictor that is used to predict
+                     * regression scores.
+                     */
+                    std::unique_ptr<IRegressionPredictorConfig> regressionPredictorConfigPtr_;
+
+                    /**
+                     * An unique pointer that stores the configuration of the predictor that is used to predict
+                     * probability estimates.
+                     */
+                    std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
 
                 private:
 
-                    std::unique_ptr<IHeadConfig> headConfigPtr_;
+                    const IHeadConfig& getHeadConfig() const override final;
 
-                    std::unique_ptr<IStatisticsConfig> statisticsConfigPtr_;
+                    const IStatisticsConfig& getStatisticsConfig() const override final;
 
-                    std::unique_ptr<ILossConfig> lossConfigPtr_;
+                    const IRegularizationConfig& getL1RegularizationConfig() const override final;
 
-                    std::unique_ptr<IRegularizationConfig> l1RegularizationConfigPtr_;
+                    const IRegularizationConfig& getL2RegularizationConfig() const override final;
 
-                    std::unique_ptr<IRegularizationConfig> l2RegularizationConfigPtr_;
+                    const ILossConfig& getLossConfig() const override final;
 
-                    std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
+                    const ILabelBinningConfig& getLabelBinningConfig() const override final;
 
-                    std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
+                    const IClassificationPredictorConfig& getClassificationPredictorConfig() const override final;
 
-                    std::unique_ptr<IRegressionPredictorConfig> regressionPredictorConfigPtr_;
+                    const IRegressionPredictorConfig& getRegressionPredictorConfig() const override final;
 
-                    std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
-
-                    const IHeadConfig& getHeadConfig() const override;
-
-                    const IStatisticsConfig& getStatisticsConfig() const override;
-
-                    const IRegularizationConfig& getL1RegularizationConfig() const override;
-
-                    const IRegularizationConfig& getL2RegularizationConfig() const override;
-
-                    const ILossConfig& getLossConfig() const override;
-
-                    const ILabelBinningConfig& getLabelBinningConfig() const override;
-
-                    const IClassificationPredictorConfig& getClassificationPredictorConfig() const override;
-
-                    const IRegressionPredictorConfig& getRegressionPredictorConfig() const override;
-
-                    const IProbabilityPredictorConfig& getProbabilityPredictorConfig() const override;
+                    const IProbabilityPredictorConfig& getProbabilityPredictorConfig() const override final;
 
                 public:
 
                     Config();
 
-                    /**
-                     * @see `IRuleLearner::IBeamSearchTopDownMixin::useBeamSearchTopDownRuleInduction`
-                     */
-                    IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
-
-                    /**
-                     * @see `IRuleLearner::IFeatureBinningMixin::useEqualWidthFeatureBinning`
-                     */
-                    IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
-
-                    /**
-                     * @see `IRuleLearner::IFeatureBinningMixin::useEqualFrequencyFeatureBinning`
-                     */
-                    IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
-
-                    /**
-                     * @see `IRuleLearner::ILabelSamplingMixin::useLabelSamplingWithoutReplacement`
-                     */
-                    ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
-
-                    /**
-                     * @see `IRuleLearner::IInstanceSamplingMixin::useInstanceSamplingWithReplacement`
-                     */
-                    IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() override;
-
-                    /**
-                     * @see `IRuleLearner::IInstanceSamplingMixin::useInstanceSamplingWithoutReplacement`
-                     */
-                    IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() override;
-
-                    /**
-                     * @see `IRuleLearner::IInstanceSamplingMixin::useLabelWiseStratifiedInstanceSampling`
-                     */
-                    ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IInstanceSamplingMixin::useExampleWiseStratifiedInstanceSampling`
-                     */
-                    IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IFeatureSamplingMixin::useFeatureSamplingWithoutReplacement`
-                     */
-                    IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
-
-                    /**
-                     * @see `IRuleLearner::IPartitionSamplingMixin::useRandomBiPartitionSampling`
-                     */
-                    IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IPartitionSamplingMixin::useLabelWiseStratifiedBiPartitionSampling`
-                     */
-                    ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IPartitionSamplingMixin::useExampleWiseStratifiedBiPartitionSampling`
-                     */
-                    IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IPruningMixin::useIrepPruning`
-                     */
-                    void useIrepPruning() override;
-
-                    /**
-                     * @see `IRuleLearner::IMultiThreadingMixin::useParallelRuleRefinement`
-                     */
-                    IManualMultiThreadingConfig& useParallelRuleRefinement() override;
-
-                    /**
-                     * @see `IRuleLearner::IMultiThreadingMixin::useParallelStatisticUpdate`
-                     */
-                    IManualMultiThreadingConfig& useParallelStatisticUpdate() override;
-
-                    /**
-                     * @see `IRuleLearner::IMultiThreadingMixin::useParallelPrediction`
-                     */
-                    IManualMultiThreadingConfig& useParallelPrediction() override;
-
-                    /**
-                     * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
-                     */
-                    ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                    /**
-                     * @see `IRuleLearner::ITimeStoppingCriterionMixin::useTimeStoppingCriterion
-                     */
-                    ITimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
-
-                    /**
-                     * @see `IRuleLearner::IMeasureStoppingCriterionMixin::useMeasureStoppingCriterion`
-                     */
-                    IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
-
-                    void useNoDefaultRule() override;
-
-                    void useAutomaticDefaultRule() override;
-
-                    void useAutomaticFeatureBinning() override;
-
-                    IConstantShrinkageConfig& useConstantShrinkagePostProcessor() override;
-
-                    void useAutomaticParallelRuleRefinement() override;
-
-                    void useAutomaticParallelStatisticUpdate() override;
-
-                    void useAutomaticHeads() override;
-
                     void useSingleLabelHeads() override;
-
-                    IFixedPartialHeadConfig& useFixedPartialHeads() override;
-
-                    IDynamicPartialHeadConfig& useDynamicPartialHeads() override;
-
-                    void useCompleteHeads() override;
-
-                    void useAutomaticStatistics() override;
 
                     void useDenseStatistics() override;
 
-                    void useSparseStatistics() override;
-
                     void useNoL1Regularization() override;
-
-                    IManualRegularizationConfig& useL1Regularization() override;
 
                     void useNoL2Regularization() override;
 
-                    IManualRegularizationConfig& useL2Regularization() override;
-
-                    void useExampleWiseLogisticLoss() override;
-
                     void useLabelWiseLogisticLoss() override;
-
-                    void useLabelWiseSquaredErrorLoss() override;
-
-                    void useLabelWiseSquaredHingeLoss() override;
 
                     void useNoLabelBinning() override;
 
-                    void useAutomaticLabelBinning() override;
-
-                    IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() override;
-
-                    void useExampleWiseClassificationPredictor() override;
-
                     void useLabelWiseClassificationPredictor() override;
-
-                    void useAutomaticClassificationPredictor() override;
 
                     void useLabelWiseRegressionPredictor() override;
 
                     void useLabelWiseProbabilityPredictor() override;
 
-                    void useMarginalizedProbabilityPredictor() override;
-
-                    void useAutomaticProbabilityPredictor() override;
-
             };
 
         private:
 
-            std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr_;
+            const IBoostingRuleLearner::IConfig& config_;
 
             Blas blas_;
 
@@ -615,38 +382,16 @@ namespace boosting {
         public:
 
             /**
-             * @param configPtr     An unique pointer to an object of type `IBoostingRuleLearner::IConfig` that
-             *                      specifies the configuration that should be used by the rule learner
+             * @param config        A reference to an object of type `IBoostingRuleLearner::IConfig` that specifies the
+             *                      configuration that should be used by the rule learner
              * @param ddotFunction  A function pointer to BLAS' DDOT routine
              * @param dspmvFunction A function pointer to BLAS' DSPMV routine
              * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
              */
-            BoostingRuleLearner(std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr,
-                                Blas::DdotFunction ddotFunction, Blas::DspmvFunction dspmvFunction,
-                                Lapack::DsysvFunction dsysvFunction);
+            AbstractBoostingRuleLearner(const IBoostingRuleLearner::IConfig& config, Blas::DdotFunction ddotFunction,
+                                        Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
 
     };
-
-    /**
-     * Creates and returns a new object of type `IBoostingRuleLearner::IConfig`.
-     *
-     * @return An unique pointer to an object of type `IBoostingRuleLearner::IConfig` that has been created
-     */
-    MLRLBOOSTING_API std::unique_ptr<IBoostingRuleLearner::IConfig> createBoostingRuleLearnerConfig();
-
-    /**
-     * Creates and returns a new object of type `IBoostingRuleLearner`.
-     *
-     * @param configPtr     An unique pointer to an object of type `IBoostingRuleLearner::IConfig` that specifies the
-     *                      configuration that should be used by the rule learner.
-     * @param ddotFunction  A function pointer to BLAS' DDOT routine
-     * @param dspmvFunction A function pointer to BLAS' DSPMV routine
-     * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
-     * @return              An unique pointer to an object of type `IBoostingRuleLearner` that has been created
-     */
-    MLRLBOOSTING_API std::unique_ptr<IBoostingRuleLearner> createBoostingRuleLearner(
-        std::unique_ptr<IBoostingRuleLearner::IConfig> configPtr, Blas::DdotFunction ddotFunction,
-        Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
 
 }
 

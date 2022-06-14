@@ -1,13 +1,6 @@
-from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IRuleLearnerConfig, RuleLearnerConfig, \
-    IBeamSearchTopDownMixin, IFeatureBinningMixin, ILabelSamplingMixin, IInstanceSamplingMixin, IFeatureSamplingMixin, \
-    IPartitionSamplingMixin, IPruningMixin, IMultiThreadingMixin, ISizeStoppingCriterionMixin, \
-    ITimeStoppingCriterionMixin, IMeasureStoppingCriterionMixin
-from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
-from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
+from mlrl.common.cython.learner cimport  IRuleLearnerConfig, RuleLearnerConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
-
-from libcpp.memory cimport unique_ptr
 
 
 ctypedef double (*DdotFunction)(int* n, double* dx, int* incx, double* dy, int* incy)
@@ -19,72 +12,21 @@ ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* ld
 
 cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
-    cdef cppclass IBoostingRuleLearnerConfig"boosting::IBoostingRuleLearner::IConfig"(IRuleLearnerConfig,
-                                                                                      IBeamSearchTopDownMixin,
-                                                                                      IFeatureBinningMixin,
-                                                                                      ILabelSamplingMixin,
-                                                                                      IInstanceSamplingMixin,
-                                                                                      IFeatureSamplingMixin,
-                                                                                      IPartitionSamplingMixin,
-                                                                                      IPruningMixin,
-                                                                                      IMultiThreadingMixin,
-                                                                                      ISizeStoppingCriterionMixin,
-                                                                                      ITimeStoppingCriterionMixin,
-                                                                                      IMeasureStoppingCriterionMixin):
+    cdef cppclass IBoostingRuleLearnerConfig"boosting::IBoostingRuleLearner::IConfig"(IRuleLearnerConfig):
 
         # Functions:
 
-        void useNoDefaultRule()
-
-        void useAutomaticDefaultRule()
-
-        void useAutomaticFeatureBinning()
-
-        IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
-
-        void useAutomaticParallelRuleRefinement()
-
-        void useAutomaticParallelStatisticUpdate()
-
-        void useAutomaticHeads()
-
         void useSingleLabelHeads()
-
-        IFixedPartialHeadConfig& useFixedPartialHeads()
-
-        IDynamicPartialHeadConfig& useDynamicPartialHeads()
-
-        void useCompleteHeads()
-
-        void useAutomaticStatistics()
 
         void useDenseStatistics()
 
-        void useSparseStatistics()
-
         void useNoL1Regularization()
-
-        IManualRegularizationConfig& useL1Regularization()
 
         void useNoL2Regularization()
 
-        IManualRegularizationConfig& useL2Regularization()
-
-        void useExampleWiseLogisticLoss()
-
         void useLabelWiseLogisticLoss()
 
-        void useLabelWiseSquaredErrorLoss()
-
-        void useLabelWiseSquaredHingeLoss()
-
         void useNoLabelBinning()
-
-        void useAutomaticLabelBinning()
-
-        IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
-
-        void useExampleWiseClassificationPredictor()
 
         void useLabelWiseClassificationPredictor()
 
@@ -92,32 +34,25 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useLabelWiseProbabilityPredictor()
 
-        void useMarginalizedProbabilityPredictor()
 
-        void useAutomaticProbabilityPredictor()
+    cdef cppclass IShrinkageMixin"boosting::IBoostingRuleLearner::IShrinkageMixin":
 
+        # Functions:
 
-    cdef cppclass IBoostingRuleLearner(IRuleLearner):
-        pass
-
-
-    unique_ptr[IBoostingRuleLearnerConfig] createBoostingRuleLearnerConfig()
+        IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
 
 
-    unique_ptr[IBoostingRuleLearner] createBoostingRuleLearner(unique_ptr[IBoostingRuleLearnerConfig] configPtr,
-                                                               DdotFunction ddotFunction, DspmvFunction dspmvFunction,
-                                                               DsysvFunction dsysvFunction)
+    cdef cppclass IRegularizationMixin"boosting::IBoostingRuleLearner::IRegularizationMixin":
+
+        # Functions:
+
+        IManualRegularizationConfig& useL1Regularization()
+
+        IManualRegularizationConfig& useL2Regularization()
 
 
 cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
-    # Attributes:
+    # Functions:
 
-    cdef unique_ptr[IBoostingRuleLearnerConfig] rule_learner_config_ptr
-
-
-cdef class BoostingRuleLearner(RuleLearner):
-
-    # Attributes:
-
-    cdef unique_ptr[IBoostingRuleLearner] rule_learner_ptr
+    cdef IBoostingRuleLearnerConfig* get_boosting_rule_learner_config_ptr(self)

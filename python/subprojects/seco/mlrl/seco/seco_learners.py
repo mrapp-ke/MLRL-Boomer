@@ -12,7 +12,7 @@ from mlrl.common.rule_learners import configure_rule_induction, \
     configure_pruning, configure_parallel_rule_refinement, configure_parallel_statistic_update, \
     configure_parallel_prediction, configure_size_stopping_criterion, configure_time_stopping_criterion
 from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int
-from mlrl.seco.cython.learner import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
+from mlrl.seco.cython.learner_seco import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
 
 HEAD_TYPE_SINGLE = 'single-label'
