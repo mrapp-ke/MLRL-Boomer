@@ -27,7 +27,6 @@ from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig,
     ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig, IMeasureStoppingCriterionConfig, \
     MeasureStoppingCriterionConfig
 
-from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
 from scipy.linalg.cython_blas cimport ddot, dspmv
@@ -513,7 +512,7 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
 
 cdef class Boomer(RuleLearner):
     """
-    A rule learner that makes use of gradient boosting.
+    The BOOMER rule learning algorithm.
     """
 
     def __cinit__(self, BoomerConfig config not None):
