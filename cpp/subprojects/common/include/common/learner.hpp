@@ -857,7 +857,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 const IMultiThreadingConfig& getParallelStatisticUpdateConfig() const override final;
 
-                const IMultiThreadingConfig& getParallelPredictionConfig() const override;
+                const IMultiThreadingConfig& getParallelPredictionConfig() const override final;
 
                 const SizeStoppingCriterionConfig* getSizeStoppingCriterionConfig() const override final;
 
@@ -877,17 +877,17 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
 
-                void useNoFeatureBinning() override final;
+                void useNoFeatureBinning() override;
 
                 IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
 
                 IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
 
-                void useNoLabelSampling() override final;
+                void useNoLabelSampling() override;
 
                 ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
 
-                void useNoInstanceSampling() override final;
+                void useNoInstanceSampling() override;
 
                 IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() override;
 
@@ -897,11 +897,11 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() override;
 
-                void useNoFeatureSampling() override final;
+                void useNoFeatureSampling() override;
 
                 IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
 
-                void useNoPartitionSampling() override final;
+                void useNoPartitionSampling() override;
 
                 IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() override;
 
@@ -909,19 +909,19 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
 
-                void useNoPruning() override final;
+                void useNoPruning() override;
 
-                void useIrepPruning() override final;
+                void useIrepPruning() override;
 
-                void useNoPostProcessor() override final;
+                void useNoPostProcessor() override;
 
-                void useNoPostOptimization() override final;
+                void useNoPostOptimization() override;
 
-                void useNoParallelRuleRefinement() override final;
+                void useNoParallelRuleRefinement() override;
 
                 IManualMultiThreadingConfig& useParallelRuleRefinement() override;
 
-                void useNoParallelStatisticUpdate() override final;
+                void useNoParallelStatisticUpdate() override;
 
                 IManualMultiThreadingConfig& useParallelStatisticUpdate() override;
 
@@ -929,15 +929,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 IManualMultiThreadingConfig& useParallelPrediction() override;
 
-                void useNoSizeStoppingCriterion() override final;
+                void useNoSizeStoppingCriterion() override;
 
                 ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
-                void useNoTimeStoppingCriterion() override final;
+                void useNoTimeStoppingCriterion() override;
 
                 ITimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
 
-                void useNoMeasureStoppingCriterion() override final;
+                void useNoMeasureStoppingCriterion() override;
 
                 IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
 
