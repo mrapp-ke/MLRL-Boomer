@@ -187,14 +187,6 @@ void AbstractRuleLearner::Config::useNoFeatureSampling() {
     featureSamplingConfigPtr_ = std::make_unique<NoFeatureSamplingConfig>();
 }
 
-IFeatureSamplingWithoutReplacementConfig& AbstractRuleLearner::Config::useFeatureSamplingWithoutReplacement() {
-    std::unique_ptr<FeatureSamplingWithoutReplacementConfig> ptr =
-        std::make_unique<FeatureSamplingWithoutReplacementConfig>();
-    IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
-    featureSamplingConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
 void AbstractRuleLearner::Config::useNoPartitionSampling() {
     partitionSamplingConfigPtr_ = std::make_unique<NoPartitionSamplingConfig>();
 }

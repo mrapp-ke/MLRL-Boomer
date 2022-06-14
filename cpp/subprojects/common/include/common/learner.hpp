@@ -300,15 +300,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoFeatureSampling() = 0;
 
                 /**
-                 * Configures the rule learner to sample from the available features with replacement whenever a rule
-                 * should be refined.
-                 *
-                 * @return A reference to an object of type `IFeatureSamplingWithoutReplacementConfig` that allows
-                 *         further configuration of the method for sampling features
-                 */
-                virtual IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() = 0;
-
-                /**
                  * Configures the rule learner to not partition the available training examples into a training set and
                  * a holdout set.
                  */
@@ -566,6 +557,23 @@ class MLRLCOMMON_API IRuleLearner {
                  *         further configuration of the method for sampling instances
                  */
                 virtual IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() = 0;
+
+        };
+
+        class IFeatureSamplingMixin {
+
+            public:
+
+                virtual ~IFeatureSamplingMixin() { };
+
+                /**
+                 * Configures the rule learner to sample from the available features with replacement whenever a rule
+                 * should be refined.
+                 *
+                 * @return A reference to an object of type `IFeatureSamplingWithoutReplacementConfig` that allows
+                 *         further configuration of the method for sampling features
+                 */
+                virtual IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() = 0;
 
         };
 
@@ -923,8 +931,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoInstanceSampling() override;
 
                 void useNoFeatureSampling() override;
-
-                IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
 
                 void useNoPartitionSampling() override;
 

@@ -4,7 +4,6 @@
 from mlrl.common.cython._arrays cimport array_uint32, c_matrix_uint8, c_matrix_float64
 from mlrl.common.cython._validation import assert_greater_or_equal
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
-from mlrl.common.cython.feature_sampling cimport FeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
 from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
@@ -105,20 +104,6 @@ cdef class RuleLearnerConfig:
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoFeatureSampling()
-
-    def use_feature_sampling_without_replacement(self) -> FeatureSamplingWithoutReplacementConfig:
-        """
-        Configures the rule learner to sample from the available features with replacement whenever a rule should be
-        refined.
-
-        :return: A `FeatureSamplingWithoutReplacementConfig` that allows further configuration of the method for
-                 sampling features
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        cdef IFeatureSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useFeatureSamplingWithoutReplacement()
-        cdef FeatureSamplingWithoutReplacementConfig config = FeatureSamplingWithoutReplacementConfig.__new__(FeatureSamplingWithoutReplacementConfig)
-        config.config_ptr = config_ptr
-        return config
 
     def use_no_partition_sampling(self):
         """

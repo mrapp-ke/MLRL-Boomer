@@ -7,6 +7,8 @@ from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfig
 from mlrl.boosting.cython.regularization cimport ManualRegularizationConfig
 from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
     IEqualFrequencyFeatureBinningConfig, EqualFrequencyFeatureBinningConfig
+from mlrl.common.cython.feature_sampling cimport IFeatureSamplingWithoutReplacementConfig, \
+    FeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
     ExampleWiseStratifiedInstanceSamplingConfig, ILabelWiseStratifiedInstanceSamplingConfig, \
     LabelWiseStratifiedInstanceSamplingConfig, IInstanceSamplingWithReplacementConfig, \
@@ -144,6 +146,20 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IExampleWiseStratifiedInstanceSamplingConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedInstanceSampling()
         cdef ExampleWiseStratifiedInstanceSamplingConfig config = ExampleWiseStratifiedInstanceSamplingConfig.__new__(ExampleWiseStratifiedInstanceSamplingConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_feature_sampling_without_replacement(self) -> FeatureSamplingWithoutReplacementConfig:
+        """
+        Configures the rule learner to sample from the available features with replacement whenever a rule should be
+        refined.
+
+        :return: A `FeatureSamplingWithoutReplacementConfig` that allows further configuration of the method for
+                 sampling features
+        """
+        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IFeatureSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useFeatureSamplingWithoutReplacement()
+        cdef FeatureSamplingWithoutReplacementConfig config = FeatureSamplingWithoutReplacementConfig.__new__(FeatureSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
         return config
 
