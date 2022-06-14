@@ -400,11 +400,11 @@ namespace boosting {
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
-                    void useNoDefaultRule() override final;
+                    void useNoDefaultRule() override;
 
-                    void useAutomaticDefaultRule() override final;
+                    void useAutomaticDefaultRule() override;
 
-                    void useAutomaticFeatureBinning() override final;
+                    void useAutomaticFeatureBinning() override;
 
                     IConstantShrinkageConfig& useConstantShrinkagePostProcessor() override;
 
