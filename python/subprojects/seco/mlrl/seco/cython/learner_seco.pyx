@@ -25,7 +25,6 @@ from mlrl.seco.cython.heuristic cimport FMeasureConfig, MEstimateConfig
 from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfig, KlnLiftFunctionConfig
 from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig
 
-from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
 
