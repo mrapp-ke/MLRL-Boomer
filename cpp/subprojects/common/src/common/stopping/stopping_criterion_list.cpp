@@ -37,7 +37,7 @@ class StoppingCriterionList final : public IStoppingCriterion {
 
         Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
-            result.action = IStoppingCriterion::Action::CONTINUE;
+            result.action = Action::CONTINUE;
 
             for (auto it = stoppingCriteria_.begin(); it != stoppingCriteria_.end(); it++) {
                 std::unique_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
@@ -66,15 +66,38 @@ class StoppingCriterionList final : public IStoppingCriterion {
 
 };
 
+/**
+ * An implementation of the type `IStoppingCriterion` that does not test for any stopping criteria.
+ */
+class NoStoppingCriterion final : public IStoppingCriterion {
+
+    public:
+
+        Result test(const IStatistics& statistics, uint32 numRules) override {
+            Result result;
+            result.action = Action::CONTINUE;
+            return result;
+        }
+
+};
+
 void StoppingCriterionListFactory::addStoppingCriterionFactory(
         std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) {
     stoppingCriterionFactories_.push_back(std::move(stoppingCriterionFactoryPtr));
 }
 
 std::unique_ptr<IStoppingCriterion> StoppingCriterionListFactory::create(const SinglePartition& partition) const {
-    return std::make_unique<StoppingCriterionList<const SinglePartition>>(partition, stoppingCriterionFactories_);
+    if (stoppingCriterionFactories_.empty()) {
+        return std::make_unique<NoStoppingCriterion>();
+    } else {
+        return std::make_unique<StoppingCriterionList<const SinglePartition>>(partition, stoppingCriterionFactories_);
+    }
 }
 
 std::unique_ptr<IStoppingCriterion> StoppingCriterionListFactory::create(BiPartition& partition) const {
-    return std::make_unique<StoppingCriterionList<BiPartition>>(partition, stoppingCriterionFactories_);
+    if (stoppingCriterionFactories_.empty()) {
+        return std::make_unique<NoStoppingCriterion>();
+    } else {
+        return std::make_unique<StoppingCriterionList<BiPartition>>(partition, stoppingCriterionFactories_);
+    }
 }
