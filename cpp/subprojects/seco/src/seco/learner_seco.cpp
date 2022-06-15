@@ -319,14 +319,13 @@ namespace seco {
         return config ? config->createStoppingCriterionFactory() : nullptr;
     }
 
-    void SeCoRuleLearner::createStoppingCriterionFactories(
-            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const {
-        AbstractRuleLearner::createStoppingCriterionFactories(stoppingCriterionFactories);
+    void SeCoRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
+        AbstractRuleLearner::createStoppingCriterionFactories(factory);
         std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory =
             this->createCoverageStoppingCriterionFactory();
 
         if (stoppingCriterionFactory) {
-            stoppingCriterionFactories.push_front(std::move(stoppingCriterionFactory));
+            factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
         }
     }
 
