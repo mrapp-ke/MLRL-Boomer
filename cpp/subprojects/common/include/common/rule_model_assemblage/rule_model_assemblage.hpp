@@ -16,7 +16,6 @@
 #include "common/statistics/statistics_provider.hpp"
 #include "common/stopping/stopping_criterion.hpp"
 #include "common/thresholds/thresholds.hpp"
-#include <forward_list>
 
 
 /**
@@ -92,10 +91,9 @@ class IRuleModelAssemblageFactory {
          * @param postOptimizationFactoryPtr    An unique pointer to an object of type `IPostOptimizationFactory` that
          *                                      allows to create the implementation to be used for optimizing a
          *                                      rule-based model once it has been learned
-         * @param stoppingCriterionFactories    A reference to a `std::forward_list` that stores unique pointers to
-         *                                      objects of type `IStoppingCriterionFactory` that allow to create the
-         *                                      implementations to be used to decide whether additional rules should be
-         *                                      induced or not
+         * @param stoppingCriterionFactoryPtr   An unique pointer to an object of type `IStoppingCriterionFactory` that
+         *                                      allows to create the implementations to be used to decide whether
+         *                                      additional rules should be induced or not
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
             std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
@@ -109,7 +107,7 @@ class IRuleModelAssemblageFactory {
             std::unique_ptr<IPruningFactory> pruningFactoryPtr,
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
             std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
-            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const = 0;
+            std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const = 0;
 
 };
 

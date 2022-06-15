@@ -30,6 +30,7 @@
 #include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
+#include "common/stopping/stopping_criterion_list.hpp"
 #include "common/stopping/stopping_criterion_measure.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/stopping/stopping_criterion_time.hpp"
@@ -1072,11 +1073,9 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * May be overridden by subclasses in order create objects of the type `IStoppingCriterionFactory` to be used by
          * the rule learner.
          *
-         * @param stoppingCriterionFactories    A `std::forward_list` that stores unique pointers to objects of type
-         *                                      `IStoppingCriterionFactory` that are used by the rule learner
+         * @param factory A reference to an object of type `StoppingCriterionListFactory` the objects may be added to
          */
-        virtual void createStoppingCriterionFactories(
-            std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const;
+        virtual void createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const;
 
         /**
          * Must be implemented by subclasses in order to create the `IStatisticsProviderFactory` to be used by the rule

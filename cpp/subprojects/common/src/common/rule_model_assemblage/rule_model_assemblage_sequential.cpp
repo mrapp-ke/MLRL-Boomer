@@ -1,37 +1,6 @@
 #include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 
 
-static inline IStoppingCriterion::Result testStoppingCriteria(
-        std::forward_list<std::unique_ptr<IStoppingCriterion>>& stoppingCriteria, const IStatistics& statistics,
-        uint32 numRules) {
-    IStoppingCriterion::Result result;
-    result.action = IStoppingCriterion::Action::CONTINUE;
-
-    for (auto it = stoppingCriteria.begin(); it != stoppingCriteria.end(); it++) {
-        std::unique_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
-        IStoppingCriterion::Result stoppingCriterionResult = stoppingCriterionPtr->test(statistics, numRules);
-        IStoppingCriterion::Action action = stoppingCriterionResult.action;
-
-        switch (action) {
-            case IStoppingCriterion::Action::FORCE_STOP: {
-                result.action = action;
-                result.numRules = stoppingCriterionResult.numRules;
-                return result;
-            }
-            case IStoppingCriterion::Action::STORE_STOP: {
-                result.action = action;
-                result.numRules = stoppingCriterionResult.numRules;
-                break;
-            }
-            default: {
-                break;
-            }
-        }
-    }
-
-    return result;
-}
-
 /**
  * Allows to sequentially induce several rules, optionally starting with a default rule, that are added to a rule-based
  * model.
@@ -62,9 +31,9 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
         std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr_;
 
-        bool useDefaultRule_;
+        std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr_;
 
-        std::forward_list<std::unique_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories_;
+        bool useDefaultRule_;
 
     public:
 
@@ -100,6 +69,9 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
          * @param postOptimizationFactoryPtr    An unique pointer to an object of type `IPostOptimizationFactory` that
          *                                      allows to create the implementation to be used for optimizing a
          *                                      rule-based model once it has been learned
+         * @param stoppingCriterionFactoryPtr   An unique pointer to an object of type `IStoppingCriterionFactory` that
+         *                                      allows to create the implementations to be used to decide whether
+         *                                      additional rules should be induced or not
          * @param useDefaultRule                True, if a default rule should be used, False otherwise
          */
         SequentialRuleModelAssemblage(
@@ -114,6 +86,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             std::unique_ptr<IPruningFactory> pruningFactoryPtr,
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
             std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
+            std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr,
             bool useDefaultRule)
             : modelBuilderFactoryPtr_(std::move(modelBuilderFactoryPtr)),
               statisticsProviderFactoryPtr_(std::move(statisticsProviderFactoryPtr)),
@@ -126,19 +99,9 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
               pruningFactoryPtr_(std::move(pruningFactoryPtr)),
               postProcessorFactoryPtr_(std::move(postProcessorFactoryPtr)),
               postOptimizationFactoryPtr_(std::move(postOptimizationFactoryPtr)),
+              stoppingCriterionFactoryPtr_(std::move(stoppingCriterionFactoryPtr)),
               useDefaultRule_(useDefaultRule) {
 
-        }
-
-        /**
-         * Adds a new `IStoppingCriterionFactory` that allows to create the implementation of a stopping criterion that
-         * should be used to decide whether the induction of additional rules should be stopped or not.
-         *
-         * @param stoppingCriterionFactoryPtr An unique pointer to an object of type `IStoppingCriterionFactory` that
-         *                                    should be added
-         */
-        void addStoppingCriterionFactory(std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) {
-            stoppingCriterionFactories_.push_front(std::move(stoppingCriterionFactoryPtr));
         }
 
         std::unique_ptr<IRuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
@@ -153,14 +116,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 *partitionSamplingFactoryPtr_);
             RNG rng(randomState);
             IPartition& partition = partitionSamplingPtr->partition(rng);
-
-            // Initialize stopping criteria...
-            std::forward_list<std::unique_ptr<IStoppingCriterion>> stoppingCriteria;
-
-            for (auto it = stoppingCriterionFactories_.cbegin(); it != stoppingCriterionFactories_.cend(); it++) {
-                const std::unique_ptr<IStoppingCriterionFactory>& stoppingCriterionFactoryPtr = *it;
-                stoppingCriteria.push_front(partition.createStoppingCriterion(*stoppingCriterionFactoryPtr));
-            }
 
             // Induce default rule...
             std::unique_ptr<IPostOptimization> postOptimizationPtr = postOptimizationFactoryPtr_->create(
@@ -185,10 +140,11 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             std::unique_ptr<ILabelSampling> labelSamplingPtr = labelSamplingFactoryPtr_->create();
             std::unique_ptr<IPruning> pruningPtr = pruningFactoryPtr_->create();
             std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr_->create();
+            std::unique_ptr<IStoppingCriterion> stoppingCriterionPtr =
+                partition.createStoppingCriterion(*stoppingCriterionFactoryPtr_);
             IStoppingCriterion::Result stoppingCriterionResult;
 
-            while (stoppingCriterionResult = testStoppingCriteria(stoppingCriteria, statisticsProviderPtr->get(),
-                                                                  numRules),
+            while (stoppingCriterionResult = stoppingCriterionPtr->test(statisticsProviderPtr->get(), numRules),
                    stoppingCriterionResult.action != IStoppingCriterion::Action::FORCE_STOP) {
                 if (stoppingCriterionResult.action == IStoppingCriterion::Action::STORE_STOP && numUsedRules == 0) {
                     numUsedRules = stoppingCriterionResult.numRules;
@@ -249,21 +205,20 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
                 std::unique_ptr<IPruningFactory> pruningFactoryPtr,
                 std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
                 std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
-                std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const override {
-            std::unique_ptr<SequentialRuleModelAssemblage> rule_model_assemblage_ptr =
-                std::make_unique<SequentialRuleModelAssemblage>(
-                    std::move(modelBuilderFactoryPtr), std::move(statisticsProviderFactoryPtr),
-                    std::move(thresholdsFactoryPtr), std::move(ruleInductionFactoryPtr),
-                    std::move(labelSamplingFactoryPtr), std::move(instanceSamplingFactoryPtr),
-                    std::move(featureSamplingFactoryPtr), std::move(partitionSamplingFactoryPtr),
-                    std::move(pruningFactoryPtr), std::move(postProcessorFactoryPtr),
-                    std::move(postOptimizationFactoryPtr), useDefaultRule_);
-
-            for (auto it = stoppingCriterionFactories.begin(); it != stoppingCriterionFactories.end(); it++) {
-                rule_model_assemblage_ptr->addStoppingCriterionFactory(std::move(*it));
-            }
-
-            return rule_model_assemblage_ptr;
+                std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const override {
+            return std::make_unique<SequentialRuleModelAssemblage>(std::move(modelBuilderFactoryPtr),
+                                                                   std::move(statisticsProviderFactoryPtr),
+                                                                   std::move(thresholdsFactoryPtr),
+                                                                   std::move(ruleInductionFactoryPtr),
+                                                                   std::move(labelSamplingFactoryPtr),
+                                                                   std::move(instanceSamplingFactoryPtr),
+                                                                   std::move(featureSamplingFactoryPtr),
+                                                                   std::move(partitionSamplingFactoryPtr),
+                                                                   std::move(pruningFactoryPtr),
+                                                                   std::move(postProcessorFactoryPtr),
+                                                                   std::move(postOptimizationFactoryPtr),
+                                                                   std::move(stoppingCriterionFactoryPtr),
+                                                                   useDefaultRule_);
         }
 
 };
