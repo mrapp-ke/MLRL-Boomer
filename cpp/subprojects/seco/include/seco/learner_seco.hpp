@@ -442,8 +442,7 @@ namespace seco {
 
         protected:
 
-            void createStoppingCriterionFactories(
-                std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const override;
+            void createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;

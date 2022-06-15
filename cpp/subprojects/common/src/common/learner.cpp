@@ -11,8 +11,6 @@
 #include "common/sampling/partition_sampling_no.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/util/validation.hpp"
-#include <stdexcept>
-#include <string>
 
 
 /**
@@ -291,24 +289,23 @@ std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createMeasureSto
     return config ? config->createStoppingCriterionFactory() : nullptr;
 }
 
-void AbstractRuleLearner::createStoppingCriterionFactories(
-        std::forward_list<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) const {
+void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
     std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory = this->createSizeStoppingCriterionFactory();
 
     if (stoppingCriterionFactory) {
-        stoppingCriterionFactories.push_front(std::move(stoppingCriterionFactory));
+        factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
     }
 
     stoppingCriterionFactory = this->createTimeStoppingCriterionFactory();
 
     if (stoppingCriterionFactory) {
-        stoppingCriterionFactories.push_front(std::move(stoppingCriterionFactory));
+        factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
     }
 
     stoppingCriterionFactory = this->createMeasureStoppingCriterionFactory();
 
     if (stoppingCriterionFactory) {
-        stoppingCriterionFactories.push_front(std::move(stoppingCriterionFactory));
+        factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
     }
 }
 
@@ -326,13 +323,9 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,
         const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const {
     assertGreaterOrEqual<uint32>("randomState", randomState, 1);
-    std::forward_list<std::unique_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories;
-    this->createStoppingCriterionFactories(stoppingCriterionFactories);
-
-    if (stoppingCriterionFactories.empty()) {
-        throw std::runtime_error("At least one stopping criterion must be used by the rule learner");
-    }
-
+    std::unique_ptr<StoppingCriterionListFactory> stoppingCriterionFactoryPtr =
+        std::make_unique<StoppingCriterionListFactory>();
+    this->createStoppingCriterionFactories(*stoppingCriterionFactoryPtr);
     std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr = this->createLabelSpaceInfo(labelMatrix);
     std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
         this->createRuleModelAssemblageFactory(labelMatrix);
@@ -342,7 +335,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         this->createRuleInductionFactory(featureMatrix, labelMatrix), this->createLabelSamplingFactory(labelMatrix),
         this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(featureMatrix),
         this->createPartitionSamplingFactory(), this->createPruningFactory(), this->createPostProcessorFactory(),
-        this->createPostOptimizationFactory(), stoppingCriterionFactories);
+        this->createPostOptimizationFactory(), std::move(stoppingCriterionFactoryPtr));
     std::unique_ptr<IRuleModel> ruleModelPtr = ruleModelAssemblagePtr->induceRules(
         nominalFeatureMask, featureMatrix, labelMatrix, randomState);
     return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), std::move(ruleModelPtr),
