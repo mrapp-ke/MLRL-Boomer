@@ -130,6 +130,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement()
 
+
     cdef cppclass IFeatureSamplingMixin"IRuleLearner::IFeatureSamplingMixin":
 
         # Functions:
