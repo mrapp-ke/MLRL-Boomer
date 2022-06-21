@@ -422,6 +422,16 @@ class CmdBuilder:
         self.args.append(rule_induction)
         return self
 
+    def predict_probabilities(self, predict_probabilities: bool = False):
+        """
+        Configures whether the algorithm should predict probabilities or not.
+        :param predict_probabilities:   True, if probabilities should be predicted, False otherwise
+        :return:                        The builder itself
+        """
+        self.args.append('--predict-probabilities')
+        self.args.append(str(predict_probabilities).lower())
+        return self
+
     def build(self) -> List[str]:
         """
         Returns a list of strings that contains the command that has been configured using the builder, as well as all

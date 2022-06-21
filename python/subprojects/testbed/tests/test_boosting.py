@@ -18,6 +18,18 @@ LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
 
 LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
 
+CLASSIFICATION_PREDICTOR_AUTO = 'auto'
+
+CLASSIFICATION_PREDICTOR_LABEL_WISE = 'label-wise'
+
+CLASSIFICATION_PREDICTOR_EXAMPLE_WISE = 'example-wise'
+
+PROBABILITY_PREDICTOR_AUTO = 'auto'
+
+PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
+
+PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
+
 
 class BoostingCmdBuilder(CmdBuilder):
     """
@@ -47,6 +59,28 @@ class BoostingCmdBuilder(CmdBuilder):
         """
         self.args.append('--loss')
         self.args.append(loss)
+        return self
+
+    def classification_predictor(self, classification_predictor: str = CLASSIFICATION_PREDICTOR_AUTO):
+        """
+        Configures the algorithm to use a specific method for predicting binary labels.
+
+        :param classification_predictor:    The name of the method that should be used for predicting binary labels
+        :return:                            The builder itself
+        """
+        self.args.append('--classification-predictor')
+        self.args.append(classification_predictor)
+        return self
+
+    def probability_predictor(self, probability_predictor: str = PROBABILITY_PREDICTOR_AUTO):
+        """
+        Configures the algorithm to use a specific method for predicting probabilities.
+
+        :param probability_predictor:   The name of the method that should be used for predicting probabilities
+        :return:                        The builder itself
+        """
+        self.args.append('--probability-predictor')
+        self.args.append(probability_predictor)
         return self
 
 
@@ -172,3 +206,44 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .loss(LOSS_SQUARED_ERROR_LABEL_WISE)
         self.run_cmd(builder, self.cmd + '_loss-squared-error-label-wise')
+
+    def test_predictor_classification_label_wise(self):
+        """
+        Tests the BOOMER algorithm when predicting binary labels that are obtained for each label individually.
+        """
+        builder = BoostingCmdBuilder() \
+            .classification_predictor(CLASSIFICATION_PREDICTOR_LABEL_WISE) \
+            .print_predictions(True)
+        self.run_cmd(builder, self.cmd + '_predictor-classification-label-wise')
+
+    def test_predictor_classification_example_wise(self):
+        """
+        Tests the BOOMER algorithm when predicting binary labels that are obtained by predicting one of the known label
+        vectors.
+        """
+        builder = BoostingCmdBuilder() \
+            .classification_predictor(CLASSIFICATION_PREDICTOR_EXAMPLE_WISE) \
+            .print_predictions(True)
+        self.run_cmd(builder, self.cmd + '_predictor-classification-example-wise')
+
+    def test_predictor_probability_label_wise(self):
+        """
+        Tests the BOOMER algorithm when predicting probabilities that are obtained by applying a label-wise
+        transformation function.
+        """
+        builder = BoostingCmdBuilder() \
+            .predict_probabilities(True) \
+            .probability_predictor(PROBABILITY_PREDICTOR_LABEL_WISE) \
+            .print_predictions(True)
+        self.run_cmd(builder, self.cmd + '_predictor-probability-label-wise')
+
+    def test_predictor_probability_marginalized(self):
+        """
+        Tests the BOOMER algorithm when predicting probabilities that are obtained via marginalization over the known
+        label vectors.
+        """
+        builder = BoostingCmdBuilder() \
+            .predict_probabilities(True) \
+            .probability_predictor(PROBABILITY_PREDICTOR_MARGINALIZED) \
+            .print_predictions(True)
+        self.run_cmd(builder, self.cmd + '_predictor-probability-marginalized')

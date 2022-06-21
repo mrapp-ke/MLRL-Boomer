@@ -44,7 +44,7 @@ class PredictionLogOutput(PredictionOutput):
     def write_predictions(self, meta_data: MetaData, data_partition: DataPartition, data_type: DataType, predictions,
                           ground_truth):
         text = 'Ground truth:\n\n' + np.array2string(ground_truth, threshold=sys.maxsize) + '\n\nPredictions:\n\n' \
-               + np.array2string(predictions, threshold=sys.maxsize)
+               + np.array2string(predictions, threshold=sys.maxsize, precision=8, suppress_small=True)
         msg = 'Predictions for ' + data_type.value + ' data'
 
         if data_partition.is_cross_validation_used():
