@@ -68,7 +68,7 @@ class BoostingCmdBuilder(CmdBuilder):
         :param classification_predictor:    The name of the method that should be used for predicting binary labels
         :return:                            The builder itself
         """
-        self.args.apppend('--classification-predictor')
+        self.args.append('--classification-predictor')
         self.args.append(classification_predictor)
         return self
 
