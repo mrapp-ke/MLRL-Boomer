@@ -199,7 +199,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .predict_probabilities(True) \
             .probability_predictor(PROBABILITY_PREDICTOR_LABEL_WISE) \
             .print_predictions(True)
-        self.run_cmd(builder, self.cmd + '_probabilities-label-wise')
+        self.run_cmd(builder, self.cmd + '_predictor-probability-label-wise')
 
     def test_probabilities_marginalized(self):
         """
@@ -210,4 +210,4 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .predict_probabilities(True) \
             .probability_predictor(PROBABILITY_PREDICTOR_MARGINALIZED) \
             .print_predictions(True)
-        self.run_cmd(builder, self.cmd + '_probabilities-marginalized')
+        self.run_cmd(builder, self.cmd + '_predictor-probability-marginalized')
