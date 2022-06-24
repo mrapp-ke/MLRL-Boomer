@@ -8,6 +8,7 @@
 #include "common/pruning/pruning.hpp"
 #include "common/rule_induction/rule_induction.hpp"
 #include "common/sampling/feature_sampling.hpp"
+#include "common/sampling/label_sampling.hpp"
 #include "common/thresholds/thresholds.hpp"
 
 
@@ -56,6 +57,8 @@ class IPostOptimization {
          * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
          *                          the training examples that belong to the training set and the holdout set,
          *                          respectively
+         * @param labelSampling     A reference to an object of type `ILabelSampling` that should be used for sampling
+         *                          labels
          * @param instanceSampling  A reference to an object of type `IInstanceSampling` that should be used for
          *                          sampling examples
          * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
@@ -67,8 +70,9 @@ class IPostOptimization {
          *                          to be used
          */
         virtual void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
-                                   IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
-                                   const IPruning& pruning, const IPostProcessor& postProcessor, RNG& rng) = 0;
+                                   ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
+                                   IFeatureSampling& featureSampling, const IPruning& pruning,
+                                   const IPostProcessor& postProcessor, RNG& rng) = 0;
 
 };
 
