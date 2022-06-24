@@ -394,6 +394,30 @@ namespace boosting {
 
             };
 
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use predictor for
+             * predicting probability estimates by summing up the scores that are provided by individual rules of an
+             * existing rule-based model and comparing the aggregated score vector to the known label vectors according
+             * to a certain distance measure.
+             */
+            class IMarginalizedProbabilityPredictorMixin {
+
+                public:
+
+                    virtual ~IMarginalizedProbabilityPredictorMixin() { };
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting probability estimates by summing up
+                     * the scores that are provided by individual rules of an existing rule-based model and comparing
+                     * the aggregated score vector to the known label vectors according to a certain distance measure.
+                     * The probability for an individual label calculates as the sum of the distances that have been
+                     * obtained for all label vectors, where the respective label is specified to be relevant, divided
+                     * by the total sum of all distances.
+                     */
+                    virtual void useMarginalizedProbabilityPredictor() = 0;
+
+            };
+
             virtual ~IBoostingRuleLearner() override { };
 
     };

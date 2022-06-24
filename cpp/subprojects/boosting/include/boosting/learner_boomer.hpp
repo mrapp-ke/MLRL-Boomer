@@ -34,6 +34,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::ILabelWiseSquaredHingeLossMixin,
                             virtual public IBoostingRuleLearner::ILabelBinningMixin,
                             virtual public IBoostingRuleLearner::IExampleWiseClassificationPredictorMixin,
+                            virtual public IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
                             virtual public IRuleLearner::IFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingMixin,
@@ -97,16 +98,6 @@ namespace boosting {
                      * individual labels are relevant or irrelevant.
                      */
                     virtual void useAutomaticClassificationPredictor() = 0;
-
-                    /**
-                     * Configures the rule learner to use a predictor for predicting probability estimates by summing up
-                     * the scores that are provided by individual rules of an existing rule-based model and comparing
-                     * the aggregated score vector to the known label vectors according to a certain distance measure.
-                     * The probability for an individual label calculates as the sum of the distances that have been
-                     * obtained for all label vectors, where the respective label is specified to be relevant, divided
-                     * by the total sum of all distances.
-                     */
-                    virtual void useMarginalizedProbabilityPredictor() = 0;
 
                     /**
                      * Configures the rule learner to automatically decide for a predictor for predicting probability
@@ -296,6 +287,11 @@ namespace boosting {
                      */
                     void useExampleWiseClassificationPredictor() override;
 
+                    /**
+                     * @see `IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin::useMarginalizedProbabilityPredictor`
+                     */
+                    void useMarginalizedProbabilityPredictor() override;
+
                     void useAutomaticDefaultRule() override;
 
                     void useAutomaticFeatureBinning() override;
@@ -311,8 +307,6 @@ namespace boosting {
                     void useAutomaticLabelBinning() override;
 
                     void useAutomaticClassificationPredictor() override;
-
-                    void useMarginalizedProbabilityPredictor() override;
 
                     void useAutomaticProbabilityPredictor() override;
 
