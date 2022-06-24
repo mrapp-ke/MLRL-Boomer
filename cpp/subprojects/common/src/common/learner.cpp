@@ -1,7 +1,6 @@
 #include "common/learner.hpp"
 #include "common/binning/feature_binning_no.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
-#include "common/post_optimization/post_optimization_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
 #include "common/pruning/pruning_no.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
