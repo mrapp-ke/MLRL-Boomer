@@ -30,6 +30,9 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::INoDefaultRuleMixin,
                             virtual public IBoostingRuleLearner::IPartialHeadMixin,
                             virtual public IBoostingRuleLearner::ISparseStatisticsMixin,
+                            virtual public IBoostingRuleLearner::IExampleWiseLogisticLossMixin,
+                            virtual public IBoostingRuleLearner::ILabelWiseSquaredErrorLossMixin,
+                            virtual public IBoostingRuleLearner::ILabelWiseSquaredHingeLossMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
                             virtual public IRuleLearner::IFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingMixin,
@@ -81,24 +84,6 @@ namespace boosting {
                      * gradients and Hessians should be used.
                      */
                     virtual void useAutomaticStatistics() = 0;
-
-                    /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * logistic loss that is applied example-wise.
-                     */
-                    virtual void useExampleWiseLogisticLoss() = 0;
-
-                    /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * squared error loss that is applied label-wise.
-                     */
-                    virtual void useLabelWiseSquaredErrorLoss() = 0;
-
-                    /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * squared hinge loss that is applied label-wise.
-                     */
-                    virtual void useLabelWiseSquaredHingeLoss() = 0;
 
                     /**
                      * Configures the rule learner to automatically decide whether a method for the assignment of labels
@@ -304,6 +289,21 @@ namespace boosting {
                      */
                     void useSparseStatistics() override;
 
+                    /**
+                     * @see `IBoostingRuleLearner::IExampleWiseLogisticLossMixin::useExampleWiseLogisticLoss`
+                     */
+                    void useExampleWiseLogisticLoss() override;
+
+                    /**
+                     * @see `IBoostingRuleLearner::ILabelWiseSquaredErrorLossMixin::useLabelWiseSquaredErrorLoss`
+                     */
+                    void useLabelWiseSquaredErrorLoss() override;
+
+                    /**
+                     * @see `IBoostingRuleLearner::ILabelWiseSquaredHingeLossMixin::useLabelWiseSquaredHingeLoss`
+                     */
+                    void useLabelWiseSquaredHingeLoss() override;
+
                     void useAutomaticDefaultRule() override;
 
                     void useAutomaticFeatureBinning() override;
@@ -315,12 +315,6 @@ namespace boosting {
                     void useAutomaticHeads() override;
 
                     void useAutomaticStatistics() override;
-
-                    void useExampleWiseLogisticLoss() override;
-
-                    void useLabelWiseSquaredErrorLoss() override;
-
-                    void useLabelWiseSquaredHingeLoss() override;
 
                     void useAutomaticLabelBinning() override;
 

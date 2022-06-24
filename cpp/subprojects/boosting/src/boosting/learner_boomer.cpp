@@ -230,6 +230,18 @@ namespace boosting {
         statisticsConfigPtr_ = std::make_unique<SparseStatisticsConfig>(lossConfigPtr_);
     }
 
+    void Boomer::Config::useExampleWiseLogisticLoss() {
+        lossConfigPtr_ = std::make_unique<ExampleWiseLogisticLossConfig>(headConfigPtr_);
+    }
+
+    void Boomer::Config::useLabelWiseSquaredErrorLoss() {
+        lossConfigPtr_ = std::make_unique<LabelWiseSquaredErrorLossConfig>(headConfigPtr_);
+    }
+
+    void Boomer::Config::useLabelWiseSquaredHingeLoss() {
+        lossConfigPtr_ = std::make_unique<LabelWiseSquaredHingeLossConfig>(headConfigPtr_);
+    }
+
     void Boomer::Config::useAutomaticDefaultRule() {
         defaultRuleConfigPtr_ = std::make_unique<AutomaticDefaultRuleConfig>(statisticsConfigPtr_, lossConfigPtr_,
                                                                              headConfigPtr_);
@@ -257,18 +269,6 @@ namespace boosting {
     void Boomer::Config::useAutomaticStatistics() {
         statisticsConfigPtr_ =
             std::make_unique<AutomaticStatisticsConfig>(lossConfigPtr_, headConfigPtr_, defaultRuleConfigPtr_);
-    }
-
-    void Boomer::Config::useExampleWiseLogisticLoss() {
-        lossConfigPtr_ = std::make_unique<ExampleWiseLogisticLossConfig>(headConfigPtr_);
-    }
-
-    void Boomer::Config::useLabelWiseSquaredErrorLoss() {
-        lossConfigPtr_ = std::make_unique<LabelWiseSquaredErrorLossConfig>(headConfigPtr_);
-    }
-
-    void Boomer::Config::useLabelWiseSquaredHingeLoss() {
-        lossConfigPtr_ = std::make_unique<LabelWiseSquaredHingeLossConfig>(headConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticLabelBinning() {

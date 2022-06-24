@@ -77,6 +77,27 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useSparseStatistics()
 
 
+    cdef cppclass IExampleWiseLogisticLossMixin"boosting::IBoostingRuleLearner::IExampleWiseLogisticLossMixin":
+
+        # Functions:
+
+        void useExampleWiseLogisticLoss()
+
+
+    cdef cppclass ILabelWiseSquaredErrorLossMixin"boosting::IBoostingRuleLearner::ILabelWiseSquaredErrorLossMixin":
+
+        # Functions:
+
+        void useLabelWiseSquaredErrorLoss()
+
+
+    cdef cppclass ILabelWiseSquaredHingeLossMixin"boosting::IBoostingRuleLearner::ILabelWiseSquaredHingeLossMixin":
+
+        # Functions:
+
+        void useLabelWiseSquaredHingeLoss()
+
+
 cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
     # Functions:

@@ -2,8 +2,9 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTo
     ILabelSamplingMixin, IInstanceSamplingMixin, IFeatureSamplingMixin, IPartitionSamplingMixin, IPruningMixin, \
     IMultiThreadingMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IMeasureStoppingCriterionMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, IShrinkageMixin, \
-    IRegularizationMixin, INoDefaultRuleMixin, IPartialHeadMixin, ISparseStatisticsMixin, DdotFunction, DspmvFunction, \
-    DsysvFunction
+    IRegularizationMixin, INoDefaultRuleMixin, IPartialHeadMixin, ISparseStatisticsMixin, \
+    IExampleWiseLogisticLossMixin, ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, DdotFunction, \
+    DspmvFunction, DsysvFunction
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 
 from libcpp.memory cimport unique_ptr
@@ -17,6 +18,9 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             INoDefaultRuleMixin,
                                                             IPartialHeadMixin,
                                                             ISparseStatisticsMixin,
+                                                            IExampleWiseLogisticLossMixin,
+                                                            ILabelWiseSquaredErrorLossMixin,
+                                                            ILabelWiseSquaredHingeLossMixin,
                                                             IBeamSearchTopDownMixin,
                                                             IFeatureBinningMixin,
                                                             ILabelSamplingMixin,
@@ -42,12 +46,6 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
         void useAutomaticHeads()
 
         void useAutomaticStatistics()
-
-        void useExampleWiseLogisticLoss()
-
-        void useLabelWiseSquaredErrorLoss()
-
-        void useLabelWiseSquaredHingeLoss()
 
         void useAutomaticLabelBinning()
 
