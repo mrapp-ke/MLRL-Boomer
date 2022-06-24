@@ -1,8 +1,9 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.boosting.cython.head_type cimport FixedPartialHeadConfig, DynamicPartialHeadConfig
-from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfig
+from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, FixedPartialHeadConfig, \
+    IDynamicPartialHeadConfig, DynamicPartialHeadConfig
+from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig, EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig, ConstantShrinkageConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig, ManualRegularizationConfig
 from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
