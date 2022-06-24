@@ -27,8 +27,9 @@ class NoPostOptimization final : public IPostOptimization {
         }
 
         void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
-                           IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
-                           const IPruning& pruning, const IPostProcessor& postProcessor, RNG& rng) override {
+                           ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
+                           IFeatureSampling& featureSampling, const IPruning& pruning,
+                           const IPostProcessor& postProcessor, RNG& rng) override {
             return;
         }
 
