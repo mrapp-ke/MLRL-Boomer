@@ -1,0 +1,42 @@
+/*
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
+ */
+#pragma once
+
+#include "common/model/model_builder.hpp"
+#include <vector>
+
+
+/**
+ * An implementation of the class `IModelBuilder` that stores intermediate representations of rules, which can still be
+ * modified when globally optimizing a rule-based model once it has been learned, that are ultimately converted into a
+ * final model using another `IModelBuilder`.
+ */
+class IntermediateModelBuilder final : public IModelBuilder {
+
+    private:
+
+        std::unique_ptr<IModelBuilder> modelBuilderPtr_;
+
+        std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr_;
+
+        typedef std::pair<std::unique_ptr<ConditionList>, std::unique_ptr<AbstractEvaluatedPrediction>> IntermediateRule;
+
+        std::vector<IntermediateRule> intermediateRuleList_;
+
+    public:
+
+        /**
+         * @param modelBuilderPtr An unique pointer to an object of type `IModelBuilder` that should be used to build
+         *                        the final model
+         */
+        IntermediateModelBuilder(std::unique_ptr<IModelBuilder> modelBuilderPtr);
+
+        void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override;
+
+        void addRule(std::unique_ptr<ConditionList>& conditionListPtr,
+                     std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override;
+
+        std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) override;
+
+};
