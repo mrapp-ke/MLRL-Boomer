@@ -123,9 +123,10 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             std::unique_ptr<IStatisticsProvider> statisticsProviderPtr = labelMatrix.createStatisticsProvider(
                 *statisticsProviderFactoryPtr_);
             std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr_->create();
+            IModelBuilder& modelBuilder = postOptimizationPtr->getModelBuilder();
 
             if (useDefaultRule_) {
-                ruleInductionPtr->induceDefaultRule(statisticsProviderPtr->get(), *postOptimizationPtr);
+                ruleInductionPtr->induceDefaultRule(statisticsProviderPtr->get(), modelBuilder);
             }
 
             statisticsProviderPtr->switchToRegularRuleEvaluation();
@@ -154,7 +155,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 const IIndexVector& labelIndices = labelSamplingPtr->sample(rng);
                 bool success = ruleInductionPtr->induceRule(*thresholdsPtr, labelIndices, weights, partition,
                                                             *featureSamplingPtr, *pruningPtr, *postProcessorPtr, rng,
-                                                            *postOptimizationPtr);
+                                                            modelBuilder);
 
                 if (success) {
                     numRules++;
@@ -164,11 +165,12 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             }
 
             // Post-optimize the model...
-            postOptimizationPtr->optimizeModel(*thresholdsPtr, *ruleInductionPtr, partition, *instanceSamplingPtr,
-                                               *featureSamplingPtr, *pruningPtr, *postProcessorPtr, rng);
+            postOptimizationPtr->optimizeModel(*thresholdsPtr, *ruleInductionPtr, partition, *labelSamplingPtr,
+                                               *instanceSamplingPtr, *featureSamplingPtr, *pruningPtr,
+                                               *postProcessorPtr, rng);
 
             // Build and return the final model...
-            return postOptimizationPtr->buildModel(numUsedRules);
+            return modelBuilder.buildModel(numUsedRules);
         }
 
 };

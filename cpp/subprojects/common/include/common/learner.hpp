@@ -16,7 +16,7 @@
 #include "common/output/predictor_classification.hpp"
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
-#include "common/post_optimization/post_optimization.hpp"
+#include "common/post_optimization/post_optimization_phase_list.hpp"
 #include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
@@ -188,14 +188,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual const IPostProcessorConfig& getPostProcessorConfig() const = 0;
 
                 /**
-                 * Returns the configuration of the method for post-optimizing a model once it has been learned.
-                 *
-                 * @return A reference to an object of type `IPostOptimizationConfig` that specifies the configuration
-                 *         of the method that post-optimizes a model once it has been learned
-                 */
-                virtual const IPostOptimizationConfig& getPostOptimizationConfig() const = 0;
-
-                /**
                  * Returns the configuration of the multi-threading behavior that is used for the parallel refinement of
                  * rules.
                  *
@@ -315,11 +307,6 @@ class MLRLCOMMON_API IRuleLearner {
                  * Configures the rule learner to not use any post processor.
                  */
                 virtual void useNoPostProcessor() = 0;
-
-                /**
-                 * Configures the rule learner to not optimize a model once it has been learned.
-                 */
-                virtual void useNoPostOptimization() = 0;
 
                 /**
                  * Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
@@ -916,12 +903,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<IPostProcessorConfig> postProcessorConfigPtr_;
 
                 /**
-                 * An unique pointer that stores the configuration of the method for post-optimizing a model once it has
-                 * been learned.
-                 */
-                std::unique_ptr<IPostOptimizationConfig> postOptimizationConfigPtr_;
-
-                /**
                  * An unique pointer that stores the configuration of the multi-threading behavior that is used for the
                  * parallel refinement of rules.
                  */
@@ -979,8 +960,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 const IPostProcessorConfig& getPostProcessorConfig() const override final;
 
-                const IPostOptimizationConfig& getPostOptimizationConfig() const override final;
-
                 const IMultiThreadingConfig& getParallelRuleRefinementConfig() const override final;
 
                 const IMultiThreadingConfig& getParallelStatisticUpdateConfig() const override final;
@@ -1016,8 +995,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoPruning() override;
 
                 void useNoPostProcessor() override;
-
-                void useNoPostOptimization() override;
 
                 void useNoParallelRuleRefinement() override;
 
@@ -1059,8 +1036,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const;
 
-        std::unique_ptr<IPostOptimizationFactory> createPostOptimizationFactory() const;
-
         std::unique_ptr<IStoppingCriterionFactory> createSizeStoppingCriterionFactory() const;
 
         std::unique_ptr<IStoppingCriterionFactory> createTimeStoppingCriterionFactory() const;
@@ -1076,6 +1051,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * @param factory A reference to an object of type `StoppingCriterionListFactory` the objects may be added to
          */
         virtual void createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const;
+
+        /**
+         * May be overridden by subclasses in order to create objects of the type `IPostOptimizationPhaseFactory` to be
+         * used by the rule learner.
+         *
+         * @param factory A reference to an object of type `PostOptimizationPhaseListFactory` the objects may be added
+         *                to
+         */
+        virtual void createPostOptimizationPhaseFactories(PostOptimizationPhaseListFactory& factory) const;
 
         /**
          * Must be implemented by subclasses in order to create the `IStatisticsProviderFactory` to be used by the rule
