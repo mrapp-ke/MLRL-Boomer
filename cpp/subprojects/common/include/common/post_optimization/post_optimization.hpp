@@ -36,7 +36,8 @@ class IPostOptimizationPhaseFactory {
 };
 
 /**
- * Defines an interface for all classes that allow to optimize a rule-based model globally once it has been learned.
+ * Defines an interface for all classes that allow to optimize a rule-based model globally once it has been learned by
+ * carrying out several optimization phases.
  */
 class IPostOptimization {
 
@@ -48,7 +49,7 @@ class IPostOptimization {
         virtual IModelBuilder& getModelBuilder() const = 0;
 
         /**
-         * Optimizes a rule-based model globally once it has been learned.
+         * Optimizes a rule-based model globally once it has been learned by carrying out several optimization phases.
          *
          * @param thresholds        A reference to an object of type `IThresholds` that provides access to the
          *                          thresholds that may be used by the conditions of the rule
