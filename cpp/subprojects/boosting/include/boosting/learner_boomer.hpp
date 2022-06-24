@@ -9,7 +9,6 @@
 #endif
 
 #include "boosting/learner.hpp"
-#include "boosting/binning/label_binning_equal_width.hpp"
 
 
 namespace boosting {
@@ -33,6 +32,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::IExampleWiseLogisticLossMixin,
                             virtual public IBoostingRuleLearner::ILabelWiseSquaredErrorLossMixin,
                             virtual public IBoostingRuleLearner::ILabelWiseSquaredHingeLossMixin,
+                            virtual public IBoostingRuleLearner::ILabelBinningMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
                             virtual public IRuleLearner::IFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingMixin,
@@ -90,16 +90,6 @@ namespace boosting {
                      * to bins should be used or not.
                      */
                     virtual void useAutomaticLabelBinning() = 0;
-
-                    /**
-                     * Configures the rule learner to use a method for the assignment of labels to bins in a way such
-                     * that each bin contains labels for which the predicted score is expected to belong to the same
-                     * value range.
-                     *
-                     * @return A reference to an object of type `IEqualWidthLabelBinningConfig` that allows further
-                     *         configuration of the method for the assignment of labels to bins
-                     */
-                    virtual IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting whether individual labels are
@@ -304,6 +294,11 @@ namespace boosting {
                      */
                     void useLabelWiseSquaredHingeLoss() override;
 
+                    /**
+                     * @see `IBoostingRuleLearner::ILabelBinningMixin::useEqualWidthLabelBinning`
+                     */
+                    IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() override;
+
                     void useAutomaticDefaultRule() override;
 
                     void useAutomaticFeatureBinning() override;
@@ -317,8 +312,6 @@ namespace boosting {
                     void useAutomaticStatistics() override;
 
                     void useAutomaticLabelBinning() override;
-
-                    IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() override;
 
                     void useExampleWiseClassificationPredictor() override;
 

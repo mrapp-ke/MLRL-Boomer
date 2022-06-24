@@ -3,9 +3,8 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTo
     IMultiThreadingMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IMeasureStoppingCriterionMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, IShrinkageMixin, \
     IRegularizationMixin, INoDefaultRuleMixin, IPartialHeadMixin, ISparseStatisticsMixin, \
-    IExampleWiseLogisticLossMixin, ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, DdotFunction, \
-    DspmvFunction, DsysvFunction
-from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
+    IExampleWiseLogisticLossMixin, ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, \
+    ILabelBinningMixin, DdotFunction, DspmvFunction, DsysvFunction
 
 from libcpp.memory cimport unique_ptr
 
@@ -21,6 +20,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IExampleWiseLogisticLossMixin,
                                                             ILabelWiseSquaredErrorLossMixin,
                                                             ILabelWiseSquaredHingeLossMixin,
+                                                            ILabelBinningMixin,
                                                             IBeamSearchTopDownMixin,
                                                             IFeatureBinningMixin,
                                                             ILabelSamplingMixin,
@@ -48,8 +48,6 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
         void useAutomaticStatistics()
 
         void useAutomaticLabelBinning()
-
-        IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
 
         void useExampleWiseClassificationPredictor()
 

@@ -2,6 +2,7 @@ from mlrl.common.cython.learner cimport  IRuleLearnerConfig, RuleLearnerConfig
 from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
+from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 
 
 ctypedef double (*DdotFunction)(int* n, double* dx, int* incx, double* dy, int* incy)
@@ -96,6 +97,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         # Functions:
 
         void useLabelWiseSquaredHingeLoss()
+
+
+    cdef cppclass ILabelBinningMixin"boosting::IBoostingRuleLearner::ILabelBinningMixin":
+
+        # Functions:
+
+        IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
 
 
 cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
