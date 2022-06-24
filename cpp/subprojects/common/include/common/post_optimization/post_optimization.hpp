@@ -24,8 +24,6 @@ class IPostOptimizationPhase {
         /**
          * Optimizes a rule-based model globally once it has been learned.
          *
-         * @param modelBuilder      A reference to an object of type `IntermediateModelBuilder` that provides access to
-         *                          the rules in the model
          * @param thresholds        A reference to an object of type `IThresholds` that provides access to the
          *                          thresholds that may be used by the conditions of the rule
          * @param ruleInduction     A reference to an object of type `IRuleInduction` that should be used for inducing
@@ -45,8 +43,7 @@ class IPostOptimizationPhase {
          * @param rng               A reference to an object of type `RNG` that implements the random number generator
          *                          to be used
          */
-        virtual void optimizeModel(IntermediateModelBuilder& modelBuilder, IThresholds& thresholds,
-                                   const IRuleInduction& ruleInduction, IPartition& partition,
+        virtual void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
                                    ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
                                    IFeatureSampling& featureSampling, const IPruning& pruning,
                                    const IPostProcessor& postProcessor, RNG& rng) const = 0;
@@ -65,9 +62,11 @@ class IPostOptimizationPhaseFactory {
         /**
          * Creates and returns a new object of type `IPostOptimizationPhase`.
          *
-         * @return An unique pointer to an object of type `IPostOptimizationPhase` that has been created
+         * @param modelBuilder  A reference to an object of type `IntermediateModelBuilder` that provides access to the
+         *                      rules in the model
+         * @return              An unique pointer to an object of type `IPostOptimizationPhase` that has been created
          */
-        virtual std::unique_ptr<IPostOptimizationPhase> create() const = 0;
+        virtual std::unique_ptr<IPostOptimizationPhase> create(IntermediateModelBuilder& modelBuilder) const = 0;
 
 };
 
