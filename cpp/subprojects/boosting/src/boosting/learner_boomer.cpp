@@ -226,6 +226,10 @@ namespace boosting {
             l2RegularizationConfigPtr_);
     }
 
+    void Boomer::Config::useSparseStatistics() {
+        statisticsConfigPtr_ = std::make_unique<SparseStatisticsConfig>(lossConfigPtr_);
+    }
+
     void Boomer::Config::useAutomaticDefaultRule() {
         defaultRuleConfigPtr_ = std::make_unique<AutomaticDefaultRuleConfig>(statisticsConfigPtr_, lossConfigPtr_,
                                                                              headConfigPtr_);
@@ -253,10 +257,6 @@ namespace boosting {
     void Boomer::Config::useAutomaticStatistics() {
         statisticsConfigPtr_ =
             std::make_unique<AutomaticStatisticsConfig>(lossConfigPtr_, headConfigPtr_, defaultRuleConfigPtr_);
-    }
-
-    void Boomer::Config::useSparseStatistics() {
-        statisticsConfigPtr_ = std::make_unique<SparseStatisticsConfig>(lossConfigPtr_);
     }
 
     void Boomer::Config::useExampleWiseLogisticLoss() {

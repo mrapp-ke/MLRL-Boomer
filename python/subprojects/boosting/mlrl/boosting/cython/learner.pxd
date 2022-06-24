@@ -70,6 +70,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useSingleLabelHeads()
 
 
+    cdef cppclass ISparseStatisticsMixin"boosting::IBoostingRuleLearner::ISparseStatisticsMixin":
+
+        # Functions:
+
+        void useSparseStatistics()
+
+
 cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
     # Functions:

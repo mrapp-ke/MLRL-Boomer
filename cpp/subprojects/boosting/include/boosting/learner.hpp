@@ -277,6 +277,24 @@ namespace boosting {
 
             };
 
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a sparse
+             * representation of gradients and Hessians, if possible.
+             */
+            class ISparseStatisticsMixin {
+
+                public:
+
+                    virtual ~ISparseStatisticsMixin() { };
+
+                    /**
+                     * Configures the rule learner to use a sparse representation of gradients and Hessians, if
+                     * possible.
+                     */
+                    virtual void useSparseStatistics() = 0;
+
+            };
+
             virtual ~IBoostingRuleLearner() override { };
 
     };
