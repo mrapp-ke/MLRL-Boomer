@@ -53,6 +53,7 @@ source_files = [
     'src/common/output/prediction_matrix_dense.cpp',
     'src/common/output/prediction_matrix_sparse_binary.cpp',
     'src/common/post_optimization/post_optimization_no.cpp',
+    'src/common/post_optimization/post_optimization_phase_list.cpp',
     'src/common/post_processing/post_processor_no.cpp',
     'src/common/pruning/pruning_irep.cpp',
     'src/common/pruning/pruning_no.cpp',
