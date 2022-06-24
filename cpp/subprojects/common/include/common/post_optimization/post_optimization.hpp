@@ -37,11 +37,14 @@ class IPostOptimizationPhaseFactory {
 /**
  * Defines an interface for all classes that allow to optimize a rule-based model globally once it has been learned.
  */
-class IPostOptimization : public IModelBuilder {
+class IPostOptimization {
 
     public:
 
-        virtual ~IPostOptimization() override { };
+        virtual ~IPostOptimization() { };
+
+        // TODO Comment
+        virtual IModelBuilder& getModelBuilder() const = 0;
 
         /**
          * Optimizes a rule-based model globally once it has been learned.

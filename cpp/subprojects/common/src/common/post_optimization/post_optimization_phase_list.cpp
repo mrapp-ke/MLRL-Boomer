@@ -22,23 +22,14 @@ class NoPostOptimization final : public IPostOptimization {
 
         }
 
-        void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
-            modelBuilderPtr_->setDefaultRule(predictionPtr);
-        }
-
-        void addRule(std::unique_ptr<ConditionList>& conditionListPtr,
-                     std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
-            modelBuilderPtr_->addRule(conditionListPtr, predictionPtr);
+        IModelBuilder& getModelBuilder() const override {
+            return *modelBuilderPtr_;
         }
 
         void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
                            IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
                            const IPruning& pruning, const IPostProcessor& postProcessor, RNG& rng) override {
             return;
-        }
-
-        std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) override {
-            return modelBuilderPtr_->buildModel(numUsedRules);
         }
 
 };
