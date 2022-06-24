@@ -4,7 +4,7 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTo
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, IShrinkageMixin, \
     IRegularizationMixin, INoDefaultRuleMixin, IPartialHeadMixin, ISparseStatisticsMixin, \
     IExampleWiseLogisticLossMixin, ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, \
-    ILabelBinningMixin, DdotFunction, DspmvFunction, DsysvFunction
+    ILabelBinningMixin, IExampleWiseClassificationPredictorMixin, DdotFunction, DspmvFunction, DsysvFunction
 
 from libcpp.memory cimport unique_ptr
 
@@ -21,6 +21,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             ILabelWiseSquaredErrorLossMixin,
                                                             ILabelWiseSquaredHingeLossMixin,
                                                             ILabelBinningMixin,
+                                                            IExampleWiseClassificationPredictorMixin,
                                                             IBeamSearchTopDownMixin,
                                                             IFeatureBinningMixin,
                                                             ILabelSamplingMixin,
@@ -48,8 +49,6 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
         void useAutomaticStatistics()
 
         void useAutomaticLabelBinning()
-
-        void useExampleWiseClassificationPredictor()
 
         void useMarginalizedProbabilityPredictor()
 

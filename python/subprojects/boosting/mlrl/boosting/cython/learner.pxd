@@ -106,6 +106,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
 
 
+    cdef cppclass IExampleWiseClassificationPredictorMixin"boosting::IBoostingRuleLearner::IExampleWiseClassificationPredictorMixin":
+
+        # Functions:
+
+        void useExampleWiseClassificationPredictor()
+
+
 cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
     # Functions:

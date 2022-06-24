@@ -242,6 +242,19 @@ namespace boosting {
         lossConfigPtr_ = std::make_unique<LabelWiseSquaredHingeLossConfig>(headConfigPtr_);
     }
 
+    IEqualWidthLabelBinningConfig& Boomer::Config::useEqualWidthLabelBinning() {
+        std::unique_ptr<EqualWidthLabelBinningConfig> ptr =
+            std::make_unique<EqualWidthLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
+        IEqualWidthLabelBinningConfig& ref = *ptr;
+        labelBinningConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    void Boomer::Config::useExampleWiseClassificationPredictor() {
+        classificationPredictorConfigPtr_ =
+            std::make_unique<ExampleWiseClassificationPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+    }
+
     void Boomer::Config::useAutomaticDefaultRule() {
         defaultRuleConfigPtr_ = std::make_unique<AutomaticDefaultRuleConfig>(statisticsConfigPtr_, lossConfigPtr_,
                                                                              headConfigPtr_);
@@ -274,19 +287,6 @@ namespace boosting {
     void Boomer::Config::useAutomaticLabelBinning() {
         labelBinningConfigPtr_ =
             std::make_unique<AutomaticLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
-    }
-
-    IEqualWidthLabelBinningConfig& Boomer::Config::useEqualWidthLabelBinning() {
-        std::unique_ptr<EqualWidthLabelBinningConfig> ptr =
-            std::make_unique<EqualWidthLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
-        IEqualWidthLabelBinningConfig& ref = *ptr;
-        labelBinningConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
-    void Boomer::Config::useExampleWiseClassificationPredictor() {
-        classificationPredictorConfigPtr_ =
-            std::make_unique<ExampleWiseClassificationPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticClassificationPredictor() {
