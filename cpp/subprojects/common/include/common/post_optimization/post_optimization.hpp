@@ -96,22 +96,3 @@ class IPostOptimizationFactory {
         virtual std::unique_ptr<IPostOptimization> create(const IModelBuilderFactory& modelBuilderFactory) const = 0;
 
 };
-
-/**
- * Defines an interface for all classes that allow to configure a method that optimizes a rule-based model globally once
- * it has been learned.
- */
-class IPostOptimizationConfig {
-
-    public:
-
-        virtual ~IPostOptimizationConfig() { };
-
-        /**
-         * Creates and returns a new object of type `IPostOptimizationFactory` according to the specified configuration.
-         *
-         * @return An unique pointer to an object of type `IPostOptimizationFactory` that has been created
-         */
-        virtual std::unique_ptr<IPostOptimizationFactory> createPostOptimizationFactory() const = 0;
-
-};
