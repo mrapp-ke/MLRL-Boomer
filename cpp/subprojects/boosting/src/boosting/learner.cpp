@@ -5,7 +5,7 @@
 #include "boosting/output/predictor_classification_label_wise.hpp"
 #include "boosting/output/predictor_regression_label_wise.hpp"
 #include "boosting/output/predictor_probability_label_wise.hpp"
-#include "boosting/rule_evaluation/head_type_single.hpp"
+#include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
 #include "common/output/label_space_info_no.hpp"
@@ -14,7 +14,7 @@
 namespace boosting {
 
     AbstractBoostingRuleLearner::Config::Config() {
-        this->useSingleLabelHeads();
+        this->useCompleteHeads();
         this->useDenseStatistics();
         this->useNoL1Regularization();
         this->useNoL2Regularization();
@@ -61,8 +61,8 @@ namespace boosting {
         return *probabilityPredictorConfigPtr_;
     }
 
-    void AbstractBoostingRuleLearner::Config::useSingleLabelHeads() {
-        headConfigPtr_ = std::make_unique<SingleLabelHeadConfig>(
+    void AbstractBoostingRuleLearner::Config::useCompleteHeads() {
+        headConfigPtr_ = std::make_unique<CompleteHeadConfig>(
             labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
             l2RegularizationConfigPtr_);
     }

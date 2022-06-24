@@ -11,12 +11,12 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
     cdef IBoostingRuleLearnerConfig* get_boosting_rule_learner_config_ptr(self):
         pass
 
-    def use_single_label_heads(self):
+    def use_complete_heads(self):
         """
-        Configures the rule learner to induce rules with single-label heads that predict for a single label.
+        Configures the rule learner to induce rules with complete heads that predict for all available labels.
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.get_boosting_rule_learner_config_ptr()
-        rule_learner_config_ptr.useSingleLabelHeads()
+        rule_learner_config_ptr.useCompleteHeads()
 
     def use_dense_statistics(self):
         """

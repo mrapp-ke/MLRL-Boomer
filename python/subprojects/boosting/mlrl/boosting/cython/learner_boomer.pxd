@@ -44,7 +44,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
 
         IDynamicPartialHeadConfig& useDynamicPartialHeads()
 
-        void useCompleteHeads()
+        void useSingleLabelHeads()
 
         void useAutomaticStatistics()
 

@@ -381,12 +381,12 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
-    def use_complete_heads(self):
+    def use_single_label_heads(self):
         """
-        Configures the rule learner to induce rules with complete heads that predict for all available labels.
+        Configures the rule learner to induce rules with single-label heads that predict for a single label.
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useCompleteHeads()
+        rule_learner_config_ptr.useSingleLabelHeads()
 
     def use_automatic_statistics(self):
         """

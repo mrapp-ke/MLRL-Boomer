@@ -16,7 +16,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useSingleLabelHeads()
+        void useCompleteHeads()
 
         void useDenseStatistics()
 

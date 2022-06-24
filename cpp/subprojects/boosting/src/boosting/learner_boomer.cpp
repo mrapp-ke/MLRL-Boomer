@@ -11,7 +11,7 @@
 #include "boosting/output/predictor_probability_auto.hpp"
 #include "boosting/output/predictor_probability_marginalized.hpp"
 #include "boosting/rule_evaluation/head_type_auto.hpp"
-#include "boosting/rule_evaluation/head_type_complete.hpp"
+#include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_model_assemblage/default_rule_auto.hpp"
 #include "boosting/statistics/statistic_format_auto.hpp"
 #include "boosting/statistics/statistic_format_sparse.hpp"
@@ -244,8 +244,8 @@ namespace boosting {
         return ref;
     }
 
-    void Boomer::Config::useCompleteHeads() {
-        headConfigPtr_ = std::make_unique<CompleteHeadConfig>(
+    void Boomer::Config::useSingleLabelHeads() {
+        headConfigPtr_ = std::make_unique<SingleLabelHeadConfig>(
             labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
             l2RegularizationConfigPtr_);
     }
