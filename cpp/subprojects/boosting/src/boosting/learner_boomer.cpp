@@ -204,6 +204,28 @@ namespace boosting {
         defaultRuleConfigPtr_ = std::make_unique<DefaultRuleConfig>(false);
     }
 
+    IFixedPartialHeadConfig& Boomer::Config::useFixedPartialHeads() {
+        std::unique_ptr<FixedPartialHeadConfig> ptr = std::make_unique<FixedPartialHeadConfig>(
+            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_);
+        IFixedPartialHeadConfig& ref = *ptr;
+        headConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    IDynamicPartialHeadConfig& Boomer::Config::useDynamicPartialHeads() {
+        std::unique_ptr<DynamicPartialHeadConfig> ptr = std::make_unique<DynamicPartialHeadConfig>(
+            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_);
+        IDynamicPartialHeadConfig& ref = *ptr;
+        headConfigPtr_ = std::move(ptr);
+        return ref;
+    }
+
+    void Boomer::Config::useSingleLabelHeads() {
+        headConfigPtr_ = std::make_unique<SingleLabelHeadConfig>(
+            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
+            l2RegularizationConfigPtr_);
+    }
+
     void Boomer::Config::useAutomaticDefaultRule() {
         defaultRuleConfigPtr_ = std::make_unique<AutomaticDefaultRuleConfig>(statisticsConfigPtr_, lossConfigPtr_,
                                                                              headConfigPtr_);
@@ -225,28 +247,6 @@ namespace boosting {
     void Boomer::Config::useAutomaticHeads() {
         headConfigPtr_ = std::make_unique<AutomaticHeadConfig>(
             lossConfigPtr_, labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
-            l2RegularizationConfigPtr_);
-    }
-
-    IFixedPartialHeadConfig& Boomer::Config::useFixedPartialHeads() {
-        std::unique_ptr<FixedPartialHeadConfig> ptr = std::make_unique<FixedPartialHeadConfig>(
-            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_);
-        IFixedPartialHeadConfig& ref = *ptr;
-        headConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
-    IDynamicPartialHeadConfig& Boomer::Config::useDynamicPartialHeads() {
-        std::unique_ptr<DynamicPartialHeadConfig> ptr = std::make_unique<DynamicPartialHeadConfig>(
-            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_);
-        IDynamicPartialHeadConfig& ref = *ptr;
-        headConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
-    void Boomer::Config::useSingleLabelHeads() {
-        headConfigPtr_ = std::make_unique<SingleLabelHeadConfig>(
-            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
             l2RegularizationConfigPtr_);
     }
 
