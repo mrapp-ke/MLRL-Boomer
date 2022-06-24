@@ -223,6 +223,22 @@ namespace boosting {
 
             };
 
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to not induce a default rule.
+             */
+            class INoDefaultRuleMixin {
+
+                public:
+
+                    virtual ~INoDefaultRuleMixin() { };
+
+                    /**
+                     * Configures the rule learner to not induce a default rule.
+                     */
+                    virtual void useNoDefaultRule() = 0;
+
+            };
+
             virtual ~IBoostingRuleLearner() override { };
 
     };

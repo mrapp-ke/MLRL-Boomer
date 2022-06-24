@@ -51,6 +51,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         IManualRegularizationConfig& useL2Regularization()
 
 
+    cdef cppclass INoDefaultRuleMixin"boosting::IBoostingRuleLearner::INoDefaultRuleMixin":
+
+        # Functions:
+
+        void useNoDefaultRule()
+
+
 cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
 
     # Functions:
