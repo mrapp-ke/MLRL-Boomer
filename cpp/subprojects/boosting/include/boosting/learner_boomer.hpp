@@ -29,6 +29,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::IRegularizationMixin,
                             virtual public IBoostingRuleLearner::INoDefaultRuleMixin,
                             virtual public IBoostingRuleLearner::IPartialHeadMixin,
+                            virtual public IBoostingRuleLearner::ISparseStatisticsMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
                             virtual public IRuleLearner::IFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingMixin,
@@ -80,12 +81,6 @@ namespace boosting {
                      * gradients and Hessians should be used.
                      */
                     virtual void useAutomaticStatistics() = 0;
-
-                    /**
-                     * Configures the rule learner to use a sparse representation of gradients and Hessians, if
-                     * possible.
-                     */
-                    virtual void useSparseStatistics() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -304,6 +299,11 @@ namespace boosting {
                      */
                     void useSingleLabelHeads() override;
 
+                    /**
+                     * @see `IBoostingRuleLearner::ISparseStatisticsMixin::useSparseStatistics`
+                     */
+                    void useSparseStatistics() override;
+
                     void useAutomaticDefaultRule() override;
 
                     void useAutomaticFeatureBinning() override;
@@ -315,8 +315,6 @@ namespace boosting {
                     void useAutomaticHeads() override;
 
                     void useAutomaticStatistics() override;
-
-                    void useSparseStatistics() override;
 
                     void useExampleWiseLogisticLoss() override;
 
