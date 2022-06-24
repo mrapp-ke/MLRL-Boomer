@@ -240,6 +240,10 @@ namespace boosting {
 
             };
 
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
+             * heads.
+             */
             class IPartialHeadMixin {
 
                 public:
