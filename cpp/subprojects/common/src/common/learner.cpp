@@ -75,7 +75,6 @@ AbstractRuleLearner::Config::Config() {
     this->useNoPartitionSampling();
     this->useNoPruning();
     this->useNoPostProcessor();
-    this->useNoPostOptimization();
     this->useNoParallelRuleRefinement();
     this->useNoParallelStatisticUpdate();
     this->useNoParallelPrediction();
@@ -122,10 +121,6 @@ const IPruningConfig& AbstractRuleLearner::Config::getPruningConfig() const {
 
 const IPostProcessorConfig& AbstractRuleLearner::Config::getPostProcessorConfig() const {
     return *postProcessorConfigPtr_;
-}
-
-const IPostOptimizationConfig& AbstractRuleLearner::Config::getPostOptimizationConfig() const {
-    return *postOptimizationConfigPtr_;
 }
 
 const IMultiThreadingConfig& AbstractRuleLearner::Config::getParallelRuleRefinementConfig() const {
@@ -196,10 +191,6 @@ void AbstractRuleLearner::Config::useNoPostProcessor() {
     postProcessorConfigPtr_ = std::make_unique<NoPostProcessorConfig>();
 }
 
-void AbstractRuleLearner::Config::useNoPostOptimization() {
-    postOptimizationConfigPtr_ = std::make_unique<NoPostOptimizationConfig>();
-}
-
 void AbstractRuleLearner::Config::useNoParallelRuleRefinement() {
     parallelRuleRefinementConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
 }
@@ -268,10 +259,6 @@ std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() con
 
 std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorFactory() const {
     return config_.getPostProcessorConfig().createPostProcessorFactory();
-}
-
-std::unique_ptr<IPostOptimizationFactory> AbstractRuleLearner::createPostOptimizationFactory() const {
-    return config_.getPostOptimizationConfig().createPostOptimizationFactory();
 }
 
 std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createSizeStoppingCriterionFactory() const {
