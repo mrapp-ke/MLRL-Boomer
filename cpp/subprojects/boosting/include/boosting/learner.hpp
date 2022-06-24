@@ -14,7 +14,8 @@
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
-#include "boosting/rule_evaluation/head_type.hpp"
+#include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
+#include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 #include "boosting/rule_evaluation/regularization_manual.hpp"
 #include "boosting/statistics/statistic_format.hpp"
 
@@ -236,6 +237,39 @@ namespace boosting {
                      * Configures the rule learner to not induce a default rule.
                      */
                     virtual void useNoDefaultRule() = 0;
+
+            };
+
+            class IPartialHeadMixin {
+
+                public:
+
+                    virtual ~IPartialHeadMixin() { };
+
+                    /**
+                     * Configures the rule learner to induce rules with partial heads that predict for a predefined
+                     * number of labels.
+                     *
+                     * @return A reference to an object of type `IFixedPartialHeadConfig` that allows further
+                     *         configuration of the rule heads
+                     */
+                    virtual IFixedPartialHeadConfig& useFixedPartialHeads() = 0;
+
+                    /**
+                     * Configures the rule learner to induce rules with partial heads that predict for a subset of the
+                     * available labels that is determined dynamically. Only those labels for which the square of the
+                     * predictive quality exceeds a certain threshold are included in a rule head.
+                     *
+                     * @return A reference to an object of type `IDynamicPartialHeadConfig` that allows further
+                     *         configuration of the rule heads
+                     */
+                    virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() = 0;
+
+                    /**
+                     * Configures the rule learner to induce rules with single-label heads that predict for a single
+                     * label.
+                     */
+                    virtual void useSingleLabelHeads() = 0;
 
             };
 

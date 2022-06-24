@@ -10,8 +10,6 @@
 
 #include "boosting/learner.hpp"
 #include "boosting/binning/label_binning_equal_width.hpp"
-#include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
-#include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 
 
 namespace boosting {
@@ -30,6 +28,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::IShrinkageMixin,
                             virtual public IBoostingRuleLearner::IRegularizationMixin,
                             virtual public IBoostingRuleLearner::INoDefaultRuleMixin,
+                            virtual public IBoostingRuleLearner::IPartialHeadMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
                             virtual public IRuleLearner::IFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingMixin,
@@ -75,31 +74,6 @@ namespace boosting {
                      * used.
                      */
                     virtual void useAutomaticHeads() = 0;
-
-                    /**
-                     * Configures the rule learner to induce rules with partial heads that predict for a predefined
-                     * number of labels.
-                     *
-                     * @return A reference to an object of type `IFixedPartialHeadConfig` that allows further
-                     *         configuration of the rule heads
-                     */
-                    virtual IFixedPartialHeadConfig& useFixedPartialHeads() = 0;
-
-                    /**
-                     * Configures the rule learner to induce rules with partial heads that predict for a subset of the
-                     * available labels that is determined dynamically. Only those labels for which the square of the
-                     * predictive quality exceeds a certain threshold are included in a rule head.
-                     *
-                     * @return A reference to an object of type `IDynamicPartialHeadConfig` that allows further
-                     *         configuration of the rule heads
-                     */
-                    virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() = 0;
-
-                    /**
-                     * Configures the rule learner to induce rules with single-label heads that predict for a single
-                     * label.
-                     */
-                    virtual void useSingleLabelHeads() = 0;
 
                     /**
                      * Configures the rule learner to automatically decide whether a dense or sparse representation of
@@ -315,6 +289,21 @@ namespace boosting {
                      */
                     void useNoDefaultRule() override;
 
+                    /**
+                     * @see `IBoostingRuleLearner::IPartialHeadMixin::useFixedPartialHeads`
+                     */
+                    IFixedPartialHeadConfig& useFixedPartialHeads() override;
+
+                    /**
+                     * @see `IBoostingRuleLearner::IPartialHeadMixin::useDynamicPartialHeads`
+                     */
+                    IDynamicPartialHeadConfig& useDynamicPartialHeads() override;
+
+                    /**
+                     * @see `IBoostingRuleLearner::IPartialHeadMixin::useSingleLabelHeads`
+                     */
+                    void useSingleLabelHeads() override;
+
                     void useAutomaticDefaultRule() override;
 
                     void useAutomaticFeatureBinning() override;
@@ -324,12 +313,6 @@ namespace boosting {
                     void useAutomaticParallelStatisticUpdate() override;
 
                     void useAutomaticHeads() override;
-
-                    IFixedPartialHeadConfig& useFixedPartialHeads() override;
-
-                    IDynamicPartialHeadConfig& useDynamicPartialHeads() override;
-
-                    void useSingleLabelHeads() override;
 
                     void useAutomaticStatistics() override;
 

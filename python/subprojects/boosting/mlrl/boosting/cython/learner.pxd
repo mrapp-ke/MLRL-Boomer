@@ -1,4 +1,5 @@
 from mlrl.common.cython.learner cimport  IRuleLearnerConfig, RuleLearnerConfig
+from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
 
@@ -56,6 +57,17 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         # Functions:
 
         void useNoDefaultRule()
+
+
+    cdef cppclass IPartialHeadMixin"boosting::IBoostingRuleLearner::IPartialHeadMixin":
+
+        # Functions:
+
+        IFixedPartialHeadConfig& useFixedPartialHeads()
+
+        IDynamicPartialHeadConfig& useDynamicPartialHeads()
+
+        void useSingleLabelHeads()
 
 
 cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):

@@ -2,8 +2,7 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTo
     ILabelSamplingMixin, IInstanceSamplingMixin, IFeatureSamplingMixin, IPartitionSamplingMixin, IPruningMixin, \
     IMultiThreadingMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IMeasureStoppingCriterionMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, IShrinkageMixin, \
-    IRegularizationMixin, INoDefaultRuleMixin, DdotFunction, DspmvFunction, DsysvFunction
-from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
+    IRegularizationMixin, INoDefaultRuleMixin, IPartialHeadMixin, DdotFunction, DspmvFunction, DsysvFunction
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 
 from libcpp.memory cimport unique_ptr
@@ -15,6 +14,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IShrinkageMixin,
                                                             IRegularizationMixin,
                                                             INoDefaultRuleMixin,
+                                                            IPartialHeadMixin,
                                                             IBeamSearchTopDownMixin,
                                                             IFeatureBinningMixin,
                                                             ILabelSamplingMixin,
@@ -38,12 +38,6 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
         void useAutomaticParallelStatisticUpdate()
 
         void useAutomaticHeads()
-
-        IFixedPartialHeadConfig& useFixedPartialHeads()
-
-        IDynamicPartialHeadConfig& useDynamicPartialHeads()
-
-        void useSingleLabelHeads()
 
         void useAutomaticStatistics()
 
