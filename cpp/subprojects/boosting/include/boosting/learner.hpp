@@ -118,10 +118,10 @@ namespace boosting {
                     virtual ~IConfig() override { };
 
                     /**
-                     * Configures the rule learner to induce rules with single-label heads that predict for a single
-                     * label.
+                     * Configures the rule learner to induce rules with complete heads that predict for all available
+                     * labels.
                      */
-                    virtual void useSingleLabelHeads() = 0;
+                    virtual void useCompleteHeads() = 0;
 
                     /**
                      * Configures the rule learner to use a dense representation of gradients and Hessians.
@@ -314,7 +314,7 @@ namespace boosting {
 
                     Config();
 
-                    void useSingleLabelHeads() override;
+                    void useCompleteHeads() override;
 
                     void useDenseStatistics() override;
 

@@ -100,10 +100,10 @@ namespace boosting {
                     virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() = 0;
 
                     /**
-                     * Configures the rule learner to induce rules with complete heads that predict for all available
-                     * labels.
+                     * Configures the rule learner to induce rules with single-label heads that predict for a single
+                     * label.
                      */
-                    virtual void useCompleteHeads() = 0;
+                    virtual void useSingleLabelHeads() = 0;
 
                     /**
                      * Configures the rule learner to automatically decide whether a dense or sparse representation of
@@ -330,7 +330,7 @@ namespace boosting {
 
                     IDynamicPartialHeadConfig& useDynamicPartialHeads() override;
 
-                    void useCompleteHeads() override;
+                    void useSingleLabelHeads() override;
 
                     void useAutomaticStatistics() override;
 
