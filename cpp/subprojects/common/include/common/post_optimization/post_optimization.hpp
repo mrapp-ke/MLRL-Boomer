@@ -53,14 +53,20 @@ class IPostOptimizationPhase {
 
 };
 
-// TODO comment.
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IPostOptimizationPhase`.
+ */
 class IPostOptimizationPhaseFactory {
 
     public:
 
         virtual ~IPostOptimizationPhaseFactory() { };
 
-        // TODO Comment
+        /**
+         * Creates and returns a new object of type `IPostOptimizationPhase`.
+         *
+         * @return An unique pointer to an object of type `IPostOptimizationPhase` that has been created
+         */
         virtual std::unique_ptr<IPostOptimizationPhase> create() const = 0;
 
 };
@@ -75,7 +81,12 @@ class IPostOptimization {
 
         virtual ~IPostOptimization() { };
 
-        // TODO Comment
+        /**
+         * Returns an `IModelBuilder` that is suited for post-optimization via this object. Rules that are induced
+         * during training must be added to the returned builder.
+         *
+         * @return A reference to an object of type `IModelBuilder` that is suited for post-optimization
+         */
         virtual IModelBuilder& getModelBuilder() const = 0;
 
         /**
