@@ -117,7 +117,7 @@ class IPostOptimizationFactory {
         virtual ~IPostOptimizationFactory() { };
 
         /**
-         * Creates and returns a new object of type `PostOptimization`.
+         * Creates and returns a new object of type `IPostOptimization`.
          *
          * @param modelBuilderFactory   A reference to an object of type `IModelBuilderFactory` that allows to create
          *                              the builder to be used for assembling a model
