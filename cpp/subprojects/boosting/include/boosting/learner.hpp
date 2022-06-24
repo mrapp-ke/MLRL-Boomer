@@ -295,6 +295,60 @@ namespace boosting {
 
             };
 
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
+             * implements a multi-label variant of the logistic loss that is applied example-wise.
+             */
+            class IExampleWiseLogisticLossMixin {
+
+                public:
+
+                    virtual ~IExampleWiseLogisticLossMixin() { };
+
+                    /**
+                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
+                     * logistic loss that is applied example-wise.
+                     */
+                    virtual void useExampleWiseLogisticLoss() = 0;
+
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
+             * implements a multi-label variant of the squared error loss that is applied label-wise.
+             */
+            class ILabelWiseSquaredErrorLossMixin {
+
+                public:
+
+                    virtual ~ILabelWiseSquaredErrorLossMixin() { };
+
+                    /**
+                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
+                     * squared error loss that is applied label-wise.
+                     */
+                    virtual void useLabelWiseSquaredErrorLoss() = 0;
+
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
+             * implements a multi-label variant of the squared hinge loss that is applied label-wise.
+             */
+            class ILabelWiseSquaredHingeLossMixin {
+
+                public:
+
+                    virtual ~ILabelWiseSquaredHingeLossMixin() { };
+
+                    /**
+                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
+                     * squared hinge loss that is applied label-wise.
+                     */
+                    virtual void useLabelWiseSquaredHingeLoss() = 0;
+
+            };
+
             virtual ~IBoostingRuleLearner() override { };
 
     };
