@@ -29,6 +29,7 @@ namespace boosting {
             class IConfig : virtual public IBoostingRuleLearner::IConfig,
                             virtual public IBoostingRuleLearner::IShrinkageMixin,
                             virtual public IBoostingRuleLearner::IRegularizationMixin,
+                            virtual public IBoostingRuleLearner::INoDefaultRuleMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
                             virtual public IRuleLearner::IFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingMixin,
@@ -44,11 +45,6 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override { };
-
-                    /**
-                     * Configures the rule learner to not induce a default rule.
-                     */
-                    virtual void useNoDefaultRule() = 0;
 
                     /**
                      * Configures the rule learner to automatically decide whether a default rule should be induced or
@@ -314,6 +310,9 @@ namespace boosting {
                      */
                     IManualRegularizationConfig& useL2Regularization() override;
 
+                    /**
+                     * @see `IBoostingRuleLearner::INoDefaultRuleMixin::useNoDefaultRule`
+                     */
                     void useNoDefaultRule() override;
 
                     void useAutomaticDefaultRule() override;

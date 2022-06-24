@@ -2,7 +2,7 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTo
     ILabelSamplingMixin, IInstanceSamplingMixin, IFeatureSamplingMixin, IPartitionSamplingMixin, IPruningMixin, \
     IMultiThreadingMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IMeasureStoppingCriterionMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, IShrinkageMixin, \
-    IRegularizationMixin, DdotFunction, DspmvFunction, DsysvFunction
+    IRegularizationMixin, INoDefaultRuleMixin, DdotFunction, DspmvFunction, DsysvFunction
 from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 
@@ -14,6 +14,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
     cdef cppclass IBoomerConfig"boosting::IBoomer::IConfig"(IBoostingRuleLearnerConfig,
                                                             IShrinkageMixin,
                                                             IRegularizationMixin,
+                                                            INoDefaultRuleMixin,
                                                             IBeamSearchTopDownMixin,
                                                             IFeatureBinningMixin,
                                                             ILabelSamplingMixin,
@@ -27,8 +28,6 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IMeasureStoppingCriterionMixin):
 
         # Functions:
-
-        void useNoDefaultRule()
 
         void useAutomaticDefaultRule()
 
