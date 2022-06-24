@@ -309,6 +309,10 @@ void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionList
     }
 }
 
+void AbstractRuleLearner::createPostOptimizationPhaseFactories(PostOptimizationPhaseListFactory& factory) const {
+
+}
+
 std::unique_ptr<IRegressionPredictorFactory> AbstractRuleLearner::createRegressionPredictorFactory(
         const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
     return nullptr;
@@ -323,9 +327,17 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,
         const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const {
     assertGreaterOrEqual<uint32>("randomState", randomState, 1);
+
+    // Create stopping criteria...
     std::unique_ptr<StoppingCriterionListFactory> stoppingCriterionFactoryPtr =
         std::make_unique<StoppingCriterionListFactory>();
     this->createStoppingCriterionFactories(*stoppingCriterionFactoryPtr);
+
+    // Create post-optimization phases...
+    std::unique_ptr<PostOptimizationPhaseListFactory> postOptimizationFactoryPtr =
+        std::make_unique<PostOptimizationPhaseListFactory>();
+    this->createPostOptimizationPhaseFactories(*postOptimizationFactoryPtr);
+
     std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr = this->createLabelSpaceInfo(labelMatrix);
     std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
         this->createRuleModelAssemblageFactory(labelMatrix);
@@ -335,7 +347,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         this->createRuleInductionFactory(featureMatrix, labelMatrix), this->createLabelSamplingFactory(labelMatrix),
         this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(featureMatrix),
         this->createPartitionSamplingFactory(), this->createPruningFactory(), this->createPostProcessorFactory(),
-        this->createPostOptimizationFactory(), std::move(stoppingCriterionFactoryPtr));
+        std::move(postOptimizationFactoryPtr), std::move(stoppingCriterionFactoryPtr));
     std::unique_ptr<IRuleModel> ruleModelPtr = ruleModelAssemblagePtr->induceRules(
         nominalFeatureMask, featureMatrix, labelMatrix, randomState);
     return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), std::move(ruleModelPtr),

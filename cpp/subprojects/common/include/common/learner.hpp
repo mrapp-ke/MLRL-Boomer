@@ -16,7 +16,7 @@
 #include "common/output/predictor_classification.hpp"
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
-#include "common/post_optimization/post_optimization.hpp"
+#include "common/post_optimization/post_optimization_phase_list.hpp"
 #include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
@@ -1076,6 +1076,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * @param factory A reference to an object of type `StoppingCriterionListFactory` the objects may be added to
          */
         virtual void createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const;
+
+        /**
+         * May be overridden by subclasses in order to create objects of the type `IPostOptimizationPhaseFactory` to be
+         * used by the rule learner.
+         *
+         * @param factory A reference to an object of type `PostOptimizationPhaseListFactory` the objects may be added
+         *                to
+         */
+        virtual void createPostOptimizationPhaseFactories(PostOptimizationPhaseListFactory& factory) const;
 
         /**
          * Must be implemented by subclasses in order to create the `IStatisticsProviderFactory` to be used by the rule
