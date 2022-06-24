@@ -8,7 +8,7 @@
 
 
 /**
- * A factory that allows to create an instance of type `IStoppingCriterion` that allows to test multiple stopping
+ * A factory that allows to create instances of the type `IStoppingCriterion` that allow to test multiple stopping
  * criteria. If at least one of these stopping criteria is met, the induction of additional rules is stopped.
  */
 class StoppingCriterionListFactory final : public IStoppingCriterionFactory {
