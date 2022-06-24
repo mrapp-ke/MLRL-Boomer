@@ -9,7 +9,7 @@
 #endif
 
 #include "common/learner.hpp"
-#include "boosting/binning/label_binning.hpp"
+#include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/losses/loss.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
@@ -346,6 +346,28 @@ namespace boosting {
                      * squared hinge loss that is applied label-wise.
                      */
                     virtual void useLabelWiseSquaredHingeLoss() = 0;
+
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a method for the
+             * assignment of labels to bins.
+             */
+            class ILabelBinningMixin {
+
+                public:
+
+                    virtual ~ILabelBinningMixin() { };
+
+                    /**
+                     * Configures the rule learner to use a method for the assignment of labels to bins in a way such
+                     * that each bin contains labels for which the predicted score is expected to belong to the same
+                     * value range.
+                     *
+                     * @return A reference to an object of type `IEqualWidthLabelBinningConfig` that allows further
+                     *         configuration of the method for the assignment of labels to bins
+                     */
+                    virtual IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() = 0;
 
             };
 
