@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/model/model_builder.hpp"
+#include "common/post_optimization/model_builder_intermediate.hpp"
 #include "common/post_processing/post_processor.hpp"
 #include "common/pruning/pruning.hpp"
 #include "common/rule_induction/rule_induction.hpp"
@@ -12,14 +12,44 @@
 #include "common/thresholds/thresholds.hpp"
 
 
-// TODO comment
+/**
+ * Defines an interface for all classes that allow to optimize a rule-based model globally once it has been learned.
+ */
 class IPostOptimizationPhase {
 
     public:
 
         virtual ~IPostOptimizationPhase() { };
 
-        // TODO optimize method
+        /**
+         * Optimizes a rule-based model globally once it has been learned.
+         *
+         * @param modelBuilder      A reference to an object of type `IntermediateModelBuilder` that provides access to
+         *                          the rules in the model
+         * @param thresholds        A reference to an object of type `IThresholds` that provides access to the
+         *                          thresholds that may be used by the conditions of the rule
+         * @param ruleInduction     A reference to an object of type `IRuleInduction` that should be used for inducing
+         *                          new rules
+         * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
+         *                          the training examples that belong to the training set and the holdout set,
+         *                          respectively
+         * @param labelSampling     A reference to an object of type `ILabelSampling` that should be used for sampling
+         *                          labels
+         * @param instanceSampling  A reference to an object of type `IInstanceSampling` that should be used for
+         *                          sampling examples
+         * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
+         *                          the features that may be used by the conditions of new rules
+         * @param pruning           A reference to an object of type `IPruning` that should be used to prune new rules
+         * @param postProcessor     A reference to an object of type `IPostProcessor` that should be used to
+         *                          post-process the predictions of new rules
+         * @param rng               A reference to an object of type `RNG` that implements the random number generator
+         *                          to be used
+         */
+        virtual void optimizeModel(IntermediateModelBuilder& modelBuilder, IThresholds& thresholds,
+                                   const IRuleInduction& ruleInduction, IPartition& partition,
+                                   ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
+                                   IFeatureSampling& featureSampling, const IPruning& pruning,
+                                   const IPostProcessor& postProcessor, RNG& rng) = 0;
 
 };
 
