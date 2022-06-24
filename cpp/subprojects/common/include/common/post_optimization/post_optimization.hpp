@@ -11,6 +11,29 @@
 #include "common/thresholds/thresholds.hpp"
 
 
+// TODO comment
+class IPostOptimizationPhase {
+
+    public:
+
+        virtual ~IPostOptimizationPhase() { };
+
+        // TODO optimize method
+
+};
+
+// TODO comment.
+class IPostOptimizationPhaseFactory {
+
+    public:
+
+        virtual ~IPostOptimizationPhaseFactory() { };
+
+        // TODO Comment
+        virtual std::unique_ptr<IPostOptimizationPhase> create() const = 0;
+
+};
+
 /**
  * Defines an interface for all classes that allow to optimize a rule-based model globally once it has been learned.
  */
