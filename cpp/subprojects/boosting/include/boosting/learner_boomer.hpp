@@ -33,6 +33,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::ILabelWiseSquaredErrorLossMixin,
                             virtual public IBoostingRuleLearner::ILabelWiseSquaredHingeLossMixin,
                             virtual public IBoostingRuleLearner::ILabelBinningMixin,
+                            virtual public IBoostingRuleLearner::IExampleWiseClassificationPredictorMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
                             virtual public IRuleLearner::IFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingMixin,
@@ -90,15 +91,6 @@ namespace boosting {
                      * to bins should be used or not.
                      */
                     virtual void useAutomaticLabelBinning() = 0;
-
-                    /**
-                     * Configures the rule learner to use a predictor for predicting whether individual labels are
-                     * relevant or irrelevant by summing up the scores that are provided by an existing rule-based model
-                     * and comparing the aggregated score vector to the known label vectors according to a certain
-                     * distance measure. The label vector that is closest to the aggregated score vector is finally
-                     * predicted.
-                     */
-                    virtual void useExampleWiseClassificationPredictor() = 0;
 
                     /**
                      * Configures the rule learner to automatically decide for a predictor for predicting whether
@@ -299,6 +291,11 @@ namespace boosting {
                      */
                     IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() override;
 
+                    /**
+                     * @see `IBoostingRuleLearner::IExampleWiseClassificationPredictorMixin::useExampleWiseClassificationPredictor`
+                     */
+                    void useExampleWiseClassificationPredictor() override;
+
                     void useAutomaticDefaultRule() override;
 
                     void useAutomaticFeatureBinning() override;
@@ -312,8 +309,6 @@ namespace boosting {
                     void useAutomaticStatistics() override;
 
                     void useAutomaticLabelBinning() override;
-
-                    void useExampleWiseClassificationPredictor() override;
 
                     void useAutomaticClassificationPredictor() override;
 

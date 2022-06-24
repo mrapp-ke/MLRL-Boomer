@@ -371,6 +371,29 @@ namespace boosting {
 
             };
 
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
+             * predicting whether individual labels are relevant or irrelevant by summing up the scores that are
+             * provided by an existing rule-based model and comparing the aggregated score vector to the known label
+             * vectors according to a certain distance measure.
+             */
+            class IExampleWiseClassificationPredictorMixin {
+
+                public:
+
+                    virtual ~IExampleWiseClassificationPredictorMixin() { };
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting whether individual labels are
+                     * relevant or irrelevant by summing up the scores that are provided by an existing rule-based model
+                     * and comparing the aggregated score vector to the known label vectors according to a certain
+                     * distance measure. The label vector that is closest to the aggregated score vector is finally
+                     * predicted.
+                     */
+                    virtual void useExampleWiseClassificationPredictor() = 0;
+
+            };
+
             virtual ~IBoostingRuleLearner() override { };
 
     };
