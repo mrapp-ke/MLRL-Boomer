@@ -28,7 +28,9 @@ class PostOptimizationPhaseList final : public IPostOptimization {
 
             for (auto it = postOptimizationPhaseFactories.cbegin(); it != postOptimizationPhaseFactories.cend(); it++) {
                 const std::unique_ptr<IPostOptimizationPhaseFactory>& postOptimizationPhaseFactoryPtr = *it;
-                postOptimizationPhases_.push_back(std::move(postOptimizationPhaseFactoryPtr->create()));
+                std::unique_ptr<IPostOptimizationPhase> postOptimizationPhasePtr =
+                    postOptimizationPhaseFactoryPtr->create(*intermediateModelBuilderPtr_);
+                postOptimizationPhases_.push_back(std::move(postOptimizationPhasePtr));
             }
         }
 
@@ -42,9 +44,8 @@ class PostOptimizationPhaseList final : public IPostOptimization {
                            const IPostProcessor& postProcessor, RNG& rng) const override {
             for (auto it = postOptimizationPhases_.cbegin(); it != postOptimizationPhases_.cend(); it++) {
                 const std::unique_ptr<IPostOptimizationPhase>& postOptimizationPhasePtr = *it;
-                postOptimizationPhasePtr->optimizeModel(*intermediateModelBuilderPtr_, thresholds, ruleInduction,
-                                                        partition, labelSampling, instanceSampling, featureSampling,
-                                                        pruning, postProcessor, rng);
+                postOptimizationPhasePtr->optimizeModel(thresholds, ruleInduction, partition, labelSampling,
+                                                        instanceSampling, featureSampling, pruning, postProcessor, rng);
             }
         }
 
