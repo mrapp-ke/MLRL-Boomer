@@ -255,6 +255,11 @@ namespace boosting {
             std::make_unique<ExampleWiseClassificationPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
+    void Boomer::Config::useMarginalizedProbabilityPredictor() {
+        probabilityPredictorConfigPtr_ =
+            std::make_unique<MarginalizedProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+    }
+
     void Boomer::Config::useAutomaticDefaultRule() {
         defaultRuleConfigPtr_ = std::make_unique<AutomaticDefaultRuleConfig>(statisticsConfigPtr_, lossConfigPtr_,
                                                                              headConfigPtr_);
@@ -292,11 +297,6 @@ namespace boosting {
     void Boomer::Config::useAutomaticClassificationPredictor() {
         classificationPredictorConfigPtr_ =
             std::make_unique<AutomaticClassificationPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
-    }
-
-    void Boomer::Config::useMarginalizedProbabilityPredictor() {
-        probabilityPredictorConfigPtr_ =
-            std::make_unique<MarginalizedProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticProbabilityPredictor() {
