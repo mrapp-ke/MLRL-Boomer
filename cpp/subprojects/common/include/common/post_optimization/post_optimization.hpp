@@ -49,7 +49,7 @@ class IPostOptimizationPhase {
                                    const IRuleInduction& ruleInduction, IPartition& partition,
                                    ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
                                    IFeatureSampling& featureSampling, const IPruning& pruning,
-                                   const IPostProcessor& postProcessor, RNG& rng) = 0;
+                                   const IPostProcessor& postProcessor, RNG& rng) const = 0;
 
 };
 
@@ -114,7 +114,7 @@ class IPostOptimization {
         virtual void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
                                    ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
                                    IFeatureSampling& featureSampling, const IPruning& pruning,
-                                   const IPostProcessor& postProcessor, RNG& rng) = 0;
+                                   const IPostProcessor& postProcessor, RNG& rng) const = 0;
 
 };
 

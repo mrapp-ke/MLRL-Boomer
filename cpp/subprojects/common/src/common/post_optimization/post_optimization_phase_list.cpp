@@ -29,7 +29,7 @@ class NoPostOptimization final : public IPostOptimization {
         void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
                            ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
                            IFeatureSampling& featureSampling, const IPruning& pruning,
-                           const IPostProcessor& postProcessor, RNG& rng) override {
+                           const IPostProcessor& postProcessor, RNG& rng) const override {
             return;
         }
 
