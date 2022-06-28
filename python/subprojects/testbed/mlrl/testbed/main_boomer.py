@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 from mlrl.boosting.boosting_learners import Boomer, STATISTIC_FORMAT_VALUES, DEFAULT_RULE_VALUES, HEAD_TYPE_VALUES, \
     LABEL_BINNING_VALUES, LOSS_VALUES, CLASSIFICATION_PREDICTOR_VALUES, \
     PROBABILITY_PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
-from mlrl.common.rule_learners import AUTOMATIC
+from mlrl.common.config import AUTOMATIC
 from mlrl.common.strings import format_dict_keys, format_string_set
 from mlrl.testbed.args import add_rule_learner_arguments, add_max_rules_argument, add_time_limit_argument, \
     add_label_sampling_argument, add_instance_sampling_argument, add_feature_sampling_argument, \

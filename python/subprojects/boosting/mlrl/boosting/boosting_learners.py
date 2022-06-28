@@ -18,16 +18,16 @@ from mlrl.boosting.config import configure_post_processor, configure_l1_regulari
     configure_example_wise_classification_predictor, configure_label_wise_probability_predictor, \
     configure_marginalized_probability_predictor
 from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
+from mlrl.common.config import AUTOMATIC, NONE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, \
+    ARGUMENT_NUM_THREADS, BINNING_EQUAL_WIDTH, BINNING_EQUAL_FREQUENCY
+from mlrl.common.config import parse_param, configure_rule_induction, configure_feature_binning, \
+    configure_label_sampling, configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, \
+    configure_pruning, configure_parallel_rule_refinement, configure_parallel_statistic_update, \
+    configure_parallel_prediction, configure_size_stopping_criterion, configure_time_stopping_criterion, \
+    configure_early_stopping_criterion
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import AUTOMATIC, NONE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, \
-    ARGUMENT_NUM_THREADS, BINNING_EQUAL_WIDTH, BINNING_EQUAL_FREQUENCY
-from mlrl.common.rule_learners import RuleLearner, SparsePolicy
-from mlrl.common.rule_learners import configure_rule_induction, configure_feature_binning, configure_label_sampling, \
-    configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, configure_pruning, \
-    configure_parallel_rule_refinement, configure_parallel_statistic_update, configure_parallel_prediction, \
-    configure_size_stopping_criterion, configure_time_stopping_criterion, configure_early_stopping_criterion
-from mlrl.common.rule_learners import parse_param, get_string, get_int, get_float
+from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int, get_float
 from sklearn.base import ClassifierMixin
 
 STATISTIC_FORMAT_VALUES: Set[str] = {

@@ -7,10 +7,11 @@ import logging as log
 from argparse import ArgumentParser
 from enum import Enum
 
+from mlrl.common.config import RULE_INDUCTION_VALUES, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, \
+    INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, EARLY_STOPPING_VALUES, \
+    PRUNING_VALUES, PARALLEL_VALUES
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import SparsePolicy, RULE_INDUCTION_VALUES, \
-    LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, \
-    FEATURE_BINNING_VALUES, EARLY_STOPPING_VALUES, PRUNING_VALUES, PARALLEL_VALUES
+from mlrl.common.rule_learners import SparsePolicy
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 
 PARAM_LOG_LEVEL = '--log-level'
