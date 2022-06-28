@@ -7,8 +7,7 @@ from typing import Dict, Set, Optional
 
 from mlrl.boosting.cython.learner import BoostingRuleLearnerConfig
 from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
-from mlrl.common.cython.learner import RuleLearnerConfig, RuleLearner as RuleLearnerWrapper
-from mlrl.common.cython.stopping_criterion import AggregationFunction
+from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, NONE, ARGUMENT_BIN_RATIO, \
     ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS, BINNING_EQUAL_WIDTH, BINNING_EQUAL_FREQUENCY
@@ -17,33 +16,9 @@ from mlrl.common.rule_learners import configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
     configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
-    configure_time_stopping_criterion
+    configure_time_stopping_criterion, configure_measure_stopping_criterion
 from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int, get_float
 from sklearn.base import ClassifierMixin
-
-EARLY_STOPPING_LOSS = 'loss'
-
-AGGREGATION_FUNCTION_MIN = 'min'
-
-AGGREGATION_FUNCTION_MAX = 'max'
-
-AGGREGATION_FUNCTION_ARITHMETIC_MEAN = 'avg'
-
-ARGUMENT_MIN_RULES = 'min_rules'
-
-ARGUMENT_UPDATE_INTERVAL = 'update_interval'
-
-ARGUMENT_STOP_INTERVAL = 'stop_interval'
-
-ARGUMENT_NUM_PAST = 'num_past'
-
-ARGUMENT_NUM_RECENT = 'num_recent'
-
-ARGUMENT_MIN_IMPROVEMENT = 'min_improvement'
-
-ARGUMENT_FORCE_STOP = 'force_stop'
-
-ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
 STATISTIC_FORMAT_DENSE = 'dense'
 
@@ -103,13 +78,6 @@ HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
     HEAD_TYPE_PARTIAL_DYNAMIC: {ARGUMENT_THRESHOLD, ARGUMENT_EXPONENT},
     HEAD_TYPE_COMPLETE: {},
     AUTOMATIC: {}
-}
-
-EARLY_STOPPING_VALUES: Dict[str, Set[str]] = {
-    NONE: {},
-    EARLY_STOPPING_LOSS: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_MIN_RULES, ARGUMENT_UPDATE_INTERVAL,
-                          ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT, ARGUMENT_MIN_IMPROVEMENT,
-                          ARGUMENT_FORCE_STOP}
 }
 
 FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
@@ -324,7 +292,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
-        self.__configure_measure_stopping_criterion(config)
+        configure_measure_stopping_criterion(config, get_string(self.early_stopping))
         configure_post_processor(config, shrinkage=get_float(self.shrinkage))
         self.__configure_head_type(config)
         self.__configure_statistics(config)
@@ -375,40 +343,6 @@ class Boomer(MLRuleLearner, ClassifierMixin):
                 config.use_automatic_parallel_statistic_update()
             else:
                 configure_parallel_statistic_update(config, parallel_statistic_update)
-
-    def __configure_measure_stopping_criterion(self, config: RuleLearnerConfig):
-        early_stopping = get_string(self.early_stopping)
-
-        if early_stopping is not None:
-            value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
-
-            if value == NONE:
-                config.use_no_measure_stopping_criterion()
-            elif value == EARLY_STOPPING_LOSS:
-                c = config.use_measure_stopping_criterion()
-                aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
-                c.set_aggregation_function(self.__create_aggregation_function(
-                    aggregation_function) if aggregation_function is not None else c.get_aggregation_function())
-                c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
-                c.set_update_interval(options.get_int(ARGUMENT_UPDATE_INTERVAL, c.get_update_interval()))
-                c.set_stop_interval(options.get_int(ARGUMENT_STOP_INTERVAL, c.get_stop_interval()))
-                c.set_num_past(options.get_int(ARGUMENT_NUM_PAST, c.get_num_past()))
-                c.set_num_current(options.get_int(ARGUMENT_NUM_RECENT, c.get_num_current()))
-                c.set_min_improvement(options.get_float(ARGUMENT_MIN_IMPROVEMENT, c.get_min_improvement()))
-                c.set_force_stop(options.get_bool(ARGUMENT_FORCE_STOP, c.is_stop_forced()))
-
-    @staticmethod
-    def __create_aggregation_function(aggregation_function: str) -> AggregationFunction:
-        value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function, {AGGREGATION_FUNCTION_MIN,
-                                                                                  AGGREGATION_FUNCTION_MAX,
-                                                                                  AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
-
-        if value == AGGREGATION_FUNCTION_MIN:
-            return AggregationFunction.MIN
-        elif value == AGGREGATION_FUNCTION_MAX:
-            return AggregationFunction.MAX
-        elif value == AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
-            return AggregationFunction.ARITHMETIC_MEAN
 
     def __configure_head_type(self, config: BoomerConfig):
         head_type = get_string(self.head_type)

@@ -10,7 +10,7 @@ from enum import Enum
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy, RULE_INDUCTION_VALUES, \
     LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, \
-    FEATURE_BINNING_VALUES, PRUNING_VALUES, PARALLEL_VALUES
+    FEATURE_BINNING_VALUES, EARLY_STOPPING_VALUES, PRUNING_VALUES, PARALLEL_VALUES
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
 
 PARAM_LOG_LEVEL = '--log-level'
@@ -76,6 +76,8 @@ PARAM_PREDICTED_LABEL_FORMAT = '--predicted-label-format'
 PARAM_MAX_RULES = '--max-rules'
 
 PARAM_TIME_LIMIT = '--time-limit'
+
+PARAM_EARLY_STOPPING = '--early-stopping'
 
 PARAM_LABEL_SAMPLING = '--label-sampling'
 
@@ -262,6 +264,13 @@ def add_time_limit_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_TIME_LIMIT, type=int,
                         help='The duration in seconds after which the induction of rules should be canceled. Must be '
                              + 'at least 1 or 0, if no time limit should be set.')
+
+
+def add_early_stopping_argument(parser: ArgumentParser):
+    parser.add_argument(PARAM_EARLY_STOPPING, type=str,
+                        help='The name of the strategy to be used for early stopping. Must be one of '
+                             + format_dict_keys(EARLY_STOPPING_VALUES) + '. For additional options refer to the '
+                             + 'documentation.')
 
 
 def add_label_sampling_argument(parser: ArgumentParser):
