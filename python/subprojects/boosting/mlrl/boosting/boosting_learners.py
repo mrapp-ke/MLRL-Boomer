@@ -340,7 +340,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         default_rule = get_string(self.default_rule)
 
         if default_rule is not None:
-            value = parse_param('pruning', default_rule, DEFAULT_RULE_VALUES)
+            value = parse_param('default_rule', default_rule, DEFAULT_RULE_VALUES)
 
             if value == AUTOMATIC:
                 config.use_automatic_default_rule()
