@@ -103,6 +103,50 @@ namespace seco {
                     virtual void useNoCoverageStoppingCriterion() = 0;
 
                     /**
+                     * Configures the rule learner to induce rules with single-label heads that predict for a single
+                     * label.
+                     */
+                    virtual void useSingleLabelHeads() = 0;
+
+                    /**
+                     * Configures the rule learner to not use a lift function.
+                     */
+                    virtual void useNoLiftFunction() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Precision" heuristic for learning rules.
+                     */
+                    virtual void usePrecisionHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Precision" heuristic for pruning rules.
+                     */
+                    virtual void usePrecisionPruningHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use predictor for predicting whether individual labels of given
+                     * query examples are relevant or irrelevant by processing rules of an existing rule-based model in
+                     * the order they have been learned. If a rule covers an example, its prediction is applied to each
+                     * label individually.
+                     */
+                    virtual void useLabelWiseClassificationPredictor() = 0;
+
+            };
+
+            virtual ~ISeCoRuleLearner() override { };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion
+             * that stops the induction of rules as soon as the sum of the weights of the uncovered labels is smaller or
+             * equal to a certain threshold.
+             */
+            class ICoverageStoppingCriterionMixin {
+
+                public:
+
+                    virtual ~ICoverageStoppingCriterionMixin() { };
+
+                    /**
                      * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon
                      * as the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
                      *
@@ -111,99 +155,23 @@ namespace seco {
                      */
                     virtual ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() = 0;
 
-                    /**
-                     * Configures the rule learner to induce rules with single-label heads that predict for a single
-                     * label.
-                     */
-                    virtual void useSingleLabelHeads() = 0;
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
+             * heads.
+             */
+            class IPartialHeadMixin {
+
+                public:
+
+                    virtual ~IPartialHeadMixin() { };
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a subset of the
                      * available labels.
                      */
                     virtual void usePartialHeads() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
-                     */
-                    virtual void useAccuracyHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "F-Measure" heuristic for learning rules.
-                     *
-                     * @return A reference to an object of type `IFMeasureConfig` that allows further configuration of
-                     *         the heuristic
-                     */
-                    virtual IFMeasureConfig& useFMeasureHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Laplace" heuristic for learning rules.
-                     */
-                    virtual void useLaplaceHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
-                     *
-                     * @return A reference to an object of type `IMEstimateConfig` that allows further configuration of
-                     *         the heuristic
-                     */
-                    virtual IMEstimateConfig& useMEstimateHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Precision" heuristic for learning rules.
-                     */
-                    virtual void usePrecisionHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Recall" heuristic for learning rules.
-                     */
-                    virtual void useRecallHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
-                     */
-                    virtual void useWraHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
-                     */
-                    virtual void useAccuracyPruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
-                     *
-                     * @return A reference to an object of type `IFMeasureConfig` that allows further configuration of
-                     *         the heuristic
-                     */
-                    virtual IFMeasureConfig& useFMeasurePruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Laplace" heuristic for pruning rules.
-                     */
-                    virtual void useLaplacePruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
-                     *
-                     * @return A reference to an object of type `IMEstimateConfig` that allows further configuration of
-                     *         the heuristic
-                     */
-                    virtual IMEstimateConfig& useMEstimatePruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Precision" heuristic for pruning rules.
-                     */
-                    virtual void usePrecisionPruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Recall" heuristic for pruning rules.
-                     */
-                    virtual void useRecallPruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
-                     */
-                    virtual void useWraPruningHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use a lift function that monotonously increases until a certain
@@ -223,17 +191,151 @@ namespace seco {
                      */
                     virtual IKlnLiftFunctionConfig& useKlnLiftFunction() = 0;
 
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Accuracy"
+             * heuristic for learning or pruning rules.
+             */
+            class IAccuracyMixin {
+
+                public:
+
+                    virtual ~IAccuracyMixin() { };
+
                     /**
-                     * Configures the rule learner to use predictor for predicting whether individual labels of given
-                     * query examples are relevant or irrelevant by processing rules of an existing rule-based model in
-                     * the order they have been learned. If a rule covers an example, its prediction is applied to each
-                     * label individually.
+                     * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
                      */
-                    virtual void useLabelWiseClassificationPredictor() = 0;
+                    virtual void useAccuracyHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
+                     */
+                    virtual void useAccuracyPruningHeuristic() = 0;
 
             };
 
-            virtual ~ISeCoRuleLearner() override { };
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "F-Measure"
+             * heuristic for learning or pruning rules.
+             */
+            class IFMeasureMixin {
+
+                public:
+
+                    virtual ~IFMeasureMixin() { };
+
+                    /**
+                     * Configures the rule learner to use the "F-Measure" heuristic for learning rules.
+                     *
+                     * @return A reference to an object of type `IFMeasureConfig` that allows further configuration of
+                     *         the heuristic
+                     */
+                    virtual IFMeasureConfig& useFMeasureHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
+                     *
+                     * @return A reference to an object of type `IFMeasureConfig` that allows further configuration of
+                     *         the heuristic
+                     */
+                    virtual IFMeasureConfig& useFMeasurePruningHeuristic() = 0;
+
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "M-Estimate"
+             * heuristic for learning or pruning rules.
+             */
+            class IMEstimateMixin {
+
+                public:
+
+                    virtual ~IMEstimateMixin() { };
+
+                    /**
+                     * Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
+                     *
+                     * @return A reference to an object of type `IMEstimateConfig` that allows further configuration of
+                     *         the heuristic
+                     */
+                    virtual IMEstimateConfig& useMEstimateHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
+                     *
+                     * @return A reference to an object of type `IMEstimateConfig` that allows further configuration of
+                     *         the heuristic
+                     */
+                    virtual IMEstimateConfig& useMEstimatePruningHeuristic() = 0;
+
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Laplace"
+             * heuristic for learning or pruning rules.
+             */
+            class ILaplaceMixin {
+
+                public:
+
+                    virtual ~ILaplaceMixin() { };
+
+                    /**
+                     * Configures the rule learner to use the "Laplace" heuristic for learning rules.
+                     */
+                    virtual void useLaplaceHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Laplace" heuristic for pruning rules.
+                     */
+                    virtual void useLaplacePruningHeuristic() = 0;
+
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Recall" heuristic
+             * for learning or pruning rules.
+             */
+            class IRecallMixin {
+
+                public:
+
+                    virtual ~IRecallMixin() { };
+
+                    /**
+                     * Configures the rule learner to use the "Recall" heuristic for learning rules.
+                     */
+                    virtual void useRecallHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Recall" heuristic for pruning rules.
+                     */
+                    virtual void useRecallPruningHeuristic() = 0;
+
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Weighted Relative
+             * Accuracy" heuristic for learning or pruning rules.
+             */
+            class IWraMixin {
+
+                public:
+
+                    virtual ~IWraMixin() { };
+
+                    /**
+                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
+                     */
+                    virtual void useWraHeuristic() = 0;
+
+                    /**
+                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
+                     */
+                    virtual void useWraPruningHeuristic() = 0;
+
+            };
 
     };
 
@@ -310,43 +412,13 @@ namespace seco {
 
                     void useNoCoverageStoppingCriterion() override;
 
-                    ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() override;
-
                     void useSingleLabelHeads() override;
 
-                    void usePartialHeads() override;
-
-                    void useAccuracyHeuristic() override;
-
-                    IFMeasureConfig& useFMeasureHeuristic() override;
-
-                    void useLaplaceHeuristic() override;
-
-                    IMEstimateConfig& useMEstimateHeuristic() override;
+                    void useNoLiftFunction() override;
 
                     void usePrecisionHeuristic() override;
 
-                    void useRecallHeuristic() override;
-
-                    void useWraHeuristic() override;
-
-                    void useAccuracyPruningHeuristic() override;
-
-                    IFMeasureConfig& useFMeasurePruningHeuristic() override;
-
-                    void useLaplacePruningHeuristic() override;
-
-                    IMEstimateConfig& useMEstimatePruningHeuristic() override;
-
                     void usePrecisionPruningHeuristic() override;
-
-                    void useRecallPruningHeuristic() override;
-
-                    void useWraPruningHeuristic() override;
-
-                    IPeakLiftFunctionConfig& usePeakLiftFunction() override;
-
-                    IKlnLiftFunctionConfig& useKlnLiftFunction() override;
 
                     void useLabelWiseClassificationPredictor() override;
 

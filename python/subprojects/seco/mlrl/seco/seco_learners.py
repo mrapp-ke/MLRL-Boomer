@@ -12,7 +12,7 @@ from mlrl.common.rule_learners import configure_rule_induction, \
     configure_feature_binning, configure_pruning, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
     configure_time_stopping_criterion
-from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int
+from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int, NONE
 from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
     MultiLabelSeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
@@ -67,6 +67,7 @@ HEURISTIC_VALUES: Dict[str, Set[str]] = {
 }
 
 LIFT_FUNCTION_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     LIFT_FUNCTION_PEAK: {ARGUMENT_PEAK_LABEL, ARGUMENT_MAX_LIFT, ARGUMENT_CURVATURE},
     LIFT_FUNCTION_KLN: {ARGUMENT_K}
 }
@@ -109,7 +110,7 @@ class MultiLabelSeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         :param head_type:                   The type of the rule heads that should be used. Must be 'single-label' or
                                             'partial'
         :param lift_function:               The lift function that should be used for the induction of partial rule
-                                            heads. Must be 'peak' or 'kln'. For additional options refer to the
+                                            heads. Must be 'peak', 'kln' or 'none'. For additional options refer to the
                                             documentation
         :param heuristic:                   The heuristic to be optimized. Must be 'accuracy', 'precision', 'recall',
                                             'weighted-relative-accuracy', 'f-measure', 'm-estimate' or 'laplace'. For
@@ -252,7 +253,9 @@ class MultiLabelSeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         if lift_function is not None:
             value, options = parse_param_and_options('lift_function', lift_function, LIFT_FUNCTION_VALUES)
 
-            if value == LIFT_FUNCTION_PEAK:
+            if value == NONE:
+                config.use_no_lift_function()
+            elif value == LIFT_FUNCTION_PEAK:
                 c = config.use_peak_lift_function()
                 c.set_peak_label(options.get_int(ARGUMENT_PEAK_LABEL, c.get_peak_label()))
                 c.set_max_lift(options.get_float(ARGUMENT_MAX_LIFT, c.get_max_lift()))
