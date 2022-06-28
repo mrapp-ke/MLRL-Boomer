@@ -5,12 +5,11 @@ Provides scikit-learn implementations of boosting algorithms.
 """
 from typing import Dict, Set, Optional
 
-from mlrl.boosting.config import STATISTIC_FORMAT_DENSE, STATISTIC_FORMAT_SPARSE, HEAD_TYPE_SINGLE, \
-    HEAD_TYPE_COMPLETE, HEAD_TYPE_PARTIAL_FIXED, HEAD_TYPE_PARTIAL_DYNAMIC, ARGUMENT_LABEL_RATIO, ARGUMENT_MIN_LABELS, \
-    ARGUMENT_MAX_LABELS, ARGUMENT_THRESHOLD, ARGUMENT_EXPONENT, LOSS_SQUARED_ERROR_LABEL_WISE, \
-    LOSS_SQUARED_HINGE_LABEL_WISE, LOSS_LOGISTIC_LABEL_WISE, LOSS_LOGISTIC_EXAMPLE_WISE, \
-    CLASSIFICATION_PREDICTOR_LABEL_WISE, CLASSIFICATION_PREDICTOR_EXAMPLE_WISE, PROBABILITY_PREDICTOR_LABEL_WISE, \
-    PROBABILITY_PREDICTOR_MARGINALIZED
+import mlrl.boosting.config as boosting_config
+import mlrl.common.config as common_config
+from mlrl.boosting.config import LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL_WISE, \
+    LOSS_LOGISTIC_LABEL_WISE, LOSS_LOGISTIC_EXAMPLE_WISE, CLASSIFICATION_PREDICTOR_LABEL_WISE, \
+    CLASSIFICATION_PREDICTOR_EXAMPLE_WISE, PROBABILITY_PREDICTOR_LABEL_WISE, PROBABILITY_PREDICTOR_MARGINALIZED
 from mlrl.boosting.config import configure_post_processor, configure_l1_regularization, configure_l2_regularization, \
     configure_default_rule, configure_head_type, configure_statistics, configure_label_wise_squared_error_loss, \
     configure_label_wise_squared_hinge_loss, configure_label_wise_logistic_loss, configure_example_wise_logistic_loss, \
@@ -18,50 +17,27 @@ from mlrl.boosting.config import configure_post_processor, configure_l1_regulari
     configure_example_wise_classification_predictor, configure_label_wise_probability_predictor, \
     configure_marginalized_probability_predictor
 from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
-from mlrl.common.config import AUTOMATIC, NONE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, \
-    ARGUMENT_NUM_THREADS, BINNING_EQUAL_WIDTH, BINNING_EQUAL_FREQUENCY
+from mlrl.common.config import AUTOMATIC
 from mlrl.common.config import parse_param, configure_rule_induction, configure_feature_binning, \
     configure_label_sampling, configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, \
     configure_pruning, configure_parallel_rule_refinement, configure_parallel_statistic_update, \
     configure_parallel_prediction, configure_size_stopping_criterion, configure_time_stopping_criterion, \
     configure_early_stopping_criterion
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int, get_float
 from sklearn.base import ClassifierMixin
 
-STATISTIC_FORMAT_VALUES: Set[str] = {
-    STATISTIC_FORMAT_DENSE,
-    STATISTIC_FORMAT_SPARSE,
-    AUTOMATIC
-}
+FEATURE_BINNING_VALUES: Dict[str, Set[str]] = common_config.FEATURE_BINNING_VALUES | {AUTOMATIC: {}}
 
-DEFAULT_RULE_VALUES: Set[str] = {
-    BooleanOption.TRUE.value,
-    BooleanOption.FALSE.value,
-    AUTOMATIC
-}
+PARALLEL_VALUES: Dict[str, Set[str]] = common_config.PARALLEL_VALUES | {AUTOMATIC: {}}
 
-HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
-    HEAD_TYPE_SINGLE: {},
-    HEAD_TYPE_PARTIAL_FIXED: {ARGUMENT_LABEL_RATIO, ARGUMENT_MIN_LABELS, ARGUMENT_MAX_LABELS},
-    HEAD_TYPE_PARTIAL_DYNAMIC: {ARGUMENT_THRESHOLD, ARGUMENT_EXPONENT},
-    HEAD_TYPE_COMPLETE: {},
-    AUTOMATIC: {}
-}
+STATISTIC_FORMAT_VALUES: Set[str] = boosting_config.STATISTIC_FORMAT_VALUES | {AUTOMATIC}
 
-FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
-    NONE: {},
-    BINNING_EQUAL_FREQUENCY: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS},
-    BINNING_EQUAL_WIDTH: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS},
-    AUTOMATIC: {},
-}
+DEFAULT_RULE_VALUES: Set[str] = boosting_config.DEFAULT_RULE_VALUES | {AUTOMATIC}
 
-LABEL_BINNING_VALUES: Dict[str, Set[str]] = {
-    NONE: {},
-    BINNING_EQUAL_WIDTH: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS},
-    AUTOMATIC: {}
-}
+HEAD_TYPE_VALUES: Dict[str, Set[str]] = boosting_config.HEAD_TYPE_VALUES | {AUTOMATIC: {}}
+
+LABEL_BINNING_VALUES: Dict[str, Set[str]] = boosting_config.LABEL_BINNING_VALUES | {AUTOMATIC: {}}
 
 LOSS_VALUES: Set[str] = {
     LOSS_SQUARED_ERROR_LABEL_WISE,
@@ -80,12 +56,6 @@ PROBABILITY_PREDICTOR_VALUES: Set[str] = {
     PROBABILITY_PREDICTOR_LABEL_WISE,
     PROBABILITY_PREDICTOR_MARGINALIZED,
     AUTOMATIC
-}
-
-PARALLEL_VALUES: Dict[str, Set[str]] = {
-    str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
-    str(BooleanOption.FALSE.value): {},
-    AUTOMATIC: {}
 }
 
 
