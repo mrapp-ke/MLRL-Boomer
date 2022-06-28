@@ -62,7 +62,7 @@ ctypedef INoLabelSpaceInfo* NoLabelSpaceInfoPtr
 ctypedef ILabelVectorSet* LabelVectorSetPtr
 
 
-cdef extern from *:
+cdef extern from * nogil:
     """
     #include "common/output/label_vector_set.hpp"
 
