@@ -6,10 +6,9 @@ Provides utility function for configuring boosting algorithms.
 from typing import Dict, Set, Optional
 
 from mlrl.boosting.cython.learner import BoostingRuleLearnerConfig
+from mlrl.common.config import NONE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, BINNING_EQUAL_WIDTH
+from mlrl.common.config import parse_param, parse_param_and_options
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import NONE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, \
-    BINNING_EQUAL_WIDTH
-from mlrl.common.rule_learners import parse_param, parse_param_and_options
 
 STATISTIC_FORMAT_DENSE = 'dense'
 

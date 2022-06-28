@@ -6,13 +6,12 @@ classification rules.
 """
 from typing import Dict, Set, Optional
 
+from mlrl.common.config import parse_param_and_options, configure_rule_induction, configure_label_sampling, \
+    configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, configure_pruning, \
+    configure_parallel_rule_refinement, configure_parallel_statistic_update, configure_parallel_prediction, \
+    configure_size_stopping_criterion, configure_time_stopping_criterion
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.rule_learners import RuleLearner, SparsePolicy
-from mlrl.common.rule_learners import configure_rule_induction, configure_label_sampling, configure_instance_sampling, \
-    configure_feature_sampling, configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
-    configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
-    configure_time_stopping_criterion
-from mlrl.common.rule_learners import parse_param_and_options, get_string, get_int
+from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int
 from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
     MultiLabelSeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
