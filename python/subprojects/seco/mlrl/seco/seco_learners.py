@@ -9,11 +9,12 @@ from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_induction, \
     configure_label_sampling, configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, \
-    configure_feature_binning, configure_pruning, configure_parallel_rule_refinement, \
-    configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
-    configure_time_stopping_criterion
-from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int
-from mlrl.seco.cython.learner_seco import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
+    configure_pruning, configure_parallel_rule_refinement, configure_parallel_statistic_update, \
+    configure_parallel_prediction, configure_size_stopping_criterion, configure_time_stopping_criterion
+from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int, NONE
+from mlrl.seco.cython.learner import SeCoRuleLearnerConfig
+from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
+    MultiLabelSeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
 
 HEAD_TYPE_SINGLE = 'single-label'
@@ -66,12 +67,83 @@ HEURISTIC_VALUES: Dict[str, Set[str]] = {
 }
 
 LIFT_FUNCTION_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     LIFT_FUNCTION_PEAK: {ARGUMENT_PEAK_LABEL, ARGUMENT_MAX_LIFT, ARGUMENT_CURVATURE},
     LIFT_FUNCTION_KLN: {ARGUMENT_K}
 }
 
 
-class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
+def configure_head_type(config: SeCoRuleLearnerConfig, head_type: Optional[str]):
+    if head_type is not None:
+        value = parse_param('head_type', head_type, HEAD_TYPE_VALUES)
+
+        if value == HEAD_TYPE_SINGLE:
+            config.use_single_label_heads()
+        elif value == HEAD_TYPE_PARTIAL:
+            config.use_partial_heads()
+
+
+def configure_heuristic(config: SeCoRuleLearnerConfig, heuristic: Optional[str]):
+    if heuristic is not None:
+        value, options = parse_param_and_options('heuristic', heuristic, HEURISTIC_VALUES)
+
+        if value == HEURISTIC_ACCURACY:
+            config.use_accuracy_heuristic()
+        elif value == HEURISTIC_PRECISION:
+            config.use_precision_heuristic()
+        elif value == HEURISTIC_RECALL:
+            config.use_recall_heuristic()
+        elif value == HEURISTIC_LAPLACE:
+            config.use_laplace_heuristic()
+        elif value == HEURISTIC_WRA:
+            config.use_wra_heuristic()
+        elif value == HEURISTIC_F_MEASURE:
+            c = config.use_f_measure_heuristic()
+            c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
+        elif value == HEURISTIC_M_ESTIMATE:
+            c = config.use_m_estimate_heuristic()
+            c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
+
+
+def configure_pruning_heuristic(config: SeCoRuleLearnerConfig, pruning_heuristic: Optional[str]):
+    if pruning_heuristic is not None:
+        value, options = parse_param_and_options('pruning_heuristic', pruning_heuristic, HEURISTIC_VALUES)
+
+        if value == HEURISTIC_ACCURACY:
+            config.use_accuracy_pruning_heuristic()
+        elif value == HEURISTIC_PRECISION:
+            config.use_precision_pruning_heuristic()
+        elif value == HEURISTIC_RECALL:
+            config.use_recall_pruning_heuristic()
+        elif value == HEURISTIC_LAPLACE:
+            config.use_laplace_pruning_heuristic()
+        elif value == HEURISTIC_WRA:
+            config.use_wra_pruning_heuristic()
+        elif value == HEURISTIC_F_MEASURE:
+            c = config.use_f_measure_pruning_heuristic()
+            c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
+        elif value == HEURISTIC_M_ESTIMATE:
+            c = config.use_m_estimate_pruning_heuristic()
+            c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
+
+
+def configure_lift_function(config: SeCoRuleLearnerConfig, lift_function: Optional[str]):
+    if lift_function is not None:
+        value, options = parse_param_and_options('lift_function', lift_function, LIFT_FUNCTION_VALUES)
+
+        if value == NONE:
+            config.use_no_lift_function()
+        elif value == LIFT_FUNCTION_PEAK:
+            c = config.use_peak_lift_function()
+            c.set_peak_label(options.get_int(ARGUMENT_PEAK_LABEL, c.get_peak_label()))
+            c.set_max_lift(options.get_float(ARGUMENT_MAX_LIFT, c.get_max_lift()))
+            c.set_curvature(options.get_float(ARGUMENT_CURVATURE, c.get_curvature()))
+        elif value == LIFT_FUNCTION_KLN:
+            c = config.use_kln_lift_function()
+            c.set_k(options.get_float(ARGUMENT_K, c.get_k()))
+
+
+class MultiLabelSeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     """
     A scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label classification
     rules.
@@ -92,7 +164,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                  instance_sampling: Optional[str] = None,
                  feature_sampling: Optional[str] = None,
                  holdout: Optional[str] = None,
-                 feature_binning: Optional[str] = None,
                  pruning: Optional[str] = None,
                  parallel_rule_refinement: Optional[str] = None,
                  parallel_statistic_update: Optional[str] = None,
@@ -108,7 +179,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         :param head_type:                   The type of the rule heads that should be used. Must be 'single-label' or
                                             'partial'
         :param lift_function:               The lift function that should be used for the induction of partial rule
-                                            heads. Must be 'peak' or 'kln'. For additional options refer to the
+                                            heads. Must be 'peak', 'kln' or 'none'. For additional options refer to the
                                             documentation
         :param heuristic:                   The heuristic to be optimized. Must be 'accuracy', 'precision', 'recall',
                                             'weighted-relative-accuracy', 'f-measure', 'm-estimate' or 'laplace'. For
@@ -131,10 +202,6 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         :param holdout:                     The name of the strategy that should be used to creating a holdout set. Must
                                             be 'random', 'stratified-label-wise', 'stratified-example-wise' or 'none',
                                             if no holdout set should be used. For additional options refer to the
-                                            documentation
-        :param feature_binning:             The strategy that should be used to assign examples to bins based on their
-                                            feature values. Must be 'equal-width', 'equal-frequency' or 'none', if no
-                                            feature binning should be used. For additional options refer to the
                                             documentation
         :param pruning:                     The strategy that should be used to prune individual rules. Must be 'irep'
                                             or 'none', if no pruning should be used
@@ -162,100 +229,26 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         self.instance_sampling = instance_sampling
         self.feature_sampling = feature_sampling
         self.holdout = holdout
-        self.feature_binning = feature_binning
         self.pruning = pruning
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
 
     def _create_learner(self) -> RuleLearnerWrapper:
-        config = SeCoRuleLearnerConfig()
+        config = MultiLabelSeCoRuleLearnerConfig()
         configure_rule_induction(config, get_string(self.rule_induction))
         configure_label_sampling(config, get_string(self.label_sampling))
         configure_instance_sampling(config, get_string(self.instance_sampling))
         configure_feature_sampling(config, get_string(self.feature_sampling))
         configure_partition_sampling(config, get_string(self.holdout))
-        configure_feature_binning(config, get_string(self.feature_binning))
         configure_pruning(config, get_string(self.pruning))
         configure_parallel_rule_refinement(config, get_string(self.parallel_rule_refinement))
         configure_parallel_statistic_update(config, get_string(self.parallel_statistic_update))
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
-        self.__configure_head_type(config)
-        self.__configure_heuristic(config)
-        self.__configure_pruning_heuristic(config)
-        self.__configure_lift_function(config)
-        return SeCoRuleLearnerWrapper(config)
-
-    def __configure_head_type(self, config: SeCoRuleLearnerConfig):
-        head_type = get_string(self.head_type)
-
-        if head_type is not None:
-            value = parse_param('head_type', head_type, HEAD_TYPE_VALUES)
-
-            if value == HEAD_TYPE_SINGLE:
-                config.use_single_label_heads()
-            elif value == HEAD_TYPE_PARTIAL:
-                config.use_partial_heads()
-
-    def __configure_heuristic(self, config: SeCoRuleLearnerConfig):
-        heuristic = get_string(self.heuristic)
-
-        if heuristic is not None:
-            value, options = parse_param_and_options('heuristic', heuristic, HEURISTIC_VALUES)
-
-            if value == HEURISTIC_ACCURACY:
-                config.use_accuracy_heuristic()
-            elif value == HEURISTIC_PRECISION:
-                config.use_precision_heuristic()
-            elif value == HEURISTIC_RECALL:
-                config.use_recall_heuristic()
-            elif value == HEURISTIC_LAPLACE:
-                config.use_laplace_heuristic()
-            elif value == HEURISTIC_WRA:
-                config.use_wra_heuristic()
-            elif value == HEURISTIC_F_MEASURE:
-                c = config.use_f_measure_heuristic()
-                c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
-            elif value == HEURISTIC_M_ESTIMATE:
-                c = config.use_m_estimate_heuristic()
-                c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
-
-    def __configure_pruning_heuristic(self, config: SeCoRuleLearnerConfig):
-        pruning_heuristic = get_string(self.pruning_heuristic)
-
-        if pruning_heuristic is not None:
-            value, options = parse_param_and_options('pruning_heuristic', pruning_heuristic, HEURISTIC_VALUES)
-
-            if value == HEURISTIC_ACCURACY:
-                config.use_accuracy_pruning_heuristic()
-            elif value == HEURISTIC_PRECISION:
-                config.use_precision_pruning_heuristic()
-            elif value == HEURISTIC_RECALL:
-                config.use_recall_pruning_heuristic()
-            elif value == HEURISTIC_LAPLACE:
-                config.use_laplace_pruning_heuristic()
-            elif value == HEURISTIC_WRA:
-                config.use_wra_pruning_heuristic()
-            elif value == HEURISTIC_F_MEASURE:
-                c = config.use_f_measure_pruning_heuristic()
-                c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
-            elif value == HEURISTIC_M_ESTIMATE:
-                c = config.use_m_estimate_pruning_heuristic()
-                c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
-
-    def __configure_lift_function(self, config: SeCoRuleLearnerConfig):
-        lift_function = get_string(self.lift_function)
-
-        if lift_function is not None:
-            value, options = parse_param_and_options('lift_function', lift_function, LIFT_FUNCTION_VALUES)
-
-            if value == LIFT_FUNCTION_PEAK:
-                c = config.use_peak_lift_function()
-                c.set_peak_label(options.get_int(ARGUMENT_PEAK_LABEL, c.get_peak_label()))
-                c.set_max_lift(options.get_float(ARGUMENT_MAX_LIFT, c.get_max_lift()))
-                c.set_curvature(options.get_float(ARGUMENT_CURVATURE, c.get_curvature()))
-            elif value == LIFT_FUNCTION_KLN:
-                c = config.use_kln_lift_function()
-                c.set_k(options.get_float(ARGUMENT_K, c.get_k()))
+        configure_head_type(config, get_string(self.head_type))
+        configure_heuristic(config, get_string(self.heuristic))
+        configure_pruning_heuristic(config, get_string(self.pruning_heuristic))
+        configure_lift_function(config, get_string(self.lift_function))
+        return MultiLabelSeCoRuleLearnerWrapper(config)

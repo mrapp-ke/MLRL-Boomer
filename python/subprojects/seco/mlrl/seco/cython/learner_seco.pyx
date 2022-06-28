@@ -1,8 +1,6 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
-    IEqualFrequencyFeatureBinningConfig, EqualFrequencyFeatureBinningConfig
 from mlrl.common.cython.feature_sampling cimport IFeatureSamplingWithoutReplacementConfig, \
     FeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
@@ -12,6 +10,7 @@ from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstance
     InstanceSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig, \
     LabelSamplingWithoutReplacementConfig
+from mlrl.common.cython.learner cimport IRuleLearnerConfig
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig, ManualMultiThreadingConfig
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ExampleWiseStratifiedBiPartitionSamplingConfig, ILabelWiseStratifiedBiPartitionSamplingConfig, \
@@ -19,25 +18,179 @@ from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiParti
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
     BeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, SizeStoppingCriterionConfig, \
-    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig, IMeasureStoppingCriterionConfig, \
-    MeasureStoppingCriterionConfig
-from mlrl.seco.cython.heuristic cimport FMeasureConfig, MEstimateConfig
-from mlrl.seco.cython.lift_function cimport PeakLiftFunctionConfig, KlnLiftFunctionConfig
-from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig
+    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig
+from mlrl.seco.cython.heuristic cimport IFMeasureConfig, FMeasureConfig, IMEstimateConfig, MEstimateConfig
+from mlrl.seco.cython.lift_function cimport IPeakLiftFunctionConfig, PeakLiftFunctionConfig, IKlnLiftFunctionConfig, \
+    KlnLiftFunctionConfig
+from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfig, CoverageStoppingCriterionConfig
 
 from libcpp.utility cimport move
 
 
-cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
+cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
     """
-    Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
+    Allows to configure the multi-label SeCo algorithm.
     """
 
     def __cinit__(self):
-        self.rule_learner_config_ptr = createSeCoRuleLearnerConfig()
+        self.rule_learner_config_ptr = createMultiLabelSeCoRuleLearnerConfig()
 
     cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
         return self.rule_learner_config_ptr.get()
+
+    cdef ISeCoRuleLearnerConfig* get_seco_rule_learner_config_ptr(self):
+        return self.rule_learner_config_ptr.get()
+
+    def use_coverage_stopping_criterion(self) -> CoverageStoppingCriterionConfig:
+        """
+        Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as the sum of
+        the weights of the uncovered labels is smaller or equal to a certain threshold.
+
+        :return: A `CoverageStoppingCriterionConfig` that allows further configuration of the stopping criterion
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef ICoverageStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useCoverageStoppingCriterion()
+        cdef CoverageStoppingCriterionConfig config = CoverageStoppingCriterionConfig.__new__(CoverageStoppingCriterionConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_partial_heads(self):
+        """
+        Configures the rule learner to induce rules with partial heads that predict for a subset of the available
+        labels.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.usePartialHeads()
+
+    def use_peak_lift_function(self) -> PeakLiftFunctionConfig:
+        """
+        Configures the rule learner to use a lift function that monotonously increases until a certain number of labels,
+        where the maximum lift is reached, and monotonously decreases afterwards.
+
+        :return: A `PeakLiftFunctionConfig` that allows further configuration of the lift function
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IPeakLiftFunctionConfig* config_ptr = &rule_learner_config_ptr.usePeakLiftFunction()
+        cdef PeakLiftFunctionConfig config = PeakLiftFunctionConfig.__new__(PeakLiftFunctionConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_kln_lift_function(self) -> KlnLiftFunctionConfig:
+        """
+        Configures the rule learner to use a lift function that monotonously increases according to the natural
+        logarithm of the number of labels for which a rule predicts.
+
+        :return: A `KlnLiftFunctionConfig` that allows further configuration of the lift function
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IKlnLiftFunctionConfig* config_ptr = &rule_learner_config_ptr.useKlnLiftFunction()
+        cdef KlnLiftFunctionConfig config = KlnLiftFunctionConfig.__new__(KlnLiftFunctionConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_accuracy_heuristic(self):
+        """
+        Configures the rule learner to use the "Accuracy" heuristic for learning rules.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAccuracyHeuristic()
+
+    def use_accuracy_pruning_heuristic(self):
+        """
+        Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAccuracyPruningHeuristic()
+
+    def use_f_measure_heuristic(self) -> FMeasureConfig:
+        """
+        Configures the rule learner to use the "F-Measure" heuristic for learning rules.
+
+        :return: A `FMeasureConfig` that allows further configuration of the heuristic
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IFMeasureConfig* config_ptr = &rule_learner_config_ptr.useFMeasureHeuristic()
+        cdef FMeasureConfig config = FMeasureConfig.__new__(FMeasureConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_f_measure_pruning_heuristic(self) -> FMeasureConfig:
+        """
+        Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
+
+        :return: A `FMeasureConfig` that allows further configuration of the heuristic
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IFMeasureConfig* config_ptr = &rule_learner_config_ptr.useFMeasurePruningHeuristic()
+        cdef FMeasureConfig config = FMeasureConfig.__new__(FMeasureConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_m_estimate_heuristic(self) -> MEstimateConfig:
+        """
+        Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
+
+        :return: A `MEstimateConfig` that allows further configuration of the heuristic
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMEstimateConfig* config_ptr = &rule_learner_config_ptr.useMEstimateHeuristic()
+        cdef MEstimateConfig config = MEstimateConfig.__new__(MEstimateConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_m_estimate_pruning_heuristic(self) -> MEstimateConfig:
+        """
+        Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
+
+        :return: A `MEstimateConfig` that allows further configuration of the heuristic
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMEstimateConfig* config_ptr = &rule_learner_config_ptr.useMEstimatePruningHeuristic()
+        cdef MEstimateConfig config = MEstimateConfig.__new__(MEstimateConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_laplace_heuristic(self):
+        """
+        Configures the rule learner to use the "Laplace" heuristic for learning rules.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useLaplaceHeuristic()
+
+    def use_laplace_pruning_heuristic(self):
+        """
+        Configures the rule learner to use the "Laplace" heuristic for pruning rules.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useLaplacePruningHeuristic()
+
+    def use_recall_heuristic(self):
+        """
+        Configures the rule learner to use the "Recall" heuristic for learning rules.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useRecallHeuristic()
+
+    def use_recall_pruning_heuristic(self):
+        """
+        Configures the rule learner to use the "Recall" heuristic for pruning rules.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useRecallPruningHeuristic()
+
+    def use_wra_heuristic(self):
+        """
+        Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useWraHeuristic()
+
+    def use_wra_pruning_heuristic(self):
+        """
+        Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useWraPruningHeuristic()
 
     def use_beam_search_top_down_rule_induction(self) -> BeamSearchTopDownRuleInductionConfig:
         """
@@ -46,37 +199,9 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of the algorithm for the
                  induction of individual rules
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IBeamSearchTopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useBeamSearchTopDownRuleInduction()
         cdef BeamSearchTopDownRuleInductionConfig config = BeamSearchTopDownRuleInductionConfig.__new__(BeamSearchTopDownRuleInductionConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_equal_width_feature_binning(self) -> EqualWidthFeatureBinningConfig:
-        """
-        Configures the rule learner to use a method for the assignment of numerical feature values to bins, such that
-        each bin contains values from equally sized value ranges.
-
-        :return: An `EqualWidthFeatureBinningConfig` that allows further configuration of the method for the assignment
-                 of numerical feature values to bins
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IEqualWidthFeatureBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualWidthFeatureBinning()
-        cdef EqualWidthFeatureBinningConfig config = EqualWidthFeatureBinningConfig.__new__(EqualWidthFeatureBinningConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_equal_frequency_feature_binning(self) -> EqualFrequencyFeatureBinningConfig:
-        """
-        Configures the rule learner to use a method for the assignment of numerical feature values to bins, such that
-        each bin contains approximately the same number of values.
-
-        :return: An `EqualFrequencyFeatureBinningConfig` that allows further configuration of the method for the
-                 assignment of numerical feature values to bins
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IEqualFrequencyFeatureBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualFrequencyFeatureBinning()
-        cdef EqualFrequencyFeatureBinningConfig config = EqualFrequencyFeatureBinningConfig.__new__(EqualFrequencyFeatureBinningConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -88,7 +213,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `LabelSamplingWithoutReplacementConfig` that allows further configuration of the method for sampling
                  labels
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ILabelSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useLabelSamplingWithoutReplacement()
         cdef LabelSamplingWithoutReplacementConfig config = LabelSamplingWithoutReplacementConfig.__new__(LabelSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
@@ -102,7 +227,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: An `InstanceSamplingWithReplacementConfig` that allows further configuration of the method for sampling
                  instances
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IInstanceSamplingWithReplacementConfig* config_ptr = &rule_learner_config_ptr.useInstanceSamplingWithReplacement()
         cdef InstanceSamplingWithReplacementConfig config = InstanceSamplingWithReplacementConfig.__new__(InstanceSamplingWithReplacementConfig)
         config.config_ptr = config_ptr
@@ -116,7 +241,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: An `InstanceSamplingWithoutReplacementConfig` that allows further configuration of the method for
                  sampling instances
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IInstanceSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useInstanceSamplingWithoutReplacement()
         cdef InstanceSamplingWithoutReplacementConfig config = InstanceSamplingWithoutReplacementConfig.__new__(InstanceSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
@@ -131,7 +256,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `LabelWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
                  sampling instances
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ILabelWiseStratifiedInstanceSamplingConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedInstanceSampling()
         cdef LabelWiseStratifiedInstanceSamplingConfig config = LabelWiseStratifiedInstanceSamplingConfig.__new__(LabelWiseStratifiedInstanceSamplingConfig)
         config.config_ptr = config_ptr
@@ -145,7 +270,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: An `ExampleWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
                  sampling instances
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IExampleWiseStratifiedInstanceSamplingConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedInstanceSampling()
         cdef ExampleWiseStratifiedInstanceSamplingConfig config = ExampleWiseStratifiedInstanceSamplingConfig.__new__(ExampleWiseStratifiedInstanceSamplingConfig)
         config.config_ptr = config_ptr
@@ -159,7 +284,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `FeatureSamplingWithoutReplacementConfig` that allows further configuration of the method for
                  sampling features
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IFeatureSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useFeatureSamplingWithoutReplacement()
         cdef FeatureSamplingWithoutReplacementConfig config = FeatureSamplingWithoutReplacementConfig.__new__(FeatureSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
@@ -173,7 +298,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `RandomBiPartitionSamplingConfig` that allows further configuration of the method for partitioning
                  the available training examples into a training set and a holdout set
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IRandomBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useRandomBiPartitionSampling()
         cdef RandomBiPartitionSamplingConfig config = RandomBiPartitionSamplingConfig.__new__(RandomBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
@@ -187,7 +312,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: A `LabelWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
                  partitioning the available training examples into a training and a holdout set
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ILabelWiseStratifiedBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedBiPartitionSampling()
         cdef LabelWiseStratifiedBiPartitionSamplingConfig config = LabelWiseStratifiedBiPartitionSamplingConfig.__new__(LabelWiseStratifiedBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
@@ -201,7 +326,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         :return: An `ExampleWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
                  partitioning the available training examples into a training and a holdout set
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IExampleWiseStratifiedBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedBiPartitionSampling()
         cdef ExampleWiseStratifiedBiPartitionSamplingConfig config = ExampleWiseStratifiedBiPartitionSamplingConfig.__new__(ExampleWiseStratifiedBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
@@ -212,7 +337,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
         Configures the rule learner to prune classification rules by following the ideas of "incremental reduced error
         pruning" (IREP).
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useIrepPruning()
 
     def use_parallel_rule_refinement(self) -> ManualMultiThreadingConfig:
@@ -221,7 +346,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelRuleRefinement()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
@@ -233,7 +358,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelStatisticUpdate()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
@@ -245,7 +370,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelPrediction()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
         config.config_ptr = config_ptr
@@ -258,7 +383,7 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `SizeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ISizeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useSizeStoppingCriterion()
         cdef SizeStoppingCriterionConfig config = SizeStoppingCriterionConfig.__new__(SizeStoppingCriterionConfig)
         config.config_ptr = config_ptr
@@ -270,228 +395,23 @@ cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
 
         :return: A `TimeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ITimeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useTimeStoppingCriterion()
         cdef TimeStoppingCriterionConfig config = TimeStoppingCriterionConfig.__new__(TimeStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 
-    def use_measure_stopping_criterion(self) -> MeasureStoppingCriterionConfig:
-        """
-        Configures the rule learner to use a stopping criterion stops the induction of rules as soon as the quality of a
-        model's predictions for the examples in a holdout set do not improve according to a certain measure.
 
-        :return: A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping criterion
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IMeasureStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useMeasureStoppingCriterion()
-        cdef MeasureStoppingCriterionConfig config = MeasureStoppingCriterionConfig.__new__(MeasureStoppingCriterionConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_no_coverage_stopping_criterion(self):
-        """
-        Configures the rule learner to not use any stopping criterion that stops the induction of rules as soon as the
-        sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useNoCoverageStoppingCriterion()
-
-    def use_coverage_stopping_criterion(self) -> CoverageStoppingCriterionConfig:
-        """
-        Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as the sum of
-        the weights of the uncovered labels is smaller or equal to a certain threshold.
-
-        :return: A `CoverageStoppingCriterionConfig` that allows further configuration of the stopping criterion
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef ICoverageStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useCoverageStoppingCriterion()
-        cdef CoverageStoppingCriterionConfig config = CoverageStoppingCriterionConfig.__new__(CoverageStoppingCriterionConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_single_label_heads(self):
-        """
-        Configures the rule learner to induce rules with single-label heads that predict for a single label.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useSingleLabelHeads()
-
-    def use_partial_heads(self):
-        """
-        Configures the rule learner to induce rules with partial heads that predict for a subset of the available
-        labels.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.usePartialHeads()
-
-    def use_accuracy_heuristic(self):
-        """
-        Configures the rule learner to use the "Accuracy" heuristic for learning rules.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useAccuracyHeuristic()
-
-    def use_f_measure_heuristic(self) -> FMeasureConfig:
-        """
-        Configures the rule learner to use the "F-Measure" heuristic for learning rules.
-
-        :return: A `FMeasureConfig` that allows further configuration of the heuristic
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IFMeasureConfig* config_ptr = &rule_learner_config_ptr.useFMeasureHeuristic()
-        cdef FMeasureConfig config = FMeasureConfig.__new__(FMeasureConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_laplace_heuristic(self):
-        """
-        Configures the rule learner to use the "Laplace" heuristic for learning rules.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useLaplaceHeuristic()
-
-    def use_m_estimate_heuristic(self) -> MEstimateConfig:
-        """
-        Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
-
-        :return: A `MEstimateConfig` that allows further configuration of the heuristic
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IMEstimateConfig* config_ptr = &rule_learner_config_ptr.useMEstimateHeuristic()
-        cdef MEstimateConfig config = MEstimateConfig.__new__(MEstimateConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_precision_heuristic(self):
-        """
-        Configures the rule learner to use the "Precision" heuristic for learning rules.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.usePrecisionHeuristic()
-
-    def use_recall_heuristic(self):
-        """
-        Configures the rule learner to use the "Recall" heuristic for learning rules.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useRecallHeuristic()
-
-    def use_wra_heuristic(self):
-        """
-        Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useWraHeuristic()
-
-    def use_accuracy_pruning_heuristic(self):
-        """
-        Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useAccuracyPruningHeuristic()
-
-    def use_f_measure_pruning_heuristic(self) -> FMeasureConfig:
-        """
-        Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
-
-        :return: A `FMeasureConfig` that allows further configuration of the heuristic
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IFMeasureConfig* config_ptr = &rule_learner_config_ptr.useFMeasurePruningHeuristic()
-        cdef FMeasureConfig config = FMeasureConfig.__new__(FMeasureConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_laplace_pruning_heuristic(self):
-        """
-        Configures the rule learner to use the "Laplace" heuristic for pruning rules.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useLaplacePruningHeuristic()
-
-    def use_m_estimate_pruning_heuristic(self) -> MEstimateConfig:
-        """
-        Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
-
-        :return: A `MEstimateConfig` that allows further configuration of the heuristic
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IMEstimateConfig* config_ptr = &rule_learner_config_ptr.useMEstimatePruningHeuristic()
-        cdef MEstimateConfig config = MEstimateConfig.__new__(MEstimateConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_precision_pruning_heuristic(self):
-        """
-        Configures the rule learner to use the "Precision" heuristic for pruning rules.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.usePrecisionPruningHeuristic()
-
-    def use_recall_pruning_heuristic(self):
-        """
-        Configures the rule learner to use the "Recall" heuristic for pruning rules.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useRecallPruningHeuristic()
-
-    def use_wra_pruning_heuristic(self):
-        """
-        Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useWraPruningHeuristic()
-
-    def use_peak_lift_function(self) -> PeakLiftFunctionConfig:
-        """
-        Configures the rule learner to use a lift function that monotonously increases until a certain number of labels,
-        where the maximum lift is reached, and monotonously decreases afterwards.
-
-        :return: A `PeakLiftFunctionConfig` that allows further configuration of the lift function
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IPeakLiftFunctionConfig* config_ptr = &rule_learner_config_ptr.usePeakLiftFunction()
-        cdef PeakLiftFunctionConfig config = PeakLiftFunctionConfig.__new__(PeakLiftFunctionConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_kln_lift_function(self) -> KlnLiftFunctionConfig:
-        """
-        Configures the rule learner to use a lift function that monotonously increases according to the natural
-        logarithm of the number of labels for which a rule predicts.
-
-        :return: A `KlnLiftFunctionConfig` that allows further configuration of the lift function
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IKlnLiftFunctionConfig* config_ptr = &rule_learner_config_ptr.useKlnLiftFunction()
-        cdef KlnLiftFunctionConfig config = KlnLiftFunctionConfig.__new__(KlnLiftFunctionConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_label_wise_classification_predictor(self):
-        """
-        Configures the rule learner to use predictor for predicting whether individual labels of given query examples
-        are relevant or irrelevant by processing rules of an existing rule-based model in the order they have been
-        learned. If a rule covers an example, its prediction is applied to each label individually.
-
-        :return: A `LabelWiseClassificationPredictorConfig` that allows further configuration of the predictor for
-                 predicting whether individual labels of given query examples are relevant or irrelevant
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useLabelWiseClassificationPredictor()
-
-
-cdef class SeCoRuleLearner(RuleLearner):
+cdef class MultiLabelSeCoRuleLearner(RuleLearner):
     """
-    A rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
+    The multi-label SeCo algorithm.
     """
 
-    def __cinit__(self, SeCoRuleLearnerConfig config not None):
+    def __cinit__(self, MultiLabelSeCoRuleLearnerConfig config not None):
         """
         :param config: The configuration that should be used by the rule learner
         """
-        self.rule_learner_ptr = createSeCoRuleLearner(move(config.rule_learner_config_ptr))
+        self.rule_learner_ptr = createMultiLabelSeCoRuleLearner(move(config.rule_learner_config_ptr))
 
     cdef IRuleLearner* get_rule_learner_ptr(self):
         return self.rule_learner_ptr.get()
