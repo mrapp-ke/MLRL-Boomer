@@ -73,6 +73,76 @@ LIFT_FUNCTION_VALUES: Dict[str, Set[str]] = {
 }
 
 
+def configure_head_type(config: MultiLabelSeCoRuleLearnerConfig, head_type: Optional[str]):
+    if head_type is not None:
+        value = parse_param('head_type', head_type, HEAD_TYPE_VALUES)
+
+        if value == HEAD_TYPE_SINGLE:
+            config.use_single_label_heads()
+        elif value == HEAD_TYPE_PARTIAL:
+            config.use_partial_heads()
+
+
+def configure_heuristic(config: MultiLabelSeCoRuleLearnerConfig, heuristic: Optional[str]):
+    if heuristic is not None:
+        value, options = parse_param_and_options('heuristic', heuristic, HEURISTIC_VALUES)
+
+        if value == HEURISTIC_ACCURACY:
+            config.use_accuracy_heuristic()
+        elif value == HEURISTIC_PRECISION:
+            config.use_precision_heuristic()
+        elif value == HEURISTIC_RECALL:
+            config.use_recall_heuristic()
+        elif value == HEURISTIC_LAPLACE:
+            config.use_laplace_heuristic()
+        elif value == HEURISTIC_WRA:
+            config.use_wra_heuristic()
+        elif value == HEURISTIC_F_MEASURE:
+            c = config.use_f_measure_heuristic()
+            c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
+        elif value == HEURISTIC_M_ESTIMATE:
+            c = config.use_m_estimate_heuristic()
+            c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
+
+
+def configure_pruning_heuristic(config: MultiLabelSeCoRuleLearnerConfig, pruning_heuristic: Optional[str]):
+    if pruning_heuristic is not None:
+        value, options = parse_param_and_options('pruning_heuristic', pruning_heuristic, HEURISTIC_VALUES)
+
+        if value == HEURISTIC_ACCURACY:
+            config.use_accuracy_pruning_heuristic()
+        elif value == HEURISTIC_PRECISION:
+            config.use_precision_pruning_heuristic()
+        elif value == HEURISTIC_RECALL:
+            config.use_recall_pruning_heuristic()
+        elif value == HEURISTIC_LAPLACE:
+            config.use_laplace_pruning_heuristic()
+        elif value == HEURISTIC_WRA:
+            config.use_wra_pruning_heuristic()
+        elif value == HEURISTIC_F_MEASURE:
+            c = config.use_f_measure_pruning_heuristic()
+            c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
+        elif value == HEURISTIC_M_ESTIMATE:
+            c = config.use_m_estimate_pruning_heuristic()
+            c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
+
+
+def configure_lift_function(config: MultiLabelSeCoRuleLearnerConfig, lift_function: Optional[str]):
+    if lift_function is not None:
+        value, options = parse_param_and_options('lift_function', lift_function, LIFT_FUNCTION_VALUES)
+
+        if value == NONE:
+            config.use_no_lift_function()
+        elif value == LIFT_FUNCTION_PEAK:
+            c = config.use_peak_lift_function()
+            c.set_peak_label(options.get_int(ARGUMENT_PEAK_LABEL, c.get_peak_label()))
+            c.set_max_lift(options.get_float(ARGUMENT_MAX_LIFT, c.get_max_lift()))
+            c.set_curvature(options.get_float(ARGUMENT_CURVATURE, c.get_curvature()))
+        elif value == LIFT_FUNCTION_KLN:
+            c = config.use_kln_lift_function()
+            c.set_k(options.get_float(ARGUMENT_K, c.get_k()))
+
+
 class MultiLabelSeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     """
     A scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label classification
@@ -184,82 +254,8 @@ class MultiLabelSeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
-        self.__configure_head_type(config)
-        self.__configure_heuristic(config)
-        self.__configure_pruning_heuristic(config)
-        self.__configure_lift_function(config)
+        configure_head_type(config, get_string(self.head_type))
+        configure_heuristic(config, get_string(self.heuristic))
+        configure_pruning_heuristic(config, get_string(self.pruning_heuristic))
+        configure_lift_function(config, get_string(self.lift_function))
         return MultiLabelSeCoRuleLearnerWrapper(config)
-
-    def __configure_head_type(self, config: MultiLabelSeCoRuleLearnerConfig):
-        head_type = get_string(self.head_type)
-
-        if head_type is not None:
-            value = parse_param('head_type', head_type, HEAD_TYPE_VALUES)
-
-            if value == HEAD_TYPE_SINGLE:
-                config.use_single_label_heads()
-            elif value == HEAD_TYPE_PARTIAL:
-                config.use_partial_heads()
-
-    def __configure_heuristic(self, config: MultiLabelSeCoRuleLearnerConfig):
-        heuristic = get_string(self.heuristic)
-
-        if heuristic is not None:
-            value, options = parse_param_and_options('heuristic', heuristic, HEURISTIC_VALUES)
-
-            if value == HEURISTIC_ACCURACY:
-                config.use_accuracy_heuristic()
-            elif value == HEURISTIC_PRECISION:
-                config.use_precision_heuristic()
-            elif value == HEURISTIC_RECALL:
-                config.use_recall_heuristic()
-            elif value == HEURISTIC_LAPLACE:
-                config.use_laplace_heuristic()
-            elif value == HEURISTIC_WRA:
-                config.use_wra_heuristic()
-            elif value == HEURISTIC_F_MEASURE:
-                c = config.use_f_measure_heuristic()
-                c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
-            elif value == HEURISTIC_M_ESTIMATE:
-                c = config.use_m_estimate_heuristic()
-                c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
-
-    def __configure_pruning_heuristic(self, config: MultiLabelSeCoRuleLearnerConfig):
-        pruning_heuristic = get_string(self.pruning_heuristic)
-
-        if pruning_heuristic is not None:
-            value, options = parse_param_and_options('pruning_heuristic', pruning_heuristic, HEURISTIC_VALUES)
-
-            if value == HEURISTIC_ACCURACY:
-                config.use_accuracy_pruning_heuristic()
-            elif value == HEURISTIC_PRECISION:
-                config.use_precision_pruning_heuristic()
-            elif value == HEURISTIC_RECALL:
-                config.use_recall_pruning_heuristic()
-            elif value == HEURISTIC_LAPLACE:
-                config.use_laplace_pruning_heuristic()
-            elif value == HEURISTIC_WRA:
-                config.use_wra_pruning_heuristic()
-            elif value == HEURISTIC_F_MEASURE:
-                c = config.use_f_measure_pruning_heuristic()
-                c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
-            elif value == HEURISTIC_M_ESTIMATE:
-                c = config.use_m_estimate_pruning_heuristic()
-                c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
-
-    def __configure_lift_function(self, config: MultiLabelSeCoRuleLearnerConfig):
-        lift_function = get_string(self.lift_function)
-
-        if lift_function is not None:
-            value, options = parse_param_and_options('lift_function', lift_function, LIFT_FUNCTION_VALUES)
-
-            if value == NONE:
-                config.use_no_lift_function()
-            elif value == LIFT_FUNCTION_PEAK:
-                c = config.use_peak_lift_function()
-                c.set_peak_label(options.get_int(ARGUMENT_PEAK_LABEL, c.get_peak_label()))
-                c.set_max_lift(options.get_float(ARGUMENT_MAX_LIFT, c.get_max_lift()))
-                c.set_curvature(options.get_float(ARGUMENT_CURVATURE, c.get_curvature()))
-            elif value == LIFT_FUNCTION_KLN:
-                c = config.use_kln_lift_function()
-                c.set_k(options.get_float(ARGUMENT_K, c.get_k()))
