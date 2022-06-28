@@ -172,10 +172,10 @@ namespace boosting {
         return ref;
     }
 
-    IMeasureStoppingCriterionConfig& Boomer::Config::useMeasureStoppingCriterion() {
-        std::unique_ptr<MeasureStoppingCriterionConfig> ptr = std::make_unique<MeasureStoppingCriterionConfig>();
-        IMeasureStoppingCriterionConfig& ref = *ptr;
-        measureStoppingCriterionConfigPtr_ = std::move(ptr);
+    IEarlyStoppingCriterionConfig& Boomer::Config::useEarlyStoppingCriterion() {
+        std::unique_ptr<EarlyStoppingCriterionConfig> ptr = std::make_unique<EarlyStoppingCriterionConfig>();
+        IEarlyStoppingCriterionConfig& ref = *ptr;
+        earlyStoppingCriterionConfigPtr_ = std::move(ptr);
         return ref;
     }
 

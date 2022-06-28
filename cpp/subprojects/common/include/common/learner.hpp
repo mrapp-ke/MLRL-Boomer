@@ -30,8 +30,8 @@
 #include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
+#include "common/stopping/stopping_criterion_early.hpp"
 #include "common/stopping/stopping_criterion_list.hpp"
-#include "common/stopping/stopping_criterion_measure.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/stopping/stopping_criterion_time.hpp"
 
@@ -238,12 +238,12 @@ class MLRLCOMMON_API IRuleLearner {
                  * Returns the configuration of the stopping criterion that stops the induction of rules as soon as a
                  * model's quality does not improve.
                  *
-                 * @return A pointer to an object of type `MeasureStoppingCriterionConfig` that specifies the
+                 * @return A pointer to an object of type `EarlyStoppingCriterionConfig` that specifies the
                  *         configuration of the stopping criterion that stops the induction of rules as soon as a
                  *         model's quality does not improve or a null pointer, if no such stopping criterion should be
                  *         used
                  */
-                virtual const MeasureStoppingCriterionConfig* getMeasureStoppingCriterionConfig() const = 0;
+                virtual const EarlyStoppingCriterionConfig* getEarlyStoppingCriterionConfig() const = 0;
 
             public:
 
@@ -341,7 +341,7 @@ class MLRLCOMMON_API IRuleLearner {
                  * as the quality of a model's predictions for the examples in a holdout set do not improve according to
                  * a certain measure.
                  */
-                virtual void useNoMeasureStoppingCriterion() = 0;
+                virtual void useNoEarlyStoppingCriterion() = 0;
 
         };
 
@@ -624,11 +624,11 @@ class MLRLCOMMON_API IRuleLearner {
          * stops the induction of rules as soon as the quality of a model's predictions for the examples in a holdout
          * set do not improve according to a certain measure.
          */
-        class IMeasureStoppingCriterionMixin {
+        class IEarlyStoppingCriterionMixin {
 
             public:
 
-                virtual ~IMeasureStoppingCriterionMixin() { };
+                virtual ~IEarlyStoppingCriterionMixin() { };
 
 
                 /**
@@ -636,10 +636,10 @@ class MLRLCOMMON_API IRuleLearner {
                  * the quality of a model's predictions for the examples in a holdout set do not improve according to a
                  * certain measure.
                  *
-                 * @return A reference to an object of the type `IMeasureStoppingCriterionConfig` that allows further
+                 * @return A reference to an object of the type `IEarlyStoppingCriterionConfig` that allows further
                  *         configuration of the stopping criterion
                  */
-                virtual IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() = 0;
+                virtual IEarlyStoppingCriterionConfig& useEarlyStoppingCriterion() = 0;
 
         };
 
@@ -936,7 +936,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  * An unique pointer that stores the configuration of the stopping criterion that stops the induction of
                  * rules as soon as a model's quality does not improve.
                  */
-                std::unique_ptr<MeasureStoppingCriterionConfig> measureStoppingCriterionConfigPtr_;
+                std::unique_ptr<EarlyStoppingCriterionConfig> earlyStoppingCriterionConfigPtr_;
 
             private:
 
@@ -970,7 +970,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 const TimeStoppingCriterionConfig* getTimeStoppingCriterionConfig() const override final;
 
-                const MeasureStoppingCriterionConfig* getMeasureStoppingCriterionConfig() const override final;
+                const EarlyStoppingCriterionConfig* getEarlyStoppingCriterionConfig() const override final;
 
             public:
 
@@ -1006,7 +1006,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoTimeStoppingCriterion() override;
 
-                void useNoMeasureStoppingCriterion() override;
+                void useNoEarlyStoppingCriterion() override;
 
         };
 
@@ -1040,7 +1040,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IStoppingCriterionFactory> createTimeStoppingCriterionFactory() const;
 
-        std::unique_ptr<IStoppingCriterionFactory> createMeasureStoppingCriterionFactory() const;
+        std::unique_ptr<IStoppingCriterionFactory> createEarlyStoppingCriterionFactory() const;
 
     protected:
 

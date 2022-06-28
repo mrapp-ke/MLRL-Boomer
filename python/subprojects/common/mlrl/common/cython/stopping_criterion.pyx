@@ -67,7 +67,7 @@ class AggregationFunction(Enum):
     ARITHMETIC_MEAN = 2
 
 
-cdef class MeasureStoppingCriterionConfig:
+cdef class EarlyStoppingCriterionConfig:
     """
     Allow to configure a stopping criterion that stops the induction of rules as soon as the quality of a model's
     predictions for the examples in a holdout set do not improve according to a certain measure.
@@ -92,7 +92,7 @@ cdef class MeasureStoppingCriterionConfig:
         cdef uint8 enum_value = self.config_ptr.getAggregationFunction()
         return AggregationFunction(enum_value)
 
-    def set_aggregation_function(self, aggregation_function: AggregationFunction) -> MeasureStoppingCriterionConfig:
+    def set_aggregation_function(self, aggregation_function: AggregationFunction) -> EarlyStoppingCriterionConfig:
         """
         Sets the type of the aggregation function that should be used to aggregate the values that are stored in a
         buffer.
@@ -100,7 +100,7 @@ cdef class MeasureStoppingCriterionConfig:
         :param aggregation_function:    A value of the enum `AggregationFunction` that specifies the type of the
                                         aggregation function that should be used to aggregate the values that are stored
                                         in a buffer
-        :return:                        A reference to an object of type `MeasureStoppingCriterionConfig` that allows
+        :return:                        A reference to an object of type `EarlyStoppingCriterionConfig` that allows
                                         further configuration of the stopping criterion
         """
         assert_not_none('aggregation_function', aggregation_function)
@@ -116,13 +116,13 @@ cdef class MeasureStoppingCriterionConfig:
         """
         return self.config_ptr.getMinRules()
 
-    def set_min_rules(self, min_rules: int) -> MeasureStoppingCriterionConfig:
+    def set_min_rules(self, min_rules: int) -> EarlyStoppingCriterionConfig:
         """
         Sets the minimum number of rules that must have been learned until the induction of rules might be stopped.
 
         :param min_rules:   The minimum number of rules that must have been learned until the induction of rules might
                             be stopped. Must be at least 1
-        :return:            A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping
+        :return:            An `EarlyStoppingCriterionConfig` that allows further configuration of the stopping
                             criterion
         """
         assert_greater_or_equal('min_rules', min_rules, 1)
@@ -137,13 +137,13 @@ cdef class MeasureStoppingCriterionConfig:
         """
         return self.config_ptr.getUpdateInterval()
 
-    def set_update_interval(self, update_interval: int) -> MeasureStoppingCriterionConfig:
+    def set_update_interval(self, update_interval: int) -> EarlyStoppingCriterionConfig:
         """
         Sets the interval that should be used to update the quality of the current model.
 
         :param update_interval: The interval that should be used to update the quality of the current model, e.g., a
          *                      value of 5 means that the model quality is assessed every 5 rules. Must be at least 1
-        :return:                A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping
+        :return:                An `EarlyStoppingCriterionConfig` that allows further configuration of the stopping
                                 criterion
         """
         assert_greater_or_equal('update_interval', update_interval, 1)
@@ -158,14 +158,14 @@ cdef class MeasureStoppingCriterionConfig:
         """
         return self.config_ptr.getStopInterval()
 
-    def set_stop_interval(self, stop_interval: int) -> MeasureStoppingCriterionConfig:
+    def set_stop_interval(self, stop_interval: int) -> EarlyStoppingCriterionConfig:
         """
         Sets the interval that should be used to decide whether the induction of rules should be stopped.
 
         :param stop_interval:   The interval that should be used to decide whether the induction of rules should be
                                 stopped, e.g., a value of 10 means that the rule induction might be stopped after 10,
                                 20, ... rules. Must be a multiple of the update interval
-        :return:                A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping
+        :return:                An `EarlyStoppingCriterionConfig` that allows further configuration of the stopping
                                 criterion
         """
         assert_multiple('stop_interval', stop_interval, self.config_ptr.getUpdateInterval())
@@ -180,13 +180,13 @@ cdef class MeasureStoppingCriterionConfig:
         """
         return self.config_ptr.getNumPast()
 
-    def set_num_past(self, num_past: int) -> MeasureStoppingCriterionConfig:
+    def set_num_past(self, num_past: int) -> EarlyStoppingCriterionConfig:
         """
         Sets the number of quality scores of past iterations that should be stored in a buffer.
 
         :param num_past:    The number of quality scores of past iterations that should be be stored in a buffer. Must
                             be at least 1
-        :return:            A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping
+        :return:            An `EarlyStoppingCriterionConfig` that allows further configuration of the stopping
                             criterion
         """
         assert_greater_or_equal('num_past', num_past, 1)
@@ -201,13 +201,13 @@ cdef class MeasureStoppingCriterionConfig:
         """
         return self.config_ptr.getNumCurrent()
 
-    def set_num_current(self, num_current: int) -> MeasureStoppingCriterionConfig:
+    def set_num_current(self, num_current: int) -> EarlyStoppingCriterionConfig:
         """
         Sets the number of quality scores of the most recent iterations that should be stored in a buffer.
 
         :param num_current: The number of quality scores of the most recent iterations that should be stored in a
                             buffer. Must be at least 1
-        :return:            A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping
+        :return:            An `EarlyStoppingCriterionConfig` that allows further configuration of the stopping
                             criterion
         """
         assert_greater_or_equal('num_current', num_current, 1)
@@ -222,13 +222,13 @@ cdef class MeasureStoppingCriterionConfig:
         """
         return self.config_ptr.getMinImprovement()
 
-    def set_min_improvement(self, min_improvement: float) -> MeasureStoppingCriterionConfig:
+    def set_min_improvement(self, min_improvement: float) -> EarlyStoppingCriterionConfig:
         """
         Sets the minimum improvement that must be reached for the rule induction to be continued.
 
         :param min_improvement: The minimum improvement in percent that must be reached for the rule induction to be
                                 continued. Must be in [0, 1]
-        :return:                A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping
+        :return:                An `EarlyStoppingCriterionConfig` that allows further configuration of the stopping
                                 criterion
         """
         assert_greater_or_equal('min_improvement', min_improvement, 0)
@@ -245,13 +245,13 @@ cdef class MeasureStoppingCriterionConfig:
         """
         return self.config_ptr.isStopForced()
 
-    def set_force_stop(self, force_stop: bool) -> MeasureStoppingCriterionConfig:
+    def set_force_stop(self, force_stop: bool) -> EarlyStoppingCriterionConfig:
         """
         Sets whether the induction of rules should be forced to be stopped, if the stopping criterion is met.
 
         :param force_stop:  True, if the induction of rules should be forced to be stopped, if the stopping criterion is
                             met, False, if only the time of stopping should be stored
-        :return:            A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping
+        :return:            An `EarlyStoppingCriterionConfig` that allows further configuration of the stopping
                             criterion
         """
         self.config_ptr.setForceStop(force_stop)

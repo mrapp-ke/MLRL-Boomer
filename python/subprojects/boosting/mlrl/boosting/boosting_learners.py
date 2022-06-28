@@ -16,7 +16,7 @@ from mlrl.common.rule_learners import configure_rule_induction, \
     configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
     configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
-    configure_time_stopping_criterion, configure_measure_stopping_criterion
+    configure_time_stopping_criterion, configure_early_stopping_criterion
 from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int, get_float
 from sklearn.base import ClassifierMixin
 
@@ -292,7 +292,7 @@ class Boomer(MLRuleLearner, ClassifierMixin):
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
-        configure_measure_stopping_criterion(config, get_string(self.early_stopping))
+        configure_early_stopping_criterion(config, get_string(self.early_stopping))
         configure_post_processor(config, shrinkage=get_float(self.shrinkage))
         self.__configure_head_type(config)
         self.__configure_statistics(config)

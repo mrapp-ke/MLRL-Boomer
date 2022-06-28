@@ -25,52 +25,52 @@ cdef extern from "common/stopping/stopping_criterion_time.hpp" nogil:
         ITimeStoppingCriterionConfig& setTimeLimit(uint32 timeLimit) except +
 
 
-cdef extern from "common/stopping/stopping_criterion_measure.hpp" nogil:
+cdef extern from "common/stopping/stopping_criterion_early.hpp" nogil:
 
-    cpdef enum AggregationFunctionImpl"IMeasureStoppingCriterionConfig::AggregationFunction":
+    cpdef enum AggregationFunctionImpl"IEarlyStoppingCriterionConfig::AggregationFunction":
 
-        MIN"IMeasureStoppingCriterionConfig::AggregationFunction::MIN" = 0
+        MIN"IEarlyStoppingCriterionConfig::AggregationFunction::MIN" = 0
 
-        MAX"IMeasureStoppingCriterionConfig::AggregationFunction::MAX" = 1
+        MAX"IEarlyStoppingCriterionConfig::AggregationFunction::MAX" = 1
 
-        ARITHMETIC_MEAN"IMeasureStoppingCriterionConfig::AggregationFunction::ARITHMETIC_MEAN" = 2
+        ARITHMETIC_MEAN"IEarlyStoppingCriterionConfig::AggregationFunction::ARITHMETIC_MEAN" = 2
 
 
-    cdef cppclass IMeasureStoppingCriterionConfig:
+    cdef cppclass IEarlyStoppingCriterionConfig:
 
         # Functions:
 
         AggregationFunctionImpl getAggregationFunction() const
 
-        IMeasureStoppingCriterionConfig& setAggregationFunction(AggregationFunctionImpl aggregationFunction) except +
+        IEarlyStoppingCriterionConfig& setAggregationFunction(AggregationFunctionImpl aggregationFunction) except +
 
         uint32 getMinRules() const
 
-        IMeasureStoppingCriterionConfig& setMinRules(uint32 minRules) except +
+        IEarlyStoppingCriterionConfig& setMinRules(uint32 minRules) except +
 
         uint32 getUpdateInterval() const
 
-        IMeasureStoppingCriterionConfig& setUpdateInterval(uint32 updateInterval) except +
+        IEarlyStoppingCriterionConfig& setUpdateInterval(uint32 updateInterval) except +
 
         uint32 getStopInterval() const;
 
-        IMeasureStoppingCriterionConfig& setStopInterval(uint32 stopInterval) except +
+        IEarlyStoppingCriterionConfig& setStopInterval(uint32 stopInterval) except +
 
         uint32 getNumPast() const
 
-        IMeasureStoppingCriterionConfig& setNumPast(uint32 numPast) except +
+        IEarlyStoppingCriterionConfig& setNumPast(uint32 numPast) except +
 
         uint32 getNumCurrent() const
 
-        IMeasureStoppingCriterionConfig& setNumCurrent(uint32 numCurrent) except +
+        IEarlyStoppingCriterionConfig& setNumCurrent(uint32 numCurrent) except +
 
         float64 getMinImprovement() const
 
-        IMeasureStoppingCriterionConfig& setMinImprovement(float64 minImprovement) except +
+        IEarlyStoppingCriterionConfig& setMinImprovement(float64 minImprovement) except +
 
         bool isStopForced() const
 
-        IMeasureStoppingCriterionConfig& setForceStop(bool forceStop) except +
+        IEarlyStoppingCriterionConfig& setForceStop(bool forceStop) except +
 
 
 cdef class SizeStoppingCriterionConfig:
@@ -87,9 +87,9 @@ cdef class TimeStoppingCriterionConfig:
     cdef ITimeStoppingCriterionConfig* config_ptr
 
 
-cdef class MeasureStoppingCriterionConfig:
+cdef class EarlyStoppingCriterionConfig:
 
 
     # Attributes:
 
-    cdef IMeasureStoppingCriterionConfig* config_ptr
+    cdef IEarlyStoppingCriterionConfig* config_ptr

@@ -337,14 +337,14 @@ def configure_time_stopping_criterion(config: RuleLearnerConfig, time_limit: Opt
             config.use_time_stopping_criterion().set_time_limit(time_limit)
 
 
-def configure_measure_stopping_criterion(config: RuleLearnerConfig, early_stopping: Optional[str]):
+def configure_early_stopping_criterion(config: RuleLearnerConfig, early_stopping: Optional[str]):
     if early_stopping is not None:
         value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
 
         if value == NONE:
-            config.use_no_measure_stopping_criterion()
+            config.use_no_early_stopping_criterion()
         elif value == EARLY_STOPPING_OBJECTIVE:
-            c = config.use_measure_stopping_criterion()
+            c = config.use_early_stopping_criterion()
             aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
             c.set_aggregation_function(__create_aggregation_function(
                 aggregation_function) if aggregation_function is not None else c.get_aggregation_function())
