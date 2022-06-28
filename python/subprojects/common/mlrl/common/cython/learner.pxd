@@ -15,7 +15,7 @@ from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiParti
 from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, IBeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig, \
-    IMeasureStoppingCriterionConfig
+    IEarlyStoppingCriterionConfig
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
@@ -90,7 +90,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoTimeStoppingCriterion()
 
-        void useNoMeasureStoppingCriterion()
+        void useNoEarlyStoppingCriterion()
 
 
     cdef cppclass IBeamSearchTopDownMixin"IRuleLearner::IBeamSearchTopDownMixin":
@@ -179,11 +179,11 @@ cdef extern from "common/learner.hpp" nogil:
         ITimeStoppingCriterionConfig& useTimeStoppingCriterion()
 
 
-    cdef cppclass IMeasureStoppingCriterionMixin"IRuleLearner::IMeasureStoppingCriterionMixin":
+    cdef cppclass IEarlyStoppingCriterionMixin"IRuleLearner::IEarlyStoppingCriterionMixin":
 
         # Functions:
 
-        IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion()
+        IEarlyStoppingCriterionConfig& useEarlyStoppingCriterion()
 
 
     cdef cppclass IRuleLearner:

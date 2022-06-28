@@ -25,8 +25,8 @@ from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiParti
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
     BeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, SizeStoppingCriterionConfig, \
-    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig, IMeasureStoppingCriterionConfig, \
-    MeasureStoppingCriterionConfig
+    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig, IEarlyStoppingCriterionConfig, \
+    EarlyStoppingCriterionConfig
 
 from libcpp.utility cimport move
 
@@ -285,16 +285,16 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
-    def use_measure_stopping_criterion(self) -> MeasureStoppingCriterionConfig:
+    def use_early_stopping_criterion(self) -> EarlyStoppingCriterionConfig:
         """
         Configures the rule learner to use a stopping criterion stops the induction of rules as soon as the quality of a
         model's predictions for the examples in a holdout set do not improve according to a certain measure.
 
-        :return: A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping criterion
+        :return: An `EarlyStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IMeasureStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useMeasureStoppingCriterion()
-        cdef MeasureStoppingCriterionConfig config = MeasureStoppingCriterionConfig.__new__(MeasureStoppingCriterionConfig)
+        cdef IEarlyStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useEarlyStoppingCriterion()
+        cdef EarlyStoppingCriterionConfig config = EarlyStoppingCriterionConfig.__new__(EarlyStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 

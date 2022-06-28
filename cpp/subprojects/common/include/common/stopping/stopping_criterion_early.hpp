@@ -21,7 +21,7 @@
  * first buffer to the older scores from the second buffer, is greater than a certain `minImprovement`, the rule
  * induction is continued, otherwise it is stopped.
  */
-class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
+class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
 
     public:
 
@@ -48,7 +48,7 @@ class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
 
         };
 
-        virtual ~IMeasureStoppingCriterionConfig() { };
+        virtual ~IEarlyStoppingCriterionConfig() { };
 
         /**
          * Returns the type of the aggregation function that is used to aggregate the values that are stored in a
@@ -66,10 +66,10 @@ class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
          * @param aggregationFunction   A value of the enum `AggregationFunction` that specifies the type of the
          *                              aggregation function that should be used to aggregate the values that are stored
          *                              in a buffer
-         * @return                      A reference to an object of type `MeasureStoppingCriterionConfig` that allows
+         * @return                      A reference to an object of type `IEarlyStoppingCriterionConfig` that allows
          *                              further configuration of the stopping criterion
          */
-        virtual IMeasureStoppingCriterionConfig& setAggregationFunction(AggregationFunction aggregationFunction) = 0;
+        virtual IEarlyStoppingCriterionConfig& setAggregationFunction(AggregationFunction aggregationFunction) = 0;
 
         /**
          * Returns the minimum number of rules that must have been learned until the induction of rules might be
@@ -84,10 +84,10 @@ class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
          *
          * @param minRules  The minimum number of rules that must have been learned until the induction of rules might
          *                  be stopped. Must be at least 1
-         * @return          A reference to an object of type `MeasureStoppingCriterionConfig` that allows further
+         * @return          A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
          *                  configuration of the stopping criterion
          */
-        virtual IMeasureStoppingCriterionConfig& setMinRules(uint32 minRules) = 0;
+        virtual IEarlyStoppingCriterionConfig& setMinRules(uint32 minRules) = 0;
 
         /**
          * Returns the interval that is used to update the quality of the current model.
@@ -102,10 +102,10 @@ class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
          * @param updateInterval    The interval that should be used to update the quality of the current model, e.g., a
          *                          value of 5 means that the model quality is assessed every 5 rules. Must be at least
          *                          1
-         * @return                  A reference to an object of type `MeasureStoppingCriterionConfig` that allows
-         *                          further configuration of the stopping criterion
+         * @return                  A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
+         *                          configuration of the stopping criterion
          */
-        virtual IMeasureStoppingCriterionConfig& setUpdateInterval(uint32 updateInterval) = 0;
+        virtual IEarlyStoppingCriterionConfig& setUpdateInterval(uint32 updateInterval) = 0;
 
         /**
          * Returns the interval that is used to decide whether the induction of rules should be stopped.
@@ -120,10 +120,10 @@ class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
          * @param stopInterval  The interval that should be used to decide whether the induction of rules should be
          *                      stopped, e.g., a value of 10 means that the rule induction might be stopped after 10,
          *                      20, ... rules. Must be a multiple of the update interval
-         * @return              A reference to an object of type `MeasureStoppingCriterionConfig` that allows further
+         * @return              A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
          *                      configuration of the stopping criterion
          */
-        virtual IMeasureStoppingCriterionConfig& setStopInterval(uint32 stopInterval) = 0;
+        virtual IEarlyStoppingCriterionConfig& setStopInterval(uint32 stopInterval) = 0;
 
         /**
          * Returns the number of quality stores of past iterations that are stored in a buffer.
@@ -137,10 +137,10 @@ class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
          *
          * @param numPast   The number of quality scores of past iterations that should be be stored in a buffer. Must
          *                  be at least 1
-         * @return          A reference to an object of type `MeasureStoppingCriterionConfig` that allows further
+         * @return          A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
          *                  configuration of the stopping criterion
          */
-        virtual IMeasureStoppingCriterionConfig& setNumPast(uint32 numPast) = 0;
+        virtual IEarlyStoppingCriterionConfig& setNumPast(uint32 numPast) = 0;
 
         /**
          * Returns the number of quality scores of the most recent iterations that are stored in a buffer.
@@ -154,10 +154,10 @@ class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
          *
          * @param numCurrent    The number of quality scores of the most recent iterations that should be stored in a
          *                      buffer. Must be at least 1
-         * @return              A reference to an object of type `MeasureStoppingCriterionConfig` that allows further
+         * @return              A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
          *                      configuration of the stopping criterion
          */
-        virtual IMeasureStoppingCriterionConfig& setNumCurrent(uint32 numCurrent) = 0;
+        virtual IEarlyStoppingCriterionConfig& setNumCurrent(uint32 numCurrent) = 0;
 
         /**
          * Returns the minimum improvement that must be reached for the rule induction to be continued.
@@ -171,10 +171,10 @@ class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
          *
          * @param minImprovement    The minimum improvement in percent that must be reached for the rule induction to be
          *                          continued. Must be in [0, 1]
-         * @return                  A reference to an object of type `MeasureStoppingCriterionConfig` that allows
-         *                          further configuration of the stopping criterion
+         * @return                  A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
+         *                          configuration of the stopping criterion
          */
-        virtual IMeasureStoppingCriterionConfig& setMinImprovement(float64 minImprovement) = 0;
+        virtual IEarlyStoppingCriterionConfig& setMinImprovement(float64 minImprovement) = 0;
 
         /**
          * Returns whether the induction of rules is forced to be stopped, if the stopping criterion is met.
@@ -189,10 +189,10 @@ class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
          *
          * @param forceStop True, if the induction of rules should be forced to be stopped, if the stopping criterion is
          *                  met, false, if only the time of stopping should be stored
-         * @return          A reference to an object of type `MeasureStoppingCriterionConfig` that allows further
+         * @return          A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
          *                  configuration of the stopping criterion
          */
-        virtual IMeasureStoppingCriterionConfig& setForceStop(bool forceStop) = 0;
+        virtual IEarlyStoppingCriterionConfig& setForceStop(bool forceStop) = 0;
 
 };
 
@@ -200,7 +200,7 @@ class MLRLCOMMON_API IMeasureStoppingCriterionConfig {
  * Allows to configure a stopping criterion that stops the induction of rules as soon as the quality of a model's
  * predictions for the examples in a holdout set do not improve according to a certain measure.
  */
-class MeasureStoppingCriterionConfig final : public IStoppingCriterionConfig, public IMeasureStoppingCriterionConfig {
+class EarlyStoppingCriterionConfig final : public IStoppingCriterionConfig, public IEarlyStoppingCriterionConfig {
 
     private:
 
@@ -222,39 +222,39 @@ class MeasureStoppingCriterionConfig final : public IStoppingCriterionConfig, pu
 
     public:
 
-        MeasureStoppingCriterionConfig();
+        EarlyStoppingCriterionConfig();
 
         AggregationFunction getAggregationFunction() const override;
 
-        IMeasureStoppingCriterionConfig& setAggregationFunction(AggregationFunction aggregationFunction) override;
+        IEarlyStoppingCriterionConfig& setAggregationFunction(AggregationFunction aggregationFunction) override;
 
         uint32 getMinRules() const override;
 
-        IMeasureStoppingCriterionConfig& setMinRules(uint32 minRules) override;
+        IEarlyStoppingCriterionConfig& setMinRules(uint32 minRules) override;
 
         uint32 getUpdateInterval() const override;
 
-        IMeasureStoppingCriterionConfig& setUpdateInterval(uint32 updateInterval) override;
+        IEarlyStoppingCriterionConfig& setUpdateInterval(uint32 updateInterval) override;
 
         uint32 getStopInterval() const override;
 
-        IMeasureStoppingCriterionConfig& setStopInterval(uint32 stopInterval) override;
+        IEarlyStoppingCriterionConfig& setStopInterval(uint32 stopInterval) override;
 
         uint32 getNumPast() const override;
 
-        IMeasureStoppingCriterionConfig& setNumPast(uint32 numPast) override;
+        IEarlyStoppingCriterionConfig& setNumPast(uint32 numPast) override;
 
         uint32 getNumCurrent() const override;
 
-        IMeasureStoppingCriterionConfig& setNumCurrent(uint32 numCurrent) override;
+        IEarlyStoppingCriterionConfig& setNumCurrent(uint32 numCurrent) override;
 
         float64 getMinImprovement() const override;
 
-        IMeasureStoppingCriterionConfig& setMinImprovement(float64 minImprovement) override;
+        IEarlyStoppingCriterionConfig& setMinImprovement(float64 minImprovement) override;
 
         bool isStopForced() const override;
 
-        IMeasureStoppingCriterionConfig& setForceStop(bool forceStop) override;
+        IEarlyStoppingCriterionConfig& setForceStop(bool forceStop) override;
 
         std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
 

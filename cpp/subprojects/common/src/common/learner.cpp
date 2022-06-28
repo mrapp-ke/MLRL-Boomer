@@ -79,7 +79,7 @@ AbstractRuleLearner::Config::Config() {
     this->useNoParallelPrediction();
     this->useNoSizeStoppingCriterion();
     this->useNoTimeStoppingCriterion();
-    this->useNoMeasureStoppingCriterion();
+    this->useNoEarlyStoppingCriterion();
 }
 
 const IDefaultRuleConfig& AbstractRuleLearner::Config::getDefaultRuleConfig() const {
@@ -142,8 +142,8 @@ const TimeStoppingCriterionConfig* AbstractRuleLearner::Config::getTimeStoppingC
     return timeStoppingCriterionConfigPtr_.get();
 }
 
-const MeasureStoppingCriterionConfig* AbstractRuleLearner::Config::getMeasureStoppingCriterionConfig() const {
-    return measureStoppingCriterionConfigPtr_.get();
+const EarlyStoppingCriterionConfig* AbstractRuleLearner::Config::getEarlyStoppingCriterionConfig() const {
+    return earlyStoppingCriterionConfigPtr_.get();
 }
 
 void AbstractRuleLearner::Config::useDefaultRule() {
@@ -210,8 +210,8 @@ void AbstractRuleLearner::Config::useNoTimeStoppingCriterion() {
     timeStoppingCriterionConfigPtr_ = nullptr;
 }
 
-void AbstractRuleLearner::Config::useNoMeasureStoppingCriterion() {
-    measureStoppingCriterionConfigPtr_ = nullptr;
+void AbstractRuleLearner::Config::useNoEarlyStoppingCriterion() {
+    earlyStoppingCriterionConfigPtr_ = nullptr;
 }
 
 AbstractRuleLearner::AbstractRuleLearner(const IRuleLearner::IConfig& config)
@@ -270,8 +270,8 @@ std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createTimeStoppi
     return config ? config->createStoppingCriterionFactory() : nullptr;
 }
 
-std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createMeasureStoppingCriterionFactory() const {
-    const MeasureStoppingCriterionConfig* config = config_.getMeasureStoppingCriterionConfig();
+std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createEarlyStoppingCriterionFactory() const {
+    const EarlyStoppingCriterionConfig* config = config_.getEarlyStoppingCriterionConfig();
     return config ? config->createStoppingCriterionFactory() : nullptr;
 }
 
@@ -288,7 +288,7 @@ void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionList
         factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
     }
 
-    stoppingCriterionFactory = this->createMeasureStoppingCriterionFactory();
+    stoppingCriterionFactory = this->createEarlyStoppingCriterionFactory();
 
     if (stoppingCriterionFactory) {
         factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));

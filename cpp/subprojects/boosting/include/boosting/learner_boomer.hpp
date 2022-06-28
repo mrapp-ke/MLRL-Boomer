@@ -45,7 +45,7 @@ namespace boosting {
                             virtual public IRuleLearner::IMultiThreadingMixin,
                             virtual public IRuleLearner::ISizeStoppingCriterionMixin,
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
-                            virtual public IRuleLearner::IMeasureStoppingCriterionMixin {
+                            virtual public IRuleLearner::IEarlyStoppingCriterionMixin {
 
                 public:
 
@@ -218,9 +218,9 @@ namespace boosting {
                     ITimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
 
                     /**
-                     * @see `IRuleLearner::IMeasureStoppingCriterionMixin::useMeasureStoppingCriterion`
+                     * @see `IRuleLearner::IEarlyStoppingCriterionMixin::useEarlyStoppingCriterion`
                      */
-                    IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
+                    IEarlyStoppingCriterionConfig& useEarlyStoppingCriterion() override;
 
                     /**
                      * @see `IBoostingRuleLearner::IShrinkageMixin::useConstantShrinkagePostProcessor`
