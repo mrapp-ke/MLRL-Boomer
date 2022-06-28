@@ -11,6 +11,18 @@ PARAM_L1_REGULARIZATION_WEIGHT = '--l1-regularization-weight'
 
 PARAM_L2_REGULARIZATION_WEIGHT = '--l2-regularization-weight'
 
+PARAM_STATISTIC_FORMAT = '--statistic-format'
+
+PARAM_DEFAULT_RULE = '--default-rule'
+
+PARAM_LABEL_BINNING = '--label-binning'
+
+PARAM_LOSS = '--loss'
+
+PARAM_CLASSIFICATION_PREDICTOR = '--classification-predictor'
+
+PARAM_PROBABILITY_PREDICTOR = '--probability-predictor'
+
 
 def add_shrinkage_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_SHRINKAGE, type=float,

@@ -13,20 +13,9 @@ from mlrl.testbed.args import add_rule_learner_arguments, add_max_rules_argument
     add_partition_sampling_argument, add_early_stopping_argument, add_pruning_argument, add_rule_induction_argument, \
     add_parallel_prediction_argument, PARAM_FEATURE_BINNING, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, \
     PARAM_PARALLEL_STATISTIC_UPDATE
-from mlrl.testbed.args_boosting import add_shrinkage_argument, add_regularization_arguments
+from mlrl.testbed.args_boosting import add_shrinkage_argument, add_regularization_arguments, PARAM_STATISTIC_FORMAT, \
+    PARAM_DEFAULT_RULE, PARAM_LABEL_BINNING, PARAM_LOSS, PARAM_CLASSIFICATION_PREDICTOR, PARAM_PROBABILITY_PREDICTOR
 from mlrl.testbed.runnables import RuleLearnerRunnable
-
-PARAM_STATISTIC_FORMAT = '--statistic-format'
-
-PARAM_DEFAULT_RULE = '--default-rule'
-
-PARAM_LABEL_BINNING = '--label-binning'
-
-PARAM_LOSS = '--loss'
-
-PARAM_CLASSIFICATION_PREDICTOR = '--classification-predictor'
-
-PARAM_PROBABILITY_PREDICTOR = '--probability-predictor'
 
 
 class BoomerRunnable(RuleLearnerRunnable):

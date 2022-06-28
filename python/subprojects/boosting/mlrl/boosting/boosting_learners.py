@@ -5,60 +5,30 @@ Provides scikit-learn implementations of boosting algorithms.
 """
 from typing import Dict, Set, Optional
 
-from mlrl.boosting.cython.learner import BoostingRuleLearnerConfig
+from mlrl.boosting.config import STATISTIC_FORMAT_DENSE, STATISTIC_FORMAT_SPARSE, HEAD_TYPE_SINGLE, \
+    HEAD_TYPE_COMPLETE, HEAD_TYPE_PARTIAL_FIXED, HEAD_TYPE_PARTIAL_DYNAMIC, ARGUMENT_LABEL_RATIO, ARGUMENT_MIN_LABELS, \
+    ARGUMENT_MAX_LABELS, ARGUMENT_THRESHOLD, ARGUMENT_EXPONENT, LOSS_SQUARED_ERROR_LABEL_WISE, \
+    LOSS_SQUARED_HINGE_LABEL_WISE, LOSS_LOGISTIC_LABEL_WISE, LOSS_LOGISTIC_EXAMPLE_WISE, \
+    CLASSIFICATION_PREDICTOR_LABEL_WISE, CLASSIFICATION_PREDICTOR_EXAMPLE_WISE, PROBABILITY_PREDICTOR_LABEL_WISE, \
+    PROBABILITY_PREDICTOR_MARGINALIZED
+from mlrl.boosting.config import configure_post_processor, configure_l1_regularization, configure_l2_regularization, \
+    configure_default_rule, configure_head_type, configure_statistics, configure_label_wise_squared_error_loss, \
+    configure_label_wise_squared_hinge_loss, configure_label_wise_logistic_loss, configure_example_wise_logistic_loss, \
+    configure_label_binning, configure_label_wise_classification_predictor, \
+    configure_example_wise_classification_predictor, configure_label_wise_probability_predictor, \
+    configure_marginalized_probability_predictor
 from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
-from mlrl.common.rule_learners import AUTOMATIC, NONE, ARGUMENT_BIN_RATIO, \
-    ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, ARGUMENT_NUM_THREADS, BINNING_EQUAL_WIDTH, BINNING_EQUAL_FREQUENCY
+from mlrl.common.rule_learners import AUTOMATIC, NONE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, \
+    ARGUMENT_NUM_THREADS, BINNING_EQUAL_WIDTH, BINNING_EQUAL_FREQUENCY
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
-from mlrl.common.rule_learners import configure_rule_induction, \
-    configure_feature_binning, configure_label_sampling, configure_instance_sampling, configure_feature_sampling, \
-    configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
-    configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
-    configure_time_stopping_criterion, configure_early_stopping_criterion
-from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int, get_float
+from mlrl.common.rule_learners import configure_rule_induction, configure_feature_binning, configure_label_sampling, \
+    configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, configure_pruning, \
+    configure_parallel_rule_refinement, configure_parallel_statistic_update, configure_parallel_prediction, \
+    configure_size_stopping_criterion, configure_time_stopping_criterion, configure_early_stopping_criterion
+from mlrl.common.rule_learners import parse_param, get_string, get_int, get_float
 from sklearn.base import ClassifierMixin
-
-STATISTIC_FORMAT_DENSE = 'dense'
-
-STATISTIC_FORMAT_SPARSE = 'sparse'
-
-HEAD_TYPE_SINGLE = 'single-label'
-
-HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
-
-ARGUMENT_LABEL_RATIO = 'label_ratio'
-
-ARGUMENT_MIN_LABELS = 'min_labels'
-
-ARGUMENT_MAX_LABELS = 'max_labels'
-
-HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
-
-ARGUMENT_THRESHOLD = 'threshold'
-
-ARGUMENT_EXPONENT = 'exponent'
-
-HEAD_TYPE_COMPLETE = 'complete'
-
-LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
-
-LOSS_LOGISTIC_EXAMPLE_WISE = 'logistic-example-wise'
-
-LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
-
-LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
-
-NON_DECOMPOSABLE_LOSSES = {LOSS_LOGISTIC_EXAMPLE_WISE}
-
-CLASSIFICATION_PREDICTOR_LABEL_WISE = 'label-wise'
-
-CLASSIFICATION_PREDICTOR_EXAMPLE_WISE = 'example-wise'
-
-PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
-
-PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
 
 STATISTIC_FORMAT_VALUES: Set[str] = {
     STATISTIC_FORMAT_DENSE,
@@ -117,30 +87,6 @@ PARALLEL_VALUES: Dict[str, Set[str]] = {
     str(BooleanOption.FALSE.value): {},
     AUTOMATIC: {}
 }
-
-
-def configure_post_processor(config: BoostingRuleLearnerConfig, shrinkage: Optional[float]):
-    if shrinkage is not None:
-        if shrinkage == 1:
-            config.use_no_post_processor()
-        else:
-            config.use_constant_shrinkage_post_processor().set_shrinkage(shrinkage)
-
-
-def configure_l1_regularization(config: BoostingRuleLearnerConfig, l1_regularization_weight: Optional[float]):
-    if l1_regularization_weight is not None:
-        if l1_regularization_weight == 0:
-            config.use_no_l1_regularization()
-        else:
-            config.use_l1_regularization().set_regularization_weight(l1_regularization_weight)
-
-
-def configure_l2_regularization(config: BoostingRuleLearnerConfig, l2_regularization_weight: Optional[float]):
-    if l2_regularization_weight is not None:
-        if l2_regularization_weight == 0:
-            config.use_no_l2_regularization()
-        else:
-            config.use_l2_regularization().set_regularization_weight(l2_regularization_weight)
 
 
 class Boomer(MLRuleLearner, ClassifierMixin):
@@ -279,159 +225,113 @@ class Boomer(MLRuleLearner, ClassifierMixin):
 
     def _create_learner(self) -> RuleLearnerWrapper:
         config = BoomerConfig()
-        self.__configure_default_rule(config)
         configure_rule_induction(config, get_string(self.rule_induction))
-        self.__configure_feature_binning(config)
         configure_label_sampling(config, get_string(self.label_sampling))
         configure_instance_sampling(config, get_string(self.instance_sampling))
         configure_feature_sampling(config, get_string(self.feature_sampling))
         configure_partition_sampling(config, get_string(self.holdout))
         configure_pruning(config, get_string(self.pruning))
-        self.__configure_parallel_rule_refinement(config)
-        self.__configure_parallel_statistic_update(config)
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
         configure_early_stopping_criterion(config, get_string(self.early_stopping))
         configure_post_processor(config, shrinkage=get_float(self.shrinkage))
-        self.__configure_head_type(config)
-        self.__configure_statistics(config)
         configure_l1_regularization(config, l1_regularization_weight=get_float(self.l1_regularization_weight))
         configure_l2_regularization(config, l2_regularization_weight=get_float(self.l2_regularization_weight))
+        self.__configure_default_rule(config)
+        self.__configure_feature_binning(config)
+        self.__configure_head_type(config)
+        self.__configure_statistics(config)
         self.__configure_loss(config)
         self.__configure_label_binning(config)
         self.__configure_classification_predictor(config)
         self.__configure_probability_predictor(config)
+        self.__configure_parallel_rule_refinement(config)
+        self.__configure_parallel_statistic_update(config)
         return BoomerWrapper(config)
 
     def __configure_default_rule(self, config: BoomerConfig):
         default_rule = get_string(self.default_rule)
 
-        if default_rule is not None:
-            value = parse_param('default_rule', default_rule, DEFAULT_RULE_VALUES)
-
-            if value == AUTOMATIC:
-                config.use_automatic_default_rule()
-            elif value == BooleanOption.TRUE.value:
-                config.use_default_rule()
-            else:
-                config.use_no_default_rule()
+        if default_rule == AUTOMATIC:
+            config.use_automatic_default_rule()
+        else:
+            configure_default_rule(config, default_rule)
 
     def __configure_feature_binning(self, config: BoomerConfig):
         feature_binning = get_string(self.feature_binning)
 
-        if feature_binning is not None:
-            if feature_binning == AUTOMATIC:
-                config.use_automatic_feature_binning()
-            else:
-                configure_feature_binning(config, feature_binning)
+        if feature_binning == AUTOMATIC:
+            config.use_automatic_feature_binning()
+        else:
+            configure_feature_binning(config, feature_binning)
 
     def __configure_parallel_rule_refinement(self, config: BoomerConfig):
         parallel_rule_refinement = get_string(self.parallel_rule_refinement)
 
-        if parallel_rule_refinement is not None:
-            if parallel_rule_refinement == AUTOMATIC:
-                config.use_automatic_parallel_rule_refinement()
-            else:
-                configure_parallel_rule_refinement(config, parallel_rule_refinement)
+        if parallel_rule_refinement == AUTOMATIC:
+            config.use_automatic_parallel_rule_refinement()
+        else:
+            configure_parallel_rule_refinement(config, parallel_rule_refinement)
 
     def __configure_parallel_statistic_update(self, config: BoomerConfig):
         parallel_statistic_update = get_string(self.parallel_statistic_update)
 
-        if parallel_statistic_update is not None:
-            if parallel_statistic_update == AUTOMATIC:
-                config.use_automatic_parallel_statistic_update()
-            else:
-                configure_parallel_statistic_update(config, parallel_statistic_update)
+        if parallel_statistic_update == AUTOMATIC:
+            config.use_automatic_parallel_statistic_update()
+        else:
+            configure_parallel_statistic_update(config, parallel_statistic_update)
 
     def __configure_head_type(self, config: BoomerConfig):
         head_type = get_string(self.head_type)
 
-        if head_type is not None:
-            value, options = parse_param_and_options("head_type", head_type, HEAD_TYPE_VALUES)
-
-            if value == AUTOMATIC:
-                config.use_automatic_heads()
-            elif value == HEAD_TYPE_SINGLE:
-                config.use_single_label_heads()
-            elif value == HEAD_TYPE_PARTIAL_FIXED:
-                c = config.use_fixed_partial_heads()
-                c.set_label_ratio(options.get_float(ARGUMENT_LABEL_RATIO, c.get_label_ratio()))
-                c.set_min_labels(options.get_int(ARGUMENT_MIN_LABELS, c.get_min_labels()))
-                c.set_max_labels(options.get_int(ARGUMENT_MAX_LABELS, c.get_max_labels()))
-            elif value == HEAD_TYPE_PARTIAL_DYNAMIC:
-                c = config.use_dynamic_partial_heads()
-                c.set_threshold(options.get_float(ARGUMENT_THRESHOLD, c.get_threshold()))
-                c.set_exponent(options.get_float(ARGUMENT_EXPONENT, c.get_exponent()))
-            elif value == HEAD_TYPE_COMPLETE:
-                config.use_complete_heads()
+        if head_type == AUTOMATIC:
+            config.use_automatic_heads()
+        else:
+            configure_head_type(config, head_type)
 
     def __configure_statistics(self, config: BoomerConfig):
         statistic_format = get_string(self.statistic_format)
 
-        if statistic_format is not None:
-            value = parse_param("statistic_format", statistic_format, STATISTIC_FORMAT_VALUES)
-
-            if value == AUTOMATIC:
-                config.use_automatic_statistics()
-            elif value == STATISTIC_FORMAT_DENSE:
-                config.use_dense_statistics()
-            elif value == STATISTIC_FORMAT_SPARSE:
-                config.use_sparse_statistics()
+        if statistic_format == AUTOMATIC:
+            config.use_automatic_statistics()
+        else:
+            configure_statistics(config, statistic_format)
 
     def __configure_loss(self, config: BoomerConfig):
         loss = get_string(self.loss)
 
         if loss is not None:
-            value = parse_param("loss", loss, LOSS_VALUES)
-
-            if value == LOSS_SQUARED_ERROR_LABEL_WISE:
-                config.use_label_wise_squared_error_loss()
-            elif value == LOSS_SQUARED_HINGE_LABEL_WISE:
-                config.use_label_wise_squared_hinge_loss()
-            elif value == LOSS_LOGISTIC_LABEL_WISE:
-                config.use_label_wise_logistic_loss()
-            elif value == LOSS_LOGISTIC_EXAMPLE_WISE:
-                config.use_example_wise_logistic_loss()
+            value = parse_param('loss', loss, LOSS_VALUES)
+            configure_label_wise_squared_error_loss(config, value)
+            configure_label_wise_squared_hinge_loss(config, value)
+            configure_label_wise_logistic_loss(config, value)
+            configure_example_wise_logistic_loss(config, value)
 
     def __configure_label_binning(self, config: BoomerConfig):
         label_binning = get_string(self.label_binning)
 
-        if label_binning is not None:
-            value, options = parse_param_and_options('label_binning', label_binning, LABEL_BINNING_VALUES)
-
-            if value == NONE:
-                config.use_no_label_binning()
-            elif value == AUTOMATIC:
-                config.use_automatic_label_binning()
-            if value == BINNING_EQUAL_WIDTH:
-                c = config.use_equal_width_label_binning()
-                c.set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, c.get_bin_ratio()))
-                c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
-                c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
+        if label_binning == AUTOMATIC:
+            config.use_automatic_label_binning()
+        else:
+            configure_label_binning(config, label_binning)
 
     def __configure_classification_predictor(self, config: BoomerConfig):
         classification_predictor = get_string(self.classification_predictor)
 
-        if classification_predictor is not None:
+        if classification_predictor == AUTOMATIC:
+            config.use_automatic_classification_predictor()
+        elif classification_predictor is not None:
             value = parse_param('classification_predictor', classification_predictor, CLASSIFICATION_PREDICTOR_VALUES)
-
-            if value == AUTOMATIC:
-                config.use_automatic_label_binning()
-            elif value == CLASSIFICATION_PREDICTOR_LABEL_WISE:
-                config.use_label_wise_classification_predictor()
-            elif value == CLASSIFICATION_PREDICTOR_EXAMPLE_WISE:
-                config.use_example_wise_classification_predictor()
+            configure_label_wise_classification_predictor(config, value)
+            configure_example_wise_classification_predictor(config, value)
 
     def __configure_probability_predictor(self, config: BoomerConfig):
         probability_predictor = get_string(self.probability_predictor)
 
-        if probability_predictor is not None:
+        if probability_predictor == AUTOMATIC:
+            config.use_automatic_probability_predictor()
+        elif probability_predictor is not None:
             value = parse_param('probability_predictor', probability_predictor, PROBABILITY_PREDICTOR_VALUES)
-
-            if value == AUTOMATIC:
-                config.use_automatic_probability_predictor()
-            elif value == PROBABILITY_PREDICTOR_LABEL_WISE:
-                config.use_label_wise_probability_predictor()
-            elif value == PROBABILITY_PREDICTOR_MARGINALIZED:
-                config.use_marginalized_probability_predictor()
+            configure_label_wise_probability_predictor(config, value)
+            configure_marginalized_probability_predictor(config, value)
