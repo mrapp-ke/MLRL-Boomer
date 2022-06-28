@@ -251,7 +251,7 @@ class ModelPrinterTxtOutput(ModelPrinterOutput):
 
 class RulePrinter(ModelPrinter):
     """
-    Allows to print a textual representation of a `MLRuleLearner`'s rule-based model.
+    Allows to print a textual representation of a rule-based model.
     """
 
     def __init__(self, print_options: str, outputs: List[ModelPrinterOutput]):
@@ -307,13 +307,13 @@ class RuleModelCharacteristics:
 
 class RuleModelCharacteristicsOutput(ABC):
     """
-    An abstract base class for all outputs, the characteristics of a `MLRuleLearner`'s model may be written to.
+    An abstract base class for all outputs, the characteristics of a rule-based model may be written to.
     """
 
     @abstractmethod
     def write_model_characteristics(self, data_partition: DataPartition, characteristics: RuleModelCharacteristics):
         """
-        Writes the characteristics of a `RuleModel` to the output.
+        Writes the characteristics of a rule-based model to the output.
 
         :param characteristics: The characteristics of the model
         :param data_partition:  The partition of data, the characteristics correspond to
@@ -544,12 +544,12 @@ class ModelCharacteristicsPrinter(ABC):
 
 class RuleModelCharacteristicsPrinter(ModelCharacteristicsPrinter):
     """
-    A class that allows to print the characteristics of `MLRuleLearner`'s model.
+    A class that allows to print the characteristics of a rule-based model.
     """
 
     def __init__(self, outputs: List[RuleModelCharacteristicsOutput]):
         """
-        :param outputs: The outputs, the characteristics of `RuleModel`s should be written to
+        :param outputs: The outputs, the model characteristics should be written to
         """
         self.outputs = outputs
 
