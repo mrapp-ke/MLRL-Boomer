@@ -1,6 +1,6 @@
-from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTopDownMixin, IFeatureBinningMixin, \
-    ILabelSamplingMixin, IInstanceSamplingMixin, IFeatureSamplingMixin, IPartitionSamplingMixin, IPruningMixin, \
-    IMultiThreadingMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IMeasureStoppingCriterionMixin
+from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTopDownMixin, ILabelSamplingMixin, \
+    IInstanceSamplingMixin, IFeatureSamplingMixin, IPartitionSamplingMixin, IPruningMixin, IMultiThreadingMixin, \
+    ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin
 from mlrl.seco.cython.learner cimport ISeCoRuleLearnerConfig, SeCoRuleLearnerConfig, ICoverageStoppingCriterionMixin, \
     IPartialHeadMixin, IAccuracyMixin, IFMeasureMixin, IMEstimateMixin, ILaplaceMixin, IRecallMixin, IWraMixin
 
@@ -20,7 +20,6 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
             IRecallMixin,
             IWraMixin,
             IBeamSearchTopDownMixin,
-            IFeatureBinningMixin,
             ILabelSamplingMixin,
             IInstanceSamplingMixin,
             IFeatureSamplingMixin,
@@ -28,8 +27,7 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
             IPruningMixin,
             IMultiThreadingMixin,
             ISizeStoppingCriterionMixin,
-            ITimeStoppingCriterionMixin,
-            IMeasureStoppingCriterionMixin):
+            ITimeStoppingCriterionMixin):
         pass
 
 
