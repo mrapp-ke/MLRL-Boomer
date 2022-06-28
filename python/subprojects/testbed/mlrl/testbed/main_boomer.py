@@ -4,13 +4,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from argparse import ArgumentParser
 
 from mlrl.boosting.boosting_learners import Boomer, STATISTIC_FORMAT_VALUES, DEFAULT_RULE_VALUES, HEAD_TYPE_VALUES, \
-    EARLY_STOPPING_VALUES, LABEL_BINNING_VALUES, LOSS_VALUES, CLASSIFICATION_PREDICTOR_VALUES, \
+    LABEL_BINNING_VALUES, LOSS_VALUES, CLASSIFICATION_PREDICTOR_VALUES, \
     PROBABILITY_PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
 from mlrl.common.rule_learners import AUTOMATIC
 from mlrl.common.strings import format_dict_keys, format_string_set
 from mlrl.testbed.args import add_rule_learner_arguments, add_max_rules_argument, add_time_limit_argument, \
     add_label_sampling_argument, add_instance_sampling_argument, add_feature_sampling_argument, \
-    add_partition_sampling_argument, add_pruning_argument, add_rule_induction_argument, \
+    add_partition_sampling_argument, add_early_stopping_argument, add_pruning_argument, add_rule_induction_argument, \
     add_parallel_prediction_argument, PARAM_FEATURE_BINNING, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, \
     PARAM_PARALLEL_STATISTIC_UPDATE
 from mlrl.testbed.args_boosting import add_shrinkage_argument, add_regularization_arguments
@@ -19,8 +19,6 @@ from mlrl.testbed.runnables import RuleLearnerRunnable
 PARAM_STATISTIC_FORMAT = '--statistic-format'
 
 PARAM_DEFAULT_RULE = '--default-rule'
-
-PARAM_EARLY_STOPPING = '--early-stopping'
 
 PARAM_LABEL_BINNING = '--label-binning'
 
@@ -74,6 +72,7 @@ def __add_arguments(parser: ArgumentParser):
     add_instance_sampling_argument(parser)
     add_feature_sampling_argument(parser)
     add_partition_sampling_argument(parser)
+    add_early_stopping_argument(parser)
     add_pruning_argument(parser)
     add_rule_induction_argument(parser)
     add_parallel_prediction_argument(parser)
@@ -88,10 +87,6 @@ def __add_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_DEFAULT_RULE, type=str,
                         help='Whether a default rule should be induced or not. Must be one of '
                              + format_string_set(DEFAULT_RULE_VALUES) + '.')
-    parser.add_argument(PARAM_EARLY_STOPPING, type=str,
-                        help='The name of the strategy to be used for early stopping. Must be one of '
-                             + format_dict_keys(EARLY_STOPPING_VALUES) + '. For additional options refer to the '
-                             + 'documentation.')
     parser.add_argument(PARAM_FEATURE_BINNING, type=str,
                         help='The name of the strategy to be used for feature binning. Must be one of '
                              + format_dict_keys(FEATURE_BINNING_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
