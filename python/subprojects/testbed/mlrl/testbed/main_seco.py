@@ -11,8 +11,8 @@ from mlrl.testbed.args import add_rule_learner_arguments, add_max_rules_argument
     PARAM_HEAD_TYPE
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
-from mlrl.seco.seco_learners import SeCoRuleLearner, HEAD_TYPE_VALUES, HEURISTIC_VALUES, LIFT_FUNCTION_VALUES, \
-    HEAD_TYPE_PARTIAL
+from mlrl.seco.seco_learners import MultiLabelSeCoRuleLearner, HEAD_TYPE_VALUES, HEURISTIC_VALUES, \
+    LIFT_FUNCTION_VALUES, HEAD_TYPE_PARTIAL
 
 PARAM_HEURISTIC = '--heuristic'
 
@@ -24,26 +24,26 @@ PARAM_LIFT_FUNCTION = '--lift-function'
 class SeCoRunnable(RuleLearnerRunnable):
 
     def _create_learner(self, args):
-        return SeCoRuleLearner(random_state=args.random_state,
-                               feature_format=args.feature_format,
-                               label_format=args.label_format,
-                               predicted_label_format=args.predicted_label_format,
-                               rule_induction=args.rule_induction,
-                               max_rules=args.max_rules,
-                               time_limit=args.time_limit,
-                               heuristic=args.heuristic,
-                               pruning_heuristic=args.pruning_heuristic,
-                               pruning=args.pruning,
-                               label_sampling=args.label_sampling,
-                               instance_sampling=args.instance_sampling,
-                               feature_sampling=args.feature_sampling,
-                               holdout=args.holdout,
-                               feature_binning=args.feature_binning,
-                               head_type=args.head_type,
-                               lift_function=args.lift_function,
-                               parallel_rule_refinement=args.parallel_rule_refinement,
-                               parallel_statistic_update=args.parallel_statistic_update,
-                               parallel_prediction=args.parallel_prediction)
+        return MultiLabelSeCoRuleLearner(random_state=args.random_state,
+                                         feature_format=args.feature_format,
+                                         label_format=args.label_format,
+                                         predicted_label_format=args.predicted_label_format,
+                                         rule_induction=args.rule_induction,
+                                         max_rules=args.max_rules,
+                                         time_limit=args.time_limit,
+                                         heuristic=args.heuristic,
+                                         pruning_heuristic=args.pruning_heuristic,
+                                         pruning=args.pruning,
+                                         label_sampling=args.label_sampling,
+                                         instance_sampling=args.instance_sampling,
+                                         feature_sampling=args.feature_sampling,
+                                         holdout=args.holdout,
+                                         feature_binning=args.feature_binning,
+                                         head_type=args.head_type,
+                                         lift_function=args.lift_function,
+                                         parallel_rule_refinement=args.parallel_rule_refinement,
+                                         parallel_statistic_update=args.parallel_statistic_update,
+                                         parallel_prediction=args.parallel_prediction)
 
     def _get_learner_name(self) -> str:
         return "seco"

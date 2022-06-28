@@ -13,7 +13,8 @@ from mlrl.common.rule_learners import configure_rule_induction, \
     configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
     configure_time_stopping_criterion
 from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int
-from mlrl.seco.cython.learner_seco import SeCoRuleLearner as SeCoRuleLearnerWrapper, SeCoRuleLearnerConfig
+from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
+    MultiLabelSeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
 
 HEAD_TYPE_SINGLE = 'single-label'
@@ -71,7 +72,7 @@ LIFT_FUNCTION_VALUES: Dict[str, Set[str]] = {
 }
 
 
-class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
+class MultiLabelSeCoRuleLearner(MLRuleLearner, ClassifierMixin):
     """
     A scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label classification
     rules.
@@ -169,7 +170,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         self.parallel_prediction = parallel_prediction
 
     def _create_learner(self) -> RuleLearnerWrapper:
-        config = SeCoRuleLearnerConfig()
+        config = MultiLabelSeCoRuleLearnerConfig()
         configure_rule_induction(config, get_string(self.rule_induction))
         configure_label_sampling(config, get_string(self.label_sampling))
         configure_instance_sampling(config, get_string(self.instance_sampling))
@@ -186,9 +187,9 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         self.__configure_heuristic(config)
         self.__configure_pruning_heuristic(config)
         self.__configure_lift_function(config)
-        return SeCoRuleLearnerWrapper(config)
+        return MultiLabelSeCoRuleLearnerWrapper(config)
 
-    def __configure_head_type(self, config: SeCoRuleLearnerConfig):
+    def __configure_head_type(self, config: MultiLabelSeCoRuleLearnerConfig):
         head_type = get_string(self.head_type)
 
         if head_type is not None:
@@ -199,7 +200,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
             elif value == HEAD_TYPE_PARTIAL:
                 config.use_partial_heads()
 
-    def __configure_heuristic(self, config: SeCoRuleLearnerConfig):
+    def __configure_heuristic(self, config: MultiLabelSeCoRuleLearnerConfig):
         heuristic = get_string(self.heuristic)
 
         if heuristic is not None:
@@ -222,7 +223,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                 c = config.use_m_estimate_heuristic()
                 c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
 
-    def __configure_pruning_heuristic(self, config: SeCoRuleLearnerConfig):
+    def __configure_pruning_heuristic(self, config: MultiLabelSeCoRuleLearnerConfig):
         pruning_heuristic = get_string(self.pruning_heuristic)
 
         if pruning_heuristic is not None:
@@ -245,7 +246,7 @@ class SeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                 c = config.use_m_estimate_pruning_heuristic()
                 c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
 
-    def __configure_lift_function(self, config: SeCoRuleLearnerConfig):
+    def __configure_lift_function(self, config: MultiLabelSeCoRuleLearnerConfig):
         lift_function = get_string(self.lift_function)
 
         if lift_function is not None:

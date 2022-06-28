@@ -11,18 +11,18 @@ from libcpp.memory cimport unique_ptr
 
 cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
 
-    cdef cppclass ISeCoRuleLearnerConfig"seco::ISeCoRuleLearner::IConfig"(IRuleLearnerConfig,
-                                                                          IBeamSearchTopDownMixin,
-                                                                          IFeatureBinningMixin,
-                                                                          ILabelSamplingMixin,
-                                                                          IInstanceSamplingMixin,
-                                                                          IFeatureSamplingMixin,
-                                                                          IPartitionSamplingMixin,
-                                                                          IPruningMixin,
-                                                                          IMultiThreadingMixin,
-                                                                          ISizeStoppingCriterionMixin,
-                                                                          ITimeStoppingCriterionMixin,
-                                                                          IMeasureStoppingCriterionMixin):
+    cdef cppclass IMultiLabelSeCoRuleLearnerConfig"seco::IMultiLabelSeCoRuleLearner::IConfig"(IRuleLearnerConfig,
+                                                                                              IBeamSearchTopDownMixin,
+                                                                                              IFeatureBinningMixin,
+                                                                                              ILabelSamplingMixin,
+                                                                                              IInstanceSamplingMixin,
+                                                                                              IFeatureSamplingMixin,
+                                                                                              IPartitionSamplingMixin,
+                                                                                              IPruningMixin,
+                                                                                              IMultiThreadingMixin,
+                                                                                              ISizeStoppingCriterionMixin,
+                                                                                              ITimeStoppingCriterionMixin,
+                                                                                              IMeasureStoppingCriterionMixin):
 
         # Functions:
 
@@ -69,25 +69,25 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
         void useLabelWiseClassificationPredictor()
 
 
-    cdef cppclass ISeCoRuleLearner(IRuleLearner):
+    cdef cppclass IMultiLabelSeCoRuleLearner(IRuleLearner):
         pass
 
 
-    unique_ptr[ISeCoRuleLearnerConfig] createSeCoRuleLearnerConfig()
+    unique_ptr[IMultiLabelSeCoRuleLearnerConfig] createMultiLabelSeCoRuleLearnerConfig()
 
 
-    unique_ptr[ISeCoRuleLearner] createSeCoRuleLearner(unique_ptr[ISeCoRuleLearnerConfig] configPtr)
+    unique_ptr[IMultiLabelSeCoRuleLearner] createMultiLabelSeCoRuleLearner(unique_ptr[IMultiLabelSeCoRuleLearnerConfig] configPtr)
 
 
-cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
-
-    # Attributes:
-
-    cdef unique_ptr[ISeCoRuleLearnerConfig] rule_learner_config_ptr
-
-
-cdef class SeCoRuleLearner(RuleLearner):
+cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig):
 
     # Attributes:
 
-    cdef unique_ptr[ISeCoRuleLearner] rule_learner_ptr
+    cdef unique_ptr[IMultiLabelSeCoRuleLearnerConfig] rule_learner_config_ptr
+
+
+cdef class MultiLabelSeCoRuleLearner(RuleLearner):
+
+    # Attributes:
+
+    cdef unique_ptr[IMultiLabelSeCoRuleLearner] rule_learner_ptr

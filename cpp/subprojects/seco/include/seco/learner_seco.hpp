@@ -22,7 +22,7 @@ namespace seco {
     /**
      * Defines an interface for all rule learners that make use of the separate-and-conquer (SeCo) paradigm.
      */
-    class MLRLSECO_API ISeCoRuleLearner : virtual public IRuleLearner {
+    class MLRLSECO_API IMultiLabelSeCoRuleLearner : virtual public IRuleLearner {
 
         public:
 
@@ -43,7 +43,7 @@ namespace seco {
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
                             virtual public IRuleLearner::IMeasureStoppingCriterionMixin {
 
-                friend class SeCoRuleLearner;
+                friend class MultiLabelSeCoRuleLearner;
 
                 private:
 
@@ -244,21 +244,22 @@ namespace seco {
 
             };
 
-            virtual ~ISeCoRuleLearner() override { };
+            virtual ~IMultiLabelSeCoRuleLearner() override { };
 
     };
 
     /**
-     * An implementation of the type `ISeCoRuleLearner`.
+     * An implementation of the type `IMultiLabelSeCoRuleLearner`.
      */
-    class SeCoRuleLearner final : public AbstractRuleLearner, virtual public ISeCoRuleLearner {
+    class MultiLabelSeCoRuleLearner final : public AbstractRuleLearner, virtual public IMultiLabelSeCoRuleLearner {
 
         public:
 
             /**
              * Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
              */
-            class Config final : public AbstractRuleLearner::Config, virtual public ISeCoRuleLearner::IConfig {
+            class Config final : public AbstractRuleLearner::Config,
+                                 virtual public IMultiLabelSeCoRuleLearner::IConfig {
 
                 private:
 
@@ -436,7 +437,7 @@ namespace seco {
 
         private:
 
-            std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr_;
+            std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr_;
 
             std::unique_ptr<IStoppingCriterionFactory> createCoverageStoppingCriterionFactory() const;
 
@@ -458,29 +459,29 @@ namespace seco {
         public:
 
             /**
-             * @param configPtr An unique pointer to an object of type `ISeCoRuleLearner::IConfig` that specifies the
-             *                  configuration that should be used by the rule learner
+             * @param configPtr An unique pointer to an object of type `IMultiLabelSeCoRuleLearner::IConfig` that
+             *                  specifies the configuration that should be used by the rule learner
              */
-            SeCoRuleLearner(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr);
+            MultiLabelSeCoRuleLearner(std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr);
 
     };
 
     /**
-     * Creates and returns a new object of type `ISeCoRuleLearner::IConfig`.
+     * Creates and returns a new object of type `IMultiLabelSeCoRuleLearner::IConfig`.
      *
-     * @return An unique pointer to an object of type `ISeCoRuleLearner::IConfig` that has been created
+     * @return An unique pointer to an object of type `IMultiLabelSeCoRuleLearner::IConfig` that has been created
      */
-    MLRLSECO_API std::unique_ptr<ISeCoRuleLearner::IConfig> createSeCoRuleLearnerConfig();
+    MLRLSECO_API std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> createMultiLabelSeCoRuleLearnerConfig();
 
     /**
-     * Creates and returns a new object of type `ISeCoRuleLearner`.
+     * Creates and returns a new object of type `IMultiLabelSeCoRuleLearner`.
      *
-     * @param configPtr An unique pointer to an object of type `ISeCoRuleLearner::IConfig` that specifies the
+     * @param configPtr An unique pointer to an object of type `IMultiLabelSeCoRuleLearner::IConfig` that specifies the
      *                  configuration that should be used by the rule learner.
-     * @return          An unique pointer to an object of type `ISeCoRuleLearner` that has been created
+     * @return          An unique pointer to an object of type `IMultiLabelSeCoRuleLearner` that has been created
      */
-    MLRLSECO_API std::unique_ptr<ISeCoRuleLearner> createSeCoRuleLearner(
-        std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr);
+    MLRLSECO_API std::unique_ptr<IMultiLabelSeCoRuleLearner> createMultiLabelSeCoRuleLearner(
+        std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr);
 
 }
 
