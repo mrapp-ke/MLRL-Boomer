@@ -13,6 +13,7 @@ from mlrl.common.rule_learners import configure_rule_induction, \
     configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
     configure_time_stopping_criterion
 from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int, NONE
+from mlrl.seco.cython.learner import SeCoRuleLearnerConfig
 from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
     MultiLabelSeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin
@@ -73,7 +74,7 @@ LIFT_FUNCTION_VALUES: Dict[str, Set[str]] = {
 }
 
 
-def configure_head_type(config: MultiLabelSeCoRuleLearnerConfig, head_type: Optional[str]):
+def configure_head_type(config: SeCoRuleLearnerConfig, head_type: Optional[str]):
     if head_type is not None:
         value = parse_param('head_type', head_type, HEAD_TYPE_VALUES)
 
@@ -83,7 +84,7 @@ def configure_head_type(config: MultiLabelSeCoRuleLearnerConfig, head_type: Opti
             config.use_partial_heads()
 
 
-def configure_heuristic(config: MultiLabelSeCoRuleLearnerConfig, heuristic: Optional[str]):
+def configure_heuristic(config: SeCoRuleLearnerConfig, heuristic: Optional[str]):
     if heuristic is not None:
         value, options = parse_param_and_options('heuristic', heuristic, HEURISTIC_VALUES)
 
@@ -105,7 +106,7 @@ def configure_heuristic(config: MultiLabelSeCoRuleLearnerConfig, heuristic: Opti
             c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
 
 
-def configure_pruning_heuristic(config: MultiLabelSeCoRuleLearnerConfig, pruning_heuristic: Optional[str]):
+def configure_pruning_heuristic(config: SeCoRuleLearnerConfig, pruning_heuristic: Optional[str]):
     if pruning_heuristic is not None:
         value, options = parse_param_and_options('pruning_heuristic', pruning_heuristic, HEURISTIC_VALUES)
 
@@ -127,7 +128,7 @@ def configure_pruning_heuristic(config: MultiLabelSeCoRuleLearnerConfig, pruning
             c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
 
 
-def configure_lift_function(config: MultiLabelSeCoRuleLearnerConfig, lift_function: Optional[str]):
+def configure_lift_function(config: SeCoRuleLearnerConfig, lift_function: Optional[str]):
     if lift_function is not None:
         value, options = parse_param_and_options('lift_function', lift_function, LIFT_FUNCTION_VALUES)
 
