@@ -1,1 +1,1 @@
-from mlrl.seco.seco_learners import SeCoRuleLearner
+from mlrl.seco.seco_learners import MultiLabelSeCoRuleLearner
