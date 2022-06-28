@@ -8,14 +8,11 @@ from mlrl.testbed.args import add_rule_learner_arguments, add_max_rules_argument
     add_label_sampling_argument, add_instance_sampling_argument, add_feature_sampling_argument, \
     add_partition_sampling_argument, add_pruning_argument, add_rule_induction_argument, \
     add_parallel_prediction_argument, add_parallel_statistic_update_argument, add_parallel_rule_refinement_argument
-from mlrl.testbed.args_seco import add_head_type_argument, add_lift_function_argument
+from mlrl.testbed.args_seco import add_head_type_argument, add_lift_function_argument, PARAM_HEURISTIC, \
+    PARAM_PRUNING_HEURISTIC
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
 from mlrl.seco.seco_learners import MultiLabelSeCoRuleLearner, HEURISTIC_VALUES
-
-PARAM_HEURISTIC = '--heuristic'
-
-PARAM_PRUNING_HEURISTIC = '--pruning-heuristic'
 
 
 class SeCoRunnable(RuleLearnerRunnable):
