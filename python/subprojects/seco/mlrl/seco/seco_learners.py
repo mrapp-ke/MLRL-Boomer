@@ -7,7 +7,7 @@ classification rules.
 from typing import Dict, Set, Optional
 
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
+from mlrl.common.rule_learners import RuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_induction, configure_label_sampling, configure_instance_sampling, \
     configure_feature_sampling, configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
     configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
@@ -36,7 +36,7 @@ HEURISTIC_VALUES: Dict[str, Set[str]] = {
 }
 
 
-class MultiLabelSeCoRuleLearner(MLRuleLearner, ClassifierMixin):
+class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin):
     """
     A scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label classification
     rules.

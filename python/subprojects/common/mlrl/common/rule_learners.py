@@ -476,7 +476,7 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
         'Matrix of type ' + type(m).__name__ + ' cannot be converted to format "' + str(sparse_format) + '""')
 
 
-class MLRuleLearner(Learner, NominalAttributeLearner, ABC):
+class RuleLearner(Learner, NominalAttributeLearner, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm for multi-label classification or ranking.
     """
