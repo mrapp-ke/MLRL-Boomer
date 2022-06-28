@@ -22,7 +22,7 @@ from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import AUTOMATIC, NONE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, \
     ARGUMENT_NUM_THREADS, BINNING_EQUAL_WIDTH, BINNING_EQUAL_FREQUENCY
-from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
+from mlrl.common.rule_learners import RuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_induction, configure_feature_binning, configure_label_sampling, \
     configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, configure_pruning, \
     configure_parallel_rule_refinement, configure_parallel_statistic_update, configure_parallel_prediction, \
@@ -89,7 +89,7 @@ PARALLEL_VALUES: Dict[str, Set[str]] = {
 }
 
 
-class Boomer(MLRuleLearner, ClassifierMixin):
+class Boomer(RuleLearner, ClassifierMixin):
     """
     A scikit-learn implementation of "BOOMER", an algorithm for learning gradient boosted multi-label classification
     rules.
