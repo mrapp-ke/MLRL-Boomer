@@ -39,7 +39,6 @@ namespace seco {
                             virtual public ISeCoRuleLearner::IRecallMixin,
                             virtual public ISeCoRuleLearner::IWraMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
-                            virtual public IRuleLearner::IFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingMixin,
                             virtual public IRuleLearner::IInstanceSamplingMixin,
                             virtual public IRuleLearner::IFeatureSamplingMixin,
@@ -47,8 +46,7 @@ namespace seco {
                             virtual public IRuleLearner::IPruningMixin,
                             virtual public IRuleLearner::IMultiThreadingMixin,
                             virtual public IRuleLearner::ISizeStoppingCriterionMixin,
-                            virtual public IRuleLearner::ITimeStoppingCriterionMixin,
-                            virtual public IRuleLearner::IMeasureStoppingCriterionMixin {
+                            virtual public IRuleLearner::ITimeStoppingCriterionMixin {
 
                 public:
 
@@ -163,16 +161,6 @@ namespace seco {
                     IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
 
                     /**
-                     * @see `IRuleLearner::IFeatureBinningMixin::useEqualWidthFeatureBinning`
-                     */
-                    IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() override;
-
-                    /**
-                     * @see `IRuleLearner::IFeatureBinningMixin::useEqualFrequencyFeatureBinning`
-                     */
-                    IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() override;
-
-                    /**
                      * @see `IRuleLearner::ILabelSamplingMixin::useLabelSamplingWithoutReplacement`
                      */
                     ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
@@ -246,11 +234,6 @@ namespace seco {
                      * @see `IRuleLearner::ITimeStoppingCriterionMixin::useTimeStoppingCriterion
                      */
                     ITimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
-
-                    /**
-                     * @see `IRuleLearner::IMeasureStoppingCriterionMixin::useMeasureStoppingCriterion`
-                     */
-                    IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
 
             };
 

@@ -1,8 +1,6 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
-    IEqualFrequencyFeatureBinningConfig, EqualFrequencyFeatureBinningConfig
 from mlrl.common.cython.feature_sampling cimport IFeatureSamplingWithoutReplacementConfig, \
     FeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
@@ -20,8 +18,7 @@ from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiParti
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
     BeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, SizeStoppingCriterionConfig, \
-    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig, IMeasureStoppingCriterionConfig, \
-    MeasureStoppingCriterionConfig
+    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig
 from mlrl.seco.cython.heuristic cimport IFMeasureConfig, FMeasureConfig, IMEstimateConfig, MEstimateConfig
 from mlrl.seco.cython.lift_function cimport IPeakLiftFunctionConfig, PeakLiftFunctionConfig, IKlnLiftFunctionConfig, \
     KlnLiftFunctionConfig
@@ -205,34 +202,6 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IBeamSearchTopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useBeamSearchTopDownRuleInduction()
         cdef BeamSearchTopDownRuleInductionConfig config = BeamSearchTopDownRuleInductionConfig.__new__(BeamSearchTopDownRuleInductionConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_equal_width_feature_binning(self) -> EqualWidthFeatureBinningConfig:
-        """
-        Configures the rule learner to use a method for the assignment of numerical feature values to bins, such that
-        each bin contains values from equally sized value ranges.
-
-        :return: An `EqualWidthFeatureBinningConfig` that allows further configuration of the method for the assignment
-                 of numerical feature values to bins
-        """
-        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IEqualWidthFeatureBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualWidthFeatureBinning()
-        cdef EqualWidthFeatureBinningConfig config = EqualWidthFeatureBinningConfig.__new__(EqualWidthFeatureBinningConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_equal_frequency_feature_binning(self) -> EqualFrequencyFeatureBinningConfig:
-        """
-        Configures the rule learner to use a method for the assignment of numerical feature values to bins, such that
-        each bin contains approximately the same number of values.
-
-        :return: An `EqualFrequencyFeatureBinningConfig` that allows further configuration of the method for the
-                 assignment of numerical feature values to bins
-        """
-        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IEqualFrequencyFeatureBinningConfig* config_ptr = &rule_learner_config_ptr.useEqualFrequencyFeatureBinning()
-        cdef EqualFrequencyFeatureBinningConfig config = EqualFrequencyFeatureBinningConfig.__new__(EqualFrequencyFeatureBinningConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -429,19 +398,6 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ITimeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useTimeStoppingCriterion()
         cdef TimeStoppingCriterionConfig config = TimeStoppingCriterionConfig.__new__(TimeStoppingCriterionConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_measure_stopping_criterion(self) -> MeasureStoppingCriterionConfig:
-        """
-        Configures the rule learner to use a stopping criterion stops the induction of rules as soon as the quality of a
-        model's predictions for the examples in a holdout set do not improve according to a certain measure.
-
-        :return: A `MeasureStoppingCriterionConfig` that allows further configuration of the stopping criterion
-        """
-        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IMeasureStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useMeasureStoppingCriterion()
-        cdef MeasureStoppingCriterionConfig config = MeasureStoppingCriterionConfig.__new__(MeasureStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 

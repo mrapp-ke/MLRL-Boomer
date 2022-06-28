@@ -117,22 +117,6 @@ namespace seco {
         return ref;
     }
 
-    IEqualWidthFeatureBinningConfig& MultiLabelSeCoRuleLearner::Config::useEqualWidthFeatureBinning() {
-        std::unique_ptr<EqualWidthFeatureBinningConfig> ptr =
-            std::make_unique<EqualWidthFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
-        IEqualWidthFeatureBinningConfig& ref = *ptr;
-        featureBinningConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
-    IEqualFrequencyFeatureBinningConfig& MultiLabelSeCoRuleLearner::Config::useEqualFrequencyFeatureBinning() {
-        std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr =
-            std::make_unique<EqualFrequencyFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
-        IEqualFrequencyFeatureBinningConfig& ref = *ptr;
-        featureBinningConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
     ILabelSamplingWithoutReplacementConfig& MultiLabelSeCoRuleLearner::Config::useLabelSamplingWithoutReplacement() {
         std::unique_ptr<LabelSamplingWithoutReplacementConfig> ptr =
             std::make_unique<LabelSamplingWithoutReplacementConfig>();
@@ -241,13 +225,6 @@ namespace seco {
         std::unique_ptr<TimeStoppingCriterionConfig> ptr = std::make_unique<TimeStoppingCriterionConfig>();
         ITimeStoppingCriterionConfig& ref = *ptr;
         timeStoppingCriterionConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
-    IMeasureStoppingCriterionConfig& MultiLabelSeCoRuleLearner::Config::useMeasureStoppingCriterion() {
-        std::unique_ptr<MeasureStoppingCriterionConfig> ptr = std::make_unique<MeasureStoppingCriterionConfig>();
-        IMeasureStoppingCriterionConfig& ref = *ptr;
-        measureStoppingCriterionConfigPtr_ = std::move(ptr);
         return ref;
     }
 

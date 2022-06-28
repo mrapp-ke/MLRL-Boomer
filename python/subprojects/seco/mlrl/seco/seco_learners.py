@@ -9,9 +9,8 @@ from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import MLRuleLearner, SparsePolicy
 from mlrl.common.rule_learners import configure_rule_induction, \
     configure_label_sampling, configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, \
-    configure_feature_binning, configure_pruning, configure_parallel_rule_refinement, \
-    configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
-    configure_time_stopping_criterion
+    configure_pruning, configure_parallel_rule_refinement, configure_parallel_statistic_update, \
+    configure_parallel_prediction, configure_size_stopping_criterion, configure_time_stopping_criterion
 from mlrl.common.rule_learners import parse_param, parse_param_and_options, get_string, get_int, NONE
 from mlrl.seco.cython.learner import SeCoRuleLearnerConfig
 from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
@@ -165,7 +164,6 @@ class MultiLabelSeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                  instance_sampling: Optional[str] = None,
                  feature_sampling: Optional[str] = None,
                  holdout: Optional[str] = None,
-                 feature_binning: Optional[str] = None,
                  pruning: Optional[str] = None,
                  parallel_rule_refinement: Optional[str] = None,
                  parallel_statistic_update: Optional[str] = None,
@@ -205,10 +203,6 @@ class MultiLabelSeCoRuleLearner(MLRuleLearner, ClassifierMixin):
                                             be 'random', 'stratified-label-wise', 'stratified-example-wise' or 'none',
                                             if no holdout set should be used. For additional options refer to the
                                             documentation
-        :param feature_binning:             The strategy that should be used to assign examples to bins based on their
-                                            feature values. Must be 'equal-width', 'equal-frequency' or 'none', if no
-                                            feature binning should be used. For additional options refer to the
-                                            documentation
         :param pruning:                     The strategy that should be used to prune individual rules. Must be 'irep'
                                             or 'none', if no pruning should be used
         :param parallel_rule_refinement:    Whether potential refinements of rules should be searched for in parallel or
@@ -235,7 +229,6 @@ class MultiLabelSeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         self.instance_sampling = instance_sampling
         self.feature_sampling = feature_sampling
         self.holdout = holdout
-        self.feature_binning = feature_binning
         self.pruning = pruning
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
@@ -248,7 +241,6 @@ class MultiLabelSeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         configure_instance_sampling(config, get_string(self.instance_sampling))
         configure_feature_sampling(config, get_string(self.feature_sampling))
         configure_partition_sampling(config, get_string(self.holdout))
-        configure_feature_binning(config, get_string(self.feature_binning))
         configure_pruning(config, get_string(self.pruning))
         configure_parallel_rule_refinement(config, get_string(self.parallel_rule_refinement))
         configure_parallel_statistic_update(config, get_string(self.parallel_statistic_update))
