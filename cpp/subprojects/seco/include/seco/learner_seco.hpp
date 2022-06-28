@@ -8,7 +8,7 @@
     #pragma warning( disable : 4250 )
 #endif
 
-#include "common/learner.hpp"
+#include "seco/learner.hpp"
 #include "seco/heuristics/heuristic_f_measure.hpp"
 #include "seco/heuristics/heuristic_m_estimate.hpp"
 #include "seco/lift_functions/lift_function_kln.hpp"
@@ -20,17 +20,16 @@
 namespace seco {
 
     /**
-     * Defines an interface for all rule learners that make use of the separate-and-conquer (SeCo) paradigm.
+     * Defines the interface of the multi-label SeCo algorithm.
      */
-    class MLRLSECO_API IMultiLabelSeCoRuleLearner : virtual public IRuleLearner {
+    class MLRLSECO_API IMultiLabelSeCoRuleLearner : virtual public ISeCoRuleLearner {
 
         public:
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner that makes use of the
-             * separate-and-conquer (SeCo) paradigm.
+             * Defines an interface for all classes that allow to configure the multi-label SeCo algorithm.
              */
-            class IConfig : virtual public IRuleLearner::IConfig,
+            class IConfig : virtual public ISeCoRuleLearner::IConfig,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
                             virtual public IRuleLearner::IFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingMixin,
@@ -43,204 +42,9 @@ namespace seco {
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
                             virtual public IRuleLearner::IMeasureStoppingCriterionMixin {
 
-                friend class MultiLabelSeCoRuleLearner;
-
-                private:
-
-                    /**
-                     * Returns the configuration of the stopping criterion that stops the induction of rules as soon as
-                     * the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
-                     *
-                     * @return A pointer to an object of type `CoverageStoppingCriterionConfig` that specifies the
-                     *         configuration of the stopping criterion that stops the induction of rules as soon as a
-                     *         the sum of the weights of the uncovered labels is smaller or equal to a certain threshold
-                     *         or a null pointer, if no such stopping criterion should be used
-                     */
-                    virtual const CoverageStoppingCriterionConfig* getCoverageStoppingCriterionConfig() const = 0;
-
-                    /**
-                     * Returns the configuration of the rule heads that should be induced by the rule learner.
-                     *
-                     * @return A reference to an object of type `IHeadConfig` that specifies the configuration of the
-                     *         rule heads
-                     */
-                    virtual const IHeadConfig& getHeadConfig() const = 0;
-
-                    /**
-                     * Returns the configuration of the heuristic for learning rules.
-                     *
-                     * @return A reference to an object of type `IHeuristicConfig` that specifies the configuration of
-                     *         the heuristic for learning rules
-                     */
-                    virtual const IHeuristicConfig& getHeuristicConfig() const = 0;
-
-                    /**
-                     * Returns the configuration of the heuristic for pruning rules.
-                     *
-                     * @return A reference to an object of type `IHeuristicConfig` that specifies the configuration of
-                     *         the heuristic for pruning rules
-                     */
-                    virtual const IHeuristicConfig& getPruningHeuristicConfig() const = 0;
-
-                    /**
-                     * Returns the configuration of the lift function that affects the quality of rules, depending on
-                     * the number of labels for which they predict.
-                     *
-                     * @return A reference to an object of type `ILiftFunctionConfig` that specifies the configuration
-                     *         of the lift function that affects the quality of rules, depending on the number of labels
-                     *         for which they predict
-                     */
-                    virtual const ILiftFunctionConfig& getLiftFunctionConfig() const = 0;
-
-                    /**
-                     * Returns the configuration of the predictor that predicts whether individual labels of given query
-                     * examples are relevant or irrelevant.
-                     *
-                     * @return A reference to an object of type `IClassificationPredictorConfig` that specifies the
-                     *         configuration of the predictor that predicts whether individual labels of given query
-                     *         examples are relevant or irrelevant
-                     */
-                    virtual const IClassificationPredictorConfig& getClassificationPredictorConfig() const = 0;
-
                 public:
 
                     virtual ~IConfig() override { };
-
-                    /**
-                     * Configures the rule learner to not use any stopping criterion that stops the induction of rules
-                     * as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain
-                     * threshold.
-                     */
-                    virtual void useNoCoverageStoppingCriterion() = 0;
-
-                    /**
-                     * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon
-                     * as the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
-                     *
-                     * @return A reference to an object of type `ICoverageStoppingCriterionConfig` that allows further
-                     *         configuration of the stopping criterion
-                     */
-                    virtual ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() = 0;
-
-                    /**
-                     * Configures the rule learner to induce rules with single-label heads that predict for a single
-                     * label.
-                     */
-                    virtual void useSingleLabelHeads() = 0;
-
-                    /**
-                     * Configures the rule learner to induce rules with partial heads that predict for a subset of the
-                     * available labels.
-                     */
-                    virtual void usePartialHeads() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
-                     */
-                    virtual void useAccuracyHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "F-Measure" heuristic for learning rules.
-                     *
-                     * @return A reference to an object of type `IFMeasureConfig` that allows further configuration of
-                     *         the heuristic
-                     */
-                    virtual IFMeasureConfig& useFMeasureHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Laplace" heuristic for learning rules.
-                     */
-                    virtual void useLaplaceHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
-                     *
-                     * @return A reference to an object of type `IMEstimateConfig` that allows further configuration of
-                     *         the heuristic
-                     */
-                    virtual IMEstimateConfig& useMEstimateHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Precision" heuristic for learning rules.
-                     */
-                    virtual void usePrecisionHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Recall" heuristic for learning rules.
-                     */
-                    virtual void useRecallHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
-                     */
-                    virtual void useWraHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
-                     */
-                    virtual void useAccuracyPruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
-                     *
-                     * @return A reference to an object of type `IFMeasureConfig` that allows further configuration of
-                     *         the heuristic
-                     */
-                    virtual IFMeasureConfig& useFMeasurePruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Laplace" heuristic for pruning rules.
-                     */
-                    virtual void useLaplacePruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
-                     *
-                     * @return A reference to an object of type `IMEstimateConfig` that allows further configuration of
-                     *         the heuristic
-                     */
-                    virtual IMEstimateConfig& useMEstimatePruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Precision" heuristic for pruning rules.
-                     */
-                    virtual void usePrecisionPruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Recall" heuristic for pruning rules.
-                     */
-                    virtual void useRecallPruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
-                     */
-                    virtual void useWraPruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use a lift function that monotonously increases until a certain
-                     * number of labels, where the maximum lift is reached, and monotonously decreases afterwards.
-                     *
-                     * @return A reference to an object of type `IPeakLiftFunctionConfig` that allows further
-                     *         configuration of the lift function
-                     */
-                    virtual IPeakLiftFunctionConfig& usePeakLiftFunction() = 0;
-
-                    /**
-                     * Configures the rule learner to use a lift function that monotonously increases according to the
-                     * natural logarithm of the number of labels for which a rule predicts.
-                     *
-                     * @return A reference to an object of type `IKlnLiftFunctionConfig` that allows further
-                     *         configuration of the lift function
-                     */
-                    virtual IKlnLiftFunctionConfig& useKlnLiftFunction() = 0;
-
-                    /**
-                     * Configures the rule learner to use predictor for predicting whether individual labels of given
-                     * query examples are relevant or irrelevant by processing rules of an existing rule-based model in
-                     * the order they have been learned. If a rule covers an example, its prediction is applied to each
-                     * label individually.
-                     */
-                    virtual void useLabelWiseClassificationPredictor() = 0;
 
             };
 
@@ -249,52 +53,21 @@ namespace seco {
     };
 
     /**
-     * An implementation of the type `IMultiLabelSeCoRuleLearner`.
+     * The multi-label SeCo algorithm.
      */
-    class MultiLabelSeCoRuleLearner final : public AbstractRuleLearner, virtual public IMultiLabelSeCoRuleLearner {
+    class MultiLabelSeCoRuleLearner final : public AbstractSeCoRuleLearner, virtual public IMultiLabelSeCoRuleLearner {
 
         public:
 
             /**
-             * Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
+             * Allows to configure the multi-label SeCo algorithm.
              */
-            class Config final : public AbstractRuleLearner::Config,
+            class Config final : public AbstractSeCoRuleLearner::Config,
                                  virtual public IMultiLabelSeCoRuleLearner::IConfig {
-
-                private:
-
-                    std::unique_ptr<CoverageStoppingCriterionConfig> coverageStoppingCriterionConfigPtr_;
-
-                    std::unique_ptr<IHeadConfig> headConfigPtr_;
-
-                    std::unique_ptr<IHeuristicConfig> heuristicConfigPtr_;
-
-                    std::unique_ptr<IHeuristicConfig> pruningHeuristicConfigPtr_;
-
-                    std::unique_ptr<ILiftFunctionConfig> liftFunctionConfigPtr_;
-
-                    std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
-
-                    const CoverageStoppingCriterionConfig* getCoverageStoppingCriterionConfig() const override;
-
-                    const IHeadConfig& getHeadConfig() const override;
-
-                    const IHeuristicConfig& getHeuristicConfig() const override;
-
-                    const IHeuristicConfig& getPruningHeuristicConfig() const override;
-
-                    const ILiftFunctionConfig& getLiftFunctionConfig() const override;
-
-                    const IClassificationPredictorConfig& getClassificationPredictorConfig() const override;
 
                 public:
 
                     Config();
-
-                    /**
-                     * @see `IRuleLearner::IConfig::useGreedyTopDownRuleInduction`
-                     */
-                    IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
                     /**
                      * @see `IRuleLearner::IBeamSearchTopDownMixin::useBeamSearchTopDownRuleInduction`
@@ -391,70 +164,11 @@ namespace seco {
                      */
                     IMeasureStoppingCriterionConfig& useMeasureStoppingCriterion() override;
 
-                    void useNoCoverageStoppingCriterion() override;
-
-                    ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() override;
-
-                    void useSingleLabelHeads() override;
-
-                    void usePartialHeads() override;
-
-                    void useAccuracyHeuristic() override;
-
-                    IFMeasureConfig& useFMeasureHeuristic() override;
-
-                    void useLaplaceHeuristic() override;
-
-                    IMEstimateConfig& useMEstimateHeuristic() override;
-
-                    void usePrecisionHeuristic() override;
-
-                    void useRecallHeuristic() override;
-
-                    void useWraHeuristic() override;
-
-                    void useAccuracyPruningHeuristic() override;
-
-                    IFMeasureConfig& useFMeasurePruningHeuristic() override;
-
-                    void useLaplacePruningHeuristic() override;
-
-                    IMEstimateConfig& useMEstimatePruningHeuristic() override;
-
-                    void usePrecisionPruningHeuristic() override;
-
-                    void useRecallPruningHeuristic() override;
-
-                    void useWraPruningHeuristic() override;
-
-                    IPeakLiftFunctionConfig& usePeakLiftFunction() override;
-
-                    IKlnLiftFunctionConfig& useKlnLiftFunction() override;
-
-                    void useLabelWiseClassificationPredictor() override;
-
             };
 
         private:
 
             std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr_;
-
-            std::unique_ptr<IStoppingCriterionFactory> createCoverageStoppingCriterionFactory() const;
-
-        protected:
-
-            void createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const override;
-
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
-
-            std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override;
-
-            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
-
-            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
-                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         public:
 
