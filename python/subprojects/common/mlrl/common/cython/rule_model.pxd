@@ -170,7 +170,7 @@ cdef extern from "common/model/rule_list.hpp" nogil:
 ctypedef IRuleList* RuleListPtr
 
 
-cdef extern from * nogil:
+cdef extern from *:
     """
     #include "common/model/body.hpp"
     #include "common/model/head.hpp"
