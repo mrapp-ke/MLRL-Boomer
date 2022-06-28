@@ -12,6 +12,7 @@ source_files = [
     'src/seco/heuristics/heuristic_recall.cpp',
     'src/seco/heuristics/heuristic_wra.cpp',
     'src/seco/lift_functions/lift_function_kln.cpp',
+    'src/seco/lift_functions/lift_function_no.cpp',
     'src/seco/lift_functions/lift_function_peak.cpp',
     'src/seco/model/decision_list_builder.cpp',
     'src/seco/output/predictor_classification_label_wise.cpp',
