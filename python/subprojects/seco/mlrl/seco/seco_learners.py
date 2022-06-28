@@ -83,50 +83,6 @@ def configure_head_type(config: SeCoRuleLearnerConfig, head_type: Optional[str])
             config.use_partial_heads()
 
 
-def configure_heuristic(config: SeCoRuleLearnerConfig, heuristic: Optional[str]):
-    if heuristic is not None:
-        value, options = parse_param_and_options('heuristic', heuristic, HEURISTIC_VALUES)
-
-        if value == HEURISTIC_ACCURACY:
-            config.use_accuracy_heuristic()
-        elif value == HEURISTIC_PRECISION:
-            config.use_precision_heuristic()
-        elif value == HEURISTIC_RECALL:
-            config.use_recall_heuristic()
-        elif value == HEURISTIC_LAPLACE:
-            config.use_laplace_heuristic()
-        elif value == HEURISTIC_WRA:
-            config.use_wra_heuristic()
-        elif value == HEURISTIC_F_MEASURE:
-            c = config.use_f_measure_heuristic()
-            c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
-        elif value == HEURISTIC_M_ESTIMATE:
-            c = config.use_m_estimate_heuristic()
-            c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
-
-
-def configure_pruning_heuristic(config: SeCoRuleLearnerConfig, pruning_heuristic: Optional[str]):
-    if pruning_heuristic is not None:
-        value, options = parse_param_and_options('pruning_heuristic', pruning_heuristic, HEURISTIC_VALUES)
-
-        if value == HEURISTIC_ACCURACY:
-            config.use_accuracy_pruning_heuristic()
-        elif value == HEURISTIC_PRECISION:
-            config.use_precision_pruning_heuristic()
-        elif value == HEURISTIC_RECALL:
-            config.use_recall_pruning_heuristic()
-        elif value == HEURISTIC_LAPLACE:
-            config.use_laplace_pruning_heuristic()
-        elif value == HEURISTIC_WRA:
-            config.use_wra_pruning_heuristic()
-        elif value == HEURISTIC_F_MEASURE:
-            c = config.use_f_measure_pruning_heuristic()
-            c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
-        elif value == HEURISTIC_M_ESTIMATE:
-            c = config.use_m_estimate_pruning_heuristic()
-            c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
-
-
 def configure_lift_function(config: SeCoRuleLearnerConfig, lift_function: Optional[str]):
     if lift_function is not None:
         value, options = parse_param_and_options('lift_function', lift_function, LIFT_FUNCTION_VALUES)
@@ -248,7 +204,52 @@ class MultiLabelSeCoRuleLearner(MLRuleLearner, ClassifierMixin):
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
         configure_head_type(config, get_string(self.head_type))
-        configure_heuristic(config, get_string(self.heuristic))
-        configure_pruning_heuristic(config, get_string(self.pruning_heuristic))
+        self.__configure_heuristic(config)
+        self.__configure_pruning_heuristic(config)
         configure_lift_function(config, get_string(self.lift_function))
         return MultiLabelSeCoRuleLearnerWrapper(config)
+
+    def __configure_heuristic(self, config: MultiLabelSeCoRuleLearnerConfig):
+        heuristic = get_string(self.heuristic)
+
+        if heuristic is not None:
+            value, options = parse_param_and_options('heuristic', heuristic, HEURISTIC_VALUES)
+
+            if value == HEURISTIC_ACCURACY:
+                config.use_accuracy_heuristic()
+            elif value == HEURISTIC_PRECISION:
+                config.use_precision_heuristic()
+            elif value == HEURISTIC_RECALL:
+                config.use_recall_heuristic()
+            elif value == HEURISTIC_LAPLACE:
+                config.use_laplace_heuristic()
+            elif value == HEURISTIC_WRA:
+                config.use_wra_heuristic()
+            elif value == HEURISTIC_F_MEASURE:
+                c = config.use_f_measure_heuristic()
+                c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
+            elif value == HEURISTIC_M_ESTIMATE:
+                c = config.use_m_estimate_heuristic()
+                c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
+
+    def __configure_pruning_heuristic(self, config: MultiLabelSeCoRuleLearnerConfig):
+        pruning_heuristic = get_string(self.pruning_heuristic)
+        if pruning_heuristic is not None:
+            value, options = parse_param_and_options('pruning_heuristic', pruning_heuristic, HEURISTIC_VALUES)
+
+            if value == HEURISTIC_ACCURACY:
+                config.use_accuracy_pruning_heuristic()
+            elif value == HEURISTIC_PRECISION:
+                config.use_precision_pruning_heuristic()
+            elif value == HEURISTIC_RECALL:
+                config.use_recall_pruning_heuristic()
+            elif value == HEURISTIC_LAPLACE:
+                config.use_laplace_pruning_heuristic()
+            elif value == HEURISTIC_WRA:
+                config.use_wra_pruning_heuristic()
+            elif value == HEURISTIC_F_MEASURE:
+                c = config.use_f_measure_pruning_heuristic()
+                c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
+            elif value == HEURISTIC_M_ESTIMATE:
+                c = config.use_m_estimate_pruning_heuristic()
+                c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
