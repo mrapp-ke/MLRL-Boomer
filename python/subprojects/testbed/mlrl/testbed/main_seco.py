@@ -3,14 +3,19 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from argparse import ArgumentParser
 
+from mlrl.common.strings import format_dict_keys
 from mlrl.testbed.args import add_rule_learner_arguments, add_max_rules_argument, add_time_limit_argument, \
     add_label_sampling_argument, add_instance_sampling_argument, add_feature_sampling_argument, \
     add_partition_sampling_argument, add_pruning_argument, add_rule_induction_argument, \
     add_parallel_prediction_argument, add_parallel_statistic_update_argument, add_parallel_rule_refinement_argument
-from mlrl.testbed.args_seco import add_head_type_argument, add_lift_function_argument, add_heuristic_arguments
+from mlrl.testbed.args_seco import add_head_type_argument, add_lift_function_argument
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
-from mlrl.seco.seco_learners import MultiLabelSeCoRuleLearner
+from mlrl.seco.seco_learners import MultiLabelSeCoRuleLearner, HEURISTIC_VALUES
+
+PARAM_HEURISTIC = '--heuristic'
+
+PARAM_PRUNING_HEURISTIC = '--pruning-heuristic'
 
 
 class SeCoRunnable(RuleLearnerRunnable):
@@ -54,7 +59,14 @@ def __add_arguments(parser: ArgumentParser):
     add_parallel_statistic_update_argument(parser)
     add_head_type_argument(parser)
     add_lift_function_argument(parser)
-    add_heuristic_arguments(parser)
+    parser.add_argument(PARAM_HEURISTIC, type=str,
+                        help='The name of the heuristic to be used for learning rules. Must be one of '
+                             + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
+                             + 'documentation.')
+    parser.add_argument(PARAM_PRUNING_HEURISTIC, type=str,
+                        help='The name of the heuristic to be used for pruning rules. Must be one of '
+                             + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
+                             + 'documentation.')
 
 
 def main():

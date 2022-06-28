@@ -8,11 +8,7 @@ from argparse import ArgumentParser
 from mlrl.common.strings import format_dict_keys, format_string_set
 from mlrl.testbed.args import PARAM_HEAD_TYPE
 
-from mlrl.seco.seco_learners import HEURISTIC_VALUES, LIFT_FUNCTION_VALUES, HEAD_TYPE_PARTIAL, HEAD_TYPE_VALUES
-
-PARAM_HEURISTIC = '--heuristic'
-
-PARAM_PRUNING_HEURISTIC = '--pruning-heuristic'
+from mlrl.seco.seco_learners import LIFT_FUNCTION_VALUES, HEAD_TYPE_PARTIAL, HEAD_TYPE_VALUES
 
 PARAM_LIFT_FUNCTION = '--lift-function'
 
@@ -28,14 +24,3 @@ def add_lift_function_argument(parser: ArgumentParser):
                         help='The lift function to be used for the induction of multi-label rules. Must be one of '
                              + format_dict_keys(LIFT_FUNCTION_VALUES) + '. Does only have an effect if the parameter '
                              + PARAM_HEAD_TYPE + ' is set to "' + HEAD_TYPE_PARTIAL + '".')
-
-
-def add_heuristic_arguments(parser: ArgumentParser):
-    parser.add_argument(PARAM_HEURISTIC, type=str,
-                        help='The name of the heuristic to be used for learning rules. Must be one of '
-                             + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
-                             + 'documentation.')
-    parser.add_argument(PARAM_PRUNING_HEURISTIC, type=str,
-                        help='The name of the heuristic to be used for pruning rules. Must be one of '
-                             + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
-                             + 'documentation.')
