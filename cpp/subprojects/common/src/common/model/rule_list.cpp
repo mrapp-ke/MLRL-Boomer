@@ -27,37 +27,8 @@ void RuleList::Rule::visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
     headPtr_->visit(completeHeadVisitor, partialHeadVisitor);
 }
 
-RuleList::RuleConstIterator::RuleConstIterator(const std::forward_list<Rule>& list, uint32 index)
-    : iterator_(list.cbegin()), index_(index) {
-
-}
-
-RuleList::RuleConstIterator::reference RuleList::RuleConstIterator::operator*() const {
-    return *iterator_;
-}
-
-RuleList::RuleConstIterator& RuleList::RuleConstIterator::operator++() {
-    ++iterator_;
-    ++index_;
-    return *this;
-}
-
-RuleList::RuleConstIterator& RuleList::RuleConstIterator::operator++(int n) {
-    iterator_++;
-    index_++;
-    return *this;
-}
-
-bool RuleList::RuleConstIterator::operator!=(const RuleConstIterator& rhs) const {
-    return index_ != rhs.index_;
-}
-
-bool RuleList::RuleConstIterator::operator==(const RuleConstIterator& rhs) const {
-    return index_ == rhs.index_;
-}
-
 RuleList::RuleList()
-    : it_(list_.begin()), numRules_(0), numUsedRules_(0), containsDefaultRule_(false) {
+    : numUsedRules_(0), containsDefaultRule_(false) {
 
 }
 
@@ -69,20 +40,20 @@ RuleList::const_iterator RuleList::cend() const {
     return list_.cend();
 }
 
-RuleList::used_const_iterator RuleList::used_cbegin() const {
-    return RuleConstIterator(list_, 0);
+RuleList::const_iterator RuleList::used_cbegin() const {
+    return list_.cbegin();
 }
 
-RuleList::used_const_iterator RuleList::used_cend() const {
-    return RuleConstIterator(list_, this->getNumUsedRules());
+RuleList::const_iterator RuleList::used_cend() const {
+    return list_.cbegin() + this->getNumUsedRules();
 }
 
 uint32 RuleList::getNumRules() const {
-    return numRules_;
+    return (uint32) list_.size();
 }
 
 uint32 RuleList::getNumUsedRules() const {
-    return numUsedRules_ > 0 ? numUsedRules_ : numRules_;;
+    return numUsedRules_ > 0 ? numUsedRules_ : this->getNumRules();
 }
 
 void RuleList::setNumUsedRules(uint32 numUsedRules) {
@@ -95,14 +66,7 @@ void RuleList::addDefaultRule(std::unique_ptr<IHead> headPtr) {
 }
 
 void RuleList::addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) {
-    if (numRules_ > 0) {
-        it_ = list_.emplace_after(it_, std::move(bodyPtr), std::move(headPtr));
-    } else {
-        list_.emplace_front(std::move(bodyPtr), std::move(headPtr));
-        it_ = list_.begin();
-    }
-
-    numRules_++;
+    list_.emplace_back(std::move(bodyPtr), std::move(headPtr));
 }
 
 bool RuleList::containsDefaultRule() const {
