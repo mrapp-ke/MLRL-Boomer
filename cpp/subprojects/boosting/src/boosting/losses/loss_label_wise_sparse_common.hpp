@@ -175,7 +175,7 @@ namespace boosting {
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
-                const SparseSetMatrix<float64>::ConstRow scoreMatrixRow = scoreMatrix[exampleIndex];
+                const SparseSetMatrix<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 CContiguousConstView<const uint8>::value_const_iterator labelIterator =
                     labelMatrix.row_values_cbegin(exampleIndex);
                 SparseLabelWiseStatisticView::row statisticViewRow = statisticView[exampleIndex];
@@ -214,7 +214,7 @@ namespace boosting {
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
-                const SparseSetMatrix<float64>::ConstRow scoreMatrixRow = scoreMatrix[exampleIndex];
+                const SparseSetMatrix<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
                 BinaryCsrConstView::index_const_iterator indicesEnd = labelMatrix.row_indices_cend(exampleIndex);
                 SparseLabelWiseStatisticView::row statisticViewRow = statisticView[exampleIndex];

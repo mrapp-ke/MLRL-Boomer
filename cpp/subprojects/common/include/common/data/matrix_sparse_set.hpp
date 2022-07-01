@@ -23,7 +23,7 @@
 template<typename T>
 class SparseSetMatrix {
 
-    public:
+    private:
 
         /**
          * Provides read-only access to a single row in the matrix.
@@ -190,8 +190,6 @@ class SparseSetMatrix {
                 void clear();
 
         };
-
-    private:
 
         LilMatrix<T> lilMatrix_;
 
