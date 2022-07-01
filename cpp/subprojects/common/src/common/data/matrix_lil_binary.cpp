@@ -26,11 +26,11 @@ BinaryLilMatrix::const_iterator BinaryLilMatrix::row_cend(uint32 row) const {
     return array_[row].cend();
 }
 
-BinaryLilMatrix::row& BinaryLilMatrix::operator[](uint32 row) {
+BinaryLilMatrix::row BinaryLilMatrix::operator[](uint32 row) {
     return array_[row];
 }
 
-BinaryLilMatrix::const_row& BinaryLilMatrix::operator[](uint32 row) const {
+BinaryLilMatrix::const_row BinaryLilMatrix::operator[](uint32 row) const {
     return array_[row];
 }
 
