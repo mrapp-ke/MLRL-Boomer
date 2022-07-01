@@ -5,7 +5,7 @@
 
 template<typename T>
 LilMatrix<T>::LilMatrix(uint32 numRows)
-    : numRows_(numRows), array_(new Row[numRows] {}) {
+    : numRows_(numRows), array_(new std::vector<IndexedValue<T>>[numRows] {}) {
 
 }
 
@@ -35,12 +35,12 @@ typename LilMatrix<T>::const_iterator LilMatrix<T>::row_cend(uint32 row) const {
 }
 
 template<typename T>
-typename LilMatrix<T>::Row& LilMatrix<T>::getRow(uint32 row) {
+typename LilMatrix<T>::row LilMatrix<T>::operator[](uint32 row) {
     return array_[row];
 }
 
 template<typename T>
-const typename LilMatrix<T>::Row& LilMatrix<T>::getRow(uint32 row) const {
+typename LilMatrix<T>::const_row LilMatrix<T>::operator[](uint32 row) const {
     return array_[row];
 }
 

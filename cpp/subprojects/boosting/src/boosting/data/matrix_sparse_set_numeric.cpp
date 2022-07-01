@@ -4,7 +4,7 @@
 namespace boosting {
 
     template<typename T, typename IndexIterator>
-    static inline void addToRowFromSubsetInternally(typename NumericSparseSetMatrix<T>::Row row,
+    static inline void addToRowFromSubsetInternally(typename NumericSparseSetMatrix<T>::row row,
                                                     typename VectorConstView<T>::const_iterator iterator,
                                                     IndexIterator indexIterator, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
@@ -25,7 +25,7 @@ namespace boosting {
                                                        typename VectorConstView<T>::const_iterator end,
                                                        CompleteIndexVector::const_iterator indicesBegin,
                                                        CompleteIndexVector::const_iterator indicesEnd) {
-        addToRowFromSubsetInternally<T, CompleteIndexVector::const_iterator>(this->getRow(row), begin, indicesBegin,
+        addToRowFromSubsetInternally<T, CompleteIndexVector::const_iterator>((*this)[row], begin, indicesBegin,
                                                                              this->getNumCols());
     }
 
@@ -35,7 +35,7 @@ namespace boosting {
                                                        PartialIndexVector::const_iterator indicesBegin,
                                                        PartialIndexVector::const_iterator indicesEnd) {
         uint32 numElements = indicesEnd - indicesBegin;
-        addToRowFromSubsetInternally<T, PartialIndexVector::const_iterator>(this->getRow(row), begin, indicesBegin,
+        addToRowFromSubsetInternally<T, PartialIndexVector::const_iterator>((*this)[row], begin, indicesBegin,
                                                                             numElements);
     }
 

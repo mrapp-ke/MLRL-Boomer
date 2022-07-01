@@ -23,7 +23,7 @@
 template<typename T>
 class SparseSetMatrix {
 
-    public:
+    private:
 
         /**
          * Provides read-only access to a single row in the matrix.
@@ -32,24 +32,25 @@ class SparseSetMatrix {
 
             private:
 
-                const typename LilMatrix<T>::Row& row_;
+                typename LilMatrix<T>::const_row row_;
 
                 typename CContiguousView<uint32>::value_const_iterator indexIterator_;
 
             public:
 
                 /**
-                 * @param row           A reference to a `LilMatrix::Row` that stores the non-zero elements at the row
+                 * @param row           A `LilMatrix::const_row` that provides access to the non-zero elements at the
+                 *                      row
                  * @param indexIterator An iterator that provides access to the indices in `row` that correspond to
                  *                      individual columns
                  */
-                ConstRow(const typename LilMatrix<T>::Row& row,
+                ConstRow(typename LilMatrix<T>::const_row row,
                          CContiguousView<uint32>::value_const_iterator indexIterator);
 
                 /**
                  * An iterator that provides read-only access to the elements in the row.
                  */
-                typedef typename LilMatrix<T>::Row::const_iterator const_iterator;
+                typedef typename LilMatrix<T>::const_iterator const_iterator;
 
                 /**
                  * Returns a `const_iterator` to the beginning of the row.
@@ -90,56 +91,46 @@ class SparseSetMatrix {
 
             private:
 
-                typename LilMatrix<T>::Row& row_;
+                typename LilMatrix<T>::row row_;
 
                 typename CContiguousView<uint32>::value_iterator indexIterator_;
 
             public:
 
                 /**
-                 * @param row           A reference to a `LilMatrix::Row` that stores the non-zero elements at the row
+                 * @param row           A `LilMatrix::row` that provides access to the the non-zero elements at the row
                  * @param indexIterator An iterator that provides access to the indices in `row` that correspond to
                  *                      individual columns
                  */
-                Row(typename LilMatrix<T>::Row& row, CContiguousView<uint32>::value_iterator indexIterator);
+                Row(typename LilMatrix<T>::row row, CContiguousView<uint32>::value_iterator indexIterator);
 
                 /**
-                 * An iterator that provides access to the elements in the row and allows to modify them.
-                 */
-                typedef typename LilMatrix<T>::Row::iterator iterator;
-
-                /**
-                 * An iterator that provides read-only access to the elements in the row.
-                 */
-                typedef typename LilMatrix<T>::Row::const_iterator const_iterator;
-
-                /**
-                 * Returns an `iterator` to the beginning of the row.
+                 * Returns a `LilMatrix::iterator` to the beginning of the row.
                  *
-                 * @return An `iterator` to the beginning
+                 * @return A `LilMatrix::iterator` to the beginning
                  */
-                iterator begin();
+                typename LilMatrix<T>::iterator begin();
 
                 /**
-                 * Returns an `iterator` to the end of the row.
+                 * Returns a `LilMatrix::iterator` to the end of the row.
                  *
-                 * @return An `iterator` to the end
+                 * @return A `LilMatrix::iterator` to the end
                  */
-                iterator end();
+                typename LilMatrix<T>::iterator end();
 
                 /**
-                 * Returns a `const_iterator` to the beginning of the row.
+                 * Returns a `LilMatrix::const_iterator` to the beginning of the row.
                  *
-                 * @return A `const_iterator` to the beginning
+                 * @return A `LilMatrix::const_iterator` to the beginning
                  */
-                const_iterator cbegin() const;
+                typename LilMatrix<T>::const_iterator cbegin() const;
 
                 /**
-                 * Returns a `const_iterator` to the end of the row.
+                 * Returns a `LilMatrix::const_iterator` to the end of the row.
                  *
-                 * @return A `const_iterator` to the end
+                 * @return A `LilMatrix::const_iterator` to the end
                  */
-                const_iterator cend() const;
+                typename LilMatrix<T>::const_iterator cend() const;
 
                 /**
                  * Returns the number of non-zero elements in the row.
@@ -190,8 +181,6 @@ class SparseSetMatrix {
 
         };
 
-    private:
-
         LilMatrix<T> lilMatrix_;
 
         DenseMatrix<uint32> indexMatrix_;
@@ -203,6 +192,16 @@ class SparseSetMatrix {
          * @param numCols   The number of columns in the matrix
          */
         SparseSetMatrix(uint32 numRows, uint32 numCols);
+
+        /**
+         * Provides access to a row and allows to modify its elements.
+         */
+        typedef typename SparseSetMatrix<T>::Row row;
+
+        /**
+         * Provides read-only access to a row.
+         */
+        typedef typename SparseSetMatrix<T>::ConstRow const_row;
 
         /**
          * An iterator that provides access to the elements at a row and allows to modify them.
@@ -247,20 +246,20 @@ class SparseSetMatrix {
         const_iterator row_cend(uint32 row) const;
 
         /**
-         * Returns a specific row.
+         * Provides access to a specific row and allows to modify its elements.
          *
-         * @param row   The index of the row to be returned
-         * @return      The row
+         * @param row   The index of the row
+         * @return      A `row`
          */
-        Row getRow(uint32 row);
+        row operator[](uint32 row);
 
         /**
-         * Returns a specific row.
+         * Provides read-only access to a specific row.
          *
-         * @param row   The index of the row to be returned
-         * @return      The row
+         * @param row   The index of the row
+         * @return      A `const_row`
          */
-        const ConstRow getRow(uint32 row) const;
+        const_row operator[](uint32 row) const;
 
         /**
          * Returns the number of rows in the matrix.
