@@ -18,6 +18,14 @@ LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
 
 LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
 
+HEAD_TYPE_SINGLE_LABEL = 'single-label'
+
+HEAD_TYPE_COMPLETE = 'complete'
+
+HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
+
+HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
+
 CLASSIFICATION_PREDICTOR_AUTO = 'auto'
 
 CLASSIFICATION_PREDICTOR_LABEL_WISE = 'label-wise'
@@ -81,6 +89,39 @@ class BoostingCmdBuilder(CmdBuilder):
         """
         self.args.append('--probability-predictor')
         self.args.append(probability_predictor)
+        return self
+
+    def default_rule(self, default_rule: bool = True):
+        """
+        Configures whether the algorithm should induce a default rule or not.
+
+        :param default_rule:    True, if a default rule should be induced, False otherwise
+        :return:                The builder itself
+        """
+        self.args.append('--default-rule')
+        self.args.append(str(default_rule).lower())
+        return self
+
+    def head_type(self, head_type: str = HEAD_TYPE_SINGLE_LABEL):
+        """
+        Configures the algorithm to use a specific type of rule heads.
+
+        :param head_type:   The type of rule heads to be used
+        :return:            The builder itself
+        """
+        self.args.append('--head-type')
+        self.args.append(head_type)
+        return self
+
+    def sparse_statistic_format(self, sparse: bool = True):
+        """
+        Configures whether sparse data structures should be used to store the statistics or not.
+
+        :param sparse:  True, if sparse data structures should be used to store the statistics, False otherwise
+        :return:        The builder itself
+        """
+        self.args.append('--statistic-format')
+        self.args.append('sparse' if sparse else 'dense')
         return self
 
 
@@ -247,3 +288,38 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .probability_predictor(PROBABILITY_PREDICTOR_MARGINALIZED) \
             .print_predictions(True)
         self.run_cmd(builder, self.cmd + '_predictor-probability-marginalized')
+
+    def test_no_default_rule(self):
+        """
+        Tests the BOOMER algorithm when not inducing a default rule.
+        """
+        builder = BoostingCmdBuilder() \
+            .default_rule(False) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_no-default-rule')
+
+    def test_statistics_sparse_labels_dense(self):
+        """
+        Tests the BOOMER algorithm when using sparse data structures for storing the statistics and a dense label
+        representation.
+        """
+        builder = BoostingCmdBuilder(dataset=self.dataset_numerical) \
+            .sparse_statistic_format(True) \
+            .sparse_label_format(False) \
+            .default_rule(False) \
+            .loss(LOSS_SQUARED_HINGE_LABEL_WISE) \
+            .head_type(HEAD_TYPE_SINGLE_LABEL)
+        self.run_cmd(builder, self.cmd + '_statistics-sparse_labels-dense')
+
+    def test_statistics_sparse_labels_sparse(self):
+        """
+        Tests the BOOMER algorithm when using sparse data structures for storing the statistics and a sparse label
+        representation.
+        """
+        builder = BoostingCmdBuilder(dataset=self.dataset_numerical) \
+            .sparse_statistic_format(True) \
+            .sparse_label_format(True) \
+            .default_rule(False) \
+            .loss(LOSS_SQUARED_HINGE_LABEL_WISE) \
+            .head_type(HEAD_TYPE_SINGLE_LABEL)
+        self.run_cmd(builder, self.cmd + '_statistics-sparse_labels-sparse')
