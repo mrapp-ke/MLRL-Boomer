@@ -32,19 +32,19 @@ class SparseSetMatrix {
 
             private:
 
-                typename LilMatrix<T>::const_row& row_;
+                typename LilMatrix<T>::const_row row_;
 
                 typename CContiguousView<uint32>::value_const_iterator indexIterator_;
 
             public:
 
                 /**
-                 * @param row           A reference to a `LilMatrix::const_row` that provides access to the non-zero
-                 *                      elements at the row
+                 * @param row           A `LilMatrix::const_row` that provides access to the non-zero elements at the
+                 *                      row
                  * @param indexIterator An iterator that provides access to the indices in `row` that correspond to
                  *                      individual columns
                  */
-                ConstRow(typename LilMatrix<T>::const_row& row,
+                ConstRow(typename LilMatrix<T>::const_row row,
                          CContiguousView<uint32>::value_const_iterator indexIterator);
 
                 /**
@@ -91,19 +91,18 @@ class SparseSetMatrix {
 
             private:
 
-                typename LilMatrix<T>::row& row_;
+                typename LilMatrix<T>::row row_;
 
                 typename CContiguousView<uint32>::value_iterator indexIterator_;
 
             public:
 
                 /**
-                 * @param row           A reference to a `LilMatrix::row` that provides access to the the non-zero
-                 *                      elements at the row
+                 * @param row           A `LilMatrix::row` that provides access to the the non-zero elements at the row
                  * @param indexIterator An iterator that provides access to the indices in `row` that correspond to
                  *                      individual columns
                  */
-                Row(typename LilMatrix<T>::row& row, CContiguousView<uint32>::value_iterator indexIterator);
+                Row(typename LilMatrix<T>::row row, CContiguousView<uint32>::value_iterator indexIterator);
 
                 /**
                  * An iterator that provides access to the elements in the row and allows to modify them.

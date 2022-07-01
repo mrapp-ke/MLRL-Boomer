@@ -35,12 +35,12 @@ typename LilMatrix<T>::const_iterator LilMatrix<T>::row_cend(uint32 row) const {
 }
 
 template<typename T>
-typename LilMatrix<T>::row& LilMatrix<T>::operator[](uint32 row) {
+typename LilMatrix<T>::row LilMatrix<T>::operator[](uint32 row) {
     return array_[row];
 }
 
 template<typename T>
-typename LilMatrix<T>::const_row& LilMatrix<T>::operator[](uint32 row) const {
+typename LilMatrix<T>::const_row LilMatrix<T>::operator[](uint32 row) const {
     return array_[row];
 }
 
