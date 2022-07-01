@@ -53,13 +53,13 @@ namespace seco {
 
     template<typename ScoreIterator, typename IndexIterator>
     static inline uint32 applyHead(ScoreIterator scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
-                                   BinaryLilMatrix::Row& row, uint32 numLabels) {
+                                   BinaryLilMatrix::row& row, uint32 numLabels) {
         if (scoresBegin != scoresEnd) {
             uint32 numElements = row.size();
 
             if (numElements > 0) {
-                BinaryLilMatrix::Row::iterator end = row.end();
-                BinaryLilMatrix::Row::iterator start = std::lower_bound(row.begin(), end, indexIterator[*scoresBegin]);
+                BinaryLilMatrix::row::iterator end = row.end();
+                BinaryLilMatrix::row::iterator start = std::lower_bound(row.begin(), end, indexIterator[*scoresBegin]);
                 uint32 bufferSize = end - start;
                 uint32* buffer = new uint32[bufferSize];
 
@@ -116,7 +116,7 @@ namespace seco {
         return 0;
     }
 
-    static inline uint32 applyHead(const IHead& head, BinaryLilMatrix::Row& row, uint32 numLabels) {
+    static inline uint32 applyHead(const IHead& head, BinaryLilMatrix::row& row, uint32 numLabels) {
         uint32 numNonZeroElements;
         auto completeHeadVisitor = [&](const CompleteHead& head) mutable {
             numNonZeroElements = applyHead(
@@ -249,7 +249,7 @@ namespace seco {
                 firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
                 firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
-                    BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
+                    BinaryLilMatrix::row& row = predictionMatrixPtr->getRow(i);
 
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                         const RuleList::Rule& rule = *it;
@@ -280,7 +280,7 @@ namespace seco {
                 firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
                 num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
-                    BinaryLilMatrix::Row& row = predictionMatrixPtr->getRow(i);
+                    BinaryLilMatrix::row& row = predictionMatrixPtr->getRow(i);
                     float32* tmpArray1 = new float32[numFeatures];
                     uint32* tmpArray2 = new uint32[numFeatures] {};
                     uint32 n = 1;

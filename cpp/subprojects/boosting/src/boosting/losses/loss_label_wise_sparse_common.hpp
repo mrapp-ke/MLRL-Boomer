@@ -63,7 +63,7 @@ namespace boosting {
     static inline void updateLabelWiseStatisticsInternally(IndexIterator indicesBegin, IndexIterator indicesEnd,
                                                            SparseSetMatrix<float64>::const_iterator scoresBegin,
                                                            SparseSetMatrix<float64>::const_iterator scoresEnd,
-                                                           SparseLabelWiseStatisticView::Row row,
+                                                           SparseLabelWiseStatisticView::row row,
                                                            LabelWiseLoss::UpdateFunction updateFunction) {
         row.clear();
         Tuple<float64> tuple;
@@ -178,7 +178,7 @@ namespace boosting {
                 const SparseSetMatrix<float64>::ConstRow scoreMatrixRow = scoreMatrix.getRow(exampleIndex);
                 CContiguousConstView<const uint8>::value_const_iterator labelIterator =
                     labelMatrix.row_values_cbegin(exampleIndex);
-                SparseLabelWiseStatisticView::Row statisticViewRow = statisticView.getRow(exampleIndex);
+                SparseLabelWiseStatisticView::row statisticViewRow = statisticView.getRow(exampleIndex);
                 uint32 numElements = labelIndicesEnd - labelIndicesBegin;
                 Tuple<float64> tuple;
 
@@ -217,7 +217,7 @@ namespace boosting {
                 const SparseSetMatrix<float64>::ConstRow scoreMatrixRow = scoreMatrix.getRow(exampleIndex);
                 BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
                 BinaryCsrConstView::index_const_iterator indicesEnd = labelMatrix.row_indices_cend(exampleIndex);
-                SparseLabelWiseStatisticView::Row statisticViewRow = statisticView.getRow(exampleIndex);
+                SparseLabelWiseStatisticView::row statisticViewRow = statisticView.getRow(exampleIndex);
                 uint32 numElements = labelIndicesEnd - labelIndicesBegin;
                 Tuple<float64> tuple;
 
