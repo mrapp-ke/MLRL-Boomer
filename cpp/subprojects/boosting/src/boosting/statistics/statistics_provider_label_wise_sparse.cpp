@@ -5,7 +5,7 @@
 
 #include "boosting/statistics/statistics_provider_label_wise_sparse.hpp"
 #include "boosting/data/histogram_view_label_wise_sparse.hpp"
-#include "boosting/data/matrix_lil_numeric.hpp"
+#include "boosting/data/matrix_sparse_set_numeric.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "statistics_provider_label_wise.hpp"
 #include "omp.h"
@@ -72,7 +72,7 @@ namespace boosting {
                                                                                SparseLabelWiseStatisticVector,
                                                                                SparseLabelWiseStatisticView,
                                                                                SparseLabelWiseHistogram,
-                                                                               NumericLilMatrix<float64>,
+                                                                               NumericSparseSetMatrix<float64>,
                                                                                ISparseLabelWiseLoss,
                                                                                ISparseEvaluationMeasure,
                                                                                ISparseLabelWiseRuleEvaluationFactory> {
@@ -93,18 +93,19 @@ namespace boosting {
              *                              to the labels of the training examples
              * @param statisticViewPtr      An unique pointer to an object of type `SparseLabelWiseStatisticView` that
              *                              provides access to the gradients and Hessians
-             * @param scoreMatrixPtr        An unique pointer to an object of type `NumericLilMatrix` that stores the
-             *                              currently predicted scores
+             * @param scoreMatrixPtr        An unique pointer to an object of type `NumericSparseSetMatrix` that stores
+             *                              the currently predicted scores
              */
             SparseLabelWiseStatistics(std::unique_ptr<ISparseLabelWiseLoss> lossPtr,
                                       std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr,
                                       const ISparseLabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
                                       const LabelMatrix& labelMatrix,
                                       std::unique_ptr<SparseLabelWiseStatisticView> statisticViewPtr,
-                                      std::unique_ptr<NumericLilMatrix<float64>> scoreMatrixPtr)
+                                      std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr)
                 : AbstractLabelWiseStatistics<LabelMatrix, SparseLabelWiseStatisticVector, SparseLabelWiseStatisticView,
-                                              SparseLabelWiseHistogram, NumericLilMatrix<float64>, ISparseLabelWiseLoss,
-                                              ISparseEvaluationMeasure, ISparseLabelWiseRuleEvaluationFactory>(
+                                              SparseLabelWiseHistogram, NumericSparseSetMatrix<float64>,
+                                              ISparseLabelWiseLoss, ISparseEvaluationMeasure,
+                                              ISparseLabelWiseRuleEvaluationFactory>(
                       std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                       std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {
 
@@ -125,8 +126,8 @@ namespace boosting {
             evaluationMeasureFactory.createSparseEvaluationMeasure();
         std::unique_ptr<SparseLabelWiseStatisticMatrix> statisticMatrixPtr =
             std::make_unique<SparseLabelWiseStatisticMatrix>(numExamples, numLabels);
-        std::unique_ptr<NumericLilMatrix<float64>> scoreMatrixPtr =
-            std::make_unique<NumericLilMatrix<float64>>(numExamples, numLabels);
+        std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr =
+            std::make_unique<NumericSparseSetMatrix<float64>>(numExamples, numLabels);
         const ISparseLabelWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const SparseSetMatrix<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
