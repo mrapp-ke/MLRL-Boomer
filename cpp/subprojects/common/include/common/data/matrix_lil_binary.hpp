@@ -86,7 +86,7 @@ class BinaryLilMatrix final {
          * @param row   The index of the row
          * @return      A `row`
          */
-        row& getRow(uint32 row);
+        row& operator[](uint32 row);
 
         /**
          * Provides read-only access to a specific row.
@@ -94,7 +94,7 @@ class BinaryLilMatrix final {
          * @param row   The index of the row
          * @return      A `const_row`
          */
-        const_row& getRow(uint32 row) const;
+        const_row& operator[](uint32 row) const;
 
         /**
          * Returns the number of rows in the matrix.

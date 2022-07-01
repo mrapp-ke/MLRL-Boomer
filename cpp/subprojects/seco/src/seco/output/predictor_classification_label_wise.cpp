@@ -249,7 +249,7 @@ namespace seco {
                 firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
                 firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
-                    BinaryLilMatrix::row& row = predictionMatrixPtr->getRow(i);
+                    BinaryLilMatrix::row& row = (*predictionMatrixPtr)[i];
 
                     for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                         const RuleList::Rule& rule = *it;
@@ -280,7 +280,7 @@ namespace seco {
                 firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
                 num_threads(numThreads_)
                 for (int64 i = 0; i < numExamples; i++) {
-                    BinaryLilMatrix::row& row = predictionMatrixPtr->getRow(i);
+                    BinaryLilMatrix::row& row = (*predictionMatrixPtr)[i];
                     float32* tmpArray1 = new float32[numFeatures];
                     uint32* tmpArray2 = new uint32[numFeatures] {};
                     uint32 n = 1;

@@ -159,13 +159,13 @@ typename SparseSetMatrix<T>::const_iterator SparseSetMatrix<T>::row_cend(uint32 
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::row SparseSetMatrix<T>::getRow(uint32 row) {
-    return Row(lilMatrix_.getRow(row), indexMatrix_.row_values_begin(row));
+typename SparseSetMatrix<T>::row SparseSetMatrix<T>::operator[](uint32 row) {
+    return Row(lilMatrix_[row], indexMatrix_.row_values_begin(row));
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::const_row SparseSetMatrix<T>::getRow(uint32 row) const {
-    return ConstRow(lilMatrix_.getRow(row), indexMatrix_.row_values_cbegin(row));
+typename SparseSetMatrix<T>::const_row SparseSetMatrix<T>::operator[](uint32 row) const {
+    return ConstRow(lilMatrix_[row], indexMatrix_.row_values_cbegin(row));
 }
 
 template<typename T>
@@ -183,7 +183,7 @@ void SparseSetMatrix<T>::clear() {
     uint32 numRows = lilMatrix_.getNumRows();
 
     for (uint32 i = 0; i < numRows; i++) {
-        clearRow<T>(lilMatrix_.getRow(i), indexMatrix_.row_values_begin(i));
+        clearRow<T>(lilMatrix_[i], indexMatrix_.row_values_begin(i));
     }
 }
 

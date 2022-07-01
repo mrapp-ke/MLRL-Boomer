@@ -68,7 +68,7 @@ namespace boosting {
              * @param row   The index of the row
              * @return      A `const_row`
              */
-            const_row getRow(uint32 row) const;
+            const_row operator[](uint32 row) const;
 
             /**
              * Returns the number of rows in the view.
@@ -112,7 +112,7 @@ namespace boosting {
              * @param row   The index of the row
              * @return      A `row`
              */
-            row getRow(uint32 row);
+            row operator[](uint32 row);
 
             /**
              * Sets all gradients and Hessians in the matrix to zero.

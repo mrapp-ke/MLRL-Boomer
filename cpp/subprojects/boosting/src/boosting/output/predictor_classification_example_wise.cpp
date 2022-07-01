@@ -210,7 +210,7 @@ namespace boosting {
                                                                                        &scoreVector[numLabels],
                                                                                        *similarityMeasureRawPtr,
                                                                                        *labelVectorSetPtr);
-                        numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
+                        numNonZeroElements += predictLabelVector((*predictionMatrixPtr)[i], closestLabelVector);
                         delete[] scoreVector;
                     }
                 }
@@ -249,7 +249,7 @@ namespace boosting {
                                                                                        &scoreVector[numLabels],
                                                                                        *similarityMeasureRawPtr,
                                                                                        *labelVectorSetPtr);
-                        numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
+                        numNonZeroElements += predictLabelVector((*predictionMatrixPtr)[i], closestLabelVector);
                         delete[] scoreVector;
                     }
                 }
