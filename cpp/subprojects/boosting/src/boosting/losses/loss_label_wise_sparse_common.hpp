@@ -21,8 +21,8 @@ namespace boosting {
 
     template<typename IndexIterator>
     static inline uint32 fetchNextStatistic(IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                            LilMatrix<float64>::const_iterator& scoreIterator,
-                                            LilMatrix<float64>::const_iterator scoresEnd,
+                                            SparseSetMatrix<float64>::const_iterator& scoreIterator,
+                                            SparseSetMatrix<float64>::const_iterator scoresEnd,
                                             Tuple<float64>& tuple, LabelWiseLoss::UpdateFunction updateFunction) {
         uint32 labelIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
@@ -47,8 +47,8 @@ namespace boosting {
 
     template<typename IndexIterator>
     static inline uint32 fetchNextNonZeroStatistic(IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                                   LilMatrix<float64>::const_iterator& scoreIterator,
-                                                   LilMatrix<float64>::const_iterator scoresEnd, Tuple<float64>& tuple,
+                                                   SparseSetMatrix<float64>::const_iterator& scoreIterator,
+                                                   SparseSetMatrix<float64>::const_iterator scoresEnd, Tuple<float64>& tuple,
                                                    LabelWiseLoss::UpdateFunction updateFunction) {
         uint32 index = fetchNextStatistic(indexIterator, indicesEnd, scoreIterator, scoresEnd, tuple, updateFunction);
 
@@ -61,8 +61,8 @@ namespace boosting {
 
     template<typename IndexIterator>
     static inline void updateLabelWiseStatisticsInternally(IndexIterator indicesBegin, IndexIterator indicesEnd,
-                                                           LilMatrix<float64>::const_iterator scoresBegin,
-                                                           LilMatrix<float64>::const_iterator scoresEnd,
+                                                           SparseSetMatrix<float64>::const_iterator scoresBegin,
+                                                           SparseSetMatrix<float64>::const_iterator scoresEnd,
                                                            SparseLabelWiseStatisticView::Row row,
                                                            LabelWiseLoss::UpdateFunction updateFunction) {
         row.clear();
@@ -78,8 +78,8 @@ namespace boosting {
 
     template<typename IndexIterator>
     static inline uint32 fetchNextEvaluation(IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                             LilMatrix<float64>::const_iterator& scoreIterator,
-                                             LilMatrix<float64>::const_iterator scoresEnd,
+                                             SparseSetMatrix<float64>::const_iterator& scoreIterator,
+                                             SparseSetMatrix<float64>::const_iterator scoresEnd,
                                              float64& score, LabelWiseLoss::EvaluateFunction evaluateFunction) {
         uint32 labelIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
@@ -104,8 +104,8 @@ namespace boosting {
 
     template<typename IndexIterator>
     static inline uint32 fetchNextNonZeroEvaluation(IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                                    LilMatrix<float64>::const_iterator& scoreIterator,
-                                                    LilMatrix<float64>::const_iterator scoresEnd,
+                                                    SparseSetMatrix<float64>::const_iterator& scoreIterator,
+                                                    SparseSetMatrix<float64>::const_iterator scoresEnd,
                                                     float64& score, LabelWiseLoss::EvaluateFunction evaluateFunction) {
         uint32 index = fetchNextEvaluation(indexIterator, indicesEnd, scoreIterator, scoresEnd, score,
                                            evaluateFunction);
@@ -119,8 +119,8 @@ namespace boosting {
 
     template<typename IndexIterator>
     static inline float64 evaluateInternally(IndexIterator indicesBegin, IndexIterator indicesEnd,
-                                             LilMatrix<float64>::const_iterator scoresBegin,
-                                             LilMatrix<float64>::const_iterator scoresEnd,
+                                             SparseSetMatrix<float64>::const_iterator scoresBegin,
+                                             SparseSetMatrix<float64>::const_iterator scoresEnd,
                                              LabelWiseLoss::EvaluateFunction evaluateFunction, uint32 numLabels) {
         float64 mean = 0;
         float64 score = 0;
@@ -157,7 +157,7 @@ namespace boosting {
             using LabelWiseLoss::updateLabelWiseStatistics;
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                                           const LilMatrix<float64>& scoreMatrix,
+                                           const SparseSetMatrix<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
@@ -171,11 +171,11 @@ namespace boosting {
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                                           const LilMatrix<float64>& scoreMatrix,
+                                           const SparseSetMatrix<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
-                const LilMatrix<float64>::Row scoreMatrixRow = scoreMatrix.getRow(exampleIndex);
+                const SparseSetMatrix<float64>::Row scoreMatrixRow = scoreMatrix.getRow(exampleIndex);
                 CContiguousConstView<const uint8>::value_const_iterator labelIterator =
                     labelMatrix.row_values_cbegin(exampleIndex);
                 SparseLabelWiseStatisticView::Row statisticViewRow = statisticView.getRow(exampleIndex);
@@ -199,7 +199,7 @@ namespace boosting {
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                           const LilMatrix<float64>& scoreMatrix,
+                                           const SparseSetMatrix<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
@@ -210,11 +210,11 @@ namespace boosting {
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                           const LilMatrix<float64>& scoreMatrix,
+                                           const SparseSetMatrix<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
-                const LilMatrix<float64>::Row scoreMatrixRow = scoreMatrix.getRow(exampleIndex);
+                const SparseSetMatrix<float64>::Row scoreMatrixRow = scoreMatrix.getRow(exampleIndex);
                 BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
                 BinaryCsrConstView::index_const_iterator indicesEnd = labelMatrix.row_indices_cend(exampleIndex);
                 SparseLabelWiseStatisticView::Row statisticViewRow = statisticView.getRow(exampleIndex);
@@ -245,7 +245,7 @@ namespace boosting {
              * @see `IEvaluationMeasure::evaluate`
              */
             float64 evaluate(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                             const LilMatrix<float64>& scoreMatrix) const override {
+                             const SparseSetMatrix<float64>& scoreMatrix) const override {
                 auto indicesBegin = make_non_zero_index_forward_iterator(
                     labelMatrix.row_values_cbegin(exampleIndex), labelMatrix.row_values_cend(exampleIndex));
                 auto indicesEnd = make_non_zero_index_forward_iterator(
@@ -259,7 +259,7 @@ namespace boosting {
              * @see `IEvaluationMeasure::evaluate`
              */
             float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                             const LilMatrix<float64>& scoreMatrix) const override {
+                             const SparseSetMatrix<float64>& scoreMatrix) const override {
                 return evaluateInternally(
                     labelMatrix.row_indices_cbegin(exampleIndex), labelMatrix.row_indices_cend(exampleIndex),
                     scoreMatrix.row_cbegin(exampleIndex), scoreMatrix.row_cend(exampleIndex),

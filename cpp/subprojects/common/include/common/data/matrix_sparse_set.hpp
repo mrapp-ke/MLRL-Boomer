@@ -13,7 +13,7 @@
  * @tparam T The type of the values that are stored in the matrix
  */
 template<typename T>
-class LilMatrix {
+class SparseSetMatrix {
 
     public:
 
@@ -140,9 +140,9 @@ class LilMatrix {
          * @param numRows   The number of rows in the matrix
          * @param numCols   The number of columns in the matrix
          */
-        LilMatrix(uint32 numRows, uint32 numCols);
+        SparseSetMatrix(uint32 numRows, uint32 numCols);
 
-        virtual ~LilMatrix();
+        virtual ~SparseSetMatrix();
 
         /**
          * An iterator that provides access to the elements at a row and allows to modify them.

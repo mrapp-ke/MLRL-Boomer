@@ -1,4 +1,4 @@
-#include "common/data/matrix_lil.hpp"
+#include "common/data/matrix_sparse_set.hpp"
 #include "common/data/arrays.hpp"
 #include "common/data/tuple.hpp"
 #include "common/data/triple.hpp"
@@ -17,44 +17,44 @@ static inline void clearRow(std::vector<IndexedValue<T>>& values, uint32* indice
 }
 
 template<typename T>
-LilMatrix<T>::Row::Row(std::vector<IndexedValue<T>>& values, uint32* indices)
+SparseSetMatrix<T>::Row::Row(std::vector<IndexedValue<T>>& values, uint32* indices)
     : values_(values), indices_(indices) {
 
 }
 
 template<typename T>
-typename LilMatrix<T>::Row::iterator LilMatrix<T>::Row::begin() {
+typename SparseSetMatrix<T>::Row::iterator SparseSetMatrix<T>::Row::begin() {
     return values_.begin();
 }
 
 template<typename T>
-typename LilMatrix<T>::Row::iterator LilMatrix<T>::Row::end() {
+typename SparseSetMatrix<T>::Row::iterator SparseSetMatrix<T>::Row::end() {
     return values_.end();
 }
 
 template<typename T>
-typename LilMatrix<T>::Row::const_iterator LilMatrix<T>::Row::cbegin() const {
+typename SparseSetMatrix<T>::Row::const_iterator SparseSetMatrix<T>::Row::cbegin() const {
     return values_.cbegin();
 }
 
 template<typename T>
-typename LilMatrix<T>::Row::const_iterator LilMatrix<T>::Row::cend() const {
+typename SparseSetMatrix<T>::Row::const_iterator SparseSetMatrix<T>::Row::cend() const {
     return values_.cend();
 }
 
 template<typename T>
-uint32 LilMatrix<T>::Row::getNumElements() const {
+uint32 SparseSetMatrix<T>::Row::getNumElements() const {
     return (uint32) values_.size();
 }
 
 template<typename T>
-const IndexedValue<T>* LilMatrix<T>::Row::operator[](uint32 index) const {
+const IndexedValue<T>* SparseSetMatrix<T>::Row::operator[](uint32 index) const {
     uint32 i = indices_[index];
     return i == MAX_INDEX ? nullptr : &values_[i];
 }
 
 template<typename T>
-IndexedValue<T>& LilMatrix<T>::Row::emplace(uint32 index) {
+IndexedValue<T>& SparseSetMatrix<T>::Row::emplace(uint32 index) {
     uint32 i = indices_[index];
 
     if (i == MAX_INDEX) {
@@ -67,7 +67,7 @@ IndexedValue<T>& LilMatrix<T>::Row::emplace(uint32 index) {
 }
 
 template<typename T>
-IndexedValue<T>& LilMatrix<T>::Row::emplace(uint32 index, const T& defaultValue) {
+IndexedValue<T>& SparseSetMatrix<T>::Row::emplace(uint32 index, const T& defaultValue) {
     uint32 i = indices_[index];
 
     if (i == MAX_INDEX) {
@@ -80,7 +80,7 @@ IndexedValue<T>& LilMatrix<T>::Row::emplace(uint32 index, const T& defaultValue)
 }
 
 template<typename T>
-void LilMatrix<T>::Row::erase(uint32 index) {
+void SparseSetMatrix<T>::Row::erase(uint32 index) {
     uint32 i = indices_[index];
 
     if (i != MAX_INDEX) {
@@ -98,79 +98,79 @@ void LilMatrix<T>::Row::erase(uint32 index) {
 }
 
 template<typename T>
-void LilMatrix<T>::Row::clear() {
+void SparseSetMatrix<T>::Row::clear() {
     clearRow(values_, indices_);
 }
 
 template<typename T>
-LilMatrix<T>::LilMatrix(uint32 numRows, uint32 numCols)
+SparseSetMatrix<T>::SparseSetMatrix(uint32 numRows, uint32 numCols)
     : numRows_(numRows), numCols_(numCols), values_(new std::vector<IndexedValue<T>>[numRows]),
       indices_(new uint32[numRows * numCols]) {
     setArrayToValue(indices_, numRows * numCols, MAX_INDEX);
 }
 
 template<typename T>
-LilMatrix<T>::~LilMatrix() {
+SparseSetMatrix<T>::~SparseSetMatrix() {
     delete[] values_;
     delete[] indices_;
 }
 
 template<typename T>
-typename LilMatrix<T>::iterator LilMatrix<T>::row_begin(uint32 row) {
+typename SparseSetMatrix<T>::iterator SparseSetMatrix<T>::row_begin(uint32 row) {
     return values_[row].begin();
 }
 
 template<typename T>
-typename LilMatrix<T>::iterator LilMatrix<T>::row_end(uint32 row) {
+typename SparseSetMatrix<T>::iterator SparseSetMatrix<T>::row_end(uint32 row) {
     return values_[row].end();
 }
 
 template<typename T>
-typename LilMatrix<T>::const_iterator LilMatrix<T>::row_cbegin(uint32 row) const {
+typename SparseSetMatrix<T>::const_iterator SparseSetMatrix<T>::row_cbegin(uint32 row) const {
     return values_[row].cbegin();
 }
 
 template<typename T>
-typename LilMatrix<T>::const_iterator LilMatrix<T>::row_cend(uint32 row) const {
+typename SparseSetMatrix<T>::const_iterator SparseSetMatrix<T>::row_cend(uint32 row) const {
     return values_[row].cend();
 }
 
 template<typename T>
-typename LilMatrix<T>::Row LilMatrix<T>::getRow(uint32 row) {
-    return LilMatrix<T>::Row(values_[row], &indices_[row * numCols_]);
+typename SparseSetMatrix<T>::Row SparseSetMatrix<T>::getRow(uint32 row) {
+    return SparseSetMatrix<T>::Row(values_[row], &indices_[row * numCols_]);
 }
 
 template<typename T>
-const typename LilMatrix<T>::Row LilMatrix<T>::getRow(uint32 row) const {
-    return LilMatrix<T>::Row(values_[row], &indices_[row * numCols_]);
+const typename SparseSetMatrix<T>::Row SparseSetMatrix<T>::getRow(uint32 row) const {
+    return SparseSetMatrix<T>::Row(values_[row], &indices_[row * numCols_]);
 }
 
 template<typename T>
-uint32 LilMatrix<T>::getNumRows() const {
+uint32 SparseSetMatrix<T>::getNumRows() const {
     return numRows_;
 }
 
 template<typename T>
-uint32 LilMatrix<T>::getNumCols() const {
+uint32 SparseSetMatrix<T>::getNumCols() const {
     return numCols_;
 }
 
 template<typename T>
-void LilMatrix<T>::clear() {
+void SparseSetMatrix<T>::clear() {
     for (uint32 i = 0; i < numRows_; i++) {
         clearRow(values_[i], &indices_[i * numCols_]);
     }
 }
 
-template class LilMatrix<uint8>;
-template class LilMatrix<uint32>;
-template class LilMatrix<float32>;
-template class LilMatrix<float64>;
-template class LilMatrix<Tuple<uint8>>;
-template class LilMatrix<Tuple<uint32>>;
-template class LilMatrix<Tuple<float32>>;
-template class LilMatrix<Tuple<float64>>;
-template class LilMatrix<Triple<uint8>>;
-template class LilMatrix<Triple<uint32>>;
-template class LilMatrix<Triple<float32>>;
-template class LilMatrix<Triple<float64>>;
+template class SparseSetMatrix<uint8>;
+template class SparseSetMatrix<uint32>;
+template class SparseSetMatrix<float32>;
+template class SparseSetMatrix<float64>;
+template class SparseSetMatrix<Tuple<uint8>>;
+template class SparseSetMatrix<Tuple<uint32>>;
+template class SparseSetMatrix<Tuple<float32>>;
+template class SparseSetMatrix<Tuple<float64>>;
+template class SparseSetMatrix<Triple<uint8>>;
+template class SparseSetMatrix<Triple<uint32>>;
+template class SparseSetMatrix<Triple<float32>>;
+template class SparseSetMatrix<Triple<float64>>;
