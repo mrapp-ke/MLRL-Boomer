@@ -3,12 +3,20 @@
  */
 #pragma once
 
-#include "common/data/indexed_value.hpp"
-#include <vector>
+#include "common/data/matrix_dense.hpp"
+#include "common/data/matrix_lil.hpp"
 
 
 /**
- * A two-dimensional matrix that provides row-wise access to values that are stored in the list of lists (LIL) format.
+ * A two-dimensional matrix that provides row-wise access to data that is stored in the list of lists (LIL) format. In
+ * contrast to a `LilMatrix`, this matrix does also provide random access to its elements. This additional functionality
+ * comes at the expense of memory efficiency, as it requires to not only maintain a sparse matrix that stores the
+ * non-zero elements, but also a dense matrix that stores for each element the corresponding position in the sparse
+ * matrix, if available.
+ *
+ * The data structure that is used for the representation of a single row is often referred to as an "unordered sparse
+ * set". It was originally proposed in "An efficient representation for sparse sets", Briggs, Torczon, 1993 (see
+ * https://dl.acm.org/doi/pdf/10.1145/176454.176484).
  *
  * @tparam T The type of the values that are stored in the matrix
  */
@@ -18,34 +26,92 @@ class SparseSetMatrix {
     public:
 
         /**
-         * Provides access to a single row in the matrix.
+         * Provides read-only access to a single row in the matrix.
+         */
+        class ConstRow final {
+
+            private:
+
+                const typename LilMatrix<T>::Row& row_;
+
+                typename CContiguousView<uint32>::value_const_iterator indexIterator_;
+
+            public:
+
+                /**
+                 * @param row           A reference to a `LilMatrix::Row` that stores the non-zero elements at the row
+                 * @param indexIterator An iterator that provides access to the indices in `row` that correspond to
+                 *                      individual columns
+                 */
+                ConstRow(const typename LilMatrix<T>::Row& row,
+                         CContiguousView<uint32>::value_const_iterator indexIterator);
+
+                /**
+                 * An iterator that provides read-only access to the elements in the row.
+                 */
+                typedef typename LilMatrix<T>::Row::const_iterator const_iterator;
+
+                /**
+                 * Returns a `const_iterator` to the beginning of the row.
+                 *
+                 * @return A `const_iterator` to the beginning
+                 */
+                const_iterator cbegin() const;
+
+                /**
+                 * Returns a `const_iterator` to the end of the row.
+                 *
+                 * @return A `const_iterator` to the end
+                 */
+                const_iterator cend() const;
+
+                /**
+                 * Returns the number of non-zero elements in the row.
+                 *
+                 * @return The number of non-zero elements in the row
+                 */
+                uint32 getNumElements() const;
+
+                /**
+                 * Returns a pointer to the element that corresponds to a specific index.
+                 *
+                 * @param index The index of the element to be returned
+                 * @return      A pointer to the element that corresponds to the given index or a null pointer, if no
+                 *              such element is available
+                 */
+                const IndexedValue<T>* operator[](uint32 index) const;
+
+        };
+
+        /**
+         * Provides access to a single row in the matrix and allows to modify its elements.
          */
         class Row final {
 
             private:
 
-                std::vector<IndexedValue<T>>& values_;
+                typename LilMatrix<T>::Row& row_;
 
-                uint32* indices_;
+                typename CContiguousView<uint32>::value_iterator indexIterator_;
 
             public:
 
                 /**
-                 * @param values    A reference to the `std::vector` that stores the non-zero elements in the row
-                 * @param indices   A pointer to an array of type `uint32` that stores for each element the
-                 *                  corresponding index in `values`
+                 * @param row           A reference to a `LilMatrix::Row` that stores the non-zero elements at the row
+                 * @param indexIterator An iterator that provides access to the indices in `row` that correspond to
+                 *                      individual columns
                  */
-                Row(std::vector<IndexedValue<T>>& values, uint32* indices);
+                Row(typename LilMatrix<T>::Row& row, CContiguousView<uint32>::value_iterator indexIterator);
 
                 /**
                  * An iterator that provides access to the elements in the row and allows to modify them.
                  */
-                typedef typename std::vector<IndexedValue<T>>::iterator iterator;
+                typedef typename LilMatrix<T>::Row::iterator iterator;
 
                 /**
                  * An iterator that provides read-only access to the elements in the row.
                  */
-                typedef typename std::vector<IndexedValue<T>>::const_iterator const_iterator;
+                typedef typename LilMatrix<T>::Row::const_iterator const_iterator;
 
                 /**
                  * Returns an `iterator` to the beginning of the row.
@@ -118,7 +184,7 @@ class SparseSetMatrix {
                 void erase(uint32 index);
 
                 /**
-                 * Removes all elements from the vector.
+                 * Removes all elements from the row.
                  */
                 void clear();
 
@@ -126,13 +192,9 @@ class SparseSetMatrix {
 
     private:
 
-        uint32 numRows_;
+        LilMatrix<T> lilMatrix_;
 
-        uint32 numCols_;
-
-        std::vector<IndexedValue<T>>* values_;
-
-        uint32* indices_;
+        DenseMatrix<uint32> indexMatrix_;
 
     public:
 
@@ -142,17 +204,15 @@ class SparseSetMatrix {
          */
         SparseSetMatrix(uint32 numRows, uint32 numCols);
 
-        virtual ~SparseSetMatrix();
-
         /**
          * An iterator that provides access to the elements at a row and allows to modify them.
          */
-        typedef typename Row::iterator iterator;
+        typedef typename LilMatrix<T>::iterator iterator;
 
         /**
          * An iterator that provides read-only access to the elements at a row.
          */
-        typedef typename Row::const_iterator const_iterator;
+        typedef typename LilMatrix<T>::const_iterator const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of a specific row.
@@ -200,7 +260,7 @@ class SparseSetMatrix {
          * @param row   The index of the row to be returned
          * @return      The row
          */
-        const Row getRow(uint32 row) const;
+        const ConstRow getRow(uint32 row) const;
 
         /**
          * Returns the number of rows in the matrix.
