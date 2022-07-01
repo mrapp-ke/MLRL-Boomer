@@ -105,42 +105,32 @@ class SparseSetMatrix {
                 Row(typename LilMatrix<T>::row row, CContiguousView<uint32>::value_iterator indexIterator);
 
                 /**
-                 * An iterator that provides access to the elements in the row and allows to modify them.
-                 */
-                typedef typename LilMatrix<T>::iterator iterator;
-
-                /**
-                 * An iterator that provides read-only access to the elements in the row.
-                 */
-                typedef typename LilMatrix<T>::const_iterator const_iterator;
-
-                /**
-                 * Returns an `iterator` to the beginning of the row.
+                 * Returns a `LilMatrix::iterator` to the beginning of the row.
                  *
-                 * @return An `iterator` to the beginning
+                 * @return A `LilMatrix::iterator` to the beginning
                  */
-                iterator begin();
+                typename LilMatrix<T>::iterator begin();
 
                 /**
-                 * Returns an `iterator` to the end of the row.
+                 * Returns a `LilMatrix::iterator` to the end of the row.
                  *
-                 * @return An `iterator` to the end
+                 * @return A `LilMatrix::iterator` to the end
                  */
-                iterator end();
+                typename LilMatrix<T>::iterator end();
 
                 /**
-                 * Returns a `const_iterator` to the beginning of the row.
+                 * Returns a `LilMatrix::const_iterator` to the beginning of the row.
                  *
-                 * @return A `const_iterator` to the beginning
+                 * @return A `LilMatrix::const_iterator` to the beginning
                  */
-                const_iterator cbegin() const;
+                typename LilMatrix<T>::const_iterator cbegin() const;
 
                 /**
-                 * Returns a `const_iterator` to the end of the row.
+                 * Returns a `LilMatrix::const_iterator` to the end of the row.
                  *
-                 * @return A `const_iterator` to the end
+                 * @return A `LilMatrix::const_iterator` to the end
                  */
-                const_iterator cend() const;
+                typename LilMatrix<T>::const_iterator cend() const;
 
                 /**
                  * Returns the number of non-zero elements in the row.
