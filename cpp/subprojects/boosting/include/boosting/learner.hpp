@@ -40,79 +40,83 @@ namespace boosting {
                 private:
 
                     /**
-                     * Returns the configuration of the rule heads that should be induced by the rule learner.
+                     * Returns an unique pointer to the configuration of the rule heads that should be induced by the
+                     * rule learner.
                      *
-                     * @return A reference to an object of type `IHeadConfig` that specifies the configuration of the
-                     *         rule heads
+                     * @return A reference to an unique pointer of type `IHeadConfig` that stores the configuration of
+                     *         the rule heads
                      */
-                    virtual const IHeadConfig& getHeadConfig() const = 0;
+                    virtual std::unique_ptr<IHeadConfig>& getHeadConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the statistics that should be used by the rule learner.
+                     * Returns an unique pointer to the configuration of the statistics that should be used by the rule
+                     * learner.
                      *
-                     * @return A reference to an object of type `IStatisticsConfig` that specifies the configuration of
-                     *         the statistics
+                     * @return A reference to an unique pointer of type `IStatisticsConfig` that stores the
+                     *         configuration of the statistics
                      */
-                    virtual const IStatisticsConfig& getStatisticsConfig() const = 0;
+                    virtual std::unique_ptr<IStatisticsConfig>& getStatisticsConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the L1 regularization term.
+                     * Returns an unique pointer to the configuration of the L1 regularization term.
                      *
-                     * @return A reference to an object of type `IRegularizationConfig` that specifies the configuration
-                     *         of the L1 regularization term
+                     * @return A reference to an unique pointer of type `IRegularizationConfig` that stores the
+                     *         configuration of the L1 regularization term
                      */
-                    virtual const IRegularizationConfig& getL1RegularizationConfig() const = 0;
+                    virtual std::unique_ptr<IRegularizationConfig>& getL1RegularizationConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the L2 regularization term.
+                     * Returns an unique pointer to the configuration of the L2 regularization term.
                      *
-                     * @return A reference to an object of type `IRegularizationConfig` that specifies the configuration
-                     *         of the L2 regularization term
+                     * @return A reference to an unique pointer of type `IRegularizationConfig` that stores the
+                     *         configuration of the L2 regularization term
                      */
-                    virtual const IRegularizationConfig& getL2RegularizationConfig() const = 0;
+                    virtual std::unique_ptr<IRegularizationConfig>& getL2RegularizationConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the loss function.
+                     * Returns an unique pointer to the configuration of the loss function.
                      *
-                     * @return A reference to an object of type `ILossConfig` that specifies the configuration of the
-                     *         loss function
+                     * @return A reference to an unique pointer of type `ILossConfig` that stores the configuration of
+                     *         the loss function
                      */
-                    virtual const ILossConfig& getLossConfig() const = 0;
+                    virtual std::unique_ptr<ILossConfig>& getLossConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the method for the assignment of labels to bins.
+                     * Returns an unique pointer to the configuration of the method for the assignment of labels to
+                     * bins.
                      *
-                     * @return A reference to an object of type `ILabelBinningConfig` that specifies the configuration
-                     *         of the method for the assignment of labels to bins
+                     * @return A reference to an unique pointer of type `ILabelBinningConfig` that stores the
+                     *         configuration of the method for the assignment of labels to bins
                      */
-                    virtual const ILabelBinningConfig& getLabelBinningConfig() const = 0;
+                    virtual std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the predictor that predicts whether individual labels of given query
-                     * examples are relevant or irrelevant.
+                     * Returns an unique pointer to the configuration of the predictor that predicts whether individual
+                     * labels of given query examples are relevant or irrelevant.
                      *
-                     * @return A reference to an object of type `IClassificationPredictorConfig` that specifies the
+                     * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
                      *         configuration of the predictor that predicts whether individual labels of given query
                      *         examples are relevant or irrelevant
                      */
-                    virtual const IClassificationPredictorConfig& getClassificationPredictorConfig() const = 0;
+                    virtual std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the predictor that predicts regression scores for individual labels.
+                     * Returns an unique pointer to the configuration of the predictor that predicts regression scores
+                     * for individual labels.
                      *
-                     * @return A reference to an object of type `IClassificationPredictorConfig` that specifies the
+                     * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
                      *         configuration of the predictor that predicts regression scores for individual labels
                      */
-                    virtual const IRegressionPredictorConfig& getRegressionPredictorConfig() const = 0;
+                    virtual std::unique_ptr<IRegressionPredictorConfig>& getRegressionPredictorConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the predictor that predicts probability estimates for individual
-                     * labels.
+                     * Returns an unique pointer to the configuration of the predictor that predicts probability
+                     * estimates for individual labels.
                      *
-                     * @return A reference to an object of type `IClassificationPredictorConfig` that specifies the
+                     * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
                      *         configuration of the predictor that predicts probability estimates for individual labels
                      */
-                    virtual const IProbabilityPredictorConfig& getProbabilityPredictorConfig() const = 0;
+                    virtual std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() = 0;
 
                 public:
 
@@ -487,23 +491,23 @@ namespace boosting {
 
                 private:
 
-                    const IHeadConfig& getHeadConfig() const override final;
+                    std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final;
 
-                    const IStatisticsConfig& getStatisticsConfig() const override final;
+                    std::unique_ptr<IStatisticsConfig>& getStatisticsConfigPtr() override final;
 
-                    const IRegularizationConfig& getL1RegularizationConfig() const override final;
+                    std::unique_ptr<IRegularizationConfig>& getL1RegularizationConfigPtr() override final;
 
-                    const IRegularizationConfig& getL2RegularizationConfig() const override final;
+                    std::unique_ptr<IRegularizationConfig>& getL2RegularizationConfigPtr() override final;
 
-                    const ILossConfig& getLossConfig() const override final;
+                    std::unique_ptr<ILossConfig>& getLossConfigPtr() override final;
 
-                    const ILabelBinningConfig& getLabelBinningConfig() const override final;
+                    std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() override final;
 
-                    const IClassificationPredictorConfig& getClassificationPredictorConfig() const override final;
+                    std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() override final;
 
-                    const IRegressionPredictorConfig& getRegressionPredictorConfig() const override final;
+                    std::unique_ptr<IRegressionPredictorConfig>& getRegressionPredictorConfigPtr() override final;
 
-                    const IProbabilityPredictorConfig& getProbabilityPredictorConfig() const override final;
+                    std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() override final;
 
                 public:
 
@@ -531,7 +535,7 @@ namespace boosting {
 
         private:
 
-            const IBoostingRuleLearner::IConfig& config_;
+            IBoostingRuleLearner::IConfig& config_;
 
             Blas blas_;
 
@@ -583,7 +587,7 @@ namespace boosting {
              * @param dspmvFunction A function pointer to BLAS' DSPMV routine
              * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
              */
-            AbstractBoostingRuleLearner(const IBoostingRuleLearner::IConfig& config, Blas::DdotFunction ddotFunction,
+            AbstractBoostingRuleLearner(IBoostingRuleLearner::IConfig& config, Blas::DdotFunction ddotFunction,
                                         Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
 
     };
