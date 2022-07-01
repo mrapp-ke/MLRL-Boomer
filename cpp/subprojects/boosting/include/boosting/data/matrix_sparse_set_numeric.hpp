@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/matrix_lil.hpp"
+#include "common/data/matrix_sparse_set.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
@@ -17,7 +17,7 @@ namespace boosting {
      * @tparam T The type of the values that are stored in the matrix
      */
     template<typename T>
-    class NumericLilMatrix final : public LilMatrix<T> {
+    class NumericSparseSetMatrix final : public SparseSetMatrix<T> {
 
         public:
 
@@ -25,7 +25,7 @@ namespace boosting {
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
              */
-            NumericLilMatrix(uint32 numRows, uint32 numCols);
+            NumericSparseSetMatrix(uint32 numRows, uint32 numCols);
 
             /**
              * Adds all values in another vector to certain elements, whose positions are given as a

@@ -10,27 +10,27 @@ BinaryLilMatrix::~BinaryLilMatrix() {
     delete[] array_;
 }
 
-typename BinaryLilMatrix::iterator BinaryLilMatrix::row_begin(uint32 row) {
+BinaryLilMatrix::iterator BinaryLilMatrix::row_begin(uint32 row) {
     return array_[row].begin();
 }
 
-typename BinaryLilMatrix::iterator BinaryLilMatrix::row_end(uint32 row) {
+BinaryLilMatrix::iterator BinaryLilMatrix::row_end(uint32 row) {
     return array_[row].end();
 }
 
-typename BinaryLilMatrix::const_iterator BinaryLilMatrix::row_cbegin(uint32 row) const {
+BinaryLilMatrix::const_iterator BinaryLilMatrix::row_cbegin(uint32 row) const {
     return array_[row].cbegin();
 }
 
-typename BinaryLilMatrix::const_iterator BinaryLilMatrix::row_cend(uint32 row) const {
+BinaryLilMatrix::const_iterator BinaryLilMatrix::row_cend(uint32 row) const {
     return array_[row].cend();
 }
 
-typename BinaryLilMatrix::Row& BinaryLilMatrix::getRow(uint32 row) {
+BinaryLilMatrix::Row& BinaryLilMatrix::getRow(uint32 row) {
     return array_[row];
 }
 
-const typename BinaryLilMatrix::Row& BinaryLilMatrix::getRow(uint32 row) const {
+const BinaryLilMatrix::Row& BinaryLilMatrix::getRow(uint32 row) const {
     return array_[row];
 }
 

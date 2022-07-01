@@ -4,7 +4,7 @@
 namespace boosting {
 
     SparseLabelWiseStatisticConstView::SparseLabelWiseStatisticConstView(uint32 numCols,
-                                                                         LilMatrix<Tuple<float64>>* statistics)
+                                                                         SparseSetMatrix<Tuple<float64>>* statistics)
         : numCols_(numCols), statistics_(statistics) {
 
     }
@@ -29,7 +29,8 @@ namespace boosting {
         return numCols_;
     }
 
-    SparseLabelWiseStatisticView::SparseLabelWiseStatisticView(uint32 numCols, LilMatrix<Tuple<float64>>* statistics)
+    SparseLabelWiseStatisticView::SparseLabelWiseStatisticView(uint32 numCols,
+                                                               SparseSetMatrix<Tuple<float64>>* statistics)
         : SparseLabelWiseStatisticConstView(numCols, statistics) {
 
     }
