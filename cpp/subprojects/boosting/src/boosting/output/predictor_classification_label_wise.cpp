@@ -17,7 +17,7 @@ namespace boosting {
     }
 
     static inline uint32 applyThreshold(CContiguousConstView<float64>::value_const_iterator originalIterator,
-                                        BinaryLilMatrix::Row& row, uint32 numElements, float64 threshold) {
+                                        BinaryLilMatrix::row row, uint32 numElements, float64 threshold) {
         uint32 numNonZeroElements = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -142,7 +142,7 @@ namespace boosting {
                     float64* scoreVector = new float64[numLabels] {};
                     applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                                &scoreVector[0]);
-                    numNonZeroElements += applyThreshold(&scoreVector[0], predictionMatrixPtr->getRow(i), numLabels,
+                    numNonZeroElements += applyThreshold(&scoreVector[0], (*predictionMatrixPtr)[i], numLabels,
                                                          threshold);
                     delete[] scoreVector;
                 }
@@ -173,7 +173,7 @@ namespace boosting {
                     applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                                   featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                                   featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                    numNonZeroElements += applyThreshold(&scoreVector[0], predictionMatrixPtr->getRow(i), numLabels,
+                    numNonZeroElements += applyThreshold(&scoreVector[0], (*predictionMatrixPtr)[i], numLabels,
                                                          threshold);
                     delete[] scoreVector;
                 }

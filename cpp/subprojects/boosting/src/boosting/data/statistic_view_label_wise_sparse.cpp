@@ -17,8 +17,8 @@ namespace boosting {
         return statistics_->row_cend(row);
     }
 
-    const SparseLabelWiseStatisticConstView::Row SparseLabelWiseStatisticConstView::getRow(uint32 row) const {
-        return statistics_->getRow(row);
+    SparseLabelWiseStatisticConstView::const_row SparseLabelWiseStatisticConstView::operator[](uint32 row) const {
+        return ((const SparseSetMatrix<Tuple<float64>>&) *statistics_)[row];
     }
 
     uint32 SparseLabelWiseStatisticConstView::getNumRows() const {
@@ -35,8 +35,8 @@ namespace boosting {
 
     }
 
-    SparseLabelWiseStatisticView::Row SparseLabelWiseStatisticView::getRow(uint32 row) {
-        return statistics_->getRow(row);
+    SparseLabelWiseStatisticView::row SparseLabelWiseStatisticView::operator[](uint32 row) {
+        return (*statistics_)[row];
     }
 
     void SparseLabelWiseStatisticView::clear() {

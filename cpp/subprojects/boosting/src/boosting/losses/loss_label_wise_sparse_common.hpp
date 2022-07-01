@@ -63,7 +63,7 @@ namespace boosting {
     static inline void updateLabelWiseStatisticsInternally(IndexIterator indicesBegin, IndexIterator indicesEnd,
                                                            SparseSetMatrix<float64>::const_iterator scoresBegin,
                                                            SparseSetMatrix<float64>::const_iterator scoresEnd,
-                                                           SparseLabelWiseStatisticView::Row row,
+                                                           SparseLabelWiseStatisticView::row row,
                                                            LabelWiseLoss::UpdateFunction updateFunction) {
         row.clear();
         Tuple<float64> tuple;
@@ -167,7 +167,7 @@ namespace boosting {
                     labelMatrix.row_values_cend(exampleIndex), labelMatrix.row_values_cend(exampleIndex));
                 updateLabelWiseStatisticsInternally(
                     indicesBegin, indicesEnd, scoreMatrix.row_cbegin(exampleIndex), scoreMatrix.row_cend(exampleIndex),
-                    statisticView.getRow(exampleIndex), LabelWiseLoss::updateFunction_);
+                    statisticView[exampleIndex], LabelWiseLoss::updateFunction_);
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
@@ -175,10 +175,10 @@ namespace boosting {
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
-                const SparseSetMatrix<float64>::ConstRow scoreMatrixRow = scoreMatrix.getRow(exampleIndex);
+                const SparseSetMatrix<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 CContiguousConstView<const uint8>::value_const_iterator labelIterator =
                     labelMatrix.row_values_cbegin(exampleIndex);
-                SparseLabelWiseStatisticView::Row statisticViewRow = statisticView.getRow(exampleIndex);
+                SparseLabelWiseStatisticView::row statisticViewRow = statisticView[exampleIndex];
                 uint32 numElements = labelIndicesEnd - labelIndicesBegin;
                 Tuple<float64> tuple;
 
@@ -206,7 +206,7 @@ namespace boosting {
                 updateLabelWiseStatisticsInternally(
                     labelMatrix.row_indices_cbegin(exampleIndex), labelMatrix.row_indices_cend(exampleIndex),
                     scoreMatrix.row_cbegin(exampleIndex), scoreMatrix.row_cend(exampleIndex),
-                    statisticView.getRow(exampleIndex), LabelWiseLoss::updateFunction_);
+                    statisticView[exampleIndex], LabelWiseLoss::updateFunction_);
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
@@ -214,10 +214,10 @@ namespace boosting {
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
-                const SparseSetMatrix<float64>::ConstRow scoreMatrixRow = scoreMatrix.getRow(exampleIndex);
+                const SparseSetMatrix<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
                 BinaryCsrConstView::index_const_iterator indicesEnd = labelMatrix.row_indices_cend(exampleIndex);
-                SparseLabelWiseStatisticView::Row statisticViewRow = statisticView.getRow(exampleIndex);
+                SparseLabelWiseStatisticView::row statisticViewRow = statisticView[exampleIndex];
                 uint32 numElements = labelIndicesEnd - labelIndicesBegin;
                 Tuple<float64> tuple;
 

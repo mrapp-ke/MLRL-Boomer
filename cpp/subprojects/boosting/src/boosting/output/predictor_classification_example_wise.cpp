@@ -53,7 +53,7 @@ namespace boosting {
         }
     }
 
-    static inline uint32 predictLabelVector(BinaryLilMatrix::Row& row, const LabelVector& labelVector) {
+    static inline uint32 predictLabelVector(BinaryLilMatrix::row row, const LabelVector& labelVector) {
         uint32 numElements = labelVector.getNumElements();
         LabelVector::const_iterator iterator = labelVector.cbegin();
         row.reserve(numElements);
@@ -210,7 +210,7 @@ namespace boosting {
                                                                                        &scoreVector[numLabels],
                                                                                        *similarityMeasureRawPtr,
                                                                                        *labelVectorSetPtr);
-                        numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
+                        numNonZeroElements += predictLabelVector((*predictionMatrixPtr)[i], closestLabelVector);
                         delete[] scoreVector;
                     }
                 }
@@ -249,7 +249,7 @@ namespace boosting {
                                                                                        &scoreVector[numLabels],
                                                                                        *similarityMeasureRawPtr,
                                                                                        *labelVectorSetPtr);
-                        numNonZeroElements += predictLabelVector(predictionMatrixPtr->getRow(i), closestLabelVector);
+                        numNonZeroElements += predictLabelVector((*predictionMatrixPtr)[i], closestLabelVector);
                         delete[] scoreVector;
                     }
                 }
