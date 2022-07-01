@@ -13,18 +13,11 @@
  */
 class BinaryLilMatrix final {
 
-    public:
-
-        /**
-         * The type of a row in the matrix.
-         */
-        typedef std::vector<uint32> Row;
-
     private:
 
         uint32 numRows_;
 
-        Row* array_;
+        std::vector<uint32>* array_;
 
     public:
 
@@ -36,14 +29,24 @@ class BinaryLilMatrix final {
         ~BinaryLilMatrix();
 
         /**
-         * An iterator that provides access to the elements at a row and allows to modify them.
+         * Provides access to a row and allows to modify its elements.
          */
-        typedef Row::iterator iterator;
+        typedef std::vector<uint32> row;
 
         /**
-         * An iterator that provides read-only access to the elements at a row.
+         * Provides read-only access to a row.
          */
-        typedef Row::const_iterator const_iterator;
+        typedef const std::vector<uint32> const_row;
+
+        /**
+         * An iterator that provides access to the elements in the matrix and allows to modify them.
+         */
+        typedef std::vector<uint32>::iterator iterator;
+
+        /**
+         * An iterator that provides read-only access to the elements in the matrix.
+         */
+        typedef std::vector<uint32>::const_iterator const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of a specific row.
@@ -78,20 +81,20 @@ class BinaryLilMatrix final {
         const_iterator row_cend(uint32 row) const;
 
         /**
-         * Returns a reference to a specific row.
+         * Provides access to a specific row and allows to modify its elements.
          *
-         * @param row   The index of the row to be returned
-         * @return      A reference to the row
+         * @param row   The index of the row
+         * @return      A `row`
          */
-        Row& getRow(uint32 row);
+        row& getRow(uint32 row);
 
         /**
-         * Returns a const reference to a specific row.
+         * Provides read-only access to a specific row.
          *
-         * @param row   The index of the row to be returned
-         * @return      A const reference to the row
+         * @param row   The index of the row
+         * @return      A `const_row`
          */
-        const Row& getRow(uint32 row) const;
+        const_row& getRow(uint32 row) const;
 
         /**
          * Returns the number of rows in the matrix.

@@ -37,14 +37,14 @@ namespace boosting {
             SparseLabelWiseStatisticConstView(uint32 numCols, SparseSetMatrix<Tuple<float64>>* statistics);
 
             /**
-             * The type of a row.
+             * Provides read-only access to a row.
              */
-            typedef SparseSetMatrix<Tuple<float64>>::Row Row;
+            typedef SparseSetMatrix<Tuple<float64>>::const_row const_row;
 
             /**
              * An iterator that provides read-only access to the elements in the view.
              */
-            typedef Row::const_iterator const_iterator;
+            typedef const_row::const_iterator const_iterator;
 
             /**
              * Returns a `const_iterator` to the beginning of a specific row.
@@ -63,12 +63,12 @@ namespace boosting {
             const_iterator row_cend(uint32 row) const;
 
             /**
-             * Returns a specific row.
+             * Provides read-only access to a specific row.
              *
-             * @param row   The index of the row to be returned
-             * @return      The row
+             * @param row   The index of the row
+             * @return      A `const_row`
              */
-            const Row getRow(uint32 row) const;
+            const_row getRow(uint32 row) const;
 
             /**
              * Returns the number of rows in the view.
@@ -102,12 +102,17 @@ namespace boosting {
             SparseLabelWiseStatisticView(uint32 numCols, SparseSetMatrix<Tuple<float64>>* statistics);
 
             /**
-             * Returns a specific row.
-             *
-             * @param row   The index of the row to be returned
-             * @return      The row
+             * Provides access to a row and allows to modify its elements.
              */
-            Row getRow(uint32 row);
+            typedef SparseSetMatrix<Tuple<float64>>::row row;
+
+            /**
+             * Provides access to a specific row and allows to modify its elements.
+             *
+             * @param row   The index of the row
+             * @return      A `row`
+             */
+            row getRow(uint32 row);
 
             /**
              * Sets all gradients and Hessians in the matrix to zero.

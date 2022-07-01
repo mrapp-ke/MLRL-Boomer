@@ -2,7 +2,7 @@
 
 
 BinaryLilMatrix::BinaryLilMatrix(uint32 numRows)
-    : numRows_(numRows), array_(new Row[numRows] {}) {
+    : numRows_(numRows), array_(new std::vector<uint32>[numRows] {}) {
 
 }
 
@@ -26,11 +26,11 @@ BinaryLilMatrix::const_iterator BinaryLilMatrix::row_cend(uint32 row) const {
     return array_[row].cend();
 }
 
-BinaryLilMatrix::Row& BinaryLilMatrix::getRow(uint32 row) {
+BinaryLilMatrix::row& BinaryLilMatrix::getRow(uint32 row) {
     return array_[row];
 }
 
-const BinaryLilMatrix::Row& BinaryLilMatrix::getRow(uint32 row) const {
+BinaryLilMatrix::const_row& BinaryLilMatrix::getRow(uint32 row) const {
     return array_[row];
 }
 

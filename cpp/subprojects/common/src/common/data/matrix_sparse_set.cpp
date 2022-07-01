@@ -8,7 +8,7 @@
 static const uint32 MAX_INDEX = std::numeric_limits<uint32>::max();
 
 template<typename T>
-static inline void clearRow(typename LilMatrix<T>::Row& row,
+static inline void clearRow(typename LilMatrix<T>::row& row,
                             typename CContiguousView<uint32>::value_iterator indexIterator) {
     while (!row.empty()) {
         const IndexedValue<T>& lastEntry = row.back();
@@ -18,7 +18,7 @@ static inline void clearRow(typename LilMatrix<T>::Row& row,
 }
 
 template<typename T>
-SparseSetMatrix<T>::ConstRow::ConstRow(const typename LilMatrix<T>::Row& row,
+SparseSetMatrix<T>::ConstRow::ConstRow(typename LilMatrix<T>::const_row& row,
                                        typename CContiguousView<uint32>::value_const_iterator indexIterator)
     : row_(row), indexIterator_(indexIterator) {
 
@@ -46,7 +46,7 @@ const IndexedValue<T>* SparseSetMatrix<T>::ConstRow::operator[](uint32 index) co
 }
 
 template<typename T>
-SparseSetMatrix<T>::Row::Row(typename LilMatrix<T>::Row& row,
+SparseSetMatrix<T>::Row::Row(typename LilMatrix<T>::row& row,
                              typename CContiguousView<uint32>::value_iterator indexIterator)
     : row_(row), indexIterator_(indexIterator) {
 
@@ -159,12 +159,12 @@ typename SparseSetMatrix<T>::const_iterator SparseSetMatrix<T>::row_cend(uint32 
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::Row SparseSetMatrix<T>::getRow(uint32 row) {
+typename SparseSetMatrix<T>::row SparseSetMatrix<T>::getRow(uint32 row) {
     return Row(lilMatrix_.getRow(row), indexMatrix_.row_values_begin(row));
 }
 
 template<typename T>
-const typename SparseSetMatrix<T>::ConstRow SparseSetMatrix<T>::getRow(uint32 row) const {
+typename SparseSetMatrix<T>::const_row SparseSetMatrix<T>::getRow(uint32 row) const {
     return ConstRow(lilMatrix_.getRow(row), indexMatrix_.row_values_cbegin(row));
 }
 

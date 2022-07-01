@@ -140,7 +140,7 @@ namespace boosting {
     void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
                                                      const PartialIndexVector& indices) {
         sumOfWeights_ += 1;
-        SparseLabelWiseStatisticConstView::Row viewRow = view.getRow(row);
+        SparseLabelWiseStatisticConstView::const_row viewRow = view.getRow(row);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
 
@@ -170,7 +170,7 @@ namespace boosting {
                                                      const PartialIndexVector& indices, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
-            SparseLabelWiseStatisticConstView::Row viewRow = view.getRow(row);
+            SparseLabelWiseStatisticConstView::const_row viewRow = view.getRow(row);
             PartialIndexVector::const_iterator indexIterator = indices.cbegin();
             uint32 numElements = indices.getNumElements();
 
