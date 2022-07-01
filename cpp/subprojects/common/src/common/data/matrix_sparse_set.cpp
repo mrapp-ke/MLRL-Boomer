@@ -25,12 +25,12 @@ SparseSetMatrix<T>::ConstRow::ConstRow(typename LilMatrix<T>::const_row row,
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::ConstRow::const_iterator SparseSetMatrix<T>::ConstRow::cbegin() const {
+typename LilMatrix<T>::const_iterator SparseSetMatrix<T>::ConstRow::cbegin() const {
     return row_.cbegin();
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::ConstRow::const_iterator SparseSetMatrix<T>::ConstRow::cend() const {
+typename LilMatrix<T>::const_iterator SparseSetMatrix<T>::ConstRow::cend() const {
     return row_.cend();
 }
 
@@ -53,22 +53,22 @@ SparseSetMatrix<T>::Row::Row(typename LilMatrix<T>::row row,
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::Row::iterator SparseSetMatrix<T>::Row::begin() {
+typename LilMatrix<T>::iterator SparseSetMatrix<T>::Row::begin() {
     return row_.begin();
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::Row::iterator SparseSetMatrix<T>::Row::end() {
+typename LilMatrix<T>::iterator SparseSetMatrix<T>::Row::end() {
     return row_.end();
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::Row::const_iterator SparseSetMatrix<T>::Row::cbegin() const {
+typename LilMatrix<T>::const_iterator SparseSetMatrix<T>::Row::cbegin() const {
     return row_.cbegin();
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::Row::const_iterator SparseSetMatrix<T>::Row::cend() const {
+typename LilMatrix<T>::const_iterator SparseSetMatrix<T>::Row::cend() const {
     return row_.cend();
 }
 
