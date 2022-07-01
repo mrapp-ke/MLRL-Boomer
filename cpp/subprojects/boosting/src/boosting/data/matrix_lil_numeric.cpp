@@ -16,7 +16,7 @@ namespace boosting {
 
     template<typename T>
     NumericLilMatrix<T>::NumericLilMatrix(uint32 numRows, uint32 numCols)
-        : LilMatrix<T>(numRows, numCols) {
+        : SparseSetMatrix<T>(numRows, numCols) {
 
     }
 
