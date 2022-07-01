@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/data/tuple.hpp"
-#include "common/data/matrix_lil.hpp"
+#include "common/data/matrix_sparse_set.hpp"
 
 
 namespace boosting {
@@ -23,22 +23,23 @@ namespace boosting {
             uint32 numCols_;
 
             /**
-             * A pointer to an object of type `LilMatrix` that stores the gradients and Hessians.
+             * A pointer to an object of type `SparseSetMatrix` that stores the gradients and Hessians.
              */
-            LilMatrix<Tuple<float64>>* statistics_;
+            SparseSetMatrix<Tuple<float64>>* statistics_;
 
         public:
 
             /**
              * @param numCols       The number of columns in the view
-             * @param statistics    A pointer to an object of type `LilMatrix` that stores the gradients and Hessians
+             * @param statistics    A pointer to an object of type `SparseSetMatrix` that stores the gradients and
+             *                      Hessians
              */
-            SparseLabelWiseStatisticConstView(uint32 numCols, LilMatrix<Tuple<float64>>* statistics);
+            SparseLabelWiseStatisticConstView(uint32 numCols, SparseSetMatrix<Tuple<float64>>* statistics);
 
             /**
              * The type of a row.
              */
-            typedef LilMatrix<Tuple<float64>>::Row Row;
+            typedef SparseSetMatrix<Tuple<float64>>::Row Row;
 
             /**
              * An iterator that provides read-only access to the elements in the view.
@@ -95,9 +96,10 @@ namespace boosting {
 
             /**
              * @param numCols       The number of columns in the view
-             * @param statistics    A pointer to an object of type `LilMatrix` that stores the gradients and Hessians
+             * @param statistics    A pointer to an object of type `SparseSetMatrix` that stores the gradients and
+             *                      Hessians
              */
-            SparseLabelWiseStatisticView(uint32 numCols, LilMatrix<Tuple<float64>>* statistics);
+            SparseLabelWiseStatisticView(uint32 numCols, SparseSetMatrix<Tuple<float64>>* statistics);
 
             /**
              * Returns a specific row.
