@@ -83,6 +83,17 @@ class BoostingCmdBuilder(CmdBuilder):
         self.args.append(probability_predictor)
         return self
 
+    def default_rule(self, default_rule: bool = True):
+        """
+        Configures whether the algorithm should induce a default rule or not.
+
+        :param default_rule:    True, if a default rule should be induced, False otherwise
+        :return:                The builder itself
+        """
+        self.args.append('--default-rule')
+        self.args.append(str(default_rule).lower())
+        return self
+
 
 class BoostingIntegrationTests(CommonIntegrationTests):
     """
@@ -247,3 +258,12 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .probability_predictor(PROBABILITY_PREDICTOR_MARGINALIZED) \
             .print_predictions(True)
         self.run_cmd(builder, self.cmd + '_predictor-probability-marginalized')
+
+    def test_no_default_rule(self):
+        """
+        Tests the BOOMER algorithm when not inducing a default rule.
+        """
+        builder = BoostingCmdBuilder() \
+            .default_rule(False) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_no-default-rule')
