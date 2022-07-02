@@ -76,84 +76,19 @@ namespace seco {
                     Config();
 
                     /**
+                     * @see `IRuleLearner::IConfig::useGreedyTopDownRuleInduction`
+                     */
+                    IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
+
+                    /**
                      * @see `IRuleLearner::IBeamSearchTopDownMixin::useBeamSearchTopDownRuleInduction`
                      */
                     IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
 
                     /**
-                     * @see `IRuleLearner::ILabelSamplingMixin::useLabelSamplingWithoutReplacement`
-                     */
-                    ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
-
-                    /**
-                     * @see `IRuleLearner::IInstanceSamplingMixin::useInstanceSamplingWithReplacement`
-                     */
-                    IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() override;
-
-                    /**
-                     * @see `IRuleLearner::IInstanceSamplingMixin::useInstanceSamplingWithoutReplacement`
-                     */
-                    IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() override;
-
-                    /**
-                     * @see `IRuleLearner::IInstanceSamplingMixin::useLabelWiseStratifiedInstanceSampling`
-                     */
-                    ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IInstanceSamplingMixin::useExampleWiseStratifiedInstanceSampling`
-                     */
-                    IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IFeatureSamplingMixin::useFeatureSamplingWithoutReplacement`
-                     */
-                    IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
-
-                    /**
-                     * @see `IRuleLearner::IPartitionSamplingMixin::useRandomBiPartitionSampling`
-                     */
-                    IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IPartitionSamplingMixin::useLabelWiseStratifiedBiPartitionSampling`
-                     */
-                    ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IPartitionSamplingMixin::useExampleWiseStratifiedBiPartitionSampling`
-                     */
-                    IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IPruningMixin::useIrepPruning`
-                     */
-                    void useIrepPruning() override;
-
-                    /**
-                     * @see `IRuleLearner::IMultiThreadingMixin::useParallelRuleRefinement`
-                     */
-                    IManualMultiThreadingConfig& useParallelRuleRefinement() override;
-
-                    /**
-                     * @see `IRuleLearner::IMultiThreadingMixin::useParallelStatisticUpdate`
-                     */
-                    IManualMultiThreadingConfig& useParallelStatisticUpdate() override;
-
-                    /**
-                     * @see `IRuleLearner::IMultiThreadingMixin::useParallelPrediction`
-                     */
-                    IManualMultiThreadingConfig& useParallelPrediction() override;
-
-                    /**
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                    /**
-                     * @see `IRuleLearner::ITimeStoppingCriterionMixin::useTimeStoppingCriterion
-                     */
-                    ITimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
 
             };
 
