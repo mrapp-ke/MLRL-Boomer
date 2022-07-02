@@ -9,11 +9,15 @@
 #endif
 
 #include "common/learner.hpp"
+#include "seco/heuristics/heuristic_accuracy.hpp"
 #include "seco/heuristics/heuristic_f_measure.hpp"
+#include "seco/heuristics/heuristic_laplace.hpp"
 #include "seco/heuristics/heuristic_m_estimate.hpp"
+#include "seco/heuristics/heuristic_recall.hpp"
+#include "seco/heuristics/heuristic_wra.hpp"
 #include "seco/lift_functions/lift_function_kln.hpp"
 #include "seco/lift_functions/lift_function_peak.hpp"
-#include "seco/rule_evaluation/head_type.hpp"
+#include "seco/rule_evaluation/head_type_partial.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
 
 
@@ -34,62 +38,64 @@ namespace seco {
 
                 friend class AbstractSeCoRuleLearner;
 
-                private:
+                protected:
 
                     /**
-                     * Returns the configuration of the stopping criterion that stops the induction of rules as soon as
-                     * the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
+                     * Returns an unique pointer to the configuration of the stopping criterion that stops the induction
+                     * of rules as soon as the sum of the weights of the uncovered labels is smaller or equal to a
+                     * certain threshold.
                      *
-                     * @return A pointer to an object of type `CoverageStoppingCriterionConfig` that specifies the
-                     *         configuration of the stopping criterion that stops the induction of rules as soon as a
+                     * @return A reference to an unique pointer of type `CoverageStoppingCriterionConfig` that stores
+                     *         the configuration of the stopping criterion that stops the induction of rules as soon as
                      *         the sum of the weights of the uncovered labels is smaller or equal to a certain threshold
                      *         or a null pointer, if no such stopping criterion should be used
                      */
-                    virtual const CoverageStoppingCriterionConfig* getCoverageStoppingCriterionConfig() const = 0;
+                    virtual std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the rule heads that should be induced by the rule learner.
+                     * Returns an unique pointer to the configuration of the rule heads that should be induced by the
+                     * rule learner.
                      *
-                     * @return A reference to an object of type `IHeadConfig` that specifies the configuration of the
-                     *         rule heads
+                     * @return A reference to an unique pointer of type `IHeadConfig` that stores the configuration of
+                     *         the rule heads
                      */
-                    virtual const IHeadConfig& getHeadConfig() const = 0;
+                    virtual std::unique_ptr<IHeadConfig>& getHeadConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the heuristic for learning rules.
+                     * Returns an unique pointer to the configuration of the heuristic for learning rules.
                      *
-                     * @return A reference to an object of type `IHeuristicConfig` that specifies the configuration of
-                     *         the heuristic for learning rules
+                     * @return A reference to an unique pointer of type `IHeuristicConfig` that stores the configuration
+                     *         of the heuristic for learning rules
                      */
-                    virtual const IHeuristicConfig& getHeuristicConfig() const = 0;
+                    virtual std::unique_ptr<IHeuristicConfig>& getHeuristicConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the heuristic for pruning rules.
+                     * Returns an unique pointer to the configuration of the heuristic for pruning rules.
                      *
-                     * @return A reference to an object of type `IHeuristicConfig` that specifies the configuration of
-                     *         the heuristic for pruning rules
+                     * @return A reference to an unique pointer of type `IHeuristicConfig` that stores the configuration
+                     *         of the heuristic for pruning rules
                      */
-                    virtual const IHeuristicConfig& getPruningHeuristicConfig() const = 0;
+                    virtual std::unique_ptr<IHeuristicConfig>& getPruningHeuristicConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the lift function that affects the quality of rules, depending on
-                     * the number of labels for which they predict.
+                     * Returns an unique pointer to the configuration of the lift function that affects the quality of
+                     * rules, depending on the number of labels for which they predict.
                      *
-                     * @return A reference to an object of type `ILiftFunctionConfig` that specifies the configuration
-                     *         of the lift function that affects the quality of rules, depending on the number of labels
-                     *         for which they predict
+                     * @return A reference to an unique pointer of type `ILiftFunctionConfig` that stores the
+                     *         configuration of the lift function that affects the quality of rules, depending on the
+                     *         number of labels for which they predict
                      */
-                    virtual const ILiftFunctionConfig& getLiftFunctionConfig() const = 0;
+                    virtual std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the predictor that predicts whether individual labels of given query
-                     * examples are relevant or irrelevant.
+                     * Returns an unique pointer to the configuration of the predictor that predicts whether individual
+                     * labels of given query examples are relevant or irrelevant.
                      *
-                     * @return A reference to an object of type `IClassificationPredictorConfig` that specifies the
+                     * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
                      *         configuration of the predictor that predicts whether individual labels of given query
                      *         examples are relevant or irrelevant
                      */
-                    virtual const IClassificationPredictorConfig& getClassificationPredictorConfig() const = 0;
+                    virtual std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() = 0;
 
                 public:
 
@@ -140,7 +146,7 @@ namespace seco {
              * that stops the induction of rules as soon as the sum of the weights of the uncovered labels is smaller or
              * equal to a certain threshold.
              */
-            class ICoverageStoppingCriterionMixin {
+            class ICoverageStoppingCriterionMixin : virtual public ISeCoRuleLearner::IConfig {
 
                 public:
 
@@ -153,7 +159,15 @@ namespace seco {
                      * @return A reference to an object of type `ICoverageStoppingCriterionConfig` that allows further
                      *         configuration of the stopping criterion
                      */
-                    virtual ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() = 0;
+                    virtual ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() {
+                        std::unique_ptr<CoverageStoppingCriterionConfig>& coverageStoppingCriterionConfigPtr =
+                            this->getCoverageStoppingCriterionConfigPtr();
+                        std::unique_ptr<CoverageStoppingCriterionConfig> ptr =
+                            std::make_unique<CoverageStoppingCriterionConfig>();
+                        ICoverageStoppingCriterionConfig& ref = *ptr;
+                        coverageStoppingCriterionConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
             };
 
@@ -161,7 +175,7 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
              * heads.
              */
-            class IPartialHeadMixin {
+            class IPartialHeadMixin : virtual public ISeCoRuleLearner::IConfig {
 
                 public:
 
@@ -171,7 +185,12 @@ namespace seco {
                      * Configures the rule learner to induce rules with partial heads that predict for a subset of the
                      * available labels.
                      */
-                    virtual void usePartialHeads() = 0;
+                    virtual void usePartialHeads() {
+                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                        headConfigPtr = std::make_unique<PartialHeadConfig>(
+                            this->getHeuristicConfigPtr(), this->getPruningHeuristicConfigPtr(),
+                            this->getLiftFunctionConfigPtr());
+                    }
 
                     /**
                      * Configures the rule learner to use a lift function that monotonously increases until a certain
@@ -180,7 +199,13 @@ namespace seco {
                      * @return A reference to an object of type `IPeakLiftFunctionConfig` that allows further
                      *         configuration of the lift function
                      */
-                    virtual IPeakLiftFunctionConfig& usePeakLiftFunction() = 0;
+                    virtual IPeakLiftFunctionConfig& usePeakLiftFunction() {
+                        std::unique_ptr<ILiftFunctionConfig>& liftFunctionConfigPtr = this->getLiftFunctionConfigPtr();
+                        std::unique_ptr<PeakLiftFunctionConfig> ptr = std::make_unique<PeakLiftFunctionConfig>();
+                        IPeakLiftFunctionConfig& ref = *ptr;
+                        liftFunctionConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
                     /**
                      * Configures the rule learner to use a lift function that monotonously increases according to the
@@ -189,7 +214,13 @@ namespace seco {
                      * @return A reference to an object of type `IKlnLiftFunctionConfig` that allows further
                      *         configuration of the lift function
                      */
-                    virtual IKlnLiftFunctionConfig& useKlnLiftFunction() = 0;
+                    virtual IKlnLiftFunctionConfig& useKlnLiftFunction() {
+                        std::unique_ptr<ILiftFunctionConfig>& liftFunctionConfigPtr = this->getLiftFunctionConfigPtr();
+                        std::unique_ptr<KlnLiftFunctionConfig> ptr = std::make_unique<KlnLiftFunctionConfig>();
+                        IKlnLiftFunctionConfig& ref = *ptr;
+                        liftFunctionConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
             };
 
@@ -197,7 +228,7 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to use the "Accuracy"
              * heuristic for learning or pruning rules.
              */
-            class IAccuracyMixin {
+            class IAccuracyMixin : virtual public ISeCoRuleLearner::IConfig {
 
                 public:
 
@@ -206,12 +237,19 @@ namespace seco {
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
                      */
-                    virtual void useAccuracyHeuristic() = 0;
+                    virtual void useAccuracyHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
+                        heuristicConfigPtr = std::make_unique<AccuracyConfig>();
+                    }
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
                      */
-                    virtual void useAccuracyPruningHeuristic() = 0;
+                    virtual void useAccuracyPruningHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
+                            this->getPruningHeuristicConfigPtr();
+                        pruningHeuristicConfigPtr = std::make_unique<AccuracyConfig>();
+                    }
 
             };
 
@@ -219,7 +257,7 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to use the "F-Measure"
              * heuristic for learning or pruning rules.
              */
-            class IFMeasureMixin {
+            class IFMeasureMixin : virtual public ISeCoRuleLearner::IConfig {
 
                 public:
 
@@ -231,7 +269,13 @@ namespace seco {
                      * @return A reference to an object of type `IFMeasureConfig` that allows further configuration of
                      *         the heuristic
                      */
-                    virtual IFMeasureConfig& useFMeasureHeuristic() = 0;
+                    virtual IFMeasureConfig& useFMeasureHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
+                        std::unique_ptr<FMeasureConfig> ptr = std::make_unique<FMeasureConfig>();
+                        IFMeasureConfig& ref = *ptr;
+                        heuristicConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
@@ -239,7 +283,14 @@ namespace seco {
                      * @return A reference to an object of type `IFMeasureConfig` that allows further configuration of
                      *         the heuristic
                      */
-                    virtual IFMeasureConfig& useFMeasurePruningHeuristic() = 0;
+                    virtual IFMeasureConfig& useFMeasurePruningHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
+                            this->getPruningHeuristicConfigPtr();
+                        std::unique_ptr<FMeasureConfig> ptr = std::make_unique<FMeasureConfig>();
+                        IFMeasureConfig& ref = *ptr;
+                        pruningHeuristicConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
             };
 
@@ -247,7 +298,7 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to use the "M-Estimate"
              * heuristic for learning or pruning rules.
              */
-            class IMEstimateMixin {
+            class IMEstimateMixin : virtual public ISeCoRuleLearner::IConfig {
 
                 public:
 
@@ -259,7 +310,13 @@ namespace seco {
                      * @return A reference to an object of type `IMEstimateConfig` that allows further configuration of
                      *         the heuristic
                      */
-                    virtual IMEstimateConfig& useMEstimateHeuristic() = 0;
+                    virtual IMEstimateConfig& useMEstimateHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
+                        std::unique_ptr<MEstimateConfig> ptr = std::make_unique<MEstimateConfig>();
+                        IMEstimateConfig& ref = *ptr;
+                        heuristicConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
@@ -267,7 +324,14 @@ namespace seco {
                      * @return A reference to an object of type `IMEstimateConfig` that allows further configuration of
                      *         the heuristic
                      */
-                    virtual IMEstimateConfig& useMEstimatePruningHeuristic() = 0;
+                    virtual IMEstimateConfig& useMEstimatePruningHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
+                            this->getPruningHeuristicConfigPtr();
+                        std::unique_ptr<MEstimateConfig> ptr = std::make_unique<MEstimateConfig>();
+                        IMEstimateConfig& ref = *ptr;
+                        pruningHeuristicConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
             };
 
@@ -275,7 +339,7 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to use the "Laplace"
              * heuristic for learning or pruning rules.
              */
-            class ILaplaceMixin {
+            class ILaplaceMixin : virtual public ISeCoRuleLearner::IConfig {
 
                 public:
 
@@ -284,12 +348,19 @@ namespace seco {
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for learning rules.
                      */
-                    virtual void useLaplaceHeuristic() = 0;
+                    virtual void useLaplaceHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
+                        heuristicConfigPtr = std::make_unique<LaplaceConfig>();
+                    }
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for pruning rules.
                      */
-                    virtual void useLaplacePruningHeuristic() = 0;
+                    virtual void useLaplacePruningHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
+                            this->getPruningHeuristicConfigPtr();
+                        pruningHeuristicConfigPtr = std::make_unique<LaplaceConfig>();
+                    }
 
             };
 
@@ -297,7 +368,7 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to use the "Recall" heuristic
              * for learning or pruning rules.
              */
-            class IRecallMixin {
+            class IRecallMixin : virtual public ISeCoRuleLearner::IConfig {
 
                 public:
 
@@ -306,12 +377,19 @@ namespace seco {
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for learning rules.
                      */
-                    virtual void useRecallHeuristic() = 0;
+                    virtual void useRecallHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
+                        heuristicConfigPtr = std::make_unique<RecallConfig>();
+                    }
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for pruning rules.
                      */
-                    virtual void useRecallPruningHeuristic() = 0;
+                    virtual void useRecallPruningHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
+                            this->getPruningHeuristicConfigPtr();
+                        pruningHeuristicConfigPtr = std::make_unique<RecallConfig>();
+                    }
 
             };
 
@@ -319,7 +397,7 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to use the "Weighted Relative
              * Accuracy" heuristic for learning or pruning rules.
              */
-            class IWraMixin {
+            class IWraMixin : virtual public ISeCoRuleLearner::IConfig {
 
                 public:
 
@@ -328,12 +406,19 @@ namespace seco {
                     /**
                      * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
                      */
-                    virtual void useWraHeuristic() = 0;
+                    virtual void useWraHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
+                        heuristicConfigPtr = std::make_unique<WraConfig>();
+                    }
 
                     /**
                      * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
                      */
-                    virtual void useWraPruningHeuristic() = 0;
+                    virtual void useWraPruningHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
+                            this->getPruningHeuristicConfigPtr();
+                        pruningHeuristicConfigPtr = std::make_unique<WraConfig>();
+                    }
 
             };
 
@@ -389,17 +474,17 @@ namespace seco {
 
                 private:
 
-                    const CoverageStoppingCriterionConfig* getCoverageStoppingCriterionConfig() const override final;
+                    std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() override final;
 
-                    const IHeadConfig& getHeadConfig() const override final;
+                    std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final;
 
-                    const IHeuristicConfig& getHeuristicConfig() const override final;
+                    std::unique_ptr<IHeuristicConfig>& getHeuristicConfigPtr() override final;
 
-                    const IHeuristicConfig& getPruningHeuristicConfig() const override final;
+                    std::unique_ptr<IHeuristicConfig>& getPruningHeuristicConfigPtr() override final;
 
-                    const ILiftFunctionConfig& getLiftFunctionConfig() const override final;
+                    std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() override final;
 
-                    const IClassificationPredictorConfig& getClassificationPredictorConfig() const override final;
+                    std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() override final;
 
                 public:
 

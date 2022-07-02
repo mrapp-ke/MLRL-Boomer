@@ -82,68 +82,68 @@ AbstractRuleLearner::Config::Config() {
     this->useNoEarlyStoppingCriterion();
 }
 
-const IDefaultRuleConfig& AbstractRuleLearner::Config::getDefaultRuleConfig() const {
-    return *defaultRuleConfigPtr_;
+std::unique_ptr<IDefaultRuleConfig>& AbstractRuleLearner::Config::getDefaultRuleConfigPtr() {
+    return defaultRuleConfigPtr_;
 }
 
-const IRuleModelAssemblageConfig& AbstractRuleLearner::Config::getRuleModelAssemblageConfig() const {
-    return *ruleModelAssemblageConfigPtr_;
+std::unique_ptr<IRuleModelAssemblageConfig>& AbstractRuleLearner::Config::getRuleModelAssemblageConfigPtr() {
+    return ruleModelAssemblageConfigPtr_;
 }
 
-const IRuleInductionConfig& AbstractRuleLearner::Config::getRuleInductionConfig() const {
-    return *ruleInductionConfigPtr_;
+std::unique_ptr<IRuleInductionConfig>& AbstractRuleLearner::Config::getRuleInductionConfigPtr() {
+    return ruleInductionConfigPtr_;
 }
 
-const IFeatureBinningConfig& AbstractRuleLearner::Config::getFeatureBinningConfig() const {
-    return *featureBinningConfigPtr_;
+std::unique_ptr<IFeatureBinningConfig>& AbstractRuleLearner::Config::getFeatureBinningConfigPtr() {
+    return featureBinningConfigPtr_;
 }
 
-const ILabelSamplingConfig& AbstractRuleLearner::Config::getLabelSamplingConfig() const {
-    return *labelSamplingConfigPtr_;
+std::unique_ptr<ILabelSamplingConfig>& AbstractRuleLearner::Config::getLabelSamplingConfigPtr() {
+    return labelSamplingConfigPtr_;
 }
 
-const IInstanceSamplingConfig& AbstractRuleLearner::Config::getInstanceSamplingConfig() const {
-    return *instanceSamplingConfigPtr_;
+std::unique_ptr<IInstanceSamplingConfig>& AbstractRuleLearner::Config::getInstanceSamplingConfigPtr() {
+    return instanceSamplingConfigPtr_;
 }
 
-const IFeatureSamplingConfig& AbstractRuleLearner::Config::getFeatureSamplingConfig() const {
-    return *featureSamplingConfigPtr_;
+std::unique_ptr<IFeatureSamplingConfig>& AbstractRuleLearner::Config::getFeatureSamplingConfigPtr() {
+    return featureSamplingConfigPtr_;
 }
 
-const IPartitionSamplingConfig& AbstractRuleLearner::Config::getPartitionSamplingConfig() const {
-    return *partitionSamplingConfigPtr_;
+std::unique_ptr<IPartitionSamplingConfig>& AbstractRuleLearner::Config::getPartitionSamplingConfigPtr() {
+    return partitionSamplingConfigPtr_;
 }
 
-const IPruningConfig& AbstractRuleLearner::Config::getPruningConfig() const {
-    return *pruningConfigPtr_;
+std::unique_ptr<IPruningConfig>& AbstractRuleLearner::Config::getPruningConfigPtr() {
+    return pruningConfigPtr_;
 }
 
-const IPostProcessorConfig& AbstractRuleLearner::Config::getPostProcessorConfig() const {
-    return *postProcessorConfigPtr_;
+std::unique_ptr<IPostProcessorConfig>& AbstractRuleLearner::Config::getPostProcessorConfigPtr() {
+    return postProcessorConfigPtr_;
 }
 
-const IMultiThreadingConfig& AbstractRuleLearner::Config::getParallelRuleRefinementConfig() const {
-    return *parallelRuleRefinementConfigPtr_;
+std::unique_ptr<IMultiThreadingConfig>& AbstractRuleLearner::Config::getParallelRuleRefinementConfigPtr() {
+    return parallelRuleRefinementConfigPtr_;
 }
 
-const IMultiThreadingConfig& AbstractRuleLearner::Config::getParallelStatisticUpdateConfig() const {
-    return *parallelStatisticUpdateConfigPtr_;
+std::unique_ptr<IMultiThreadingConfig>& AbstractRuleLearner::Config::getParallelStatisticUpdateConfigPtr() {
+    return parallelStatisticUpdateConfigPtr_;
 }
 
-const IMultiThreadingConfig& AbstractRuleLearner::Config::getParallelPredictionConfig() const {
-    return *parallelPredictionConfigPtr_;
+std::unique_ptr<IMultiThreadingConfig>& AbstractRuleLearner::Config::getParallelPredictionConfigPtr() {
+    return parallelPredictionConfigPtr_;
 }
 
-const SizeStoppingCriterionConfig* AbstractRuleLearner::Config::getSizeStoppingCriterionConfig() const {
-    return sizeStoppingCriterionConfigPtr_.get();
+std::unique_ptr<SizeStoppingCriterionConfig>& AbstractRuleLearner::Config::getSizeStoppingCriterionConfigPtr() {
+    return sizeStoppingCriterionConfigPtr_;
 }
 
-const TimeStoppingCriterionConfig* AbstractRuleLearner::Config::getTimeStoppingCriterionConfig() const {
-    return timeStoppingCriterionConfigPtr_.get();
+std::unique_ptr<TimeStoppingCriterionConfig>& AbstractRuleLearner::Config::getTimeStoppingCriterionConfigPtr() {
+    return timeStoppingCriterionConfigPtr_;
 }
 
-const EarlyStoppingCriterionConfig* AbstractRuleLearner::Config::getEarlyStoppingCriterionConfig() const {
-    return earlyStoppingCriterionConfigPtr_.get();
+std::unique_ptr<EarlyStoppingCriterionConfig>& AbstractRuleLearner::Config::getEarlyStoppingCriterionConfigPtr() {
+    return earlyStoppingCriterionConfigPtr_;
 }
 
 void AbstractRuleLearner::Config::useDefaultRule() {
@@ -214,65 +214,65 @@ void AbstractRuleLearner::Config::useNoEarlyStoppingCriterion() {
     earlyStoppingCriterionConfigPtr_ = nullptr;
 }
 
-AbstractRuleLearner::AbstractRuleLearner(const IRuleLearner::IConfig& config)
+AbstractRuleLearner::AbstractRuleLearner(IRuleLearner::IConfig& config)
     : config_(config) {
 
 }
 
 std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory(
         const IRowWiseLabelMatrix& labelMatrix) const {
-    return config_.getRuleModelAssemblageConfig().createRuleModelAssemblageFactory(labelMatrix);
+    return config_.getRuleModelAssemblageConfigPtr()->createRuleModelAssemblageFactory(labelMatrix);
 }
 
 std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory(
         const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
-    return config_.getFeatureBinningConfig().createThresholdsFactory(featureMatrix, labelMatrix);
+    return config_.getFeatureBinningConfigPtr()->createThresholdsFactory(featureMatrix, labelMatrix);
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory(
         const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
-    return config_.getRuleInductionConfig().createRuleInductionFactory(featureMatrix, labelMatrix);
+    return config_.getRuleInductionConfigPtr()->createRuleInductionFactory(featureMatrix, labelMatrix);
 }
 
 std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory(
         const ILabelMatrix& labelMatrix) const {
-    return config_.getLabelSamplingConfig().createLabelSamplingFactory(labelMatrix);
+    return config_.getLabelSamplingConfigPtr()->createLabelSamplingFactory(labelMatrix);
 }
 
 std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSamplingFactory() const {
-    return config_.getInstanceSamplingConfig().createInstanceSamplingFactory();
+    return config_.getInstanceSamplingConfigPtr()->createInstanceSamplingFactory();
 }
 
 std::unique_ptr<IFeatureSamplingFactory> AbstractRuleLearner::createFeatureSamplingFactory(
         const IFeatureMatrix& featureMatrix) const {
-    return config_.getFeatureSamplingConfig().createFeatureSamplingFactory(featureMatrix);
+    return config_.getFeatureSamplingConfigPtr()->createFeatureSamplingFactory(featureMatrix);
 }
 
 std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionSamplingFactory() const {
-    return config_.getPartitionSamplingConfig().createPartitionSamplingFactory();
+    return config_.getPartitionSamplingConfigPtr()->createPartitionSamplingFactory();
 }
 
 std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() const {
-    return config_.getPruningConfig().createPruningFactory();
+    return config_.getPruningConfigPtr()->createPruningFactory();
 }
 
 std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorFactory() const {
-    return config_.getPostProcessorConfig().createPostProcessorFactory();
+    return config_.getPostProcessorConfigPtr()->createPostProcessorFactory();
 }
 
 std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createSizeStoppingCriterionFactory() const {
-    const SizeStoppingCriterionConfig* config = config_.getSizeStoppingCriterionConfig();
-    return config ? config->createStoppingCriterionFactory() : nullptr;
+    std::unique_ptr<SizeStoppingCriterionConfig>& configPtr = config_.getSizeStoppingCriterionConfigPtr();
+    return configPtr.get() != nullptr ? configPtr->createStoppingCriterionFactory() : nullptr;
 }
 
 std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createTimeStoppingCriterionFactory() const {
-    const TimeStoppingCriterionConfig* config = config_.getTimeStoppingCriterionConfig();
-    return config ? config->createStoppingCriterionFactory() : nullptr;
+    std::unique_ptr<TimeStoppingCriterionConfig>& configPtr = config_.getTimeStoppingCriterionConfigPtr();
+    return configPtr.get() != nullptr ? configPtr->createStoppingCriterionFactory() : nullptr;
 }
 
 std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createEarlyStoppingCriterionFactory() const {
-    const EarlyStoppingCriterionConfig* config = config_.getEarlyStoppingCriterionConfig();
-    return config ? config->createStoppingCriterionFactory() : nullptr;
+    std::unique_ptr<EarlyStoppingCriterionConfig>& configPtr = config_.getEarlyStoppingCriterionConfigPtr();
+    return configPtr.get() != nullptr ? configPtr->createStoppingCriterionFactory() : nullptr;
 }
 
 void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {

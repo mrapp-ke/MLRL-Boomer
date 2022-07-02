@@ -76,84 +76,9 @@ namespace seco {
                     Config();
 
                     /**
-                     * @see `ISeCoRuleLearner::ICoverageStoppingCriterionMixin::useCoverageStoppingCriterion`
+                     * @see `IRuleLearner::IConfig::useGreedyTopDownRuleInduction`
                      */
-                    ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IPartialHeadMixin::usePartialHeads`
-                     */
-                    void usePartialHeads() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IPartialHeadMixin::usePeakLiftFunction`
-                     */
-                    IPeakLiftFunctionConfig& usePeakLiftFunction() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IPartialHeadMixin::useKlnLiftFunction`
-                     */
-                    IKlnLiftFunctionConfig& useKlnLiftFunction() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IAccuracyMixin::useAccuracyHeuristic`
-                     */
-                    void useAccuracyHeuristic() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IAccuracyMixin::useAccuracyPruningHeuristic`
-                     */
-                    void useAccuracyPruningHeuristic() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IFMeasureMixin::useFMeasureHeuristic`
-                     */
-                    IFMeasureConfig& useFMeasureHeuristic() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IFMeasureMixin::useFMeasurePruningHeuristic`
-                     */
-                    IFMeasureConfig& useFMeasurePruningHeuristic() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IMEstimateMixin::useMEstimateHeuristic`
-                     */
-                    IMEstimateConfig& useMEstimateHeuristic() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IMEstimateMixin::useMEstimatePruningHeuristic`
-                     */
-                    IMEstimateConfig& useMEstimatePruningHeuristic() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::ILaplaceMixin::useLaplaceHeuristic`
-                     */
-                    void useLaplaceHeuristic() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::ILaplaceMixin::useLaplacePruningHeuristic`
-                     */
-                    void useLaplacePruningHeuristic() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IRecallMixin::useRecallHeuristic`
-                     */
-                    void useRecallHeuristic() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IRecallMixin::useRecallPruningHeuristic`
-                     */
-                    void useRecallPruningHeuristic() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IWraMixin::useWraHeuristic`
-                     */
-                    void useWraHeuristic() override;
-
-                    /**
-                     * @see `ISeCoRuleLearner::IWraMixin::useWraPruningHeuristic`
-                     */
-                    void useWraPruningHeuristic() override;
+                    IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
                     /**
                      * @see `IRuleLearner::IBeamSearchTopDownMixin::useBeamSearchTopDownRuleInduction`
@@ -161,79 +86,9 @@ namespace seco {
                     IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
 
                     /**
-                     * @see `IRuleLearner::ILabelSamplingMixin::useLabelSamplingWithoutReplacement`
-                     */
-                    ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() override;
-
-                    /**
-                     * @see `IRuleLearner::IInstanceSamplingMixin::useInstanceSamplingWithReplacement`
-                     */
-                    IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() override;
-
-                    /**
-                     * @see `IRuleLearner::IInstanceSamplingMixin::useInstanceSamplingWithoutReplacement`
-                     */
-                    IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() override;
-
-                    /**
-                     * @see `IRuleLearner::IInstanceSamplingMixin::useLabelWiseStratifiedInstanceSampling`
-                     */
-                    ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IInstanceSamplingMixin::useExampleWiseStratifiedInstanceSampling`
-                     */
-                    IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IFeatureSamplingMixin::useFeatureSamplingWithoutReplacement`
-                     */
-                    IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() override;
-
-                    /**
-                     * @see `IRuleLearner::IPartitionSamplingMixin::useRandomBiPartitionSampling`
-                     */
-                    IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IPartitionSamplingMixin::useLabelWiseStratifiedBiPartitionSampling`
-                     */
-                    ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IPartitionSamplingMixin::useExampleWiseStratifiedBiPartitionSampling`
-                     */
-                    IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() override;
-
-                    /**
-                     * @see `IRuleLearner::IPruningMixin::useIrepPruning`
-                     */
-                    void useIrepPruning() override;
-
-                    /**
-                     * @see `IRuleLearner::IMultiThreadingMixin::useParallelRuleRefinement`
-                     */
-                    IManualMultiThreadingConfig& useParallelRuleRefinement() override;
-
-                    /**
-                     * @see `IRuleLearner::IMultiThreadingMixin::useParallelStatisticUpdate`
-                     */
-                    IManualMultiThreadingConfig& useParallelStatisticUpdate() override;
-
-                    /**
-                     * @see `IRuleLearner::IMultiThreadingMixin::useParallelPrediction`
-                     */
-                    IManualMultiThreadingConfig& useParallelPrediction() override;
-
-                    /**
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                    /**
-                     * @see `IRuleLearner::ITimeStoppingCriterionMixin::useTimeStoppingCriterion
-                     */
-                    ITimeStoppingCriterionConfig& useTimeStoppingCriterion() override;
 
             };
 
