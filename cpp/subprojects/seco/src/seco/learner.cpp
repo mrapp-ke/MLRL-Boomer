@@ -18,28 +18,28 @@ namespace seco {
         this->useLabelWiseClassificationPredictor();
     }
 
-    const CoverageStoppingCriterionConfig* AbstractSeCoRuleLearner::Config::getCoverageStoppingCriterionConfig() const {
-        return coverageStoppingCriterionConfigPtr_.get();
+    std::unique_ptr<CoverageStoppingCriterionConfig>& AbstractSeCoRuleLearner::Config::getCoverageStoppingCriterionConfigPtr() {
+        return coverageStoppingCriterionConfigPtr_;
     }
 
-    const IHeadConfig& AbstractSeCoRuleLearner::Config::getHeadConfig() const {
-        return *headConfigPtr_;
+    std::unique_ptr<IHeadConfig>& AbstractSeCoRuleLearner::Config::getHeadConfigPtr() {
+        return headConfigPtr_;
     }
 
-    const IHeuristicConfig& AbstractSeCoRuleLearner::Config::getHeuristicConfig() const {
-        return *heuristicConfigPtr_;
+    std::unique_ptr<IHeuristicConfig>& AbstractSeCoRuleLearner::Config::getHeuristicConfigPtr() {
+        return heuristicConfigPtr_;
     }
 
-    const IHeuristicConfig& AbstractSeCoRuleLearner::Config::getPruningHeuristicConfig() const {
-        return *pruningHeuristicConfigPtr_;
+    std::unique_ptr<IHeuristicConfig>& AbstractSeCoRuleLearner::Config::getPruningHeuristicConfigPtr() {
+        return pruningHeuristicConfigPtr_;
     }
 
-    const ILiftFunctionConfig& AbstractSeCoRuleLearner::Config::getLiftFunctionConfig() const {
-        return *liftFunctionConfigPtr_;
+    std::unique_ptr<ILiftFunctionConfig>& AbstractSeCoRuleLearner::Config::getLiftFunctionConfigPtr() {
+        return liftFunctionConfigPtr_;
     }
 
-    const IClassificationPredictorConfig& AbstractSeCoRuleLearner::Config::getClassificationPredictorConfig() const {
-        return *classificationPredictorConfigPtr_;
+    std::unique_ptr<IClassificationPredictorConfig>& AbstractSeCoRuleLearner::Config::getClassificationPredictorConfigPtr() {
+        return classificationPredictorConfigPtr_;
     }
 
     IGreedyTopDownRuleInductionConfig& AbstractSeCoRuleLearner::Config::useGreedyTopDownRuleInduction() {
@@ -79,8 +79,8 @@ namespace seco {
     }
 
     std::unique_ptr<IStoppingCriterionFactory> AbstractSeCoRuleLearner::createCoverageStoppingCriterionFactory() const {
-        const CoverageStoppingCriterionConfig* config = config_.getCoverageStoppingCriterionConfig();
-        return config ? config->createStoppingCriterionFactory() : nullptr;
+        std::unique_ptr<CoverageStoppingCriterionConfig>& configPtr = config_.getCoverageStoppingCriterionConfigPtr();
+        return configPtr.get() != nullptr ? configPtr->createStoppingCriterionFactory() : nullptr;
     }
 
     void AbstractSeCoRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
@@ -95,7 +95,7 @@ namespace seco {
 
     std::unique_ptr<IStatisticsProviderFactory> AbstractSeCoRuleLearner::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
-        return config_.getHeadConfig().createStatisticsProviderFactory(labelMatrix);
+        return config_.getHeadConfigPtr()->createStatisticsProviderFactory(labelMatrix);
     }
 
     std::unique_ptr<IModelBuilderFactory> AbstractSeCoRuleLearner::createModelBuilderFactory() const {
@@ -104,7 +104,7 @@ namespace seco {
 
     std::unique_ptr<ILabelSpaceInfo> AbstractSeCoRuleLearner::createLabelSpaceInfo(
             const IRowWiseLabelMatrix& labelMatrix) const {
-        if (config_.getClassificationPredictorConfig().isLabelVectorSetNeeded()) {
+        if (config_.getClassificationPredictorConfigPtr()->isLabelVectorSetNeeded()) {
             return createLabelVectorSet(labelMatrix);
         } else {
             return createNoLabelSpaceInfo();
@@ -113,8 +113,8 @@ namespace seco {
 
     std::unique_ptr<IClassificationPredictorFactory> AbstractSeCoRuleLearner::createClassificationPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        return config_.getClassificationPredictorConfig().createClassificationPredictorFactory(featureMatrix,
-                                                                                               numLabels);
+        return config_.getClassificationPredictorConfigPtr()->createClassificationPredictorFactory(featureMatrix,
+                                                                                                   numLabels);
     }
 
 }
