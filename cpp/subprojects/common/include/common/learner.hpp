@@ -100,7 +100,7 @@ class MLRLCOMMON_API IRuleLearner {
 
             friend class AbstractRuleLearner;
 
-            private:
+            protected:
 
                 /**
                  * Returns an unique pointer to the configuration of the default that is included in a rule-based model.
