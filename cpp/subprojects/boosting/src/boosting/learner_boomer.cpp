@@ -1,20 +1,13 @@
 #include "boosting/learner_boomer.hpp"
 #include "boosting/binning/feature_binning_auto.hpp"
 #include "boosting/binning/label_binning_auto.hpp"
-#include "boosting/losses/loss_example_wise_logistic.hpp"
-#include "boosting/losses/loss_label_wise_squared_error.hpp"
-#include "boosting/losses/loss_label_wise_squared_hinge.hpp"
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
 #include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
 #include "boosting/output/predictor_classification_auto.hpp"
-#include "boosting/output/predictor_classification_example_wise.hpp"
 #include "boosting/output/predictor_probability_auto.hpp"
-#include "boosting/output/predictor_probability_marginalized.hpp"
 #include "boosting/rule_evaluation/head_type_auto.hpp"
-#include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_model_assemblage/default_rule_auto.hpp"
 #include "boosting/statistics/statistic_format_auto.hpp"
-#include "boosting/statistics/statistic_format_sparse.hpp"
 #include "common/pruning/pruning_irep.hpp"
 
 
@@ -177,87 +170,6 @@ namespace boosting {
         IEarlyStoppingCriterionConfig& ref = *ptr;
         earlyStoppingCriterionConfigPtr_ = std::move(ptr);
         return ref;
-    }
-
-    IConstantShrinkageConfig& Boomer::Config::useConstantShrinkagePostProcessor() {
-        std::unique_ptr<ConstantShrinkageConfig> ptr = std::make_unique<ConstantShrinkageConfig>();
-        IConstantShrinkageConfig& ref = *ptr;
-        postProcessorConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
-    IManualRegularizationConfig& Boomer::Config::useL1Regularization() {
-        std::unique_ptr<ManualRegularizationConfig> ptr = std::make_unique<ManualRegularizationConfig>();
-        IManualRegularizationConfig& ref = *ptr;
-        l1RegularizationConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
-    IManualRegularizationConfig& Boomer::Config::useL2Regularization() {
-        std::unique_ptr<ManualRegularizationConfig> ptr = std::make_unique<ManualRegularizationConfig>();
-        IManualRegularizationConfig& ref = *ptr;
-        l2RegularizationConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
-    void Boomer::Config::useNoDefaultRule() {
-        defaultRuleConfigPtr_ = std::make_unique<DefaultRuleConfig>(false);
-    }
-
-    IFixedPartialHeadConfig& Boomer::Config::useFixedPartialHeads() {
-        std::unique_ptr<FixedPartialHeadConfig> ptr = std::make_unique<FixedPartialHeadConfig>(
-            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_);
-        IFixedPartialHeadConfig& ref = *ptr;
-        headConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
-    IDynamicPartialHeadConfig& Boomer::Config::useDynamicPartialHeads() {
-        std::unique_ptr<DynamicPartialHeadConfig> ptr = std::make_unique<DynamicPartialHeadConfig>(
-            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_);
-        IDynamicPartialHeadConfig& ref = *ptr;
-        headConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
-    void Boomer::Config::useSingleLabelHeads() {
-        headConfigPtr_ = std::make_unique<SingleLabelHeadConfig>(
-            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
-            l2RegularizationConfigPtr_);
-    }
-
-    void Boomer::Config::useSparseStatistics() {
-        statisticsConfigPtr_ = std::make_unique<SparseStatisticsConfig>(lossConfigPtr_);
-    }
-
-    void Boomer::Config::useExampleWiseLogisticLoss() {
-        lossConfigPtr_ = std::make_unique<ExampleWiseLogisticLossConfig>(headConfigPtr_);
-    }
-
-    void Boomer::Config::useLabelWiseSquaredErrorLoss() {
-        lossConfigPtr_ = std::make_unique<LabelWiseSquaredErrorLossConfig>(headConfigPtr_);
-    }
-
-    void Boomer::Config::useLabelWiseSquaredHingeLoss() {
-        lossConfigPtr_ = std::make_unique<LabelWiseSquaredHingeLossConfig>(headConfigPtr_);
-    }
-
-    IEqualWidthLabelBinningConfig& Boomer::Config::useEqualWidthLabelBinning() {
-        std::unique_ptr<EqualWidthLabelBinningConfig> ptr =
-            std::make_unique<EqualWidthLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
-        IEqualWidthLabelBinningConfig& ref = *ptr;
-        labelBinningConfigPtr_ = std::move(ptr);
-        return ref;
-    }
-
-    void Boomer::Config::useExampleWiseClassificationPredictor() {
-        classificationPredictorConfigPtr_ =
-            std::make_unique<ExampleWiseClassificationPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
-    }
-
-    void Boomer::Config::useMarginalizedProbabilityPredictor() {
-        probabilityPredictorConfigPtr_ =
-            std::make_unique<MarginalizedProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticDefaultRule() {
