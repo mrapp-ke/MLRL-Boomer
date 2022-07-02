@@ -10,14 +10,20 @@
 
 #include "common/learner.hpp"
 #include "boosting/binning/label_binning_equal_width.hpp"
-#include "boosting/losses/loss.hpp"
+#include "boosting/losses/loss_example_wise_logistic.hpp"
+#include "boosting/losses/loss_label_wise_squared_error.hpp"
+#include "boosting/losses/loss_label_wise_squared_hinge.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
+#include "boosting/output/predictor_classification_example_wise.hpp"
+#include "boosting/output/predictor_probability_marginalized.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
+#include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_manual.hpp"
 #include "boosting/statistics/statistic_format.hpp"
+#include "boosting/statistics/statistic_format_sparse.hpp"
 
 
 namespace boosting {
@@ -37,7 +43,7 @@ namespace boosting {
 
                 friend class AbstractBoostingRuleLearner;
 
-                private:
+                protected:
 
                     /**
                      * Returns an unique pointer to the configuration of the rule heads that should be induced by the
@@ -184,7 +190,7 @@ namespace boosting {
              * Defines an interface for all classes that allow to configure a rule learner to use a post processor that
              * shrinks the weights fo rules by a "shrinkage" parameter.
              */
-            class IShrinkageMixin {
+            class IShrinkageMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
@@ -197,14 +203,21 @@ namespace boosting {
                      * @return A reference to an object of type `IConstantShrinkageConfig` that allows further
                      *         configuration of the loss function
                      */
-                    virtual IConstantShrinkageConfig& useConstantShrinkagePostProcessor() = 0;
+                    virtual IConstantShrinkageConfig& useConstantShrinkagePostProcessor() {
+                        std::unique_ptr<IPostProcessorConfig>& postProcessorConfigPtr =
+                            this->getPostProcessorConfigPtr();
+                        std::unique_ptr<ConstantShrinkageConfig> ptr = std::make_unique<ConstantShrinkageConfig>();
+                        IConstantShrinkageConfig& ref = *ptr;
+                        postProcessorConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use regularization.
              */
-            class IRegularizationMixin {
+            class IRegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
@@ -216,7 +229,15 @@ namespace boosting {
                      * @return A reference to an object of type `IManualRegularizationConfig` that allows further
                      *         configuration of the regularization term
                      */
-                    virtual IManualRegularizationConfig& useL1Regularization() = 0;
+                    virtual IManualRegularizationConfig& useL1Regularization() {
+                        std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr =
+                            this->getL1RegularizationConfigPtr();
+                        std::unique_ptr<ManualRegularizationConfig> ptr =
+                            std::make_unique<ManualRegularizationConfig>();
+                        IManualRegularizationConfig& ref = *ptr;
+                        l1RegularizationConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
                     /**
                      * Configures the rule learner to use L2 regularization.
@@ -224,14 +245,22 @@ namespace boosting {
                      * @return A reference to an object of type `IManualRegularizationConfig` that allows further
                      *         configuration of the regularization term
                      */
-                    virtual IManualRegularizationConfig& useL2Regularization() = 0;
+                    virtual IManualRegularizationConfig& useL2Regularization() {
+                        std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr =
+                            this->getL2RegularizationConfigPtr();
+                        std::unique_ptr<ManualRegularizationConfig> ptr =
+                            std::make_unique<ManualRegularizationConfig>();
+                        IManualRegularizationConfig& ref = *ptr;
+                        l2RegularizationConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to not induce a default rule.
              */
-            class INoDefaultRuleMixin {
+            class INoDefaultRuleMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
@@ -240,7 +269,10 @@ namespace boosting {
                     /**
                      * Configures the rule learner to not induce a default rule.
                      */
-                    virtual void useNoDefaultRule() = 0;
+                    virtual void useNoDefaultRule() {
+                        std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr = this->getDefaultRuleConfigPtr();
+                        defaultRuleConfigPtr = std::make_unique<DefaultRuleConfig>(false);
+                    }
 
             };
 
@@ -248,7 +280,7 @@ namespace boosting {
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
              * heads.
              */
-            class IPartialHeadMixin {
+            class IPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
@@ -261,7 +293,14 @@ namespace boosting {
                      * @return A reference to an object of type `IFixedPartialHeadConfig` that allows further
                      *         configuration of the rule heads
                      */
-                    virtual IFixedPartialHeadConfig& useFixedPartialHeads() = 0;
+                    virtual IFixedPartialHeadConfig& useFixedPartialHeads() {
+                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                        std::unique_ptr<FixedPartialHeadConfig> ptr = std::make_unique<FixedPartialHeadConfig>(
+                            this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr());
+                        IFixedPartialHeadConfig& ref = *ptr;
+                        headConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a subset of the
@@ -271,13 +310,25 @@ namespace boosting {
                      * @return A reference to an object of type `IDynamicPartialHeadConfig` that allows further
                      *         configuration of the rule heads
                      */
-                    virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() = 0;
+                    virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() {
+                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                        std::unique_ptr<DynamicPartialHeadConfig> ptr = std::make_unique<DynamicPartialHeadConfig>(
+                            this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr());
+                        IDynamicPartialHeadConfig& ref = *ptr;
+                        headConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
                     /**
                      * Configures the rule learner to induce rules with single-label heads that predict for a single
                      * label.
                      */
-                    virtual void useSingleLabelHeads() = 0;
+                    virtual void useSingleLabelHeads() {
+                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                        headConfigPtr = std::make_unique<SingleLabelHeadConfig>(
+                            this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
+                            this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
+                    }
 
             };
 
@@ -285,7 +336,7 @@ namespace boosting {
              * Defines an interface for all classes that allow to configure a rule learner to use a sparse
              * representation of gradients and Hessians, if possible.
              */
-            class ISparseStatisticsMixin {
+            class ISparseStatisticsMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
@@ -295,7 +346,10 @@ namespace boosting {
                      * Configures the rule learner to use a sparse representation of gradients and Hessians, if
                      * possible.
                      */
-                    virtual void useSparseStatistics() = 0;
+                    virtual void useSparseStatistics() {
+                        std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr = this->getStatisticsConfigPtr();
+                        statisticsConfigPtr = std::make_unique<SparseStatisticsConfig>(this->getLossConfigPtr());
+                    }
 
             };
 
@@ -303,7 +357,7 @@ namespace boosting {
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
              * implements a multi-label variant of the logistic loss that is applied example-wise.
              */
-            class IExampleWiseLogisticLossMixin {
+            class IExampleWiseLogisticLossMixin : virtual public IBoostingRuleLearner::IConfig {
 
                 public:
 
@@ -313,7 +367,10 @@ namespace boosting {
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * logistic loss that is applied example-wise.
                      */
-                    virtual void useExampleWiseLogisticLoss() = 0;
+                    virtual void useExampleWiseLogisticLoss() {
+                        std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
+                        lossConfigPtr = std::make_unique<ExampleWiseLogisticLossConfig>(this->getHeadConfigPtr());
+                    }
 
             };
 
@@ -321,7 +378,7 @@ namespace boosting {
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
              * implements a multi-label variant of the squared error loss that is applied label-wise.
              */
-            class ILabelWiseSquaredErrorLossMixin {
+            class ILabelWiseSquaredErrorLossMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
@@ -331,7 +388,10 @@ namespace boosting {
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * squared error loss that is applied label-wise.
                      */
-                    virtual void useLabelWiseSquaredErrorLoss() = 0;
+                    virtual void useLabelWiseSquaredErrorLoss() {
+                        std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
+                        lossConfigPtr = std::make_unique<LabelWiseSquaredErrorLossConfig>(this->getHeadConfigPtr());
+                    }
 
             };
 
@@ -339,7 +399,7 @@ namespace boosting {
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
              * implements a multi-label variant of the squared hinge loss that is applied label-wise.
              */
-            class ILabelWiseSquaredHingeLossMixin {
+            class ILabelWiseSquaredHingeLossMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
@@ -349,7 +409,10 @@ namespace boosting {
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * squared hinge loss that is applied label-wise.
                      */
-                    virtual void useLabelWiseSquaredHingeLoss() = 0;
+                    virtual void useLabelWiseSquaredHingeLoss() {
+                        std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
+                        lossConfigPtr = std::make_unique<LabelWiseSquaredHingeLossConfig>(this->getHeadConfigPtr());
+                    }
 
             };
 
@@ -357,7 +420,7 @@ namespace boosting {
              * Defines an interface for all classes that allow to configure a rule learner to use a method for the
              * assignment of labels to bins.
              */
-            class ILabelBinningMixin {
+            class ILabelBinningMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
@@ -371,7 +434,15 @@ namespace boosting {
                      * @return A reference to an object of type `IEqualWidthLabelBinningConfig` that allows further
                      *         configuration of the method for the assignment of labels to bins
                      */
-                    virtual IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() = 0;
+                    virtual IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() {
+                        std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr = this->getLabelBinningConfigPtr();
+                        std::unique_ptr<EqualWidthLabelBinningConfig> ptr =
+                            std::make_unique<EqualWidthLabelBinningConfig>(this->getL1RegularizationConfigPtr(),
+                                                                           this->getL2RegularizationConfigPtr());
+                        IEqualWidthLabelBinningConfig& ref = *ptr;
+                        labelBinningConfigPtr = std::move(ptr);
+                        return ref;
+                    }
 
             };
 
@@ -381,7 +452,7 @@ namespace boosting {
              * provided by an existing rule-based model and comparing the aggregated score vector to the known label
              * vectors according to a certain distance measure.
              */
-            class IExampleWiseClassificationPredictorMixin {
+            class IExampleWiseClassificationPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
@@ -394,7 +465,12 @@ namespace boosting {
                      * distance measure. The label vector that is closest to the aggregated score vector is finally
                      * predicted.
                      */
-                    virtual void useExampleWiseClassificationPredictor() = 0;
+                    virtual void useExampleWiseClassificationPredictor() {
+                        std::unique_ptr<IClassificationPredictorConfig>& classificationPredictorConfigPtr =
+                            this->getClassificationPredictorConfigPtr();
+                        classificationPredictorConfigPtr = std::make_unique<ExampleWiseClassificationPredictorConfig>(
+                            this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                    }
 
             };
 
@@ -404,7 +480,7 @@ namespace boosting {
              * existing rule-based model and comparing the aggregated score vector to the known label vectors according
              * to a certain distance measure.
              */
-            class IMarginalizedProbabilityPredictorMixin {
+            class IMarginalizedProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
@@ -418,7 +494,12 @@ namespace boosting {
                      * obtained for all label vectors, where the respective label is specified to be relevant, divided
                      * by the total sum of all distances.
                      */
-                    virtual void useMarginalizedProbabilityPredictor() = 0;
+                    virtual void useMarginalizedProbabilityPredictor() {
+                        std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
+                            this->getProbabilityPredictorConfigPtr();
+                        probabilityPredictorConfigPtr = std::make_unique<MarginalizedProbabilityPredictorConfig>(
+                            this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                    }
 
             };
 
