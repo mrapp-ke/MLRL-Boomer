@@ -37,59 +37,61 @@ namespace seco {
                 private:
 
                     /**
-                     * Returns the configuration of the stopping criterion that stops the induction of rules as soon as
-                     * the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
+                     * Returns an unique pointer to the configuration of the stopping criterion that stops the induction
+                     * of rules as soon as the sum of the weights of the uncovered labels is smaller or equal to a
+                     * certain threshold.
                      *
-                     * @return A pointer to an object of type `CoverageStoppingCriterionConfig` that specifies the
-                     *         configuration of the stopping criterion that stops the induction of rules as soon as a
+                     * @return A reference to an unique pointer of type `CoverageStoppingCriterionConfig` that stores
+                     *         the configuration of the stopping criterion that stops the induction of rules as soon as
                      *         the sum of the weights of the uncovered labels is smaller or equal to a certain threshold
                      *         or a null pointer, if no such stopping criterion should be used
                      */
-                    virtual const CoverageStoppingCriterionConfig* getCoverageStoppingCriterionConfig() const = 0;
+                    virtual std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the rule heads that should be induced by the rule learner.
+                     * Returns an unique pointer to the configuration of the rule heads that should be induced by the
+                     * rule learner.
                      *
-                     * @return A reference to an object of type `IHeadConfig` that specifies the configuration of the
-                     *         rule heads
+                     * @return A reference to an unique pointer of type `IHeadConfig` that stores the configuration of
+                     *         the rule heads
                      */
-                    virtual const IHeadConfig& getHeadConfig() const = 0;
+                    virtual std::unique_ptr<IHeadConfig>& getHeadConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the heuristic for learning rules.
+                     * Returns an unique pointer to the configuration of the heuristic for learning rules.
                      *
-                     * @return A reference to an object of type `IHeuristicConfig` that specifies the configuration of
-                     *         the heuristic for learning rules
+                     * @return A reference to an unique pointer of type `IHeuristicConfig` that stores the configuration
+                     *         of the heuristic for learning rules
                      */
-                    virtual const IHeuristicConfig& getHeuristicConfig() const = 0;
+                    virtual std::unique_ptr<IHeuristicConfig>& getHeuristicConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the heuristic for pruning rules.
+                     * Returns an unique pointer to the configuration of the heuristic for pruning rules.
                      *
-                     * @return A reference to an object of type `IHeuristicConfig` that specifies the configuration of
-                     *         the heuristic for pruning rules
+                     * @return A reference to an unique pointer of type `IHeuristicConfig` that stores the configuration
+                     *         of the heuristic for pruning rules
                      */
-                    virtual const IHeuristicConfig& getPruningHeuristicConfig() const = 0;
+                    virtual std::unique_ptr<IHeuristicConfig>& getPruningHeuristicConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the lift function that affects the quality of rules, depending on
-                     * the number of labels for which they predict.
+                     * Returns an unique pointer to the configuration of the lift function that affects the quality of
+                     * rules, depending on the number of labels for which they predict.
                      *
-                     * @return A reference to an object of type `ILiftFunctionConfig` that specifies the configuration
-                     *         of the lift function that affects the quality of rules, depending on the number of labels
-                     *         for which they predict
+                     * @return A reference to an unique pointer of type `ILiftFunctionConfig` that stores the
+                     *         configuration of the lift function that affects the quality of rules, depending on the
+                     *         number of labels for which they predict
                      */
-                    virtual const ILiftFunctionConfig& getLiftFunctionConfig() const = 0;
+                    virtual std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() = 0;
 
                     /**
-                     * Returns the configuration of the predictor that predicts whether individual labels of given query
-                     * examples are relevant or irrelevant.
+                     * Returns an unique pointer to the configuration of the predictor that predicts whether individual
+                     * labels of given query examples are relevant or irrelevant.
                      *
-                     * @return A reference to an object of type `IClassificationPredictorConfig` that specifies the
+                     * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
                      *         configuration of the predictor that predicts whether individual labels of given query
                      *         examples are relevant or irrelevant
                      */
-                    virtual const IClassificationPredictorConfig& getClassificationPredictorConfig() const = 0;
+                    virtual std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() = 0;
 
                 public:
 
@@ -389,17 +391,17 @@ namespace seco {
 
                 private:
 
-                    const CoverageStoppingCriterionConfig* getCoverageStoppingCriterionConfig() const override final;
+                    std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() override final;
 
-                    const IHeadConfig& getHeadConfig() const override final;
+                    std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final;
 
-                    const IHeuristicConfig& getHeuristicConfig() const override final;
+                    std::unique_ptr<IHeuristicConfig>& getHeuristicConfigPtr() override final;
 
-                    const IHeuristicConfig& getPruningHeuristicConfig() const override final;
+                    std::unique_ptr<IHeuristicConfig>& getPruningHeuristicConfigPtr() override final;
 
-                    const ILiftFunctionConfig& getLiftFunctionConfig() const override final;
+                    std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() override final;
 
-                    const IClassificationPredictorConfig& getClassificationPredictorConfig() const override final;
+                    std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() override final;
 
                 public:
 
