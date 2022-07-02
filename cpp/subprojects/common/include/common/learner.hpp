@@ -103,147 +103,152 @@ class MLRLCOMMON_API IRuleLearner {
             private:
 
                 /**
-                 * Returns the configuration of the default that is included in a rule-based model.
+                 * Returns an unique pointer to the configuration of the default that is included in a rule-based model.
                  *
-                 * @return A reference to an object of type `IDefaultRuleConfig` that specifies the configuration of the
-                 *         default rule that is included in a rule-based model
+                 * @return A reference to an unique pointer of type `IDefaultRuleConfig` that stores the configuration
+                 *         of the default rule that is included in a rule-based model
                  */
-                virtual const IDefaultRuleConfig& getDefaultRuleConfig() const = 0;
+                virtual std::unique_ptr<IDefaultRuleConfig>& getDefaultRuleConfigPtr() = 0;
 
                 /**
-                 * Returns the configuration of the algorithm for the induction of several rules that are added to a
-                 * rule-based model.
+                 * Returns an unique pointer to the configuration of the algorithm for the induction of several rules
+                 * that are added to a rule-based model.
                  *
-                 * @return A reference to an object of type `IRuleModelAssemblageConfig` that specifies the
+                 * @return A reference to an unique pointer of type `IRuleModelAssemblageConfig` that stores the
                  *         configuration of the algorithm for the induction of several rules that are added to a
                  *         rule-based model
                  */
-                virtual const IRuleModelAssemblageConfig& getRuleModelAssemblageConfig() const = 0;
+                virtual std::unique_ptr<IRuleModelAssemblageConfig>& getRuleModelAssemblageConfigPtr() = 0;
 
                 /**
-                 * Returns the configuration of the algorithm for the induction of individual rules.
-                 *
-                 * @return A reference to an object of type `IRuleInductionConfig` that specifies the configuration of
-                 *         the algorithm for the induction of individual rules
-                 */
-                virtual const IRuleInductionConfig& getRuleInductionConfig() const = 0;
-
-                /**
-                 * Returns the configuration of the method for the assignment of numerical feature values to bins.
-                 *
-                 * @return A reference to an object of type `IFeatureBinningConfig` that specifies the configuration of
-                 *         the method for the assignment of numerical feature values to bins
-                 */
-                virtual const IFeatureBinningConfig& getFeatureBinningConfig() const = 0;
-
-                /**
-                 * Returns the configuration of the method for sampling labels.
-                 *
-                 * @return A reference to an object of type `ILabelSamplingConfig` that specifies the configuration of
-                 *         the method for sampling labels
-                 */
-                virtual const ILabelSamplingConfig& getLabelSamplingConfig() const = 0;
-
-                /**
-                 * Returns the configuration of the method for sampling instances.
-                 *
-                 * @return A reference to an object of type `IInstanceSamplingConfig` that specifies the configuration
-                 *         of the method for sampling instances
-                 */
-                virtual const IInstanceSamplingConfig& getInstanceSamplingConfig() const = 0;
-
-                /**
-                 * Returns the configuration of the method for sampling features.
-                 *
-                 * @return A reference to an object of type `IFeatureSamplingConfig` that specifies the configuration of
-                 *         the method for sampling features
-                 */
-                virtual const IFeatureSamplingConfig& getFeatureSamplingConfig() const = 0;
-
-                /**
-                 * Returns the configuration of the method for partitioning the available training examples into a
-                 * training set and a holdout set.
-                 *
-                 * @return A reference to an object of type `IPartitionSamplingConfig` that specifies the configuration
-                 *         of the method for partitioning the available training examples into a training set and a
-                 *         holdout set
-                 */
-                virtual const IPartitionSamplingConfig& getPartitionSamplingConfig() const = 0;
-
-                /**
-                 * Returns the configuration of the method for pruning individual rules.
-                 *
-                 * @return A reference to an object of type `IPruningConfig` that specifies the configuration of the
-                 *         method for pruning individual rules
-                 */
-                virtual const IPruningConfig& getPruningConfig() const = 0;
-
-                /**
-                 * Returns the configuration of the method for post-processing the predictions of rules once they have
-                 * been learned.
-                 *
-                 * @return A reference to an object of type `IPostProcessorConfig` that specifies the configuration
-                 *         of the method that post-processes the predictions of rules once they have been learned
-                 */
-                virtual const IPostProcessorConfig& getPostProcessorConfig() const = 0;
-
-                /**
-                 * Returns the configuration of the multi-threading behavior that is used for the parallel refinement of
+                 * Returns an unique pointer to the configuration of the algorithm for the induction of individual
                  * rules.
                  *
-                 * @return A reference to an object of type `IMultiThreadingConfig` that specifies the configuration of
-                 *         the multi-threading behavior that is used for the parallel refinement of rules
+                 * @return A reference to an unique pointer of type `IRuleInductionConfig` that stores the configuration
+                 *         of the algorithm for the induction of individual rules
                  */
-                virtual const IMultiThreadingConfig& getParallelRuleRefinementConfig() const = 0;
+                virtual std::unique_ptr<IRuleInductionConfig>& getRuleInductionConfigPtr() = 0;
 
                 /**
-                 * Returns the configuration of the multi-threading behavior that is used for the parallel update of
-                 * statistics.
+                 * Returns an unique pointer to the configuration of the method for the assignment of numerical feature
+                 * values to bins.
                  *
-                 * @return A reference to an object of type `IMultiThreadingConfig` that specifies the configuration of
-                 *         the multi-threading behavior that is used for the parallel update of statistics
+                 * @return A reference to an unique pointer of type `IFeatureBinningConfig` that stores the
+                 *         configuration of the method for the assignment of numerical feature values to bins
                  */
-                virtual const IMultiThreadingConfig& getParallelStatisticUpdateConfig() const = 0;
+                virtual std::unique_ptr<IFeatureBinningConfig>& getFeatureBinningConfigPtr() = 0;
 
                 /**
-                 * Returns the configuration of the multi-threading behavior that is used to predict for several query
-                 * examples in parallel.
+                 * Returns an unique pointer to the configuration of the method for sampling labels.
                  *
-                 * @return A reference to an object of type `IMultiThreadingConfig` that specifies the configuration of
-                 *         the multi-threading behavior that is used to predict for several query examples in parallel
+                 * @return A reference to an unique pointer of type `ILabelSamplingConfig` that stores the configuration
+                 *         of the method for sampling labels
                  */
-                virtual const IMultiThreadingConfig& getParallelPredictionConfig() const = 0;
+                virtual std::unique_ptr<ILabelSamplingConfig>& getLabelSamplingConfigPtr() = 0;
 
                 /**
-                 * Returns the configuration of the stopping criterion that ensures that the number of rules does not
-                 * exceed a certain maximum.
+                 * Returns an unique pointer to the configuration of the method for sampling instances.
                  *
-                 * @return A pointer to an object of type `SizeStoppingCriterionConfig` that specifies the configuration
-                 *         of the stopping criterion that ensures that the number of rules does not exceed a certain
-                 *         maximum or a null pointer, if no such stopping criterion should be used
+                 * @return A reference to an unique pointer of type `IInstanceSamplingConfig` that stores the
+                 *         configuration of the method for sampling instances
                  */
-                virtual const SizeStoppingCriterionConfig* getSizeStoppingCriterionConfig() const = 0;
+                virtual std::unique_ptr<IInstanceSamplingConfig>& getInstanceSamplingConfigPtr() = 0;
 
                 /**
-                 * Returns the configuration of the stopping criterion that ensures that a certain time limit is not
-                 * exceeded.
+                 * Returns an unique pointer to the configuration of the method for sampling features.
                  *
-                 * @return A pointer to an object of type `TimeStoppingCriterionConfig` that specifies the configuration
-                 *         of the stopping criterion that ensures that a certain time limit is not exceeded or a null
-                 *         pointer, if no such stopping criterion should be used
+                 * @return A reference to an unique pointer of type `IFeatureSamplingConfig` that specifies the
+                 *         configuration of the method for sampling features
                  */
-                virtual const TimeStoppingCriterionConfig* getTimeStoppingCriterionConfig() const = 0;
+                virtual std::unique_ptr<IFeatureSamplingConfig>& getFeatureSamplingConfigPtr() = 0;
 
                 /**
-                 * Returns the configuration of the stopping criterion that stops the induction of rules as soon as a
-                 * model's quality does not improve.
+                 * Returns an unique pointer to the configuration of the method for partitioning the available training
+                 * examples into a training set and a holdout set.
                  *
-                 * @return A pointer to an object of type `EarlyStoppingCriterionConfig` that specifies the
+                 * @return A reference to an unique pointer of type `IPartitionSamplingConfig` that stores the
+                 *         configuration of the method for partitioning the available training examples into a training
+                 *         set and a holdout set
+                 */
+                virtual std::unique_ptr<IPartitionSamplingConfig>& getPartitionSamplingConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the configuration of the method for pruning individual rules.
+                 *
+                 * @return A reference to an unique pointer of type `IPruningConfig` that stores the configuration of
+                 *         the method for pruning individual rules
+                 */
+                virtual std::unique_ptr<IPruningConfig>& getPruningConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the configuration of the method for post-processing the predictions of
+                 * rules once they have been learned.
+                 *
+                 * @return A reference to an unique pointer of type `IPostProcessorConfig` that stores the configuration
+                 *         of the method that post-processes the predictions of rules once they have been learned
+                 */
+                virtual std::unique_ptr<IPostProcessorConfig>& getPostProcessorConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the configuration of the multi-threading behavior that is used for the
+                 * parallel refinement of rules.
+                 *
+                 * @return A reference to an unique pointer of type `IMultiThreadingConfig` that stores the
+                 *         configuration of the multi-threading behavior that is used for the parallel refinement of
+                 *         rules
+                 */
+                virtual std::unique_ptr<IMultiThreadingConfig>& getParallelRuleRefinementConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the the configuration of the multi-threading behavior that is used for
+                 * the parallel update of statistics.
+                 *
+                 * @return A reference to an unique pointer of type `IMultiThreadingConfig` that stores the
+                 *         configuration of the multi-threading behavior that is used for the parallel update of
+                 *         statistics
+                 */
+                virtual std::unique_ptr<IMultiThreadingConfig>& getParallelStatisticUpdateConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the configuration of the multi-threading behavior that is used to
+                 * predict for several query examples in parallel.
+                 *
+                 * @return A reference to an unique pointer of type `IMultiThreadingConfig` that stores the
+                 *         configuration of the multi-threading behavior that is used to predict for several query
+                 *         examples in parallel
+                 */
+                virtual std::unique_ptr<IMultiThreadingConfig>& getParallelPredictionConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the configuration of the stopping criterion that ensures that the number
+                 * of rules does not exceed a certain maximum.
+                 *
+                 * @return A pointer to an unique pointer of type `SizeStoppingCriterionConfig` that stores the
+                 *         configuration of the stopping criterion that ensures that the number of rules does not exceed
+                 *         a certain maximum or a null pointer, if no such stopping criterion should be used
+                 */
+                virtual std::unique_ptr<SizeStoppingCriterionConfig>& getSizeStoppingCriterionConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the configuration of the stopping criterion that ensures that a certain
+                 * time limit is not exceeded.
+                 *
+                 * @return A pointer to an unique pointer of type `TimeStoppingCriterionConfig` that stores the
+                 *         configuration of the stopping criterion that ensures that a certain time limit is not
+                 *         exceeded or a null pointer, if no such stopping criterion should be used
+                 */
+                virtual std::unique_ptr<TimeStoppingCriterionConfig>& getTimeStoppingCriterionConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the configuration of the stopping criterion that stops the induction of
+                 * rules as soon as a model's quality does not improve.
+                 *
+                 * @return A pointer to an unique pointer of type `EarlyStoppingCriterionConfig` that stores the
                  *         configuration of the stopping criterion that stops the induction of rules as soon as a
                  *         model's quality does not improve or a null pointer, if no such stopping criterion should be
                  *         used
                  */
-                virtual const EarlyStoppingCriterionConfig* getEarlyStoppingCriterionConfig() const = 0;
+                virtual std::unique_ptr<EarlyStoppingCriterionConfig>& getEarlyStoppingCriterionConfigPtr() = 0;
 
             public:
 
@@ -940,37 +945,37 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
             private:
 
-                const IDefaultRuleConfig& getDefaultRuleConfig() const override final;
+                std::unique_ptr<IDefaultRuleConfig>& getDefaultRuleConfigPtr() override final;
 
-                const IRuleModelAssemblageConfig& getRuleModelAssemblageConfig() const override final;
+                std::unique_ptr<IRuleModelAssemblageConfig>& getRuleModelAssemblageConfigPtr() override final;
 
-                const IRuleInductionConfig& getRuleInductionConfig() const override final;
+                std::unique_ptr<IRuleInductionConfig>& getRuleInductionConfigPtr() override final;
 
-                const IFeatureBinningConfig& getFeatureBinningConfig() const override final;
+                std::unique_ptr<IFeatureBinningConfig>& getFeatureBinningConfigPtr() override final;
 
-                const ILabelSamplingConfig& getLabelSamplingConfig() const override final;
+                std::unique_ptr<ILabelSamplingConfig>& getLabelSamplingConfigPtr() override final;
 
-                const IInstanceSamplingConfig& getInstanceSamplingConfig() const override final;
+                std::unique_ptr<IInstanceSamplingConfig>& getInstanceSamplingConfigPtr() override final;
 
-                const IFeatureSamplingConfig& getFeatureSamplingConfig() const override final;
+                std::unique_ptr<IFeatureSamplingConfig>& getFeatureSamplingConfigPtr() override final;
 
-                const IPartitionSamplingConfig& getPartitionSamplingConfig() const override final;
+                std::unique_ptr<IPartitionSamplingConfig>& getPartitionSamplingConfigPtr() override final;
 
-                const IPruningConfig& getPruningConfig() const override final;
+                std::unique_ptr<IPruningConfig>& getPruningConfigPtr() override final;
 
-                const IPostProcessorConfig& getPostProcessorConfig() const override final;
+                std::unique_ptr<IPostProcessorConfig>& getPostProcessorConfigPtr() override final;
 
-                const IMultiThreadingConfig& getParallelRuleRefinementConfig() const override final;
+                std::unique_ptr<IMultiThreadingConfig>& getParallelRuleRefinementConfigPtr() override final;
 
-                const IMultiThreadingConfig& getParallelStatisticUpdateConfig() const override final;
+                std::unique_ptr<IMultiThreadingConfig>& getParallelStatisticUpdateConfigPtr() override final;
 
-                const IMultiThreadingConfig& getParallelPredictionConfig() const override final;
+                std::unique_ptr<IMultiThreadingConfig>& getParallelPredictionConfigPtr() override final;
 
-                const SizeStoppingCriterionConfig* getSizeStoppingCriterionConfig() const override final;
+                std::unique_ptr<SizeStoppingCriterionConfig>& getSizeStoppingCriterionConfigPtr() override final;
 
-                const TimeStoppingCriterionConfig* getTimeStoppingCriterionConfig() const override final;
+                std::unique_ptr<TimeStoppingCriterionConfig>& getTimeStoppingCriterionConfigPtr() override final;
 
-                const EarlyStoppingCriterionConfig* getEarlyStoppingCriterionConfig() const override final;
+                std::unique_ptr<EarlyStoppingCriterionConfig>& getEarlyStoppingCriterionConfigPtr() override final;
 
             public:
 
@@ -1012,7 +1017,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
     private:
 
-        const IRuleLearner::IConfig& config_;
+        IRuleLearner::IConfig& config_;
 
         std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
             const IRowWiseLabelMatrix& labelMatrix) const;
@@ -1140,7 +1145,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * @param config A reference to an object of type `IRuleLearner::IConfig` that specifies the configuration that
          *               should be used by the rule learner
          */
-        AbstractRuleLearner(const IRuleLearner::IConfig& config);
+        AbstractRuleLearner(IRuleLearner::IConfig& config);
 
         std::unique_ptr<ITrainingResult> fit(
             const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,
