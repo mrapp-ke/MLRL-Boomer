@@ -1,0 +1,42 @@
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=True, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, early_stopping=None, pruning=None, rule_induction=None, parallel_prediction=None, shrinkage=None, l1_regularization_weight=None, l2_regularization_weight=None, statistic_format=None, default_rule=None, feature_binning=None, label_binning='equal-width', loss='logistic-label-wise', classification_predictor=None, probability_predictor=None, head_type='partial-fixed', parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Starting experiment...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-train.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-test.arff"...
+INFO Fitting model to 391 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.7040552949765697 seconds
+INFO Predicting for 202 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.005586426006630063 seconds
+INFO Overall evaluation result on test data:
+
+Ex.-based F1: 0.579042904290429
+Ex.-based Jacc.: 0.5008250825082508
+Ex.-based Prec.: 0.7277227722772277
+Ex.-based Rec.: 0.5750825082508251
+Hamm. Acc.: 0.7838283828382838
+Hamm. Loss: 0.21617161716171618
+Ma. F1: 0.6289847755189727
+Ma. Jacc.: 0.4701711368334777
+Ma. Prec.: 0.7151369168356997
+Ma. Rec.: 0.5763209519105345
+Mi. F1: 0.6391184573002755
+Mi. Jacc.: 0.46963562753036436
+Mi. Prec.: 0.709480122324159
+Mi. Rec.: 0.581453634085213
+Subs. 0/1 Loss: 0.7475247524752475
+Subs. Acc.: 0.2524752475247525
+
+INFO Model characteristics:
+
+Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 6.882882882882883, min. 1, max. 22
+Conditions total: 6876 (50.43630017452006% use <= operator, 49.56369982547993% use > operator, 0.0% use == operator, 7.105427357601002e-15% use != operator)
+Predictions per rule: avg. 2.0, min. 2, max. 2
+Predictions total: 1998 (37.38738738738739% positive, 62.61261261261261% negative)
+
+INFO Successfully finished after 0.7806820230325684 seconds
