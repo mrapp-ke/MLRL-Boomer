@@ -9,7 +9,7 @@ from typing import Dict, Set, Optional
 from mlrl.common.config import parse_param_and_options, configure_rule_induction, configure_label_sampling, \
     configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, configure_pruning, \
     configure_parallel_rule_refinement, configure_parallel_statistic_update, configure_parallel_prediction, \
-    configure_size_stopping_criterion, configure_time_stopping_criterion
+    configure_size_stopping_criterion, configure_time_stopping_criterion, configure_sequential_post_optimization
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int
 from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
@@ -48,6 +48,7 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin):
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
                  time_limit: Optional[int] = None,
+                 post_optimization_rounds: Optional[int] = None,
                  head_type: Optional[str] = None,
                  lift_function: Optional[str] = None,
                  heuristic: Optional[str] = None,
@@ -68,6 +69,8 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin):
                                             be at least 1 or 0, if the number of rules should not be restricted
         :param time_limit:                  The duration in seconds after which the induction of rules should be
                                             canceled. Must be at least 1 or 0, if no time limit should be set
+        :param post_optimization_rounds:    The number of iterations that should be carried out for post-optimization.
+                                            Must be at least 1 or 0, if no post-optimization should be used
         :param head_type:                   The type of the rule heads that should be used. Must be 'single-label' or
                                             'partial'
         :param lift_function:               The lift function that should be used for the induction of partial rule
@@ -113,6 +116,7 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin):
         self.rule_induction = rule_induction
         self.max_rules = max_rules
         self.time_limit = time_limit
+        self.post_optimization_rounds = post_optimization_rounds
         self.head_type = head_type
         self.lift_function = lift_function
         self.heuristic = heuristic
@@ -139,6 +143,7 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin):
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
+        configure_sequential_post_optimization(config, num_iterations=get_int(self.post_optimization_rounds))
         configure_head_type(config, get_string(self.head_type))
         configure_lift_function(config, get_string(self.lift_function))
         self.__configure_heuristic(config)
