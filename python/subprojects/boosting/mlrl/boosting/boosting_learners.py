@@ -209,7 +209,7 @@ class Boomer(RuleLearner, ClassifierMixin):
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
         configure_early_stopping_criterion(config, get_string(self.early_stopping))
-        configure_sequential_post_optimization(config, get_int(self.post_optimization_rounds))
+        configure_sequential_post_optimization(config, num_iterations=get_int(self.post_optimization_rounds))
         configure_post_processor(config, shrinkage=get_float(self.shrinkage))
         configure_l1_regularization(config, l1_regularization_weight=get_float(self.l1_regularization_weight))
         configure_l2_regularization(config, l2_regularization_weight=get_float(self.l2_regularization_weight))
