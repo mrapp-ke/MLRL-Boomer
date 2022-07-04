@@ -26,6 +26,8 @@ HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
 
 HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
 
+LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
+
 CLASSIFICATION_PREDICTOR_AUTO = 'auto'
 
 CLASSIFICATION_PREDICTOR_LABEL_WISE = 'label-wise'
@@ -111,6 +113,17 @@ class BoostingCmdBuilder(CmdBuilder):
         """
         self.args.append('--head-type')
         self.args.append(head_type)
+        return self
+
+    def label_binning(self, label_binning: str = LABEL_BINNING_EQUAL_WIDTH):
+        """
+        Configures the algorithm to use a specific method for the assignment of labels to bins.
+
+        :param label_binning:   The name of the method to be used
+        :return:                The builder itself
+        """
+        self.args.append('--label-binning')
+        self.args.append(label_binning)
         return self
 
     def sparse_statistic_format(self, sparse: bool = True):
@@ -323,3 +336,171 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_SQUARED_HINGE_LABEL_WISE) \
             .head_type(HEAD_TYPE_SINGLE_LABEL)
         self.run_cmd(builder, self.cmd + '_statistics-sparse_labels-sparse')
+
+    def test_label_wise_single_label_heads(self):
+        """
+        Tests the BOOMER algorithm when using a label-wise decomposable loss function for the induction of rules with
+        single-label heads.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .head_type(HEAD_TYPE_SINGLE_LABEL) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_label-wise-single-label-heads')
+
+    def test_label_wise_complete_heads(self):
+        """
+        Tests the BOOMER algorithm when using a label-wise decomposable loss function for the induction of rules with
+        complete heads.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .head_type(HEAD_TYPE_COMPLETE) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_label-wise-complete-heads')
+
+    def test_label_wise_complete_heads_equal_width_label_binning(self):
+        """
+        Tests the BOOMER algorithm when using a label-wise decomposable loss function and equal-width label binning for
+        the induction of rules with complete heads.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .head_type(HEAD_TYPE_COMPLETE) \
+            .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_label-wise-complete-heads_equal-width-label-binning')
+
+    def test_label_wise_partial_fixed_heads(self):
+        """
+        Tests the BOOMER algorithm when using a label-wise decomposable loss function for the induction of rules that
+        predict for a predefined number of labels
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .head_type(HEAD_TYPE_PARTIAL_FIXED) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_label-wise-partial-fixed-heads')
+
+    def test_label_wise_partial_fixed_heads_equal_width_label_binning(self):
+        """
+        Tests the BOOMER algorithm when using a label-wise decomposable loss function and equal-width label binning for
+        the induction of rules that predict for a predefined number of labels
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .head_type(HEAD_TYPE_PARTIAL_FIXED) \
+            .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_label-wise-partial-fixed-heads_equal-width-label-binning')
+
+    def test_label_wise_partial_dynamic_heads(self):
+        """
+        Tests the BOOMER algorithm when using a label-wise decomposable loss function for the induction of rules that
+        predict for a dynamically determined subset of the available labels.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_label-wise-partial-dynamic-heads')
+
+    def test_label_wise_partial_dynamic_heads_equal_width_label_binning(self):
+        """
+        Tests the BOOMER algorithm when using a label-wise decomposable loss function and equal-width label binning for
+        the induction of rules that predict for a dynamically determined subset of the available labels.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
+            .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_label-wise-partial-dynamic-heads_equal-width-label-binning')
+
+
+
+
+
+
+
+
+
+    def test_example_wise_single_label_heads(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules with
+        single-label heads.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .head_type(HEAD_TYPE_SINGLE_LABEL) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_example-wise-single-label-heads')
+
+    def test_example_wise_complete_heads(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules with complete
+        heads.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .head_type(HEAD_TYPE_COMPLETE) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_example-wise-complete-heads')
+
+    def test_example_wise_complete_heads_equal_width_label_binning(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
+        induction of rules with complete heads.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .head_type(HEAD_TYPE_COMPLETE) \
+            .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_example-wise-complete-heads_equal-width-label-binning')
+
+    def test_example_wise_partial_fixed_heads(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
+        for a predefined number of labels
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .head_type(HEAD_TYPE_PARTIAL_FIXED) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_example-wise-partial-fixed-heads')
+
+    def test_example_wise_partial_fixed_heads_equal_width_label_binning(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
+        induction of rules that predict for a predefined number of labels
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .head_type(HEAD_TYPE_PARTIAL_FIXED) \
+            .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_example-wise-partial-fixed-heads_equal-width-label-binning')
+
+    def test_example_wise_partial_dynamic_heads(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
+        for a dynamically determined subset of the available labels.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_example-wise-partial-dynamic-heads')
+
+    def test_example_wise_partial_dynamic_heads_equal_width_label_binning(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
+        induction of rules that predict for a dynamically determined subset of the available labels.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
+            .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, self.cmd + '_example-wise-partial-dynamic-heads_equal-width-label-binning')
