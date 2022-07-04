@@ -63,6 +63,36 @@ namespace boosting {
                                     PartialIndexVector::const_iterator indicesBegin,
                                     PartialIndexVector::const_iterator indicesEnd);
 
+            /**
+             * Subtracts all values in another vector from certain elements, whose positions are given as a
+             * `CompleteIndexVector`, at a specific row of this matrix.
+             *
+             * @param row           The row
+             * @param begin         An iterator to the beginning of the vector
+             * @param end           An iterator to the end of the vector
+             * @param indicesBegin  An iterator to the beginning of the indices
+             * @param indicesEnd    An iterator to the end of the indices
+             */
+            void removeFromRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,
+                                         typename VectorConstView<T>::const_iterator end,
+                                         CompleteIndexVector::const_iterator indicesBegin,
+                                         CompleteIndexVector::const_iterator indicesEnd);
+
+            /**
+             * Subtracts all values in another vector from certain elements, whose positions are given as a
+             * `PartialIndexVector`, at a specific row of this matrix.
+             *
+             * @param row           The row
+             * @param begin         An iterator to the beginning of the vector
+             * @param end           An iterator to the end of the vector
+             * @param indicesBegin  An iterator to the beginning of the indices
+             * @param indicesEnd    An iterator to the end of the indices
+             */
+            void removeFromRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,
+                                         typename VectorConstView<T>::const_iterator end,
+                                         PartialIndexVector::const_iterator indicesBegin,
+                                         PartialIndexVector::const_iterator indicesEnd);
+
     };
 
 }
