@@ -567,6 +567,15 @@ namespace seco {
                                         prediction.indices_cend());
     }
 
+    template<typename Prediction, typename CoverageMatrix>
+    static inline void revertLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                           CoverageMatrix& coverageMatrix,
+                                                           const VectorConstView<uint32>& majorityLabelIndices) {
+        coverageMatrix.decreaseCoverage(statisticIndex, majorityLabelIndices, prediction.scores_cbegin(),
+                                        prediction.scores_cend(), prediction.indices_cbegin(),
+                                        prediction.indices_cend());
+    }
+
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory, typename WeightVector, typename IndexVector>
     static inline std::unique_ptr<IStatisticsSubset> createStatisticsSubsetInternally(
@@ -676,6 +685,24 @@ namespace seco {
                 applyLabelWisePredictionInternally<PartialPrediction, CoverageMatrix>(statisticIndex, prediction,
                                                                                       *coverageMatrixPtr_,
                                                                                       *majorityLabelVectorPtr_);
+            }
+
+            /**
+             * @see `IStatistics::revertPrediction`
+             */
+            void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
+                revertLabelWisePredictionInternally<CompletePrediction, CoverageMatrix>(statisticIndex, prediction,
+                                                                                        *coverageMatrixPtr_,
+                                                                                        *majorityLabelVectorPtr_);
+            }
+
+            /**
+             * @see `IStatistics::revertPrediction`
+             */
+            void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
+                revertLabelWisePredictionInternally<PartialPrediction, CoverageMatrix>(statisticIndex, prediction,
+                                                                                       *coverageMatrixPtr_,
+                                                                                       *majorityLabelVectorPtr_);
             }
 
             /**
