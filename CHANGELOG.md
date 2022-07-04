@@ -9,6 +9,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * Sparse data structures can now be used to store gradients and Hessians if supported by the loss function. The desired behavior can be specified via a new parameter `--statistic-format`.
 * The parameter `--head-type` does now allow to learn partial rules that predict for a predefined number of labels (`partial-fixed`) or a subset of the available labels that is determined dynamically (`partial-dynamic`).
 * The parameter `--rule-induction` does now allow to use a top-down beam search for the induction of individual rules (`top-down-beam-search`).
+* A new parameter `--post-optimization-rounds` has been added. It allows to specify the number of iterations that should be carried out for post-optimization of a model.
 * A new parameter `--probability-predictor` has been added. It allows to specify whether probability estimates should be obtained for each label independently (`label-wise`) or via marginalization over the label vectors that are encountered in the training data (`marginalized`).
 * The arguments `--print-prediction-characteristics` and `--store-prediction-characteristics` have been added to the command line API. They allow to print certain characteristics of binary predictions or write them into output files.
 * Fixed behavior of the argument `--label-format` when set to the value `auto`.
