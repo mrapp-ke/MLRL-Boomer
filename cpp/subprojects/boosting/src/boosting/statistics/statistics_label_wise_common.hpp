@@ -698,15 +698,15 @@ namespace boosting {
     };
 
     template<typename Prediction, typename ScoreMatrix>
-    static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                          ScoreMatrix& scoreMatrix) {
+    static inline void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                 ScoreMatrix& scoreMatrix) {
         scoreMatrix.addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
                                        prediction.indices_cbegin(), prediction.indices_cend());
     }
 
     template<typename Prediction, typename ScoreMatrix>
-    static inline void revertLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                           ScoreMatrix& scoreMatrix) {
+    static inline void revertPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                  ScoreMatrix& scoreMatrix) {
         scoreMatrix.removeFromRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
                                             prediction.indices_cbegin(), prediction.indices_cend());
     }
@@ -810,7 +810,7 @@ namespace boosting {
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                applyLabelWisePredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
+                applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
                 updateLabelWiseStatisticsInternally(statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_,
                                                     *scoreMatrixPtr_, *lossPtr_);
             }
@@ -819,7 +819,7 @@ namespace boosting {
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                applyLabelWisePredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
+                applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
                 updateLabelWiseStatisticsInternally(statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_,
                                                     *scoreMatrixPtr_, *lossPtr_);
             }
@@ -828,7 +828,7 @@ namespace boosting {
              * @see `IStatistics::revertPrediction`
              */
             void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                revertLabelWisePredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
+                revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
                 updateLabelWiseStatisticsInternally(statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_,
                                                     *scoreMatrixPtr_, *lossPtr_);
             }
@@ -837,7 +837,7 @@ namespace boosting {
              * @see `IStatistics::revertPrediction`
              */
             void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                revertLabelWisePredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
+                revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
                 updateLabelWiseStatisticsInternally(statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_,
                                                     *scoreMatrixPtr_, *lossPtr_);
             }
