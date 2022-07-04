@@ -80,6 +80,8 @@ PARAM_TIME_LIMIT = '--time-limit'
 
 PARAM_EARLY_STOPPING = '--early-stopping'
 
+PARAM_SEQUENTIAL_POST_OPTIMIZATION = '--post-optimization-rounds'
+
 PARAM_LABEL_SAMPLING = '--label-sampling'
 
 PARAM_FEATURE_SAMPLING = '--feature-sampling'
@@ -272,6 +274,12 @@ def add_early_stopping_argument(parser: ArgumentParser):
                         help='The name of the strategy to be used for early stopping. Must be one of '
                              + format_dict_keys(EARLY_STOPPING_VALUES) + '. For additional options refer to the '
                              + 'documentation.')
+
+
+def add_sequential_post_optimization_argument(parser: ArgumentParser):
+    parser.add_argument(PARAM_SEQUENTIAL_POST_OPTIMIZATION, type=int,
+                        help='The number of iterations that should be carried out for post-optimization. Must be at '
+                             + 'least 1 or 0, if no post-optimization should be used')
 
 
 def add_label_sampling_argument(parser: ArgumentParser):

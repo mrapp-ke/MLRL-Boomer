@@ -362,3 +362,12 @@ def __create_aggregation_function(aggregation_function: str) -> AggregationFunct
         return AggregationFunction.MAX
     elif value == AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
         return AggregationFunction.ARITHMETIC_MEAN
+
+
+def configure_sequential_post_optimization(config: RuleLearnerConfig, num_iterations: Optional[int]):
+    if num_iterations is not None:
+        if num_iterations == 0:
+            config.use_no_sequential_post_optimization()
+        else:
+            c = config.use_no_sequential_post_optimization()
+            c.set_num_iterations(num_iterations)
