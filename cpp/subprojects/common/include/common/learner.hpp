@@ -17,6 +17,7 @@
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
 #include "common/post_optimization/post_optimization_phase_list.hpp"
+#include "common/post_optimization/post_optimization_sequential.hpp"
 #include "common/pruning/pruning_irep.hpp"
 #include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
@@ -251,6 +252,17 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual std::unique_ptr<EarlyStoppingCriterionConfig>& getEarlyStoppingCriterionConfigPtr() = 0;
 
+                /**
+                 * Returns an unique pointer to the configuration of the post-optimization method that optimizes each
+                 * rule in a model by relearning it in the context of the other rules.
+                 *
+                 * @return A reference to an unique pointer of type `SequentialPostOptimizationConfig` that stores the
+                 *         configuration of the post-optimization method that optimizes each rule in a model by
+                 *         relearning it in the context of the other rules or a null pointer, if no such
+                 *         post-optimization method should be used
+                 */
+                virtual std::unique_ptr<SequentialPostOptimizationConfig>& getSequentialPostOptimizationConfigPtr() = 0;
+
             public:
 
                 virtual ~IConfig() { };
@@ -348,6 +360,12 @@ class MLRLCOMMON_API IRuleLearner {
                  * a certain measure.
                  */
                 virtual void useNoEarlyStoppingCriterion() = 0;
+
+                /**
+                 * Configures the rule learner to not use a post-optimization method that optimizes each rule in a model
+                 * by relearning it in the context of the other rules.
+                 */
+                virtual void useNoSequentialPostOptimization() = 0;
 
         };
 
@@ -791,6 +809,35 @@ class MLRLCOMMON_API IRuleLearner {
 
         };
 
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use a post-optimization method
+         * that optimizes each rule in a model by relearning it in the context of the other rules.
+         */
+        class ISequentialPostOptimizationMixin : virtual public IRuleLearner::IConfig {
+
+            public:
+
+                virtual ~ISequentialPostOptimizationMixin() { };
+
+                /**
+                 * Configures the rule learner to use a post-optimization method that optimizes each rule in a model by
+                 * relearning it in the context of the other rules.
+                 *
+                 * @return A reference to an object of type `ISequentialPostOptimizationConfig` that allows further
+                 *         configuration of the post-optimization method
+                 */
+                virtual ISequentialPostOptimizationConfig& useSequentialPostOptimization() {
+                    std::unique_ptr<SequentialPostOptimizationConfig>& sequentialPostOptimizationConfigPtr =
+                        this->getSequentialPostOptimizationConfigPtr();
+                    std::unique_ptr<SequentialPostOptimizationConfig> ptr =
+                        std::make_unique<SequentialPostOptimizationConfig>();
+                    ISequentialPostOptimizationConfig& ref = *ptr;
+                    sequentialPostOptimizationConfigPtr = std::move(ptr);
+                    return ref;
+                }
+
+        };
+
         virtual ~IRuleLearner() { };
 
         /**
@@ -1086,6 +1133,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  */
                 std::unique_ptr<EarlyStoppingCriterionConfig> earlyStoppingCriterionConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the post-optimization method that optimizes each
+                 * rule in a model by relearning it in the context of the other rules.
+                 */
+                std::unique_ptr<SequentialPostOptimizationConfig> sequentialPostOptimizationConfigPtr_;
+
             private:
 
                 std::unique_ptr<IDefaultRuleConfig>& getDefaultRuleConfigPtr() override final;
@@ -1119,6 +1172,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<TimeStoppingCriterionConfig>& getTimeStoppingCriterionConfigPtr() override final;
 
                 std::unique_ptr<EarlyStoppingCriterionConfig>& getEarlyStoppingCriterionConfigPtr() override final;
+
+                std::unique_ptr<SequentialPostOptimizationConfig>& getSequentialPostOptimizationConfigPtr() override final;
 
             public:
 
@@ -1156,6 +1211,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoEarlyStoppingCriterion() override;
 
+                void useNoSequentialPostOptimization() override;
+
         };
 
     private:
@@ -1189,6 +1246,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         std::unique_ptr<IStoppingCriterionFactory> createTimeStoppingCriterionFactory() const;
 
         std::unique_ptr<IStoppingCriterionFactory> createEarlyStoppingCriterionFactory() const;
+
+        std::unique_ptr<IPostOptimizationPhaseFactory> createSequentialPostOptimizationFactory() const;
 
     protected:
 
