@@ -80,6 +80,7 @@ AbstractRuleLearner::Config::Config() {
     this->useNoSizeStoppingCriterion();
     this->useNoTimeStoppingCriterion();
     this->useNoEarlyStoppingCriterion();
+    this->useNoSequentialPostOptimization();
 }
 
 std::unique_ptr<IDefaultRuleConfig>& AbstractRuleLearner::Config::getDefaultRuleConfigPtr() {
@@ -144,6 +145,10 @@ std::unique_ptr<TimeStoppingCriterionConfig>& AbstractRuleLearner::Config::getTi
 
 std::unique_ptr<EarlyStoppingCriterionConfig>& AbstractRuleLearner::Config::getEarlyStoppingCriterionConfigPtr() {
     return earlyStoppingCriterionConfigPtr_;
+}
+
+std::unique_ptr<SequentialPostOptimizationConfig>& AbstractRuleLearner::Config::getSequentialPostOptimizationConfigPtr() {
+    return sequentialPostOptimizationConfigPtr_;
 }
 
 void AbstractRuleLearner::Config::useDefaultRule() {
@@ -214,6 +219,10 @@ void AbstractRuleLearner::Config::useNoEarlyStoppingCriterion() {
     earlyStoppingCriterionConfigPtr_ = nullptr;
 }
 
+void AbstractRuleLearner::Config::useNoSequentialPostOptimization() {
+    sequentialPostOptimizationConfigPtr_ = nullptr;
+}
+
 AbstractRuleLearner::AbstractRuleLearner(IRuleLearner::IConfig& config)
     : config_(config) {
 
@@ -275,6 +284,11 @@ std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createEarlyStopp
     return configPtr.get() != nullptr ? configPtr->createStoppingCriterionFactory() : nullptr;
 }
 
+std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createSequentialPostOptimizationFactory() const {
+    std::unique_ptr<SequentialPostOptimizationConfig>& configPtr = config_.getSequentialPostOptimizationConfigPtr();
+    return configPtr.get() != nullptr ? configPtr->createPostOptimizationPhaseFactory() : nullptr;
+}
+
 void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
     std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory = this->createSizeStoppingCriterionFactory();
 
@@ -296,7 +310,12 @@ void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionList
 }
 
 void AbstractRuleLearner::createPostOptimizationPhaseFactories(PostOptimizationPhaseListFactory& factory) const {
+    std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactory =
+        this->createSequentialPostOptimizationFactory();
 
+    if (postOptimizationPhaseFactory) {
+        factory.addPostOptimizationPhaseFactory(std::move(postOptimizationPhaseFactory));
+    }
 }
 
 std::unique_ptr<IRegressionPredictorFactory> AbstractRuleLearner::createRegressionPredictorFactory(
