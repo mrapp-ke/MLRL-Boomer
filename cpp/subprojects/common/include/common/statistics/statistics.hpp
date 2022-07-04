@@ -63,6 +63,26 @@ class IStatistics {
         virtual void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) = 0;
 
         /**
+         * Reverts a specific statistic that has previously been updated via the function `applyPrediction` based on the
+         * prediction of a rule that predicts for all available labels.
+         *
+         * @param statisticIndex    The index of the statistic to be reverted
+         * @param prediction        A reference to an object of type `CompletePrediction` that stores the scores that
+         *                          are predicted by the rule
+         */
+        virtual void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) = 0;
+
+        /**
+         * Reverts a specific statistic that has previously been updated via the function `applyPrediction` based on the
+         * prediction of a rule that predicts for a subset of the available labels.
+         *
+         * @param statisticIndex    The index of the statistic to be reverted
+         * @param prediction        A reference to an object of type `PartialPrediction` that stores the scores that are
+         *                          predicted by the rule
+         */
+        virtual void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) = 0;
+
+        /**
          * Calculates and returns a numeric score that assesses the quality of the current predictions for a specific
          * statistic.
          *
