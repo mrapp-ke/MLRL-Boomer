@@ -83,6 +83,10 @@ void PartialPrediction::apply(IStatistics& statistics, uint32 statisticIndex) co
     statistics.applyPrediction(statisticIndex, *this);
 }
 
+void PartialPrediction::revert(IStatistics& statistics, uint32 statisticIndex) const {
+    statistics.revertPrediction(statisticIndex, *this);
+}
+
 void PartialPrediction::sort() {
     if (!sorted_) {
         uint32 numElements = this->getNumElements();
