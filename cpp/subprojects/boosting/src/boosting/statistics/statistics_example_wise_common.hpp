@@ -731,13 +731,6 @@ namespace boosting {
 
     };
 
-    template<typename Prediction, typename ScoreMatrix>
-    static inline void applyExampleWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                            ScoreMatrix& scoreMatrix) {
-        scoreMatrix.addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
-                                       prediction.indices_cbegin(), prediction.indices_cend());
-    }
-
     template<typename LabelMatrix, typename StatisticView, typename ScoreMatrix, typename LossFunction>
     static inline void updateExampleWiseStatisticsInternally(uint32 statisticIndex, const LabelMatrix& labelMatrix,
                                                              StatisticView& statisticView, ScoreMatrix& scoreMatrix,
@@ -862,7 +855,7 @@ namespace boosting {
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                applyExampleWisePredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
+                applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
                 updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, *this->statisticViewPtr_,
                                                       *scoreMatrixPtr_, *lossPtr_);
             }
@@ -871,7 +864,7 @@ namespace boosting {
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                applyExampleWisePredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
+                applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
                 updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, *this->statisticViewPtr_,
                                                       *scoreMatrixPtr_, *lossPtr_);
             }
