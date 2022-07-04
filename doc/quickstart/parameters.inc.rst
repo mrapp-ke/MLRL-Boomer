@@ -144,6 +144,10 @@ The following parameters allow to control the behavior of the algorithm:
     * ``min_improvement`` (Default value = ``0.005``) The minimum improvement in percent that must be reached when comparing the aggregated scores in both buffers for the rule induction to be continued. Must be in [0, 1].
     * ``force_stop`` (Default value = ``'true'``) ``'true'``, if the induction of rules should be forced to be stopped as soon as the stopping criterion is met, ``'false'``, if the time of stopping should only be stored.
 
+* ``post_optimization_rounds`` (Default value = ``0``)
+
+    * The number of iterations to be carried out for post-optimization. Must be at least 1 or 0, if no post-optimization should be used. At each iteration the rules in a previously learned model are relearned in the context of the other rules.
+
 * ``feature_binning`` (Default value = ``'none'``)
 
   * ``'none'`` No feature binning is used.
