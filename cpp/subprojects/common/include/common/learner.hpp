@@ -225,7 +225,7 @@ class MLRLCOMMON_API IRuleLearner {
                  * Returns an unique pointer to the configuration of the stopping criterion that ensures that the number
                  * of rules does not exceed a certain maximum.
                  *
-                 * @return A pointer to an unique pointer of type `SizeStoppingCriterionConfig` that stores the
+                 * @return A reference to an unique pointer of type `SizeStoppingCriterionConfig` that stores the
                  *         configuration of the stopping criterion that ensures that the number of rules does not exceed
                  *         a certain maximum or a null pointer, if no such stopping criterion should be used
                  */
@@ -235,7 +235,7 @@ class MLRLCOMMON_API IRuleLearner {
                  * Returns an unique pointer to the configuration of the stopping criterion that ensures that a certain
                  * time limit is not exceeded.
                  *
-                 * @return A pointer to an unique pointer of type `TimeStoppingCriterionConfig` that stores the
+                 * @return A reference to an unique pointer of type `TimeStoppingCriterionConfig` that stores the
                  *         configuration of the stopping criterion that ensures that a certain time limit is not
                  *         exceeded or a null pointer, if no such stopping criterion should be used
                  */
@@ -245,7 +245,7 @@ class MLRLCOMMON_API IRuleLearner {
                  * Returns an unique pointer to the configuration of the stopping criterion that stops the induction of
                  * rules as soon as a model's quality does not improve.
                  *
-                 * @return A pointer to an unique pointer of type `EarlyStoppingCriterionConfig` that stores the
+                 * @return A reference to an unique pointer of type `EarlyStoppingCriterionConfig` that stores the
                  *         configuration of the stopping criterion that stops the induction of rules as soon as a
                  *         model's quality does not improve or a null pointer, if no such stopping criterion should be
                  *         used
