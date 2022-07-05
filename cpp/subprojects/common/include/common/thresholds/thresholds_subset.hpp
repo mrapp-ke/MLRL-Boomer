@@ -66,8 +66,8 @@ class IThresholdsSubset {
         virtual void filterThresholds(const Condition& condition) = 0;
 
         /**
-         * Resets the filtered thresholds. This reverts the effects of all previous calls to the functions
-         * `filterThresholds(Refinement)` or `filterThresholds(Condition)`.
+         * Resets the filtered thresholds. This reverts the effects of all previous calls to the function
+         * `filterThresholds`.
          */
         virtual void resetThresholds() = 0;
 
