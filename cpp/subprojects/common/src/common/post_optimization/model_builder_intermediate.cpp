@@ -6,6 +6,14 @@ IntermediateModelBuilder::IntermediateModelBuilder(std::unique_ptr<IModelBuilder
 
 }
 
+IntermediateModelBuilder::iterator IntermediateModelBuilder::begin() {
+    return intermediateRuleList_.begin();
+}
+
+IntermediateModelBuilder::iterator IntermediateModelBuilder::end() {
+    return intermediateRuleList_.end();
+}
+
 void IntermediateModelBuilder::setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) {
     defaultPredictionPtr_ = std::move(predictionPtr);
 }

@@ -14,13 +14,15 @@
  */
 class IntermediateModelBuilder final : public IModelBuilder {
 
+    public:
+
+        typedef std::pair<std::unique_ptr<ConditionList>, std::unique_ptr<AbstractEvaluatedPrediction>> IntermediateRule;
+
     private:
 
         std::unique_ptr<IModelBuilder> modelBuilderPtr_;
 
         std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr_;
-
-        typedef std::pair<std::unique_ptr<ConditionList>, std::unique_ptr<AbstractEvaluatedPrediction>> IntermediateRule;
 
         std::vector<IntermediateRule> intermediateRuleList_;
 
@@ -31,6 +33,25 @@ class IntermediateModelBuilder final : public IModelBuilder {
          *                        the final model
          */
         IntermediateModelBuilder(std::unique_ptr<IModelBuilder> modelBuilderPtr);
+
+        /**
+         * An iterator that provides access to the intermediate representations of rules and allows to modify them.
+         */
+        typedef std::vector<IntermediateRule>::iterator iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the intermediate representations of rules.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin();
+
+        /**
+         * Returns an `iterator` to the end of the intermediate representations of rules.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end();
 
         void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override;
 
