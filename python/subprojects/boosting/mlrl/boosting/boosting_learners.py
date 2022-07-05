@@ -22,7 +22,7 @@ from mlrl.common.config import parse_param, configure_rule_induction, configure_
     configure_label_sampling, configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, \
     configure_pruning, configure_parallel_rule_refinement, configure_parallel_statistic_update, \
     configure_parallel_prediction, configure_size_stopping_criterion, configure_time_stopping_criterion, \
-    configure_early_stopping_criterion, configure_sequential_post_optimization
+    configure_early_stopping_criterion, configure_post_optimization
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int, get_float
 from sklearn.base import ClassifierMixin
@@ -76,7 +76,7 @@ class Boomer(RuleLearner, ClassifierMixin):
                  max_rules: Optional[int] = None,
                  time_limit: Optional[int] = None,
                  early_stopping: Optional[str] = None,
-                 post_optimization_rounds: Optional[int] = None,
+                 post_optimization: Optional[str] = None,
                  head_type: Optional[str] = None,
                  loss: Optional[str] = None,
                  classification_predictor: Optional[str] = None,
@@ -108,13 +108,15 @@ class Boomer(RuleLearner, ClassifierMixin):
                                             be at least 1 or 0, if the number of rules should not be restricted.
         :param time_limit:                  The duration in seconds after which the induction of rules should be
                                             canceled. Must be at least 1 or 0, if no time limit should be set
-        :param early_stopping:              The strategy that should be used for early stopping. Must be 'loss', if the
-                                            induction of new rules should be stopped as soon as the performance of the
-                                            model does not improve on a holdout set according to the loss function or
-                                            'none', if no early stopping should be used. For additional options refer to
-                                            the documentation
-        :param post_optimization_rounds:    The number of iterations that should be carried out for post-optimization.
-                                            Must be at least 1 or 0, if no post-optimization should be used
+        :param early_stopping:              The strategy that should be used for early stopping. Must be 'objective', if
+                                            the induction of new rules should be stopped as soon as the performance of
+                                            the model does not improve on a holdout set according to the loss function
+                                            or 'none', if no early stopping should be used. For additional options refer
+                                            to the documentation
+        :param post_optimization:           The name of the method that should be used for post-optimization. Must be
+                                            'sequential', if each rule should be optimized by being relearned in the
+                                            context of the other rules, or 'none', if no post-optimization should be
+                                            used. For additional options refer to the documentation
         :param head_type:                   The type of the rule heads that should be used. Must be 'single-label',
                                             'complete', 'partial-fixed', 'partial-dynamic' or 'auto', if the type of the
                                             heads should be chosen automatically. For additional options refer to the
@@ -178,7 +180,7 @@ class Boomer(RuleLearner, ClassifierMixin):
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.early_stopping = early_stopping
-        self.post_optimization_rounds = post_optimization_rounds
+        self.post_optimization = post_optimization
         self.head_type = head_type
         self.loss = loss
         self.classification_predictor = classification_predictor
@@ -209,7 +211,7 @@ class Boomer(RuleLearner, ClassifierMixin):
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
         configure_early_stopping_criterion(config, get_string(self.early_stopping))
-        configure_sequential_post_optimization(config, num_iterations=get_int(self.post_optimization_rounds))
+        configure_post_optimization(config, get_string(self.post_optimization))
         configure_post_processor(config, shrinkage=get_float(self.shrinkage))
         configure_l1_regularization(config, l1_regularization_weight=get_float(self.l1_regularization_weight))
         configure_l2_regularization(config, l2_regularization_weight=get_float(self.l2_regularization_weight))
