@@ -1,5 +1,7 @@
 #include "common/post_optimization/post_optimization_sequential.hpp"
+#include "common/sampling/feature_sampling_predefined.hpp"
 #include "common/util/validation.hpp"
+#include <unordered_set>
 
 
 /**
@@ -34,59 +36,6 @@ class RuleReplacementBuilder final : public IModelBuilder {
 
         std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) {
             return nullptr;
-        }
-
-};
-
-/**
- * An implementation of the class `IFeatureSampling` that returns the same features that are used by an existing
- * `ConditionList`.
- */
-class ConditionListFeatureSampling final : public IFeatureSampling {
-
-    private:
-
-        PartialIndexVector indexVector_;
-
-        const ConditionList& conditionList_;
-
-        uint32 index_;
-
-    public:
-
-        /**
-         * @param conditionList A reference to an object of type `ConditionList` to sample from
-         * @param index         The index of the condition that should be used next
-         */
-        ConditionListFeatureSampling(const ConditionList& conditionList, uint32 index)
-            : indexVector_(PartialIndexVector(1)), conditionList_(conditionList), index_(index) {
-
-        }
-
-        /**
-         * @param conditionList A reference to an object of type `ConditionList` to sample from
-         */
-        ConditionListFeatureSampling(const ConditionList& conditionList)
-            : ConditionListFeatureSampling(conditionList, 0) {
-
-        }
-
-        const IIndexVector& sample(RNG& rng) override {
-            if (index_ < conditionList_.getNumConditions()) {
-                const Condition& condition = conditionList_.cbegin()[index_];
-                uint32 featureIndex = condition.featureIndex;
-                indexVector_.begin()[0] = featureIndex;
-                index_++;
-            } else {
-                indexVector_.setNumElements(0, false);
-            }
-
-            return indexVector_;
-        }
-
-
-        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) override {
-            return std::make_unique<ConditionListFeatureSampling>(conditionList_, index_);
         }
 
 };
@@ -155,9 +104,24 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                         ruleInduction.induceRule(thresholds, labelIndices, weights, partition, featureSampling, pruning,
                                                  postProcessor, rng, ruleReplacementBuilder);
                     } else {
-                        ConditionListFeatureSampling conditionListFeatureSampling(conditionList);
+                        std::unordered_set<uint32> uniqueFeatureIndices;
+
+                        for (auto it2 = conditionList.cbegin(); it2 != conditionList.cend(); it2++) {
+                            const Condition& condition = *it2;
+                            uniqueFeatureIndices.emplace(condition.featureIndex);
+                        }
+
+                        PartialIndexVector indexVector(uniqueFeatureIndices.size());
+                        PartialIndexVector::iterator indexIterator = indexVector.begin();
+
+                        for (auto it2 = uniqueFeatureIndices.cbegin(); it2 != uniqueFeatureIndices.cend(); it2++) {
+                            *indexIterator = *it2;
+                            indexIterator++;
+                        }
+
+                        PredefinedFeatureSampling predefinedFeatureSampling(indexVector);
                         ruleInduction.induceRule(thresholds, labelIndices, weights, partition,
-                                                 conditionListFeatureSampling, pruning, postProcessor, rng,
+                                                 predefinedFeatureSampling, pruning, postProcessor, rng,
                                                  ruleReplacementBuilder);
                     }
                 }
