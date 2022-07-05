@@ -369,5 +369,5 @@ def configure_sequential_post_optimization(config: RuleLearnerConfig, num_iterat
         if num_iterations == 0:
             config.use_no_sequential_post_optimization()
         else:
-            c = config.use_no_sequential_post_optimization()
+            c = config.use_sequential_post_optimization()
             c.set_num_iterations(num_iterations)
