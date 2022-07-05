@@ -1,0 +1,34 @@
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='emotions', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=False, model_dir=None, parameter_dir=None, output_dir=None, print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, sequential_post_optimization='true', label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_induction=None, parallel_prediction=None, parallel_rule_refinement=None, parallel_statistic_update=None, head_type=None, lift_function=None, heuristic=None, pruning_heuristic=None)
+INFO Starting experiment...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-train.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-test.arff"...
+INFO Fitting model to 391 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.39724482502788305 seconds
+INFO Predicting for 202 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.00569119188003242 seconds
+INFO Overall evaluation result on test data:
+
+Ex.-based F1: 0.5450495049504951
+Ex.-based Jacc.: 0.45437293729372935
+Ex.-based Prec.: 0.6471947194719473
+Ex.-based Rec.: 0.5915841584158416
+Hamm. Acc.: 0.7301980198019802
+Hamm. Loss: 0.2698019801980198
+Ma. F1: 0.5179472717165646
+Ma. Jacc.: 0.3800341813231953
+Ma. Prec.: 0.6744119800695696
+Ma. Rec.: 0.5852125987420559
+Mi. F1: 0.5917602996254682
+Mi. Jacc.: 0.42021276595744683
+Mi. Prec.: 0.5895522388059702
+Mi. Rec.: 0.5939849624060151
+Subs. 0/1 Loss: 0.806930693069307
+Subs. Acc.: 0.19306930693069307
+
+INFO Successfully finished after 0.46244681789539754 seconds
