@@ -100,6 +100,14 @@ class AbstractPrediction : public IIndexVector {
         virtual void apply(IStatistics& statistics, uint32 statisticIndex) const = 0;
 
         /**
+         * Updates the given statistics by reverting this prediction.
+         *
+         * @param statistics        A reference to an object of type `IStatistics` to be updated
+         * @param statisticIndex    The index of the statistic to be updated
+         */
+        virtual void revert(IStatistics& statistics, uint32 statisticIndex) const = 0;
+
+        /**
          * Sorts the scores that stored by this prediction in increasing order by the the indices of the labels they
          * correspond to.
          */

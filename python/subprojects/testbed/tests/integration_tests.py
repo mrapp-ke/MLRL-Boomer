@@ -432,6 +432,17 @@ class CmdBuilder:
         self.args.append(str(predict_probabilities).lower())
         return self
 
+    def sequential_post_optimization(self, sequential_post_optimization: bool = False):
+        """
+        Configures whether the algorithm should use sequential post-optimization or not.
+
+        :param sequential_post_optimization:    True, if sequential post-optimization should be used, False otherwise
+        :return:                                The builder itself
+        """
+        self.args.append('--sequential-post-optimization')
+        self.args.append(str(sequential_post_optimization).lower())
+        return self
+
     def build(self) -> List[str]:
         """
         Returns a list of strings that contains the command that has been configured using the builder, as well as all

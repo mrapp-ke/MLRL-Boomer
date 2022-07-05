@@ -22,6 +22,7 @@ from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig, Man
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ExampleWiseStratifiedBiPartitionSamplingConfig, ILabelWiseStratifiedBiPartitionSamplingConfig, \
     LabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
+from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig, SequentialPostOptimizationConfig
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
     BeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, SizeStoppingCriterionConfig, \
@@ -295,6 +296,19 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IEarlyStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useEarlyStoppingCriterion()
         cdef EarlyStoppingCriterionConfig config = EarlyStoppingCriterionConfig.__new__(EarlyStoppingCriterionConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_sequential_post_optimization(self) -> SequentialPostOptimizationConfig:
+        """
+        Configures the rule learner to use a post-optimization method that optimizes each rule in a model by relearning
+        it in the context of the other rules.
+
+        :return: A `SequentialPostOptimizationConfig` that allows further configuration of the post-optimization method
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef ISequentialPostOptimizationConfig* config_ptr = &rule_learner_config_ptr.useSequentialPostOptimization()
+        cdef SequentialPostOptimizationConfig config = SequentialPostOptimizationConfig.__new__(SequentialPostOptimizationConfig)
         config.config_ptr = config_ptr
         return config
 

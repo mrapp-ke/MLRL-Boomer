@@ -12,6 +12,7 @@ from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.common.cython.nominal_feature_mask cimport INominalFeatureMask
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
+from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
 from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, IBeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig, \
@@ -91,6 +92,8 @@ cdef extern from "common/learner.hpp" nogil:
         void useNoTimeStoppingCriterion()
 
         void useNoEarlyStoppingCriterion()
+
+        void useNoSequentialPostOptimization()
 
 
     cdef cppclass IBeamSearchTopDownMixin"IRuleLearner::IBeamSearchTopDownMixin":
@@ -184,6 +187,13 @@ cdef extern from "common/learner.hpp" nogil:
         # Functions:
 
         IEarlyStoppingCriterionConfig& useEarlyStoppingCriterion()
+
+
+    cdef cppclass ISequentialPostOptimizationMixin"IRuleLearner::ISequentialPostOptimizationMixin":
+
+        # Functions:
+
+        ISequentialPostOptimizationConfig& useSequentialPostOptimization()
 
 
     cdef cppclass IRuleLearner:
