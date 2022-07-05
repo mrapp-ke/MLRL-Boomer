@@ -92,7 +92,7 @@ PARAM_PRUNING = '--pruning'
 
 PARAM_RULE_MODEL_ASSEMBLAGE = '--rule-model-assemblage'
 
-PARAM_POST_OPTIMIZATION = '--post-optimization'
+PARAM_SEQUENTIAL_POST_OPTIMIZATION = '--sequential-post-optimization'
 
 PARAM_RULE_INDUCTION = '--rule-induction'
 
@@ -272,6 +272,13 @@ def add_early_stopping_argument(parser: ArgumentParser):
                         help='The name of the strategy to be used for early stopping. Must be one of '
                              + format_dict_keys(EARLY_STOPPING_VALUES) + '. For additional options refer to the '
                              + 'documentation.')
+
+
+def add_sequential_post_optimization_argument(parser: ArgumentParser):
+    parser.add_argument(PARAM_SEQUENTIAL_POST_OPTIMIZATION, type=str,
+                        help='Whether each rule in a previously learned model should be optimized by being relearned '
+                             + 'in the context of the other rules. Must be one of ' + format_enum_values(BooleanOption)
+                             + '. For additional options refer to the documentation.')
 
 
 def add_label_sampling_argument(parser: ArgumentParser):

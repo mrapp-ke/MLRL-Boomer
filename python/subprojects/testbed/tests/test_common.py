@@ -576,3 +576,11 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .rule_induction(RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH)
         self.run_cmd(builder, self.cmd + '_rule-induction-top-down-beam-search')
+
+    def test_sequential_post_optimization(self):
+        """
+        Tests the rule learning algorithm when using sequential post-optimization.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .sequential_post_optimization(True)
+        self.run_cmd(builder, self.cmd + '_sequential-post-optimization')

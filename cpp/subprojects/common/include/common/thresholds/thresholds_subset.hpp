@@ -230,4 +230,12 @@ class IThresholdsSubset {
          */
         virtual void applyPrediction(const AbstractPrediction& prediction) = 0;
 
+        /**
+         * Reverts the statistics that correspond to the current subset based on the predictions of a rule.
+         *
+         * @param prediction A reference to an object of type `AbstractPrediction` that stores the prediction of the
+         *                   rule
+         */
+        virtual void revertPrediction(const AbstractPrediction& prediction) = 0;
+
 };

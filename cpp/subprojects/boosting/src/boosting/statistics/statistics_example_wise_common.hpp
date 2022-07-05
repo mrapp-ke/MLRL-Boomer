@@ -870,6 +870,24 @@ namespace boosting {
             }
 
             /**
+             * @see `IStatistics::revertPrediction`
+             */
+            void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
+                revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
+                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, *this->statisticViewPtr_,
+                                                      *scoreMatrixPtr_, *lossPtr_);
+            }
+
+            /**
+             * @see `IStatistics::revertPrediction`
+             */
+            void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
+                revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
+                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, *this->statisticViewPtr_,
+                                                      *scoreMatrixPtr_, *lossPtr_);
+            }
+
+            /**
              * @see `IStatistics::evaluatePrediction`
              */
             float64 evaluatePrediction(uint32 statisticIndex) const override final {

@@ -1,3 +1,8 @@
+/*
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
+ */
+#pragma once
+
 #include "common/sampling/feature_sampling.hpp"
 
 
@@ -16,17 +21,10 @@ class PredefinedFeatureSampling final : public IFeatureSampling {
         /**
          * @param indexVector A reference to an object of type `IIndexVector` that stores predefined feature indices
          */
-        PredefinedFeatureSampling(const IIndexVector& indexVector)
-            : indexVector_(indexVector) {
+        PredefinedFeatureSampling(const IIndexVector& indexVector);
 
-        }
+        const IIndexVector& sample(RNG& rng) override;
 
-        const IIndexVector& sample(RNG& rng) override {
-            return indexVector_;
-        }
-
-        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) override {
-            return std::make_unique<PredefinedFeatureSampling>(indexVector_);
-        }
+        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) override;
 
 };

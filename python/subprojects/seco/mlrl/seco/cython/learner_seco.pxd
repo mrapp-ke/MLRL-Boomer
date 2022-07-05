@@ -1,6 +1,6 @@
 from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTopDownMixin, ILabelSamplingMixin, \
     IInstanceSamplingMixin, IFeatureSamplingMixin, IPartitionSamplingMixin, IPruningMixin, IMultiThreadingMixin, \
-    ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin
+    ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, ISequentialPostOptimizationMixin
 from mlrl.seco.cython.learner cimport ISeCoRuleLearnerConfig, SeCoRuleLearnerConfig, ICoverageStoppingCriterionMixin, \
     IPartialHeadMixin, IAccuracyMixin, IFMeasureMixin, IMEstimateMixin, ILaplaceMixin, IRecallMixin, IWraMixin
 
@@ -27,7 +27,8 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
             IPruningMixin,
             IMultiThreadingMixin,
             ISizeStoppingCriterionMixin,
-            ITimeStoppingCriterionMixin):
+            ITimeStoppingCriterionMixin,
+            ISequentialPostOptimizationMixin):
         pass
 
 

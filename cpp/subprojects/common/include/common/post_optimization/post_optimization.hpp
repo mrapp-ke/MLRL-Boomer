@@ -71,6 +71,26 @@ class IPostOptimizationPhaseFactory {
 };
 
 /**
+ * Defines an interface for all classes that allow to configure a method that optimizes a rule-based model globally once
+ * it has been learned.
+ */
+class IPostOptimizationPhaseConfig {
+
+    public:
+
+        virtual ~IPostOptimizationPhaseConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IPostOptimizationPhaseFactory` according to the specified
+         * configuration.
+         *
+         * @return An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been created
+         */
+        virtual std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory() const = 0;
+
+};
+
+/**
  * Defines an interface for all classes that allow to optimize a rule-based model globally once it has been learned by
  * carrying out several optimization phases.
  */

@@ -65,6 +65,10 @@ void CompletePrediction::apply(IStatistics& statistics, uint32 statisticIndex) c
     statistics.applyPrediction(statisticIndex, *this);
 }
 
+void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) const {
+    statistics.revertPrediction(statisticIndex, *this);
+}
+
 void CompletePrediction::sort() {
 
 }
