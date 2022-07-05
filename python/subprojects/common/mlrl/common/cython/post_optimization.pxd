@@ -1,5 +1,7 @@
 from mlrl.common.cython._types cimport uint32
 
+from libcpp cimport bool
+
 
 cdef extern from "common/post_optimization/post_optimization_sequential.hpp" nogil:
 
@@ -10,6 +12,10 @@ cdef extern from "common/post_optimization/post_optimization_sequential.hpp" nog
         uint32 getNumIterations() const
 
         ISequentialPostOptimizationConfig& setNumIterations(uint32 numIterations) except +
+
+        bool areHeadsRefined() const
+
+        ISequentialPostOptimizationConfig& setRefineHeads(bool refineHeads) except +
 
 
 cdef class SequentialPostOptimizationConfig:

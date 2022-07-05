@@ -29,3 +29,22 @@ cdef class SequentialPostOptimizationConfig:
         assert_greater_or_equal('num_iterations', num_iterations, 1)
         self.config_ptr.setNumIterations(num_iterations)
         return self
+
+    def are_heads_refined(self) -> bool:
+        """
+        Returns whether the heads of rules are refined when being relearned or not.
+
+        :return: True, if the heads of rules are refined when being relearned, False otherwise
+        """
+        return self.config_ptr.areHeadsRefined()
+
+    def set_refine_heads(self, refine_heads: bool) -> SequentialPostOptimizationConfig:
+        """
+        Sets whether the heads of rules should be refined when being relearned or not.
+
+        :param refine_heads:    True, if the heads of rules should be refined when being relearned, False otherwise
+        :return:                An `SequentialPostOptimizationConfig` that allows further configuration of the
+                                optimization method
+        """
+        self.config_ptr.setRefineHeads(refine_heads)
+        return self

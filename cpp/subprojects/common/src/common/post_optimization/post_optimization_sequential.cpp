@@ -50,15 +50,18 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 
         uint32 numIterations_;
 
+        bool refineHeads_;
+
     public:
 
         /**
          * @param modelBuilderPtr   A reference to an object of type `IntermediateModelBuilder` that provides access to
          *                          the existing rules
          * @param numIterations     The number of iterations to be performed. Must be at least 1
+         * @param refineHeads       True, if the heads of rules should be refined when being relearned, false otherwise
          */
-        SequentialPostOptimization(IntermediateModelBuilder& modelBuilder, uint32 numIterations)
-            : modelBuilder_(modelBuilder), numIterations_(numIterations) {
+        SequentialPostOptimization(IntermediateModelBuilder& modelBuilder, uint32 numIterations, bool refineHeads)
+            : modelBuilder_(modelBuilder), numIterations_(numIterations), refineHeads_(refineHeads) {
 
         }
 
@@ -86,7 +89,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                     thresholdsSubsetPtr->revertPrediction(*predictionPtr);
 
                     // Learn a new rule...
-                    const IIndexVector& labelIndices = *predictionPtr;
+                    const IIndexVector& labelIndices = refineHeads_ ? labelSampling.sample(rng) : *predictionPtr;
                     RuleReplacementBuilder ruleReplacementBuilder(intermediateRule);
                     ruleInduction.induceRule(thresholds, labelIndices, weights, partition, featureSampling, pruning,
                                              postProcessor, rng, ruleReplacementBuilder);
@@ -106,24 +109,27 @@ class SequentialPostOptimizationFactory final : public IPostOptimizationPhaseFac
 
         uint32 numIterations_;
 
+        bool refineHeads_;
+
     public:
 
         /**
          * @param numIterations The number of iterations to be performed. Must be at least 1
+         * @param refineHeads   True, if the heads of rules should be refined when being relearned, false otherwise
          */
-        SequentialPostOptimizationFactory(uint32 numIterations)
-            : numIterations_(numIterations) {
+        SequentialPostOptimizationFactory(uint32 numIterations, bool refineHeads)
+            : numIterations_(numIterations), refineHeads_(refineHeads) {
 
         }
 
         std::unique_ptr<IPostOptimizationPhase> create(IntermediateModelBuilder& modelBuilder) const override {
-            return std::make_unique<SequentialPostOptimization>(modelBuilder, numIterations_);
+            return std::make_unique<SequentialPostOptimization>(modelBuilder, numIterations_, refineHeads_);
         }
 
 };
 
 SequentialPostOptimizationConfig::SequentialPostOptimizationConfig()
-    : numIterations_(2) {
+    : numIterations_(2), refineHeads_(false) {
 
 }
 
@@ -137,6 +143,15 @@ ISequentialPostOptimizationConfig& SequentialPostOptimizationConfig::setNumItera
     return *this;
 }
 
+bool SequentialPostOptimizationConfig::areHeadsRefined() const {
+    return refineHeads_;
+}
+
+ISequentialPostOptimizationConfig& SequentialPostOptimizationConfig::setRefineHeads(bool refineHeads) {
+    refineHeads_ = refineHeads;
+    return *this;
+}
+
 std::unique_ptr<IPostOptimizationPhaseFactory> SequentialPostOptimizationConfig::createPostOptimizationPhaseFactory() const {
-    return std::make_unique<SequentialPostOptimizationFactory>(numIterations_);
+    return std::make_unique<SequentialPostOptimizationFactory>(numIterations_, refineHeads_);
 }
