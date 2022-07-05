@@ -56,7 +56,7 @@ cdef class SequentialPostOptimizationConfig:
         :return: True, if a new sample of the available features is created whenever a new rule is refined, false, if
                  the conditions of the new rule use the same features as the original rule
         """
-        return self.condig_ptr.areFeaturesResampled()
+        return self.config_ptr.areFeaturesResampled()
 
     def set_resample_features(self, resample_features: bool) -> SequentialPostOptimizationConfig:
         """
