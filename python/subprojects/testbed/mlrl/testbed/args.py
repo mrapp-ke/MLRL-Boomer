@@ -9,7 +9,7 @@ from enum import Enum
 
 from mlrl.common.config import RULE_INDUCTION_VALUES, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, \
     INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, EARLY_STOPPING_VALUES, \
-    PRUNING_VALUES, PARALLEL_VALUES
+    POST_OPTIMIZATION_VALUES, PRUNING_VALUES, PARALLEL_VALUES
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
@@ -79,8 +79,6 @@ PARAM_MAX_RULES = '--max-rules'
 PARAM_TIME_LIMIT = '--time-limit'
 
 PARAM_EARLY_STOPPING = '--early-stopping'
-
-PARAM_SEQUENTIAL_POST_OPTIMIZATION = '--post-optimization-rounds'
 
 PARAM_LABEL_SAMPLING = '--label-sampling'
 
@@ -276,10 +274,11 @@ def add_early_stopping_argument(parser: ArgumentParser):
                              + 'documentation.')
 
 
-def add_sequential_post_optimization_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_SEQUENTIAL_POST_OPTIMIZATION, type=int,
-                        help='The number of iterations that should be carried out for post-optimization. Must be at '
-                             + 'least 1 or 0, if no post-optimization should be used')
+def add_post_optimization_argument(parser: ArgumentParser):
+    parser.add_argument(PARAM_POST_OPTIMIZATION, type=str,
+                        help='The name of the method to be used for post-optimization. Must be one of '
+                             + format_dict_keys(POST_OPTIMIZATION_VALUES) + '. For additional options refer to the '
+                             + 'documentation.')
 
 
 def add_label_sampling_argument(parser: ArgumentParser):
