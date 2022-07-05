@@ -3,6 +3,42 @@
 
 
 /**
+ * An implementation of the class `IModelBuilder` that allows to replace a single rule of an `IntermediateModelBuilder`.
+ */
+class RuleReplacementBuilder final : public IModelBuilder {
+
+    private:
+
+        IntermediateModelBuilder::IntermediateRule& intermediateRule_;
+
+    public:
+
+        /**
+         * @param intermediateRule A reference to an object of type `IntermediateModelBuilder::IntermediateRule` that
+         *                         should be replaced
+         */
+        RuleReplacementBuilder(IntermediateModelBuilder::IntermediateRule& intermediateRule)
+            : intermediateRule_(intermediateRule) {
+
+        }
+
+        void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
+
+        }
+
+        void addRule(std::unique_ptr<ConditionList>& conditionListPtr,
+                     std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) {
+            intermediateRule_.first = std::move(conditionListPtr);
+            intermediateRule_.second = std::move(predictionPtr);
+        }
+
+        std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) {
+            return nullptr;
+        }
+
+};
+
+/**
  * An implementation of the class `IPostOptimizationPhase` that optimizes each rule in a model by relearning it in the
  * context of the other rules.
  */
