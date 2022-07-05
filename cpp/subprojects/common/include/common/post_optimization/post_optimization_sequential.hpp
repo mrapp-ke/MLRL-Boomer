@@ -50,6 +50,25 @@ class MLRLCOMMON_API ISequentialPostOptimizationConfig {
          */
         virtual ISequentialPostOptimizationConfig& setRefineHeads(bool refineHeads) = 0;
 
+        /**
+         * Returns whether a new sample of the available features is created whenever a new rule is refined or not.
+         *
+         * @return True, if a new sample of the available features is created whenever a new rule is refined, false, if
+         *         the conditions of the new rule use the same features as the original rule
+         */
+        virtual bool areFeaturesResampled() const = 0;
+
+        /**
+         * Sets whether a new sample of the available features should be created whenever a new rule is refined or not.
+         *
+         * @param resampleFeatures  True, if a new sample of the available features should be created whenever a new
+         *                          rule is refined, false, if the conditions of the new rule should use the same
+         *                          features as the original rule
+         * @return                  A reference to an object of type `ISequentialPostOptimizationConfig` that allows
+         *                          further configuration of the optimization method
+         */
+        virtual ISequentialPostOptimizationConfig& setResampleFeatures(bool resampleFeatures) = 0;
+
 };
 
 /**
@@ -64,6 +83,8 @@ class SequentialPostOptimizationConfig final : public ISequentialPostOptimizatio
 
         bool refineHeads_;
 
+        bool resampleFeatures_;
+
     public:
 
         SequentialPostOptimizationConfig();
@@ -75,6 +96,10 @@ class SequentialPostOptimizationConfig final : public ISequentialPostOptimizatio
         bool areHeadsRefined() const override;
 
         ISequentialPostOptimizationConfig& setRefineHeads(bool refineHeads) override;
+
+        bool areFeaturesResampled() const override;
+
+        ISequentialPostOptimizationConfig& setResampleFeatures(bool resampleFeatures) override;
 
         std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory() const override;
 

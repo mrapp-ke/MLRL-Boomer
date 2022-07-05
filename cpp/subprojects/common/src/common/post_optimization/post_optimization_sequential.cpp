@@ -39,6 +39,59 @@ class RuleReplacementBuilder final : public IModelBuilder {
 };
 
 /**
+ * An implementation of the class `IFeatureSampling` that returns the same features that are used by an existing
+ * `ConditionList`.
+ */
+class ConditionListFeatureSampling final : public IFeatureSampling {
+
+    private:
+
+        PartialIndexVector indexVector_;
+
+        const ConditionList& conditionList_;
+
+        uint32 index_;
+
+    public:
+
+        /**
+         * @param conditionList A reference to an object of type `ConditionList` to sample from
+         * @param index         The index of the condition that should be used next
+         */
+        ConditionListFeatureSampling(const ConditionList& conditionList, uint32 index)
+            : indexVector_(PartialIndexVector(1)), conditionList_(conditionList), index_(index) {
+
+        }
+
+        /**
+         * @param conditionList A reference to an object of type `ConditionList` to sample from
+         */
+        ConditionListFeatureSampling(const ConditionList& conditionList)
+            : ConditionListFeatureSampling(conditionList, 0) {
+
+        }
+
+        const IIndexVector& sample(RNG& rng) override {
+            if (index_ < conditionList_.getNumConditions()) {
+                const Condition& condition = conditionList_.cbegin()[index_];
+                uint32 featureIndex = condition.featureIndex;
+                indexVector_.begin()[0] = featureIndex;
+                index_++;
+            } else {
+                indexVector_.setNumElements(0, false);
+            }
+
+            return indexVector_;
+        }
+
+
+        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) override {
+            return std::make_unique<ConditionListFeatureSampling>(conditionList_, index_);
+        }
+
+};
+
+/**
  * An implementation of the class `IPostOptimizationPhase` that optimizes each rule in a model by relearning it in the
  * context of the other rules.
  */
@@ -52,6 +105,8 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 
         bool refineHeads_;
 
+        bool resampleFeatures_;
+
     public:
 
         /**
@@ -59,9 +114,13 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
          *                          the existing rules
          * @param numIterations     The number of iterations to be performed. Must be at least 1
          * @param refineHeads       True, if the heads of rules should be refined when being relearned, false otherwise
+         * @param resampleFeatures  True, if a new sample of the available features should be created when refining a
+         *                          new rule, false otherwise
          */
-        SequentialPostOptimization(IntermediateModelBuilder& modelBuilder, uint32 numIterations, bool refineHeads)
-            : modelBuilder_(modelBuilder), numIterations_(numIterations), refineHeads_(refineHeads) {
+        SequentialPostOptimization(IntermediateModelBuilder& modelBuilder, uint32 numIterations, bool refineHeads,
+                                   bool resampleFeatures)
+            : modelBuilder_(modelBuilder), numIterations_(numIterations), refineHeads_(refineHeads),
+              resampleFeatures_(resampleFeatures) {
 
         }
 
@@ -72,27 +131,35 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
             for (uint32 i = 0; i < numIterations_; i++) {
                 for (auto it = modelBuilder_.begin(); it != modelBuilder_.end(); it++) {
                     IntermediateModelBuilder::IntermediateRule& intermediateRule = *it;
-                    std::unique_ptr<ConditionList>& conditionListPtr = intermediateRule.first;
-                    std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr = intermediateRule.second;
+                    const ConditionList& conditionList = *intermediateRule.first;
+                    const AbstractEvaluatedPrediction& prediction = *intermediateRule.second;
 
                     // Create a new subset of the given thresholds...
                     const IWeightVector& weights = instanceSampling.sample(rng);
                     std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(thresholds);
 
                     // Filter the thresholds subset according to the conditions of the current rule...
-                    for (auto it2 = conditionListPtr->cbegin(); it2 != conditionListPtr->cend(); it2++) {
+                    for (auto it2 = conditionList.cbegin(); it2 != conditionList.cend(); it2++) {
                         const Condition& condition = *it2;
                         thresholdsSubsetPtr->filterThresholds(condition);
                     }
 
                     // Revert the statistics based on the predictions of the current rule...
-                    thresholdsSubsetPtr->revertPrediction(*predictionPtr);
+                    thresholdsSubsetPtr->revertPrediction(prediction);
 
                     // Learn a new rule...
-                    const IIndexVector& labelIndices = refineHeads_ ? labelSampling.sample(rng) : *predictionPtr;
+                    const IIndexVector& labelIndices = refineHeads_ ? labelSampling.sample(rng) : prediction;
                     RuleReplacementBuilder ruleReplacementBuilder(intermediateRule);
-                    ruleInduction.induceRule(thresholds, labelIndices, weights, partition, featureSampling, pruning,
-                                             postProcessor, rng, ruleReplacementBuilder);
+
+                    if (resampleFeatures_) {
+                        ruleInduction.induceRule(thresholds, labelIndices, weights, partition, featureSampling, pruning,
+                                                 postProcessor, rng, ruleReplacementBuilder);
+                    } else {
+                        ConditionListFeatureSampling conditionListFeatureSampling(conditionList);
+                        ruleInduction.induceRule(thresholds, labelIndices, weights, partition,
+                                                 conditionListFeatureSampling, pruning, postProcessor, rng,
+                                                 ruleReplacementBuilder);
+                    }
                 }
             }
         }
@@ -111,25 +178,30 @@ class SequentialPostOptimizationFactory final : public IPostOptimizationPhaseFac
 
         bool refineHeads_;
 
+        bool resampleFeatures_;
+
     public:
 
         /**
-         * @param numIterations The number of iterations to be performed. Must be at least 1
-         * @param refineHeads   True, if the heads of rules should be refined when being relearned, false otherwise
+         * @param numIterations     The number of iterations to be performed. Must be at least 1
+         * @param refineHeads       True, if the heads of rules should be refined when being relearned, false otherwise
+         * @param resampleFeatures  True, if a new sample of the available features should be created when refining a
+         *                          new rule, false otherwise
          */
-        SequentialPostOptimizationFactory(uint32 numIterations, bool refineHeads)
-            : numIterations_(numIterations), refineHeads_(refineHeads) {
+        SequentialPostOptimizationFactory(uint32 numIterations, bool refineHeads, bool resampleFeatures)
+            : numIterations_(numIterations), refineHeads_(refineHeads), resampleFeatures_(resampleFeatures) {
 
         }
 
         std::unique_ptr<IPostOptimizationPhase> create(IntermediateModelBuilder& modelBuilder) const override {
-            return std::make_unique<SequentialPostOptimization>(modelBuilder, numIterations_, refineHeads_);
+            return std::make_unique<SequentialPostOptimization>(modelBuilder, numIterations_, refineHeads_,
+                                                                resampleFeatures_);
         }
 
 };
 
 SequentialPostOptimizationConfig::SequentialPostOptimizationConfig()
-    : numIterations_(2), refineHeads_(false) {
+    : numIterations_(2), refineHeads_(false), resampleFeatures_(false) {
 
 }
 
@@ -152,6 +224,15 @@ ISequentialPostOptimizationConfig& SequentialPostOptimizationConfig::setRefineHe
     return *this;
 }
 
+bool SequentialPostOptimizationConfig::areFeaturesResampled() const {
+    return resampleFeatures_;
+}
+
+ISequentialPostOptimizationConfig& SequentialPostOptimizationConfig::setResampleFeatures(bool resampleFeatures) {
+    resampleFeatures_ = resampleFeatures;
+    return *this;
+}
+
 std::unique_ptr<IPostOptimizationPhaseFactory> SequentialPostOptimizationConfig::createPostOptimizationPhaseFactory() const {
-    return std::make_unique<SequentialPostOptimizationFactory>(numIterations_, refineHeads_);
+    return std::make_unique<SequentialPostOptimizationFactory>(numIterations_, refineHeads_, resampleFeatures_);
 }
