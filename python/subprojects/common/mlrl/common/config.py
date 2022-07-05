@@ -56,8 +56,6 @@ AGGREGATION_FUNCTION_MAX = 'max'
 
 AGGREGATION_FUNCTION_ARITHMETIC_MEAN = 'avg'
 
-POST_OPTIMIZATION_SEQUENTIAL = 'sequential'
-
 ARGUMENT_NUM_ITERATIONS = 'num_iterations'
 
 ARGUMENT_REFINE_HEADS = 'refine_heads'
@@ -132,9 +130,9 @@ EARLY_STOPPING_VALUES: Dict[str, Set[str]] = {
                                ARGUMENT_FORCE_STOP}
 }
 
-POST_OPTIMIZATION_VALUES: Dict[str, Set[str]] = {
-    NONE: {},
-    POST_OPTIMIZATION_SEQUENTIAL: {ARGUMENT_NUM_ITERATIONS, ARGUMENT_REFINE_HEADS}
+SEQUENTIAL_POST_OPTIMIZATION_VALUES: Dict[str, Set[str]] = {
+    str(BooleanOption.TRUE.value): {ARGUMENT_NUM_ITERATIONS, ARGUMENT_REFINE_HEADS},
+    str(BooleanOption.FALSE.value): {}
 }
 
 FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
@@ -375,13 +373,14 @@ def __create_aggregation_function(aggregation_function: str) -> AggregationFunct
         return AggregationFunction.ARITHMETIC_MEAN
 
 
-def configure_post_optimization(config: RuleLearnerConfig, post_optimization: Optional[str]):
-    if post_optimization is not None:
-        value, options = parse_param_and_options('post_optimization', post_optimization, POST_OPTIMIZATION_VALUES)
+def configure_sequential_post_optimization(config: RuleLearnerConfig, sequential_post_optimization: Optional[str]):
+    if sequential_post_optimization is not None:
+        value, options = parse_param_and_options('sequential_post_optimization', sequential_post_optimization,
+                                                 SEQUENTIAL_POST_OPTIMIZATION_VALUES)
 
-        if value == NONE:
+        if value == BooleanOption.FALSE.value:
             config.use_no_sequential_post_optimization()
-        elif value == POST_OPTIMIZATION_SEQUENTIAL:
+        elif value == BooleanOption.TRUE.value:
             c = config.use_sequential_post_optimization()
             c.set_num_iterations(options.get_int(ARGUMENT_NUM_ITERATIONS, c.get_num_iterations()))
             c.set_refine_heads(options.get_bool(ARGUMENT_REFINE_HEADS, c.are_heads_refined()))
