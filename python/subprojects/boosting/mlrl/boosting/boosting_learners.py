@@ -22,7 +22,7 @@ from mlrl.common.config import parse_param, configure_rule_induction, configure_
     configure_label_sampling, configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, \
     configure_pruning, configure_parallel_rule_refinement, configure_parallel_statistic_update, \
     configure_parallel_prediction, configure_size_stopping_criterion, configure_time_stopping_criterion, \
-    configure_early_stopping_criterion, configure_post_optimization
+    configure_early_stopping_criterion, configure_sequential_post_optimization
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int, get_float
 from sklearn.base import ClassifierMixin
@@ -76,7 +76,7 @@ class Boomer(RuleLearner, ClassifierMixin):
                  max_rules: Optional[int] = None,
                  time_limit: Optional[int] = None,
                  early_stopping: Optional[str] = None,
-                 post_optimization: Optional[str] = None,
+                 sequential_post_optimization: Optional[str] = None,
                  head_type: Optional[str] = None,
                  loss: Optional[str] = None,
                  classification_predictor: Optional[str] = None,
@@ -95,83 +95,85 @@ class Boomer(RuleLearner, ClassifierMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
-        :param statistic_format:            The format to be used for representation of gradients and Hessians. Must be
-                                            'dense', 'sparse' or 'auto', if the most suitable format should be chosen
-                                            automatically
-        :param default_rule:                Whether a default rule should be induced or not. Must be 'true', 'false' or
-                                            'auto', if it should be decided automatically whether a default rule should
-                                            be induced or not
-        :param rule_induction:              The algorithm that should be used for the induction of individual rules.
-                                            Must be 'top-down-greedy' or 'top-down-beam-search'. For additional options
-                                            refer to the documentation
-        :param max_rules:                   The maximum number of rules to be learned (including the default rule). Must
-                                            be at least 1 or 0, if the number of rules should not be restricted.
-        :param time_limit:                  The duration in seconds after which the induction of rules should be
-                                            canceled. Must be at least 1 or 0, if no time limit should be set
-        :param early_stopping:              The strategy that should be used for early stopping. Must be 'objective', if
-                                            the induction of new rules should be stopped as soon as the performance of
-                                            the model does not improve on a holdout set according to the loss function
-                                            or 'none', if no early stopping should be used. For additional options refer
-                                            to the documentation
-        :param post_optimization:           The name of the method that should be used for post-optimization. Must be
-                                            'sequential', if each rule should be optimized by being relearned in the
-                                            context of the other rules, or 'none', if no post-optimization should be
-                                            used. For additional options refer to the documentation
-        :param head_type:                   The type of the rule heads that should be used. Must be 'single-label',
-                                            'complete', 'partial-fixed', 'partial-dynamic' or 'auto', if the type of the
-                                            heads should be chosen automatically. For additional options refer to the
-                                            documentation
-        :param loss:                        The loss function to be minimized. Must be 'squared-error-label-wise',
-                                            'squared-hinge-label-wise', 'logistic-label-wise' or 'logistic-example-wise'
-        :param classification_predictor:    The strategy that should be used for predicting binary labels. Must be
-                                            'label-wise', 'example-wise' or 'auto', if the most suitable strategy should
-                                            be chosen automatically, depending on the loss function
-        :param probability_predictor:       The strategy that should be used for predicting probabilities. Must be
-                                            'label-wise', 'marginalized' or 'auto', if the most suitable strategy should
-                                            be chosen automatically, depending on the loss function
-        :param label_sampling:              The strategy that should be used to sample from the available labels
-                                            whenever a new rule is learned. Must be 'without-replacement' or 'none', if
-                                            no sampling should be used. For additional options refer to the
-                                            documentation
-        :param instance_sampling:           The strategy that should be used to sample from the available the training
-                                            examples whenever a new rule is learned. Must be 'with-replacement',
-                                            'without-replacement', 'stratified_label_wise', 'stratified_example_wise' or
-                                            'none', if no sampling should be used. For additional options refer to the
-                                            documentation
-        :param feature_sampling:            The strategy that is used to sample from the available features whenever a
-                                            rule is refined. Must be 'without-replacement' or 'none', if no sampling
-                                            should be used. For additional options refer to the documentation
-        :param holdout:                     The name of the strategy that should be used to creating a holdout set. Must
-                                            be 'random', 'stratified-label-wise', 'stratified-example-wise' or 'none',
-                                            if no holdout set should be used. For additional options refer to the
-                                            documentation
-        :param feature_binning:             The strategy that should be used to assign examples to bins based on their
-                                            feature values. Must be 'auto', 'equal-width', 'equal-frequency' or 'none',
-                                            if no feature binning should be used. If set to 'auto', the most suitable
-                                            strategy is chosen automatically, depending on the characteristics of the
-                                            feature matrix. For additional options refer to the documentation
-        :param label_binning:               The strategy that should be used to assign labels to bins. Must be 'auto',
-                                            'equal-width' or 'none', if no label binning should be used. If set to
-                                            'auto', the most suitable strategy is chosen automatically, depending on the
-                                            loss function and the type of rule heads. For additional options refer to
-                                            the documentation
-        :param pruning:                     The strategy that should be used to prune individual rules. Must be 'irep'
-                                            or 'none', if no pruning should be used
-        :param shrinkage:                   The shrinkage parameter, a.k.a. the "learning rate", that should be used to
-                                            shrink the weight of individual rules. Must be in (0, 1]
-        :param l1_regularization_weight:    The weight of the L1 regularization. Must be at least 0
-        :param l2_regularization_weight:    The weight of the L2 regularization. Must be at least 0
-        :param parallel_rule_refinement:    Whether potential refinements of rules should be searched for in parallel or
-                                            not. Must be 'true', 'false' or 'auto', if the most suitable strategy should
-                                            be chosen automatically depending on the loss function. For additional
-                                            options refer to the documentation
-        :param parallel_statistic_update:   Whether the gradients and Hessians for different examples should be updated
-                                            in parallel or not. Must be 'true', 'false' or 'auto', if the most suitable
-                                            strategy should be chosen automatically, depending on the loss function. For
-                                            additional options refer to the documentation
-        :param parallel_prediction:         Whether predictions for different examples should be obtained in parallel or
-                                            not. Must be 'true' or 'false'. For additional options refer to the
-                                            documentation
+        :param statistic_format:                The format to be used for representation of gradients and Hessians. Must
+                                                be 'dense', 'sparse' or 'auto', if the most suitable format should be
+                                                chosen automatically
+        :param default_rule:                    Whether a default rule should be induced or not. Must be 'true', 'false'
+                                                or 'auto', if it should be decided automatically whether a default rule
+                                                should be induced or not
+        :param rule_induction:                  The algorithm that should be used for the induction of individual rules.
+                                                Must be 'top-down-greedy' or 'top-down-beam-search'. For additional
+                                                options refer to the documentation
+        :param max_rules:                       The maximum number of rules to be learned (including the default rule).
+                                                Must be at least 1 or 0, if the number of rules should not be restricted
+        :param time_limit:                      The duration in seconds after which the induction of rules should be
+                                                canceled. Must be at least 1 or 0, if no time limit should be set
+        :param early_stopping:                  The strategy that should be used for early stopping. Must be
+                                                'objective', if the induction of new rules should be stopped as soon as
+                                                the performance of the model does not improve on a holdout set according
+                                                to the loss function or 'none', if no early stopping should be used. For
+                                                additional options refer to the documentation
+        :param sequential_post_optimization:    Whether each rule in a previously learned model should be optimized by
+                                                being relearned in the context of the other rules or not. Must be 'true'
+                                                or 'false'. For additional options refer to the documentation
+        :param head_type:                       The type of the rule heads that should be used. Must be 'single-label',
+                                                'complete', 'partial-fixed', 'partial-dynamic' or 'auto', if the type of
+                                                the heads should be chosen automatically. For additional options refer
+                                                to the documentation
+        :param loss:                            The loss function to be minimized. Must be 'squared-error-label-wise',
+                                                'squared-hinge-label-wise', 'logistic-label-wise' or
+                                                'logistic-example-wise'
+        :param classification_predictor:        The strategy that should be used for predicting binary labels. Must be
+                                                'label-wise', 'example-wise' or 'auto', if the most suitable strategy
+                                                should be chosen automatically, depending on the loss function
+        :param probability_predictor:           The strategy that should be used for predicting probabilities. Must be
+                                                'label-wise', 'marginalized' or 'auto', if the most suitable strategy
+                                                should be chosen automatically, depending on the loss function
+        :param label_sampling:                  The strategy that should be used to sample from the available labels
+                                                whenever a new rule is learned. Must be 'without-replacement' or 'none',
+                                                if no sampling should be used. For additional options refer to the
+                                                documentation
+        :param instance_sampling:               The strategy that should be used to sample from the available the
+                                                training examples whenever a new rule is learned. Must be
+                                                'with-replacement', 'without-replacement', 'stratified_label_wise',
+                                                'stratified_example_wise' or 'none', if no sampling should be used. For
+                                                additional options refer to the documentation
+        :param feature_sampling:                The strategy that is used to sample from the available features whenever
+                                                a rule is refined. Must be 'without-replacement' or 'none', if no
+                                                sampling should be used. For additional options refer to the
+                                                documentation
+        :param holdout:                         The name of the strategy that should be used to creating a holdout set.
+                                                Must be 'random', 'stratified-label-wise', 'stratified-example-wise' or
+                                                'none', if no holdout set should be used. For additional options refer
+                                                to the documentation
+        :param feature_binning:                 The strategy that should be used to assign examples to bins based on
+                                                their feature values. Must be 'auto', 'equal-width', 'equal-frequency'
+                                                or 'none', if no feature binning should be used. If set to 'auto', the
+                                                most suitable strategy is chosen automatically, depending on the
+                                                characteristics of the feature matrix. For additional options refer to
+                                                the documentation
+        :param label_binning:                   The strategy that should be used to assign labels to bins. Must be
+                                                'auto', 'equal-width' or 'none', if no label binning should be used. If
+                                                set to 'auto', the most suitable strategy is chosen automatically,
+                                                depending on the loss function and the type of rule heads. For
+                                                additional options refer to the documentation
+        :param pruning:                         The strategy that should be used to prune individual rules. Must be
+                                                'irep' or 'none', if no pruning should be used
+        :param shrinkage:                       The shrinkage parameter, a.k.a. the "learning rate", that should be used
+                                                to shrink the weight of individual rules. Must be in (0, 1]
+        :param l1_regularization_weight:        The weight of the L1 regularization. Must be at least 0
+        :param l2_regularization_weight:        The weight of the L2 regularization. Must be at least 0
+        :param parallel_rule_refinement:        Whether potential refinements of rules should be searched for in
+                                                parallel or not. Must be 'true', 'false' or 'auto', if the most suitable
+                                                strategy should be chosen automatically depending on the loss function.
+                                                For additional options refer to the documentation
+        :param parallel_statistic_update:       Whether the gradients and Hessians for different examples should be
+                                                updated in parallel or not. Must be 'true', 'false' or 'auto', if the
+                                                most suitable strategy should be chosen automatically, depending on the
+                                                loss function. For additional options refer to the documentation
+        :param parallel_prediction:             Whether predictions for different examples should be obtained in
+                                                parallel or not. Must be 'true' or 'false'. For additional options refer
+                                                to the documentation
         """
         super().__init__(random_state, feature_format, label_format, predicted_label_format)
         self.statistic_format = statistic_format
@@ -180,7 +182,7 @@ class Boomer(RuleLearner, ClassifierMixin):
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.early_stopping = early_stopping
-        self.post_optimization = post_optimization
+        self.sequential_post_optimization = sequential_post_optimization
         self.head_type = head_type
         self.loss = loss
         self.classification_predictor = classification_predictor
@@ -211,7 +213,7 @@ class Boomer(RuleLearner, ClassifierMixin):
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
         configure_early_stopping_criterion(config, get_string(self.early_stopping))
-        configure_post_optimization(config, get_string(self.post_optimization))
+        configure_sequential_post_optimization(config, get_string(self.sequential_post_optimization))
         configure_post_processor(config, shrinkage=get_float(self.shrinkage))
         configure_l1_regularization(config, l1_regularization_weight=get_float(self.l1_regularization_weight))
         configure_l2_regularization(config, l2_regularization_weight=get_float(self.l2_regularization_weight))
