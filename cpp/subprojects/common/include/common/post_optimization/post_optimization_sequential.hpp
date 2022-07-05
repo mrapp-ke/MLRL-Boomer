@@ -34,6 +34,22 @@ class MLRLCOMMON_API ISequentialPostOptimizationConfig {
          */
         virtual ISequentialPostOptimizationConfig& setNumIterations(uint32 numIterations) = 0;
 
+        /**
+         * Returns whether the heads of rules are refined when being relearned or not.
+         *
+         * @return True, if the heads of rules are refined when being relearned, false otherwise
+         */
+        virtual bool areHeadsRefined() const = 0;
+
+        /**
+         * Sets whether the heads of rules should be refined when being relearned or not.
+         *
+         * @param refineHeads   True, if the heads of rules should be refined when being relearned, false otherwise
+         * @return              A reference to an object of type `ISequentialPostOptimizationConfig` that allows further
+         *                      configuration of the optimization method
+         */
+        virtual ISequentialPostOptimizationConfig& setRefineHeads(bool refineHeads) = 0;
+
 };
 
 /**
@@ -46,6 +62,8 @@ class SequentialPostOptimizationConfig final : public ISequentialPostOptimizatio
 
         uint32 numIterations_;
 
+        bool refineHeads_;
+
     public:
 
         SequentialPostOptimizationConfig();
@@ -53,6 +71,10 @@ class SequentialPostOptimizationConfig final : public ISequentialPostOptimizatio
         uint32 getNumIterations() const override;
 
         ISequentialPostOptimizationConfig& setNumIterations(uint32 numIterations) override;
+
+        bool areHeadsRefined() const override;
+
+        ISequentialPostOptimizationConfig& setRefineHeads(bool refineHeads) override;
 
         std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory() const override;
 
