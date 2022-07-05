@@ -337,6 +337,21 @@ class ApproximateThresholds final : public AbstractThresholds {
                     }
                 }
 
+                void revertPrediction(const AbstractPrediction& prediction) override {
+                    uint32 numCovered = coverageSet_.getNumCovered();
+                    CoverageSet::const_iterator iterator = coverageSet_.cbegin();
+                    const AbstractPrediction* predictionPtr = &prediction;
+                    IStatistics* statisticsPtr = &thresholds_.statisticsProvider_.get();
+                    uint32 numThreads = thresholds_.numThreads_;
+
+                    #pragma omp parallel for firstprivate(numCovered) firstprivate(iterator) \
+                    firstprivate(predictionPtr) firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+                    for (int64 i = 0; i < numCovered; i++) {
+                        uint32 exampleIndex = iterator[i];
+                        predictionPtr->revert(*statisticsPtr, exampleIndex);
+                    }
+                }
+
         };
 
         std::unique_ptr<IFeatureBinning> numericalFeatureBinningPtr_;
