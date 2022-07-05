@@ -201,7 +201,7 @@ class SequentialPostOptimizationFactory final : public IPostOptimizationPhaseFac
 };
 
 SequentialPostOptimizationConfig::SequentialPostOptimizationConfig()
-    : numIterations_(2), refineHeads_(false), resampleFeatures_(false) {
+    : numIterations_(2), refineHeads_(false), resampleFeatures_(true) {
 
 }
 
