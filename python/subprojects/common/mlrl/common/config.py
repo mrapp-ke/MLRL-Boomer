@@ -131,7 +131,7 @@ EARLY_STOPPING_VALUES: Dict[str, Set[str]] = {
 }
 
 SEQUENTIAL_POST_OPTIMIZATION_VALUES: Dict[str, Set[str]] = {
-    str(BooleanOption.TRUE.value): {ARGUMENT_NUM_ITERATIONS, ARGUMENT_REFINE_HEADS},
+    str(BooleanOption.TRUE.value): {ARGUMENT_NUM_ITERATIONS, ARGUMENT_REFINE_HEADS, ARGUMENT_RESAMPLE_FEATURES},
     str(BooleanOption.FALSE.value): {}
 }
 
