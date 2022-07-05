@@ -48,3 +48,25 @@ cdef class SequentialPostOptimizationConfig:
         """
         self.config_ptr.setRefineHeads(refine_heads)
         return self
+
+    def are_features_resampled(self) -> bool:
+        """
+        Returns whether a new sample of the available features is created whenever a new rule is refined or not.
+
+        :return: True, if a new sample of the available features is created whenever a new rule is refined, false, if
+                 the conditions of the new rule use the same features as the original rule
+        """
+        return self.condig_ptr.areFeaturesResampled()
+
+    def set_resample_features(self, resample_features: bool) -> SequentialPostOptimizationConfig:
+        """
+        Sets whether a new sample of the available features should be created whenever a new rule is refined or not.
+
+        :param resample_features:   True, if a new sample of the available features should be created whenever a new
+                                    rule is refined, false, if the conditions of the new rule should use the same
+                                    features as the original rule
+        :return:                    An `SequentialPostOptimizationConfig` that allows further configuration of the
+                                    optimization method
+        """
+        self.config_ptr.setResampleFeatures(resample_features)
+        return self

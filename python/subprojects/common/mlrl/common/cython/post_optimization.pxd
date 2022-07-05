@@ -17,6 +17,10 @@ cdef extern from "common/post_optimization/post_optimization_sequential.hpp" nog
 
         ISequentialPostOptimizationConfig& setRefineHeads(bool refineHeads) except +
 
+        bool areFeaturesResampled() const
+
+        ISequentialPostOptimizationConfig& setResampleFeatures(bool resampleFeatures) except +
+
 
 cdef class SequentialPostOptimizationConfig:
 

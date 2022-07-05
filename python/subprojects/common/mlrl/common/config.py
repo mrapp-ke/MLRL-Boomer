@@ -384,3 +384,4 @@ def configure_sequential_post_optimization(config: RuleLearnerConfig, sequential
             c = config.use_sequential_post_optimization()
             c.set_num_iterations(options.get_int(ARGUMENT_NUM_ITERATIONS, c.get_num_iterations()))
             c.set_refine_heads(options.get_bool(ARGUMENT_REFINE_HEADS, c.are_heads_refined()))
+            c.set_resample_features(options.get_bool(ARGUMENT_RESAMPLE_FEATURES, c.are_features_resampled()))
