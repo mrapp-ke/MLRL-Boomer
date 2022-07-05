@@ -107,11 +107,11 @@ class Boomer(RuleLearner, ClassifierMixin):
                                             be at least 1 or 0, if the number of rules should not be restricted.
         :param time_limit:                  The duration in seconds after which the induction of rules should be
                                             canceled. Must be at least 1 or 0, if no time limit should be set
-        :param early_stopping:              The strategy that should be used for early stopping. Must be 'loss', if the
-                                            induction of new rules should be stopped as soon as the performance of the
-                                            model does not improve on a holdout set according to the loss function or
-                                            'none', if no early stopping should be used. For additional options refer to
-                                            the documentation
+        :param early_stopping:              The strategy that should be used for early stopping. Must be 'objective', if
+                                            the induction of new rules should be stopped as soon as the performance of
+                                            the model does not improve on a holdout set according to the loss function
+                                            or 'none', if no early stopping should be used. For additional options refer
+                                            to the documentation
         :param head_type:                   The type of the rule heads that should be used. Must be 'single-label',
                                             'complete', 'partial-fixed', 'partial-dynamic' or 'auto', if the type of the
                                             heads should be chosen automatically. For additional options refer to the
