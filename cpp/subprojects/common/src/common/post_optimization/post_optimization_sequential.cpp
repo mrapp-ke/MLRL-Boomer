@@ -66,7 +66,32 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                            ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
                            IFeatureSampling& featureSampling, const IPruning& pruning,
                            const IPostProcessor& postProcessor, RNG& rng) const override {
-            // TODO Implement
+            for (uint32 i = 0; i < numIterations_; i++) {
+                for (auto it = modelBuilder_.begin(); it != modelBuilder_.end(); it++) {
+                    IntermediateModelBuilder::IntermediateRule& intermediateRule = *it;
+                    std::unique_ptr<ConditionList>& conditionListPtr = intermediateRule.first;
+                    std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr = intermediateRule.second;
+
+                    // Create a new subset of the given thresholds...
+                    const IWeightVector& weights = instanceSampling.sample(rng);
+                    std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(thresholds);
+
+                    // Filter the thresholds subset according to the conditions of the current rule...
+                    for (auto it2 = conditionListPtr->cbegin(); it2 != conditionListPtr->cend(); it2++) {
+                        const Condition& condition = *it2;
+                        thresholdsSubsetPtr->filterThresholds(condition);
+                    }
+
+                    // Revert the statistics based on the predictions of the current rule...
+                    thresholdsSubsetPtr->revertPrediction(*predictionPtr);
+
+                    // Learn a new rule...
+                    const IIndexVector& labelIndices = *predictionPtr;
+                    RuleReplacementBuilder ruleReplacementBuilder(intermediateRule);
+                    ruleInduction.induceRule(thresholds, labelIndices, weights, partition, featureSampling, pruning,
+                                             postProcessor, rng, ruleReplacementBuilder);
+                }
+            }
         }
 
 };
