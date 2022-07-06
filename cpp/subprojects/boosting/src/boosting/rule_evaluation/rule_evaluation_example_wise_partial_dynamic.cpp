@@ -69,7 +69,7 @@ namespace boosting {
 
             }
 
-            const IScoreVector& evaluate(DenseExampleWiseStatisticVector& statisticVector) override {
+            const IScoreVector& calculateScores(DenseExampleWiseStatisticVector& statisticVector) override {
                 uint32 numLabels = statisticVector.getNumElements();
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
                     statisticVector.gradients_cbegin();

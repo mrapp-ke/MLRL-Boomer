@@ -31,7 +31,7 @@ namespace boosting {
              * @return                  A reference to an object of type `IScoreVector` that stores the predicted
              *                          scores, as well as an overall quality score
              */
-            virtual const IScoreVector& evaluate(StatisticVector& statisticVector) = 0;
+            virtual const IScoreVector& calculateScores(StatisticVector& statisticVector) = 0;
 
     };
 

@@ -35,9 +35,9 @@ namespace seco {
                 scoreVector_.overallQualityScore = 0;
             }
 
-            const IScoreVector& evaluate(const VectorConstView<uint32>& majorityLabelIndices,
-                                         const DenseConfusionMatrixVector& confusionMatricesTotal,
-                                         const DenseConfusionMatrixVector& confusionMatricesCovered) override {
+            const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
+                                                const DenseConfusionMatrixVector& confusionMatricesTotal,
+                                                const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 typename DenseScoreVector<T>::index_const_iterator indexIterator = scoreVector_.indices_cbegin();
                 auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),

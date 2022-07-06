@@ -45,7 +45,7 @@ namespace boosting {
 
             }
 
-            const IScoreVector& evaluate(StatisticVector& statisticVector) override {
+            const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename DenseScoreVector<IndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();

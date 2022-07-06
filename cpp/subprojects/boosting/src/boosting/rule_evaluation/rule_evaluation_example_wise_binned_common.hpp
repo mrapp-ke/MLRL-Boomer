@@ -277,7 +277,7 @@ namespace boosting {
             /**
              * @see `IRuleEvaluation::evaluate`
              */
-            const IScoreVector& evaluate(DenseExampleWiseStatisticVector& statisticVector) override final {
+            const IScoreVector& calculateScores(DenseExampleWiseStatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
                 uint32 numCriteria = this->calculateLabelWiseCriteria(statisticVector, criteria_,
                                                                       scoreVector_.getNumElements(),

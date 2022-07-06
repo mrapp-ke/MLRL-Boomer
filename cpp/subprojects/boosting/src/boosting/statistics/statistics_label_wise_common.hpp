@@ -122,7 +122,7 @@ namespace boosting {
              * @see `IStatisticsSubset::calculateScores`
              */
             const IScoreVector& calculateScores() override final {
-                return ruleEvaluationPtr_->evaluate(sumVector_);
+                return ruleEvaluationPtr_->calculateScores(sumVector_);
             }
 
     };
@@ -215,7 +215,7 @@ namespace boosting {
                      * @see `IWeightedStatisticsSubset::calculateScoresAccumulated`
                      */
                     const IScoreVector& calculateScoresAccumulated() override final {
-                        return this->ruleEvaluationPtr_->evaluate(*accumulatedSumVectorPtr_);
+                        return this->ruleEvaluationPtr_->calculateScores(*accumulatedSumVectorPtr_);
                     }
 
                     /**
@@ -223,7 +223,7 @@ namespace boosting {
                      */
                     const IScoreVector& calculateScoresUncovered() override final {
                         tmpVector_.difference(*totalSumVector_, this->labelIndices_, this->sumVector_);
-                        return this->ruleEvaluationPtr_->evaluate(tmpVector_);
+                        return this->ruleEvaluationPtr_->calculateScores(tmpVector_);
                     }
 
                     /**
@@ -231,7 +231,7 @@ namespace boosting {
                      */
                     const IScoreVector& calculateScoresUncoveredAccumulated() override final {
                         tmpVector_.difference(*totalSumVector_, this->labelIndices_, *accumulatedSumVectorPtr_);
-                        return this->ruleEvaluationPtr_->evaluate(tmpVector_);
+                        return this->ruleEvaluationPtr_->calculateScores(tmpVector_);
                     }
 
             };
