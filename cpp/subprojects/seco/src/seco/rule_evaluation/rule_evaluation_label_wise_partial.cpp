@@ -48,9 +48,9 @@ namespace seco {
 
             }
 
-            const IScoreVector& evaluate(const VectorConstView<uint32>& majorityLabelIndices,
-                                         const DenseConfusionMatrixVector& confusionMatricesTotal,
-                                         const DenseConfusionMatrixVector& confusionMatricesCovered) override {
+            const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
+                                                const DenseConfusionMatrixVector& confusionMatricesTotal,
+                                                const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = scoreVector_.getNumElements();
                 DenseScoreVector<PartialIndexVector>::index_const_iterator indexIterator =
                     scoreVector_.indices_cbegin();
@@ -121,9 +121,9 @@ namespace seco {
 
             }
 
-            const IScoreVector& evaluate(const VectorConstView<uint32>& majorityLabelIndices,
-                                         const DenseConfusionMatrixVector& confusionMatricesTotal,
-                                         const DenseConfusionMatrixVector& confusionMatricesCovered) override {
+            const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
+                                                const DenseConfusionMatrixVector& confusionMatricesTotal,
+                                                const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
                 typename T::const_iterator indexIterator = labelIndices_.cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();

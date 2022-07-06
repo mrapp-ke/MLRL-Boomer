@@ -35,9 +35,9 @@ namespace seco {
              * @return                          A reference to an object of type `IScoreVector` that stores the
              *                                  predicted scores, as well as an overall quality score
              */
-            virtual const IScoreVector& evaluate(const VectorConstView<uint32>& majorityLabelIndices,
-                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
-                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) = 0;
+            virtual const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
+                                                        const DenseConfusionMatrixVector& confusionMatricesTotal,
+                                                        const DenseConfusionMatrixVector& confusionMatricesCovered) = 0;
 
     };
 
