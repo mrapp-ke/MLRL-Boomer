@@ -70,7 +70,7 @@ namespace boosting {
                 indexVector_.begin()[0] = labelIndices_.cbegin()[bestIndex];
                 scoreVector_.overallQualityScore = calculateLabelWiseQualityScore(
                     bestScore, statisticIterator[bestIndex].first, statisticIterator[bestIndex].second,
-                    l1RegularizationWeight_, l2RegularizationWeight_);;
+                    l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }
 
