@@ -50,6 +50,6 @@ class IStatisticsSubset {
          * @return A reference to an object of type `IScoreVector` that stores the scores to be predicted by the rule
          *         for each considered label, as well as an overall quality score
          */
-        virtual const IScoreVector& evaluate() = 0;
+        virtual const IScoreVector& calculateScores() = 0;
 
 };
