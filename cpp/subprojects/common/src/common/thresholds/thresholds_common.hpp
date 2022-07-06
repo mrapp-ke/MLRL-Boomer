@@ -26,7 +26,7 @@ static inline float64 evaluateOutOfSampleInternally(IndexIterator indexIterator,
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
     return scoreVector.overallQualityScore;
 }
 
@@ -48,7 +48,7 @@ static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights,
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
     return scoreVector.overallQualityScore;
 }
 
@@ -71,7 +71,7 @@ static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights,
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
     return scoreVector.overallQualityScore;
 }
 
@@ -90,7 +90,7 @@ static inline void recalculatePredictionInternally(IndexIterator indexIterator, 
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
     scoreVector.updatePrediction(prediction);
 }
 
@@ -107,7 +107,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
         statisticsSubsetPtr->addToSubset(exampleIndex);
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
     scoreVector.updatePrediction(prediction);
 }
 
@@ -128,7 +128,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
     scoreVector.updatePrediction(prediction);
 }
 

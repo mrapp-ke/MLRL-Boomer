@@ -106,7 +106,7 @@ static inline void findRefinementInternally(
                     // covers at least `minCoverage` examples...
                     if (numCovered >= minCoverage) {
                         // Determine the best prediction for the covered examples...
-                        const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+                        const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
                         if (comparator.isImprovement(scoreVector)) {
@@ -135,7 +135,7 @@ static inline void findRefinementInternally(
 
                     if (coverage >= minCoverage) {
                         // Determine the best prediction for the covered examples...
-                        const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateUncovered();
+                        const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScoresUncovered();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
                         if (comparator.isImprovement(scoreVector)) {
@@ -183,7 +183,7 @@ static inline void findRefinementInternally(
             // Check if a condition that uses the == operator covers at least `minCoverage` examples...
             if (numCovered >= minCoverage) {
                 // Determine the best prediction for the covered examples...
-                const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+                const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
                 if (comparator.isImprovement(scoreVector)) {
@@ -203,7 +203,7 @@ static inline void findRefinementInternally(
 
             if (coverage >= minCoverage) {
                 // Determine the best prediction for the covered examples...
-                const IScoreVector& scoreVector2 = statisticsSubsetPtr->evaluateUncovered();
+                const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculateScoresUncovered();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
                 if (comparator.isImprovement(scoreVector2)) {
@@ -263,7 +263,7 @@ static inline void findRefinementInternally(
                     // covers at least `minCoverage` examples...
                     if (numCovered >= minCoverage) {
                         // Determine the best prediction for the covered examples...
-                        const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+                        const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
                         if (comparator.isImprovement(scoreVector)) {
@@ -291,7 +291,7 @@ static inline void findRefinementInternally(
 
                     if (coverage >= minCoverage) {
                         // Determine the best prediction for the covered examples...
-                        const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateUncovered();
+                        const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScoresUncovered();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
                         if (comparator.isImprovement(scoreVector)) {
@@ -340,7 +340,7 @@ static inline void findRefinementInternally(
         // Check if a condition that uses the == operator covers at least `minCoverage` examples...
         if (numCovered >= minCoverage) {
             // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+            const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {
@@ -360,7 +360,7 @@ static inline void findRefinementInternally(
 
         if (coverage >= minCoverage) {
             // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateUncovered();
+            const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScoresUncovered();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {
@@ -396,8 +396,8 @@ static inline void findRefinementInternally(
 
         if (coverage >= minCoverage) {
             // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = nominal ? statisticsSubsetPtr->evaluateAccumulated()
-                                                      : statisticsSubsetPtr->evaluate();
+            const IScoreVector& scoreVector = nominal ? statisticsSubsetPtr->calculateScoresAccumulated()
+                                                      : statisticsSubsetPtr->calculateScores();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {
@@ -427,8 +427,8 @@ static inline void findRefinementInternally(
 
         if (coverage >= minCoverage) {
             // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = nominal ? statisticsSubsetPtr->evaluateUncoveredAccumulated()
-                                                      : statisticsSubsetPtr->evaluateUncovered();
+            const IScoreVector& scoreVector = nominal ? statisticsSubsetPtr->calculateScoresUncoveredAccumulated()
+                                                      : statisticsSubsetPtr->calculateScoresUncovered();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {
@@ -463,7 +463,7 @@ static inline void findRefinementInternally(
         // Check if a condition that uses the <= operator covers at least `minCoverage` examples...
         if (numAccumulatedNegative >= minCoverage) {
             // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateAccumulated();
+            const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScoresAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {
@@ -493,7 +493,7 @@ static inline void findRefinementInternally(
 
         if (coverage >= minCoverage) {
             // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluateUncoveredAccumulated();
+            const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScoresUncoveredAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {

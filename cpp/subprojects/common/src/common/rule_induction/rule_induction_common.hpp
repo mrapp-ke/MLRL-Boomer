@@ -72,7 +72,7 @@ class AbstractRuleInduction : public IRuleInduction {
                 statisticsSubsetPtr->addToSubset(i);
             }
 
-            const IScoreVector& scoreVector = statisticsSubsetPtr->evaluate();
+            const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
             std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr;
             ScoreProcessor scoreProcessor(defaultPredictionPtr);
             scoreProcessor.processScores(scoreVector);

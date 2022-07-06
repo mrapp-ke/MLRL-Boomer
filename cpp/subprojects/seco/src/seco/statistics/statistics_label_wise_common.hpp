@@ -155,9 +155,9 @@ namespace seco {
             }
 
             /**
-             * @see `IStatisticsSubset::evaluate`
+             * @see `IStatisticsSubset::calculateScores`
              */
-            const IScoreVector& evaluate() override final {
+            const IScoreVector& calculateScores() override final {
                 return ruleEvaluationPtr_->evaluate(majorityLabelVector_, totalSumVector_, sumVector_);
             }
 
@@ -386,17 +386,17 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::evaluateAccumulated`
+                     * @see `IWeightedStatisticsSubset::calculateScoresAccumulated`
                      */
-                    const IScoreVector& evaluateAccumulated() override {
+                    const IScoreVector& calculateScoresAccumulated() override {
                         return this->ruleEvaluationPtr_->evaluate(this->majorityLabelVector_, this->totalSumVector_,
                                                                   *accumulatedSumVectorPtr_);
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::evaluateUncovered`
+                     * @see `IWeightedStatisticsSubset::calculateScoresUncovered`
                      */
-                    const IScoreVector& evaluateUncovered() override {
+                    const IScoreVector& calculateScoresUncovered() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), this->labelIndices_,
                                               this->sumVector_.cbegin(), this->sumVector_.cend());
                         return this->ruleEvaluationPtr_->evaluate(this->majorityLabelVector_, this->totalSumVector_,
@@ -404,9 +404,9 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::evaluateUncoveredAccumulated`
+                     * @see `IWeightedStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
-                    const IScoreVector& evaluateUncoveredAccumulated() override {
+                    const IScoreVector& calculateScoresUncoveredAccumulated() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), this->labelIndices_,
                                               accumulatedSumVectorPtr_->cbegin(), accumulatedSumVectorPtr_->cend());
                         return this->ruleEvaluationPtr_->evaluate(this->majorityLabelVector_, this->totalSumVector_,

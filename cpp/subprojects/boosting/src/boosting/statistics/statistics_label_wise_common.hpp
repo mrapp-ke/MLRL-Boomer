@@ -119,9 +119,9 @@ namespace boosting {
             }
 
             /**
-             * @see `IStatisticsSubset::evaluate`
+             * @see `IStatisticsSubset::calculateScores`
              */
-            const IScoreVector& evaluate() override final {
+            const IScoreVector& calculateScores() override final {
                 return ruleEvaluationPtr_->evaluate(sumVector_);
             }
 
@@ -212,24 +212,24 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::evaluateAccumulated`
+                     * @see `IWeightedStatisticsSubset::calculateScoresAccumulated`
                      */
-                    const IScoreVector& evaluateAccumulated() override final {
+                    const IScoreVector& calculateScoresAccumulated() override final {
                         return this->ruleEvaluationPtr_->evaluate(*accumulatedSumVectorPtr_);
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::evaluateUncovered`
+                     * @see `IWeightedStatisticsSubset::calculateScoresUncovered`
                      */
-                    const IScoreVector& evaluateUncovered() override final {
+                    const IScoreVector& calculateScoresUncovered() override final {
                         tmpVector_.difference(*totalSumVector_, this->labelIndices_, this->sumVector_);
                         return this->ruleEvaluationPtr_->evaluate(tmpVector_);
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::evaluateUncoveredAccumulated`
+                     * @see `IWeightedStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
-                    const IScoreVector& evaluateUncoveredAccumulated() override final {
+                    const IScoreVector& calculateScoresUncoveredAccumulated() override final {
                         tmpVector_.difference(*totalSumVector_, this->labelIndices_, *accumulatedSumVectorPtr_);
                         return this->ruleEvaluationPtr_->evaluate(tmpVector_);
                     }
