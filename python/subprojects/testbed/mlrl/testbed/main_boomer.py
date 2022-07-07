@@ -8,11 +8,12 @@ from mlrl.boosting.boosting_learners import Boomer, STATISTIC_FORMAT_VALUES, DEF
     PROBABILITY_PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
 from mlrl.common.config import AUTOMATIC
 from mlrl.common.strings import format_dict_keys, format_string_set
-from mlrl.testbed.args import add_rule_learner_arguments, add_max_rules_argument, add_time_limit_argument, \
-    add_label_sampling_argument, add_instance_sampling_argument, add_feature_sampling_argument, \
-    add_partition_sampling_argument, add_early_stopping_argument, add_sequential_post_optimization_argument, \
-    add_pruning_argument, add_rule_induction_argument, add_parallel_prediction_argument, PARAM_FEATURE_BINNING, \
-    PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE
+from mlrl.testbed.args import add_learner_arguments, add_rule_learner_arguments, add_max_rules_argument, \
+    add_time_limit_argument, add_label_sampling_argument, add_instance_sampling_argument, \
+    add_feature_sampling_argument, add_partition_sampling_argument, add_early_stopping_argument, \
+    add_sequential_post_optimization_argument, add_pruning_argument, add_rule_induction_argument, \
+    add_parallel_prediction_argument, PARAM_FEATURE_BINNING, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, \
+    PARAM_PARALLEL_STATISTIC_UPDATE
 from mlrl.testbed.args_boosting import add_shrinkage_argument, add_regularization_arguments, PARAM_STATISTIC_FORMAT, \
     PARAM_DEFAULT_RULE, PARAM_LABEL_BINNING, PARAM_LOSS, PARAM_CLASSIFICATION_PREDICTOR, PARAM_PROBABILITY_PREDICTOR
 from mlrl.testbed.runnables import RuleLearnerRunnable
@@ -55,6 +56,7 @@ class BoomerRunnable(RuleLearnerRunnable):
 
 
 def __add_arguments(parser: ArgumentParser):
+    add_learner_arguments(parser)
     add_rule_learner_arguments(parser)
     add_max_rules_argument(parser)
     add_time_limit_argument(parser)
