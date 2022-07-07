@@ -204,8 +204,7 @@ class LearnerRunnable(Runnable, ABC):
         :param args:    The command line arguments
         :return:        The `ModelPrinter` that has been created
         """
-        if args.print_rules or (args.store_rules and args.output_dir is not None):
-            log.warning('The learner does not support printing textual representations of models')
+        log.warning('The learner does not support printing textual representations of models')
         return None
 
     def _create_model_characteristics_printer(self, args) -> Optional[ModelCharacteristicsPrinter]:
@@ -216,8 +215,7 @@ class LearnerRunnable(Runnable, ABC):
         :param args:    The command line arguments
         :return:        The `ModelCharacteristicsPrinter` that has been created
         """
-        if args.print_model_characteristics or (args.store_model_characteristics and args.output_dir is not None):
-            log.warning('The learner does not support printing the characteristics of models')
+        log.warning('The learner does not support printing the characteristics of models')
         return None
 
     @abstractmethod
