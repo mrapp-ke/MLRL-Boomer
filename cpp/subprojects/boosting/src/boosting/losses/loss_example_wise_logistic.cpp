@@ -1,6 +1,7 @@
 #include "boosting/losses/loss_example_wise_logistic.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
 #include "common/math/math.hpp"
+#include "logistic_function.hpp"
 
 
 namespace boosting {
@@ -361,7 +362,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IProbabilityFunctionFactory> ExampleWiseLogisticLossConfig::createProbabilityFunctionFactory() const {
-        return nullptr;
+        return std::make_unique<LogisticFunctionFactory>();
     }
 
     float64 ExampleWiseLogisticLossConfig::getDefaultPrediction() const {
