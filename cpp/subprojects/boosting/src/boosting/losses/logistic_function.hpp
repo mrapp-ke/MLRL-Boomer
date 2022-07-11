@@ -9,7 +9,6 @@
 
 namespace boosting {
 
-
     /**
      * Calculates and returns the logistic function `1 / (1 + exp(-x))`, given a specific value `x`.
      *
