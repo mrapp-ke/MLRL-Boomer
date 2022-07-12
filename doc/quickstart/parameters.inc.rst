@@ -222,6 +222,7 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'auto'`` The most suitable strategy for predicting binary labels is chosen automatically, depending on the loss function.
   * ``'label-wise'`` The prediction for an example is determined for each label independently.
   * ``'example-wise'`` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data.
+  * ``'gfm'`` The label vector that is predicted for an example is chosen according to the general F-measure maximizer (GFM).
 
 * ``probability_predictor`` (Default value = ``'auto'``)
 
