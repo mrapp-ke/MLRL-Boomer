@@ -498,6 +498,15 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useExampleWiseClassificationPredictor()
 
+    def use_gfm_classification_predictor(self):
+        """
+        Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
+        irrelevant by summing up the scores that are provided by the individual rules of a existing rule-based model and
+        transforming them into binary values according to the general F-measure maximizer (GFM).
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useGfmClassificationPredictor()
+
     def use_automatic_classification_predictor(self):
         """
         Configures the rule learner to automatically decide for a predictor for predicting whether individual labels are
