@@ -1,9 +1,138 @@
 #include "boosting/output/predictor_classification_gfm.hpp"
+#include "common/data/vector_sparse_array.hpp"
+#include "common/math/math.hpp"
 #include "predictor_common.hpp"
+#include "predictor_probability_common.hpp"
 #include "omp.h"
+#include <algorithm>
 
 
 namespace boosting {
+
+    static inline float64 calculateMarginalizedProbabilities(float64* probabilities, uint32 numLabels,
+                                                             const float64* jointProbabilities,
+                                                             float64 sumOfJointProbabilities,
+                                                             const LabelVectorSet& labelVectorSet) {
+        float64 nullVectorProbability = 0;
+        uint32 i = 0;
+
+        for (auto it = labelVectorSet.cbegin(); it != labelVectorSet.cend(); it++) {
+            const auto& entry = *it;
+            const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
+            uint32 numRelevantLabels = labelVectorPtr->getNumElements();
+            float64 normalizedJointProbability = divideOrZero(jointProbabilities[i], sumOfJointProbabilities);
+
+            if (numRelevantLabels > 0) {
+                LabelVector::const_iterator labelIndexIterator = labelVectorPtr->cbegin();
+
+                for (uint32 j = 0; j < numRelevantLabels; j++) {
+                    uint32 labelIndex = labelIndexIterator[j];
+                    probabilities[(numLabels * labelIndex) + numRelevantLabels] += normalizedJointProbability;
+                }
+            } else {
+                nullVectorProbability = normalizedJointProbability;
+            }
+
+            i++;
+        }
+
+        return nullVectorProbability;
+    }
+
+    static inline float64 createAndEvaluateLabelVector(SparseArrayVector<float64>::iterator iterator, uint32 numLabels,
+                                                       const float64* probabilities, uint32 k) {
+        for (uint32 i = 0; i < numLabels; i++) {
+            uint32 offset = i * numLabels;
+            float64 weightedProbability = 0;
+
+            for (uint32 j = 0; j < numLabels; j++) {
+                float64 probability = probabilities[offset + j];
+                weightedProbability += (2 * probability) / (float64) (j + k + 1);
+            }
+
+            IndexedValue<float64>& entry = iterator[i];
+            entry.index = i;
+            entry.value = weightedProbability;
+        }
+
+        std::partial_sort(iterator, &iterator[k], &iterator[numLabels],
+                          [=](const IndexedValue<float64>& a, const IndexedValue<float64>& b) {
+            return a.value > b.value;
+        });
+
+        float64 quality = 0;
+
+        for (uint32 i = 0; i < k; i++) {
+            quality += iterator[i].value;
+        }
+
+        return quality;
+    }
+
+    static inline uint32 storePrediction(const SparseArrayVector<float64>& tmpVector,
+                                       DensePredictionMatrix<uint8>::value_iterator predictionIterator) {
+        uint32 numRelevantLabels = tmpVector.getNumElements();
+        SparseArrayVector<float64>::const_iterator iterator = tmpVector.cbegin();
+
+        for (uint32 i = 0; i < numRelevantLabels; i++) {
+            uint32 labelIndex = iterator[i].index;
+            predictionIterator[labelIndex] = 1;
+        }
+
+        return numRelevantLabels;
+    }
+
+    static inline uint32 storePrediction(SparseArrayVector<float64>& tmpVector, BinaryLilMatrix::row row) {
+        uint32 numRelevantLabels = tmpVector.getNumElements();
+
+        if (numRelevantLabels > 0) {
+            SparseArrayVector<float64>::iterator iterator = tmpVector.begin();
+            std::sort(iterator, tmpVector.end(), [=](const IndexedValue<float64>& a, const IndexedValue<float64>& b) {
+                return a.index < b.index;
+            });
+
+            for (uint32 i = 0; i < numRelevantLabels; i++) {
+                row.emplace_back(iterator[i].index);
+            }
+        }
+
+        return numRelevantLabels;
+    }
+
+    template<typename Prediction>
+    static inline uint32 predictGfm(const float64* scoresBegin, const float64* scoresEnd, Prediction prediction,
+                                    uint32 numLabels, const IProbabilityFunction& probabilityFunction,
+                                    const LabelVectorSet& labelVectorSet, uint32 numLabelVectors) {
+        float64* jointProbabilities = new float64[numLabelVectors];
+        float64 sumOfJointProbabilities = calculateJointProbabilities(scoresBegin, scoresEnd, jointProbabilities,
+                                                                      probabilityFunction, labelVectorSet);
+        float64* marginalProbabilities = new float64[numLabels * numLabels] {}; // TODO Use sparse representation
+        float64 bestQuality = calculateMarginalizedProbabilities(marginalProbabilities, numLabels, jointProbabilities,
+                                                                 sumOfJointProbabilities, labelVectorSet);
+        delete[] jointProbabilities;
+
+        SparseArrayVector<float64> tmpVector(numLabels);
+        tmpVector.setNumElements(0, false);
+        SparseArrayVector<float64> tmpVector2(numLabels);
+        SparseArrayVector<float64>* bestVectorPtr = &tmpVector;
+        SparseArrayVector<float64>* tmpVectorPtr = &tmpVector2;
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            uint32 k = i + 1;
+            float64 quality = createAndEvaluateLabelVector(tmpVectorPtr->begin(), numLabels, marginalProbabilities, k);
+
+            if (quality > bestQuality) {
+                bestQuality = quality;
+                tmpVectorPtr->setNumElements(k, false);
+                SparseArrayVector<float64>* tmpPtr = bestVectorPtr;
+                bestVectorPtr = tmpVectorPtr;
+                tmpVectorPtr = tmpPtr;
+            }
+        }
+
+        delete[] marginalProbabilities;
+        return storePrediction(*bestVectorPtr, prediction);
+    }
 
     /**
      * An implementation of the type `IClassificationPredictor` that allows to predict whether individual labels of
@@ -55,22 +184,28 @@ namespace boosting {
                     std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
                 const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
 
-                if (labelVectorSetPtr && labelVectorSetPtr->getNumLabelVectors() > 0) {
-                    const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
-                    CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
-                    const Model* modelPtr = &model_;
-                    const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
+                if (labelVectorSetPtr) {
+                    uint32 numLabelVectors = labelVectorSetPtr->getNumLabelVectors();
 
-                    #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-                    firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-                    firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) schedule(dynamic) \
-                    num_threads(numThreads_)
-                    for (int64 i = 0; i < numExamples; i++) {
-                        float64* scoreVector = new float64[numLabels] {};
-                        applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
-                                   featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                        // TODO
-                        delete[] scoreVector;
+                    if (numLabelVectors > 0) {
+                        const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
+                        CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
+                        const Model* modelPtr = &model_;
+                        const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
+
+                        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) \
+                        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
+                        firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) \
+                        firstprivate(numLabelVectors) schedule(dynamic) num_threads(numThreads_)
+                        for (int64 i = 0; i < numExamples; i++) {
+                            float64* scoreVector = new float64[numLabels] {};
+                            applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
+                                       featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                            predictGfm(scoreVector, &scoreVector[numLabels],
+                                       predictionMatrixRawPtr->row_values_begin(i), numLabels, *probabilityFunctionPtr,
+                                       *labelVectorSetPtr, numLabelVectors);
+                            delete[] scoreVector;
+                        }
                     }
                 }
 
@@ -88,23 +223,30 @@ namespace boosting {
                     std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
                 const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
 
-                if (labelVectorSetPtr && labelVectorSetPtr->getNumLabelVectors() > 0) {
-                    const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
-                    CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
-                    const Model* modelPtr = &model_;
-                    const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
+                if (labelVectorSetPtr) {
+                    uint32 numLabelVectors = labelVectorSetPtr->getNumLabelVectors();
 
-                    #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) \
-                    firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-                    firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
-                    firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads_)
-                    for (int64 i = 0; i < numExamples; i++) {
-                        float64* scoreVector = new float64[numLabels] {};
-                        applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
-                                      featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                                      featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                        // TODO
-                        delete[] scoreVector;
+                    if (numLabelVectors > 0) {
+                        const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
+                        CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
+                        const Model* modelPtr = &model_;
+                        const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
+
+                        #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) \
+                        firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+                        firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
+                        firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) schedule(dynamic) \
+                        num_threads(numThreads_)
+                        for (int64 i = 0; i < numExamples; i++) {
+                            float64* scoreVector = new float64[numLabels] {};
+                            applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                                          featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                                          featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                            predictGfm(scoreVector, &scoreVector[numLabels],
+                                       predictionMatrixRawPtr->row_values_begin(i), numLabels, *probabilityFunctionPtr,
+                                       *labelVectorSetPtr, numLabelVectors);
+                            delete[] scoreVector;
+                        }
                     }
                 }
 
@@ -121,22 +263,30 @@ namespace boosting {
                 uint32 numNonZeroElements = 0;
                 const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
 
-                if (labelVectorSetPtr && labelVectorSetPtr->getNumLabelVectors() > 0) {
-                    const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
-                    BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
-                    const Model* modelPtr = &model_;
-                    const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
+                if (labelVectorSetPtr) {
+                    uint32 numLabelVectors = labelVectorSetPtr->getNumLabelVectors();
 
-                    #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
-                    firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-                    firstprivate(predictionMatrixPtr) firstprivate(probabilityFunctionPtr) \
-                    firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads_)
-                    for (int64 i = 0; i < numExamples; i++) {
-                        float64* scoreVector = new float64[numLabels] {};
-                        applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
-                                   featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                        // TODO
-                        delete[] scoreVector;
+                    if (numLabelVectors > 0) {
+                        const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
+                        BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
+                        const Model* modelPtr = &model_;
+                        const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
+
+                        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
+                        firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+                        firstprivate(predictionMatrixPtr) firstprivate(probabilityFunctionPtr) \
+                        firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) schedule(dynamic) \
+                        num_threads(numThreads_)
+                        for (int64 i = 0; i < numExamples; i++) {
+                            float64* scoreVector = new float64[numLabels] {};
+                            applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
+                                       featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                            numNonZeroElements += predictGfm<BinaryLilMatrix::row>(scoreVector, &scoreVector[numLabels],
+                                                                                   (*predictionMatrixPtr)[i], numLabels,
+                                                                                   *probabilityFunctionPtr,
+                                                                                   *labelVectorSetPtr, numLabelVectors);
+                            delete[] scoreVector;
+                        }
                     }
                 }
 
@@ -154,24 +304,31 @@ namespace boosting {
                 uint32 numNonZeroElements = 0;
                 const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
 
-                if (labelVectorSetPtr && labelVectorSetPtr->getNumLabelVectors() > 0) {
-                    const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
-                    BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
-                    const Model* modelPtr = &model_;
-                    const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
+                if (labelVectorSetPtr) {
+                    uint32 numLabelVectors = labelVectorSetPtr->getNumLabelVectors();
 
-                    #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
-                    firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) \
-                    firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-                    firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) schedule(dynamic) \
-                    num_threads(numThreads_)
-                    for (int64 i = 0; i < numExamples; i++) {
-                        float64* scoreVector = new float64[numLabels] {};
-                        applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
-                                      featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                                      featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                        // TODO
-                        delete[] scoreVector;
+                    if (numLabelVectors > 0) {
+                        const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
+                        BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
+                        const Model* modelPtr = &model_;
+                        const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
+
+                        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
+                        firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) \
+                        firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+                        firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) \
+                        firstprivate(numLabelVectors) schedule(dynamic) num_threads(numThreads_)
+                        for (int64 i = 0; i < numExamples; i++) {
+                            float64* scoreVector = new float64[numLabels] {};
+                            applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                                          featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                                          featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                            numNonZeroElements += predictGfm<BinaryLilMatrix::row>(scoreVector, &scoreVector[numLabels],
+                                                                                   (*predictionMatrixPtr)[i], numLabels,
+                                                                                   *probabilityFunctionPtr,
+                                                                                   *labelVectorSetPtr, numLabelVectors);
+                            delete[] scoreVector;
+                        }
                     }
                 }
 
