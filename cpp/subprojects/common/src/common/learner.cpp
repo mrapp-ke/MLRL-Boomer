@@ -359,6 +359,15 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
                                             std::move(labelSpaceInfoPtr));
 }
 
+bool AbstractRuleLearner::canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix,
+                                           const ITrainingResult& trainingResult) const {
+    return this->canPredictLabels(featureMatrix, trainingResult.getNumLabels());
+}
+
+bool AbstractRuleLearner::canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    return this->createClassificationPredictorFactory(featureMatrix, numLabels) != nullptr;
+}
+
 std::unique_ptr<DensePredictionMatrix<uint8>> AbstractRuleLearner::predictLabels(
         const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
     return this->predictLabels(featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getLabelSpaceInfo(),

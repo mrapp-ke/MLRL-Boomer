@@ -858,6 +858,28 @@ class MLRLCOMMON_API IRuleLearner {
             const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const = 0;
 
         /**
+         * Returns whether the rule learner is able to predict binary labels or not.
+         *
+         * @param featureMatrix     A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise
+         *                          access to the feature values of the query examples
+         * @param trainingResult    A reference to an object of type `ITrainingResult` that provides access to the model
+         *                          and additional information that should be used to obtain predictions
+         * @return                  True, if the rule learner is able to predict binary labels, false otherwise
+         */
+        virtual bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix,
+                                      const ITrainingResult& trainingResult) const = 0;
+
+        /**
+         * Returns whether the rule learner is able to predict binary labels or not.
+         *
+         * @param featureMatrix     A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise
+         *                          access to the feature values of the query examples
+         * @param numLabels         The number of labels to predict for
+         * @return                  True, if the rule learner is able to predict binary labels, false otherwise
+         */
+        virtual bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
+
+        /**
          * Obtains and returns dense predictions for given query examples.
          *
          * @param featureMatrix     A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise
@@ -1355,6 +1377,11 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(
             const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
+
+        bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix,
+                              const ITrainingResult& trainingResult) const override;
+
+        bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
