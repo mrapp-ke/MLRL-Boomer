@@ -63,7 +63,7 @@ class IClassificationPredictorConfig : public IPredictorConfig {
          *                      values of the training examples
          * @param numLabels     The total number of available labels
          * @return              An unique pointer to an object of type `IClassificationPredictorFactory` that has been
-         *                      created
+         *                      created or a null pointer, if the prediction of binary labels is not supported
          */
         virtual std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
