@@ -318,6 +318,11 @@ void AbstractRuleLearner::createPostOptimizationPhaseFactories(PostOptimizationP
     }
 }
 
+std::unique_ptr<IClassificationPredictorFactory> AbstractRuleLearner::createClassificationPredictorFactory(
+        const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    return nullptr;
+}
+
 std::unique_ptr<IRegressionPredictorFactory> AbstractRuleLearner::createRegressionPredictorFactory(
         const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
     return nullptr;
