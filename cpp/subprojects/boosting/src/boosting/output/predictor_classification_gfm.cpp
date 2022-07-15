@@ -396,7 +396,6 @@ namespace boosting {
             return std::make_unique<GfmClassificationPredictorFactory>(std::move(probabilityFunctionFactoryPtr),
                                                                        numThreads);
         } else {
-            // FIXME This will cause problems
             return nullptr;
         }
     }
