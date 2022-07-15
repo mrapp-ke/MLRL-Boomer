@@ -388,13 +388,40 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
         num_neq = characteristics.num_neq
         num_conditions = num_leq + num_gr + num_eq + num_neq
         num_total_conditions = np.sum(num_conditions)
-        frac_leq = np.sum(num_leq) / num_total_conditions * 100
-        frac_gr = np.sum(num_gr) / num_total_conditions * 100
-        frac_eq = np.sum(num_eq) / num_total_conditions * 100
-        frac_neq = 100 - frac_leq - frac_gr - frac_eq
+
+        if num_total_conditions > 0:
+            frac_leq = np.sum(num_leq) / num_total_conditions * 100
+            frac_gr = np.sum(num_gr) / num_total_conditions * 100
+            frac_eq = np.sum(num_eq) / num_total_conditions * 100
+            frac_neq = 100 - frac_leq - frac_gr - frac_eq
+            num_conditions_mean = np.mean(num_conditions)
+            num_conditions_min = np.min(num_conditions)
+            num_conditions_max = np.max(num_conditions)
+
+        else:
+            frac_leq = 0.0
+            frac_gr = 0.0
+            frac_eq = 0.0
+            frac_neq = 0.0
+            num_conditions_mean = 0.0
+            num_conditions_min = 0.0
+            num_conditions_max = 0.0
+
         num_total_predictions = np.sum(num_predictions)
-        frac_pos = np.sum(num_pos_predictions) / num_total_predictions * 100
-        frac_neg = 100 - frac_pos
+
+        if num_total_predictions > 0:
+            frac_pos = np.sum(num_pos_predictions) / num_total_predictions * 100
+            frac_neg = 100 - frac_pos
+            num_predictions_mean = np.mean(num_predictions)
+            num_predictions_min = np.min(num_predictions)
+            num_predictions_max = np.max(num_predictions)
+        else:
+            frac_pos = 0.0
+            frac_neg = 0.0
+            num_predictions_mean = 0.0
+            num_predictions_min = 0.0
+            num_predictions_max = 0.0
+
         num_rules = num_predictions.shape[0]
         msg = 'Model characteristics'
 
@@ -403,19 +430,21 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
 
         msg += ':\n\n'
         msg += 'Rules: ' + str(num_rules)
+
         if default_rule_index is not None:
             msg += ' (plus a default rule with ' + str(
                 characteristics.default_rule_pos_predictions) + ' positive and ' + str(
                 characteristics.default_rule_neg_predictions) + ' negative predictions that is excluded from the ' \
                    + 'following statistics)'
+
         msg += '\n'
-        msg += 'Conditions per rule: avg. ' + str(np.mean(num_conditions)) + ', min. ' + str(
-            np.min(num_conditions)) + ', max. ' + str(np.max(num_conditions)) + '\n'
+        msg += 'Conditions per rule: avg. ' + str(num_conditions_mean) + ', min. ' + str(
+            num_conditions_min) + ', max. ' + str(num_conditions_max) + '\n'
         msg += 'Conditions total: ' + str(num_total_conditions) + ' (' + str(frac_leq) + '% use <= operator, ' + str(
             frac_gr) + '% use > operator, ' + str(frac_eq) + '% use == operator, ' + str(
             frac_neq) + '% use != operator)\n'
-        msg += 'Predictions per rule: avg. ' + str(np.mean(num_predictions)) + ', min. ' + str(
-            np.min(num_predictions)) + ', max. ' + str(np.max(num_predictions)) + '\n'
+        msg += 'Predictions per rule: avg. ' + str(num_predictions_mean) + ', min. ' + str(
+            num_predictions_min) + ', max. ' + str(num_predictions_max) + '\n'
         msg += 'Predictions total: ' + str(num_total_predictions) + ' (' + str(frac_pos) + '% positive, ' + str(
             frac_neg) + '% negative)\n'
         log.info(msg)
