@@ -83,7 +83,7 @@ class Learner(BaseEstimator, ABC):
         :return:    A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that stores the
                     prediction for individual examples and labels
         """
-        pass
+        raise RuntimeError('Prediction of binary labels not supported using the current configuration')
 
     def _predict_proba(self, x):
         """
