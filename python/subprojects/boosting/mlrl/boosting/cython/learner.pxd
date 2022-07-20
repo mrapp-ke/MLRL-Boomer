@@ -113,6 +113,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useExampleWiseClassificationPredictor()
 
 
+    cdef cppclass IGfmClassificationPredictorMixin"boosting::IBoostingRuleLearner::IGfmClassificationPredictorMixin":
+
+        # Functions:
+
+        void useGfmClassificationPredictor()
+
+
     cdef cppclass IMarginalizedProbabilityPredictorMixin"boosting::IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin":
 
         # Functions:
