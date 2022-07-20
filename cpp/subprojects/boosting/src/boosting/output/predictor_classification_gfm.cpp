@@ -29,7 +29,7 @@ namespace boosting {
                 for (uint32 j = 0; j < numRelevantLabels; j++) {
                     uint32 labelIndex = labelIndexIterator[j];
                     SparseSetMatrix<float64>::row row = probabilities[labelIndex];
-                    IndexedValue<float64>& indexedValue = row.emplace(numRelevantLabels, 0.0);
+                    IndexedValue<float64>& indexedValue = row.emplace(numRelevantLabels - 1, 0.0);
                     indexedValue.value += normalizedJointProbability;
                 }
             } else {
