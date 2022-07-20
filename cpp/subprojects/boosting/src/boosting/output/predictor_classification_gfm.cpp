@@ -111,10 +111,10 @@ namespace boosting {
                                                                  sumOfJointProbabilities, labelVectorSet);
         delete[] jointProbabilities;
 
-        SparseArrayVector<float64> tmpVector(numLabels);
-        tmpVector.setNumElements(0, false);
+        SparseArrayVector<float64> tmpVector1(numLabels);
+        tmpVector1.setNumElements(0, false);
         SparseArrayVector<float64> tmpVector2(numLabels);
-        SparseArrayVector<float64>* bestVectorPtr = &tmpVector;
+        SparseArrayVector<float64>* bestVectorPtr = &tmpVector1;
         SparseArrayVector<float64>* tmpVectorPtr = &tmpVector2;
 
         for (uint32 i = 0; i < numLabels; i++) {
