@@ -10,6 +10,22 @@
 
 namespace boosting {
 
+    static inline uint32 getMaxLabelCardinality(const LabelVectorSet& labelVectorSet) {
+        uint32 maxLabelCardinality = 0;
+
+        for (auto it = labelVectorSet.cbegin(); it != labelVectorSet.cend(); it++) {
+            const auto& entry = *it;
+            const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
+            uint32 numRelevantLabels = labelVectorPtr->getNumElements();
+
+            if (numRelevantLabels > maxLabelCardinality) {
+                maxLabelCardinality = numRelevantLabels;
+            }
+        }
+
+        return maxLabelCardinality;
+    }
+
     static inline float64 calculateMarginalizedProbabilities(SparseSetMatrix<float64>& probabilities, uint32 numLabels,
                                                              const float64* jointProbabilities,
                                                              float64 sumOfJointProbabilities,
@@ -104,11 +120,12 @@ namespace boosting {
     template<typename Prediction>
     static inline uint32 predictGfm(const float64* scoresBegin, const float64* scoresEnd, Prediction prediction,
                                     uint32 numLabels, const IProbabilityFunction& probabilityFunction,
-                                    const LabelVectorSet& labelVectorSet, uint32 numLabelVectors) {
+                                    const LabelVectorSet& labelVectorSet, uint32 numLabelVectors,
+                                    uint32 maxLabelCardinality) {
         float64* jointProbabilities = new float64[numLabelVectors];
         float64 sumOfJointProbabilities = calculateJointProbabilities(scoresBegin, scoresEnd, jointProbabilities,
                                                                       probabilityFunction, labelVectorSet);
-        SparseSetMatrix<float64> marginalProbabilities(numLabels, numLabels);
+        SparseSetMatrix<float64> marginalProbabilities(numLabels, maxLabelCardinality);
         float64 bestQuality = calculateMarginalizedProbabilities(marginalProbabilities, numLabels, jointProbabilities,
                                                                  sumOfJointProbabilities, labelVectorSet);
         delete[] jointProbabilities;
@@ -189,6 +206,7 @@ namespace boosting {
                     uint32 numLabelVectors = labelVectorSetPtr->getNumLabelVectors();
 
                     if (numLabelVectors > 0) {
+                        uint32 maxLabelCardinality = getMaxLabelCardinality(*labelVectorSetPtr);
                         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                         CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                         const Model* modelPtr = &model_;
@@ -197,14 +215,15 @@ namespace boosting {
                         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) \
                         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
                         firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) \
-                        firstprivate(numLabelVectors) schedule(dynamic) num_threads(numThreads_)
+                        firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) schedule(dynamic) \
+                        num_threads(numThreads_)
                         for (int64 i = 0; i < numExamples; i++) {
                             float64* scoreVector = new float64[numLabels] {};
                             applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
                                        featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                             predictGfm(scoreVector, &scoreVector[numLabels],
                                        predictionMatrixRawPtr->row_values_begin(i), numLabels, *probabilityFunctionPtr,
-                                       *labelVectorSetPtr, numLabelVectors);
+                                       *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
                             delete[] scoreVector;
                         }
                     }
@@ -228,6 +247,7 @@ namespace boosting {
                     uint32 numLabelVectors = labelVectorSetPtr->getNumLabelVectors();
 
                     if (numLabelVectors > 0) {
+                        uint32 maxLabelCardinality = getMaxLabelCardinality(*labelVectorSetPtr);
                         const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                         CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                         const Model* modelPtr = &model_;
@@ -236,8 +256,8 @@ namespace boosting {
                         #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) \
                         firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
                         firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
-                        firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) schedule(dynamic) \
-                        num_threads(numThreads_)
+                        firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
+                        firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads_)
                         for (int64 i = 0; i < numExamples; i++) {
                             float64* scoreVector = new float64[numLabels] {};
                             applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
@@ -245,7 +265,7 @@ namespace boosting {
                                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                             predictGfm(scoreVector, &scoreVector[numLabels],
                                        predictionMatrixRawPtr->row_values_begin(i), numLabels, *probabilityFunctionPtr,
-                                       *labelVectorSetPtr, numLabelVectors);
+                                       *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
                             delete[] scoreVector;
                         }
                     }
@@ -268,6 +288,7 @@ namespace boosting {
                     uint32 numLabelVectors = labelVectorSetPtr->getNumLabelVectors();
 
                     if (numLabelVectors > 0) {
+                        uint32 maxLabelCardinality = getMaxLabelCardinality(*labelVectorSetPtr);
                         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                         BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                         const Model* modelPtr = &model_;
@@ -276,8 +297,8 @@ namespace boosting {
                         #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
                         firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
                         firstprivate(predictionMatrixPtr) firstprivate(probabilityFunctionPtr) \
-                        firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) schedule(dynamic) \
-                        num_threads(numThreads_)
+                        firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
+                        firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads_)
                         for (int64 i = 0; i < numExamples; i++) {
                             float64* scoreVector = new float64[numLabels] {};
                             applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
@@ -285,7 +306,8 @@ namespace boosting {
                             numNonZeroElements += predictGfm<BinaryLilMatrix::row>(scoreVector, &scoreVector[numLabels],
                                                                                    (*predictionMatrixPtr)[i], numLabels,
                                                                                    *probabilityFunctionPtr,
-                                                                                   *labelVectorSetPtr, numLabelVectors);
+                                                                                   *labelVectorSetPtr, numLabelVectors,
+                                                                                   maxLabelCardinality);
                             delete[] scoreVector;
                         }
                     }
@@ -309,6 +331,7 @@ namespace boosting {
                     uint32 numLabelVectors = labelVectorSetPtr->getNumLabelVectors();
 
                     if (numLabelVectors > 0) {
+                        uint32 maxLabelCardinality = getMaxLabelCardinality(*labelVectorSetPtr);
                         const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                         BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                         const Model* modelPtr = &model_;
@@ -318,7 +341,8 @@ namespace boosting {
                         firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) \
                         firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
                         firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) \
-                        firstprivate(numLabelVectors) schedule(dynamic) num_threads(numThreads_)
+                        firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) schedule(dynamic) \
+                        num_threads(numThreads_)
                         for (int64 i = 0; i < numExamples; i++) {
                             float64* scoreVector = new float64[numLabels] {};
                             applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
@@ -327,7 +351,8 @@ namespace boosting {
                             numNonZeroElements += predictGfm<BinaryLilMatrix::row>(scoreVector, &scoreVector[numLabels],
                                                                                    (*predictionMatrixPtr)[i], numLabels,
                                                                                    *probabilityFunctionPtr,
-                                                                                   *labelVectorSetPtr, numLabelVectors);
+                                                                                   *labelVectorSetPtr, numLabelVectors,
+                                                                                   maxLabelCardinality);
                             delete[] scoreVector;
                         }
                     }
