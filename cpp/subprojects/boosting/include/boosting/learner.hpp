@@ -16,6 +16,7 @@
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 #include "boosting/output/predictor_classification_example_wise.hpp"
+#include "boosting/output/predictor_classification_gfm.hpp"
 #include "boosting/output/predictor_probability_marginalized.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
@@ -469,6 +470,33 @@ namespace boosting {
                         std::unique_ptr<IClassificationPredictorConfig>& classificationPredictorConfigPtr =
                             this->getClassificationPredictorConfigPtr();
                         classificationPredictorConfigPtr = std::make_unique<ExampleWiseClassificationPredictorConfig>(
+                            this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                    }
+
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
+             * predicting whether individual labels are relevant or irrelevant by summing up the scores that are
+             * provided by the individual rules of an existing rule-based model and transforming them into binary values
+             * according to the general F-measure maximizer (GFM).
+             */
+            class IGfmClassificationPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+
+                public:
+
+                    virtual ~IGfmClassificationPredictorMixin() { };
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting whether individual labels are
+                     * relevant or irrelevant by summing up the scores that are provided by the individual rules of a
+                     * existing rule-based model and transforming them into binary values according to the general
+                     * F-measure maximizer (GFM).
+                     */
+                    virtual void useGfmClassificationPredictor() {
+                        std::unique_ptr<IClassificationPredictorConfig>& classificationPredictorConfigPtr =
+                            this->getClassificationPredictorConfigPtr();
+                        classificationPredictorConfigPtr = std::make_unique<GfmClassificationPredictorConfig>(
                             this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
 
