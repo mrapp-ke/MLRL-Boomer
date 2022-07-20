@@ -1,4 +1,5 @@
 #include "boosting/output/predictor_classification_gfm.hpp"
+#include "common/data/matrix_sparse_set.hpp"
 #include "common/data/vector_sparse_array.hpp"
 #include "common/math/math.hpp"
 #include "predictor_common.hpp"
@@ -9,7 +10,7 @@
 
 namespace boosting {
 
-    static inline float64 calculateMarginalizedProbabilities(float64* probabilities, uint32 numLabels,
+    static inline float64 calculateMarginalizedProbabilities(SparseSetMatrix<float64>& probabilities, uint32 numLabels,
                                                              const float64* jointProbabilities,
                                                              float64 sumOfJointProbabilities,
                                                              const LabelVectorSet& labelVectorSet) {
@@ -27,7 +28,9 @@ namespace boosting {
 
                 for (uint32 j = 0; j < numRelevantLabels; j++) {
                     uint32 labelIndex = labelIndexIterator[j];
-                    probabilities[(numLabels * labelIndex) + numRelevantLabels] += normalizedJointProbability;
+                    SparseSetMatrix<float64>::row row = probabilities[labelIndex];
+                    IndexedValue<float64>& indexedValue = row.emplace(numRelevantLabels, 0.0);
+                    indexedValue.value += normalizedJointProbability;
                 }
             } else {
                 nullVectorProbability = normalizedJointProbability;
@@ -40,14 +43,13 @@ namespace boosting {
     }
 
     static inline float64 createAndEvaluateLabelVector(SparseArrayVector<float64>::iterator iterator, uint32 numLabels,
-                                                       const float64* probabilities, uint32 k) {
+                                                       const SparseSetMatrix<float64>& probabilities, uint32 k) {
         for (uint32 i = 0; i < numLabels; i++) {
-            uint32 offset = i * numLabels;
             float64 weightedProbability = 0;
 
-            for (uint32 j = 0; j < numLabels; j++) {
-                float64 probability = probabilities[offset + j];
-                weightedProbability += (2 * probability) / (float64) (j + k + 1);
+            for (auto it = probabilities.row_cbegin(i); it != probabilities.row_cend(i); it++) {
+                const IndexedValue<float64>& indexedValue = *it;
+                weightedProbability += (2 * indexedValue.value) / (float64) (indexedValue.index + k + 1);
             }
 
             IndexedValue<float64>& entry = iterator[i];
@@ -106,7 +108,7 @@ namespace boosting {
         float64* jointProbabilities = new float64[numLabelVectors];
         float64 sumOfJointProbabilities = calculateJointProbabilities(scoresBegin, scoresEnd, jointProbabilities,
                                                                       probabilityFunction, labelVectorSet);
-        float64* marginalProbabilities = new float64[numLabels * numLabels] {}; // TODO Use sparse representation
+        SparseSetMatrix<float64> marginalProbabilities(numLabels, numLabels);
         float64 bestQuality = calculateMarginalizedProbabilities(marginalProbabilities, numLabels, jointProbabilities,
                                                                  sumOfJointProbabilities, labelVectorSet);
         delete[] jointProbabilities;
@@ -130,7 +132,6 @@ namespace boosting {
             }
         }
 
-        delete[] marginalProbabilities;
         return storePrediction(*bestVectorPtr, prediction);
     }
 
