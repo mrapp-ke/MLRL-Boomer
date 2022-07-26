@@ -428,7 +428,7 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
             frac_leq = np.sum(num_leq) / num_total_conditions * 100
             frac_gr = np.sum(num_gr) / num_total_conditions * 100
             frac_eq = np.sum(num_eq) / num_total_conditions * 100
-            frac_neq = 100 - frac_leq - frac_gr - frac_eq
+            frac_neq = np.sum(num_neq) / num_total_conditions * 100
             num_conditions_mean = np.mean(num_conditions)
             num_conditions_min = np.min(num_conditions)
             num_conditions_max = np.max(num_conditions)
@@ -446,7 +446,7 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
 
         if num_total_predictions > 0:
             frac_pos = np.sum(num_pos_predictions) / num_total_predictions * 100
-            frac_neg = 100 - frac_pos
+            frac_neg = np.sum(num_neg_predictions) / num_total_predictions * 100
             num_predictions_mean = np.mean(num_predictions)
             num_predictions_min = np.min(num_predictions)
             num_predictions_max = np.max(num_predictions)
