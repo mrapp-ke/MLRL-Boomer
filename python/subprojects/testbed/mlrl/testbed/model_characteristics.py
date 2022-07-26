@@ -24,6 +24,10 @@ ARGUMENT_PRINT_LABEL_NAMES = 'print_label_names'
 
 ARGUMENT_PRINT_NOMINAL_VALUES = 'print_nominal_values'
 
+ARGUMENT_PRINT_BODIES = 'print_bodies'
+
+ARGUMENT_PRINT_HEADS = 'print_heads'
+
 
 class RuleModelFormatter(RuleModelVisitor):
     """
@@ -39,12 +43,15 @@ class RuleModelFormatter(RuleModelVisitor):
         self.print_feature_names = options.get_bool(ARGUMENT_PRINT_FEATURE_NAMES, True)
         self.print_label_names = options.get_bool(ARGUMENT_PRINT_LABEL_NAMES, True)
         self.print_nominal_values = options.get_bool(ARGUMENT_PRINT_NOMINAL_VALUES, True)
+        self.print_bodies = options.get_bool(ARGUMENT_PRINT_BODIES, True)
+        self.print_heads = options.get_bool(ARGUMENT_PRINT_HEADS, True)
         self.attributes = meta_data.attributes
         self.labels = meta_data.labels
         self.text = StringIO()
 
     def visit_empty_body(self, _: EmptyBody):
-        self.text.write('{}')
+        if self.print_bodies:
+            self.text.write('{}')
 
     def __format_conditions(self, num_conditions: int, indices: np.ndarray, thresholds: np.ndarray,
                             operator: str) -> int:
@@ -88,58 +95,75 @@ class RuleModelFormatter(RuleModelVisitor):
         return result
 
     def visit_conjunctive_body(self, body: ConjunctiveBody):
-        text = self.text
-        text.write('{')
-        num_conditions = self.__format_conditions(0, body.leq_indices, body.leq_thresholds, '<=')
-        num_conditions = self.__format_conditions(num_conditions, body.gr_indices, body.gr_thresholds, '>')
-        num_conditions = self.__format_conditions(num_conditions, body.eq_indices, body.eq_thresholds, '==')
-        self.__format_conditions(num_conditions, body.neq_indices, body.neq_thresholds, '!=')
-        text.write('}')
+        if self.print_bodies:
+            text = self.text
+            text.write('{')
+            num_conditions = self.__format_conditions(0, body.leq_indices, body.leq_thresholds, '<=')
+            num_conditions = self.__format_conditions(num_conditions, body.gr_indices, body.gr_thresholds, '>')
+            num_conditions = self.__format_conditions(num_conditions, body.eq_indices, body.eq_thresholds, '==')
+            self.__format_conditions(num_conditions, body.neq_indices, body.neq_thresholds, '!=')
+            text.write('}')
 
     def visit_complete_head(self, head: CompleteHead):
         text = self.text
-        print_label_names = self.print_label_names
-        labels = self.labels
-        scores = head.scores
-        text.write(' => (')
 
-        for i in range(scores.shape[0]):
-            if i > 0:
-                text.write(', ')
+        if self.print_heads:
+            print_label_names = self.print_label_names
+            labels = self.labels
+            scores = head.scores
 
-            if print_label_names and len(labels) > i:
-                text.write(labels[i].attribute_name)
-            else:
-                text.write(str(i))
+            if self.print_bodies:
+                text.write(' => ')
 
-            text.write(' = ')
-            text.write('{0:.2f}'.format(scores[i]))
+            text.write('(')
 
-        text.write(')\n')
+            for i in range(scores.shape[0]):
+                if i > 0:
+                    text.write(', ')
+
+                if print_label_names and len(labels) > i:
+                    text.write(labels[i].attribute_name)
+                else:
+                    text.write(str(i))
+
+                text.write(' = ')
+                text.write('{0:.2f}'.format(scores[i]))
+
+            text.write(')\n')
+        elif self.print_bodies:
+            text.write('\n')
 
     def visit_partial_head(self, head: PartialHead):
         text = self.text
-        print_label_names = self.print_label_names
-        labels = self.labels
-        indices = head.indices
-        scores = head.scores
-        text.write(' => (')
 
-        for i in range(indices.shape[0]):
-            if i > 0:
-                text.write(', ')
+        if self.print_heads:
+            print_label_names = self.print_label_names
+            labels = self.labels
+            indices = head.indices
+            scores = head.scores
 
-            label_index = indices[i]
+            if self.print_bodies:
+                text.write(' => ')
 
-            if print_label_names and len(labels) > label_index:
-                text.write(labels[label_index].attribute_name)
-            else:
-                text.write(str(label_index))
+            text.write('(')
 
-            text.write(' = ')
-            text.write('{0:.2f}'.format(scores[i]))
+            for i in range(indices.shape[0]):
+                if i > 0:
+                    text.write(', ')
 
-        text.write(')\n')
+                label_index = indices[i]
+
+                if print_label_names and len(labels) > label_index:
+                    text.write(labels[label_index].attribute_name)
+                else:
+                    text.write(str(label_index))
+
+                text.write(' = ')
+                text.write('{0:.2f}'.format(scores[i]))
+
+            text.write(')\n')
+        elif self.print_bodies:
+            text.write('\n')
 
     def get_text(self) -> str:
         """

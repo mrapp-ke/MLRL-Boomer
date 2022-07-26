@@ -107,6 +107,8 @@ In addition to the mandatory arguments that must be provided to the command line
     * ``print_feature_names`` (Default value = ``true``) ``true``, if the names of features should be printed instead of their indices, ``false`` otherwise.
     * ``print_label_names`` (Default value = ``true``) ``true``, if the names of labels should be printed instead of their indices, ``false`` otherwise.
     * ``print_nominal_values`` (Default value = ``true``) ``true``, if the names of nominal values should be printed instead of their numerical representation, ``false`` otherwise.
+    * ``print_bodies`` (Default value = ``true``) ``true``, if the bodies of rules should be printed, ``false`` otherwise.
+    * ``print_heads`` (Default value = ``true``) ``true``, if the heads of rules should be printed, ``false`` otherwise.
 
   * ``false`` The induced rules are not printed on the console.
 
@@ -117,6 +119,8 @@ In addition to the mandatory arguments that must be provided to the command line
     * ``print_feature_names`` (Default value = ``true``) ``true``, if the names of features should be printed instead of their indices, ``false`` otherwise.
     * ``print_label_names`` (Default value = ``true``) ``true``, if the names of labels should be printed instead of their indices, ``false`` otherwise.
     * ``print_nominal_values`` (Default value = ``true``) ``true``, if the names of nominal values should be printed instead of their numerical representation, ``false`` otherwise.
+    * ``print_bodies`` (Default value = ``true``) ``true``, if the bodies of rules should be printed, ``false`` otherwise.
+    * ``print_heads`` (Default value = ``true``) ``true``, if the heads of rules should be printed, ``false`` otherwise.
 
   * ``false`` The induced rules are not written into a .txt file.
 
