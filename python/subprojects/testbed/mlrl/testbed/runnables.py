@@ -9,14 +9,17 @@ from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 from typing import Optional
 
+from mlrl.common.config import parse_param_and_options
+from mlrl.common.options import BooleanOption
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
 from mlrl.testbed.evaluation import Evaluation, ClassificationEvaluation, RankingEvaluation, EvaluationLogOutput, \
     EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.io import clear_directory
-from mlrl.testbed.model_characteristics import ModelPrinter, RulePrinter, ModelPrinterLogOutput, \
-    ModelPrinterTxtOutput, ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, \
+from mlrl.testbed.model_characteristics import ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, \
+    ARGUMENT_PRINT_NOMINAL_VALUES, ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS, ModelPrinter, RulePrinter, \
+    ModelPrinterLogOutput, ModelPrinterTxtOutput, ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, \
     RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
 from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterPrinter, ParameterLogOutput, \
     ParameterCsvOutput
@@ -27,6 +30,14 @@ from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, Pre
 from mlrl.testbed.training import DataSet
 
 LOG_FORMAT = '%(levelname)s %(message)s'
+
+PRINT_RULES_VALUES = {
+    BooleanOption.TRUE.value: {ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, ARGUMENT_PRINT_NOMINAL_VALUES,
+                               ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS},
+    BooleanOption.FALSE.value: {}
+}
+
+STORE_RULES_VALUES = PRINT_RULES_VALUES
 
 
 class Runnable(ABC):
@@ -246,13 +257,17 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
     def _create_model_printer(self, args) -> Optional[ModelPrinter]:
         outputs = []
 
-        if args.print_rules:
-            outputs.append(ModelPrinterLogOutput())
+        value, options = parse_param_and_options('--print-rules', args.print_rules, PRINT_RULES_VALUES)
 
-        if args.store_rules and args.output_dir is not None:
-            outputs.append(ModelPrinterTxtOutput(output_dir=args.output_dir))
+        if value == BooleanOption.TRUE.value:
+            outputs.append(ModelPrinterLogOutput(options))
 
-        return RulePrinter(args.print_options, outputs) if len(outputs) > 0 else None
+        value, options = parse_param_and_options('--store-rules', args.store_rules, STORE_RULES_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            outputs.append(ModelPrinterTxtOutput(options, output_dir=args.output_dir))
+
+        return RulePrinter(outputs) if len(outputs) > 0 else None
 
     def _create_model_characteristics_printer(self, args) -> Optional[ModelCharacteristicsPrinter]:
         outputs = []
