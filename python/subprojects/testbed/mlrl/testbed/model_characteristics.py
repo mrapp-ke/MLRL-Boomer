@@ -7,10 +7,11 @@ e.g., to the console or to a file.
 import logging as log
 from _io import StringIO
 from abc import ABC, abstractmethod
-from typing import List, Set
+from typing import List, Optional
 
 import numpy as np
-from mlrl.common.cython.rule_model import RuleModelVisitor, EmptyBody, ConjunctiveBody, CompleteHead, PartialHead
+from mlrl.common.cython.rule_model import RuleModel, RuleModelVisitor, EmptyBody, ConjunctiveBody, CompleteHead, \
+    PartialHead
 from mlrl.common.learners import Learner
 from mlrl.common.options import Options
 from mlrl.testbed.data import Attribute, MetaData
@@ -23,33 +24,34 @@ ARGUMENT_PRINT_LABEL_NAMES = 'print_label_names'
 
 ARGUMENT_PRINT_NOMINAL_VALUES = 'print_nominal_values'
 
-PRINT_OPTION_VALUES: Set[str] = {ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES,
-                                 ARGUMENT_PRINT_NOMINAL_VALUES}
+ARGUMENT_PRINT_BODIES = 'print_bodies'
+
+ARGUMENT_PRINT_HEADS = 'print_heads'
 
 
 class RuleModelFormatter(RuleModelVisitor):
     """
-    Allows to create textual representation of the rules in a `RuleModel`.
+    Allows to create textual representations of the rules in a `RuleModel`.
     """
 
-    def __init__(self, attributes: List[Attribute], labels: List[Attribute], print_feature_names: bool,
-                 print_label_names: bool, print_nominal_values: bool):
+    def __init__(self, options: Options, meta_data: MetaData):
         """
-        :param attributes:              A list that contains the attributes
-        :param labels:                  A list that contains the labels
-        :param print_feature_names:     True, if the names of features should be printed, False otherwise
-        :param print_label_names:       True, if the names of labels should be printed, False otherwise
-        :param print_nominal_values:    True, if the values of nominal values should be printed, False otherwise
+        :param options:     The options that should be used for creating textual representations of the rules in a model
+        :param meta_data:   The meta data of the training data set
         """
-        self.print_feature_names = print_feature_names
-        self.print_label_names = print_label_names
-        self.print_nominal_values = print_nominal_values
-        self.attributes = attributes
-        self.labels = labels
+
+        self.print_feature_names = options.get_bool(ARGUMENT_PRINT_FEATURE_NAMES, True)
+        self.print_label_names = options.get_bool(ARGUMENT_PRINT_LABEL_NAMES, True)
+        self.print_nominal_values = options.get_bool(ARGUMENT_PRINT_NOMINAL_VALUES, True)
+        self.print_bodies = options.get_bool(ARGUMENT_PRINT_BODIES, True)
+        self.print_heads = options.get_bool(ARGUMENT_PRINT_HEADS, True)
+        self.attributes = meta_data.attributes
+        self.labels = meta_data.labels
         self.text = StringIO()
 
     def visit_empty_body(self, _: EmptyBody):
-        self.text.write('{}')
+        if self.print_bodies:
+            self.text.write('{}')
 
     def __format_conditions(self, num_conditions: int, indices: np.ndarray, thresholds: np.ndarray,
                             operator: str) -> int:
@@ -67,7 +69,7 @@ class RuleModelFormatter(RuleModelVisitor):
 
                 feature_index = indices[i]
                 threshold = thresholds[i]
-                attribute = attributes[feature_index] if len(attributes) > feature_index else None
+                attribute: Optional[Attribute] = attributes[feature_index] if len(attributes) > feature_index else None
 
                 if print_feature_names and attribute is not None:
                     text.write(attribute.attribute_name)
@@ -93,58 +95,75 @@ class RuleModelFormatter(RuleModelVisitor):
         return result
 
     def visit_conjunctive_body(self, body: ConjunctiveBody):
-        text = self.text
-        text.write('{')
-        num_conditions = self.__format_conditions(0, body.leq_indices, body.leq_thresholds, '<=')
-        num_conditions = self.__format_conditions(num_conditions, body.gr_indices, body.gr_thresholds, '>')
-        num_conditions = self.__format_conditions(num_conditions, body.eq_indices, body.eq_thresholds, '==')
-        self.__format_conditions(num_conditions, body.neq_indices, body.neq_thresholds, '!=')
-        text.write('}')
+        if self.print_bodies:
+            text = self.text
+            text.write('{')
+            num_conditions = self.__format_conditions(0, body.leq_indices, body.leq_thresholds, '<=')
+            num_conditions = self.__format_conditions(num_conditions, body.gr_indices, body.gr_thresholds, '>')
+            num_conditions = self.__format_conditions(num_conditions, body.eq_indices, body.eq_thresholds, '==')
+            self.__format_conditions(num_conditions, body.neq_indices, body.neq_thresholds, '!=')
+            text.write('}')
 
     def visit_complete_head(self, head: CompleteHead):
         text = self.text
-        print_label_names = self.print_label_names
-        labels = self.labels
-        scores = head.scores
-        text.write(' => (')
 
-        for i in range(scores.shape[0]):
-            if i > 0:
-                text.write(', ')
+        if self.print_heads:
+            print_label_names = self.print_label_names
+            labels = self.labels
+            scores = head.scores
 
-            if print_label_names and len(labels) > i:
-                text.write(labels[i].attribute_name)
-            else:
-                text.write(str(i))
+            if self.print_bodies:
+                text.write(' => ')
 
-            text.write(' = ')
-            text.write('{0:.2f}'.format(scores[i]))
+            text.write('(')
 
-        text.write(')\n')
+            for i in range(scores.shape[0]):
+                if i > 0:
+                    text.write(', ')
+
+                if print_label_names and len(labels) > i:
+                    text.write(labels[i].attribute_name)
+                else:
+                    text.write(str(i))
+
+                text.write(' = ')
+                text.write('{0:.2f}'.format(scores[i]))
+
+            text.write(')\n')
+        elif self.print_bodies:
+            text.write('\n')
 
     def visit_partial_head(self, head: PartialHead):
         text = self.text
-        print_label_names = self.print_label_names
-        labels = self.labels
-        indices = head.indices
-        scores = head.scores
-        text.write(' => (')
 
-        for i in range(indices.shape[0]):
-            if i > 0:
-                text.write(', ')
+        if self.print_heads:
+            print_label_names = self.print_label_names
+            labels = self.labels
+            indices = head.indices
+            scores = head.scores
 
-            label_index = indices[i]
+            if self.print_bodies:
+                text.write(' => ')
 
-            if print_label_names and len(labels) > label_index:
-                text.write(labels[label_index].attribute_name)
-            else:
-                text.write(str(label_index))
+            text.write('(')
 
-            text.write(' = ')
-            text.write('{0:.2f}'.format(scores[i]))
+            for i in range(indices.shape[0]):
+                if i > 0:
+                    text.write(', ')
 
-        text.write(')\n')
+                label_index = indices[i]
+
+                if print_label_names and len(labels) > label_index:
+                    text.write(labels[label_index].attribute_name)
+                else:
+                    text.write(str(label_index))
+
+                text.write(' = ')
+                text.write('{0:.2f}'.format(scores[i]))
+
+            text.write(')\n')
+        elif self.print_bodies:
+            text.write('\n')
 
     def get_text(self) -> str:
         """
@@ -159,6 +178,15 @@ class ModelPrinterOutput(ABC):
     """
     An abstract base class for all outputs, textual representations of models may be written to.
     """
+
+    @abstractmethod
+    def get_options(self) -> Options:
+        """
+        Returns the options that should be used for creating textual representations of models.
+
+        :return: The options that should be used
+        """
+        pass
 
     @abstractmethod
     def write_model(self, data_partition: DataPartition, model: str):
@@ -176,17 +204,11 @@ class ModelPrinter(ABC):
     An abstract base class for all classes that allow to print a textual representation of a learner's model.
     """
 
-    def __init__(self, print_options: str, outputs: List[ModelPrinterOutput]):
+    def __init__(self, outputs: List[ModelPrinterOutput]):
         """
-        :param print_options:   The options to be used for printing models
-        :param outputs:         The outputs, the textual representations of models should be written to
+        :param outputs: The outputs, the textual representations of models should be written to
         """
         self.outputs = outputs
-
-        try:
-            self.print_options = Options.create(print_options, PRINT_OPTION_VALUES)
-        except ValueError as e:
-            raise ValueError('Invalid value given for parameter "print_options". ' + str(e))
 
     def print(self, meta_data: MetaData, data_partition: DataPartition, learner):
         """
@@ -198,19 +220,21 @@ class ModelPrinter(ABC):
         :param learner:         The learner
         """
         if not isinstance(learner, Learner):
-            raise ValueError('Cannot create textual representation of ' + type(learner).__name__)
+            raise ValueError('Cannot create textual representation of a model of type ' + type(learner).__name__)
 
         model = learner.model_
-        text = self._format_model(meta_data, model)
 
         for output in self.outputs:
+            options = output.get_options()
+            text = self._format_model(options, meta_data, model)
             output.write_model(data_partition, text)
 
     @abstractmethod
-    def _format_model(self, meta_data: MetaData, model) -> str:
+    def _format_model(self, options: Options, meta_data: MetaData, model) -> str:
         """
         Must be implemented by subclasses in order to create a textual representation of a model.
 
+        :param options:     The options that should be used for creating a textual representation of a model
         :param meta_data:   The meta data of the training data set
         :param model:       The model
         :return:            The textual representation of the given model
@@ -222,6 +246,15 @@ class ModelPrinterLogOutput(ModelPrinterOutput):
     """
     Outputs the textual representation of a model using the logger.
     """
+
+    def __init__(self, options: Options):
+        """
+        :param options: The options to be used for printing models
+        """
+        self.options = options
+
+    def get_options(self) -> Options:
+        return self.options
 
     def write_model(self, data_partition: DataPartition, model: str):
         msg = 'Model'
@@ -238,11 +271,16 @@ class ModelPrinterTxtOutput(ModelPrinterOutput):
     Writes the textual representation of a model to a text file.
     """
 
-    def __init__(self, output_dir: str):
+    def __init__(self, options: Options, output_dir: str):
         """
-        :param output_dir: The path of the directory, the text files should be written to
+        :param options:     The options to be used for printing models
+        :param output_dir:  The path of the directory, the text files should be written to
         """
+        self.options = options
         self.output_dir = output_dir
+
+    def get_options(self) -> Options:
+        return self.options
 
     def write_model(self, data_partition: DataPartition, model: str):
         with open_writable_txt_file(self.output_dir, 'rules', data_partition.get_fold()) as text_file:
@@ -254,17 +292,14 @@ class RulePrinter(ModelPrinter):
     Allows to print a textual representation of a rule-based model.
     """
 
-    def __init__(self, print_options: str, outputs: List[ModelPrinterOutput]):
-        super(RulePrinter, self).__init__(print_options, outputs)
+    def __init__(self, outputs: List[ModelPrinterOutput]):
+        super(RulePrinter, self).__init__(outputs)
 
-    def _format_model(self, meta_data: MetaData, model) -> str:
-        print_options = self.print_options
-        print_feature_names = print_options.get_bool(ARGUMENT_PRINT_FEATURE_NAMES, True)
-        print_label_names = print_options.get_bool(ARGUMENT_PRINT_LABEL_NAMES, True)
-        print_nominal_values = print_options.get_bool(ARGUMENT_PRINT_NOMINAL_VALUES, True)
-        formatter = RuleModelFormatter(attributes=meta_data.attributes, labels=meta_data.labels,
-                                       print_feature_names=print_feature_names, print_label_names=print_label_names,
-                                       print_nominal_values=print_nominal_values)
+    def _format_model(self, options: Options, meta_data: MetaData, model) -> str:
+        if not isinstance(model, RuleModel):
+            raise ValueError('Cannot create a textual representation of a model of type ' + type(model).__name__)
+
+        formatter = RuleModelFormatter(options, meta_data)
         model.visit(formatter)
         return formatter.get_text()
 
@@ -559,7 +594,7 @@ class ModelCharacteristicsPrinter(ABC):
         :param learner:         The learner
         """
         if not isinstance(learner, Learner):
-            raise ValueError('Cannot obtain model characteristics of ' + type(learner.__name__))
+            raise ValueError('Cannot obtain characteristics of a model of type ' + type(learner.__name__))
 
         self._print_model_characteristics(data_partition, learner.model_)
 
@@ -583,15 +618,21 @@ class RuleModelCharacteristicsPrinter(ModelCharacteristicsPrinter):
         self.outputs = outputs
 
     def _print_model_characteristics(self, data_partition: DataPartition, model):
+        if not isinstance(model, RuleModel):
+            raise ValueError('Cannot obtain characteristics of a model of type ' + type(model).__name__)
+
         if len(self.outputs) > 0:
             visitor = RuleModelCharacteristicsVisitor()
             model.visit(visitor)
             characteristics = RuleModelCharacteristics(
                 default_rule_index=visitor.default_rule_index,
                 default_rule_pos_predictions=visitor.default_rule_pos_predictions,
-                default_rule_neg_predictions=visitor.default_rule_neg_predictions, num_leq=np.asarray(visitor.num_leq),
-                num_gr=np.asarray(visitor.num_gr), num_eq=np.asarray(visitor.num_eq),
-                num_neq=np.asarray(visitor.num_neq), num_pos_predictions=np.asarray(visitor.num_pos_predictions),
+                default_rule_neg_predictions=visitor.default_rule_neg_predictions,
+                num_leq=np.asarray(visitor.num_leq),
+                num_gr=np.asarray(visitor.num_gr),
+                num_eq=np.asarray(visitor.num_eq),
+                num_neq=np.asarray(visitor.num_neq),
+                num_pos_predictions=np.asarray(visitor.num_pos_predictions),
                 num_neg_predictions=np.asarray(visitor.num_neg_predictions))
 
             for output in self.outputs:
