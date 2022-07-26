@@ -18,9 +18,9 @@ from mlrl.testbed.evaluation import Evaluation, ClassificationEvaluation, Rankin
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, \
-    ARGUMENT_PRINT_NOMINAL_VALUES, ModelPrinter, RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput, \
-    ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, RuleModelCharacteristicsLogOutput, \
-    RuleModelCharacteristicsCsvOutput
+    ARGUMENT_PRINT_NOMINAL_VALUES, ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS, ModelPrinter, RulePrinter, \
+    ModelPrinterLogOutput, ModelPrinterTxtOutput, ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, \
+    RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
 from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterPrinter, ParameterLogOutput, \
     ParameterCsvOutput
 from mlrl.testbed.persistence import ModelPersistence
@@ -32,7 +32,8 @@ from mlrl.testbed.training import DataSet
 LOG_FORMAT = '%(levelname)s %(message)s'
 
 PRINT_RULES_VALUES = {
-    BooleanOption.TRUE.value: {ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, ARGUMENT_PRINT_NOMINAL_VALUES},
+    BooleanOption.TRUE.value: {ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, ARGUMENT_PRINT_NOMINAL_VALUES,
+                               ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS},
     BooleanOption.FALSE.value: {}
 }
 
