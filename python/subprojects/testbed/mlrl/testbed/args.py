@@ -66,8 +66,6 @@ PARAM_PRINT_RULES = '--print-rules'
 
 PARAM_STORE_RULES = '--store-rules'
 
-PARAM_PRINT_OPTIONS = '--print-options'
-
 PARAM_FEATURE_FORMAT = '--feature-format'
 
 PARAM_LABEL_FORMAT = '--label-format'
@@ -149,12 +147,6 @@ def boolean_string(s):
     return BooleanOption.parse(s)
 
 
-def optional_string(s):
-    if s is None or s == 'none':
-        return None
-    return s
-
-
 def add_learner_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_LOG_LEVEL, type=log_level, default=LogLevel.INFO.value,
                         help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
@@ -187,8 +179,8 @@ def add_learner_arguments(parser: ArgumentParser):
                              + 'effect if the parameter ' + PARAM_PREDICT_PROBABILITIES + ' is set to '
                              + BooleanOption.FALSE.value + '.')
     parser.add_argument(PARAM_STORE_PREDICTION_CHARACTERISTICS, type=boolean_string, default=False,
-                        help='Whether the characteristics of binary predictions should be writting into output files '
-                             + 'or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an '
+                        help='Whether the characteristics of binary predictions should be written into output files or '
+                             + 'not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an '
                              + 'effect if the parameter ' + PARAM_PREDICT_PROBABILITIES + ' is set to '
                              + BooleanOption.FALSE.value + '.')
     parser.add_argument(PARAM_PRINT_DATA_CHARACTERISTICS, type=boolean_string, default=False,
@@ -235,18 +227,14 @@ def add_rule_learner_arguments(parser: ArgumentParser):
                         help='Whether the characteristics of models should be written into output files or not. Must '
                              + 'be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if the '
                              + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
-    parser.add_argument(PARAM_PRINT_RULES, type=boolean_string, default=False,
+    parser.add_argument(PARAM_PRINT_RULES, type=str, default=BooleanOption.FALSE.value,
                         help='Whether the induced rules should be printed on the console or not. Must be one of '
-                             + format_enum_values(BooleanOption) + '.')
-    parser.add_argument(PARAM_STORE_RULES, type=boolean_string, default=False,
+                             + format_enum_values(BooleanOption) + '. For additional options refer to the '
+                             + 'documentation.')
+    parser.add_argument(PARAM_STORE_RULES, type=str, default=BooleanOption.FALSE.value,
                         help='Whether the induced rules should be written into a text file or not. Must be one of '
                              + format_enum_values(BooleanOption) + '. Does only have an effect if the parameter '
-                             + PARAM_OUTPUT_DIR + ' is specified.')
-    parser.add_argument(PARAM_PRINT_OPTIONS, type=optional_string,
-                        help='Additional options to be taken into account when writing rules to the console or an '
-                             + 'output file. Does only have an effect if the parameter ' + PARAM_PRINT_RULES + ' or '
-                             + PARAM_STORE_RULES + ' is set to True. For a list of the available options refer to the '
-                             + 'documentation.')
+                             + PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
     parser.add_argument(PARAM_FEATURE_FORMAT, type=str, default=SparsePolicy.AUTO.value,
                         help='The format to be used for the representation of the feature matrix. Must be one of '
                              + format_enum_values(SparsePolicy) + '.')

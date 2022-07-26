@@ -102,21 +102,23 @@ In addition to the mandatory arguments that must be provided to the command line
 
 * ``--print-rules`` (Default value = ``false``)
 
-  * ``true`` The induced rules are printed on the console.
-  * ``false`` The induced rules are not printed on the console.
-
-* ``--store-rules`` (Default value = ``false``)
-
-  * ``true`` The induced rules are written into a .txt file. Does only have an effect if the parameter ``--output-dir`` is specified.
-  * ``false`` The induced rules are not written into a .txt file.
-
-* ``--print-options`` (Default value = ``None``)
-
-  * Additional options to be taken into account when writing rules on the console or into an output file. Does only have an effect, if the parameter ``--print-rules`` or ``--store-rules`` is set to ``true``. The options must be given using the bracket notation (see :ref:`parameters`). The following options are available:
+  * ``true`` The induced rules are printed on the console. The following options may be specified via the bracket notation (see :ref:`parameters`):
 
     * ``print_feature_names`` (Default value = ``true``) ``true``, if the names of features should be printed instead of their indices, ``false`` otherwise.
     * ``print_label_names`` (Default value = ``true``) ``true``, if the names of labels should be printed instead of their indices, ``false`` otherwise.
     * ``print_nominal_values`` (Default value = ``true``) ``true``, if the names of nominal values should be printed instead of their numerical representation, ``false`` otherwise.
+
+  * ``false`` The induced rules are not printed on the console.
+
+* ``--store-rules`` (Default value = ``false``)
+
+  * ``true`` The induced rules are written into a .txt file. Does only have an effect if the parameter ``--output-dir`` is specified. The following options may be specified via the bracket notation (see :ref:`parameters`):
+
+    * ``print_feature_names`` (Default value = ``true``) ``true``, if the names of features should be printed instead of their indices, ``false`` otherwise.
+    * ``print_label_names`` (Default value = ``true``) ``true``, if the names of labels should be printed instead of their indices, ``false`` otherwise.
+    * ``print_nominal_values`` (Default value = ``true``) ``true``, if the names of nominal values should be printed instead of their numerical representation, ``false`` otherwise.
+
+  * ``false`` The induced rules are not written into a .txt file.
 
 * ``--log-level`` (Default value = ``info``)
 
