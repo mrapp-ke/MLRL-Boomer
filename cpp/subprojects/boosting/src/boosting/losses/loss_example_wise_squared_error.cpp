@@ -209,8 +209,23 @@ namespace boosting {
             float64 measureSimilarity(const VectorConstView<uint32>& relevantLabelIndices,
                                       CContiguousView<float64>::value_const_iterator scoresBegin,
                                       CContiguousView<float64>::value_const_iterator scoresEnd) const override {
-                // TODO Implement
-                return 0;
+                // The example-wise squared error loss calculates as
+                // `sqrt((expectedScore_1 - predictedScore_1)^2 + ...)`.
+                uint32 numLabels = scoresEnd - scoresBegin;
+                auto labelIterator = make_binary_forward_iterator(relevantLabelIndices.cbegin(),
+                                                                  relevantLabelIndices.cend());
+                float64 sumOfSquares = 0;
+
+                for (uint32 i = 0; i < numLabels; i++) {
+                    float64 predictedScore = scoresBegin[i];
+                    bool trueLabel = *labelIterator;
+                    float64 expectedScore = trueLabel ? 1 : -1;
+                    float64 difference = (expectedScore - predictedScore);
+                    sumOfSquares += (difference * difference);
+                    labelIterator++;
+                }
+
+                return std::sqrt(sumOfSquares);
             }
 
     };
