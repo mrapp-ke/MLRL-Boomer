@@ -112,6 +112,24 @@ namespace boosting {
         }
     }
 
+    template<typename LabelIterator>
+    static inline float64 evaluateInternally(CContiguousConstView<float64>::value_const_iterator scoreIterator,
+                                             LabelIterator labelIterator, uint32 numLabels) {
+        // The example-wise squared error loss calculates as `sqrt((expectedScore_1 - predictedScore_1)^2 + ...)`.
+        float64 sumOfSquares = 0;
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            float64 predictedScore = scoreIterator[i];
+            bool trueLabel = *labelIterator;
+            float64 expectedScore = trueLabel ? 1 : -1;
+            float64 difference = (expectedScore - predictedScore);
+            sumOfSquares += (difference * difference);
+            labelIterator++;
+        }
+
+        return std::sqrt(sumOfSquares);
+    }
+
     /**
      * An implementation of the type `IExampleWiseLoss` that implements a multi-label variant of the squared error loss
      * that is applied example-wise.
@@ -190,8 +208,8 @@ namespace boosting {
              */
             float64 evaluate(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override {
-                // TODO Implement
-                return 0;
+                return evaluateInternally(scoreMatrix.row_values_cbegin(exampleIndex),
+                                          labelMatrix.row_values_cbegin(exampleIndex), labelMatrix.getNumCols());
             }
 
             /**
@@ -199,8 +217,10 @@ namespace boosting {
              */
             float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override {
-                // TODO Implement
-                return 0;
+                auto labelIterator = make_binary_forward_iterator(labelMatrix.row_indices_cbegin(exampleIndex),
+                                                                  labelMatrix.row_indices_cend(exampleIndex));
+                return evaluateInternally(scoreMatrix.row_values_cbegin(exampleIndex), labelIterator,
+                                          labelMatrix.getNumCols());
             }
 
             /**
@@ -209,23 +229,10 @@ namespace boosting {
             float64 measureSimilarity(const VectorConstView<uint32>& relevantLabelIndices,
                                       CContiguousView<float64>::value_const_iterator scoresBegin,
                                       CContiguousView<float64>::value_const_iterator scoresEnd) const override {
-                // The example-wise squared error loss calculates as
-                // `sqrt((expectedScore_1 - predictedScore_1)^2 + ...)`.
                 uint32 numLabels = scoresEnd - scoresBegin;
                 auto labelIterator = make_binary_forward_iterator(relevantLabelIndices.cbegin(),
                                                                   relevantLabelIndices.cend());
-                float64 sumOfSquares = 0;
-
-                for (uint32 i = 0; i < numLabels; i++) {
-                    float64 predictedScore = scoresBegin[i];
-                    bool trueLabel = *labelIterator;
-                    float64 expectedScore = trueLabel ? 1 : -1;
-                    float64 difference = (expectedScore - predictedScore);
-                    sumOfSquares += (difference * difference);
-                    labelIterator++;
-                }
-
-                return std::sqrt(sumOfSquares);
+                return evaluateInternally(scoresBegin, labelIterator, numLabels);
             }
 
     };
