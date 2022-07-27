@@ -8,13 +8,13 @@ from typing import Dict, Set, Optional
 import mlrl.boosting.config as boosting_config
 import mlrl.common.config as common_config
 from mlrl.boosting.config import LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL_WISE, \
-    LOSS_LOGISTIC_LABEL_WISE, LOSS_LOGISTIC_EXAMPLE_WISE, CLASSIFICATION_PREDICTOR_LABEL_WISE, \
-    CLASSIFICATION_PREDICTOR_EXAMPLE_WISE, CLASSIFICATION_PREDICTOR_GFM, PROBABILITY_PREDICTOR_LABEL_WISE, \
-    PROBABILITY_PREDICTOR_MARGINALIZED
+    LOSS_LOGISTIC_LABEL_WISE, LOSS_SQUARED_ERROR_EXAMPLE_WISE, LOSS_LOGISTIC_EXAMPLE_WISE, \
+    CLASSIFICATION_PREDICTOR_LABEL_WISE, CLASSIFICATION_PREDICTOR_EXAMPLE_WISE, CLASSIFICATION_PREDICTOR_GFM, \
+    PROBABILITY_PREDICTOR_LABEL_WISE, PROBABILITY_PREDICTOR_MARGINALIZED
 from mlrl.boosting.config import configure_post_processor, configure_l1_regularization, configure_l2_regularization, \
     configure_default_rule, configure_head_type, configure_statistics, configure_label_wise_squared_error_loss, \
     configure_label_wise_squared_hinge_loss, configure_label_wise_logistic_loss, configure_example_wise_logistic_loss, \
-    configure_label_binning, configure_label_wise_classification_predictor, \
+    configure_example_wise_squared_error_loss, configure_label_binning, configure_label_wise_classification_predictor, \
     configure_example_wise_classification_predictor, configure_gfm_classification_predictor, \
     configure_label_wise_probability_predictor, configure_marginalized_probability_predictor
 from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
@@ -42,6 +42,7 @@ LABEL_BINNING_VALUES: Dict[str, Set[str]] = boosting_config.LABEL_BINNING_VALUES
 
 LOSS_VALUES: Set[str] = {
     LOSS_SQUARED_ERROR_LABEL_WISE,
+    LOSS_SQUARED_ERROR_EXAMPLE_WISE,
     LOSS_SQUARED_HINGE_LABEL_WISE,
     LOSS_LOGISTIC_LABEL_WISE,
     LOSS_LOGISTIC_EXAMPLE_WISE
@@ -123,8 +124,8 @@ class Boomer(RuleLearner, ClassifierMixin):
                                                 the heads should be chosen automatically. For additional options refer
                                                 to the documentation
         :param loss:                            The loss function to be minimized. Must be 'squared-error-label-wise',
-                                                'squared-hinge-label-wise', 'logistic-label-wise' or
-                                                'logistic-example-wise'
+                                                'squared-error-example-wise', 'squared-hinge-label-wise',
+                                                'logistic-label-wise' or 'logistic-example-wise'
         :param classification_predictor:        The strategy that should be used for predicting binary labels. Must be
                                                 'label-wise', 'example-wise', 'gfm' or 'auto', if the most suitable
                                                 strategy should be chosen automatically, depending on the loss function
@@ -285,6 +286,7 @@ class Boomer(RuleLearner, ClassifierMixin):
         if loss is not None:
             value = parse_param('loss', loss, LOSS_VALUES)
             configure_label_wise_squared_error_loss(config, value)
+            configure_example_wise_squared_error_loss(config, value)
             configure_label_wise_squared_hinge_loss(config, value)
             configure_label_wise_logistic_loss(config, value)
             configure_example_wise_logistic_loss(config, value)
