@@ -6,6 +6,51 @@
 namespace boosting {
 
     template<typename LabelIterator>
+    static inline void updateLabelWiseStatisticsInternally(
+            CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
+            DenseLabelWiseStatisticView::iterator statisticIterator, uint32 numLabels) {
+        LabelIterator labelIterator2 = labelIterator;
+
+        // For each label `i`, calculate `x_i = predictedScore_i^2 + (-2 * expectedScore_i * predictedScore_i) + 1` and
+        // sum up those values. The sum is used as a denominator when calculating the gradients and Hessians
+        // afterwards...
+        float64 denominator = 0;
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            float64 predictedScore = scoreIterator[i];
+            bool trueLabel = *labelIterator;
+            float64 expectedScore = trueLabel ? 1 : -1;
+            float64 x = (predictedScore * predictedScore) + (-2 * expectedScore * predictedScore) + 1;
+            statisticIterator[i].first = x;  // Temporarily store `x` in the array of gradients
+            denominator += x;
+            labelIterator++;
+        }
+
+        // The denominator that is used for the calculation of gradients is `sqrt(x_1 + x_2 + ...)`...
+        float64 denominatorGradient = std::sqrt(denominator);
+
+        // The denominator that is used for the calculation of Hessians is `(x_1 + x_2 + ...)^1.5`...
+        float64 denominatorHessian = std::pow(denominator, 1.5);
+
+        // Calculate the gradients and Hessians...
+        for (uint32 i = 0; i < numLabels; i++) {
+            float64 predictedScore = scoreIterator[i];
+            bool trueLabel = *labelIterator2;
+            float64 expectedScore = trueLabel ? 1 : -1;
+            Tuple<float64>& tuple = statisticIterator[i];
+            float64 x = tuple.first;
+
+            // Calculate the gradient as `(predictedScore_i - expectedScore_i) / sqrt(x_1 + x_2 + ...)`...
+            tuple.first = divideOrZero<float64>(predictedScore - expectedScore, denominatorGradient);
+
+            // Calculate the Hessian on the diagonal of the Hessian matrix as
+            // `(x_1 + ... + x_i-1 + x_i+1 + ...) / (x_1 + x_2 + ...)^1.5`...
+            tuple.second = divideOrZero<float64>(denominator - x, denominatorHessian);
+            labelIterator2++;
+        }
+    }
+
+    template<typename LabelIterator>
     static inline void updateExampleWiseStatisticsInternally(
             CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
             DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
@@ -81,7 +126,9 @@ namespace boosting {
                                                    CompleteIndexVector::const_iterator labelIndicesBegin,
                                                    CompleteIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const override {
-                // TODO Implement
+                updateLabelWiseStatisticsInternally(scoreMatrix.row_values_cbegin(exampleIndex),
+                                                    labelMatrix.row_values_cbegin(exampleIndex),
+                                                    statisticView.row_begin(exampleIndex), labelMatrix.getNumCols());
             }
 
             virtual void updateLabelWiseStatistics(uint32 exampleIndex,
@@ -90,7 +137,9 @@ namespace boosting {
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const override {
-                // TODO Implement
+                updateLabelWiseStatisticsInternally(scoreMatrix.row_values_cbegin(exampleIndex),
+                                                    labelMatrix.row_values_cbegin(exampleIndex),
+                                                    statisticView.row_begin(exampleIndex), labelMatrix.getNumCols());
             }
 
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
@@ -98,7 +147,10 @@ namespace boosting {
                                                    CompleteIndexVector::const_iterator labelIndicesBegin,
                                                    CompleteIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const override {
-                // TODO Implement
+                auto labelIterator = make_binary_forward_iterator(labelMatrix.row_indices_cbegin(exampleIndex),
+                                                                  labelMatrix.row_indices_cend(exampleIndex));
+                updateLabelWiseStatisticsInternally(scoreMatrix.row_values_cbegin(exampleIndex), labelIterator,
+                                                    statisticView.row_begin(exampleIndex), labelMatrix.getNumCols());
             }
 
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
@@ -106,7 +158,10 @@ namespace boosting {
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const override {
-                // TODO Implement
+                auto labelIterator = make_binary_forward_iterator(labelMatrix.row_indices_cbegin(exampleIndex),
+                                                                  labelMatrix.row_indices_cend(exampleIndex));
+                updateLabelWiseStatisticsInternally(scoreMatrix.row_values_cbegin(exampleIndex), labelIterator,
+                                                    statisticView.row_begin(exampleIndex), labelMatrix.getNumCols());
             }
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
