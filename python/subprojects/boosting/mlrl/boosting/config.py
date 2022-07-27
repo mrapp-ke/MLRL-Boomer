@@ -38,6 +38,8 @@ LOSS_LOGISTIC_EXAMPLE_WISE = 'logistic-example-wise'
 
 LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
 
+LOSS_SQUARED_ERROR_EXAMPLE_WISE = 'squared-error-example-wise'
+
 LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
 
 CLASSIFICATION_PREDICTOR_LABEL_WISE = 'label-wise'
@@ -167,6 +169,11 @@ def configure_label_wise_logistic_loss(config: BoostingRuleLearnerConfig, value:
 def configure_example_wise_logistic_loss(config: BoostingRuleLearnerConfig, value: str):
     if value == LOSS_LOGISTIC_EXAMPLE_WISE:
         config.use_example_wise_logistic_loss()
+
+
+def configure_example_wise_squared_error_loss(config: BoostingRuleLearnerConfig, value: str):
+    if value == LOSS_SQUARED_ERROR_EXAMPLE_WISE:
+        config.use_example_wise_squared_error_loss()
 
 
 def configure_label_wise_classification_predictor(config: BoostingRuleLearnerConfig, value: str):
