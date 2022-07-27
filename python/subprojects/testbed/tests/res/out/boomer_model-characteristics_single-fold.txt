@@ -12,7 +12,7 @@ INFO Model characteristics (Fold 1):
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 5.857857857857858, min. 1, max. 18
-Conditions total: 5852 (49.98291182501709% use <= operator, 50.017088174982916% use > operator, 0.0% use == operator, -7.105427357601002e-15% use != operator)
+Conditions total: 5852 (49.98291182501709% use <= operator, 50.017088174982916% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 999 (46.346346346346344% positive, 53.653653653653656% negative)
 

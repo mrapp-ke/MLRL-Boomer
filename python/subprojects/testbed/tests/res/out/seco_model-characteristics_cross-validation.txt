@@ -12,7 +12,7 @@ INFO Model characteristics (Fold 1):
 
 Rules: 72 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.2638888888888888, min. 1, max. 3
-Conditions total: 91 (54.94505494505495% use <= operator, 45.05494505494506% use > operator, 0.0% use == operator, -7.105427357601002e-15% use != operator)
+Conditions total: 91 (54.94505494505495% use <= operator, 45.05494505494506% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 72 (100.0% positive, 0.0% negative)
 
@@ -90,7 +90,7 @@ INFO Model characteristics (Fold 7):
 
 Rules: 71 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.1690140845070423, min. 1, max. 3
-Conditions total: 83 (46.98795180722892% use <= operator, 53.01204819277109% use > operator, 0.0% use == operator, -7.105427357601002e-15% use != operator)
+Conditions total: 83 (46.98795180722892% use <= operator, 53.01204819277109% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 71 (100.0% positive, 0.0% negative)
 
