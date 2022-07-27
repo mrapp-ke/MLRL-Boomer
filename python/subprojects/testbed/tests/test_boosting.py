@@ -271,7 +271,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .loss(LOSS_SQUARED_ERROR_EXAMPLE_WISE)
-        self.run_cmd(builder, self.cmd + '_loss-squared_error-example-wise')
+        self.run_cmd(builder, self.cmd + '_loss-squared-error-example-wise')
 
     def test_predictor_classification_label_wise(self):
         """
