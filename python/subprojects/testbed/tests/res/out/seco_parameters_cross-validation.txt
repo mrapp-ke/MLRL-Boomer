@@ -137,7 +137,7 @@ INFO Model characteristics (Fold 6):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (66.66666666666666% use <= operator, 33.33333333333333% use > operator, 0.0% use == operator, 1.4210854715202004e-14% use != operator)
+Conditions total: 9 (66.66666666666666% use <= operator, 33.33333333333333% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 9 (100.0% positive, 0.0% negative)
 
@@ -160,7 +160,7 @@ INFO Model characteristics (Fold 7):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (66.66666666666666% use <= operator, 33.33333333333333% use > operator, 0.0% use == operator, 1.4210854715202004e-14% use != operator)
+Conditions total: 9 (66.66666666666666% use <= operator, 33.33333333333333% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 9 (100.0% positive, 0.0% negative)
 
@@ -229,7 +229,7 @@ INFO Model characteristics (Fold 10):
 
 Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (66.66666666666666% use <= operator, 33.33333333333333% use > operator, 0.0% use == operator, 1.4210854715202004e-14% use != operator)
+Conditions total: 9 (66.66666666666666% use <= operator, 33.33333333333333% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 1.0, min. 1, max. 1
 Predictions total: 9 (100.0% positive, 0.0% negative)
 
