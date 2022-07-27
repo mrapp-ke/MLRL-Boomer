@@ -450,6 +450,14 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useExampleWiseLogisticLoss()
 
+    def use_example_wise_squared_error_loss(self):
+        """
+        Configures the rule learner to use a loss function that implements a multi-label variant of the squared error
+        loss that is applied example-wise.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useExampleWiseSquaredErrorLoss()
+
     def use_label_wise_squared_error_loss(self):
         """
         Configures the rule learner to use a loss function that implements a multi-label variant of the squared error
