@@ -18,6 +18,8 @@ LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
 
 LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
 
+LOSS_SQUARED_ERROR_EXAMPLE_WISE = 'squared-error-example-wise'
+
 HEAD_TYPE_SINGLE_LABEL = 'single-label'
 
 HEAD_TYPE_COMPLETE = 'complete'
@@ -262,6 +264,14 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .loss(LOSS_SQUARED_ERROR_LABEL_WISE)
         self.run_cmd(builder, self.cmd + '_loss-squared-error-label-wise')
+
+    def test_loss_squared_error_example_wise(self):
+        """
+        Tests the BOOMER algorithm when using the example-wise squared error loss function.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_SQUARED_ERROR_EXAMPLE_WISE)
+        self.run_cmd(builder, self.cmd + '_loss-squared_error-example-wise')
 
     def test_predictor_classification_label_wise(self):
         """
