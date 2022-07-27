@@ -35,8 +35,8 @@ INFO Model characteristics:
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 6.882882882882883, min. 1, max. 22
-Conditions total: 6876 (50.43630017452006% use <= operator, 49.56369982547993% use > operator, 0.0% use == operator, 7.105427357601002e-15% use != operator)
+Conditions total: 6876 (50.43630017452006% use <= operator, 49.56369982547993% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 2.0, min. 2, max. 2
-Predictions total: 1998 (37.38738738738739% positive, 62.61261261261261% negative)
+Predictions total: 1998 (37.38738738738739% positive, 62.612612612612615% negative)
 
 INFO Successfully finished after 0.7806820230325684 seconds
