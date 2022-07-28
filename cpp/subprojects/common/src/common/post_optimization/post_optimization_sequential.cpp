@@ -29,12 +29,12 @@ class RuleReplacementBuilder final : public IModelBuilder {
         }
 
         void addRule(std::unique_ptr<ConditionList>& conditionListPtr,
-                     std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) {
+                     std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
             intermediateRule_.first = std::move(conditionListPtr);
             intermediateRule_.second = std::move(predictionPtr);
         }
 
-        std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) {
+        std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) override {
             return nullptr;
         }
 
