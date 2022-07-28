@@ -85,6 +85,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useExampleWiseLogisticLoss()
 
 
+    cdef cppclass IExampleWiseSquaredErrorLossMixin"boosting::IBoostingRuleLearner::IExampleWiseSquaredErrorLossMixin":
+
+        # Functions:
+
+        void useExampleWiseSquaredErrorLoss()
+
+
     cdef cppclass ILabelWiseSquaredErrorLossMixin"boosting::IBoostingRuleLearner::ILabelWiseSquaredErrorLossMixin":
 
         # Functions:

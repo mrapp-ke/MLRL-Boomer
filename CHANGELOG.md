@@ -10,6 +10,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * The parameter `--head-type` does now allow to learn partial rules that predict for a predefined number of labels (`partial-fixed`) or a subset of the available labels that is determined dynamically (`partial-dynamic`).
 * The parameter `--rule-induction` does now allow to use a top-down beam search for the induction of individual rules (`top-down-beam-search`).
 * The parameter `--classification-predictor` does now allow to obtain predictions that maximize the example-wise F1-measure (`gfm`).
+* The parameter `--loss` does now allow to use a variant of the squared error loss that takes all labels of an example into account at the same time (`squared-error-example-wise`).  
 * A new parameter `--sequential-post-optimization` has been added. It allows to optimize each rule in a previously learned model by being relearned in the context of the other rules.
 * A new parameter `--probability-predictor` has been added. It allows to specify whether probability estimates should be obtained for each label independently (`label-wise`) or via marginalization over the label vectors that are encountered in the training data (`marginalized`).
 * The arguments `--print-prediction-characteristics` and `--store-prediction-characteristics` have been added to the command line API. They allow to print certain characteristics of binary predictions or write them into output files.

@@ -11,6 +11,7 @@
 #include "common/learner.hpp"
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/losses/loss_example_wise_logistic.hpp"
+#include "boosting/losses/loss_example_wise_squared_error.hpp"
 #include "boosting/losses/loss_label_wise_squared_error.hpp"
 #include "boosting/losses/loss_label_wise_squared_hinge.hpp"
 #include "boosting/math/blas.hpp"
@@ -371,6 +372,27 @@ namespace boosting {
                     virtual void useExampleWiseLogisticLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
                         lossConfigPtr = std::make_unique<ExampleWiseLogisticLossConfig>(this->getHeadConfigPtr());
+                    }
+
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
+             * implements a multi-label variant of the squared error loss that is applied example-wise.
+             */
+            class IExampleWiseSquaredErrorLossMixin : virtual public IBoostingRuleLearner::IConfig {
+
+                public:
+
+                    virtual ~IExampleWiseSquaredErrorLossMixin() { };
+
+                    /**
+                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
+                     * squared error loss that is applied example-wise.
+                     */
+                    virtual void useExampleWiseSquaredErrorLoss() {
+                        std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
+                        lossConfigPtr = std::make_unique<ExampleWiseSquaredErrorLossConfig>(this->getHeadConfigPtr());
                     }
 
             };
