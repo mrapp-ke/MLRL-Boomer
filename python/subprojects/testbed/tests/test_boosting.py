@@ -18,6 +18,8 @@ LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
 
 LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
 
+LOSS_SQUARED_ERROR_EXAMPLE_WISE = 'squared-error-example-wise'
+
 HEAD_TYPE_SINGLE_LABEL = 'single-label'
 
 HEAD_TYPE_COMPLETE = 'complete'
@@ -33,6 +35,8 @@ CLASSIFICATION_PREDICTOR_AUTO = 'auto'
 CLASSIFICATION_PREDICTOR_LABEL_WISE = 'label-wise'
 
 CLASSIFICATION_PREDICTOR_EXAMPLE_WISE = 'example-wise'
+
+CLASSIFICATION_PREDICTOR_GFM = 'gfm'
 
 PROBABILITY_PREDICTOR_AUTO = 'auto'
 
@@ -261,6 +265,14 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_SQUARED_ERROR_LABEL_WISE)
         self.run_cmd(builder, self.cmd + '_loss-squared-error-label-wise')
 
+    def test_loss_squared_error_example_wise(self):
+        """
+        Tests the BOOMER algorithm when using the example-wise squared error loss function.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_SQUARED_ERROR_EXAMPLE_WISE)
+        self.run_cmd(builder, self.cmd + '_loss-squared-error-example-wise')
+
     def test_predictor_classification_label_wise(self):
         """
         Tests the BOOMER algorithm when predicting binary labels that are obtained for each label individually.
@@ -279,6 +291,16 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .classification_predictor(CLASSIFICATION_PREDICTOR_EXAMPLE_WISE) \
             .print_predictions(True)
         self.run_cmd(builder, self.cmd + '_predictor-classification-example-wise')
+
+    def test_predictor_classification_gfm(self):
+        """
+        Tests the BOOMER algorithm when predicting binary labels that are obtained via the general F-measure maximizer
+        (GFM).
+        """
+        builder = BoostingCmdBuilder() \
+            .classification_predictor(CLASSIFICATION_PREDICTOR_GFM) \
+            .print_predictions(True)
+        self.run_cmd(builder, self.cmd + '_predictor-classification-gfm')
 
     def test_predictor_probability_label_wise(self):
         """
@@ -416,14 +438,6 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics(True)
         self.run_cmd(builder, self.cmd + '_label-wise-partial-dynamic-heads_equal-width-label-binning')
-
-
-
-
-
-
-
-
 
     def test_example_wise_single_label_heads(self):
         """

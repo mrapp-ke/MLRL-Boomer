@@ -71,8 +71,12 @@ def label_imbalance_ratio(y) -> float:
     else:
         num_relevant_per_label = np.count_nonzero(y, axis=0)
 
-    max_relevant = np.max(num_relevant_per_label)
-    return np.average(max_relevant / num_relevant_per_label[num_relevant_per_label != 0])
+    num_relevant_per_label = num_relevant_per_label[num_relevant_per_label != 0]
+
+    if num_relevant_per_label.shape[0] > 0:
+        return np.average(np.max(num_relevant_per_label) / num_relevant_per_label)
+    else:
+        return 0.0
 
 
 class LabelCharacteristics:

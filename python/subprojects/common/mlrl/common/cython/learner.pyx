@@ -213,6 +213,18 @@ cdef class RuleLearner:
         cdef LabelSpaceInfo label_space_info = create_label_space_info(move(label_space_info_ptr))
         return TrainingResult.__new__(TrainingResult, num_labels, rule_model, label_space_info)
 
+    def can_predict_labels(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
+        """
+        Returns whether the rule learner is able to predict binary labels or not.
+
+        :param feature_matrix:  A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
+                                query examples
+        :param num_labels:      The number of labels to predict for
+        :return:                True, if the rule learner is able to predict binary labels, False otherwise
+        """
+        return self.get_rule_learner_ptr().canPredictLabels(
+            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
+
     def predict_labels(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
                        LabelSpaceInfo label_space_info not None, uint32 num_labels) -> np.ndarray:
         """

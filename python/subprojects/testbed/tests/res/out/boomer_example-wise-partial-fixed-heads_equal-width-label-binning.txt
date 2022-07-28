@@ -35,7 +35,7 @@ INFO Model characteristics:
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
 Conditions per rule: avg. 6.654654654654655, min. 1, max. 22
-Conditions total: 6648 (49.774368231046935% use <= operator, 50.22563176895307% use > operator, 0.0% use == operator, -7.105427357601002e-15% use != operator)
+Conditions total: 6648 (49.774368231046935% use <= operator, 50.22563176895307% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 2.0, min. 2, max. 2
 Predictions total: 1998 (35.63563563563564% positive, 64.36436436436436% negative)
 

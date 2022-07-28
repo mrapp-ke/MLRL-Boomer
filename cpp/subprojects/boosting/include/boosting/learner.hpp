@@ -11,11 +11,13 @@
 #include "common/learner.hpp"
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/losses/loss_example_wise_logistic.hpp"
+#include "boosting/losses/loss_example_wise_squared_error.hpp"
 #include "boosting/losses/loss_label_wise_squared_error.hpp"
 #include "boosting/losses/loss_label_wise_squared_hinge.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 #include "boosting/output/predictor_classification_example_wise.hpp"
+#include "boosting/output/predictor_classification_gfm.hpp"
 #include "boosting/output/predictor_probability_marginalized.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
@@ -376,6 +378,27 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
+             * implements a multi-label variant of the squared error loss that is applied example-wise.
+             */
+            class IExampleWiseSquaredErrorLossMixin : virtual public IBoostingRuleLearner::IConfig {
+
+                public:
+
+                    virtual ~IExampleWiseSquaredErrorLossMixin() { };
+
+                    /**
+                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
+                     * squared error loss that is applied example-wise.
+                     */
+                    virtual void useExampleWiseSquaredErrorLoss() {
+                        std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
+                        lossConfigPtr = std::make_unique<ExampleWiseSquaredErrorLossConfig>(this->getHeadConfigPtr());
+                    }
+
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
              * implements a multi-label variant of the squared error loss that is applied label-wise.
              */
             class ILabelWiseSquaredErrorLossMixin : public virtual IBoostingRuleLearner::IConfig {
@@ -469,6 +492,33 @@ namespace boosting {
                         std::unique_ptr<IClassificationPredictorConfig>& classificationPredictorConfigPtr =
                             this->getClassificationPredictorConfigPtr();
                         classificationPredictorConfigPtr = std::make_unique<ExampleWiseClassificationPredictorConfig>(
+                            this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                    }
+
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
+             * predicting whether individual labels are relevant or irrelevant by summing up the scores that are
+             * provided by the individual rules of an existing rule-based model and transforming them into binary values
+             * according to the general F-measure maximizer (GFM).
+             */
+            class IGfmClassificationPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+
+                public:
+
+                    virtual ~IGfmClassificationPredictorMixin() { };
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting whether individual labels are
+                     * relevant or irrelevant by summing up the scores that are provided by the individual rules of a
+                     * existing rule-based model and transforming them into binary values according to the general
+                     * F-measure maximizer (GFM).
+                     */
+                    virtual void useGfmClassificationPredictor() {
+                        std::unique_ptr<IClassificationPredictorConfig>& classificationPredictorConfigPtr =
+                            this->getClassificationPredictorConfigPtr();
+                        classificationPredictorConfigPtr = std::make_unique<GfmClassificationPredictorConfig>(
                             this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
 
