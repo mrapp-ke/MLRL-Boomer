@@ -38,11 +38,15 @@ LOSS_LOGISTIC_EXAMPLE_WISE = 'logistic-example-wise'
 
 LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
 
+LOSS_SQUARED_ERROR_EXAMPLE_WISE = 'squared-error-example-wise'
+
 LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
 
 CLASSIFICATION_PREDICTOR_LABEL_WISE = 'label-wise'
 
 CLASSIFICATION_PREDICTOR_EXAMPLE_WISE = 'example-wise'
+
+CLASSIFICATION_PREDICTOR_GFM = 'gfm'
 
 PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
 
@@ -167,6 +171,11 @@ def configure_example_wise_logistic_loss(config: BoostingRuleLearnerConfig, valu
         config.use_example_wise_logistic_loss()
 
 
+def configure_example_wise_squared_error_loss(config: BoostingRuleLearnerConfig, value: str):
+    if value == LOSS_SQUARED_ERROR_EXAMPLE_WISE:
+        config.use_example_wise_squared_error_loss()
+
+
 def configure_label_wise_classification_predictor(config: BoostingRuleLearnerConfig, value: str):
     if value == CLASSIFICATION_PREDICTOR_LABEL_WISE:
         config.use_label_wise_classification_predictor()
@@ -176,6 +185,10 @@ def configure_example_wise_classification_predictor(config: BoostingRuleLearnerC
     if value == CLASSIFICATION_PREDICTOR_EXAMPLE_WISE:
         config.use_example_wise_classification_predictor()
 
+
+def configure_gfm_classification_predictor(config: BoostingRuleLearnerConfig, value: str):
+    if value == CLASSIFICATION_PREDICTOR_GFM:
+        config.use_gfm_classification_predictor()
 
 def configure_label_wise_probability_predictor(config: BoostingRuleLearnerConfig, value: str):
     if value == PROBABILITY_PREDICTOR_LABEL_WISE:

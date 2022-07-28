@@ -204,15 +204,19 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
         return training_result.rule_model
 
     def _predict(self, x):
-        feature_matrix = self.__create_row_wise_feature_matrix(x)
         learner = self._create_learner()
+        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        num_labels = self.num_labels_
 
-        if self.sparse_predictions_:
-            log.debug('A sparse matrix is used to store the predicted labels')
-            return learner.predict_sparse_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+        if learner.can_predict_labels(feature_matrix, num_labels):
+            if self.sparse_predictions_:
+                log.debug('A sparse matrix is used to store the predicted labels')
+                return learner.predict_sparse_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+            else:
+                log.debug('A dense matrix is used to store the predicted labels')
+                return learner.predict_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
         else:
-            log.debug('A dense matrix is used to store the predicted labels')
-            return learner.predict_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+            super()._predict(x)
 
     def _predict_proba(self, x):
         learner = self._create_learner()

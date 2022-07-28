@@ -450,6 +450,14 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useExampleWiseLogisticLoss()
 
+    def use_example_wise_squared_error_loss(self):
+        """
+        Configures the rule learner to use a loss function that implements a multi-label variant of the squared error
+        loss that is applied example-wise.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useExampleWiseSquaredErrorLoss()
+
     def use_label_wise_squared_error_loss(self):
         """
         Configures the rule learner to use a loss function that implements a multi-label variant of the squared error
@@ -497,6 +505,15 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useExampleWiseClassificationPredictor()
+
+    def use_gfm_classification_predictor(self):
+        """
+        Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
+        irrelevant by summing up the scores that are provided by the individual rules of a existing rule-based model and
+        transforming them into binary values according to the general F-measure maximizer (GFM).
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useGfmClassificationPredictor()
 
     def use_automatic_classification_predictor(self):
         """

@@ -215,6 +215,7 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'logistic-label-wise'`` A variant of the logistic loss function that is applied to each label individually.
   * ``'logistic-example-wise'`` A variant of the logistic loss function that takes all labels into account at the same time.
   * ``'squared-error-label-wise'`` A variant of the squared error loss that is applied to each label individually.
+  * ``'squared-error-example-wise'`` A variant of the squared error loss that takes all labels into account at the same time.
   * ``'squared-hinge-label-wise'`` A variant of the squared hinge loss that is applied to each label individually.
 
 * ``classification_predictor`` (Default value = ``'auto'``)
@@ -222,6 +223,7 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'auto'`` The most suitable strategy for predicting binary labels is chosen automatically, depending on the loss function.
   * ``'label-wise'`` The prediction for an example is determined for each label independently.
   * ``'example-wise'`` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data.
+  * ``'gfm'`` The label vector that is predicted for an example is chosen according to the general F-measure maximizer (GFM).
 
 * ``probability_predictor`` (Default value = ``'auto'``)
 

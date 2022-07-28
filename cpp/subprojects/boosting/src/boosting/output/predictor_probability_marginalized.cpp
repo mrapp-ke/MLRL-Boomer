@@ -1,55 +1,15 @@
 #include "boosting/output/predictor_probability_marginalized.hpp"
 #include "common/math/math.hpp"
 #include "predictor_common.hpp"
+#include "predictor_probability_common.hpp"
 #include "omp.h"
 
 
 namespace boosting {
 
-    static inline float64 measureSimilarity(LabelVectorSet::const_iterator iterator, const float64* scoresBegin,
-                                            const float64* scoresEnd, const ISimilarityMeasure& measure) {
-        const auto& entry = *iterator;
-        const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
-        return measure.measureSimilarity(*labelVectorPtr, scoresBegin, scoresEnd);
-    }
-
-    static inline float64 calculateDistances(const float64* scoresBegin, const float64* scoresEnd, float64* distances,
-                                             const ISimilarityMeasure& measure, const LabelVectorSet& labelVectorSet) {
-        LabelVectorSet::const_iterator it = labelVectorSet.cbegin();
-        float64 minDistance = measureSimilarity(it, scoresBegin, scoresEnd, measure);
-        distances[0] = minDistance;
-        it++;
-        uint32 i = 1;
-
-        for (; it != labelVectorSet.cend(); it++) {
-            float64 distance = measureSimilarity(it, scoresBegin, scoresEnd, measure);
-
-            if (distance < minDistance) {
-                minDistance = distance;
-            }
-
-            distances[i] = distance;
-            i++;
-        }
-
-        return minDistance;
-    }
-
-    static inline float64 normalizeDistances(float64* distances, uint32 numDistances, float64 minDistance) {
-        float64 sumOfNormalizedDistances = 0;
-
-        for (uint32 i = 0; i < numDistances; i++) {
-            float64 normalizedDistance = divideOrZero(minDistance, distances[i]);
-            distances[i] = normalizedDistance;
-            sumOfNormalizedDistances += normalizedDistance;
-        }
-
-        return sumOfNormalizedDistances;
-    }
-
     static inline void calculateMarginalizedProbabilities(CContiguousView<float64>::value_iterator predictionIterator,
-                                                          const float64* normalizedDistances,
-                                                          float64 sumOfNormalizedDistances,
+                                                          const float64* jointProbabilities,
+                                                          float64 sumOfJointProbabilities,
                                                           const LabelVectorSet& labelVectorSet) {
         uint32 i = 0;
 
@@ -58,11 +18,11 @@ namespace boosting {
             const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
             uint32 numRelevantLabels = labelVectorPtr->getNumElements();
             LabelVector::const_iterator labelIndexIterator = labelVectorPtr->cbegin();
-            float64 jointProbability = divideOrZero(normalizedDistances[i], sumOfNormalizedDistances);
+            float64 normalizedJointProbability = divideOrZero(jointProbabilities[i], sumOfJointProbabilities);
 
             for (uint32 j = 0; j < numRelevantLabels; j++) {
                 uint32 labelIndex = labelIndexIterator[j];
-                predictionIterator[labelIndex] += jointProbability;
+                predictionIterator[labelIndex] += normalizedJointProbability;
             }
 
             i++;
@@ -71,13 +31,14 @@ namespace boosting {
 
     static inline void predictMarginalizedProbabilities(const float64* scoresBegin, const float64* scoresEnd,
                                                         CContiguousView<float64>::value_iterator predictionIterator,
-                                                        const ISimilarityMeasure& measure,
+                                                        const IProbabilityFunction& probabilityFunction,
                                                         const LabelVectorSet& labelVectorSet, uint32 numLabelVectors) {
-        float64* distances = new float64[numLabelVectors];
-        float64 minDistance = calculateDistances(scoresBegin, scoresEnd, distances, measure, labelVectorSet);
-        float64 sumOfNormalizedDistances = normalizeDistances(distances, numLabelVectors, minDistance);
-        calculateMarginalizedProbabilities(predictionIterator, distances, sumOfNormalizedDistances, labelVectorSet);
-        delete[] distances;
+        float64* jointProbabilities = new float64[numLabelVectors];
+        float64 sumOfJointProbabilities = calculateJointProbabilities(scoresBegin, scoresEnd, jointProbabilities,
+                                                                      probabilityFunction, labelVectorSet);
+        calculateMarginalizedProbabilities(predictionIterator, jointProbabilities, sumOfJointProbabilities,
+                                           labelVectorSet);
+        delete[] jointProbabilities;
     }
 
     /**
@@ -99,28 +60,27 @@ namespace boosting {
 
             const LabelVectorSet* labelVectorSet_;
 
-            std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr_;
+            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
 
             uint32 numThreads_;
 
         public:
 
             /**
-             * @param model                 A reference to an object of template type `Model` that should be used to
-             *                              obtain predictions
-             * @param labelVectorSet        A pointer to an object of type `LabelVectorSet` that stores all known label
-             *                              vectors or a null pointer, if no such set is available
-             * @param similarityMeasurePtr  An unique pointer to an object of type `ISimilarityMeasure` that implements
-             *                              the similarity measure that should be used to quantify the similarity
-             *                              between predictions and known label vectors
-             * @param numThreads            The number of CPU threads to be used to make predictions for different query
-             *                              examples in parallel. Must be at least 1
+             * @param model                     A reference to an object of template type `Model` that should be used to
+             *                                  obtain predictions
+             * @param labelVectorSet            A pointer to an object of type `LabelVectorSet` that stores all known
+             *                                  label vectors or a null pointer, if no such set is available
+             * @param probabilityFunctionPtr    An unique pointer to an object of type `IProbabilityFunction` that
+             *                                  should be used to transform predicted scores into probabilities
+             * @param numThreads                The number of CPU threads to be used to make predictions for different
+             *                                  query examples in parallel. Must be at least 1
              */
             MarginalizedProbabilityPredictor(const Model& model, const LabelVectorSet* labelVectorSet,
-                                             std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr,
+                                             std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
                                              uint32 numThreads)
                 : model_(model), labelVectorSet_(labelVectorSet),
-                  similarityMeasurePtr_(std::move(similarityMeasurePtr)), numThreads_(numThreads) {
+                  probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {
 
             }
 
@@ -141,11 +101,11 @@ namespace boosting {
                         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                         CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                         const Model* modelPtr = &model_;
-                        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
+                        const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
 
                         #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) \
                         firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-                        firstprivate(similarityMeasureRawPtr) firstprivate(labelVectorSetPtr) \
+                        firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) \
                         firstprivate(numLabelVectors) schedule(dynamic) num_threads(numThreads_)
                         for (int64 i = 0; i < numExamples; i++) {
                             float64* scoreVector = new float64[numLabels] {};
@@ -153,7 +113,7 @@ namespace boosting {
                                        featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                             predictMarginalizedProbabilities(&scoreVector[0], &scoreVector[numLabels],
                                                              predictionMatrixRawPtr->row_values_begin(i),
-                                                             *similarityMeasureRawPtr, *labelVectorSetPtr,
+                                                             *probabilityFunctionPtr, *labelVectorSetPtr,
                                                              numLabelVectors);
                             delete[] scoreVector;
                         }
@@ -181,11 +141,11 @@ namespace boosting {
                         const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                         CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                         const Model* modelPtr = &model_;
-                        const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
+                        const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
 
                         #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) \
                         firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-                        firstprivate(predictionMatrixRawPtr) firstprivate(similarityMeasureRawPtr) \
+                        firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
                         firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) schedule(dynamic) \
                         num_threads(numThreads_)
                         for (int64 i = 0; i < numExamples; i++) {
@@ -195,7 +155,7 @@ namespace boosting {
                                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                             predictMarginalizedProbabilities(&scoreVector[0], &scoreVector[numLabels],
                                                              predictionMatrixRawPtr->row_values_begin(i),
-                                                             *similarityMeasureRawPtr, *labelVectorSetPtr,
+                                                             *probabilityFunctionPtr, *labelVectorSetPtr,
                                                              numLabelVectors);
                             delete[] scoreVector;
                         }
@@ -219,23 +179,22 @@ namespace boosting {
 
         private:
 
-            std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr_;
+            std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
 
             uint32 numThreads_;
 
         public:
 
             /**
-             * @param similarityMeasureFactoryPtr   An unique pointer to an object of type `ISimilarityMeasureFactory`
-             *                                      that allows to create implementations of the similarity measure
-             *                                      that should be used to quantify the similarity between predictions
-             *                                      and known label vectors
+             * @param probabilityFunctionFactoryPtr An unique pointer to an object of type `IProbabilityFunctionFactory`
+             *                                      that allows to create implementations of the transformation function
+             *                                      to be used to transform predicted scores into probabilities
              * @param numThreads                    The number of CPU threads to be used to make predictions for
              *                                      different query examples in parallel. Must be at least 1
              */
             MarginalizedProbabilityPredictorFactory(
-                    std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr, uint32 numThreads)
-                : similarityMeasureFactoryPtr_(std::move(similarityMeasureFactoryPtr)), numThreads_(numThreads) {
+                    std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
+                : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {
 
             }
 
@@ -244,10 +203,9 @@ namespace boosting {
              */
             std::unique_ptr<IProbabilityPredictor> create(const RuleList& model,
                                                           const LabelVectorSet* labelVectorSet) const override {
-                std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
-                    similarityMeasureFactoryPtr_->createSimilarityMeasure();
+                std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
                 return std::make_unique<MarginalizedProbabilityPredictor<RuleList>>(model, labelVectorSet,
-                                                                                    std::move(similarityMeasurePtr),
+                                                                                    std::move(probabilityFunctionPtr),
                                                                                     numThreads_);
             }
 
@@ -262,11 +220,16 @@ namespace boosting {
 
     std::unique_ptr<IProbabilityPredictorFactory> MarginalizedProbabilityPredictorConfig::createProbabilityPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        std::unique_ptr<ISimilarityMeasureFactory> similarityMeasureFactoryPtr =
-            lossConfigPtr_->createSimilarityMeasureFactory();
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<MarginalizedProbabilityPredictorFactory>(std::move(similarityMeasureFactoryPtr),
-                                                                         numThreads);
+        std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
+            lossConfigPtr_->createProbabilityFunctionFactory();
+
+        if (probabilityFunctionFactoryPtr) {
+            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+            return std::make_unique<MarginalizedProbabilityPredictorFactory>(std::move(probabilityFunctionFactoryPtr),
+                                                                             numThreads);
+        } else {
+            return nullptr;
+        }
     }
 
     bool MarginalizedProbabilityPredictorConfig::isLabelVectorSetNeeded() const {
