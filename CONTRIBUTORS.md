@@ -14,6 +14,7 @@ We highly appreciate the efforts of the following persons (listed in alphabetica
 * [Kevin Kampa](https://github.com/bapfelbaum)
 * [Lukas Johannes Eberle](https://github.com/LukasEberle)
 * [Michael Rapp](https://github.com/michael-rapp)
+* [Paul Trojan](https://github.com/ptrojahn)
 
 ### Special Thanks
 
