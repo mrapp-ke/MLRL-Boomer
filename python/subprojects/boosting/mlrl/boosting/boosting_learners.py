@@ -28,17 +28,17 @@ from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int, get_float
 from sklearn.base import ClassifierMixin
 
-FEATURE_BINNING_VALUES: Dict[str, Set[str]] = common_config.FEATURE_BINNING_VALUES | {AUTOMATIC: {}}
+FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {**common_config.FEATURE_BINNING_VALUES, **{AUTOMATIC: {}}}
 
-PARALLEL_VALUES: Dict[str, Set[str]] = common_config.PARALLEL_VALUES | {AUTOMATIC: {}}
+PARALLEL_VALUES: Dict[str, Set[str]] = {**common_config.PARALLEL_VALUES, **{AUTOMATIC: {}}}
 
-STATISTIC_FORMAT_VALUES: Set[str] = boosting_config.STATISTIC_FORMAT_VALUES | {AUTOMATIC}
+STATISTIC_FORMAT_VALUES: Set[str] = boosting_config.STATISTIC_FORMAT_VALUES.union(AUTOMATIC)
 
-DEFAULT_RULE_VALUES: Set[str] = boosting_config.DEFAULT_RULE_VALUES | {AUTOMATIC}
+DEFAULT_RULE_VALUES: Set[str] = boosting_config.DEFAULT_RULE_VALUES.union(AUTOMATIC)
 
-HEAD_TYPE_VALUES: Dict[str, Set[str]] = boosting_config.HEAD_TYPE_VALUES | {AUTOMATIC: {}}
+HEAD_TYPE_VALUES: Dict[str, Set[str]] = {**boosting_config.HEAD_TYPE_VALUES, **{AUTOMATIC: {}}}
 
-LABEL_BINNING_VALUES: Dict[str, Set[str]] = boosting_config.LABEL_BINNING_VALUES | {AUTOMATIC: {}}
+LABEL_BINNING_VALUES: Dict[str, Set[str]] = {**boosting_config.LABEL_BINNING_VALUES, **{AUTOMATIC: {}}}
 
 LOSS_VALUES: Set[str] = {
     LOSS_SQUARED_ERROR_LABEL_WISE,
