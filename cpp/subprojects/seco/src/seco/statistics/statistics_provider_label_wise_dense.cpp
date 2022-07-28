@@ -1,3 +1,8 @@
+#ifdef _WIN32
+    #pragma warning( push )
+    #pragma warning( disable : 4250 )
+#endif
+
 #include "seco/statistics/statistics_provider_label_wise_dense.hpp"
 #include "seco/data/vector_confusion_matrix_dense.hpp"
 #include "statistics_label_wise_common.hpp"
@@ -147,3 +152,7 @@ namespace seco {
     }
 
 }
+
+#ifdef _WIN32
+    #pragma warning( pop )
+#endif
