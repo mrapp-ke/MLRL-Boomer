@@ -99,7 +99,7 @@ def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_nam
     """
     xml_file = path.join(data_dir, xml_file_name)
     log.debug('Parsing meta data from file \"%s\"...', xml_file)
-    labels = __parse_labels(xml_file)
+    labels = __parse_labels_from_xml_file(xml_file)
     arff_file = path.join(data_dir, arff_file_name)
     log.debug('Loading data set from file \"%s\"...', arff_file)
     matrix, attributes, relation = __load_arff(arff_file, feature_dtype=feature_dtype)
@@ -363,7 +363,7 @@ def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
         return arff.load(file, encode_nominal=True, return_type=sparse_format)
 
 
-def __parse_labels(xml_file) -> List[Attribute]:
+def __parse_labels_from_xml_file(xml_file) -> List[Attribute]:
     """
     Parses a Mulan XML file to retrieve information about the labels contained in a data set.
 
