@@ -86,9 +86,9 @@ setup(
     ],
     python_requires='>=3.7',
     install_requires=[
-        'numpy>=1.23.0',
-        'scipy>=1.8.1',
-        'scikit-learn>=1.1.1'
+        'numpy==1.23.1',
+        'scipy==1.9.0',
+        'scikit-learn==1.1.1'
     ],
     packages=find_packages(),
     ext_modules=find_extensions('mlrl'),
