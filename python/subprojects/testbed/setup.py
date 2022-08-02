@@ -41,7 +41,7 @@ setup(
     platforms=['any'],
     python_requires='>=3.7',
     install_requires=[
-        'liac-arff>=2.5.0',
+        'liac-arff==2.5.0',
         'mlrl-common==' + VERSION
     ],
     extras_require={
