@@ -16,6 +16,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * The arguments `--print-prediction-characteristics` and `--store-prediction-characteristics` have been added to the command line API. They allow to print certain characteristics of binary predictions or write them into output files.
 * Fixed behavior of the argument `--label-format` when set to the value `auto`.
 * Rules are now guaranteed to not cover more examples than specified via the parameter `min_coverage`. The parameter is now also taken into account when using feature binning. Alternatively, the minimum coverage of rules can now also be specified as a fraction via the parameter `min_support`. 
+* Data sets in the MEKA format can now be used for experiments.
 
 ### Version 0.8.2 (Apr. 11th, 2022)
 

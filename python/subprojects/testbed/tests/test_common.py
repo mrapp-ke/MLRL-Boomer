@@ -41,6 +41,14 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         else:
             super(CommonIntegrationTests, cls).setUpClass()
 
+    def test_meka_format(self):
+        """
+        Tests the evaluation of the rule learning algorithm when using the MEKA data format.
+        """
+        builder = CmdBuilder(self.cmd, dataset='meka') \
+            .print_evaluation(False)
+        self.run_cmd(builder, self.cmd + '_meka-format')
+
     def test_evaluation_train_test(self):
         """
         Tests the evaluation of the rule learning algorithm when using a predefined split of the dataset into training
