@@ -102,7 +102,7 @@ def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_nam
     labels = __parse_labels(xml_file)
     arff_file = path.join(data_dir, arff_file_name)
     log.debug('Loading data set from file \"%s\"...', arff_file)
-    matrix, attributes = __load_arff(arff_file, feature_dtype=feature_dtype)
+    matrix, attributes, relation = __load_arff(arff_file, feature_dtype=feature_dtype)
     meta_data = __create_meta_data(attributes, labels)
     x, y = __create_feature_and_label_matrix(matrix, meta_data, label_dtype)
     return x, y, meta_data
@@ -125,7 +125,7 @@ def load_data_set(data_dir: str, arff_file_name: str, meta_data: MetaData, featu
     """
     arff_file = path.join(data_dir, arff_file_name)
     log.debug('Loading data set from file \"%s\"...', arff_file)
-    matrix, _ = __load_arff(arff_file, feature_dtype=feature_dtype)
+    matrix, _, _ = __load_arff(arff_file, feature_dtype=feature_dtype)
     x, y = __create_feature_and_label_matrix(matrix, meta_data, label_dtype)
     return x, y
 
@@ -320,14 +320,15 @@ def __create_feature_and_label_matrix(matrix: csc_matrix, meta_data: MetaData, l
     return x, y
 
 
-def __load_arff(arff_file: str, feature_dtype) -> (csc_matrix, list):
+def __load_arff(arff_file: str, feature_dtype) -> (csc_matrix, list, str):
     """
     Loads the content of an ARFF file.
 
     :param arff_file:       The path of the ARFF file (including the suffix)
     :param feature_dtype:   The type, the data should be converted to
-    :return:                A `np.sparse.csc_matrix` of type `feature_dtype`, containing the values in the ARFF file, as
-                            well as a list that contains a description of each attribute in the ARFF file
+    :return:                A `np.sparse.csc_matrix` of type `feature_dtype`, containing the values in the ARFF file, a
+                            list that contains a description of each attribute in the ARFF file, as well as its
+                            @relation name
     """
     try:
         arff_dict = __load_arff_as_dict(arff_file, sparse=True)
@@ -344,7 +345,8 @@ def __load_arff(arff_file: str, feature_dtype) -> (csc_matrix, list):
         matrix = csc_matrix(data, dtype=feature_dtype)
 
     attributes = arff_dict['attributes']
-    return matrix, attributes
+    relation = arff_dict['relation']
+    return matrix, attributes, relation
 
 
 def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
