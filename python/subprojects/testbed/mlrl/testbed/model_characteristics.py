@@ -16,7 +16,7 @@ from mlrl.common.learners import Learner
 from mlrl.common.options import Options
 from mlrl.testbed.data import Attribute, MetaData
 from mlrl.testbed.io import open_writable_txt_file, open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.training import DataPartition
+from mlrl.testbed.training import DataSplit
 
 ARGUMENT_PRINT_FEATURE_NAMES = 'print_feature_names'
 
@@ -189,12 +189,12 @@ class ModelPrinterOutput(ABC):
         pass
 
     @abstractmethod
-    def write_model(self, data_partition: DataPartition, model: str):
+    def write_model(self, data_split: DataSplit, model: str):
         """
         Write a textual representation of a model to the output.
 
-        :param data_partition:  The partition of data, the model corresponds to
-        :param model:           The textual representation of the model
+        :param data_split:  The split of the available data, the model corresponds to
+        :param model:       The textual representation of the model
         """
         pass
 
@@ -210,14 +210,14 @@ class ModelPrinter(ABC):
         """
         self.outputs = outputs
 
-    def print(self, meta_data: MetaData, data_partition: DataPartition, learner):
+    def print(self, meta_data: MetaData, data_split: DataSplit, learner):
         """
         Prints a textual representation of a learner's model. If the learner does not support to create a textual
         representation of the model, a `ValueError` is raised.
 
-        :param meta_data:       The meta-data of the training data set
-        :param data_partition:  The partition of data, the model corresponds to
-        :param learner:         The learner
+        :param meta_data:   The meta-data of the training data set
+        :param data_split:  The split of the available data, the model corresponds to
+        :param learner:     The learner
         """
         if not isinstance(learner, Learner):
             raise ValueError('Cannot create textual representation of a model of type ' + type(learner).__name__)
@@ -227,7 +227,7 @@ class ModelPrinter(ABC):
         for output in self.outputs:
             options = output.get_options()
             text = self._format_model(options, meta_data, model)
-            output.write_model(data_partition, text)
+            output.write_model(data_split, text)
 
     @abstractmethod
     def _format_model(self, options: Options, meta_data: MetaData, model) -> str:
@@ -256,11 +256,11 @@ class ModelPrinterLogOutput(ModelPrinterOutput):
     def get_options(self) -> Options:
         return self.options
 
-    def write_model(self, data_partition: DataPartition, model: str):
+    def write_model(self, data_split: DataSplit, model: str):
         msg = 'Model'
 
-        if data_partition.is_cross_validation_used():
-            msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
+        if data_split.is_cross_validation_used():
+            msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
         msg += ':\n\n%s'
         log.info(msg, model)
@@ -282,8 +282,8 @@ class ModelPrinterTxtOutput(ModelPrinterOutput):
     def get_options(self) -> Options:
         return self.options
 
-    def write_model(self, data_partition: DataPartition, model: str):
-        with open_writable_txt_file(self.output_dir, 'rules', data_partition.get_fold()) as text_file:
+    def write_model(self, data_split: DataSplit, model: str):
+        with open_writable_txt_file(self.output_dir, 'rules', data_split.get_fold()) as text_file:
             text_file.write(model)
 
 
@@ -346,12 +346,12 @@ class RuleModelCharacteristicsOutput(ABC):
     """
 
     @abstractmethod
-    def write_model_characteristics(self, data_partition: DataPartition, characteristics: RuleModelCharacteristics):
+    def write_model_characteristics(self, data_split: DataSplit, characteristics: RuleModelCharacteristics):
         """
         Writes the characteristics of a rule-based model to the output.
 
         :param characteristics: The characteristics of the model
-        :param data_partition:  The partition of data, the characteristics correspond to
+        :param data_split:      The split of the available data, the characteristics correspond to
         """
         pass
 
@@ -412,7 +412,7 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
     Outputs the characteristics of a `RuleModel` using the logger.
     """
 
-    def write_model_characteristics(self, data_partition: DataPartition, characteristics: RuleModelCharacteristics):
+    def write_model_characteristics(self, data_split: DataSplit, characteristics: RuleModelCharacteristics):
         default_rule_index = characteristics.default_rule_index
         num_pos_predictions = characteristics.num_pos_predictions
         num_neg_predictions = characteristics.num_neg_predictions
@@ -460,8 +460,8 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
         num_rules = num_predictions.shape[0]
         msg = 'Model characteristics'
 
-        if data_partition.is_cross_validation_used():
-            msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
+        if data_split.is_cross_validation_used():
+            msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
         msg += ':\n\n'
         msg += 'Rules: ' + str(num_rules)
@@ -518,7 +518,7 @@ class RuleModelCharacteristicsCsvOutput(RuleModelCharacteristicsOutput):
         """
         self.output_dir = output_dir
 
-    def write_model_characteristics(self, data_partition: DataPartition, characteristics: RuleModelCharacteristics):
+    def write_model_characteristics(self, data_split: DataSplit, characteristics: RuleModelCharacteristics):
         header = [
             RuleModelCharacteristicsCsvOutput.COL_RULE_NAME,
             RuleModelCharacteristicsCsvOutput.COL_CONDITIONS,
@@ -536,7 +536,7 @@ class RuleModelCharacteristicsCsvOutput(RuleModelCharacteristicsOutput):
         num_rules = len(characteristics.num_pos_predictions)
         num_total_rules = num_rules if default_rule_index is None else num_rules + 1
 
-        with open_writable_csv_file(self.output_dir, 'model_characteristics', data_partition.get_fold()) as csv_file:
+        with open_writable_csv_file(self.output_dir, 'model_characteristics', data_split.get_fold()) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             n = 0
 
@@ -585,23 +585,23 @@ class ModelCharacteristicsPrinter(ABC):
     A class that allows to print the characteristics of a learner's model.
     """
 
-    def print(self, data_partition: DataPartition, learner):
+    def print(self, data_split: DataSplit, learner):
         """
         Prints the characteristics of a learner's model. If the learner does not support to obtain the characteristics
         of the model, a `ValueError` is raised.
 
-        :param data_partition:  The partition of data, the model corresponds to
-        :param learner:         The learner
+        :param data_split:  The split of the available data, the model corresponds to
+        :param learner:     The learner
         """
         if not isinstance(learner, Learner):
             raise ValueError('Cannot obtain characteristics of a model of type ' + type(learner.__name__))
 
-        self._print_model_characteristics(data_partition, learner.model_)
+        self._print_model_characteristics(data_split, learner.model_)
 
-    def _print_model_characteristics(self, data_partition: DataPartition, model):
+    def _print_model_characteristics(self, data_split: DataSplit, model):
         """
-        :param data_partition:  The partition of data, the model corresponds to
-        :param model:           The model
+        :param data_split:  The split of the available data, the model corresponds to
+        :param model:       The model
         """
         pass
 
@@ -617,7 +617,7 @@ class RuleModelCharacteristicsPrinter(ModelCharacteristicsPrinter):
         """
         self.outputs = outputs
 
-    def _print_model_characteristics(self, data_partition: DataPartition, model):
+    def _print_model_characteristics(self, data_split: DataSplit, model):
         if not isinstance(model, RuleModel):
             raise ValueError('Cannot obtain characteristics of a model of type ' + type(model).__name__)
 
@@ -636,4 +636,4 @@ class RuleModelCharacteristicsPrinter(ModelCharacteristicsPrinter):
                 num_neg_predictions=np.asarray(visitor.num_neg_predictions))
 
             for output in self.outputs:
-                output.write_model_characteristics(data_partition, characteristics)
+                output.write_model_characteristics(data_split, characteristics)

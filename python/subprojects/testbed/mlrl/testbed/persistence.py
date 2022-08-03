@@ -8,7 +8,7 @@ import logging as log
 import os.path as path
 
 from mlrl.testbed.io import get_file_name_per_fold
-from mlrl.testbed.training import DataPartition
+from mlrl.testbed.training import DataSplit
 
 SUFFIX_MODEL = 'model'
 
@@ -24,15 +24,15 @@ class ModelPersistence:
         """
         self.model_dir = model_dir
 
-    def save_model(self, model, model_name: str, data_partition: DataPartition):
+    def save_model(self, model, model_name: str, data_split: DataSplit):
         """
         Saves a model to a file.
 
-        :param model:           The model to be persisted
-        :param model_name:      The name of the model to be persisted
-        :param data_partition:  Information about the partition of data, the model corresponds to
+        :param model:       The model to be persisted
+        :param model_name:  The name of the model to be persisted
+        :param data_split:  Information about the split of the available data, the model corresponds to
         """
-        file_name = get_file_name_per_fold(model_name, SUFFIX_MODEL, data_partition.get_fold())
+        file_name = get_file_name_per_fold(model_name, SUFFIX_MODEL, data_split.get_fold())
         file_path = path.join(self.model_dir, file_name)
         log.debug('Saving model to file \"%s\"...', file_path)
 
@@ -43,17 +43,17 @@ class ModelPersistence:
         except IOError:
             log.exception('Failed to save model to file \"%s\"', file_path)
 
-    def load_model(self, model_name: str, data_partition: DataPartition, raise_exception: bool = False):
+    def load_model(self, model_name: str, data_split: DataSplit, raise_exception: bool = False):
         """
         Loads a model from a file.
 
         :param model_name:      The name of the model to be loaded
-        :param data_partition:  Information about the partition of data, the model corresponds to
+        :param data_split:      Information about the split of the available data, the model corresponds to
         :param raise_exception: True, if an exception should be raised if an error occurs, False, if None should be
                                 returned in such case
         :return:                The loaded model
         """
-        file_name = get_file_name_per_fold(model_name, SUFFIX_MODEL, data_partition.get_fold())
+        file_name = get_file_name_per_fold(model_name, SUFFIX_MODEL, data_split.get_fold())
         file_path = path.join(self.model_dir, file_name)
         log.debug("Loading model from file \"%s\"...", file_path)
 

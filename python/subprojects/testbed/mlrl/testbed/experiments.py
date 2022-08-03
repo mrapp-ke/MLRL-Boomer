@@ -17,7 +17,7 @@ from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
 from mlrl.testbed.predictions import PredictionPrinter
-from mlrl.testbed.training import DataSplitter, DataSet, DataPartition, DataType
+from mlrl.testbed.training import DataSplitter, DataSplit, DataSet, DataType
 from sklearn.base import BaseEstimator, clone
 
 
@@ -124,7 +124,7 @@ class Experiment(DataSplitter, ABC):
 
         super(Experiment, self).run()
 
-    def _train_and_evaluate(self, meta_data: MetaData, data_partition: DataPartition, train_indices, train_x, train_y,
+    def _train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_indices, train_x, train_y,
                             test_indices, test_x, test_y):
         base_learner = self.base_learner
         current_learner = clone(base_learner)
@@ -133,7 +133,7 @@ class Experiment(DataSplitter, ABC):
         parameter_input = self.parameter_input
 
         if parameter_input is not None:
-            params = parameter_input.read_parameters(data_partition)
+            params = parameter_input.read_parameters(data_split)
             current_learner.set_params(**params)
             log.info('Successfully applied parameter setting: %s', params)
 
@@ -141,20 +141,20 @@ class Experiment(DataSplitter, ABC):
         parameter_printer = self.parameter_printer
 
         if parameter_printer is not None:
-            parameter_printer.print(data_partition, current_learner)
+            parameter_printer.print(data_split, current_learner)
 
         # Print data characteristics, if necessary...
         data_characteristics_printer = self.data_characteristics_printer
 
         if data_characteristics_printer is not None:
-            data_characteristics_printer.print(meta_data, data_partition, train_x, train_y)
+            data_characteristics_printer.print(meta_data, data_split, train_x, train_y)
 
         # Set the indices of nominal attributes, if supported...
         if isinstance(current_learner, NominalAttributeLearner):
             current_learner.nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
 
         # Load model from disc, if possible, otherwise train a new model...
-        loaded_learner = self.__load_model(data_partition)
+        loaded_learner = self.__load_model(data_split)
 
         if isinstance(loaded_learner, BaseEstimator):
             current_learner = loaded_learner
@@ -165,7 +165,7 @@ class Experiment(DataSplitter, ABC):
             log.info('Successfully fit model in %s seconds', train_time)
 
             # Save model to disk...
-            self.__save_model(current_learner, data_partition)
+            self.__save_model(current_learner, data_split)
 
         # Obtain and evaluate predictions for training data, if necessary...
         evaluation = self.train_evaluation
@@ -181,14 +181,14 @@ class Experiment(DataSplitter, ABC):
                 data_type = DataType.TRAINING
 
                 if evaluation is not None:
-                    evaluation.evaluate(meta_data, data_partition, data_type, predictions, train_y,
+                    evaluation.evaluate(meta_data, data_split, data_type, predictions, train_y,
                                         train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
-                    prediction_printer.print(meta_data, data_partition, data_type, predictions, train_y)
+                    prediction_printer.print(meta_data, data_split, data_type, predictions, train_y)
 
                 if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(data_partition, data_type, predictions)
+                    prediction_characteristics_printer.print(data_split, data_type, predictions)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
@@ -204,21 +204,21 @@ class Experiment(DataSplitter, ABC):
                 data_type = DataType.TEST
 
                 if evaluation is not None:
-                    evaluation.evaluate(meta_data, data_partition, data_type, predictions, test_y,
+                    evaluation.evaluate(meta_data, data_split, data_type, predictions, test_y,
                                         train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
-                    prediction_printer.print(meta_data, data_partition, data_type, predictions, test_y)
+                    prediction_printer.print(meta_data, data_split, data_type, predictions, test_y)
 
                 if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(data_partition, data_type, predictions)
+                    prediction_characteristics_printer.print(data_split, data_type, predictions)
 
         # Print model characteristics, if necessary...
         model_characteristics_printer = self.model_characteristics_printer
 
         if model_characteristics_printer is not None:
             try:
-                model_characteristics_printer.print(data_partition, current_learner)
+                model_characteristics_printer.print(data_split, current_learner)
             except ValueError:
                 log.error('The learner does not support to obtain model characteristics')
 
@@ -227,7 +227,7 @@ class Experiment(DataSplitter, ABC):
 
         if model_printer is not None:
             try:
-                model_printer.print(meta_data, data_partition, current_learner)
+                model_printer.print(meta_data, data_split, current_learner)
             except ValueError:
                 log.error('The learner does not support to create a textual representation of the model')
 
@@ -276,28 +276,28 @@ class Experiment(DataSplitter, ABC):
 
         return predictions, predict_time
 
-    def __load_model(self, data_partition: DataPartition):
+    def __load_model(self, data_split: DataSplit):
         """
         Loads the model from disk, if available.
 
-        :param data_partition:  Information about the partition of data, the model corresponds to
-        :return:                The loaded model
+        :param data_split:  Information about the split of the available data, the model corresponds to
+        :return:            The loaded model
         """
         persistence = self.persistence
 
         if persistence is not None:
-            return persistence.load_model(self.learner_name, data_partition)
+            return persistence.load_model(self.learner_name, data_split)
 
         return None
 
-    def __save_model(self, model, data_partition: DataPartition):
+    def __save_model(self, model, data_split: DataSplit):
         """
         Saves a model to disk.
 
-        :param model:           The model to be saved
-        :param data_partition:  Information about the partition of data, the model corresponds to
+        :param model:       The model to be saved
+        :param data_split:  Information about the split of the available data, the model corresponds to
         """
         persistence = self.persistence
 
         if persistence is not None:
-            persistence.save_model(model, self.learner_name, data_partition)
+            persistence.save_model(model, self.learner_name, data_split)

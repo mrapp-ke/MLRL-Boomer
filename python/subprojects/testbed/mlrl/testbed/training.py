@@ -33,9 +33,9 @@ class DataSet:
         self.use_one_hot_encoding = use_one_hot_encoding
 
 
-class DataPartition(ABC):
+class DataSplit(ABC):
     """
-    Provides information about a partition of the available data that is used for training and testing.
+    Provides information about a split of the available data that is used for training and testing.
     """
 
     @abstractmethod
@@ -50,7 +50,7 @@ class DataPartition(ABC):
     @abstractmethod
     def get_fold(self) -> Optional[int]:
         """
-        Returns the cross validation fold, the partition of data corresponds to.
+        Returns the cross validation fold, this split corresponds to.
 
         :return: The cross validation fold, starting at 0, or None, if no cross validation is used
         """
@@ -66,16 +66,16 @@ class DataPartition(ABC):
 
     def is_last_fold(self) -> bool:
         """
-        Returns whether this is the last fold or not.
+        Returns whether this split corresponds to the last fold of a cross validation or not.
 
-        :return: True, if this is the last fold, False otherwise
+        :return: True, if this split corresponds to the last fold, False otherwise
         """
         return not self.is_cross_validation_used() or self.get_fold() == self.get_num_folds() - 1
 
 
-class TrainingTestSplit(DataPartition):
+class TrainingTestSplit(DataSplit):
     """
-    Provides information about a predefined partition of the available data into training and test data.
+    Provides information about a split of the available data into training and test data.
     """
 
     def get_num_folds(self) -> int:
@@ -85,9 +85,9 @@ class TrainingTestSplit(DataPartition):
         return None
 
 
-class CrossValidationFold(DataPartition):
+class CrossValidationFold(DataSplit):
     """
-    Provides information a partition of the available data that is used by a single fold of a cross validation.
+    Provides information a split of the available data that is used by a single fold of a cross validation.
     """
 
     def __init__(self, num_folds: int, fold: int):
@@ -235,15 +235,15 @@ class DataSplitter(ABC):
                                  None, train_x, train_y, None, test_x, test_y)
 
     @abstractmethod
-    def _train_and_evaluate(self, meta_data: MetaData, data_partition: DataPartition, train_indices, train_x, train_y,
+    def _train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_indices, train_x, train_y,
                             test_indices, test_x, test_y):
         """
         The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it on a
         test set.
 
         :param meta_data:       The meta-data of the training data set
-        :param data_partition:  Information about the partition of data that should be used for building and evaluating
-                                a classifier or ranker
+        :param data_split:      Information about the split of the available data that should be used for building and
+                                evaluating a classifier or ranker
         :param train_indices:   The indices of the training examples or None, if no cross validation is used
         :param train_x:         The feature matrix of the training examples
         :param train_y:         The label matrix of the training examples
