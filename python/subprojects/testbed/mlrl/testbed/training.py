@@ -113,10 +113,9 @@ class DataType(Enum):
     TEST = 'test'
 
 
-class CrossValidation(ABC):
+class DataSplitter(ABC):
     """
-    A base class for all classes that use cross validation or a train-test split to train and evaluate a multi-label
-    classifier or ranker.
+    A base class for all classes that split a data set into training and test data.
     """
 
     def __init__(self, data_set: DataSet, num_folds: int, current_fold: int, random_state: int):
