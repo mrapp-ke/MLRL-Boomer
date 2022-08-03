@@ -1,8 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from integration_tests import CmdBuilder, DIR_DATA, DATASET_EMOTIONS
-from test_common import CommonIntegrationTests
+from test_common import CommonIntegrationTests, CmdBuilder, DIR_DATA, DATASET_EMOTIONS
 
 CMD_BOOMER = 'boomer'
 

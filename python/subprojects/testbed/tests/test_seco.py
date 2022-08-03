@@ -2,8 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
-from integration_tests import DATASET_WEATHER
-from test_common import CommonIntegrationTests
+from test_common import CommonIntegrationTests, DATASET_WEATHER
 
 CMD_SECO = 'seco'
 
