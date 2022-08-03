@@ -4,9 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
 from enum import Enum
-from typing import Set
+from typing import Set, Dict
 
-from mlrl.common.strings import format_string_set, format_enum_values
+from mlrl.common.strings import format_string_set, format_enum_values, format_dict_keys
 
 
 class BooleanOption(Enum):
@@ -159,3 +159,30 @@ class Options:
             return value
 
         return default_value
+
+
+def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:
+    if value in allowed_values:
+        return value
+
+    raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
+                     + format_string_set(allowed_values) + ', but is "' + value + '"')
+
+
+def parse_param_and_options(parameter_name: str, value: str,
+                            allowed_values_and_options: Dict[str, Set[str]]) -> (str, Options):
+    for allowed_value, allowed_options in allowed_values_and_options.items():
+        if value.startswith(allowed_value):
+            suffix = value[len(allowed_value):].strip()
+
+            if len(suffix) > 0:
+                try:
+                    return allowed_value, Options.create(suffix, allowed_options)
+                except ValueError as e:
+                    raise ValueError('Invalid options specified for parameter "' + parameter_name + '" with value "'
+                                     + allowed_value + '": ' + str(e))
+
+            return allowed_value, Options()
+
+    raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
+                     + format_dict_keys(allowed_values_and_options) + ', but is "' + value + '"')

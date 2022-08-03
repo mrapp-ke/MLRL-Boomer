@@ -9,8 +9,7 @@ from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 from typing import Optional
 
-from mlrl.common.config import parse_param_and_options
-from mlrl.common.options import BooleanOption
+from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
 from mlrl.testbed.data_splitting import DataSet

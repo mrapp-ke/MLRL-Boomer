@@ -19,12 +19,13 @@ from mlrl.boosting.config import configure_post_processor, configure_l1_regulari
     configure_label_wise_probability_predictor, configure_marginalized_probability_predictor
 from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
 from mlrl.common.config import AUTOMATIC
-from mlrl.common.config import parse_param, configure_rule_induction, configure_feature_binning, \
-    configure_label_sampling, configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, \
-    configure_pruning, configure_parallel_rule_refinement, configure_parallel_statistic_update, \
-    configure_parallel_prediction, configure_size_stopping_criterion, configure_time_stopping_criterion, \
-    configure_early_stopping_criterion, configure_sequential_post_optimization
+from mlrl.common.config import configure_rule_induction, configure_feature_binning, configure_label_sampling, \
+    configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, configure_pruning, \
+    configure_parallel_rule_refinement, configure_parallel_statistic_update, configure_parallel_prediction, \
+    configure_size_stopping_criterion, configure_time_stopping_criterion, configure_early_stopping_criterion, \
+    configure_sequential_post_optimization
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
+from mlrl.common.options import parse_param
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int, get_float
 from sklearn.base import ClassifierMixin
 

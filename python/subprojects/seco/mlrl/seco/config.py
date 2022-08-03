@@ -5,8 +5,8 @@ Provides utility functions for configuring separate-and-conquer (SeCo) algorithm
 """
 from typing import Dict, Set, Optional
 
-from mlrl.common.config import parse_param, parse_param_and_options, NONE
-from mlrl.common.options import Options
+from mlrl.common.config import NONE
+from mlrl.common.options import Options, parse_param, parse_param_and_options
 from mlrl.seco.cython.learner import SeCoRuleLearnerConfig
 
 HEAD_TYPE_SINGLE = 'single-label'
