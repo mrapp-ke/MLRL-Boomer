@@ -7,8 +7,8 @@ import _pickle as pickle
 import logging as log
 import os.path as path
 
+from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.io import get_file_name_per_fold
-from mlrl.testbed.training import DataSplit
 
 SUFFIX_MODEL = 'model'
 

@@ -11,13 +11,13 @@ from typing import Optional
 from mlrl.common.learners import NominalAttributeLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
+from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataSet, DataType
 from mlrl.testbed.evaluation import Evaluation
 from mlrl.testbed.model_characteristics import ModelPrinter, ModelCharacteristicsPrinter
 from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
 from mlrl.testbed.predictions import PredictionPrinter
-from mlrl.testbed.training import DataSplitter, DataSplit, DataSet, DataType
 from sklearn.base import BaseEstimator, clone
 
 
