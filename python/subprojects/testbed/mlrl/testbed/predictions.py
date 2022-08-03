@@ -26,7 +26,7 @@ class PredictionOutput(ABC):
         """
         Writes predictions to the output.
 
-        :param meta_data:       The meta data of the data set
+        :param meta_data:       The meta-data of the data set
         :param data_partition:  The partition of data, the predictions and ground truth labels correspond to
         :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
                                 test data
@@ -87,7 +87,7 @@ class PredictionPrinter:
 
     def print(self, meta_data: MetaData, data_partition: DataPartition, data_type: DataType, predictions, ground_truth):
         """
-        :param meta_data:       The meta data of the data set
+        :param meta_data:       The meta-data of the data set
         :param data_partition:  The partition of data, the predictions and ground truth labels correspond to
         :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
                                 test data

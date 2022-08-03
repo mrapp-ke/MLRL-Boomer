@@ -37,7 +37,7 @@ class RuleModelFormatter(RuleModelVisitor):
     def __init__(self, options: Options, meta_data: MetaData):
         """
         :param options:     The options that should be used for creating textual representations of the rules in a model
-        :param meta_data:   The meta data of the training data set
+        :param meta_data:   The meta-data of the training data set
         """
 
         self.print_feature_names = options.get_bool(ARGUMENT_PRINT_FEATURE_NAMES, True)
@@ -215,7 +215,7 @@ class ModelPrinter(ABC):
         Prints a textual representation of a learner's model. If the learner does not support to create a textual
         representation of the model, a `ValueError` is raised.
 
-        :param meta_data:       The meta data of the training data set
+        :param meta_data:       The meta-data of the training data set
         :param data_partition:  The partition of data, the model corresponds to
         :param learner:         The learner
         """
@@ -235,7 +235,7 @@ class ModelPrinter(ABC):
         Must be implemented by subclasses in order to create a textual representation of a model.
 
         :param options:     The options that should be used for creating a textual representation of a model
-        :param meta_data:   The meta data of the training data set
+        :param meta_data:   The meta-data of the training data set
         :param model:       The model
         :return:            The textual representation of the given model
         """

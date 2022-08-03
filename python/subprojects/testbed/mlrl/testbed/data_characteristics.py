@@ -22,7 +22,7 @@ class FeatureCharacteristics:
 
     def __init__(self, meta_data: MetaData, x):
         """
-        :param meta_data:   The meta data of the data set
+        :param meta_data:   The meta-data of the data set
         :param x:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that
                             stores the feature values
         """
@@ -127,7 +127,7 @@ class DataCharacteristicsPrinter:
 
     def print(self, meta_data: MetaData, data_partition: DataPartition, x, y):
         """
-        :param meta_data:       The meta data of the data set
+        :param meta_data:       The meta-data of the data set
         :param data_partition:  Information about the partition of data, the characteristics correspond to
         :param x:               A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that
                                 stores the feature values
