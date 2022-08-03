@@ -7,8 +7,7 @@ from typing import Dict, Set, Optional
 
 from mlrl.common.cython.learner import RuleLearnerConfig
 from mlrl.common.cython.stopping_criterion import AggregationFunction
-from mlrl.common.options import BooleanOption, Options
-from mlrl.common.strings import format_dict_keys, format_string_set
+from mlrl.common.options import BooleanOption, parse_param, parse_param_and_options
 
 AUTOMATIC = 'auto'
 
@@ -150,33 +149,6 @@ PARALLEL_VALUES: Dict[str, Set[str]] = {
     str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
     str(BooleanOption.FALSE.value): {}
 }
-
-
-def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:
-    if value in allowed_values:
-        return value
-
-    raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + format_string_set(allowed_values) + ', but is "' + value + '"')
-
-
-def parse_param_and_options(parameter_name: str, value: str,
-                            allowed_values_and_options: Dict[str, Set[str]]) -> (str, Options):
-    for allowed_value, allowed_options in allowed_values_and_options.items():
-        if value.startswith(allowed_value):
-            suffix = value[len(allowed_value):].strip()
-
-            if len(suffix) > 0:
-                try:
-                    return allowed_value, Options.create(suffix, allowed_options)
-                except ValueError as e:
-                    raise ValueError('Invalid options specified for parameter "' + parameter_name + '" with value "'
-                                     + allowed_value + '": ' + str(e))
-
-            return allowed_value, Options()
-
-    raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + format_dict_keys(allowed_values_and_options) + ', but is "' + value + '"')
 
 
 def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional[str]):
