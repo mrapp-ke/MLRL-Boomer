@@ -9,8 +9,8 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from mlrl.testbed.data_splitting import DataSplit
-from mlrl.testbed.io import create_csv_dict_reader
-from mlrl.testbed.io import open_readable_csv_file, open_writable_csv_file, create_csv_dict_writer
+from mlrl.testbed.io import create_csv_dict_reader, open_readable_csv_file, open_writable_csv_file, \
+    create_csv_dict_writer
 
 
 class ParameterInput(ABC):
