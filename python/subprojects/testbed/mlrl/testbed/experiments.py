@@ -17,11 +17,11 @@ from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
 from mlrl.testbed.predictions import PredictionPrinter
-from mlrl.testbed.training import CrossValidation, DataSet, DataPartition, DataType
+from mlrl.testbed.training import DataSplitter, DataSet, DataPartition, DataType
 from sklearn.base import BaseEstimator, clone
 
 
-class Experiment(CrossValidation, ABC):
+class Experiment(DataSplitter, ABC):
     """
     An experiment that trains and evaluates a single multi-label classifier or ranker on a specific data set using cross
     validation or separate training and test sets.
