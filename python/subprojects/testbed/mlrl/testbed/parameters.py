@@ -10,18 +10,18 @@ from typing import List
 
 from mlrl.testbed.io import create_csv_dict_reader
 from mlrl.testbed.io import open_readable_csv_file, open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.training import DataPartition
+from mlrl.testbed.training import DataSplit
 
 
 class ParameterInput(ABC):
 
     @abstractmethod
-    def read_parameters(self, data_partition: DataPartition) -> dict:
+    def read_parameters(self, data_split: DataSplit) -> dict:
         """
         Reads a parameter setting from the input.
 
-        :param data_partition:  Information about the partition of data, the parameter setting corresponds to
-        :return:                A dictionary that stores the parameters
+        :param data_split:  Information about the split of the available data, the parameter setting corresponds to
+        :return:            A dictionary that stores the parameters
         """
         pass
 
@@ -37,8 +37,8 @@ class ParameterCsvInput(ParameterInput):
         """
         self.input_dir = input_dir
 
-    def read_parameters(self, data_partition: DataPartition) -> dict:
-        with open_readable_csv_file(self.input_dir, 'parameters', data_partition.get_fold()) as csv_file:
+    def read_parameters(self, data_split: DataSplit) -> dict:
+        with open_readable_csv_file(self.input_dir, 'parameters', data_split.get_fold()) as csv_file:
             csv_reader = create_csv_dict_reader(csv_file)
             return dict(next(csv_reader))
 
@@ -49,10 +49,10 @@ class ParameterOutput(ABC):
     """
 
     @abstractmethod
-    def write_parameters(self, data_partition: DataPartition, learner):
+    def write_parameters(self, data_split: DataSplit, learner):
         """
-        :param data_partition:  Information about the partition of data, the parameter setting corresponds to
-        :param learner:         The learner
+        :param data_split:  Information about the split of the available data, the parameter setting corresponds to
+        :param learner:     The learner
         """
         pass
 
@@ -62,11 +62,11 @@ class ParameterLogOutput(ParameterOutput):
     Outputs parameter settings using the logger.
     """
 
-    def write_parameters(self, data_partition: DataPartition, learner):
+    def write_parameters(self, data_split: DataSplit, learner):
         msg = 'Custom parameters'
 
-        if data_partition.is_cross_validation_used():
-            msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
+        if data_split.is_cross_validation_used():
+            msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
         msg += ':\n\n'
         params = learner.get_params()
@@ -91,7 +91,7 @@ class ParameterCsvOutput(ParameterOutput):
         """
         self.output_dir = output_dir
 
-    def write_parameters(self, data_partition: DataPartition, learner):
+    def write_parameters(self, data_split: DataSplit, learner):
         params = learner.get_params()
 
         for key, value in list(params.items()):
@@ -100,7 +100,7 @@ class ParameterCsvOutput(ParameterOutput):
 
         header = sorted(params)
 
-        with open_writable_csv_file(self.output_dir, 'parameters', data_partition.get_fold()) as csv_file:
+        with open_writable_csv_file(self.output_dir, 'parameters', data_split.get_fold()) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(params)
 
@@ -116,10 +116,10 @@ class ParameterPrinter:
         """
         self.outputs = outputs
 
-    def print(self, data_partition: DataPartition, learner):
+    def print(self, data_split: DataSplit, learner):
         """
-        :param data_partition:  Information about the partition of data, the characteristics correspond to
-        :param learner:         The learner
+        :param data_split:  Information about the split of the available data, the characteristics correspond to
+        :param learner:     The learner
         """
         for output in self.outputs:
-            output.write_parameters(data_partition, learner)
+            output.write_parameters(data_split, learner)

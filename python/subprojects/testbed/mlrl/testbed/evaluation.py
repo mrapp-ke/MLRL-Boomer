@@ -14,7 +14,7 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.training import DataPartition, DataType
+from mlrl.testbed.training import DataSplit, DataType
 from sklearn.utils.multiclass import is_multilabel
 
 # The name of the accuracy metric
@@ -111,13 +111,13 @@ class Evaluation(ABC):
     """
 
     @abstractmethod
-    def evaluate(self, meta_data: MetaData, data_partition: DataPartition, data_type: DataType, predictions,
-                 ground_truth, train_time: float, predict_time: float):
+    def evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, predictions, ground_truth,
+                 train_time: float, predict_time: float):
         """
         Evaluates the predictions provided by a classifier or ranker.
 
         :param meta_data:       The meta-data of the data set
-        :param data_partition:  The partition of data, the predictions and ground truth labels correspond to
+        :param data_split:      The split of the available data, the predictions and ground truth labels correspond to
         :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
                                 test data
         :param predictions:     The predictions provided by the classifier
@@ -321,24 +321,24 @@ class AbstractEvaluation(Evaluation, ABC):
         self.outputs = outputs
         self.results: Dict[str, EvaluationResult] = {}
 
-    def evaluate(self, meta_data: MetaData, data_partition: DataPartition, data_type: DataType, predictions,
-                 ground_truth, train_time: float, predict_time: float):
+    def evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, predictions, ground_truth,
+                 train_time: float, predict_time: float):
         result = self.results[data_type] if data_type in self.results else EvaluationResult()
         self.results[data_type] = result
-        result.put(TIME_TRAIN, train_time, data_partition.get_num_folds(), data_partition.get_fold())
-        result.put(TIME_PREDICT, predict_time, data_partition.get_num_folds(), data_partition.get_fold())
-        self._populate_result(data_partition, result, predictions, ground_truth)
+        result.put(TIME_TRAIN, train_time, data_split.get_num_folds(), data_split.get_fold())
+        result.put(TIME_PREDICT, predict_time, data_split.get_num_folds(), data_split.get_fold())
+        self._populate_result(data_split, result, predictions, ground_truth)
 
-        if data_partition.is_cross_validation_used():
+        if data_split.is_cross_validation_used():
             for output in self.outputs:
-                output.write_evaluation_results(data_type, result, data_partition.get_fold())
+                output.write_evaluation_results(data_type, result, data_split.get_fold())
 
-        if data_partition.is_last_fold():
+        if data_split.is_last_fold():
             for output in self.outputs:
-                output.write_overall_evaluation_results(data_type, result, data_partition.get_num_folds())
+                output.write_overall_evaluation_results(data_type, result, data_split.get_num_folds())
 
     @abstractmethod
-    def _populate_result(self, data_partition: DataPartition, result: EvaluationResult, predictions, ground_truth):
+    def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
         pass
 
 
@@ -350,9 +350,9 @@ class ClassificationEvaluation(AbstractEvaluation):
     def __init__(self, *args: EvaluationOutput):
         super(ClassificationEvaluation, self).__init__(*args)
 
-    def _populate_result(self, data_partition: DataPartition, result: EvaluationResult, predictions, ground_truth):
-        num_folds = data_partition.get_num_folds()
-        fold = data_partition.get_fold()
+    def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
+        num_folds = data_split.get_num_folds()
+        fold = data_split.get_fold()
 
         if is_multilabel(ground_truth):
             hamming_loss = metrics.hamming_loss(ground_truth, predictions)
@@ -405,10 +405,10 @@ class RankingEvaluation(AbstractEvaluation):
     def __init__(self, *args: EvaluationOutput):
         super(RankingEvaluation, self).__init__(*args)
 
-    def _populate_result(self, data_partition: DataPartition, result: EvaluationResult, predictions, ground_truth):
+    def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
         if is_multilabel(ground_truth):
-            num_folds = data_partition.get_num_folds()
-            fold = data_partition.get_fold()
+            num_folds = data_split.get_num_folds()
+            fold = data_split.get_fold()
             ground_truth = enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8)
             result.put(RANK_LOSS, metrics.label_ranking_loss(ground_truth, predictions), num_folds, fold)
             result.put(COVERAGE_ERROR, metrics.coverage_error(ground_truth, predictions), num_folds, fold)

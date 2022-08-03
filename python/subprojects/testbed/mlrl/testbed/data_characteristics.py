@@ -12,7 +12,7 @@ from typing import List
 from mlrl.testbed.characteristics import LabelCharacteristics, density
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.training import DataPartition
+from mlrl.testbed.training import DataSplit
 
 
 class FeatureCharacteristics:
@@ -41,12 +41,13 @@ class DataCharacteristicsOutput(ABC):
     """
 
     @abstractmethod
-    def write_data_characteristics(self, data_partition: DataPartition, feature_characteristics: FeatureCharacteristics,
+    def write_data_characteristics(self, data_split: DataSplit, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
         """
         Writes the characteristics of a data set to the output.
 
-        :param data_partition:          Information about the partition of data, the characteristics correspond to
+        :param data_split:              Information about the split of the available data, the characteristics
+                                        correspond to
         :param feature_characteristics: The characteristics of the feature matrix
         :param label_characteristics:   The characteristics of the label matrix
         """
@@ -58,12 +59,12 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
     Outputs the characteristics of a data set using the logger.
     """
 
-    def write_data_characteristics(self, data_partition: DataPartition, feature_characteristics: FeatureCharacteristics,
+    def write_data_characteristics(self, data_split: DataSplit, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
         msg = 'Data characteristics'
 
-        if data_partition.is_cross_validation_used():
-            msg += ' (Fold ' + str(data_partition.get_fold() + 1) + ')'
+        if data_split.is_cross_validation_used():
+            msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
         msg += ':\n\n'
         msg += 'Examples: ' + str(feature_characteristics.num_examples) + '\n'
@@ -92,7 +93,7 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
         """
         self.output_dir = output_dir
 
-    def write_data_characteristics(self, data_partition: DataPartition, feature_characteristics: FeatureCharacteristics,
+    def write_data_characteristics(self, data_split: DataSplit, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
         columns = {
             'Examples': feature_characteristics.num_examples,
@@ -109,7 +110,7 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
             'Distinct label vectors': label_characteristics.num_distinct_label_vectors
         }
         header = sorted(columns.keys())
-        with open_writable_csv_file(self.output_dir, 'data_characteristics', data_partition.get_fold()) as csv_file:
+        with open_writable_csv_file(self.output_dir, 'data_characteristics', data_split.get_fold()) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
@@ -125,18 +126,18 @@ class DataCharacteristicsPrinter:
         """
         self.outputs = outputs
 
-    def print(self, meta_data: MetaData, data_partition: DataPartition, x, y):
+    def print(self, meta_data: MetaData, data_split: DataSplit, x, y):
         """
-        :param meta_data:       The meta-data of the data set
-        :param data_partition:  Information about the partition of data, the characteristics correspond to
-        :param x:               A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that
-                                stores the feature values
-        :param y:               A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                stores the ground truth labels
+        :param meta_data:   The meta-data of the data set
+        :param data_split:  Information about the split of the available data, the characteristics correspond to
+        :param x:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that
+                            stores the feature values
+        :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores
+                            the ground truth labels
         """
         if len(self.outputs) > 0:
             feature_characteristics = FeatureCharacteristics(meta_data, x)
             label_characteristics = LabelCharacteristics(y)
 
             for output in self.outputs:
-                output.write_data_characteristics(data_partition, feature_characteristics, label_characteristics)
+                output.write_data_characteristics(data_split, feature_characteristics, label_characteristics)
