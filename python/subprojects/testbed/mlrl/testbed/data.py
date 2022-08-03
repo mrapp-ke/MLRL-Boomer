@@ -56,7 +56,7 @@ class Label(Attribute):
 
 class MetaData:
     """
-    Stores the meta data of a multi-label data set.
+    Stores the meta-data of a multi-label data set.
     """
 
     def __init__(self, attributes: List[Attribute], labels: List[Attribute], labels_at_start: bool):
@@ -95,7 +95,7 @@ def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_nam
     :return:                A `scipy.sparse.lil_matrix` of type `feature_dtype`, shape `(num_examples, num_features)`,
                             representing the feature values of the examples, a `scipy.sparse.lil_matrix` of type
                             `label_dtype`, shape `(num_examples, num_labels)`, representing the corresponding label
-                            vectors, as well as the data set's meta data
+                            vectors, as well as the data set's meta-data
     """
     xml_file = path.join(data_dir, xml_file_name)
     labels = None
@@ -122,13 +122,13 @@ def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_nam
 def load_data_set(data_dir: str, arff_file_name: str, meta_data: MetaData, feature_dtype=DTYPE_FLOAT32,
                   label_dtype=DTYPE_UINT8) -> (lil_matrix, lil_matrix):
     """
-    Loads a multi-label data set from an ARFF file given its meta data.
+    Loads a multi-label data set from an ARFF file given its meta-data.
 
     :param data_dir:        The path of the directory that contains the ARFF file
     :param arff_file_name:  The name of the ARFF file (including the suffix)
-    :param meta_data:       The meta data
-    :param feature_dtype:   The requested dtype of the feature matrix
-    :param label_dtype:     The requested dtype of the label matrix
+    :param meta_data:       The meta-data
+    :param feature_dtype:   The requested data type of the feature matrix
+    :param label_dtype:     The requested data type of the label matrix
     :return:                A `scipy.sparse.lil_matrix` of type `feature_dtype`, shape `(num_examples, num_features)`,
                             representing the feature values of the examples, as well as a `scipy.sparse.lil_matrix` of
                             type `label_dtype`, shape `(num_examples, num_labels)`, representing the corresponding
@@ -144,7 +144,7 @@ def load_data_set(data_dir: str, arff_file_name: str, meta_data: MetaData, featu
 def save_data_set_and_meta_data(output_dir: str, arff_file_name: str, xml_file_name: str, x: np.ndarray,
                                 y: np.ndarray) -> MetaData:
     """
-    Saves a multi-label data set to an ARFF file and its meta data to a XML file. All attributes in the data set are
+    Saves a multi-label data set to an ARFF file and its meta-data to a XML file. All attributes in the data set are
     considered to be numerical.
 
     :param output_dir:      The path of the directory where the ARFF file and the XML file should be saved
@@ -154,7 +154,7 @@ def save_data_set_and_meta_data(output_dir: str, arff_file_name: str, xml_file_n
                             the examples that are contained in the data set
     :param y:               An array of type `float`, shape `(num_examples, num_labels)`, representing the label vectors
                             of the examples that are contained in the data set
-    :return:                The meta data of the data set that has been saved
+    :return:                The meta-data of the data set that has been saved
     """
     meta_data = save_data_set(output_dir, arff_file_name, x, y)
     save_meta_data(output_dir, xml_file_name, meta_data)
@@ -171,7 +171,7 @@ def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nda
                             the features of the examples that are contained in the data set
     :param y:               A `np.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
                             labels of the examples that are contained in the data set
-    :return:                The meta data of the data set that has been saved
+    :return:                The meta-data of the data set that has been saved
     """
 
     num_attributes = x.shape[1]
@@ -193,7 +193,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
                             the features of the examples that are contained in the data set
     :param y:               A `np.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
                             labels of the examples that are contained in the data set
-    :param meta_data:       The meta data of the data set that should be saved
+    :param meta_data:       The meta-data of the data set that should be saved
     """
     arff_file = path.join(output_dir, arff_file_name)
     log.debug('Saving data set to file \'' + str(arff_file) + '\'...')
@@ -247,11 +247,11 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
 
 def save_meta_data(output_dir: str, xml_file_name: str, meta_data: MetaData):
     """
-    Saves the meta data of a multi-label data set to a XML file.
+    Saves the meta-data of a multi-label data set to a XML file.
 
     :param output_dir:      The path of the directory where the XML file should be saved
     :param xml_file_name:   The name of the XML file (including the suffix)
-    :param meta_data:       The meta data of the data set
+    :param meta_data:       The meta-data of the data set
     """
     xml_file = path.join(output_dir, xml_file_name)
     log.debug('Saving meta data to file \'' + str(xml_file) + '\'...')
@@ -264,17 +264,17 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     One-hot encodes the nominal attributes contained in a data set, if any.
 
     If the given feature matrix is sparse, it will be converted into a dense matrix. Also, an updated variant of the
-    given meta data, where the attributes have been removed, will be returned, as the original attributes become invalid
+    given meta-data, where the attributes have been removed, will be returned, as the original attributes become invalid
     by applying one-hot-encoding.
 
     :param x:           A `np.ndarray` or `scipy.sparse.matrix`, shape `(num_examples, num_features)`, representing the
                         features of the examples in the data set
     :param y:           A `np.ndarray` or `scipy.sparse.matrix`, shape `(num_examples, num_labels)`, representing the
                         labels of the examples in the data set
-    :param meta_data:   The meta data of the data set
+    :param meta_data:   The meta-data of the data set
     :param encoder:     The 'ColumnTransformer' to be used or None, if a new encoder should be created
     :return:            A `np.ndarray`, shape `(num_examples, num_encoded_features)`, representing the encoded features
-                        of the given examples, the encoder that has been used, as well as the updated meta data
+                        of the given examples, the encoder that has been used, as well as the updated meta-data
     """
     nominal_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
     num_nominal_attributes = len(nominal_indices)
@@ -311,7 +311,7 @@ def __create_feature_and_label_matrix(matrix: csc_matrix, meta_data: MetaData, l
 
     :param matrix:      A `scipy.sparse.csc_matrix` of type `feature_dtype`, shape
                         `(num_examples, num_features + num_labels)`, representing the values in an ARFF file
-    :param meta_data:   The meta data of the data set
+    :param meta_data:   The meta-data of the data set
     :param label_dtype: The requested type of the label matrix
     :return:            A `scipy.sparse.lil_matrix` of type `feature_dtype`, shape `(num_examples, num_features)`,
                         representing the feature matrix, as well as `scipy.sparse.lil_matrix` of type `label_dtype`,
@@ -457,10 +457,10 @@ def __parse_attribute_or_label_name(name: str) -> str:
 
 def __write_meta_data(xml_file, meta_data: MetaData):
     """
-    Writes meta data to a Mulan XML file.
+    Writes meta-data to a Mulan XML file.
 
     :param xml_file:    The path fo the XML file (including the suffix)
-    :param meta_data:   The meta data to be written
+    :param meta_data:   The meta-data to be written
     """
     root_element = XmlTree.Element('labels')
     root_element.set('xmlns', 'http://mulan.sourceforge.net/labels')

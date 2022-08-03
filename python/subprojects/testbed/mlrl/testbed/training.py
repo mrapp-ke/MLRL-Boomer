@@ -242,7 +242,7 @@ class CrossValidation(ABC):
         The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it on a
         test set.
 
-        :param meta_data:       The meta data of the training data set
+        :param meta_data:       The meta-data of the training data set
         :param data_partition:  Information about the partition of data that should be used for building and evaluating
                                 a classifier or ranker
         :param train_indices:   The indices of the training examples or None, if no cross validation is used
