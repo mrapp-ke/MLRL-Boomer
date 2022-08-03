@@ -9,8 +9,8 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from mlrl.testbed.characteristics import LabelCharacteristics
+from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.training import DataPartition, DataType
 
 
 class PredictionCharacteristicsOutput(ABC):

@@ -13,6 +13,7 @@ from mlrl.common.config import parse_param_and_options
 from mlrl.common.options import BooleanOption
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
+from mlrl.testbed.data_splitting import DataSet
 from mlrl.testbed.evaluation import Evaluation, ClassificationEvaluation, RankingEvaluation, EvaluationLogOutput, \
     EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
@@ -27,7 +28,6 @@ from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter, \
     PredictionCharacteristicsLogOutput, PredictionCharacteristicsCsvOutput
 from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, PredictionArffOutput
-from mlrl.testbed.training import DataSet
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 

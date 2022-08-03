@@ -15,8 +15,8 @@ from mlrl.common.cython.rule_model import RuleModel, RuleModelVisitor, EmptyBody
 from mlrl.common.learners import Learner
 from mlrl.common.options import Options
 from mlrl.testbed.data import Attribute, MetaData
+from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.io import open_writable_txt_file, open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.training import DataSplit
 
 ARGUMENT_PRINT_FEATURE_NAMES = 'print_feature_names'
 

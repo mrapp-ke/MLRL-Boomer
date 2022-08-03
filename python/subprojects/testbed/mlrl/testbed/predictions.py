@@ -11,8 +11,8 @@ from typing import List
 
 import numpy as np
 from mlrl.testbed.data import MetaData, Label, save_arff_file
+from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
-from mlrl.testbed.training import DataSplit, DataType
 
 
 class PredictionOutput(ABC):

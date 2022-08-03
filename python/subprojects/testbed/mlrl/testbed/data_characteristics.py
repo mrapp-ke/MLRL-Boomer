@@ -11,8 +11,8 @@ from typing import List
 
 from mlrl.testbed.characteristics import LabelCharacteristics, density
 from mlrl.testbed.data import MetaData, AttributeType
+from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.training import DataSplit
 
 
 class FeatureCharacteristics:
