@@ -1,7 +1,9 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from test_common import CommonIntegrationTests, CmdBuilder, DIR_DATA, DATASET_EMOTIONS
+from test_common import CommonIntegrationTests, CmdBuilder, DIR_OUT, DIR_DATA, DATASET_EMOTIONS
+from os import path
+
 
 CMD_BOOMER = 'boomer'
 
@@ -150,7 +152,9 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         :param methodName: The name of the test method to be executed
         """
-        super(BoostingIntegrationTests, self).__init__(cmd=CMD_BOOMER, methodName=methodName)
+        super(BoostingIntegrationTests, self).__init__(cmd=CMD_BOOMER,
+                                                       expected_output_dir=path.join(DIR_OUT, CMD_BOOMER),
+                                                       methodName=methodName)
 
     def test_feature_binning_equal_width_nominal_features_dense(self):
         """
@@ -160,7 +164,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder(dataset=self.dataset_nominal) \
             .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(False)
-        self.run_cmd(builder, self.cmd + '_feature-binning-equal-width_nominal-features-dense')
+        self.run_cmd(builder, 'feature-binning-equal-width_nominal-features-dense')
 
     def test_feature_binning_equal_width_nominal_features_sparse(self):
         """
@@ -170,7 +174,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder(dataset=self.dataset_nominal) \
             .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(True)
-        self.run_cmd(builder, self.cmd + '_feature-binning-equal-width_nominal-features-sparse')
+        self.run_cmd(builder, 'feature-binning-equal-width_nominal-features-sparse')
 
     def test_feature_binning_equal_width_numerical_features_dense(self):
         """
@@ -180,7 +184,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(False)
-        self.run_cmd(builder, self.cmd + '_feature-binning-equal-width_numerical-features-dense')
+        self.run_cmd(builder, 'feature-binning-equal-width_numerical-features-dense')
 
     def test_feature_binning_equal_width_numerical_features_sparse(self):
         """
@@ -190,7 +194,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(True)
-        self.run_cmd(builder, self.cmd + '_feature-binning-equal-width_numerical-features-sparse')
+        self.run_cmd(builder, 'feature-binning-equal-width_numerical-features-sparse')
 
     def test_feature_binning_equal_frequency_nominal_features_dense(self):
         """
@@ -200,7 +204,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder(dataset=self.dataset_nominal) \
             .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(False)
-        self.run_cmd(builder, self.cmd + '_feature-binning-equal-frequency_nominal-features-dense')
+        self.run_cmd(builder, 'feature-binning-equal-frequency_nominal-features-dense')
 
     def test_feature_binning_equal_frequency_nominal_features_sparse(self):
         """
@@ -210,7 +214,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder(dataset=self.dataset_nominal) \
             .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(True)
-        self.run_cmd(builder, self.cmd + '_feature-binning-equal-frequency_nominal-features-sparse')
+        self.run_cmd(builder, 'feature-binning-equal-frequency_nominal-features-sparse')
 
     def test_feature_binning_equal_frequency_numerical_features_dense(self):
         """
@@ -220,7 +224,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(False)
-        self.run_cmd(builder, self.cmd + '_feature-binning-equal-frequency_numerical-features-dense')
+        self.run_cmd(builder, 'feature-binning-equal-frequency_numerical-features-dense')
 
     def test_feature_binning_equal_frequency_numerical_features_sparse(self):
         """
@@ -230,7 +234,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(True)
-        self.run_cmd(builder, self.cmd + '_feature-binning-equal-frequency_numerical-features-sparse')
+        self.run_cmd(builder, 'feature-binning-equal-frequency_numerical-features-sparse')
 
     def test_loss_logistic_label_wise(self):
         """
@@ -238,7 +242,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .loss(LOSS_LOGISTIC_LABEL_WISE)
-        self.run_cmd(builder, self.cmd + '_loss-logistic-label-wise')
+        self.run_cmd(builder, 'loss-logistic-label-wise')
 
     def test_loss_logistic_example_wise(self):
         """
@@ -246,7 +250,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .loss(LOSS_LOGISTIC_EXAMPLE_WISE)
-        self.run_cmd(builder, self.cmd + '_loss-logistic-example-wise')
+        self.run_cmd(builder, 'loss-logistic-example-wise')
 
     def test_loss_squared_hinge_label_wise(self):
         """
@@ -254,7 +258,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .loss(LOSS_SQUARED_HINGE_LABEL_WISE)
-        self.run_cmd(builder, self.cmd + '_loss-squared-hinge-label-wise')
+        self.run_cmd(builder, 'loss-squared-hinge-label-wise')
 
     def test_loss_squared_error_label_wise(self):
         """
@@ -262,7 +266,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .loss(LOSS_SQUARED_ERROR_LABEL_WISE)
-        self.run_cmd(builder, self.cmd + '_loss-squared-error-label-wise')
+        self.run_cmd(builder, 'loss-squared-error-label-wise')
 
     def test_loss_squared_error_example_wise(self):
         """
@@ -270,7 +274,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .loss(LOSS_SQUARED_ERROR_EXAMPLE_WISE)
-        self.run_cmd(builder, self.cmd + '_loss-squared-error-example-wise')
+        self.run_cmd(builder, 'loss-squared-error-example-wise')
 
     def test_predictor_classification_label_wise(self):
         """
@@ -279,7 +283,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .classification_predictor(CLASSIFICATION_PREDICTOR_LABEL_WISE) \
             .print_predictions(True)
-        self.run_cmd(builder, self.cmd + '_predictor-classification-label-wise')
+        self.run_cmd(builder, 'predictor-classification-label-wise')
 
     def test_predictor_classification_example_wise(self):
         """
@@ -289,7 +293,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .classification_predictor(CLASSIFICATION_PREDICTOR_EXAMPLE_WISE) \
             .print_predictions(True)
-        self.run_cmd(builder, self.cmd + '_predictor-classification-example-wise')
+        self.run_cmd(builder, 'predictor-classification-example-wise')
 
     def test_predictor_classification_gfm(self):
         """
@@ -299,7 +303,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .classification_predictor(CLASSIFICATION_PREDICTOR_GFM) \
             .print_predictions(True)
-        self.run_cmd(builder, self.cmd + '_predictor-classification-gfm')
+        self.run_cmd(builder, 'predictor-classification-gfm')
 
     def test_predictor_probability_label_wise(self):
         """
@@ -310,7 +314,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .predict_probabilities(True) \
             .probability_predictor(PROBABILITY_PREDICTOR_LABEL_WISE) \
             .print_predictions(True)
-        self.run_cmd(builder, self.cmd + '_predictor-probability-label-wise')
+        self.run_cmd(builder, 'predictor-probability-label-wise')
 
     def test_predictor_probability_marginalized(self):
         """
@@ -321,7 +325,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .predict_probabilities(True) \
             .probability_predictor(PROBABILITY_PREDICTOR_MARGINALIZED) \
             .print_predictions(True)
-        self.run_cmd(builder, self.cmd + '_predictor-probability-marginalized')
+        self.run_cmd(builder, 'predictor-probability-marginalized')
 
     def test_no_default_rule(self):
         """
@@ -330,7 +334,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .default_rule(False) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_no-default-rule')
+        self.run_cmd(builder, 'no-default-rule')
 
     def test_statistics_sparse_labels_dense(self):
         """
@@ -343,7 +347,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .default_rule(False) \
             .loss(LOSS_SQUARED_HINGE_LABEL_WISE) \
             .head_type(HEAD_TYPE_SINGLE_LABEL)
-        self.run_cmd(builder, self.cmd + '_statistics-sparse_labels-dense')
+        self.run_cmd(builder, 'statistics-sparse_labels-dense')
 
     def test_statistics_sparse_labels_sparse(self):
         """
@@ -356,7 +360,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .default_rule(False) \
             .loss(LOSS_SQUARED_HINGE_LABEL_WISE) \
             .head_type(HEAD_TYPE_SINGLE_LABEL)
-        self.run_cmd(builder, self.cmd + '_statistics-sparse_labels-sparse')
+        self.run_cmd(builder, 'statistics-sparse_labels-sparse')
 
     def test_label_wise_single_label_heads(self):
         """
@@ -367,7 +371,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_LOGISTIC_LABEL_WISE) \
             .head_type(HEAD_TYPE_SINGLE_LABEL) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_label-wise-single-label-heads')
+        self.run_cmd(builder, 'label-wise-single-label-heads')
 
     def test_label_wise_complete_heads(self):
         """
@@ -378,7 +382,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_LOGISTIC_LABEL_WISE) \
             .head_type(HEAD_TYPE_COMPLETE) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_label-wise-complete-heads')
+        self.run_cmd(builder, 'label-wise-complete-heads')
 
     def test_label_wise_complete_heads_equal_width_label_binning(self):
         """
@@ -390,7 +394,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .head_type(HEAD_TYPE_COMPLETE) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_label-wise-complete-heads_equal-width-label-binning')
+        self.run_cmd(builder, 'label-wise-complete-heads_equal-width-label-binning')
 
     def test_label_wise_partial_fixed_heads(self):
         """
@@ -401,7 +405,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_LOGISTIC_LABEL_WISE) \
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_label-wise-partial-fixed-heads')
+        self.run_cmd(builder, 'label-wise-partial-fixed-heads')
 
     def test_label_wise_partial_fixed_heads_equal_width_label_binning(self):
         """
@@ -413,7 +417,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_label-wise-partial-fixed-heads_equal-width-label-binning')
+        self.run_cmd(builder, 'label-wise-partial-fixed-heads_equal-width-label-binning')
 
     def test_label_wise_partial_dynamic_heads(self):
         """
@@ -424,7 +428,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_LOGISTIC_LABEL_WISE) \
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_label-wise-partial-dynamic-heads')
+        self.run_cmd(builder, 'label-wise-partial-dynamic-heads')
 
     def test_label_wise_partial_dynamic_heads_equal_width_label_binning(self):
         """
@@ -436,7 +440,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_label-wise-partial-dynamic-heads_equal-width-label-binning')
+        self.run_cmd(builder, 'label-wise-partial-dynamic-heads_equal-width-label-binning')
 
     def test_example_wise_single_label_heads(self):
         """
@@ -447,7 +451,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
             .head_type(HEAD_TYPE_SINGLE_LABEL) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_example-wise-single-label-heads')
+        self.run_cmd(builder, 'example-wise-single-label-heads')
 
     def test_example_wise_complete_heads(self):
         """
@@ -458,7 +462,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
             .head_type(HEAD_TYPE_COMPLETE) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_example-wise-complete-heads')
+        self.run_cmd(builder, 'example-wise-complete-heads')
 
     def test_example_wise_complete_heads_equal_width_label_binning(self):
         """
@@ -470,7 +474,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .head_type(HEAD_TYPE_COMPLETE) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_example-wise-complete-heads_equal-width-label-binning')
+        self.run_cmd(builder, 'example-wise-complete-heads_equal-width-label-binning')
 
     def test_example_wise_partial_fixed_heads(self):
         """
@@ -481,7 +485,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_example-wise-partial-fixed-heads')
+        self.run_cmd(builder, 'example-wise-partial-fixed-heads')
 
     def test_example_wise_partial_fixed_heads_equal_width_label_binning(self):
         """
@@ -493,7 +497,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_example-wise-partial-fixed-heads_equal-width-label-binning')
+        self.run_cmd(builder, 'example-wise-partial-fixed-heads_equal-width-label-binning')
 
     def test_example_wise_partial_dynamic_heads(self):
         """
@@ -504,7 +508,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_example-wise-partial-dynamic-heads')
+        self.run_cmd(builder, 'example-wise-partial-dynamic-heads')
 
     def test_example_wise_partial_dynamic_heads_equal_width_label_binning(self):
         """
@@ -516,4 +520,4 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, self.cmd + '_example-wise-partial-dynamic-heads_equal-width-label-binning')
+        self.run_cmd(builder, 'example-wise-partial-dynamic-heads_equal-width-label-binning')

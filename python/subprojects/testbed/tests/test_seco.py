@@ -2,7 +2,9 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
-from test_common import CommonIntegrationTests, DATASET_WEATHER
+from os import path
+
+from test_common import CommonIntegrationTests, DIR_OUT, DATASET_WEATHER
 
 CMD_SECO = 'seco'
 
@@ -17,4 +19,5 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         :param methodName: The name of the test method to be executed
         """
         super(SeCoIntegrationTests, self).__init__(CMD_SECO, dataset_one_hot_encoding=DATASET_WEATHER,
+                                                   expected_output_dir=path.join(DIR_OUT, CMD_SECO),
                                                    methodName=methodName)
