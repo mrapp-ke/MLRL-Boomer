@@ -7,8 +7,7 @@ from abc import ABC
 from functools import reduce
 from os import path, makedirs
 from typing import List, Optional
-from unittest import SkipTest
-from unittest import TestCase
+from unittest import TestCase, SkipTest
 
 
 DIR_RES = 'python/subprojects/testbed/tests/res'
@@ -460,11 +459,13 @@ class IntegrationTests(ABC, TestCase):
     An abstract base class for all integration tests.
     """
 
-    def __init__(self, methodName='runTest'):
+    def __init__(self, expected_output_dir = DIR_OUT, methodName='runTest'):
         """
-        :param methodName: The name of the test method to be executed
+        :param expected_output_dir: The path of the directory that contains the file with the expected output
+        :param methodName:          The name of the test method to be executed
         """
         super(IntegrationTests, self).__init__(methodName)
+        self.expected_output_dir = expected_output_dir
 
     @staticmethod
     def __get_file_name(name: str, suffix: str, fold: Optional[int] = None):
@@ -644,13 +645,12 @@ class IntegrationTests(ABC, TestCase):
                              out.stderr))
         return out
 
-    def run_cmd(self, builder: CmdBuilder, expected_output_file_name: str = None, expected_output_dir: str = DIR_OUT):
+    def run_cmd(self, builder: CmdBuilder, expected_output_file_name: str = None):
         """
         Runs a command that has been configured via a builder.
 
         :param builder:                     The builder
         :param expected_output_file_name:   The name of the text file that contains the expected output of the command
-        :param expected_output_dir:         The path of the directory that contains the file with the expected output
         """
         for tmp_dir in builder.tmp_dirs:
             makedirs(tmp_dir, exist_ok=True)
@@ -664,7 +664,7 @@ class IntegrationTests(ABC, TestCase):
         if expected_output_file_name is not None:
             stdout = str(out.stdout).splitlines()
 
-            with open(path.join(expected_output_dir, expected_output_file_name + '.txt'), 'r') as f:
+            with open(path.join(self.expected_output_dir, expected_output_file_name + '.txt'), 'r') as f:
                 for i, line in enumerate(f):
                     line = line.strip('\n')
 
@@ -689,16 +689,17 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def __init__(self, cmd: str, dataset_default: str = DATASET_EMOTIONS, dataset_numerical: str = DATASET_LANGLOG,
                  dataset_nominal: str = DATASET_ENRON, dataset_one_hot_encoding: str = DATASET_ENRON,
-                 methodName='runTest'):
+                 expected_output_dir = DIR_OUT, methodName='runTest'):
         """
         :param cmd:                         The command to be run by the integration tests
         :param dataset_default:             The name of the dataset that should be used by default
         :param dataset_numerical:           The name of a dataset with numerical features
         :param dataset_nominal:             The name of a dataset with nominal features
         :param dataset_one_hot_encoding:    The name of the dataset that should be used for one-hot-encoding
+        :param expected_output_dir:         The path of the directory that contains the file with the expected output
         :param methodName:                  The name of the test method to be executed
         """
-        super(CommonIntegrationTests, self).__init__(methodName)
+        super(CommonIntegrationTests, self).__init__(expected_output_dir, methodName)
         self.cmd = cmd
         self.dataset_default = dataset_default
         self.dataset_numerical = dataset_numerical
@@ -718,7 +719,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset='meka') \
             .print_evaluation(False)
-        self.run_cmd(builder, self.cmd + '_meka-format')
+        self.run_cmd(builder, 'meka-format')
 
     def test_evaluation_train_test(self):
         """
@@ -729,7 +730,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
-        self.run_cmd(builder, self.cmd + '_evaluation_train-test')
+        self.run_cmd(builder, 'evaluation_train-test')
 
     def test_evaluation_cross_validation(self):
         """
@@ -740,7 +741,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
-        self.run_cmd(builder, self.cmd + '_evaluation_cross-validation')
+        self.run_cmd(builder, 'evaluation_cross-validation')
 
     def test_evaluation_single_fold(self):
         """
@@ -751,7 +752,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
-        self.run_cmd(builder, self.cmd + '_evaluation_single-fold')
+        self.run_cmd(builder, 'evaluation_single-fold')
 
     def test_evaluation_training_data(self):
         """
@@ -762,7 +763,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
-        self.run_cmd(builder, self.cmd + '_evaluation_training-data')
+        self.run_cmd(builder, 'evaluation_training-data')
 
     def test_model_persistence_train_test(self):
         """
@@ -771,7 +772,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .set_model_dir()
-        self.run_cmd(builder, self.cmd + '_model-persistence_train-test')
+        self.run_cmd(builder, 'model-persistence_train-test')
 
     def test_model_persistence_cross_validation(self):
         """
@@ -780,7 +781,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation() \
             .set_model_dir()
-        self.run_cmd(builder, self.cmd + '_model-persistence_cross-validation')
+        self.run_cmd(builder, 'model-persistence_cross-validation')
 
     def test_model_persistence_single_fold(self):
         """
@@ -789,7 +790,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .set_model_dir()
-        self.run_cmd(builder, self.cmd + '_model-persistence_single-fold')
+        self.run_cmd(builder, 'model-persistence_single-fold')
 
     def test_predictions_train_test(self):
         """
@@ -802,7 +803,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_predictions() \
             .store_predictions()
-        self.run_cmd(builder, self.cmd + '_predictions_train-test')
+        self.run_cmd(builder, 'predictions_train-test')
 
     def test_predictions_cross_validation(self):
         """
@@ -815,7 +816,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_predictions() \
             .store_predictions()
-        self.run_cmd(builder, self.cmd + '_predictions_cross-validation')
+        self.run_cmd(builder, 'predictions_cross-validation')
 
     def test_predictions_single_fold(self):
         """
@@ -829,7 +830,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_predictions() \
             .store_predictions()
-        self.run_cmd(builder, self.cmd + '_predictions_single-fold')
+        self.run_cmd(builder, 'predictions_single-fold')
 
     def test_predictions_training_data(self):
         """
@@ -842,7 +843,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_predictions() \
             .store_predictions()
-        self.run_cmd(builder, self.cmd + '_predictions_training-data')
+        self.run_cmd(builder, 'predictions_training-data')
 
     def test_prediction_characteristics_train_test(self):
         """
@@ -855,7 +856,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        self.run_cmd(builder, self.cmd + '_prediction-characteristics_train-test')
+        self.run_cmd(builder, 'prediction-characteristics_train-test')
 
     def test_prediction_characteristics_cross_validation(self):
         """
@@ -869,7 +870,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        self.run_cmd(builder, self.cmd + '_prediction-characteristics_cross-validation')
+        self.run_cmd(builder, 'prediction-characteristics_cross-validation')
 
     def test_prediction_characteristics_single_fold(self):
         """
@@ -883,7 +884,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        self.run_cmd(builder, self.cmd + '_prediction-characteristics_single-fold')
+        self.run_cmd(builder, 'prediction-characteristics_single-fold')
 
     def test_prediction_characteristics_training_data(self):
         """
@@ -897,7 +898,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        self.run_cmd(builder, self.cmd + '_prediction-characteristics_training-data')
+        self.run_cmd(builder, 'prediction-characteristics_training-data')
 
     def test_data_characteristics_train_test(self):
         """
@@ -910,7 +911,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_data_characteristics() \
             .store_data_characteristics()
-        self.run_cmd(builder, self.cmd + '_data-characteristics_train-test')
+        self.run_cmd(builder, 'data-characteristics_train-test')
 
     def test_data_characteristics_cross_validation(self):
         """
@@ -924,7 +925,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_data_characteristics() \
             .store_data_characteristics()
-        self.run_cmd(builder, self.cmd + '_data-characteristics_cross-validation')
+        self.run_cmd(builder, 'data-characteristics_cross-validation')
 
     def test_data_characteristics_single_fold(self):
         """
@@ -938,7 +939,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_data_characteristics() \
             .store_data_characteristics()
-        self.run_cmd(builder, self.cmd + '_data-characteristics_single-fold')
+        self.run_cmd(builder, 'data-characteristics_single-fold')
 
     def test_model_characteristics_train_test(self):
         """
@@ -951,7 +952,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_model_characteristics() \
             .store_model_characteristics()
-        self.run_cmd(builder, self.cmd + '_model-characteristics_train-test')
+        self.run_cmd(builder, 'model-characteristics_train-test')
 
     def test_model_characteristics_cross_validation(self):
         """
@@ -964,7 +965,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_model_characteristics() \
             .store_model_characteristics()
-        self.run_cmd(builder, self.cmd + '_model-characteristics_cross-validation')
+        self.run_cmd(builder, 'model-characteristics_cross-validation')
 
     def test_model_characteristics_single_fold(self):
         """
@@ -977,7 +978,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_model_characteristics() \
             .store_model_characteristics()
-        self.run_cmd(builder, self.cmd + '_model-characteristics_single-fold')
+        self.run_cmd(builder, 'model-characteristics_single-fold')
 
     def test_rules_train_test(self):
         """
@@ -990,7 +991,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_rules() \
             .store_rules()
-        self.run_cmd(builder, self.cmd + '_rules_train-test')
+        self.run_cmd(builder, 'rules_train-test')
 
     def test_rules_cross_validation(self):
         """
@@ -1003,7 +1004,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_rules() \
             .store_rules()
-        self.run_cmd(builder, self.cmd + '_rules_cross-validation')
+        self.run_cmd(builder, 'rules_cross-validation')
 
     def test_rules_single_fold(self):
         """
@@ -1017,7 +1018,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .set_output_dir() \
             .print_rules() \
             .store_rules()
-        self.run_cmd(builder, self.cmd + '_rules_single-fold')
+        self.run_cmd(builder, 'rules_single-fold')
 
     def test_numeric_features_dense(self):
         """
@@ -1026,7 +1027,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical) \
             .sparse_feature_format(False)
-        self.run_cmd(builder, self.cmd + '_numeric-features-dense')
+        self.run_cmd(builder, 'numeric-features-dense')
 
     def test_numeric_features_sparse(self):
         """
@@ -1035,7 +1036,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical) \
             .sparse_feature_format(True)
-        self.run_cmd(builder, self.cmd + '_numeric-features-sparse')
+        self.run_cmd(builder, 'numeric-features-sparse')
 
     def test_nominal_features_dense(self):
         """
@@ -1044,7 +1045,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
             .sparse_feature_format(False)
-        self.run_cmd(builder, self.cmd + '_nominal-features-dense')
+        self.run_cmd(builder, 'nominal-features-dense')
 
     def test_nominal_features_sparse(self):
         """
@@ -1053,7 +1054,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
             .sparse_feature_format(True)
-        self.run_cmd(builder, self.cmd + '_nominal-features-sparse')
+        self.run_cmd(builder, 'nominal-features-sparse')
 
     def test_labels_dense(self):
         """
@@ -1061,7 +1062,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .sparse_label_format(False)
-        self.run_cmd(builder, self.cmd + '_labels-dense')
+        self.run_cmd(builder, 'labels-dense')
 
     def test_labels_sparse(self):
         """
@@ -1069,7 +1070,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .sparse_label_format(True)
-        self.run_cmd(builder, self.cmd + '_labels-sparse')
+        self.run_cmd(builder, 'labels-sparse')
 
     def test_predicted_labels_dense(self):
         """
@@ -1078,7 +1079,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .sparse_predicted_label_format(False) \
             .print_predictions(True)
-        self.run_cmd(builder, self.cmd + '_predicted-labels-dense')
+        self.run_cmd(builder, 'predicted-labels-dense')
 
     def test_predicted_labels_sparse(self):
         """
@@ -1087,7 +1088,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .sparse_predicted_label_format(True) \
             .print_predictions(True)
-        self.run_cmd(builder, self.cmd + '_predicted-labels-sparse')
+        self.run_cmd(builder, 'predicted-labels-sparse')
 
     def test_one_hot_encoding_train_test(self):
         """
@@ -1096,7 +1097,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_one_hot_encoding) \
             .one_hot_encoding()
-        self.run_cmd(builder, self.cmd + '_one-hot-encoding_train-test')
+        self.run_cmd(builder, 'one-hot-encoding_train-test')
 
     def test_one_hot_encoding_cross_validation(self):
         """
@@ -1106,7 +1107,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_one_hot_encoding) \
             .cross_validation() \
             .one_hot_encoding()
-        self.run_cmd(builder, self.cmd + '_one-hot-encoding_cross-validation')
+        self.run_cmd(builder, 'one-hot-encoding_cross-validation')
 
     def test_parameters_train_test(self):
         """
@@ -1121,7 +1122,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .store_parameters(True) \
             .set_output_dir() \
             .set_parameter_dir()
-        self.run_cmd(builder, self.cmd + '_parameters_train-test')
+        self.run_cmd(builder, 'parameters_train-test')
 
     def test_parameters_cross_validation(self):
         """
@@ -1137,7 +1138,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .store_parameters(True) \
             .set_output_dir() \
             .set_parameter_dir()
-        self.run_cmd(builder, self.cmd + '_parameters_cross-validation')
+        self.run_cmd(builder, 'parameters_cross-validation')
 
     def test_parameters_single_fold(self):
         """
@@ -1153,7 +1154,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .store_parameters(True) \
             .set_output_dir() \
             .set_parameter_dir()
-        self.run_cmd(builder, self.cmd + '_parameters_single-fold')
+        self.run_cmd(builder, 'parameters_single-fold')
 
     def test_instance_sampling_no(self):
         """
@@ -1161,7 +1162,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .instance_sampling(INSTANCE_SAMPLING_NO)
-        self.run_cmd(builder, self.cmd + '_instance-sampling-no')
+        self.run_cmd(builder, 'instance-sampling-no')
 
     def test_instance_sampling_with_replacement(self):
         """
@@ -1170,7 +1171,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .instance_sampling(INSTANCE_SAMPLING_WITH_REPLACEMENT)
-        self.run_cmd(builder, self.cmd + '_instance-sampling-with-replacement')
+        self.run_cmd(builder, 'instance-sampling-with-replacement')
 
     def test_instance_sampling_without_replacement(self):
         """
@@ -1179,7 +1180,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .instance_sampling(INSTANCE_SAMPLING_WITHOUT_REPLACEMENT)
-        self.run_cmd(builder, self.cmd + '_instance-sampling-without-replacement')
+        self.run_cmd(builder, 'instance-sampling-without-replacement')
 
     def test_instance_sampling_stratified_label_wise(self):
         """
@@ -1188,7 +1189,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE)
-        self.run_cmd(builder, self.cmd + '_instance-sampling-stratified-label-wise')
+        self.run_cmd(builder, 'instance-sampling-stratified-label-wise')
 
     def test_instance_sampling_stratified_example_wise(self):
         """
@@ -1197,7 +1198,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE)
-        self.run_cmd(builder, self.cmd + '_instance-sampling-stratified-example-wise')
+        self.run_cmd(builder, 'instance-sampling-stratified-example-wise')
 
     def test_feature_sampling_no(self):
         """
@@ -1205,7 +1206,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .feature_sampling(FEATURE_SAMPLING_NO)
-        self.run_cmd(builder, self.cmd + '_feature-sampling-no')
+        self.run_cmd(builder, 'feature-sampling-no')
 
     def test_feature_sampling_without_replacement(self):
         """
@@ -1213,7 +1214,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .feature_sampling(FEATURE_SAMPLING_WITHOUT_REPLACEMENT)
-        self.run_cmd(builder, self.cmd + '_feature-sampling-without-replacement')
+        self.run_cmd(builder, 'feature-sampling-without-replacement')
 
     def test_label_sampling_no(self):
         """
@@ -1221,7 +1222,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .label_sampling(LABEL_SAMPLING_NO)
-        self.run_cmd(builder, self.cmd + '_label-sampling-no')
+        self.run_cmd(builder, 'label-sampling-no')
 
     def test_label_sampling_without_replacement(self):
         """
@@ -1229,7 +1230,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .label_sampling(LABEL_SAMPLING_WITHOUT_REPLACEMENT)
-        self.run_cmd(builder, self.cmd + '_label-sampling-without-replacement')
+        self.run_cmd(builder, 'label-sampling-without-replacement')
 
     def test_pruning_no(self):
         """
@@ -1237,7 +1238,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .pruning(PRUNING_NO)
-        self.run_cmd(builder, self.cmd + '_pruning-no')
+        self.run_cmd(builder, 'pruning-no')
 
     def test_pruning_irep(self):
         """
@@ -1246,7 +1247,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .instance_sampling() \
             .pruning(PRUNING_IREP)
-        self.run_cmd(builder, self.cmd + '_pruning-irep')
+        self.run_cmd(builder, 'pruning-irep')
 
     def test_rule_induction_top_down_beam_search(self):
         """
@@ -1254,7 +1255,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .rule_induction(RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH)
-        self.run_cmd(builder, self.cmd + '_rule-induction-top-down-beam-search')
+        self.run_cmd(builder, 'rule-induction-top-down-beam-search')
 
     def test_sequential_post_optimization(self):
         """
@@ -1262,4 +1263,4 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .sequential_post_optimization(True)
-        self.run_cmd(builder, self.cmd + '_sequential-post-optimization')
+        self.run_cmd(builder, 'sequential-post-optimization')
