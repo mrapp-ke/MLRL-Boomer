@@ -115,83 +115,63 @@ class DataType(Enum):
 
 class DataSplitter(ABC):
     """
-    A base class for all classes that split a data set into training and test data.
+    An abstract base class for all classes that split a data set into training and test data.
     """
 
-    def __init__(self, data_set: DataSet, num_folds: int, current_fold: int, random_state: int):
+    class Callback(ABC):
         """
-        :param data_set:        The properties of the data set to be used
-        :param num_folds:       The total number of folds to be used by cross validation or 1, if separate training and
-                                test sets should be used
-        :param current_fold:    The cross validation fold to be performed or -1, if all folds should be performed
-        :param random_state:    The seed to be used by RNGs. Must be at least 1
+        An abstract base class for all classes that train and evaluate a model given a predefined split of the available
+        data.
         """
-        self.data_set = data_set
-        self.num_folds = num_folds
-        self.current_fold = current_fold
-        self.random_state = random_state
 
-    def run(self):
+        @abstractmethod
+        def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_indices, train_x, train_y,
+                               test_indices, test_x, test_y):
+            """
+            The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it
+            on a test set.
+
+            :param meta_data:       The meta-data of the training data set
+            :param data_split:      Information about the split of the available data that should be used for building
+                                    and evaluating a classifier or ranker
+            :param train_indices:   The indices of the training examples or None, if no cross validation is used
+            :param train_x:         The feature matrix of the training examples
+            :param train_y:         The label matrix of the training examples
+            :param test_indices:    The indices of the test examples or None, if no cross validation is used
+            :param test_x:          The feature matrix of the test examples
+            :param test_y:          The label matrix of the test examples
+            """
+            pass
+
+    def run(self, callback: Callback):
+        """
+        :param callback: The callback that should be used for training and evaluating models
+        """
         start_time = timer()
-        num_folds = self.num_folds
-
-        if num_folds > 1:
-            self.__cross_validate(num_folds)
-        else:
-            self.__train_test_split()
-
+        self._split_data(callback)
         end_time = timer()
         run_time = end_time - start_time
         log.info('Successfully finished after %s seconds', run_time)
 
-    def __cross_validate(self, num_folds: int):
+    @abstractmethod
+    def _split_data(self, callback: Callback):
         """
-        Performs n-fold cross validation.
+        Must be implemented by subclasses in order to split the available data.
 
-        :param num_folds: The total number of cross validation folds
+        :param callback: The callback that should be used for training and evaluating models
         """
-        current_fold = self.current_fold
-        log.info('Performing ' + (
-            'full' if current_fold < 0 else ('fold ' + str(current_fold + 1) + ' of')) + ' %s-fold cross validation...',
-                 num_folds)
-        data_set = self.data_set
-        data_set_name = data_set.data_set_name
-        x, y, meta_data = load_data_set_and_meta_data(data_set.data_dir, get_file_name(data_set_name, SUFFIX_ARFF),
-                                                      get_file_name(data_set_name, SUFFIX_XML))
+        pass
 
-        if data_set.use_one_hot_encoding:
-            x, _, encoded_meta_data = one_hot_encode(x, y, meta_data)
-        else:
-            encoded_meta_data = None
 
-        # Cross validate
-        i = 0
-        k_fold = KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True)
+class TrainTestSplitter(DataSplitter):
+    """
+    Splits the available data into a single train and test set.
+    """
 
-        for train_indices, test_indices in k_fold.split(x, y):
-            if current_fold < 0 or i == current_fold:
-                log.info('Fold %s / %s:', (i + 1), num_folds)
+    def __init__(self, data_set: DataSet):
+        self.data_set = data_set
 
-                # Create training set for current fold
-                train_x = x[train_indices]
-                train_y = y[train_indices]
-
-                # Create test set for current fold
-                test_x = x[test_indices]
-                test_y = y[test_indices]
-
-                # Train & evaluate classifier
-                data_partition = CrossValidationFold(num_folds=num_folds, fold=i)
-                self._train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data,
-                                         data_partition, train_indices, train_x, train_y, test_indices, test_x, test_y)
-
-            i += 1
-
-    def __train_test_split(self):
-        """
-        Trains the classifier used in the experiment on a training set and validates it on a test set.
-        """
-
+    def _split_data(self, callback: DataSplitter.Callback):
         log.info('Using separate training and test sets...')
 
         # Load training data
@@ -231,24 +211,64 @@ class DataSplitter(ABC):
 
         # Train and evaluate classifier
         data_partition = TrainingTestSplit()
-        self._train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_partition,
-                                 None, train_x, train_y, None, test_x, test_y)
+        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_partition,
+                                    None, train_x, train_y, None, test_x, test_y)
 
-    @abstractmethod
-    def _train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_indices, train_x, train_y,
-                            test_indices, test_x, test_y):
-        """
-        The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it on a
-        test set.
 
-        :param meta_data:       The meta-data of the training data set
-        :param data_split:      Information about the split of the available data that should be used for building and
-                                evaluating a classifier or ranker
-        :param train_indices:   The indices of the training examples or None, if no cross validation is used
-        :param train_x:         The feature matrix of the training examples
-        :param train_y:         The label matrix of the training examples
-        :param test_indices:    The indices of the test examples or None, if no cross validation is used
-        :param test_x:          The feature matrix of the test examples
-        :param test_y:          The label matrix of the test examples
+class CrossValidationSplitter(DataSplitter):
+    """
+    Splits the available data into training and test sets corresponding to the individual folds of a cross validation.
+    """
+
+    def __init__(self, data_set: DataSet, num_folds: int, current_fold: int, random_state: int):
         """
-        pass
+        :param data_set:        The properties of the data set to be used
+        :param num_folds:       The total number of folds to be used by cross validation or 1, if separate training and
+                                test sets should be used
+        :param current_fold:    The cross validation fold to be performed or -1, if all folds should be performed
+        :param random_state:    The seed to be used by RNGs. Must be at least 1
+        """
+        self.data_set = data_set
+        self.num_folds = num_folds
+        self.current_fold = current_fold
+        self.random_state = random_state
+
+    def _split_data(self, callback: DataSplitter.Callback):
+        num_folds = self.num_folds
+        current_fold = self.current_fold
+        log.info('Performing ' + (
+            'full' if current_fold < 0 else ('fold ' + str(current_fold + 1) + ' of')) + ' %s-fold cross validation...',
+                 num_folds)
+        data_set = self.data_set
+        data_set_name = data_set.data_set_name
+        x, y, meta_data = load_data_set_and_meta_data(data_set.data_dir, get_file_name(data_set_name, SUFFIX_ARFF),
+                                                      get_file_name(data_set_name, SUFFIX_XML))
+
+        if data_set.use_one_hot_encoding:
+            x, _, encoded_meta_data = one_hot_encode(x, y, meta_data)
+        else:
+            encoded_meta_data = None
+
+        # Cross validate
+        i = 0
+        k_fold = KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True)
+
+        for train_indices, test_indices in k_fold.split(x, y):
+            if current_fold < 0 or i == current_fold:
+                log.info('Fold %s / %s:', (i + 1), num_folds)
+
+                # Create training set for current fold
+                train_x = x[train_indices]
+                train_y = y[train_indices]
+
+                # Create test set for current fold
+                test_x = x[test_indices]
+                test_y = y[test_indices]
+
+                # Train & evaluate classifier
+                data_partition = CrossValidationFold(num_folds=num_folds, fold=i)
+                callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data,
+                                            data_partition, train_indices, train_x, train_y, test_indices, test_x,
+                                            test_y)
+
+            i += 1

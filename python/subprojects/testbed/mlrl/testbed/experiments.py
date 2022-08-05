@@ -21,7 +21,7 @@ from mlrl.testbed.predictions import PredictionPrinter
 from sklearn.base import BaseEstimator, clone
 
 
-class Experiment(DataSplitter, ABC):
+class Experiment(DataSplitter.Callback):
     """
     An experiment that trains and evaluates a single multi-label classifier or ranker on a specific data set using cross
     validation or separate training and test sets.
@@ -42,10 +42,7 @@ class Experiment(DataSplitter, ABC):
     def __init__(self,
                  base_learner: BaseEstimator,
                  learner_name: str,
-                 data_set: DataSet,
-                 random_state: int = 1,
-                 num_folds: int = 1,
-                 current_fold: int = -1,
+                 data_splitter: DataSplitter,
                  pre_execution_hook: Optional[ExecutionHook] = None,
                  predict_probabilities: bool = False,
                  train_evaluation: Optional[Evaluation] = None,
@@ -62,6 +59,8 @@ class Experiment(DataSplitter, ABC):
         """
         :param base_learner:                                The classifier or ranker to be trained
         :param learner_name:                                The name of the classifier or ranker
+        :param data_splitter:                               The method to be used for splitting the available data into
+                                                            training and test sets
         :param pre_execution_hook:                          An operation that should be executed before the experiment
         :param predict_probabilities:                       True, if probabilities should be predicted rather than
                                                             binary labels, False otherwise
@@ -97,9 +96,9 @@ class Experiment(DataSplitter, ABC):
         :param persistence:                                 The `ModelPersistence` that should be used for loading and
                                                             saving models
         """
-        super(Experiment, self).__init__(data_set, num_folds, current_fold, random_state)
         self.base_learner = base_learner
         self.learner_name = learner_name
+        self.data_splitter = data_splitter
         self.pre_execution_hook = pre_execution_hook
         self.predict_probabilities = predict_probabilities
         self.train_evaluation = train_evaluation
@@ -122,10 +121,10 @@ class Experiment(DataSplitter, ABC):
         if self.pre_execution_hook is not None:
             self.pre_execution_hook.execute()
 
-        super(Experiment, self).run()
+        self.data_splitter.run(self)
 
-    def _train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_indices, train_x, train_y,
-                            test_indices, test_x, test_y):
+    def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_indices, train_x, train_y,
+                           test_indices, test_x, test_y):
         base_learner = self.base_learner
         current_learner = clone(base_learner)
 

@@ -12,7 +12,7 @@ from typing import Optional
 from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
-from mlrl.testbed.data_splitting import DataSet
+from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, DataSet
 from mlrl.testbed.evaluation import Evaluation, ClassificationEvaluation, RankingEvaluation, EvaluationLogOutput, \
     EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
@@ -86,13 +86,24 @@ class LearnerRunnable(Runnable, ABC):
             clear_directory(self.output_dir)
 
     @staticmethod
+    def __create_data_splitter(args) -> DataSplitter:
+        data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
+                           use_one_hot_encoding=args.one_hot_encoding)
+        num_folds = args.folds
+
+        if num_folds > 1:
+            current_fold = args.current_fold
+            random_state = args.random_state
+
+            return CrossValidationSplitter(data_set, num_folds=num_folds, current_fold=current_fold,
+                                           random_state=random_state)
+        else:
+            return TrainTestSplitter(data_set)
+
+    @staticmethod
     def __create_pre_execution_hook(args) -> Optional[Experiment.ExecutionHook]:
         return None if args.output_dir is None or args.current_fold >= 0 else LearnerRunnable.ClearOutputDirHook(
             output_dir=args.output_dir)
-
-    @staticmethod
-    def __create_data_set(args) -> DataSet:
-        return DataSet(data_dir=args.data_dir, data_set_name=args.dataset, use_one_hot_encoding=args.one_hot_encoding)
 
     @staticmethod
     def __create_parameter_input(args) -> Optional[ParameterInput]:
@@ -186,7 +197,7 @@ class LearnerRunnable(Runnable, ABC):
         # Configure experiment...
         experiment = Experiment(base_learner=self._create_learner(args),
                                 learner_name=self._get_learner_name(),
-                                random_state=args.random_state,
+                                data_splitter=self.__create_data_splitter(args),
                                 pre_execution_hook=self.__create_pre_execution_hook(args),
                                 predict_probabilities=args.predict_probabilities,
                                 test_evaluation=self.__create_evaluation(args),
@@ -195,9 +206,6 @@ class LearnerRunnable(Runnable, ABC):
                                 test_prediction_printer=self.__create_prediction_printer(args),
                                 train_prediction_characteristics_printer=train_prediction_characteristics_printer,
                                 test_prediction_characteristics_printer=test_prediction_characteristics_printer,
-                                data_set=self.__create_data_set(args),
-                                num_folds=args.folds,
-                                current_fold=args.current_fold,
                                 parameter_input=self.__create_parameter_input(args),
                                 parameter_printer=self.__create_parameter_printer(args),
                                 model_printer=self._create_model_printer(args),
