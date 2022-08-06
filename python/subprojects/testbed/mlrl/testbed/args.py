@@ -13,6 +13,7 @@ from mlrl.common.config import RULE_INDUCTION_VALUES, LABEL_SAMPLING_VALUES, FEA
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
+from mlrl.testbed.runnables import PRINT_RULES_VALUES, STORE_RULES_VALUES
 
 PARAM_LOG_LEVEL = '--log-level'
 
@@ -229,11 +230,11 @@ def add_rule_learner_arguments(parser: ArgumentParser):
                              + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
     parser.add_argument(PARAM_PRINT_RULES, type=str, default=BooleanOption.FALSE.value,
                         help='Whether the induced rules should be printed on the console or not. Must be one of '
-                             + format_enum_values(BooleanOption) + '. For additional options refer to the '
+                             + format_dict_keys(PRINT_RULES_VALUES) + '. For additional options refer to the '
                              + 'documentation.')
     parser.add_argument(PARAM_STORE_RULES, type=str, default=BooleanOption.FALSE.value,
                         help='Whether the induced rules should be written into a text file or not. Must be one of '
-                             + format_enum_values(BooleanOption) + '. Does only have an effect if the parameter '
+                             + format_dict_keys(STORE_RULES_VALUES) + '. Does only have an effect if the parameter '
                              + PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
     parser.add_argument(PARAM_FEATURE_FORMAT, type=str, default=SparsePolicy.AUTO.value,
                         help='The format to be used for the representation of the feature matrix. Must be one of '
