@@ -5,13 +5,13 @@ Command Line Arguments
 
 In addition to the mandatory arguments that must be provided to the command line API to specify the dataset to be used for training, a wide variety of optional arguments are available as well. In the following, we provide an overview of these arguments and discuss their respective purposes.
 
-* ``--folds`` (Default value = ``1``)
+* ``--data-split`` (Default value = ``train-test``)
 
-  * The total number of folds to be used for cross validation. Must be greater than 1 or 1, if no cross validation should be used. If set to 1, the program will try to use predefined splits of a dataset into training and test data. Given that ``name`` is provided as the value of the argument ``--dataset``, the former must be provided as a file named ``name-train.arff``, whereas the latter is retrieved from a file with the name ``name-test.arff``. If no such files are available or if cross validation should be used, the program will look for a file with the name ``name.arff`` instead.
+  * ``train-test`` The available data is split into a single training and test set. Given that ``dataset-name`` is provided as the value of the argument ``--dataset``, the training data must be stored in a file named ``dataset-name-train.arff``, whereas the test data must be stored in a file named ``dataset-name-test.arff``. If no such files are available, the program will look for a file with the name ``dataset-name.arff`` instead.
+  * ``cross-validation`` A cross validation is performed. Given that ``dataset-name`` is provided as the value of the argument ``--dataset``, the program will look for a file with the name ``dataset-name.arff``. The following options may be specified via the bracket notation (see :ref:`parameters`):
 
-* ``--current-fold`` (Default value = ``0``)
-
-  * The cross validation fold to be performed. Must be in [1, ``--folds``] or 0, if all folds should be performed. This parameter is ignored if the argument ``--folds`` is set to 1.
+    * ``num_folds`` (Default value = ``10``) The total number of cross validation folds to be performed. Must be at least 2.
+    * ``current_fold`` (Default value = ``0``) The cross validation fold to be performed. Must be in [1, ``num_folds``] or 0, if all folds should be performed.
 
 * ``--predict-probabilities`` (Default value = ``false``)
 
