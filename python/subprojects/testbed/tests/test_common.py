@@ -457,7 +457,7 @@ class IntegrationTests(ABC, TestCase):
     An abstract base class for all integration tests.
     """
 
-    def __init__(self, expected_output_dir = DIR_OUT, methodName='runTest'):
+    def __init__(self, expected_output_dir=DIR_OUT, methodName='runTest'):
         """
         :param expected_output_dir: The path of the directory that contains the file with the expected output
         :param methodName:          The name of the test method to be executed
@@ -687,7 +687,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def __init__(self, cmd: str, dataset_default: str = DATASET_EMOTIONS, dataset_numerical: str = DATASET_LANGLOG,
                  dataset_nominal: str = DATASET_ENRON, dataset_one_hot_encoding: str = DATASET_ENRON,
-                 expected_output_dir = DIR_OUT, methodName='runTest'):
+                 expected_output_dir=DIR_OUT, methodName='runTest'):
         """
         :param cmd:                         The command to be run by the integration tests
         :param dataset_default:             The name of the dataset that should be used by default
