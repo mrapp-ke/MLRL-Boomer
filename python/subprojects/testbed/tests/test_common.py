@@ -71,7 +71,7 @@ class CmdBuilder:
         self.cmd = cmd
         self.output_dir = None
         self.model_dir = None
-        self.folds = 0
+        self.num_folds = 0
         self.current_fold = 0
         self.training_data_evaluated = False
         self.evaluation_stored = True
@@ -126,20 +126,18 @@ class CmdBuilder:
             self.args.append(parameter_dir)
         return self
 
-    def cross_validation(self, folds: int = 10, current_fold: int = 0):
+    def cross_validation(self, num_folds: int = 10, current_fold: int = 0):
         """
         Configures the rule learner to use a cross validation.
 
-        :param folds:           The total number of folds
+        :param num_folds:       The total number of folds
         :param current_fold:    The fold to be run or 0, if all folds should be run
         :return:                The builder itself
         """
-        self.folds = folds
+        self.num_folds = num_folds
         self.current_fold = current_fold
-        self.args.append('--folds')
-        self.args.append(str(folds))
-        self.args.append('--current-fold')
-        self.args.append(str(current_fold))
+        self.args.append('--data-split')
+        self.args.append('cross-validation{num_folds=' + str(num_folds) + ',current_fold=' + str(current_fold) + '}')
         return self
 
     def evaluate_training_data(self, evaluate_training_data: bool = True):
@@ -502,13 +500,13 @@ class IntegrationTests(ABC, TestCase):
         :param builder:     The builder
         """
         if directory is not None:
-            if builder.folds > 0:
+            if builder.num_folds > 0:
                 current_fold = builder.current_fold
 
                 if current_fold > 0:
                     self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix, current_fold))
                 else:
-                    for i in range(builder.folds):
+                    for i in range(builder.num_folds):
                         self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix, i + 1))
             else:
                 self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix))
