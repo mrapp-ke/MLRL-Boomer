@@ -9,6 +9,7 @@ from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 from typing import Optional, Dict, Set
 
+from mlrl.common.cython.validation import assert_greater_or_equal, assert_less_or_equal
 from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
@@ -106,9 +107,13 @@ class LearnerRunnable(Runnable, ABC):
 
         if value == DATA_SPLIT_CROSS_VALIDATION:
             num_folds = options.get_int(ARGUMENT_NUM_FOLDS, 10)
+            assert_greater_or_equal('num_folds', num_folds, 2)
             current_fold = options.get_int(ARGUMENT_CURRENT_FOLD, 0)
+            if current_fold != 0:
+                assert_greater_or_equal('current_fold', current_fold, 1)
+                assert_less_or_equal('current_fold', current_fold, num_folds)
             random_state = args.random_state
-            return CrossValidationSplitter(data_set, num_folds=num_folds, current_fold=current_fold,
+            return CrossValidationSplitter(data_set, num_folds=num_folds, current_fold=current_fold - 1,
                                            random_state=random_state)
         else:
             return TrainTestSplitter(data_set)
