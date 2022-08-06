@@ -7,8 +7,9 @@ import logging as log
 import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
-from typing import Optional
+from typing import Optional, Dict, Set
 
+from mlrl.common.cython.validation import assert_greater_or_equal, assert_less_or_equal
 from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
@@ -30,7 +31,20 @@ from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, Pre
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
-PRINT_RULES_VALUES = {
+DATA_SPLIT_TRAIN_TEST = 'train-test'
+
+DATA_SPLIT_CROSS_VALIDATION = 'cross-validation'
+
+ARGUMENT_NUM_FOLDS = 'num_folds'
+
+ARGUMENT_CURRENT_FOLD = 'current_fold'
+
+DATA_SPLIT_VALUES: Dict[str, Set[str]] = {
+    DATA_SPLIT_TRAIN_TEST: {},
+    DATA_SPLIT_CROSS_VALIDATION: {ARGUMENT_NUM_FOLDS, ARGUMENT_CURRENT_FOLD}
+}
+
+PRINT_RULES_VALUES: Dict[str, Set[str]] = {
     BooleanOption.TRUE.value: {ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, ARGUMENT_PRINT_NOMINAL_VALUES,
                                ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS},
     BooleanOption.FALSE.value: {}
@@ -89,20 +103,25 @@ class LearnerRunnable(Runnable, ABC):
     def __create_data_splitter(args) -> DataSplitter:
         data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
-        num_folds = args.folds
+        value, options = parse_param_and_options('--data-split', args.data_split, DATA_SPLIT_VALUES)
 
-        if num_folds > 1:
-            current_fold = args.current_fold
+        if value == DATA_SPLIT_CROSS_VALIDATION:
+            num_folds = options.get_int(ARGUMENT_NUM_FOLDS, 10)
+            assert_greater_or_equal('num_folds', num_folds, 2)
+            current_fold = options.get_int(ARGUMENT_CURRENT_FOLD, 0)
+            if current_fold != 0:
+                assert_greater_or_equal('current_fold', current_fold, 1)
+                assert_less_or_equal('current_fold', current_fold, num_folds)
             random_state = args.random_state
-
-            return CrossValidationSplitter(data_set, num_folds=num_folds, current_fold=current_fold,
+            return CrossValidationSplitter(data_set, num_folds=num_folds, current_fold=current_fold - 1,
                                            random_state=random_state)
         else:
             return TrainTestSplitter(data_set)
 
     @staticmethod
-    def __create_pre_execution_hook(args) -> Optional[Experiment.ExecutionHook]:
-        return None if args.output_dir is None or args.current_fold >= 0 else LearnerRunnable.ClearOutputDirHook(
+    def __create_pre_execution_hook(args, data_splitter: DataSplitter) -> Optional[Experiment.ExecutionHook]:
+        current_fold = data_splitter.current_fold if isinstance(data_splitter, CrossValidationSplitter) else -1
+        return None if args.output_dir is None or current_fold >= 0 else LearnerRunnable.ClearOutputDirHook(
             output_dir=args.output_dir)
 
     @staticmethod
@@ -193,12 +212,13 @@ class LearnerRunnable(Runnable, ABC):
             train_prediction_characteristics_printer = None
 
         test_prediction_characteristics_printer = self.__create_prediction_characteristics_printer(args)
+        data_splitter = self.__create_data_splitter(args)
 
         # Configure experiment...
         experiment = Experiment(base_learner=self._create_learner(args),
                                 learner_name=self._get_learner_name(),
-                                data_splitter=self.__create_data_splitter(args),
-                                pre_execution_hook=self.__create_pre_execution_hook(args),
+                                data_splitter=data_splitter,
+                                pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
                                 predict_probabilities=args.predict_probabilities,
                                 test_evaluation=self.__create_evaluation(args),
                                 train_evaluation=train_evaluation,
