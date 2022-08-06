@@ -30,6 +30,19 @@ from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, Pre
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
+DATA_SPLIT_TRAIN_TEST = 'train-test'
+
+DATA_SPLIT_CROSS_VALIDATION = 'cross-validation'
+
+ARGUMENT_NUM_FOLDS = 'num_folds'
+
+ARGUMENT_CURRENT_FOLD = 'current_fold'
+
+DATA_SPLIT_VALUES: Dict[str, Set[str]] = {
+    DATA_SPLIT_TRAIN_TEST: {},
+    DATA_SPLIT_CROSS_VALIDATION: {ARGUMENT_NUM_FOLDS, ARGUMENT_CURRENT_FOLD}
+}
+
 PRINT_RULES_VALUES: Dict[str, Set[str]] = {
     BooleanOption.TRUE.value: {ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, ARGUMENT_PRINT_NOMINAL_VALUES,
                                ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS},
@@ -89,12 +102,12 @@ class LearnerRunnable(Runnable, ABC):
     def __create_data_splitter(args) -> DataSplitter:
         data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
-        num_folds = args.folds
+        value, options = parse_param_and_options('--data-split', args.data_split, DATA_SPLIT_VALUES)
 
-        if num_folds > 1:
-            current_fold = args.current_fold
+        if value == DATA_SPLIT_CROSS_VALIDATION:
+            num_folds = options.get_int(ARGUMENT_NUM_FOLDS, 10)
+            current_fold = options.get_int(ARGUMENT_CURRENT_FOLD, 0)
             random_state = args.random_state
-
             return CrossValidationSplitter(data_set, num_folds=num_folds, current_fold=current_fold,
                                            random_state=random_state)
         else:
