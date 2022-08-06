@@ -7,7 +7,7 @@ import logging as log
 import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
-from typing import Optional
+from typing import Optional, Dict, Set
 
 from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
@@ -30,7 +30,7 @@ from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, Pre
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
-PRINT_RULES_VALUES = {
+PRINT_RULES_VALUES: Dict[str, Set[str]] = {
     BooleanOption.TRUE.value: {ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, ARGUMENT_PRINT_NOMINAL_VALUES,
                                ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS},
     BooleanOption.FALSE.value: {}
