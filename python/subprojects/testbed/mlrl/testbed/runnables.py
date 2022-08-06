@@ -119,8 +119,9 @@ class LearnerRunnable(Runnable, ABC):
             return TrainTestSplitter(data_set)
 
     @staticmethod
-    def __create_pre_execution_hook(args) -> Optional[Experiment.ExecutionHook]:
-        return None if args.output_dir is None or args.current_fold >= 0 else LearnerRunnable.ClearOutputDirHook(
+    def __create_pre_execution_hook(args, data_splitter: DataSplitter) -> Optional[Experiment.ExecutionHook]:
+        current_fold = data_splitter.current_fold if isinstance(data_splitter, CrossValidationSplitter) else -1
+        return None if args.output_dir is None or current_fold >= 0 else LearnerRunnable.ClearOutputDirHook(
             output_dir=args.output_dir)
 
     @staticmethod
@@ -211,12 +212,13 @@ class LearnerRunnable(Runnable, ABC):
             train_prediction_characteristics_printer = None
 
         test_prediction_characteristics_printer = self.__create_prediction_characteristics_printer(args)
+        data_splitter = self.__create_data_splitter(args)
 
         # Configure experiment...
         experiment = Experiment(base_learner=self._create_learner(args),
                                 learner_name=self._get_learner_name(),
-                                data_splitter=self.__create_data_splitter(args),
-                                pre_execution_hook=self.__create_pre_execution_hook(args),
+                                data_splitter=data_splitter,
+                                pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
                                 predict_probabilities=args.predict_probabilities,
                                 test_evaluation=self.__create_evaluation(args),
                                 train_evaluation=train_evaluation,
