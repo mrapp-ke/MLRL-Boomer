@@ -1,38 +1,36 @@
-INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='weather', folds=1, current_fold=-1, print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=True, model_dir=None, parameter_dir=None, output_dir=None, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules=False, store_rules=False, print_options=None, feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_model_assemblage=None, post_optimization=None, rule_induction=None, parallel_prediction=None, heuristic=None, pruning_heuristic=None, lift_function=None, head_type=None, parallel_rule_refinement=None, parallel_statistic_update=None)
+INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/subprojects/testbed/tests/res/data', dataset='weather', data_split='train-test', print_evaluation=True, store_evaluation=True, evaluate_training_data=False, print_prediction_characteristics=False, store_prediction_characteristics=False, print_data_characteristics=False, store_data_characteristics=False, one_hot_encoding=True, model_dir=None, parameter_dir=None, output_dir=None, print_parameters=False, store_parameters=False, print_predictions=False, store_predictions=False, predict_probabilities=False, print_model_characteristics=False, store_model_characteristics=False, print_rules='false', store_rules='false', feature_format='auto', label_format='auto', predicted_label_format='auto', max_rules=None, time_limit=None, sequential_post_optimization=None, label_sampling=None, instance_sampling=None, feature_sampling=None, holdout=None, pruning=None, rule_induction=None, parallel_prediction=None, parallel_rule_refinement=None, parallel_statistic_update=None, head_type=None, lift_function=None, heuristic=None, pruning_heuristic=None)
 INFO Starting experiment...
 INFO Using separate training and test sets...
-WARNING File 'python/subprojects/testbed/tests/res/data/weather-train.arff' does not exist. Using 'python/subprojects/testbed/tests/res/data/weather.arff' instead!
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/weather.xml"...
 DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/weather.arff"...
 INFO Data set contains 2 nominal and 2 numerical attributes.
 INFO Applying one-hot encoding...
 INFO Original data set contained 4 attributes, one-hot encoded data set contains 7 attributes
-WARNING No test data set available. Model will be evaluated on the training data!
-INFO Fitting model to 14 training examples...
+INFO Fitting model to 9 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.0017009860021062195 seconds
-INFO Predicting for 14 test examples...
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.000834833999761031 seconds
+INFO Predicting for 5 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0002686520019778982 seconds
+INFO Successfully predicted in 0.00025212199943780433 seconds
 INFO Overall evaluation result on test data:
 
-Ex.-based F1: 0.6785714285714286
-Ex.-based Jacc.: 0.6309523809523808
-Ex.-based Prec.: 0.8214285714285714
-Ex.-based Rec.: 0.7142857142857143
-Hamm. Acc.: 0.7857142857142857
-Hamm. Loss: 0.21428571428571427
-Ma. F1: 0.7078431372549021
-Ma. Jacc.: 0.5666666666666665
-Ma. Prec.: 0.736111111111111
-Ma. Rec.: 0.725925925925926
-Mi. F1: 0.7428571428571428
-Mi. Jacc.: 0.5909090909090909
-Mi. Prec.: 0.7647058823529411
-Mi. Rec.: 0.7222222222222222
-Subs. 0/1 Loss: 0.5
-Subs. Acc.: 0.5
+Ex.-based F1: 0.2333333333333333
+Ex.-based Jacc.: 0.16666666666666666
+Ex.-based Prec.: 0.9
+Ex.-based Rec.: 0.2
+Hamm. Acc.: 0.5333333333333333
+Hamm. Loss: 0.4666666666666667
+Ma. F1: 0.2222222222222222
+Ma. Jacc.: 0.16666666666666666
+Ma. Prec.: 0.6666666666666666
+Ma. Rec.: 0.16666666666666666
+Mi. F1: 0.36363636363636365
+Mi. Jacc.: 0.2222222222222222
+Mi. Prec.: 0.6666666666666666
+Mi. Rec.: 0.25
+Subs. 0/1 Loss: 1.0
+Subs. Acc.: 0.0
 
-INFO Successfully finished after 0.027259930997388437 seconds
+INFO Successfully finished after 0.02420688600068388 seconds
