@@ -109,7 +109,7 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
             isspmatrix_csc(m) and sparse_format == SparseFormat.CSC):
         # Matrix is a `scipy.sparse.csr_matrix` or `scipy.sparse.csc_matrix` and is already in the given sparse format
         return policy != SparsePolicy.FORCE_DENSE
-    elif isspmatrix_lil(m) or isspmatrix_coo(m) or isspmatrix_dok(m):
+    elif isspmatrix_lil(m) or isspmatrix_coo(m) or isspmatrix_dok(m) or isspmatrix_csr(m) or isspmatrix_csc(m):
         # Given matrix is in a format that might be converted into the specified sparse format
         if policy == SparsePolicy.AUTO:
             return is_sparse(m, sparse_format=sparse_format, dtype=dtype, sparse_values=sparse_values)
