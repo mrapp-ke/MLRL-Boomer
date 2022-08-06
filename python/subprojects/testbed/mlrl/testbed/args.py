@@ -13,10 +13,9 @@ from mlrl.common.config import RULE_INDUCTION_VALUES, LABEL_SAMPLING_VALUES, FEA
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
+from mlrl.testbed.runnables import DATA_SPLIT_VALUES, DATA_SPLIT_TRAIN_TEST, PRINT_RULES_VALUES, STORE_RULES_VALUES
 
 PARAM_LOG_LEVEL = '--log-level'
-
-PARAM_CURRENT_FOLD = '--current-fold'
 
 PARAM_RANDOM_STATE = '--random-state'
 
@@ -24,7 +23,7 @@ PARAM_DATA_DIR = '--data-dir'
 
 PARAM_DATASET = '--dataset'
 
-PARAM_FOLDS = '--folds'
+PARAM_DATA_SPLIT = '--data-split'
 
 PARAM_PRINT_EVALUATION = '--print-evaluation'
 
@@ -135,14 +134,6 @@ def log_level(s):
             LogLevel) + ', but is "' + str(s) + '".')
 
 
-def current_fold_string(s):
-    n = int(s)
-    if n >= 0:
-        return n - 1
-    raise ValueError(
-        'Invalid value given for parameter "' + PARAM_CURRENT_FOLD + '". Must be at least 0, but is "' + str(n) + '".')
-
-
 def boolean_string(s):
     return BooleanOption.parse(s)
 
@@ -156,13 +147,10 @@ def add_learner_arguments(parser: ArgumentParser):
                         help='The path of the directory where the data set files are located.')
     parser.add_argument(PARAM_DATASET, type=str, required=True,
                         help='The name of the data set files without suffix.')
-    parser.add_argument(PARAM_FOLDS, type=int, default=1,
-                        help='The total number of folds to be used for cross validation. Must be greater than 1 or 1, '
-                             + 'if no cross validation should be used.')
-    parser.add_argument(PARAM_CURRENT_FOLD, type=current_fold_string, default=-1,
-                        help='The cross validation fold to be performed. Must be in [1, ' + PARAM_FOLDS + '] or 0, if '
-                             + 'all folds should be performed. This parameter is ignored if ' + PARAM_FOLDS + ' is set '
-                             + 'to 1.')
+    parser.add_argument(PARAM_DATA_SPLIT, type=str, default=DATA_SPLIT_TRAIN_TEST,
+                        help='The strategy to be used for splitting the available data into training and test sets. '
+                             + 'Must be one of ' + format_dict_keys(DATA_SPLIT_VALUES) + '. For additional options '
+                             + 'refer to the documentation.')
     parser.add_argument(PARAM_PRINT_EVALUATION, type=boolean_string, default=True,
                         help='Whether the evaluation results should be printed on the console or not. Must be one of '
                              + format_enum_values(BooleanOption) + '.')
@@ -229,11 +217,11 @@ def add_rule_learner_arguments(parser: ArgumentParser):
                              + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
     parser.add_argument(PARAM_PRINT_RULES, type=str, default=BooleanOption.FALSE.value,
                         help='Whether the induced rules should be printed on the console or not. Must be one of '
-                             + format_enum_values(BooleanOption) + '. For additional options refer to the '
+                             + format_dict_keys(PRINT_RULES_VALUES) + '. For additional options refer to the '
                              + 'documentation.')
     parser.add_argument(PARAM_STORE_RULES, type=str, default=BooleanOption.FALSE.value,
                         help='Whether the induced rules should be written into a text file or not. Must be one of '
-                             + format_enum_values(BooleanOption) + '. Does only have an effect if the parameter '
+                             + format_dict_keys(STORE_RULES_VALUES) + '. Does only have an effect if the parameter '
                              + PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
     parser.add_argument(PARAM_FEATURE_FORMAT, type=str, default=SparsePolicy.AUTO.value,
                         help='The format to be used for the representation of the feature matrix. Must be one of '
