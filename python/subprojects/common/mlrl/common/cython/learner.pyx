@@ -2,7 +2,7 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from mlrl.common.cython._arrays cimport array_uint32, c_matrix_uint8, c_matrix_float64
-from mlrl.common.cython._validation import assert_greater_or_equal
+from mlrl.common.cython.validation import assert_greater_or_equal
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
