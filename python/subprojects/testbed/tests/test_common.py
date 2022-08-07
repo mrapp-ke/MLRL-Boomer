@@ -9,6 +9,7 @@ from os import path, makedirs
 from typing import List, Optional
 from unittest import TestCase, SkipTest
 
+OVERWRITE_EXPECTED_OUTPUT_FILES = False
 
 DIR_RES = 'python/subprojects/testbed/tests/res'
 
@@ -665,24 +666,31 @@ class IntegrationTests(ABC, TestCase):
 
         if expected_output_file_name is not None:
             stdout = str(out.stdout).splitlines()
+            expected_output_file = path.join(self.expected_output_dir, expected_output_file_name + '.txt')
 
-            with open(path.join(self.expected_output_dir, expected_output_file_name + '.txt'), 'r') as f:
-                for i, line in enumerate(f):
-                    line = line.strip('\n')
+            if OVERWRITE_EXPECTED_OUTPUT_FILES:
+                with open(expected_output_file, 'w') as f:
+                    for line in stdout:
+                        f.write(line + '\n')
+            else:
+                with open(expected_output_file, 'r') as f:
+                    for i, line in enumerate(f):
+                        line = line.strip('\n')
 
-                    if not line.startswith('INFO Configuration:') and not line.endswith('seconds'):
-                        self.assertEqual(stdout[i], line,
-                                         'Output of command "' + self.__format_cmd(args) + '" differs at line ' + str(
-                                             i + 1))
+                        if not line.startswith('INFO Configuration:') and not line.endswith('seconds'):
+                            self.assertEqual(stdout[i], line, 'Output of command "' + self.__format_cmd(args)
+                                             + '" differs at line ' + str(i + 1))
 
-        self.__assert_model_files_exist(builder)
-        self.__assert_evaluation_files_exist(builder)
-        self.__assert_parameter_files_exist(builder)
-        self.__assert_prediction_files_exist(builder)
-        self.__assert_prediction_characteristic_files_exist(builder)
-        self.__assert_data_characteristic_files_exist(builder)
-        self.__assert_model_characteristic_files_exist(builder)
-        self.__assert_rule_files_exist(builder)
+        if not OVERWRITE_EXPECTED_OUTPUT_FILES:
+            self.__assert_model_files_exist(builder)
+            self.__assert_evaluation_files_exist(builder)
+            self.__assert_parameter_files_exist(builder)
+            self.__assert_prediction_files_exist(builder)
+            self.__assert_prediction_characteristic_files_exist(builder)
+            self.__assert_data_characteristic_files_exist(builder)
+            self.__assert_model_characteristic_files_exist(builder)
+            self.__assert_rule_files_exist(builder)
+
         self.__remove_tmp_dirs(builder)
 
 
