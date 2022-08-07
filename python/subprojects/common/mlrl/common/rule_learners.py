@@ -117,7 +117,7 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
             return policy == SparsePolicy.FORCE_SPARSE
 
     raise ValueError(
-        'Matrix of type ' + type(m).__name__ + ' cannot be converted to format "' + str(sparse_format) + '""')
+        'Matrix of type ' + type(m).__name__ + ' cannot be converted to format "' + str(sparse_format) + '"')
 
 
 class RuleLearner(Learner, NominalAttributeLearner, ABC):
