@@ -5,29 +5,29 @@ DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emo
 DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A sparse matrix is used to store the labels of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.2512965720088687 seconds
 INFO Predicting for 196 test examples...
-DEBUG A sparse matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.005928602011408657 seconds
 INFO Overall evaluation result on test data:
 
-Ex.-based F1: 0.5806122448979593
-Ex.-based Jacc.: 0.5029761904761906
-Ex.-based Prec.: 0.7789115646258503
-Ex.-based Rec.: 0.5773809523809523
-Hamm. Acc.: 0.8010204081632653
-Hamm. Loss: 0.1989795918367347
-Ma. F1: 0.6241788915072266
-Ma. Jacc.: 0.4701613873652854
-Ma. Prec.: 0.7214290339290339
-Ma. Rec.: 0.5617065870717727
-Mi. F1: 0.6497005988023953
-Mi. Jacc.: 0.4811529933481153
-Mi. Prec.: 0.7406143344709898
-Mi. Rec.: 0.5786666666666667
-Subs. 0/1 Loss: 0.7448979591836735
-Subs. Acc.: 0.25510204081632654
+Ex.-based F1: 0.5848639455782313
+Ex.-based Jacc.: 0.5004251700680271
+Ex.-based Prec.: 0.8061224489795918
+Ex.-based Rec.: 0.5841836734693877
+Hamm. Acc.: 0.8027210884353742
+Hamm. Loss: 0.19727891156462585
+Ma. F1: 0.6277218005126736
+Ma. Jacc.: 0.46966899888102326
+Ma. Prec.: 0.7434041996541997
+Ma. Rec.: 0.561077844106856
+Mi. F1: 0.649546827794562
+Mi. Jacc.: 0.4809843400447427
+Mi. Prec.: 0.7491289198606271
+Mi. Rec.: 0.5733333333333334
+Subs. 0/1 Loss: 0.7704081632653061
+Subs. Acc.: 0.22959183673469388
 
 INFO Successfully finished after 0.31229538697516546 seconds
