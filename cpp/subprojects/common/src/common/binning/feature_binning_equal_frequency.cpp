@@ -89,6 +89,7 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
                 FeatureVector::const_iterator featureIterator = featureVector.cbegin();
                 ThresholdVector::iterator thresholdIterator = thresholdVector.begin();
                 uint32 numElementsPerBin = (uint32) std::ceil((float) numElements / (float) numBins);
+                uint32 numElementsInCurrentBin = 0;
                 uint32 binIndex = 0;
                 float32 previousValue = 0;
                 uint32 i = 0;
@@ -102,26 +103,31 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
                     }
 
                     if (currentValue != previousValue) {
-                        if (i / numElementsPerBin != binIndex) {
+                        if (numElementsInCurrentBin >= numElementsPerBin) {
                             thresholdIterator[binIndex] = arithmeticMean(previousValue, currentValue);
                             binIndex++;
+                            numElementsInCurrentBin = 0;
                         }
 
                         previousValue = currentValue;
                     }
 
                     binIndices.setBinIndex(featureIterator[i].index, binIndex);
+                    numElementsInCurrentBin++;
                 }
 
                 // If there are any sparse values, check if they belong to the current one or the next one...
                 if (sparse) {
-                    if (i / numElementsPerBin != binIndex) {
+                    previousValue = 0;
+
+                    if (numElementsInCurrentBin >= numElementsPerBin) {
                         thresholdIterator[binIndex] = arithmeticMean<float32>(previousValue, 0);
                         binIndex++;
+                        numElementsInCurrentBin = 0;
                     }
 
                     thresholdVector.setSparseBinIndex(binIndex);
-                    previousValue = 0;
+                    numElementsInCurrentBin += numSparse;
                 }
 
                 // Iterate feature values >= 0...
@@ -130,15 +136,17 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 
                     if (!sparse || currentValue != 0) {
                         if (currentValue != previousValue) {
-                            if ((i + numSparse) / numElementsPerBin != binIndex) {
+                            if (numElementsInCurrentBin >= numElementsPerBin) {
                                 thresholdIterator[binIndex] = arithmeticMean(previousValue, currentValue);
                                 binIndex++;
+                                numElementsInCurrentBin = 0;
                             }
 
                             previousValue = currentValue;
                         }
 
                         binIndices.setBinIndex(featureIterator[i].index, binIndex);
+                        numElementsInCurrentBin++;
                     }
                 }
 
