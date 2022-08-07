@@ -2,41 +2,40 @@ INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/sub
 INFO Starting experiment...
 INFO Using separate training and test sets...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
-DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-train.arff"...
-DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-test.arff"...
-INFO Fitting model to 391 training examples...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
 INFO Successfully fit model in 1.2369376079877838 seconds
-INFO Predicting for 202 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
+INFO Predicting for 196 test examples...
+DEBUG A sparse matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.005646749050356448 seconds
 INFO Overall evaluation result on test data:
 
-Ex.-based F1: 0.6171617161716171
-Ex.-based Jacc.: 0.5346534653465347
-Ex.-based Prec.: 0.7417491749174918
-Ex.-based Rec.: 0.617986798679868
-Hamm. Acc.: 0.7995049504950495
-Hamm. Loss: 0.2004950495049505
-Ma. F1: 0.6612300020088455
-Ma. Jacc.: 0.5016169659947927
-Ma. Prec.: 0.7263624994610574
-Ma. Rec.: 0.6163701906135951
-Mi. F1: 0.6729475100942127
-Mi. Jacc.: 0.5070993914807302
-Mi. Prec.: 0.7267441860465116
-Mi. Rec.: 0.6265664160401002
-Subs. 0/1 Loss: 0.7227722772277227
-Subs. Acc.: 0.27722772277227725
+Ex.-based F1: 0.5986394557823129
+Ex.-based Jacc.: 0.5250850340136054
+Ex.-based Prec.: 0.7814625850340136
+Ex.-based Rec.: 0.6045918367346939
+Hamm. Acc.: 0.8086734693877551
+Hamm. Loss: 0.1913265306122449
+Ma. F1: 0.6428492045420412
+Ma. Jacc.: 0.4872535610427327
+Ma. Prec.: 0.7366319444444445
+Ma. Rec.: 0.5913404519257633
+Mi. F1: 0.6686303387334316
+Mi. Jacc.: 0.5022123893805309
+Mi. Prec.: 0.7467105263157895
+Mi. Rec.: 0.6053333333333333
+Subs. 0/1 Loss: 0.7091836734693877
+Subs. Acc.: 0.29081632653061223
 
 INFO Model characteristics:
 
 Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 11.567567567567568, min. 1, max. 37
-Conditions total: 11556 (51.11630321910696% use <= operator, 48.88369678089305% use > operator, 0.0% use == operator, 0.0% use != operator)
+Conditions per rule: avg. 11.90890890890891, min. 1, max. 33
+Conditions total: 11897 (50.70185761116248% use <= operator, 49.298142388837526% use > operator, 0.0% use == operator, 0.0% use != operator)
 Predictions per rule: avg. 6.0, min. 6, max. 6
-Predictions total: 5994 (39.60627293960627% positive, 60.39372706039373% negative)
+Predictions total: 5994 (39.7731064397731% positive, 60.22689356022689% negative)
 
 INFO Successfully finished after 1.3159440029412508 seconds

@@ -2,36 +2,35 @@ INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='data', dat
 INFO Starting experiment...
 INFO Using separate training and test sets...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
-DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-train.arff"...
-DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-test.arff"...
-INFO Fitting model to 391 training examples...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.27096990001155064 seconds
-INFO Predicting for 391 training examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
+INFO Predicting for 397 training examples...
+DEBUG A sparse matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.012410861963871866 seconds
 INFO Prediction characteristics for training data:
 
 Labels: 6
-Label density: 0.30221653878942883
-Label sparsity: 0.6977834612105711
-Label imbalance ratio: 1.4867270689979437
-Label cardinality: 1.813299232736573
-Distinct label vectors: 26
+Label density: 0.3077246011754828
+Label sparsity: 0.6922753988245172
+Label imbalance ratio: 1.4464859637001537
+Label cardinality: 1.8463476070528968
+Distinct label vectors: 23
 
-INFO Predicting for 202 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
+INFO Predicting for 196 test examples...
+DEBUG A sparse matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0053924230160191655 seconds
 INFO Prediction characteristics for test data:
 
 Labels: 6
-Label density: 0.2731023102310231
-Label sparsity: 0.726897689768977
-Label imbalance ratio: 2.2208164312248364
-Label cardinality: 1.6386138613861385
+Label density: 0.23469387755102042
+Label sparsity: 0.7653061224489796
+Label imbalance ratio: 2.2036551960280777
+Label cardinality: 1.4081632653061225
 Distinct label vectors: 18
 
 INFO Successfully finished after 0.38902993098599836 seconds
