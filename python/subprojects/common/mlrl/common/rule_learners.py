@@ -79,19 +79,18 @@ def is_sparse(m, sparse_format: SparseFormat, dtype, sparse_values: bool = True)
 def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, dtype,
                           sparse_values: bool = True) -> bool:
     """
-    Returns whether it is preferable to convert a given matrix into a `scipy.sparse.csr_matrix`,
-    `scipy.sparse.csc_matrix` or `scipy.sparse.dok_matrix`, depending on the format of the given matrix and a given
-    `SparsePolicy`:
+    Returns whether it is preferable to convert a given matrix into a `scipy.sparse.csr_matrix` or
+    `scipy.sparse.csc_matrix`, depending on the format of the given matrix and a given `SparsePolicy`:
 
-    If the given policy is `SparsePolicy.AUTO`, the matrix will be converted into the given sparse format, if possible,
-    if the sparse matrix is expected to occupy less memory than a dense matrix. To be able to convert the matrix into a
-    sparse format, it must be a `scipy.sparse.lil_matrix`, `scipy.sparse.dok_matrix` or `scipy.sparse.coo_matrix`. If
-    the given sparse format is `csr` or `csc` and the matrix is already in that format, it will not be converted.
+    If the given policy is `SparsePolicy.AUTO`, the matrix will be converted into the given sparse format, if possible
+    and if the sparse matrix is expected to occupy less memory than a dense matrix. To be able to convert the matrix
+    into a sparse format, it must be a `scipy.sparse.lil_matrix`, `scipy.sparse.dok_matrix`, `scipy.sparse.coo_matrix`,
+    `scipy.sparse.csr_matrix` or `scipy.sparse.csc_matrix`.
 
-    If the given policy is `SparsePolicy.FORCE_DENSE`, the matrix will always be converted into the specified sparse
+    If the given policy is `SparsePolicy.FORCE_SPARSE`, the matrix will always be converted into the specified sparse
     format, if possible.
 
-    If the given policy is `SparsePolicy.FORCE_SPARSE`, the matrix will always be converted into a dense matrix.
+    If the given policy is `SparsePolicy.FORCE_DENSE`, the matrix will always be converted into a dense matrix.
 
     :param m:               A `np.ndarray` or `scipy.sparse.matrix` to be checked
     :param sparse_format:   The `SparseFormat` to be used
@@ -103,12 +102,7 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
     """
     if not issparse(m):
         # Given matrix is dense
-        if policy != SparsePolicy.FORCE_SPARSE:
-            return False
-    elif (isspmatrix_csr(m) and sparse_format == SparseFormat.CSR) or (
-            isspmatrix_csc(m) and sparse_format == SparseFormat.CSC):
-        # Matrix is a `scipy.sparse.csr_matrix` or `scipy.sparse.csc_matrix` and is already in the given sparse format
-        return policy != SparsePolicy.FORCE_DENSE
+        return policy == SparsePolicy.FORCE_SPARSE
     elif isspmatrix_lil(m) or isspmatrix_coo(m) or isspmatrix_dok(m) or isspmatrix_csr(m) or isspmatrix_csc(m):
         # Given matrix is in a format that might be converted into the specified sparse format
         if policy == SparsePolicy.AUTO:
