@@ -294,7 +294,7 @@ class EvaluationCsvOutput(EvaluationOutput):
         columns = evaluation_result.dict(fold)
         header = sorted(columns.keys())
 
-        with open_writable_csv_file(self.output_dir, 'evaluation_' + data_type.value, fold) as csv_file:
+        with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation'), fold) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
@@ -303,7 +303,7 @@ class EvaluationCsvOutput(EvaluationOutput):
         columns = evaluation_result.avg_dict() if num_folds > 1 else evaluation_result.dict(0)
         header = sorted(columns.keys())
 
-        with open_writable_csv_file(self.output_dir, 'evaluation_' + data_type.value) as csv_file:
+        with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation')) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
