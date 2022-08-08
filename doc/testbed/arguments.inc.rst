@@ -7,7 +7,7 @@ In addition to the mandatory arguments that must be provided to the command line
 
 * ``--data-split`` (Default value = ``train-test``)
 
-  * ``train-test`` The available data is split into a single training and test set. Given that ``dataset-name`` is provided as the value of the argument ``--dataset``, the training data must be stored in a file named ``dataset-name-train.arff``, whereas the test data must be stored in a file named ``dataset-name-test.arff``. If no such files are available, the program will look for a file with the name ``dataset-name.arff`` and split it into training and test data automatically. The following options may be specified via the bracket notation (see :ref:`parameters`):
+  * ``train-test`` The available data is split into a single training and test set. Given that ``dataset-name`` is provided as the value of the argument ``--dataset``, the training data must be stored in a file named ``dataset-name_training.arff``, whereas the test data must be stored in a file named ``dataset-name_test.arff``. If no such files are available, the program will look for a file with the name ``dataset-name.arff`` and split it into training and test data automatically. The following options may be specified via the bracket notation (see :ref:`parameters`):
 
     * ``test_size`` (Default value = ``0.33``) The fraction of the available data to be included in the test set, if the training and test set are not provided as separate files. Must be in (0, 1).
 
