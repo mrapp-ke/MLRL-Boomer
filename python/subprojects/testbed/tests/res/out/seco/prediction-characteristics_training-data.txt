@@ -2,36 +2,35 @@ INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/sub
 INFO Starting experiment...
 INFO Using separate training and test sets...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
-DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-train.arff"...
-DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-test.arff"...
-INFO Fitting model to 391 training examples...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.1634177519590594 seconds
-INFO Predicting for 391 training examples...
+INFO Predicting for 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.007419428962748498 seconds
 INFO Prediction characteristics for training data:
 
 Labels: 6
-Label density: 0.30647911338448425
-Label sparsity: 0.6935208866155158
-Label imbalance ratio: 2.255951656543279
-Label cardinality: 1.8388746803069054
-Distinct label vectors: 21
+Label density: 0.30856423173803527
+Label sparsity: 0.6914357682619647
+Label imbalance ratio: 4.245291494206476
+Label cardinality: 1.8513853904282116
+Distinct label vectors: 28
 
-INFO Predicting for 202 test examples...
+INFO Predicting for 196 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.005934583023190498 seconds
 INFO Prediction characteristics for test data:
 
 Labels: 6
-Label density: 0.3118811881188119
-Label sparsity: 0.6881188118811881
-Label imbalance ratio: 2.1666356845768613
-Label cardinality: 1.8712871287128714
-Distinct label vectors: 20
+Label density: 0.31887755102040816
+Label sparsity: 0.6811224489795918
+Label imbalance ratio: 10.50038980970979
+Label cardinality: 1.913265306122449
+Distinct label vectors: 22
 
 INFO Successfully finished after 0.21247219701763242 seconds

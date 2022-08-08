@@ -744,6 +744,17 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .store_evaluation()
         self.run_cmd(builder, 'evaluation_train-test')
 
+    def test_evaluation_train_test_predefined(self):
+        """
+        Tests the evaluation of the rule learning algorithm when using a predefined split of the dataset, stored in
+        different files, into training and test data.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default + '-predefined') \
+            .set_output_dir() \
+            .print_evaluation() \
+            .store_evaluation()
+        self.run_cmd(builder, 'evaluation_train-test-predefined')
+
     def test_evaluation_cross_validation(self):
         """
         Tests the evaluation of the rule learning algorithm when using a cross validation.
@@ -779,8 +790,8 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_model_persistence_train_test(self):
         """
-        Tests the functionality to store models and load them afterward when using a predefined split of the dataset
-        into training and test data.
+        Tests the functionality to store models and load them afterward when using a split of the dataset into training
+        and test data.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .set_model_dir()
@@ -806,8 +817,8 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_predictions_train_test(self):
         """
-        Tests the functionality to store the predictions of the rule learning algorithm when using a predefined split of
-        the dataset into training and test data.
+        Tests the functionality to store the predictions of the rule learning algorithm when using a split of the
+        dataset into training and test data.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
@@ -860,7 +871,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
     def test_prediction_characteristics_train_test(self):
         """
         Tests the functionality to store the prediction characteristics of the rule learning algorithm when using a
-        predefined split of the dataset into training and test data.
+        split of the dataset into training and test data.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
@@ -915,7 +926,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
     def test_data_characteristics_train_test(self):
         """
         Tests the functionality to store the characteristics of the data used for training by the rule learning
-        algorithm when using a predefined split of the dataset into training and test data.
+        algorithm when using a split of the dataset into training and test data.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
@@ -955,8 +966,8 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_model_characteristics_train_test(self):
         """
-        Tests the functionality to store the characteristics of models when using a predefined split of the dataset into
-        training and test data.
+        Tests the functionality to store the characteristics of models when using a split of the dataset into training
+        and test data.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
@@ -994,8 +1005,8 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_rules_train_test(self):
         """
-        Tests the functionality to store textual representations of the rules in a model when using a predefined split
-        of the dataset into training and test data.
+        Tests the functionality to store textual representations of the rules in a model when using a split of the
+        dataset into training and test data.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
@@ -1104,8 +1115,8 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_one_hot_encoding_train_test(self):
         """
-        Tests the rule learning algorithm on a dataset with one-hot-encoded nominal attributes when using a predefined
-        split of the dataset into training and test data.
+        Tests the rule learning algorithm on a dataset with one-hot-encoded nominal attributes when using a split of the
+        dataset into training and test data.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_one_hot_encoding) \
             .one_hot_encoding()
@@ -1124,7 +1135,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
     def test_parameters_train_test(self):
         """
         Tests the functionality to configure the rule learning algorithm according to parameter settings that are loaded
-        from input files when using a predefined split of the dataset into training and test data.
+        from input files when using a split of the dataset into training and test data.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \

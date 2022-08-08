@@ -399,7 +399,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
     def test_label_wise_partial_fixed_heads(self):
         """
         Tests the BOOMER algorithm when using a label-wise decomposable loss function for the induction of rules that
-        predict for a predefined number of labels
+        predict for a number of labels
         """
         builder = BoostingCmdBuilder() \
             .loss(LOSS_LOGISTIC_LABEL_WISE) \
@@ -410,7 +410,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
     def test_label_wise_partial_fixed_heads_equal_width_label_binning(self):
         """
         Tests the BOOMER algorithm when using a label-wise decomposable loss function and equal-width label binning for
-        the induction of rules that predict for a predefined number of labels
+        the induction of rules that predict for a number of labels
         """
         builder = BoostingCmdBuilder() \
             .loss(LOSS_LOGISTIC_LABEL_WISE) \
@@ -479,7 +479,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
     def test_example_wise_partial_fixed_heads(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
-        for a predefined number of labels
+        for a number of labels
         """
         builder = BoostingCmdBuilder() \
             .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
@@ -490,7 +490,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
     def test_example_wise_partial_fixed_heads_equal_width_label_binning(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
-        induction of rules that predict for a predefined number of labels
+        induction of rules that predict for a number of labels
         """
         builder = BoostingCmdBuilder() \
             .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
