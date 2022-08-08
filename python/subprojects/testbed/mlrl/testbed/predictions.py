@@ -67,7 +67,7 @@ class PredictionArffOutput(PredictionOutput):
 
     def write_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, predictions,
                           ground_truth):
-        file_name = get_file_name_per_fold('predictions_' + data_type.value, SUFFIX_ARFF, data_split.get_fold())
+        file_name = get_file_name_per_fold(data_type.get_file_name('predictions'), SUFFIX_ARFF, data_split.get_fold())
         attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
         labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
         prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)

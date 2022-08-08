@@ -75,7 +75,7 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
             'Distinct label vectors': characteristics.num_distinct_label_vectors
         }
         header = sorted(columns.keys())
-        with open_writable_csv_file(self.output_dir, 'prediction_characteristics_' + data_type.value,
+        with open_writable_csv_file(self.output_dir, data_type.get_file_name('prediction_characteristics'),
                                     data_split.get_fold()) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
