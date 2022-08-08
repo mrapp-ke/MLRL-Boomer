@@ -136,21 +136,18 @@ class DataSplitter(ABC):
         """
 
         @abstractmethod
-        def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_indices, train_x, train_y,
-                               test_indices, test_x, test_y):
+        def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_x, train_y, test_x, test_y):
             """
             The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it
             on a test set.
 
-            :param meta_data:       The meta-data of the training data set
-            :param data_split:      Information about the split of the available data that should be used for building
-                                    and evaluating a classifier or ranker
-            :param train_indices:   The indices of the training examples or None, if no cross validation is used
-            :param train_x:         The feature matrix of the training examples
-            :param train_y:         The label matrix of the training examples
-            :param test_indices:    The indices of the test examples or None, if no cross validation is used
-            :param test_x:          The feature matrix of the test examples
-            :param test_y:          The label matrix of the test examples
+            :param meta_data:   The meta-data of the training data set
+            :param data_split:  Information about the split of the available data that should be used for building and
+                                evaluating a classifier or ranker
+            :param train_x:     The feature matrix of the training examples
+            :param train_y:     The label matrix of the training examples
+            :param test_x:      The feature matrix of the test examples
+            :param test_y:      The label matrix of the test examples
             """
             pass
 
@@ -250,8 +247,8 @@ class TrainTestSplitter(DataSplitter):
 
         # Train and evaluate classifier...
         data_split = TrainingTestSplit()
-        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split, None,
-                                    train_x, train_y, None, test_x, test_y)
+        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split,
+                                    train_x, train_y, test_x, test_y)
 
 
 class CrossValidationSplitter(DataSplitter):
@@ -350,7 +347,7 @@ class CrossValidationSplitter(DataSplitter):
             # Train and evaluate classifier...
             data_split = CrossValidationFold(num_folds=num_folds, fold=fold)
             callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split,
-                                        None, train_x, train_y, None, test_x, test_y)
+                                        train_x, train_y, test_x, test_y)
 
     def __cross_validation(self, callback: DataSplitter.Callback, data_dir: str, arff_file_name: str,
                            xml_file_name: str, use_one_hot_encoding: bool, num_folds: int, current_fold: int):
@@ -381,4 +378,4 @@ class CrossValidationSplitter(DataSplitter):
                 # Train and evaluate classifier...
                 data_split = CrossValidationFold(num_folds=num_folds, fold=fold)
                 callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data,
-                                            data_split, train_indices, train_x, train_y, test_indices, test_x, test_y)
+                                            data_split, train_x, train_y, test_x, test_y)
