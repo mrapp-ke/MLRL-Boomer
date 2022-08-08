@@ -1,0 +1,313 @@
+INFO Starting experiment...
+INFO Performing full 10-fold cross validation...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions-predefined.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-predefined_fold-1.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-predefined_fold-2.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-predefined_fold-3.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-predefined_fold-4.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-predefined_fold-5.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-predefined_fold-6.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-predefined_fold-7.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-predefined_fold-8.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-predefined_fold-9.arff"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-predefined_fold-10.arff"...
+INFO Fold 1 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.33443586400244385 seconds
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.002380595997237833 seconds
+INFO Evaluation result on test data (Fold 1):
+
+Ex.-based F1: 0.6367231638418078
+Ex.-based Jacc.: 0.5437853107344633
+Ex.-based Prec.: 0.8220338983050848
+Ex.-based Rec.: 0.652542372881356
+Hamm. Acc.: 0.8248587570621468
+Hamm. Loss: 0.1751412429378531
+Ma. F1: 0.6870795123403336
+Ma. Jacc.: 0.5281727117724561
+Ma. Prec.: 0.787768331885979
+Ma. Rec.: 0.6208099224095096
+Mi. F1: 0.693069306930693
+Mi. Jacc.: 0.5303030303030303
+Mi. Prec.: 0.7692307692307693
+Mi. Rec.: 0.6306306306306306
+Subs. 0/1 Loss: 0.728813559322034
+Subs. Acc.: 0.2711864406779661
+
+INFO Fold 2 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.32056990300043253 seconds
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0024021339995670132 seconds
+INFO Evaluation result on test data (Fold 2):
+
+Ex.-based F1: 0.5954802259887005
+Ex.-based Jacc.: 0.5423728813559322
+Ex.-based Prec.: 0.7796610169491526
+Ex.-based Rec.: 0.5932203389830508
+Hamm. Acc.: 0.8163841807909604
+Hamm. Loss: 0.18361581920903955
+Ma. F1: 0.6416331008285031
+Ma. Jacc.: 0.4859126984126984
+Ma. Prec.: 0.7745896464646465
+Ma. Rec.: 0.5662812133400369
+Mi. F1: 0.6666666666666667
+Mi. Jacc.: 0.5
+Mi. Prec.: 0.7647058823529411
+Mi. Rec.: 0.5909090909090909
+Subs. 0/1 Loss: 0.6271186440677966
+Subs. Acc.: 0.3728813559322034
+
+INFO Fold 3 / 10:
+INFO Fitting model to 533 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.3037968930002535 seconds
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.002563590998761356 seconds
+INFO Evaluation result on test data (Fold 3):
+
+Ex.-based F1: 0.5805555555555556
+Ex.-based Jacc.: 0.49027777777777776
+Ex.-based Prec.: 0.8277777777777778
+Ex.-based Rec.: 0.5722222222222222
+Hamm. Acc.: 0.8111111111111111
+Hamm. Loss: 0.18888888888888888
+Ma. F1: 0.6339292607034542
+Ma. Jacc.: 0.4818961675579323
+Ma. Prec.: 0.7513121377345516
+Ma. Rec.: 0.5606218705805909
+Mi. F1: 0.66
+Mi. Jacc.: 0.4925373134328358
+Mi. Prec.: 0.7586206896551724
+Mi. Rec.: 0.584070796460177
+Subs. 0/1 Loss: 0.7833333333333333
+Subs. Acc.: 0.21666666666666667
+
+INFO Fold 4 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.3096682959985628 seconds
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.002348679998249281 seconds
+INFO Evaluation result on test data (Fold 4):
+
+Ex.-based F1: 0.619774011299435
+Ex.-based Jacc.: 0.5508474576271186
+Ex.-based Prec.: 0.7768361581920904
+Ex.-based Rec.: 0.6299435028248587
+Hamm. Acc.: 0.8333333333333334
+Hamm. Loss: 0.16666666666666666
+Ma. F1: 0.672041847041847
+Ma. Jacc.: 0.5400045417148184
+Ma. Prec.: 0.7468876824099948
+Ma. Rec.: 0.6290117025217645
+Mi. F1: 0.7093596059113301
+Mi. Jacc.: 0.549618320610687
+Mi. Prec.: 0.7741935483870968
+Mi. Rec.: 0.6545454545454545
+Subs. 0/1 Loss: 0.6779661016949152
+Subs. Acc.: 0.3220338983050847
+
+INFO Fold 5 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.2940804460013169 seconds
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0024898129995563067 seconds
+INFO Evaluation result on test data (Fold 5):
+
+Ex.-based F1: 0.6367231638418078
+Ex.-based Jacc.: 0.5677966101694916
+Ex.-based Prec.: 0.7768361581920903
+Ex.-based Rec.: 0.6327683615819208
+Hamm. Acc.: 0.8333333333333334
+Hamm. Loss: 0.16666666666666666
+Ma. F1: 0.6679875679875679
+Ma. Jacc.: 0.5380763659186927
+Ma. Prec.: 0.758764367816092
+Ma. Rec.: 0.6302946279726466
+Mi. F1: 0.7064676616915423
+Mi. Jacc.: 0.5461538461538461
+Mi. Prec.: 0.7717391304347826
+Mi. Rec.: 0.6513761467889908
+Subs. 0/1 Loss: 0.6440677966101696
+Subs. Acc.: 0.3559322033898305
+
+INFO Fold 6 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.3039159470026789 seconds
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.002400151999609079 seconds
+INFO Evaluation result on test data (Fold 6):
+
+Ex.-based F1: 0.6497175141242937
+Ex.-based Jacc.: 0.5706214689265537
+Ex.-based Prec.: 0.7203389830508474
+Ex.-based Rec.: 0.6807909604519775
+Hamm. Acc.: 0.8135593220338984
+Hamm. Loss: 0.1864406779661017
+Ma. F1: 0.6685372999774623
+Ma. Jacc.: 0.5179728600781233
+Ma. Prec.: 0.7141465560583208
+Ma. Rec.: 0.6529644246362513
+Mi. F1: 0.6915887850467289
+Mi. Jacc.: 0.5285714285714286
+Mi. Prec.: 0.7115384615384616
+Mi. Rec.: 0.6727272727272727
+Subs. 0/1 Loss: 0.6949152542372881
+Subs. Acc.: 0.3050847457627119
+
+INFO Fold 7 / 10:
+INFO Fitting model to 533 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.30176647400003276 seconds
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.002374964999035001 seconds
+INFO Evaluation result on test data (Fold 7):
+
+Ex.-based F1: 0.605
+Ex.-based Jacc.: 0.5277777777777778
+Ex.-based Prec.: 0.7472222222222222
+Ex.-based Rec.: 0.6083333333333335
+Hamm. Acc.: 0.8
+Hamm. Loss: 0.2
+Ma. F1: 0.6322592737703093
+Ma. Jacc.: 0.4748847167325428
+Ma. Prec.: 0.7203682483094248
+Ma. Rec.: 0.5753640637541566
+Mi. F1: 0.6504854368932039
+Mi. Jacc.: 0.48201438848920863
+Mi. Prec.: 0.7204301075268817
+Mi. Rec.: 0.5929203539823009
+Subs. 0/1 Loss: 0.7
+Subs. Acc.: 0.3
+
+INFO Fold 8 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.3164068389996828 seconds
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0024148880002030637 seconds
+INFO Evaluation result on test data (Fold 8):
+
+Ex.-based F1: 0.6259887005649717
+Ex.-based Jacc.: 0.5409604519774012
+Ex.-based Prec.: 0.7344632768361582
+Ex.-based Rec.: 0.6666666666666666
+Hamm. Acc.: 0.8192090395480226
+Hamm. Loss: 0.1807909604519774
+Ma. F1: 0.6822105158007794
+Ma. Jacc.: 0.5324295587453483
+Ma. Prec.: 0.740014245014245
+Ma. Rec.: 0.6443900333412717
+Mi. F1: 0.6893203883495146
+Mi. Jacc.: 0.5259259259259259
+Mi. Prec.: 0.7319587628865979
+Mi. Rec.: 0.6513761467889908
+Subs. 0/1 Loss: 0.7457627118644068
+Subs. Acc.: 0.2542372881355932
+
+INFO Fold 9 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.313779500000237 seconds
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.002584478999779094 seconds
+INFO Evaluation result on test data (Fold 9):
+
+Ex.-based F1: 0.5581920903954803
+Ex.-based Jacc.: 0.48022598870056493
+Ex.-based Prec.: 0.7740112994350282
+Ex.-based Rec.: 0.57909604519774
+Hamm. Acc.: 0.7966101694915254
+Hamm. Loss: 0.2033898305084746
+Ma. F1: 0.6137885201452564
+Ma. Jacc.: 0.45842041819065166
+Ma. Prec.: 0.7084249084249085
+Ma. Rec.: 0.5646140946257044
+Mi. F1: 0.64
+Mi. Jacc.: 0.47058823529411764
+Mi. Prec.: 0.7111111111111111
+Mi. Rec.: 0.5818181818181818
+Subs. 0/1 Loss: 0.7627118644067796
+Subs. Acc.: 0.23728813559322035
+
+INFO Fold 10 / 10:
+INFO Fitting model to 533 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.2934399730002042 seconds
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0023833599989302456 seconds
+INFO Evaluation result on test data (Fold 10):
+
+Ex.-based F1: 0.573888888888889
+Ex.-based Jacc.: 0.4930555555555555
+Ex.-based Prec.: 0.7027777777777777
+Ex.-based Rec.: 0.5805555555555555
+Hamm. Acc.: 0.7861111111111111
+Hamm. Loss: 0.21388888888888888
+Ma. F1: 0.5903328675967995
+Ma. Jacc.: 0.44489352387378706
+Ma. Prec.: 0.6433253272069063
+Ma. Rec.: 0.5802450024844245
+Mi. F1: 0.6384976525821596
+Mi. Jacc.: 0.4689655172413793
+Mi. Prec.: 0.68
+Mi. Rec.: 0.6017699115044248
+Subs. 0/1 Loss: 0.75
+Subs. Acc.: 0.25
+
+INFO Overall evaluation result on test data:
+
+Ex.-based F1: 0.6082043314500941 ±0.02900953718369623
+Ex.-based Jacc.: 0.5307721280602636 ±0.030652461612111364
+Ex.-based Prec.: 0.766195856873823 ±0.03856255260801187
+Ex.-based Rec.: 0.6196139359698682 ±0.03682080071839101
+Hamm. Acc.: 0.8134510357815442 ±0.014764854076719146
+Hamm. Loss: 0.18654896421845574 ±0.014764854076719144
+Ma. F1: 0.6489799766192312 ±0.030115569383768873
+Ma. Jacc.: 0.5002663562997051 ±0.03337728091714245
+Ma. Prec.: 0.7345601451325069 ±0.03886724623793397
+Ma. Rec.: 0.6024596955666357 ±0.03441605117279639
+Mi. F1: 0.6745455504071839 ±0.025354135337117074
+Mi. Jacc.: 0.509467800602246 ±0.028826865107535214
+Mi. Prec.: 0.7393528463123814 ±0.03110659240024941
+Mi. Rec.: 0.6212143986155516 ±0.03271303228791028
+Subs. 0/1 Loss: 0.7114689265536722 ±0.04892622747506766
+Subs. Acc.: 0.28853107344632767 ±0.04892622747506767
+
+INFO Successfully finished after 3.471387830999447 seconds
