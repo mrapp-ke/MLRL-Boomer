@@ -211,12 +211,13 @@ class TrainTestSplitter(DataSplitter):
 
     def _split_data(self, callback: DataSplitter.Callback):
         log.info('Using separate training and test sets...')
-
-        # Load training data
         data_set = self.data_set
         data_dir = data_set.data_dir
         data_set_name = data_set.data_set_name
         use_one_hot_encoding = data_set.use_one_hot_encoding
+        xml_file_name = get_file_name(data_set_name, SUFFIX_XML)
+
+        # Check if ARFF files with predefined training and test data are available...
         train_arff_file_name = get_file_name(DataType.TRAINING.get_file_name(data_set_name), SUFFIX_ARFF)
         test_arff_file_name = get_file_name(DataType.TEST.get_file_name(data_set_name), SUFFIX_ARFF)
         predefined_split = check_if_files_exist(data_dir, [train_arff_file_name, test_arff_file_name])
@@ -224,9 +225,10 @@ class TrainTestSplitter(DataSplitter):
         if not predefined_split:
             train_arff_file_name = get_file_name(data_set_name, SUFFIX_ARFF)
 
-        train_x, train_y, meta_data = load_data_set_and_meta_data(data_dir, train_arff_file_name,
-                                                                  get_file_name(data_set_name, SUFFIX_XML))
+        # Load (training) data set...
+        train_x, train_y, meta_data = load_data_set_and_meta_data(data_dir, train_arff_file_name, xml_file_name)
 
+        # Apply one-hot-encoding, if necessary...
         if use_one_hot_encoding:
             train_x, encoder, encoded_meta_data = one_hot_encode(train_x, train_y, meta_data)
         else:
@@ -234,18 +236,21 @@ class TrainTestSplitter(DataSplitter):
             encoded_meta_data = None
 
         if predefined_split:
+            # Load test data set...
             test_x, test_y = load_data_set(data_dir, test_arff_file_name, meta_data)
 
+            # Apply one-hot-encoding, if necessary...
             if encoder is not None:
                 test_x, _, _ = one_hot_encode(test_x, test_y, meta_data, encoder=encoder)
         else:
+            # Split data set into training and test data...
             train_x, test_x, train_y, test_y = train_test_split(train_x, train_y, test_size=self.test_size,
                                                                 random_state=self.random_state, shuffle=True)
 
-        # Train and evaluate classifier
-        data_partition = TrainingTestSplit()
-        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data,
-                                    data_partition, None, train_x, train_y, None, test_x, test_y)
+        # Train and evaluate classifier...
+        data_split = TrainingTestSplit()
+        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split, None,
+                                    train_x, train_y, None, test_x, test_y)
 
 
 class CrossValidationSplitter(DataSplitter):
