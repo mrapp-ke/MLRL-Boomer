@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from functools import reduce
 from timeit import default_timer as timer
-from typing import Optional
+from typing import Optional, List
 
 from mlrl.testbed.data import MetaData, load_data_set_and_meta_data, load_data_set, one_hot_encode
 from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
@@ -173,10 +173,12 @@ class DataSplitter(ABC):
         pass
 
 
-def check_if_files_exist(files: list) -> bool:
+def check_if_files_exist(directory: str, file_names: List[str]) -> bool:
     missing_files = []
 
-    for file in files:
+    for file_name in file_names:
+        file = path.join(directory, file_name)
+
         if not path.isfile(file):
             missing_files.append(file)
 
@@ -184,7 +186,7 @@ def check_if_files_exist(files: list) -> bool:
 
     if num_missing_files == 0:
         return True
-    elif num_missing_files == len(files):
+    elif num_missing_files == len(file_names):
         return False
     else:
         raise RuntimeError(
@@ -216,10 +218,8 @@ class TrainTestSplitter(DataSplitter):
         data_set_name = data_set.data_set_name
         use_one_hot_encoding = data_set.use_one_hot_encoding
         train_arff_file_name = get_file_name(DataType.TRAINING.get_file_name(data_set_name), SUFFIX_ARFF)
-        train_arff_file = path.join(data_dir, train_arff_file_name)
         test_arff_file_name = get_file_name(DataType.TEST.get_file_name(data_set_name), SUFFIX_ARFF)
-        test_arff_file = path.join(data_dir, test_arff_file_name)
-        predefined_split = check_if_files_exist([train_arff_file, test_arff_file])
+        predefined_split = check_if_files_exist(data_dir, [train_arff_file_name, test_arff_file_name])
 
         if not predefined_split:
             train_arff_file_name = get_file_name(data_set_name, SUFFIX_ARFF)
