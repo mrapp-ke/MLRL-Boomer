@@ -11,7 +11,7 @@ from typing import Optional
 from mlrl.common.learners import NominalAttributeLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
-from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataSet, DataType
+from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
 from mlrl.testbed.evaluation import Evaluation
 from mlrl.testbed.model_characteristics import ModelPrinter, ModelCharacteristicsPrinter
 from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
@@ -123,8 +123,7 @@ class Experiment(DataSplitter.Callback):
 
         self.data_splitter.run(self)
 
-    def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_indices, train_x, train_y,
-                           test_indices, test_x, test_y):
+    def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_x, train_y, test_x, test_y):
         base_learner = self.base_learner
         current_learner = clone(base_learner)
 
