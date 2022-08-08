@@ -2,33 +2,32 @@ INFO Configuration: Namespace(log_level=10, random_state=1, data_dir='python/sub
 INFO Starting experiment...
 INFO Using separate training and test sets...
 DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
-DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-train.arff"...
-DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-test.arff"...
-INFO Fitting model to 391 training examples...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.7132292329333723 seconds
-INFO Predicting for 202 test examples...
+INFO Predicting for 196 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.005075737135484815 seconds
 INFO Overall evaluation result on test data:
 
-Ex.-based F1: 0.5815181518151814
-Ex.-based Jacc.: 0.5008250825082508
-Ex.-based Prec.: 0.7483498349834983
-Ex.-based Rec.: 0.5841584158415841
-Hamm. Acc.: 0.7929042904290429
-Hamm. Loss: 0.2070957095709571
-Ma. F1: 0.6357068130263649
-Ma. Jacc.: 0.4739434438664254
-Ma. Prec.: 0.7358814343821805
-Ma. Rec.: 0.5739522418779689
-Mi. F1: 0.6509040333796939
-Mi. Jacc.: 0.4824742268041237
-Mi. Prec.: 0.73125
-Mi. Rec.: 0.5864661654135338
-Subs. 0/1 Loss: 0.7574257425742574
-Subs. Acc.: 0.24257425742574257
+Ex.-based F1: 0.5996598639455782
+Ex.-based Jacc.: 0.5267857142857143
+Ex.-based Prec.: 0.826530612244898
+Ex.-based Rec.: 0.5926870748299319
+Hamm. Acc.: 0.8163265306122449
+Hamm. Loss: 0.1836734693877551
+Ma. F1: 0.6466695627286118
+Ma. Jacc.: 0.49206115061517613
+Ma. Prec.: 0.7801572246372008
+Ma. Rec.: 0.5711465606221134
+Mi. F1: 0.6697247706422018
+Mi. Jacc.: 0.503448275862069
+Mi. Prec.: 0.7849462365591398
+Mi. Rec.: 0.584
+Subs. 0/1 Loss: 0.7091836734693877
+Subs. Acc.: 0.29081632653061223
 
 INFO Successfully finished after 0.7862235149368644 seconds
