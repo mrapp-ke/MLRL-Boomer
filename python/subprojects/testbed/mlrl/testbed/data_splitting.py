@@ -113,6 +113,15 @@ class DataType(Enum):
     TRAINING = 'training'
     TEST = 'test'
 
+    def get_file_name(self, name: str) -> str:
+        """
+        Returns a file name that corresponds to a specific type of data.
+
+        :param name:    The name of the file (without suffix)
+        :return:        The file name
+        """
+        return name + '_' + str(self.value)
+
 
 class DataSplitter(ABC):
     """
