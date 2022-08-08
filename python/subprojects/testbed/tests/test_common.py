@@ -677,7 +677,7 @@ class IntegrationTests(ABC, TestCase):
                     for i, line in enumerate(f):
                         line = line.strip('\n')
 
-                        if not line.startswith('INFO Configuration:') and not line.endswith('seconds'):
+                        if not line.endswith('seconds'):
                             self.assertEqual(stdout[i], line, 'Output of command "' + self.__format_cmd(args)
                                              + '" differs at line ' + str(i + 1))
 

@@ -72,7 +72,6 @@ class Runnable(ABC):
         out_handler.setFormatter(log.Formatter(LOG_FORMAT))
         root.addHandler(out_handler)
 
-        log.info('Configuration: %s', args)
         self._run(args)
 
     @abstractmethod
