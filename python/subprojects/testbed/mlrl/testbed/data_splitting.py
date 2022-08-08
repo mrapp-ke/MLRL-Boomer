@@ -13,7 +13,8 @@ from timeit import default_timer as timer
 from typing import Optional, List
 
 from mlrl.testbed.data import MetaData, load_data_set_and_meta_data, load_data_set, one_hot_encode
-from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
+from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
+from scipy.sparse import vstack
 from sklearn.model_selection import KFold, train_test_split
 
 
@@ -278,32 +279,106 @@ class CrossValidationSplitter(DataSplitter):
             'full' if current_fold < 0 else ('fold ' + str(current_fold + 1) + ' of')) + ' %s-fold cross validation...',
                  num_folds)
         data_set = self.data_set
+        data_dir = data_set.data_dir
         data_set_name = data_set.data_set_name
-        x, y, meta_data = load_data_set_and_meta_data(data_set.data_dir, get_file_name(data_set_name, SUFFIX_ARFF),
-                                                      get_file_name(data_set_name, SUFFIX_XML))
+        use_one_hot_encoding = data_set.use_one_hot_encoding
+        xml_file_name = get_file_name(data_set_name, SUFFIX_XML)
 
-        if data_set.use_one_hot_encoding:
+        # Check if ARFF files with predefined folds are available...
+        arff_file_names = [get_file_name_per_fold(data_set_name, SUFFIX_ARFF, fold) for fold in range(num_folds)]
+        predefined_split = check_if_files_exist(data_dir, arff_file_names)
+
+        if predefined_split:
+            self.__predefined_cross_validation(callback, data_dir=data_dir, arff_file_names=arff_file_names,
+                                               xml_file_name=xml_file_name, use_one_hot_encoding=use_one_hot_encoding,
+                                               num_folds=num_folds, current_fold=current_fold)
+        else:
+            arff_file_name = get_file_name(data_set_name, SUFFIX_ARFF)
+            self.__cross_validation(callback, data_dir=data_dir, arff_file_name=arff_file_name,
+                                    xml_file_name=xml_file_name, use_one_hot_encoding=use_one_hot_encoding,
+                                    num_folds=num_folds, current_fold=current_fold)
+
+    @staticmethod
+    def __predefined_cross_validation(callback: DataSplitter.Callback, data_dir: str, arff_file_names: List[str],
+                                      xml_file_name: str, use_one_hot_encoding: bool, num_folds: int,
+                                      current_fold: int):
+        # Load first data set for the first fold...
+        x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_names[0], xml_file_name)
+
+        # Apply one-hot-encoding, if necessary...
+        if use_one_hot_encoding:
+            x, encoder, encoded_meta_data = one_hot_encode(x, y, meta_data)
+        else:
+            encoder = None
+            encoded_meta_data = None
+
+        data = [(x, y)]
+
+        # Load data sets for the remaining folds...
+        for fold in range(1, num_folds):
+            x, y = load_data_set(data_dir, arff_file_names[fold], meta_data)
+
+            # Apply one-hot-encoding, if necessary...
+            if encoder is not None:
+                x, _, _ = one_hot_encode(x, y, meta_data, encoder=encoder)
+
+            data.append((x, y))
+
+        # Perform cross-validation...
+        for fold in range(0 if current_fold < 0 else current_fold,
+                          num_folds if current_fold < 0 else current_fold + 1):
+            log.info('Fold %s / %s:', (fold + 1), num_folds)
+
+            # Create training set for current fold...
+            train_x = None
+            train_y = None
+
+            for other_fold in range(num_folds):
+                if other_fold != fold:
+                    x, y = data[other_fold]
+
+                    if train_x is None:
+                        train_x = x
+                        train_y = y
+                    else:
+                        train_x = vstack((train_x, x))
+                        train_y = vstack((train_y, y))
+
+            # Obtain test set for current fold...
+            test_x, test_y = data[fold]
+
+            # Train and evaluate classifier...
+            data_split = CrossValidationFold(num_folds=num_folds, fold=fold)
+            callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split,
+                                        None, train_x, train_y, None, test_x, test_y)
+
+    def __cross_validation(self, callback: DataSplitter.Callback, data_dir: str, arff_file_name: str,
+                           xml_file_name: str, use_one_hot_encoding: bool, num_folds: int, current_fold: int):
+        # Load data set...
+        x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_name, xml_file_name)
+
+        # Apply one-hot-encoding, if necessary...
+        if use_one_hot_encoding:
             x, _, encoded_meta_data = one_hot_encode(x, y, meta_data)
         else:
             encoded_meta_data = None
 
-        # Cross validate
+        # Perform cross-validation...
         k_fold = KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True)
 
         for fold, (train_indices, test_indices) in enumerate(k_fold.split(x, y)):
             if current_fold < 0 or fold == current_fold:
                 log.info('Fold %s / %s:', (fold + 1), num_folds)
 
-                # Create training set for current fold
+                # Create training set for current fold...
                 train_x = x[train_indices]
                 train_y = y[train_indices]
 
-                # Create test set for current fold
+                # Create test set for current fold...
                 test_x = x[test_indices]
                 test_y = y[test_indices]
 
-                # Train & evaluate classifier
-                data_partition = CrossValidationFold(num_folds=num_folds, fold=fold)
+                # Train and evaluate classifier...
+                data_split = CrossValidationFold(num_folds=num_folds, fold=fold)
                 callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data,
-                                            data_partition, train_indices, train_x, train_y, test_indices, test_x,
-                                            test_y)
+                                            data_split, train_indices, train_x, train_y, test_indices, test_x, test_y)
