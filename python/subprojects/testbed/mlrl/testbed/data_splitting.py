@@ -283,12 +283,11 @@ class CrossValidationSplitter(DataSplitter):
             encoded_meta_data = None
 
         # Cross validate
-        i = 0
         k_fold = KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True)
 
-        for train_indices, test_indices in k_fold.split(x, y):
-            if current_fold < 0 or i == current_fold:
-                log.info('Fold %s / %s:', (i + 1), num_folds)
+        for fold, (train_indices, test_indices) in enumerate(k_fold.split(x, y)):
+            if current_fold < 0 or fold == current_fold:
+                log.info('Fold %s / %s:', (fold + 1), num_folds)
 
                 # Create training set for current fold
                 train_x = x[train_indices]
@@ -299,9 +298,7 @@ class CrossValidationSplitter(DataSplitter):
                 test_y = y[test_indices]
 
                 # Train & evaluate classifier
-                data_partition = CrossValidationFold(num_folds=num_folds, fold=i)
+                data_partition = CrossValidationFold(num_folds=num_folds, fold=fold)
                 callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data,
                                             data_partition, train_indices, train_x, train_y, test_indices, test_x,
                                             test_y)
-
-            i += 1
