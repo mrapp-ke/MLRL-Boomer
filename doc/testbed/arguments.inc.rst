@@ -11,7 +11,7 @@ In addition to the mandatory arguments that must be provided to the command line
 
     * ``test_size`` (Default value = ``0.33``) The fraction of the available data to be included in the test set, if the training and test set are not provided as separate files. Must be in (0, 1).
 
-  * ``cross-validation`` A cross validation is performed. Given that ``dataset-name`` is provided as the value of the argument ``--dataset``, the program will look for a file with the name ``dataset-name.arff``. The following options may be specified via the bracket notation (see :ref:`parameters`):
+  * ``cross-validation`` A cross validation is performed. Given that ``dataset-name`` is provided as the value of the argument ``--dataset``, the data for individual folds must be stored in files named ``dataset-name_fold-1``, ``dataset-name_fold-2``, etc.. If no such files are available, the program will look for a file with the name ``dataset-name.arff`` and split it into training and test data for the individual folds automatically. The following options may be specified via the bracket notation (see :ref:`parameters`):
 
     * ``num_folds`` (Default value = ``10``) The total number of cross validation folds to be performed. Must be at least 2.
     * ``current_fold`` (Default value = ``0``) The cross validation fold to be performed. Must be in [1, ``num_folds``] or 0, if all folds should be performed.
