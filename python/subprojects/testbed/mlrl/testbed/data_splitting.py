@@ -113,6 +113,15 @@ class DataType(Enum):
     TRAINING = 'training'
     TEST = 'test'
 
+    def get_file_name(self, name: str) -> str:
+        """
+        Returns a file name that corresponds to a specific type of data.
+
+        :param name:    The name of the file (without suffix)
+        :return:        The file name
+        """
+        return name + '_' + str(self.value)
+
 
 class DataSplitter(ABC):
     """
@@ -206,9 +215,9 @@ class TrainTestSplitter(DataSplitter):
         data_dir = data_set.data_dir
         data_set_name = data_set.data_set_name
         use_one_hot_encoding = data_set.use_one_hot_encoding
-        train_arff_file_name = get_file_name(data_set_name + '-train', SUFFIX_ARFF)
+        train_arff_file_name = get_file_name(DataType.TRAINING.get_file_name(data_set_name), SUFFIX_ARFF)
         train_arff_file = path.join(data_dir, train_arff_file_name)
-        test_arff_file_name = get_file_name(data_set_name + '-test', SUFFIX_ARFF)
+        test_arff_file_name = get_file_name(DataType.TEST.get_file_name(data_set_name), SUFFIX_ARFF)
         test_arff_file = path.join(data_dir, test_arff_file_name)
         predefined_split = check_if_files_exist([train_arff_file, test_arff_file])
 
