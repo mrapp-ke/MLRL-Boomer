@@ -746,8 +746,8 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_evaluation_train_test_predefined(self):
         """
-        Tests the evaluation of the rule learning algorithm when using a predefined split of the dataset, stored in
-        different files, into training and test data.
+        Tests the evaluation of the rule learning algorithm when using a predefined split of the dataset into training
+        and test data, as provided by separate files.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default + '-predefined') \
             .set_output_dir() \
@@ -765,6 +765,18 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .print_evaluation() \
             .store_evaluation()
         self.run_cmd(builder, 'evaluation_cross-validation')
+
+    def test_evaluation_cross_validation_predefined(self):
+        """
+        Tests the evaluation of the rule learning algorithm when using predefined splits of the dataset into individual
+        cross validation folds, as provided by separate files.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default + '-predefined') \
+            .cross_validation() \
+            .set_output_dir() \
+            .print_evaluation() \
+            .store_evaluation()
+        self.run_cmd(builder, 'evaluation_cross-validation-predefined')
 
     def test_evaluation_single_fold(self):
         """
