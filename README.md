@@ -5,6 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PyPI version](https://badge.fury.io/py/mlrl-boomer.svg)](https://badge.fury.io/py/mlrl-boomer)
 [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
+[![Twitter URL](https://img.shields.io/twitter/url?label=Follow%20on%20Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2FBOOMER_ML)](https://twitter.com/BOOMER_ML)
 
 **Important links:** [Documentation](https://mlrl-boomer.readthedocs.io) | [Issue Tracker](https://github.com/mrapp-ke/Boomer/issues) | [Changelog](https://github.com/mrapp-ke/Boomer/blob/master/CHANGELOG.md) | [Contributors](https://github.com/mrapp-ke/Boomer/blob/master/CONTRIBUTORS.md) | [Code of Conduct](https://github.com/mrapp-ke/Boomer/blob/master/CODE_OF_CONDUCT.md)
 
