@@ -6,6 +6,8 @@
 [![PyPI version](https://badge.fury.io/py/mlrl-boomer.svg)](https://badge.fury.io/py/mlrl-boomer)
 [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 
+**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io) | [Issue Tracker](https://github.com/mrapp-ke/Boomer/issues) | [Changelog](https://github.com/mrapp-ke/Boomer/blob/master/CHANGELOG.md) | [Contributors](https://github.com/mrapp-ke/Boomer/blob/master/CONTRIBUTORS.md) | [Code of Conduct](https://github.com/mrapp-ke/Boomer/blob/master/CODE_OF_CONDUCT.md)
+
 This software package provides an implementation of **BOOMER - an algorithm for learning gradient boosted multi-label classification rules** that integrates with the popular [scikit-learn](https://scikit-learn.org) machine learning framework.
 
 The goal of [multi-label classification](https://en.wikipedia.org/wiki/Multi-label_classification) is the automatic assignment of sets of labels to individual data points, for example, the annotation of text documents with topics. The BOOMER algorithm uses [gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) to learn an ensemble of rules that is built with respect to a given multivariate loss function. To provide a versatile tool for different use cases, great emphasis is put on the *efficiency* of the implementation. To ensure its *flexibility*, it is designed in a modular fashion and can therefore easily be adjusted to different requirements.  
