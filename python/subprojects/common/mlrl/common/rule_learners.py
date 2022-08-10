@@ -178,6 +178,11 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
             label_matrix = CsrLabelMatrix(y.shape[0], y.shape[1], y_row_indices, y_col_indices)
         else:
             log.debug('A dense matrix is used to store the labels of the training examples')
+
+            # Convert y into two-dimensional array, if necessary...
+            if y.ndim == 1:
+                y = np.expand_dims(y, axis=1)
+
             label_matrix = CContiguousLabelMatrix(y)
 
         # Create a mask that provides access to the information whether individual features are nominal or not...
