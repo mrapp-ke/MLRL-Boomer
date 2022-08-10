@@ -22,7 +22,7 @@ from mlrl.seco.config import configure_head_type, configure_lift_function, confi
     configure_wra_pruning_heuristic, configure_f_measure_pruning_heuristic, configure_m_estimate_pruning_heuristic
 from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
     MultiLabelSeCoRuleLearnerConfig
-from sklearn.base import ClassifierMixin
+from sklearn.base import ClassifierMixin, MultiOutputMixin
 
 HEURISTIC_VALUES: Dict[str, Set[str]] = {
     HEURISTIC_ACCURACY: {},
@@ -35,7 +35,7 @@ HEURISTIC_VALUES: Dict[str, Set[str]] = {
 }
 
 
-class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin):
+class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
     """
     A scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label classification
     rules.
