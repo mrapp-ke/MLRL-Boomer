@@ -38,6 +38,16 @@ from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, Pre
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
+PARAM_DATA_SPLIT = '--data-split'
+
+PARAM_PRINT_EVALUATION = '--print-evaluation'
+
+PARAM_STORE_EVALUATION = '--store-evaluation'
+
+PARAM_PRINT_RULES = '--print-rules'
+
+PARAM_STORE_RULES = '--store-rules'
+
 DATA_SPLIT_TRAIN_TEST = 'train-test'
 
 ARGUMENT_TEST_SIZE = 'test_size'
@@ -139,7 +149,7 @@ class LearnerRunnable(Runnable, ABC):
         data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
         random_state = args.random_state
-        value, options = parse_param_and_options('--data-split', args.data_split, DATA_SPLIT_VALUES)
+        value, options = parse_param_and_options(PARAM_DATA_SPLIT, args.data_split, DATA_SPLIT_VALUES)
 
         if value == DATA_SPLIT_CROSS_VALIDATION:
             num_folds = options.get_int(ARGUMENT_NUM_FOLDS, 10)
@@ -185,12 +195,12 @@ class LearnerRunnable(Runnable, ABC):
     @staticmethod
     def __create_evaluation(args) -> Optional[Evaluation]:
         outputs = []
-        value, options = parse_param_and_options('--print-evaluation', args.print_evaluation, PRINT_EVALUATION_VALUES)
+        value, options = parse_param_and_options(PARAM_PRINT_EVALUATION, args.print_evaluation, PRINT_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value:
             outputs.append(EvaluationLogOutput(options))
 
-        value, options = parse_param_and_options('--store-evaluation', args.store_evaluation, STORE_EVALUATION_VALUES)
+        value, options = parse_param_and_options(PARAM_STORE_EVALUATION, args.store_evaluation, STORE_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             outputs.append(EvaluationCsvOutput(options, output_dir=args.output_dir))
@@ -324,12 +334,12 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
 
     def _create_model_printer(self, args) -> Optional[ModelPrinter]:
         outputs = []
-        value, options = parse_param_and_options('--print-rules', args.print_rules, PRINT_RULES_VALUES)
+        value, options = parse_param_and_options(PARAM_PRINT_RULES, args.print_rules, PRINT_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value:
             outputs.append(ModelPrinterLogOutput(options))
 
-        value, options = parse_param_and_options('--store-rules', args.store_rules, STORE_RULES_VALUES)
+        value, options = parse_param_and_options(PARAM_STORE_RULES, args.store_rules, STORE_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             outputs.append(ModelPrinterTxtOutput(options, output_dir=args.output_dir))
