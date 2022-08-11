@@ -347,8 +347,8 @@ class ClassificationEvaluation(AbstractEvaluation):
     Evaluates the predictions of a single- or multi-label classifier according to commonly used bipartition measures.
     """
 
-    def __init__(self, *args: EvaluationOutput):
-        super(ClassificationEvaluation, self).__init__(*args)
+    def __init__(self, outputs: List[EvaluationOutput]):
+        super(ClassificationEvaluation, self).__init__(outputs)
 
     def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
         num_folds = data_split.get_num_folds()
@@ -402,8 +402,8 @@ class RankingEvaluation(AbstractEvaluation):
     Evaluates the predictions of a multi-label ranker according to commonly used ranking measures.
     """
 
-    def __init__(self, *args: EvaluationOutput):
-        super(RankingEvaluation, self).__init__(*args)
+    def __init__(self, outputs: List[EvaluationOutput]):
+        super(RankingEvaluation, self).__init__(outputs)
 
     def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
         if is_multilabel(ground_truth):
