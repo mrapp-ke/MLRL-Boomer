@@ -81,7 +81,7 @@ namespace boosting {
 
             const Model& model_;
 
-            const LabelVectorSet* labelVectorSet_;
+            const LabelVectorSet& labelVectorSet_;
 
             std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr_;
 
@@ -92,15 +92,15 @@ namespace boosting {
             /**
              * @param model                 A reference to an object of template type `Model` that should be used to
              *                              obtain predictions
-             * @param labelVectorSet        A pointer to an object of type `LabelVectorSet` that stores all known label
-             *                              vectors or a null pointer, if no such set is available
+             * @param labelVectorSet        A reference to an object of type `LabelVectorSet` that stores all known
+             *                              label vectors
              * @param similarityMeasurePtr  An unique pointer to an object of type `ISimilarityMeasure` that implements
              *                              the similarity measure that should be used to quantify the similarity
              *                              between predictions and known label vectors
              * @param numThreads            The number of CPU threads to be used to make predictions for different query
              *                              examples in parallel. Must be at least 1
              */
-            ExampleWiseClassificationPredictor(const Model& model, const LabelVectorSet* labelVectorSet,
+            ExampleWiseClassificationPredictor(const Model& model, const LabelVectorSet& labelVectorSet,
                                                std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr,
                                                uint32 numThreads)
                 : model_(model), labelVectorSet_(labelVectorSet),
@@ -116,13 +116,13 @@ namespace boosting {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                     std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
-                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
 
-                if (labelVectorSetPtr && labelVectorSetPtr->getNumLabelVectors() > 0) {
+                if (labelVectorSet_.getNumLabelVectors() > 0) {
                     const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                     CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                     const Model* modelPtr = &model_;
                     const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
+                    const LabelVectorSet* labelVectorSetPtr = &labelVectorSet_;
 
                     #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
                     firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
@@ -153,13 +153,13 @@ namespace boosting {
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                     std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
-                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
 
-                if (labelVectorSetPtr && labelVectorSetPtr->getNumLabelVectors() > 0) {
+                if (labelVectorSet_.getNumLabelVectors() > 0) {
                     const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                     CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                     const Model* modelPtr = &model_;
                     const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
+                    const LabelVectorSet* labelVectorSetPtr = &labelVectorSet_;
 
                     #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) \
                     firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
@@ -190,13 +190,13 @@ namespace boosting {
                 uint32 numExamples = featureMatrix.getNumRows();
                 BinaryLilMatrix lilMatrix(numExamples);
                 uint32 numNonZeroElements = 0;
-                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
 
-                if (labelVectorSetPtr && labelVectorSetPtr->getNumLabelVectors() > 0) {
+                if (labelVectorSet_.getNumLabelVectors() > 0) {
                     const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                     BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                     const Model* modelPtr = &model_;
                     const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
+                    const LabelVectorSet* labelVectorSetPtr = &labelVectorSet_;
 
                     #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
                     firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
@@ -227,13 +227,13 @@ namespace boosting {
                 uint32 numFeatures = featureMatrix.getNumCols();
                 BinaryLilMatrix lilMatrix(numExamples);
                 uint32 numNonZeroElements = 0;
-                const LabelVectorSet* labelVectorSetPtr = labelVectorSet_;
 
-                if (labelVectorSetPtr && labelVectorSetPtr->getNumLabelVectors() > 0) {
+                if (labelVectorSet_.getNumLabelVectors() > 0) {
                     const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                     BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
                     const Model* modelPtr = &model_;
                     const ISimilarityMeasure* similarityMeasureRawPtr = similarityMeasurePtr_.get();
+                    const LabelVectorSet* labelVectorSetPtr = &labelVectorSet_;
 
                     #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
                     firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) \
@@ -294,9 +294,16 @@ namespace boosting {
              */
             std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
                                                              const LabelVectorSet* labelVectorSet) const override {
+                if (!labelVectorSet) {
+                    throw std::runtime_error("Information about the label vectors that have been encountered in the "
+                        "training data is required for predicting binary labels, but no such information is provided "
+                        "by the model. Most probably, the model was intended to use a different prediction method when "
+                        "it has been trained.");
+                }
+
                 std::unique_ptr<ISimilarityMeasure> similarityMeasurePtr =
                     similarityMeasureFactoryPtr_->createSimilarityMeasure();
-                return std::make_unique<ExampleWiseClassificationPredictor<RuleList>>(model, labelVectorSet,
+                return std::make_unique<ExampleWiseClassificationPredictor<RuleList>>(model, *labelVectorSet,
                                                                                       std::move(similarityMeasurePtr),
                                                                                       numThreads_);
             }
