@@ -13,7 +13,9 @@ from mlrl.common.config import RULE_INDUCTION_VALUES, LABEL_SAMPLING_VALUES, FEA
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
-from mlrl.testbed.runnables import DATA_SPLIT_VALUES, DATA_SPLIT_TRAIN_TEST, PRINT_RULES_VALUES, STORE_RULES_VALUES
+from mlrl.testbed.runnables import PARAM_DATA_SPLIT, PARAM_PRINT_EVALUATION, PARAM_STORE_EVALUATION, \
+    PARAM_PRINT_RULES, PARAM_STORE_RULES, DATA_SPLIT_VALUES, DATA_SPLIT_TRAIN_TEST, PRINT_RULES_VALUES, \
+    STORE_RULES_VALUES
 
 PARAM_LOG_LEVEL = '--log-level'
 
@@ -22,12 +24,6 @@ PARAM_RANDOM_STATE = '--random-state'
 PARAM_DATA_DIR = '--data-dir'
 
 PARAM_DATASET = '--dataset'
-
-PARAM_DATA_SPLIT = '--data-split'
-
-PARAM_PRINT_EVALUATION = '--print-evaluation'
-
-PARAM_STORE_EVALUATION = '--store-evaluation'
 
 PARAM_EVALUATE_TRAINING_DATA = '--evaluate-training-data'
 
@@ -60,10 +56,6 @@ PARAM_STORE_DATA_CHARACTERISTICS = '--store-data-characteristics'
 PARAM_PRINT_MODEL_CHARACTERISTICS = '--print-model-characteristics'
 
 PARAM_STORE_MODEL_CHARACTERISTICS = '--store-model-characteristics'
-
-PARAM_PRINT_RULES = '--print-rules'
-
-PARAM_STORE_RULES = '--store-rules'
 
 PARAM_FEATURE_FORMAT = '--feature-format'
 
@@ -151,13 +143,15 @@ def add_learner_arguments(parser: ArgumentParser):
                         help='The strategy to be used for splitting the available data into training and test sets. '
                              + 'Must be one of ' + format_dict_keys(DATA_SPLIT_VALUES) + '. For additional options '
                              + 'refer to the documentation.')
-    parser.add_argument(PARAM_PRINT_EVALUATION, type=boolean_string, default=True,
+    parser.add_argument(PARAM_PRINT_EVALUATION, type=str, default=BooleanOption.TRUE.value,
                         help='Whether the evaluation results should be printed on the console or not. Must be one of '
-                             + format_enum_values(BooleanOption) + '.')
-    parser.add_argument(PARAM_STORE_EVALUATION, type=boolean_string, default=True,
+                             + format_enum_values(BooleanOption) + '. For additional options refer to the '
+                             + 'documentation.')
+    parser.add_argument(PARAM_STORE_EVALUATION, type=str, default=BooleanOption.TRUE.value,
                         help='Whether the evaluation results should be written into output files or not. Must be one '
                              + 'of ' + format_enum_values(BooleanOption) + '. Does only have an effect if the '
-                             + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified')
+                             + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
+                             + 'documentation.')
     parser.add_argument(PARAM_EVALUATE_TRAINING_DATA, type=boolean_string, default=False,
                         help='Whether the models should not only be evaluated on the test data, but also on the '
                              + 'training data. Must be one of ' + format_enum_values(BooleanOption) + '.')

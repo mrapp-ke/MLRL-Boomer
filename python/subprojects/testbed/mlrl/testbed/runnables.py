@@ -14,8 +14,15 @@ from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
 from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, DataSet
-from mlrl.testbed.evaluation import Evaluation, ClassificationEvaluation, RankingEvaluation, EvaluationLogOutput, \
-    EvaluationCsvOutput
+from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCURACY, ARGUMENT_SUBSET_ZERO_ONE_LOSS, \
+    ARGUMENT_SUBSET_ACCURACY, ARGUMENT_MICRO_PRECISION, ARGUMENT_MICRO_RECALL, ARGUMENT_MICRO_F1, \
+    ARGUMENT_MICRO_JACCARD, ARGUMENT_MACRO_PRECISION, ARGUMENT_MACRO_RECALL, ARGUMENT_MACRO_F1, \
+    ARGUMENT_MACRO_JACCARD, ARGUMENT_EXAMPLE_WISE_PRECISION, ARGUMENT_EXAMPLE_WISE_RECALL, ARGUMENT_EXAMPLE_WISE_F1, \
+    ARGUMENT_EXAMPLE_WISE_JACCARD, ARGUMENT_ACCURACY, ARGUMENT_ZERO_ONE_LOSS, ARGUMENT_PRECISION, ARGUMENT_RECALL, \
+    ARGUMENT_F1, ARGUMENT_JACCARD, ARGUMENT_RANK_LOSS, ARGUMENT_COVERAGE_ERROR, \
+    ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, ARGUMENT_TRAINING_TIME, \
+    ARGUMENT_PREDICTION_TIME, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, Evaluation, ClassificationEvaluation, \
+    RankingEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, \
@@ -31,6 +38,16 @@ from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, Pre
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
+PARAM_DATA_SPLIT = '--data-split'
+
+PARAM_PRINT_EVALUATION = '--print-evaluation'
+
+PARAM_STORE_EVALUATION = '--store-evaluation'
+
+PARAM_PRINT_RULES = '--print-rules'
+
+PARAM_STORE_RULES = '--store-rules'
+
 DATA_SPLIT_TRAIN_TEST = 'train-test'
 
 ARGUMENT_TEST_SIZE = 'test_size'
@@ -44,6 +61,33 @@ ARGUMENT_CURRENT_FOLD = 'current_fold'
 DATA_SPLIT_VALUES: Dict[str, Set[str]] = {
     DATA_SPLIT_TRAIN_TEST: {ARGUMENT_TEST_SIZE},
     DATA_SPLIT_CROSS_VALIDATION: {ARGUMENT_NUM_FOLDS, ARGUMENT_CURRENT_FOLD}
+}
+
+PRINT_EVALUATION_VALUES: Dict[str, Set[str]] = {
+    BooleanOption.TRUE.value: {ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCURACY, ARGUMENT_SUBSET_ZERO_ONE_LOSS,
+                               ARGUMENT_SUBSET_ACCURACY, ARGUMENT_MICRO_PRECISION, ARGUMENT_MICRO_RECALL,
+                               ARGUMENT_MICRO_F1, ARGUMENT_MICRO_JACCARD, ARGUMENT_MACRO_PRECISION,
+                               ARGUMENT_MACRO_RECALL, ARGUMENT_MACRO_F1, ARGUMENT_MACRO_JACCARD,
+                               ARGUMENT_EXAMPLE_WISE_PRECISION, ARGUMENT_EXAMPLE_WISE_RECALL, ARGUMENT_EXAMPLE_WISE_F1,
+                               ARGUMENT_EXAMPLE_WISE_JACCARD, ARGUMENT_ACCURACY, ARGUMENT_ZERO_ONE_LOSS,
+                               ARGUMENT_PRECISION, ARGUMENT_RECALL, ARGUMENT_F1, ARGUMENT_JACCARD, ARGUMENT_RANK_LOSS,
+                               ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION,
+                               ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN},
+    BooleanOption.FALSE.value: {}
+}
+
+STORE_EVALUATION_VALUES: Dict[str, Set[str]] = {
+    BooleanOption.TRUE.value: {ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCURACY, ARGUMENT_SUBSET_ZERO_ONE_LOSS,
+                               ARGUMENT_SUBSET_ACCURACY, ARGUMENT_MICRO_PRECISION, ARGUMENT_MICRO_RECALL,
+                               ARGUMENT_MICRO_F1, ARGUMENT_MICRO_JACCARD, ARGUMENT_MACRO_PRECISION,
+                               ARGUMENT_MACRO_RECALL, ARGUMENT_MACRO_F1, ARGUMENT_MACRO_JACCARD,
+                               ARGUMENT_EXAMPLE_WISE_PRECISION, ARGUMENT_EXAMPLE_WISE_RECALL, ARGUMENT_EXAMPLE_WISE_F1,
+                               ARGUMENT_EXAMPLE_WISE_JACCARD, ARGUMENT_ACCURACY, ARGUMENT_ZERO_ONE_LOSS,
+                               ARGUMENT_PRECISION, ARGUMENT_RECALL, ARGUMENT_F1, ARGUMENT_JACCARD, ARGUMENT_RANK_LOSS,
+                               ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION,
+                               ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN,
+                               ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME},
+    BooleanOption.FALSE.value: {}
 }
 
 PRINT_RULES_VALUES: Dict[str, Set[str]] = {
@@ -105,7 +149,7 @@ class LearnerRunnable(Runnable, ABC):
         data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
         random_state = args.random_state
-        value, options = parse_param_and_options('--data-split', args.data_split, DATA_SPLIT_VALUES)
+        value, options = parse_param_and_options(PARAM_DATA_SPLIT, args.data_split, DATA_SPLIT_VALUES)
 
         if value == DATA_SPLIT_CROSS_VALIDATION:
             num_folds = options.get_int(ARGUMENT_NUM_FOLDS, 10)
@@ -151,12 +195,15 @@ class LearnerRunnable(Runnable, ABC):
     @staticmethod
     def __create_evaluation(args) -> Optional[Evaluation]:
         outputs = []
+        value, options = parse_param_and_options(PARAM_PRINT_EVALUATION, args.print_evaluation, PRINT_EVALUATION_VALUES)
 
-        if args.print_evaluation:
-            outputs.append(EvaluationLogOutput())
+        if value == BooleanOption.TRUE.value:
+            outputs.append(EvaluationLogOutput(options))
 
-        if args.store_evaluation and args.output_dir is not None:
-            outputs.append(EvaluationCsvOutput(output_dir=args.output_dir))
+        value, options = parse_param_and_options(PARAM_STORE_EVALUATION, args.store_evaluation, STORE_EVALUATION_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            outputs.append(EvaluationCsvOutput(options, output_dir=args.output_dir))
 
         if len(outputs) > 0:
             if args.predict_probabilities:
@@ -287,13 +334,12 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
 
     def _create_model_printer(self, args) -> Optional[ModelPrinter]:
         outputs = []
-
-        value, options = parse_param_and_options('--print-rules', args.print_rules, PRINT_RULES_VALUES)
+        value, options = parse_param_and_options(PARAM_PRINT_RULES, args.print_rules, PRINT_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value:
             outputs.append(ModelPrinterLogOutput(options))
 
-        value, options = parse_param_and_options('--store-rules', args.store_rules, STORE_RULES_VALUES)
+        value, options = parse_param_and_options(PARAM_STORE_RULES, args.store_rules, STORE_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             outputs.append(ModelPrinterTxtOutput(options, output_dir=args.output_dir))
