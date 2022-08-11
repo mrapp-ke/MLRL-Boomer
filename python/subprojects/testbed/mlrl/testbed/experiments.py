@@ -155,6 +155,7 @@ class Experiment(DataSplitter.Callback):
         loaded_learner = self.__load_model(data_split)
 
         if isinstance(loaded_learner, BaseEstimator):
+            loaded_learner.set_params(**current_learner.get_params())
             current_learner = loaded_learner
             train_time = 0
         else:
