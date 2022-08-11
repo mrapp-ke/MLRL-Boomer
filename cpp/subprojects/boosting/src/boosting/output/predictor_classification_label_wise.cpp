@@ -236,7 +236,7 @@ namespace boosting {
     }
 
     bool LabelWiseClassificationPredictorConfig::isLabelVectorSetNeeded() const {
-        return true;
+        return false;
     }
 
 }
