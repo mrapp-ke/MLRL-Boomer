@@ -14,8 +14,15 @@ from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
 from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, DataSet
-from mlrl.testbed.evaluation import Evaluation, ClassificationEvaluation, RankingEvaluation, EvaluationLogOutput, \
-    EvaluationCsvOutput
+from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCURACY, ARGUMENT_SUBSET_ZERO_ONE_LOSS, \
+    ARGUMENT_SUBSET_ACCURACY, ARGUMENT_MICRO_PRECISION, ARGUMENT_MICRO_RECALL, ARGUMENT_MICRO_F1, \
+    ARGUMENT_MICRO_JACCARD, ARGUMENT_MACRO_PRECISION, ARGUMENT_MACRO_RECALL, ARGUMENT_MACRO_F1, \
+    ARGUMENT_MACRO_JACCARD, ARGUMENT_EXAMPLE_WISE_PRECISION, ARGUMENT_EXAMPLE_WISE_RECALL, ARGUMENT_EXAMPLE_WISE_F1, \
+    ARGUMENT_EXAMPLE_WISE_JACCARD, ARGUMENT_ACCURACY, ARGUMENT_ZERO_ONE_LOSS, ARGUMENT_PRECISION, ARGUMENT_RECALL, \
+    ARGUMENT_F1, ARGUMENT_JACCARD, ARGUMENT_RANK_LOSS, ARGUMENT_COVERAGE_ERROR, \
+    ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, ARGUMENT_TRAINING_TIME, \
+    ARGUMENT_PREDICTION_TIME, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, Evaluation, ClassificationEvaluation, \
+    RankingEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, \
@@ -44,6 +51,33 @@ ARGUMENT_CURRENT_FOLD = 'current_fold'
 DATA_SPLIT_VALUES: Dict[str, Set[str]] = {
     DATA_SPLIT_TRAIN_TEST: {ARGUMENT_TEST_SIZE},
     DATA_SPLIT_CROSS_VALIDATION: {ARGUMENT_NUM_FOLDS, ARGUMENT_CURRENT_FOLD}
+}
+
+PRINT_EVALUATION_VALUES: Dict[str, Set[str]] = {
+    BooleanOption.TRUE.value: {ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCURACY, ARGUMENT_SUBSET_ZERO_ONE_LOSS,
+                               ARGUMENT_SUBSET_ACCURACY, ARGUMENT_MICRO_PRECISION, ARGUMENT_MICRO_RECALL,
+                               ARGUMENT_MICRO_F1, ARGUMENT_MICRO_JACCARD, ARGUMENT_MACRO_PRECISION,
+                               ARGUMENT_MACRO_RECALL, ARGUMENT_MACRO_F1, ARGUMENT_MACRO_JACCARD,
+                               ARGUMENT_EXAMPLE_WISE_PRECISION, ARGUMENT_EXAMPLE_WISE_RECALL, ARGUMENT_EXAMPLE_WISE_F1,
+                               ARGUMENT_EXAMPLE_WISE_JACCARD, ARGUMENT_ACCURACY, ARGUMENT_ZERO_ONE_LOSS,
+                               ARGUMENT_PRECISION, ARGUMENT_RECALL, ARGUMENT_F1, ARGUMENT_JACCARD, ARGUMENT_RANK_LOSS,
+                               ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION,
+                               ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN},
+    BooleanOption.FALSE.value: {}
+}
+
+STORE_EVALUATION_VALUES: Dict[str, Set[str]] = {
+    BooleanOption.TRUE.value: {ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCURACY, ARGUMENT_SUBSET_ZERO_ONE_LOSS,
+                               ARGUMENT_SUBSET_ACCURACY, ARGUMENT_MICRO_PRECISION, ARGUMENT_MICRO_RECALL,
+                               ARGUMENT_MICRO_F1, ARGUMENT_MICRO_JACCARD, ARGUMENT_MACRO_PRECISION,
+                               ARGUMENT_MACRO_RECALL, ARGUMENT_MACRO_F1, ARGUMENT_MACRO_JACCARD,
+                               ARGUMENT_EXAMPLE_WISE_PRECISION, ARGUMENT_EXAMPLE_WISE_RECALL, ARGUMENT_EXAMPLE_WISE_F1,
+                               ARGUMENT_EXAMPLE_WISE_JACCARD, ARGUMENT_ACCURACY, ARGUMENT_ZERO_ONE_LOSS,
+                               ARGUMENT_PRECISION, ARGUMENT_RECALL, ARGUMENT_F1, ARGUMENT_JACCARD, ARGUMENT_RANK_LOSS,
+                               ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION,
+                               ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN,
+                               ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME},
+    BooleanOption.FALSE.value: {}
 }
 
 PRINT_RULES_VALUES: Dict[str, Set[str]] = {
@@ -151,12 +185,15 @@ class LearnerRunnable(Runnable, ABC):
     @staticmethod
     def __create_evaluation(args) -> Optional[Evaluation]:
         outputs = []
+        value, options = parse_param_and_options('--print-evaluation', args.print_evaluation, PRINT_EVALUATION_VALUES)
 
-        if args.print_evaluation:
-            outputs.append(EvaluationLogOutput())
+        if value == BooleanOption.TRUE.value:
+            outputs.append(EvaluationLogOutput(options))
 
-        if args.store_evaluation and args.output_dir is not None:
-            outputs.append(EvaluationCsvOutput(output_dir=args.output_dir))
+        value, options = parse_param_and_options('--store-evaluation', args.store_evaluation, STORE_EVALUATION_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            outputs.append(EvaluationCsvOutput(options, output_dir=args.output_dir))
 
         if len(outputs) > 0:
             if args.predict_probabilities:
@@ -287,7 +324,6 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
 
     def _create_model_printer(self, args) -> Optional[ModelPrinter]:
         outputs = []
-
         value, options = parse_param_and_options('--print-rules', args.print_rules, PRINT_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value:

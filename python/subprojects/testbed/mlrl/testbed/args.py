@@ -151,13 +151,15 @@ def add_learner_arguments(parser: ArgumentParser):
                         help='The strategy to be used for splitting the available data into training and test sets. '
                              + 'Must be one of ' + format_dict_keys(DATA_SPLIT_VALUES) + '. For additional options '
                              + 'refer to the documentation.')
-    parser.add_argument(PARAM_PRINT_EVALUATION, type=boolean_string, default=True,
+    parser.add_argument(PARAM_PRINT_EVALUATION, type=str, default=BooleanOption.TRUE.value,
                         help='Whether the evaluation results should be printed on the console or not. Must be one of '
-                             + format_enum_values(BooleanOption) + '.')
-    parser.add_argument(PARAM_STORE_EVALUATION, type=boolean_string, default=True,
+                             + format_enum_values(BooleanOption) + '. For additional options refer to the '
+                             + 'documentation.')
+    parser.add_argument(PARAM_STORE_EVALUATION, type=str, default=BooleanOption.TRUE.value,
                         help='Whether the evaluation results should be written into output files or not. Must be one '
                              + 'of ' + format_enum_values(BooleanOption) + '. Does only have an effect if the '
-                             + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified')
+                             + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
+                             + 'documentation.')
     parser.add_argument(PARAM_EVALUATE_TRAINING_DATA, type=boolean_string, default=False,
                         help='Whether the models should not only be evaluated on the test data, but also on the '
                              + 'training data. Must be one of ' + format_enum_values(BooleanOption) + '.')

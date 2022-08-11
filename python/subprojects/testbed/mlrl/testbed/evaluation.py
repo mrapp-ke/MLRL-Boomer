@@ -6,12 +6,14 @@ measures. The evaluation results can be written to one or several outputs, e.g.,
 """
 import logging as log
 from abc import ABC, abstractmethod
+from functools import reduce
 from typing import List, Dict, Set, Optional
 
 import numpy as np
 import sklearn.metrics as metrics
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
+from mlrl.common.options import Options
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
@@ -71,23 +73,34 @@ ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN = 'dcg'
 
 ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN = 'ndcg'
 
+ARGUMENT_TRAINING_TIME = 'training_time'
+
+ARGUMENT_PREDICTION_TIME = 'prediction_time'
+
 
 class EvaluationMeasure:
 
-    def __init__(self, argument: str, name: str, evaluation_function, **kwargs):
+    def __init__(self, argument: str, name: str):
         self.argument = argument
         self.name = name
+
+    def __str__(self):
+        return self.name
+
+    def __lt__(self, other):
+        return self.name < other.name
+
+    def __hash__(self):
+        return hash(self.name)
+
+
+class EvaluationFunction(EvaluationMeasure):
+
+    def __init__(self, argument: str, name: str, evaluation_function, **kwargs):
+        super().__init__(argument, name)
         self.evaluation_function = evaluation_function
         self.kwargs = kwargs
 
-
-RANKING_MEASURES = [
-    EvaluationMeasure(ARGUMENT_RANK_LOSS, 'Rank Loss', metrics.label_ranking_loss),
-    EvaluationMeasure(ARGUMENT_COVERAGE_ERROR, 'Cov. Error', metrics.coverage_error),
-    EvaluationMeasure(ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, 'LRAP', metrics.label_ranking_average_precision_score),
-    EvaluationMeasure(ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, 'DCG', metrics.dcg_score),
-    EvaluationMeasure(ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, 'NDCG', metrics.ndcg_score)
-]
 
 ARGS_MICRO = {
     'average': 'micro',
@@ -104,37 +117,46 @@ ARGS_EXAMPLE_WISE = {
     'zero_division': 1
 }
 
-MULTI_LABEL_MEASURES = [
-    EvaluationMeasure(ARGUMENT_HAMMING_ACCURACY, 'Hamm. Acc.', lambda a, b: 1 - metrics.hamming_loss(a, b)),
-    EvaluationMeasure(ARGUMENT_HAMMING_LOSS, 'Hamm. Loss', metrics.hamming_loss),
-    EvaluationMeasure(ARGUMENT_SUBSET_ACCURACY, 'Subs. Acc.', metrics.accuracy_score),
-    EvaluationMeasure(ARGUMENT_SUBSET_ZERO_ONE_LOSS, 'Subs. 0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
-    EvaluationMeasure(ARGUMENT_MICRO_PRECISION, 'Mi. Prec.', metrics.precision_score, **ARGS_MICRO),
-    EvaluationMeasure(ARGUMENT_MICRO_RECALL, 'Mi. Rec.', metrics.recall_score, **ARGS_MICRO),
-    EvaluationMeasure(ARGUMENT_MICRO_F1, 'Mi. F1', metrics.f1_score, **ARGS_MICRO),
-    EvaluationMeasure(ARGUMENT_MICRO_JACCARD, 'Mi. Jacc.', metrics.jaccard_score, **ARGS_MICRO),
-    EvaluationMeasure(ARGUMENT_MACRO_PRECISION, 'Ma. Prec.', metrics.precision_score, **ARGS_MACRO),
-    EvaluationMeasure(ARGUMENT_MACRO_RECALL, 'Ma. Rec.', metrics.recall_score, **ARGS_MACRO),
-    EvaluationMeasure(ARGUMENT_MACRO_F1, 'Ma. F1', metrics.f1_score, **ARGS_MACRO),
-    EvaluationMeasure(ARGUMENT_MACRO_JACCARD, 'Ma. Jacc.', metrics.jaccard_score, **ARGS_MACRO),
-    EvaluationMeasure(ARGUMENT_EXAMPLE_WISE_PRECISION, 'Ex.-based Prec.', metrics.precision_score, **ARGS_EXAMPLE_WISE),
-    EvaluationMeasure(ARGUMENT_EXAMPLE_WISE_RECALL, 'Ex.-based Rec.', metrics.recall_score, **ARGS_EXAMPLE_WISE),
-    EvaluationMeasure(ARGUMENT_EXAMPLE_WISE_F1, 'Ex.-based F1', metrics.f1_score, **ARGS_EXAMPLE_WISE),
-    EvaluationMeasure(ARGUMENT_EXAMPLE_WISE_JACCARD, 'Ex.-based Jacc.', metrics.jaccard_score, **ARGS_EXAMPLE_WISE)
+MULTI_LABEL_EVALUATION_FUNCTIONS = [
+    EvaluationFunction(ARGUMENT_HAMMING_ACCURACY, 'Hamm. Acc.', lambda a, b: 1 - metrics.hamming_loss(a, b)),
+    EvaluationFunction(ARGUMENT_HAMMING_LOSS, 'Hamm. Loss', metrics.hamming_loss),
+    EvaluationFunction(ARGUMENT_SUBSET_ACCURACY, 'Subs. Acc.', metrics.accuracy_score),
+    EvaluationFunction(ARGUMENT_SUBSET_ZERO_ONE_LOSS, 'Subs. 0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
+    EvaluationFunction(ARGUMENT_MICRO_PRECISION, 'Mi. Prec.', metrics.precision_score, **ARGS_MICRO),
+    EvaluationFunction(ARGUMENT_MICRO_RECALL, 'Mi. Rec.', metrics.recall_score, **ARGS_MICRO),
+    EvaluationFunction(ARGUMENT_MICRO_F1, 'Mi. F1', metrics.f1_score, **ARGS_MICRO),
+    EvaluationFunction(ARGUMENT_MICRO_JACCARD, 'Mi. Jacc.', metrics.jaccard_score, **ARGS_MICRO),
+    EvaluationFunction(ARGUMENT_MACRO_PRECISION, 'Ma. Prec.', metrics.precision_score, **ARGS_MACRO),
+    EvaluationFunction(ARGUMENT_MACRO_RECALL, 'Ma. Rec.', metrics.recall_score, **ARGS_MACRO),
+    EvaluationFunction(ARGUMENT_MACRO_F1, 'Ma. F1', metrics.f1_score, **ARGS_MACRO),
+    EvaluationFunction(ARGUMENT_MACRO_JACCARD, 'Ma. Jacc.', metrics.jaccard_score, **ARGS_MACRO),
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_PRECISION, 'Ex.-based Prec.', metrics.precision_score,
+                       **ARGS_EXAMPLE_WISE),
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_RECALL, 'Ex.-based Rec.', metrics.recall_score, **ARGS_EXAMPLE_WISE),
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_F1, 'Ex.-based F1', metrics.f1_score, **ARGS_EXAMPLE_WISE),
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_JACCARD, 'Ex.-based Jacc.', metrics.jaccard_score, **ARGS_EXAMPLE_WISE)
 ]
 
-SINGLE_LABEL_MEASURES = [
-    EvaluationMeasure(ARGUMENT_ACCURACY, 'Acc.', metrics.accuracy_score),
-    EvaluationMeasure(ARGUMENT_ZERO_ONE_LOSS, '0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
-    EvaluationMeasure(ARGUMENT_PRECISION, 'Prec.', metrics.precision_score),
-    EvaluationMeasure(ARGUMENT_RECALL, 'Rec.', metrics.recall_score),
-    EvaluationMeasure(ARGUMENT_F1, 'F1', metrics.f1_score),
-    EvaluationMeasure(ARGUMENT_JACCARD, 'Jacc.', metrics.jaccard_score)
+SINGLE_LABEL_EVALUATION_FUNCTIONS = [
+    EvaluationFunction(ARGUMENT_ACCURACY, 'Acc.', metrics.accuracy_score),
+    EvaluationFunction(ARGUMENT_ZERO_ONE_LOSS, '0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
+    EvaluationFunction(ARGUMENT_PRECISION, 'Prec.', metrics.precision_score),
+    EvaluationFunction(ARGUMENT_RECALL, 'Rec.', metrics.recall_score),
+    EvaluationFunction(ARGUMENT_F1, 'F1', metrics.f1_score),
+    EvaluationFunction(ARGUMENT_JACCARD, 'Jacc.', metrics.jaccard_score)
 ]
 
-TIME_TRAIN = 'Training Time'
+RANKING_EVALUATION_FUNCTIONS = [
+    EvaluationFunction(ARGUMENT_RANK_LOSS, 'Rank Loss', metrics.label_ranking_loss),
+    EvaluationFunction(ARGUMENT_COVERAGE_ERROR, 'Cov. Error', metrics.coverage_error),
+    EvaluationFunction(ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, 'LRAP', metrics.label_ranking_average_precision_score),
+    EvaluationFunction(ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, 'DCG', metrics.dcg_score),
+    EvaluationFunction(ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, 'NDCG', metrics.ndcg_score)
+]
 
-TIME_PREDICT = 'Prediction Time'
+EVALUATION_MEASURE_TRAINING_TIME = EvaluationMeasure(ARGUMENT_TRAINING_TIME, 'Training Time')
+
+EVALUATION_MEASURE_PREDICTION_TIME = EvaluationMeasure(ARGUMENT_PREDICTION_TIME, 'Prediction Time')
 
 
 class Evaluation(ABC):
@@ -166,14 +188,14 @@ class EvaluationResult:
     """
 
     def __init__(self):
-        self.measures: Set[str] = set()
-        self.results: Optional[List[Dict[str, float]]] = None
+        self.measures: Set[EvaluationMeasure] = set()
+        self.results: Optional[List[Dict[EvaluationMeasure, float]]] = None
 
-    def put(self, name: str, score: float, num_folds: int, fold: Optional[int]):
+    def put(self, measure: EvaluationMeasure, score: float, num_folds: int, fold: Optional[int]):
         """
         Adds a new score according to a specific measure to the evaluation result.
 
-        :param name:        The name of the measure
+        :param measure:     The measure
         :param score:       The score according to the measure
         :param num_folds:   The total number of cross validation folds
         :param fold:        The fold, the score corresponds to, or None, if no cross validation is used
@@ -183,22 +205,22 @@ class EvaluationResult:
         elif len(self.results) != num_folds:
             raise AssertionError('Inconsistent number of total folds given')
 
-        self.measures.add(name)
+        self.measures.add(measure)
         values = self.results[fold if fold is not None else 0]
-        values[name] = score
+        values[measure] = score
 
-    def get(self, name: str, fold: Optional[int]) -> float:
+    def get(self, measure: EvaluationMeasure, fold: Optional[int]) -> float:
         """
         Returns the score according to a specific measure.
 
-        :param name:    The name of the measure
+        :param measure: The measure
         :param fold:    The fold, the score corresponds to, or None, if no cross validation is used
         :return:        The score
         """
         if self.results is None:
             raise AssertionError('No evaluation results available')
 
-        return self.results[fold if fold is not None else 0][name]
+        return self.results[fold if fold is not None else 0][measure]
 
     def dict(self, fold: Optional[int]) -> Dict:
         """
@@ -212,18 +234,18 @@ class EvaluationResult:
 
         return self.results[fold if fold is not None else 0].copy()
 
-    def avg(self, name: str) -> (float, float):
+    def avg(self, measure: EvaluationMeasure) -> (float, float):
         """
         Returns the score and standard deviation according to a specific measure averaged over all available folds.
 
-        :param name:    The name of the measure
+        :param measure: The measure
         :return:        A tuple consisting of the averaged score and standard deviation
         """
         values = []
 
         for i in range(len(self.results)):
             if len(self.results[i]) > 0:
-                values.append(self.get(name, i))
+                values.append(self.get(measure, i))
 
         values = np.array(values)
         return np.average(values), np.std(values)
@@ -235,12 +257,12 @@ class EvaluationResult:
 
         :return: A dictionary that stores the scores and standard deviation according to each measure
         """
-        result: Dict[str, float] = {}
+        result: Dict[EvaluationMeasure, float] = {}
 
         for measure in self.measures:
             score, std_dev = self.avg(measure)
             result[measure] = score
-            result['Std.-dev. ' + measure] = std_dev.item()
+            result[EvaluationMeasure(measure.argument, 'Std.-dev. ' + measure.name)] = std_dev.item()
 
         return result
 
@@ -249,6 +271,12 @@ class EvaluationOutput(ABC):
     """
     An abstract base class for all outputs, evaluation results may be written to.
     """
+
+    def __init__(self, options: Options):
+        """
+        :param options: The options that should be used for writing evaluation results to the output
+        """
+        self.options = options
 
     @abstractmethod
     def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
@@ -280,30 +308,37 @@ class EvaluationLogOutput(EvaluationOutput):
     Outputs evaluation result using the logger.
     """
 
+    def __init__(self, options: Options):
+        super().__init__(options)
+
     def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
+        options = self.options
         text = ''
 
         for measure in sorted(evaluation_result.measures):
-            if measure != TIME_TRAIN and measure != TIME_PREDICT:
+            if measure != EVALUATION_MEASURE_TRAINING_TIME and measure != EVALUATION_MEASURE_PREDICTION_TIME \
+                    and options.get_bool(measure.argument, True):
                 if len(text) > 0:
                     text += '\n'
 
                 score = evaluation_result.get(measure, fold)
-                text += measure + ': ' + str(score)
+                text += str(measure) + ': ' + str(score)
 
         log.info('Evaluation result on ' + data_type.value + ' data (Fold ' + str(fold + 1) + '):\n\n%s\n', text)
 
     def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
                                          num_folds: int):
+        options = self.options
         text = ''
 
         for measure in sorted(evaluation_result.measures):
-            if measure != TIME_TRAIN and measure != TIME_PREDICT:
+            if measure != EVALUATION_MEASURE_TRAINING_TIME and measure != EVALUATION_MEASURE_PREDICTION_TIME \
+                    and options.get_bool(measure.argument, True):
                 if len(text) > 0:
                     text += '\n'
 
                 score, std_dev = evaluation_result.avg(measure)
-                text += (measure + ': ' + str(score))
+                text += (str(measure) + ': ' + str(score))
 
                 if num_folds > 1:
                     text += (' ±' + str(std_dev))
@@ -316,14 +351,21 @@ class EvaluationCsvOutput(EvaluationOutput):
     Writes evaluation results to CSV files.
     """
 
-    def __init__(self, output_dir: str):
+    def __init__(self, options: Options, output_dir: str):
         """
         :param output_dir: The path of the directory, the CSV files should be written to
         """
+        super().__init__(options)
         self.output_dir = output_dir
 
     def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
+        options = self.options
         columns = evaluation_result.dict(fold)
+
+        for measure in list(columns.keys()):
+            if not options.get_bool(measure.argument, True):
+                del columns[measure]
+
         header = sorted(columns.keys())
 
         with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation'), fold) as csv_file:
@@ -332,7 +374,13 @@ class EvaluationCsvOutput(EvaluationOutput):
 
     def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
                                          num_folds: int):
+        options = self.options
         columns = evaluation_result.avg_dict() if num_folds > 1 else evaluation_result.dict(0)
+
+        for measure in list(columns.keys()):
+            if not options.get_bool(measure.argument, True):
+                del columns[measure]
+
         header = sorted(columns.keys())
 
         with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation')) as csv_file:
@@ -357,8 +405,12 @@ class AbstractEvaluation(Evaluation, ABC):
                  train_time: float, predict_time: float):
         result = self.results[data_type] if data_type in self.results else EvaluationResult()
         self.results[data_type] = result
-        result.put(TIME_TRAIN, train_time, data_split.get_num_folds(), data_split.get_fold())
-        result.put(TIME_PREDICT, predict_time, data_split.get_num_folds(), data_split.get_fold())
+
+        num_folds = data_split.get_num_folds()
+        fold = data_split.get_fold()
+        result.put(EVALUATION_MEASURE_TRAINING_TIME, train_time, num_folds=num_folds, fold=fold)
+        result.put(EVALUATION_MEASURE_PREDICTION_TIME, predict_time, num_folds=num_folds, fold=fold)
+
         self._populate_result(data_split, result, predictions, ground_truth)
 
         if data_split.is_cross_validation_used():
@@ -387,16 +439,17 @@ class ClassificationEvaluation(AbstractEvaluation):
         fold = data_split.get_fold()
 
         if is_multilabel(ground_truth):
-            evaluation_measures = MULTI_LABEL_MEASURES
+            evaluation_functions = MULTI_LABEL_EVALUATION_FUNCTIONS
         else:
             predictions = np.ravel(enforce_dense(predictions, order='C', dtype=DTYPE_UINT8))
             ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8))
-            evaluation_measures = SINGLE_LABEL_MEASURES
+            evaluation_functions = SINGLE_LABEL_EVALUATION_FUNCTIONS
 
-        for evaluation_measure in evaluation_measures:
-            kwargs = evaluation_measure.kwargs
-            score = evaluation_measure.evaluation_function(ground_truth, predictions, **kwargs)
-            result.put(evaluation_measure.name, score, num_folds=num_folds, fold=fold)
+        for evaluation_function in evaluation_functions:
+            if reduce(lambda a, b: a or b.options.get_bool(evaluation_function.argument, True), self.outputs, False):
+                kwargs = evaluation_function.kwargs
+                score = evaluation_function.evaluation_function(ground_truth, predictions, **kwargs)
+                result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
 
 
 class RankingEvaluation(AbstractEvaluation):
@@ -413,7 +466,9 @@ class RankingEvaluation(AbstractEvaluation):
             fold = data_split.get_fold()
             ground_truth = enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8)
 
-            for evaluation_measure in RANKING_MEASURES:
-                kwargs = evaluation_measure.kwargs
-                score = evaluation_measure.evaluation_function(ground_truth, predictions, **kwargs)
-                result.put(evaluation_measure.name, score, num_folds=num_folds, fold=fold)
+            for evaluation_function in RANKING_EVALUATION_FUNCTIONS:
+                if reduce(lambda a, b: a or b.options.get_bool(evaluation_function.argument, True), self.outputs,
+                          False):
+                    kwargs = evaluation_function.kwargs
+                    score = evaluation_function.evaluation_function(ground_truth, predictions, **kwargs)
+                    result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
