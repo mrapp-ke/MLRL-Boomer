@@ -5,6 +5,7 @@ Provides classes for performing experiments.
 """
 import logging as log
 from abc import ABC, abstractmethod
+from functools import reduce
 from timeit import default_timer as timer
 from typing import Optional
 
@@ -154,8 +155,11 @@ class Experiment(DataSplitter.Callback):
         # Load model from disc, if possible, otherwise train a new model...
         loaded_learner = self.__load_model(data_split)
 
-        if isinstance(loaded_learner, BaseEstimator):
-            loaded_learner.set_params(**current_learner.get_params())
+        if isinstance(loaded_learner, type(current_learner)):
+            current_params = current_learner.get_params()
+            self.__check_for_parameter_changes(expected_params=current_params,
+                                               actual_params=loaded_learner.get_params())
+            loaded_learner.set_params(**current_params)
             current_learner = loaded_learner
             train_time = 0
         else:
@@ -300,3 +304,19 @@ class Experiment(DataSplitter.Callback):
 
         if persistence is not None:
             persistence.save_model(model, self.learner_name, data_split)
+
+    @staticmethod
+    def __check_for_parameter_changes(expected_params, actual_params):
+        changes = []
+
+        for key, expected_value in expected_params.items():
+            actual_value = actual_params[key]
+
+            if actual_value != expected_value:
+                changes.append((key, expected_value, actual_value))
+
+        if len(changes) > 0:
+            log.warning(
+                'The loaded model\'s values for the following parameters differ from the expected configuration: %s',
+                reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b[0] + '" is "' + str(
+                    b[2]) + '" instead of "' + str(b[1] + '"'), changes, ''))
