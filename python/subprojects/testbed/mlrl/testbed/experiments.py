@@ -27,8 +27,8 @@ class PredictionType(Enum):
     """
     Contains all possible types of predictions that may be obtained from a learner.
     """
-    LABELS = 'labels',
-    SCORES = 'scores',
+    LABELS = 'labels'
+    SCORES = 'scores'
     PROBABILITIES = 'probabilities'
 
 
