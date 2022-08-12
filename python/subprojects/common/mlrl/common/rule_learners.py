@@ -135,7 +135,7 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
         self.label_format = label_format
         self.predicted_label_format = predicted_label_format
 
-    def _fit(self, x, y):
+    def _fit(self, x, y, **kwargs):
         # Validate feature matrix and convert it to the preferred format...
         x_sparse_format = SparseFormat.CSC
         x_sparse_policy = create_sparse_policy('feature_format', self.feature_format)
@@ -202,7 +202,7 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
         self.label_space_info_ = training_result.label_space_info
         return training_result.rule_model
 
-    def _predict(self, x):
+    def _predict(self, x, **kwargs):
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
@@ -210,14 +210,15 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
         if learner.can_predict_labels(feature_matrix, num_labels):
             if self.sparse_predictions_:
                 log.debug('A sparse matrix is used to store the predicted labels')
-                return learner.predict_sparse_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+                return learner.predict_sparse_labels(feature_matrix, self.model_, self.label_space_info_,
+                                                     self.num_labels_)
             else:
                 log.debug('A dense matrix is used to store the predicted labels')
                 return learner.predict_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
         else:
-            super()._predict(x)
+            super()._predict(x, **kwargs)
 
-    def _predict_proba(self, x):
+    def _predict_proba(self, x, **kwargs):
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
@@ -226,7 +227,7 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
             log.debug('A dense matrix is used to store the predicted probability estimates')
             return learner.predict_probabilities(feature_matrix, self.model_, self.label_space_info_, num_labels)
         else:
-            super()._predict_proba(x)
+            super()._predict_proba(x, **kwargs)
 
     def __create_row_wise_feature_matrix(self, x):
         sparse_format = SparseFormat.CSR
