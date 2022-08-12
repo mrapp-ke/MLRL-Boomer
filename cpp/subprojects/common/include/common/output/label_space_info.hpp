@@ -26,8 +26,8 @@ class MLRLCOMMON_API ILabelSpaceInfo {
         virtual ~ILabelSpaceInfo() { };
 
         /**
-         * Creates and returns a new instance of the class `IClassificationPredictor`, based on the type of the label
-         * space information.
+         * Creates and returns a new instance of the class `IClassificationPredictor`, based on the type of this
+         * information about the label space.
          *
          * @param factory   A reference to an object of type `IClassificationPredictorFactory` that should be used to
          *                  create the instance
@@ -38,8 +38,8 @@ class MLRLCOMMON_API ILabelSpaceInfo {
             const IClassificationPredictorFactory& factory, const RuleList& model) const = 0;
 
         /**
-         * Creates and returns a new instance of the class `IRegressionPredictor`, based on the type of this rule-based
-         * model.
+         * Creates and returns a new instance of the class `IRegressionPredictor`, based on the type of this information
+         * about the label space.
          *
          * @param factory   A reference to an object of type `IRegressionPredictorFactory` that should be used to create
          *                  the instance
@@ -50,8 +50,8 @@ class MLRLCOMMON_API ILabelSpaceInfo {
             const IRegressionPredictorFactory& factory, const RuleList& model) const = 0;
 
         /**
-         * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this rule-based
-         * model.
+         * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this
+         * information about the label space.
          *
          * @param factory   A reference to an object of type `IProbabilityPredictorFactory` that should be used to
          *                  create the instance
