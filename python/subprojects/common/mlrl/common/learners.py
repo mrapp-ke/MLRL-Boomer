@@ -23,9 +23,9 @@ class Learner(BaseEstimator, ABC):
     A base class for all single- or multi-label classifiers or rankers.
     """
 
-    def fit(self, x, y):
+    def fit(self, x, y, **kwargs):
         """
-        Fits a model according to given training examples and corresponding ground truth labels.
+        Fits a model to given training examples and their corresponding ground truth labels.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the training examples
@@ -33,12 +33,13 @@ class Learner(BaseEstimator, ABC):
                     labels of the training examples according to the ground truth
         :return:    The fitted learner
         """
-        self.model_ = self._fit(x, y)
+        self.model_ = self._fit(x, y, **kwargs)
         return self
 
-    def predict(self, x):
+    def predict(self, x, **kwargs):
         """
-        Makes a prediction for given query examples.
+        Obtains and returns predictions for given query examples. If the optional keyword argument `predict_scores` is
+        set to `True`, regression scores are obtained instead of binary predictions.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the query examples
@@ -46,11 +47,15 @@ class Learner(BaseEstimator, ABC):
                     prediction for individual examples and labels
         """
         check_is_fitted(self)
-        return self._predict(x)
 
-    def predict_proba(self, x):
+        if bool(kwargs.get('predict_scores', False)):
+            return self._predict_scores(x, **kwargs)
+        else:
+            return self._predict_labels(x, **kwargs)
+
+    def predict_proba(self, x, **kwargs):
         """
-        Returns probability estimates for given query examples.
+        Obtains and returns probability estimates for given query examples.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the query examples
@@ -58,12 +63,13 @@ class Learner(BaseEstimator, ABC):
                     probabilities for individual examples and labels
         """
         check_is_fitted(self)
-        return self._predict_proba(x)
+        return self._predict_proba(x, **kwargs)
 
     @abstractmethod
-    def _fit(self, x, y):
+    def _fit(self, x, y, **kwargs):
         """
-        Trains a new model on the given training data.
+        Must be implemented by subclasses in order to fit a new model to given training examples and their corresponding
+        ground truth labels.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the training examples
@@ -74,9 +80,9 @@ class Learner(BaseEstimator, ABC):
         pass
 
     @abstractmethod
-    def _predict(self, x):
+    def _predict_labels(self, x, **kwargs):
         """
-        Makes a prediction for given query examples.
+        Must be implemented by subclasses in order to obtain binary predictions for given query examples.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the query examples
@@ -85,9 +91,20 @@ class Learner(BaseEstimator, ABC):
         """
         raise RuntimeError('Prediction of binary labels not supported using the current configuration')
 
-    def _predict_proba(self, x):
+    def _predict_scores(self, x, **kwargs):
         """
-        Returns probability estimates for given query examples.
+        May be overridden by subclasses in order to obtain regression scores for given query examples.
+
+        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
+                    feature values of the query examples
+        :return:    A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that stores the
+                    regression scores for individual examples and labels
+        """
+        raise RuntimeError('Prediction of regression scores not supported using the current configuration')
+
+    def _predict_proba(self, x, **kwargs):
+        """
+        May be overridden by subclasses in order to obtain probability estimates for given query examples.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the query examples

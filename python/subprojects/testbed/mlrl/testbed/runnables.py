@@ -11,6 +11,7 @@ from typing import Optional, Dict, Set
 
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.options import BooleanOption, parse_param_and_options
+from mlrl.common.strings import format_enum_values
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
 from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, DataSet
@@ -23,7 +24,7 @@ from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCU
     ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, ARGUMENT_TRAINING_TIME, \
     ARGUMENT_PREDICTION_TIME, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, Evaluation, ClassificationEvaluation, \
     RankingEvaluation, EvaluationLogOutput, EvaluationCsvOutput
-from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.experiments import Experiment, PredictionType
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, \
     ARGUMENT_PRINT_NOMINAL_VALUES, ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS, ModelPrinter, RulePrinter, \
@@ -39,6 +40,8 @@ from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, Pre
 LOG_FORMAT = '%(levelname)s %(message)s'
 
 PARAM_DATA_SPLIT = '--data-split'
+
+PARAM_PREDICTION_TYPE = '--prediction-type'
 
 PARAM_PRINT_EVALUATION = '--print-evaluation'
 
@@ -145,6 +148,16 @@ class LearnerRunnable(Runnable, ABC):
             clear_directory(self.output_dir)
 
     @staticmethod
+    def __create_prediction_type(args) -> PredictionType:
+        prediction_type = args.prediction_type
+
+        try:
+            return PredictionType(prediction_type)
+        except ValueError:
+            raise ValueError('Invalid value given for parameter "' + PARAM_PREDICTION_TYPE + '": Must be one of '
+                             + format_enum_values(PredictionType) + ', but is "' + str(prediction_type) + '"')
+
+    @staticmethod
     def __create_data_splitter(args) -> DataSplitter:
         data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
@@ -193,7 +206,7 @@ class LearnerRunnable(Runnable, ABC):
         return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
 
     @staticmethod
-    def __create_evaluation(args) -> Optional[Evaluation]:
+    def __create_evaluation(args, prediction_type: PredictionType) -> Optional[Evaluation]:
         outputs = []
         value, options = parse_param_and_options(PARAM_PRINT_EVALUATION, args.print_evaluation, PRINT_EVALUATION_VALUES)
 
@@ -206,7 +219,7 @@ class LearnerRunnable(Runnable, ABC):
             outputs.append(EvaluationCsvOutput(options, output_dir=args.output_dir))
 
         if len(outputs) > 0:
-            if args.predict_probabilities:
+            if prediction_type == PredictionType.SCORES or prediction_type == PredictionType.PROBABILITIES:
                 evaluation = RankingEvaluation(outputs)
             else:
                 evaluation = ClassificationEvaluation(outputs)
@@ -252,9 +265,11 @@ class LearnerRunnable(Runnable, ABC):
         return DataCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
 
     def _run(self, args):
+        prediction_type = self.__create_prediction_type(args)
+
         # Create outputs...
         if args.evaluate_training_data:
-            train_evaluation = self.__create_evaluation(args)
+            train_evaluation = self.__create_evaluation(args, prediction_type)
             train_prediction_printer = self.__create_prediction_printer(args)
             train_prediction_characteristics_printer = self.__create_prediction_characteristics_printer(args)
         else:
@@ -270,8 +285,8 @@ class LearnerRunnable(Runnable, ABC):
                                 learner_name=self._get_learner_name(),
                                 data_splitter=data_splitter,
                                 pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
-                                predict_probabilities=args.predict_probabilities,
-                                test_evaluation=self.__create_evaluation(args),
+                                prediction_type=prediction_type,
+                                test_evaluation=self.__create_evaluation(args, prediction_type),
                                 train_evaluation=train_evaluation,
                                 train_prediction_printer=train_prediction_printer,
                                 test_prediction_printer=self.__create_prediction_printer(args),

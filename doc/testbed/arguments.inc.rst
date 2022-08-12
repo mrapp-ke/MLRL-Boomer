@@ -16,10 +16,11 @@ In addition to the mandatory arguments that must be provided to the command line
     * ``num_folds`` (Default value = ``10``) The total number of cross validation folds to be performed. Must be at least 2.
     * ``current_fold`` (Default value = ``0``) The cross validation fold to be performed. Must be in [1, ``num_folds``] or 0, if all folds should be performed.
 
-* ``--predict-probabilities`` (Default value = ``false``)
+* ``--prediction-type`` (Default value = ``labels``)
 
-  * ``true`` The learner is instructed to provide predictions in the form of probabilities. In this case, ranking measures are used for evaluation.
-  * ``false`` The learner is instructed to provide binary predictions. In this case, bipartition evaluation measures are used for evaluation.
+  * ``labels`` The learner is instructed to predict binary labels. In this case, bipartition evaluation measures are used for evaluation.
+  * ``scores`` The learner is instructed to predict regression scores. In this case, ranking measures are used for evaluation.
+  * ``probabilities`` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
 
 * ``--evaluate-training-data`` (Default value = ``false``)
 

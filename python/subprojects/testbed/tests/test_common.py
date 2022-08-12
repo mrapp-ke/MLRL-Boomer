@@ -35,6 +35,12 @@ PRUNING_NO = 'none'
 
 PRUNING_IREP = 'irep'
 
+PREDICTION_TYPE_LABELS = 'labels'
+
+PREDICTION_TYPE_SCORES = 'scores'
+
+PREDICTION_TYPE_PROBABILITIES = 'probabilities'
+
 RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
 
 RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
@@ -422,14 +428,15 @@ class CmdBuilder:
         self.args.append(rule_induction)
         return self
 
-    def predict_probabilities(self, predict_probabilities: bool = False):
+    def prediction_type(self, prediction_type: str = PREDICTION_TYPE_LABELS):
         """
-        Configures whether the algorithm should predict probabilities or not.
-        :param predict_probabilities:   True, if probabilities should be predicted, False otherwise
-        :return:                        The builder itself
+        Configures the type of predictions that should be obtained from the algorithm.
+
+        :param prediction_type: The type of the predictions
+        :return:                The builder itself
         """
-        self.args.append('--predict-probabilities')
-        self.args.append(str(predict_probabilities).lower())
+        self.args.append('--prediction-type')
+        self.args.append(prediction_type)
         return self
 
     def sequential_post_optimization(self, sequential_post_optimization: bool = False):
