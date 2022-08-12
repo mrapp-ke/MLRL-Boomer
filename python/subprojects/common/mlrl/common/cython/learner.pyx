@@ -275,6 +275,40 @@ cdef class RuleLearner:
         indptr = np.asarray(array_uint32(row_indices, num_examples + 1))
         return csr_matrix((data, indices, indptr), shape=(num_examples, num_labels))
 
+    def can_predict_scores(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
+        """
+
+        :param feature_matrix:  A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
+                                query examples
+        :param num_labels:      The number of labels to predict for
+        return:                 True, if the rule learner is able to predict regression scores, False otherwise
+        """
+        return self.get_rule_learner_ptr().canPredictScores(
+            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
+
+    def predict_scores(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
+                       LabelSpaceInfo label_space_info not None, uint32 num_labels) -> np.ndarray:
+        """
+        Obtains and returns regression scores for given query examples.
+
+        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
+                                    query examples
+        :param rule_model:          The `RuleModel` that should be used to obtain predictions
+        :param label_space_info:    The `LabelSpaceInfo` that may be used as a basis for obtaining predictions
+        :param num_labels:          The number of labels to predict for
+        :return:                    A `scipy.sparse.csr_matrix` of type `float64`, shape `(num_examples, num_labels)`
+                                    that stores the predictions
+        """
+        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.get_rule_learner_ptr().predictScores(
+            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
+            dereference(rule_model.get_rule_model_ptr()),
+            dereference(label_space_info.get_label_space_info_ptr()),
+            num_labels)
+        cdef float64* array = prediction_matrix_ptr.get().release()
+        cdef uint32 num_examples = feature_matrix.get_feature_matrix_ptr().getNumRows()
+        cdef float64[:, ::1] prediction_matrix = c_matrix_float64(array, num_examples, num_labels)
+        return np.asarray(prediction_matrix)
+
     def can_predict_probabilities(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
         """
         Returns whether the rule learner is able to predict probability estimates or not.

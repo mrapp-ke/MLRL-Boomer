@@ -5,11 +5,12 @@ Provides classes for performing experiments.
 """
 import logging as log
 from abc import ABC, abstractmethod
+from enum import Enum
 from functools import reduce
 from timeit import default_timer as timer
 from typing import Optional
 
-from mlrl.common.learners import NominalAttributeLearner
+from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
@@ -19,7 +20,16 @@ from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
 from mlrl.testbed.predictions import PredictionPrinter
-from sklearn.base import BaseEstimator, clone
+from sklearn.base import BaseEstimator, RegressorMixin, clone
+
+
+class PredictionType(Enum):
+    """
+    Contains all possible types of predictions that may be obtained from a learner.
+    """
+    LABELS = 'labels'
+    SCORES = 'scores'
+    PROBABILITIES = 'probabilities'
 
 
 class Experiment(DataSplitter.Callback):
@@ -45,7 +55,7 @@ class Experiment(DataSplitter.Callback):
                  learner_name: str,
                  data_splitter: DataSplitter,
                  pre_execution_hook: Optional[ExecutionHook] = None,
-                 predict_probabilities: bool = False,
+                 prediction_type: PredictionType = PredictionType.LABELS,
                  train_evaluation: Optional[Evaluation] = None,
                  test_evaluation: Optional[Evaluation] = None,
                  train_prediction_printer: Optional[PredictionPrinter] = None,
@@ -63,8 +73,8 @@ class Experiment(DataSplitter.Callback):
         :param data_splitter:                               The method to be used for splitting the available data into
                                                             training and test sets
         :param pre_execution_hook:                          An operation that should be executed before the experiment
-        :param predict_probabilities:                       True, if probabilities should be predicted rather than
-                                                            binary labels, False otherwise
+        :param prediction_type:                             The type of the predictions to be obtained from the
+                                                            classifier or ranker
         :param train_evaluation:                            The evaluation to be used for evaluating the predictions for
                                                             the training data or None, if the predictions should not be
                                                             evaluated
@@ -101,7 +111,7 @@ class Experiment(DataSplitter.Callback):
         self.learner_name = learner_name
         self.data_splitter = data_splitter
         self.pre_execution_hook = pre_execution_hook
-        self.predict_probabilities = predict_probabilities
+        self.prediction_type = prediction_type
         self.train_evaluation = train_evaluation
         self.test_evaluation = test_evaluation
         self.train_prediction_printer = train_prediction_printer
@@ -173,7 +183,7 @@ class Experiment(DataSplitter.Callback):
         # Obtain and evaluate predictions for training data, if necessary...
         evaluation = self.train_evaluation
         prediction_printer = self.train_prediction_printer
-        prediction_characteristics_printer = None if self.predict_probabilities else \
+        prediction_characteristics_printer = None if self.prediction_type != PredictionType.LABELS else \
             self.train_prediction_characteristics_printer
 
         if evaluation is not None or prediction_printer is not None or prediction_characteristics_printer is not None:
@@ -196,7 +206,7 @@ class Experiment(DataSplitter.Callback):
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
         prediction_printer = self.test_prediction_printer
-        prediction_characteristics_printer = None if self.predict_probabilities else \
+        prediction_characteristics_printer = None if self.prediction_type != PredictionType.LABELS else \
             self.test_prediction_characteristics_printer
 
         if evaluation is not None or prediction_printer is not None or prediction_characteristics_printer is not None:
@@ -261,8 +271,20 @@ class Experiment(DataSplitter.Callback):
         :return:        The predictions, as well as the time needed to obtain them
         """
         start_time = timer()
+        prediction_type = self.prediction_type
 
-        if self.predict_probabilities:
+        if prediction_type == PredictionType.SCORES:
+            try:
+                if isinstance(learner, Learner):
+                    predictions = learner.predict(x, predict_scores=True)
+                elif isinstance(learner, RegressorMixin):
+                    predictions = learner.predict(x)
+                else:
+                    raise RuntimeError()
+            except RuntimeError:
+                log.error('Prediction of regression scores not supported')
+                predictions = None
+        elif prediction_type == PredictionType.PROBABILITIES:
             try:
                 predictions = learner.predict_proba(x)
             except RuntimeError:

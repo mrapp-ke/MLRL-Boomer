@@ -1,9 +1,10 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from test_common import CommonIntegrationTests, CmdBuilder, DIR_OUT, DIR_DATA, DATASET_EMOTIONS
 from os import path
 
+from test_common import CommonIntegrationTests, CmdBuilder, DIR_OUT, DIR_DATA, DATASET_EMOTIONS, \
+    PREDICTION_TYPE_SCORES, PREDICTION_TYPE_PROBABILITIES
 
 CMD_BOOMER = 'boomer'
 
@@ -305,13 +306,22 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_predictions(True)
         self.run_cmd(builder, 'predictor-classification-gfm')
 
+    def test_predictor_regression_label_wise(self):
+        """
+        Tests the BOOMER algorithm when predicting regression scores that are obtained in label-wise manner.
+        """
+        builder = BoostingCmdBuilder() \
+            .prediction_type(PREDICTION_TYPE_SCORES) \
+            .print_predictions(True)
+        self.run_cmd(builder, 'predictor-regression-label-wise')
+
     def test_predictor_probability_label_wise(self):
         """
         Tests the BOOMER algorithm when predicting probabilities that are obtained by applying a label-wise
         transformation function.
         """
         builder = BoostingCmdBuilder() \
-            .predict_probabilities(True) \
+            .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
             .probability_predictor(PROBABILITY_PREDICTOR_LABEL_WISE) \
             .print_predictions(True)
         self.run_cmd(builder, 'predictor-probability-label-wise')
@@ -322,7 +332,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         label vectors.
         """
         builder = BoostingCmdBuilder() \
-            .predict_probabilities(True) \
+            .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
             .probability_predictor(PROBABILITY_PREDICTOR_MARGINALIZED) \
             .print_predictions(True)
         self.run_cmd(builder, 'predictor-probability-marginalized')

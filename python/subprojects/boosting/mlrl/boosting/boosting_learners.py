@@ -16,7 +16,7 @@ from mlrl.common.config import configure_rule_induction, configure_feature_binni
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import parse_param
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int, get_float
-from sklearn.base import ClassifierMixin, MultiOutputMixin
+from sklearn.base import ClassifierMixin, RegressorMixin, MultiOutputMixin
 
 import mlrl.boosting.config as boosting_config
 from mlrl.boosting.config import LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL_WISE, \
@@ -64,7 +64,7 @@ PROBABILITY_PREDICTOR_VALUES: Set[str] = {
 }
 
 
-class Boomer(RuleLearner, ClassifierMixin, MultiOutputMixin):
+class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
     """
     A scikit-learn implementation of "BOOMER", an algorithm for learning gradient boosted multi-label classification
     rules.
