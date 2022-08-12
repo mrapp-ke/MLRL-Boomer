@@ -216,6 +216,13 @@ cdef extern from "common/learner.hpp" nogil:
                                                                      const ILabelSpaceInfo& labelSpaceInfo,
                                                                      uint32 numLabels) const
 
+        bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
+
+        unique_ptr[DensePredictionMatrix[float64]] predictScores(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                 const IRuleModel& ruleModel,
+                                                                 const ILabelSpaceInfo& labelSpaceInfo,
+                                                                 uint32 numLabels) const
+
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
         unique_ptr[DensePredictionMatrix[float64]] predictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
