@@ -1375,13 +1375,13 @@ class AbstractRuleLearner : virtual public IRuleLearner {
             const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,
             const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const override;
 
-        std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(
-            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
-
         bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix,
                               const ITrainingResult& trainingResult) const override;
 
         bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+
+        std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(
+            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
 
         std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
