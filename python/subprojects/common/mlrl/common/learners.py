@@ -38,7 +38,8 @@ class Learner(BaseEstimator, ABC):
 
     def predict(self, x, **kwargs):
         """
-        Obtains and returns predictions for given query examples.
+        Obtains and returns predictions for given query examples. If the optional keyword argument `predict_scores` is
+        set to `True`, regression scores are obtained instead of binary predictions.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the query examples
@@ -46,7 +47,11 @@ class Learner(BaseEstimator, ABC):
                     prediction for individual examples and labels
         """
         check_is_fitted(self)
-        return self._predict(x, **kwargs)
+
+        if bool(kwargs.get('predict_scores', False)):
+            return self._predict_scores(x, **kwargs)
+        else:
+            return self._predict(x, **kwargs)
 
     def predict_proba(self, x, **kwargs):
         """
@@ -85,6 +90,17 @@ class Learner(BaseEstimator, ABC):
                     prediction for individual examples and labels
         """
         raise RuntimeError('Prediction of binary labels not supported using the current configuration')
+
+    def _predict_scores(self, x, **kwargs):
+        """
+        May be overridden by subclasses in order to obtain regression scores for given query examples.
+
+        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
+                    feature values of the query examples
+        :return:    A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that stores the
+                    regression scores for individual examples and labels
+        """
+        raise RuntimeError('Prediction of regression scores not supported using the current configuration')
 
     def _predict_proba(self, x, **kwargs):
         """

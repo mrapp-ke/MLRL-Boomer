@@ -207,23 +207,27 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
 
-        if bool(kwargs.get('predict_scores', False)):
-            if learner.can_predict_scores(feature_matrix, num_labels):
-                log.debug('A dense matrix is used to store the predicted regression scores')
-                return learner.predict_scores(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+        if learner.can_predict_labels(feature_matrix, num_labels):
+            if self.sparse_predictions_:
+                log.debug('A sparse matrix is used to store the predicted labels')
+                return learner.predict_sparse_labels(feature_matrix, self.model_, self.label_space_info_,
+                                                     self.num_labels_)
             else:
-                raise RuntimeError('Prediction of regression scores not supported using the current configuration')
+                log.debug('A dense matrix is used to store the predicted labels')
+                return learner.predict_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
         else:
-            if learner.can_predict_labels(feature_matrix, num_labels):
-                if self.sparse_predictions_:
-                    log.debug('A sparse matrix is used to store the predicted labels')
-                    return learner.predict_sparse_labels(feature_matrix, self.model_, self.label_space_info_,
-                                                         self.num_labels_)
-                else:
-                    log.debug('A dense matrix is used to store the predicted labels')
-                    return learner.predict_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+            return super()._predict(x, **kwargs)
 
-        return super()._predict(x, **kwargs)
+    def _predict_scores(self, x, **kwargs):
+        learner = self._create_learner()
+        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        num_labels = self.num_labels_
+
+        if learner.can_predict_scores(feature_matrix, num_labels):
+            log.debug('A dense matrix is used to store the predicted regression scores')
+            return learner.predict_scores(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+        else:
+            return super()._predict_scores(x, **kwargs)
 
     def _predict_proba(self, x, **kwargs):
         learner = self._create_learner()
@@ -233,8 +237,8 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
         if learner.can_predict_probabilities(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted probability estimates')
             return learner.predict_probabilities(feature_matrix, self.model_, self.label_space_info_, num_labels)
-
-        return super()._predict_proba(x, **kwargs)
+        else:
+            return super()._predict_proba(x, **kwargs)
 
     def __create_row_wise_feature_matrix(self, x):
         sparse_format = SparseFormat.CSR
