@@ -25,7 +25,7 @@ class Learner(BaseEstimator, ABC):
 
     def fit(self, x, y, **kwargs):
         """
-        Fits a model according to given training examples and corresponding ground truth labels.
+        Fits a model to given training examples and their corresponding ground truth labels.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the training examples
@@ -38,7 +38,7 @@ class Learner(BaseEstimator, ABC):
 
     def predict(self, x, **kwargs):
         """
-        Makes a prediction for given query examples.
+        Obtains and returns predictions for given query examples.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the query examples
@@ -50,7 +50,7 @@ class Learner(BaseEstimator, ABC):
 
     def predict_proba(self, x, **kwargs):
         """
-        Returns probability estimates for given query examples.
+        Obtains and returns probability estimates for given query examples.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the query examples
@@ -63,7 +63,8 @@ class Learner(BaseEstimator, ABC):
     @abstractmethod
     def _fit(self, x, y, **kwargs):
         """
-        Trains a new model on the given training data.
+        Must be implemented by subclasses in order to fit a new model to given training examples and their corresponding
+        ground truth labels.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the training examples
@@ -76,7 +77,7 @@ class Learner(BaseEstimator, ABC):
     @abstractmethod
     def _predict(self, x, **kwargs):
         """
-        Makes a prediction for given query examples.
+        Must be implemented by subclasses in order to obtain predictions for given query examples.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the query examples
@@ -87,7 +88,7 @@ class Learner(BaseEstimator, ABC):
 
     def _predict_proba(self, x, **kwargs):
         """
-        Returns probability estimates for given query examples.
+        Must be implemented by subclasses in order to obtain probability estimates for given query examples.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the query examples
