@@ -13,9 +13,10 @@ from mlrl.common.config import RULE_INDUCTION_VALUES, LABEL_SAMPLING_VALUES, FEA
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy
 from mlrl.common.strings import format_enum_values, format_string_set, format_dict_keys
-from mlrl.testbed.runnables import PARAM_DATA_SPLIT, PARAM_PRINT_EVALUATION, PARAM_STORE_EVALUATION, \
-    PARAM_PRINT_RULES, PARAM_STORE_RULES, DATA_SPLIT_VALUES, DATA_SPLIT_TRAIN_TEST, PRINT_RULES_VALUES, \
-    STORE_RULES_VALUES
+from mlrl.testbed.experiments import PredictionType
+from mlrl.testbed.runnables import PARAM_DATA_SPLIT, PARAM_PREDICTION_TYPE, PARAM_PRINT_EVALUATION, \
+    PARAM_STORE_EVALUATION, PARAM_PRINT_RULES, PARAM_STORE_RULES, DATA_SPLIT_VALUES, DATA_SPLIT_TRAIN_TEST, \
+    PRINT_RULES_VALUES, STORE_RULES_VALUES
 
 PARAM_LOG_LEVEL = '--log-level'
 
@@ -42,8 +43,6 @@ PARAM_STORE_PARAMETERS = '--store-parameters'
 PARAM_PRINT_PREDICTIONS = '--print-predictions'
 
 PARAM_STORE_PREDICTIONS = '--store-predictions'
-
-PARAM_PREDICT_PROBABILITIES = '--predict-probabilities'
 
 PARAM_PRINT_PREDICTION_CHARACTERISTICS = '--print-prediction-characteristics'
 
@@ -158,13 +157,13 @@ def add_learner_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_PRINT_PREDICTION_CHARACTERISTICS, type=boolean_string, default=False,
                         help='Whether the characteristics of binary predictions should be printed on the console or '
                              + 'not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an '
-                             + 'effect if the parameter ' + PARAM_PREDICT_PROBABILITIES + ' is set to '
-                             + BooleanOption.FALSE.value + '.')
+                             + 'effect if the parameter ' + PARAM_PREDICTION_TYPE + ' is set to '
+                             + PredictionType.LABELS.value + '.')
     parser.add_argument(PARAM_STORE_PREDICTION_CHARACTERISTICS, type=boolean_string, default=False,
                         help='Whether the characteristics of binary predictions should be written into output files or '
                              + 'not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an '
-                             + 'effect if the parameter ' + PARAM_PREDICT_PROBABILITIES + ' is set to '
-                             + BooleanOption.FALSE.value + '.')
+                             + 'effect if the parameter ' + PARAM_PREDICTION_TYPE + ' is set to '
+                             + PredictionType.LABELS.value + '.')
     parser.add_argument(PARAM_PRINT_DATA_CHARACTERISTICS, type=boolean_string, default=False,
                         help='Whether the characteristics of the training data should be printed on the console or '
                              + 'not. Must be one of ' + format_enum_values(BooleanOption) + '.')
@@ -196,9 +195,9 @@ def add_learner_arguments(parser: ArgumentParser):
                         help='Whether the predictions for individual examples and labels should be written into output '
                              + 'files or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have '
                              + 'an effect, if the parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
-    parser.add_argument(PARAM_PREDICT_PROBABILITIES, type=boolean_string, default=False,
-                        help='Whether probabilities should be predicted rather than binary labels or not. Must be one '
-                             + 'of ' + format_enum_values(BooleanOption) + '.')
+    parser.add_argument(PARAM_PREDICTION_TYPE, type=str, default=PredictionType.LABELS.value,
+                        help='The type of predictions that should be obtained from the learner. Must be one of '
+                             + format_enum_values(PredictionType) + '.')
 
 
 def add_rule_learner_arguments(parser: ArgumentParser):
