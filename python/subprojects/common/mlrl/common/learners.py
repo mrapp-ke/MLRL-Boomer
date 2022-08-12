@@ -51,7 +51,7 @@ class Learner(BaseEstimator, ABC):
         if bool(kwargs.get('predict_scores', False)):
             return self._predict_scores(x, **kwargs)
         else:
-            return self._predict(x, **kwargs)
+            return self._predict_labels(x, **kwargs)
 
     def predict_proba(self, x, **kwargs):
         """
@@ -80,9 +80,9 @@ class Learner(BaseEstimator, ABC):
         pass
 
     @abstractmethod
-    def _predict(self, x, **kwargs):
+    def _predict_labels(self, x, **kwargs):
         """
-        Must be implemented by subclasses in order to obtain predictions for given query examples.
+        Must be implemented by subclasses in order to obtain binary predictions for given query examples.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the query examples
