@@ -202,7 +202,7 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
         self.label_space_info_ = training_result.label_space_info
         return training_result.rule_model
 
-    def _predict(self, x, **kwargs):
+    def _predict_labels(self, x, **kwargs):
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
@@ -216,7 +216,7 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
                 log.debug('A dense matrix is used to store the predicted labels')
                 return learner.predict_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
         else:
-            return super()._predict(x, **kwargs)
+            return super()._predict_labels(x, **kwargs)
 
     def _predict_scores(self, x, **kwargs):
         learner = self._create_learner()
