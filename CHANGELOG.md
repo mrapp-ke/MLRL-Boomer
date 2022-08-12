@@ -17,6 +17,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * Fixed behavior of the argument `--label-format` when set to the value `auto`.
 * Rules are now guaranteed to not cover more examples than specified via the parameter `min_coverage`. The parameter is now also taken into account when using feature binning. Alternatively, the minimum coverage of rules can now also be specified as a fraction via the parameter `min_support`. 
 * The parameters `--folds` and `--current-fold` have been replaced with a new parameter `--data-split` that provides more control of how data is split into training and test sets.
+* The parameter `--predict-probabilities` has been replaced with a new parameter `--prediction-type` that allows to specify whether binary labels (`labels`), regression scores (`scores`) or probability estimates (`probabilities`) should be predicted.
 * The parameters `--print-evaluation` and `--store-evaluation` do now allow to specify whether individual evaluation measures should be used or not.
 * Data sets in the MEKA format can now be used for experiments.
 
