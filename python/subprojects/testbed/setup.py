@@ -7,6 +7,21 @@ from setuptools import setup, find_packages
 
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
 
+
+def find_dependencies(requirements_file, dependency_names):
+    lines = requirements_file.read_text().split('\n')
+    dependencies = []
+
+    for dependency_name in dependency_names:
+        matches = list(filter(lambda line: line.startswith(dependency_name), lines))
+
+        if len(matches) != 1:
+            raise RuntimeError('Failed to determine required version for dependency "' + dependency_name + '"')
+
+        dependencies.extend(matches)
+
+    return dependencies
+
 setup(
     name='mlrl-testbed',
     version=VERSION,
@@ -41,8 +56,9 @@ setup(
     platforms=['any'],
     python_requires='>=3.7',
     install_requires=[
-        'liac-arff==2.5.0',
-        'mlrl-common==' + VERSION
+        'mlrl-common==' + VERSION,
+        *find_dependencies(Path(__file__).resolve().parent.parent.parent / 'requirements.txt',
+                           ['liac-arff'])
     ],
     extras_require={
         'BOOMER': ['mlrl-boomer==' + VERSION],
