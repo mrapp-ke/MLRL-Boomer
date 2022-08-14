@@ -45,6 +45,21 @@ def find_extensions(directory):
     return extensions
 
 
+def find_dependencies(requirements_file, dependency_names):
+    lines = requirements_file.read_text().split('\n')
+    dependencies = []
+
+    for dependency_name in dependency_names:
+        matches = list(filter(lambda line: line.startswith(dependency_name), lines))
+
+        if len(matches) != 1:
+            raise RuntimeError('Failed to determine required version of dependency "' + dependency_name + '"')
+
+        dependencies.extend(matches)
+
+    return dependencies
+
+
 setup(
     name='mlrl-common',
     version=VERSION,
@@ -85,11 +100,8 @@ setup(
         'Windows'
     ],
     python_requires='>=3.7',
-    install_requires=[
-        'numpy==1.23.1',
-        'scipy==1.9.0',
-        'scikit-learn==1.1.1'
-    ],
+    install_requires=find_dependencies(Path(__file__).resolve().parent.parent.parent / 'requirements.txt',
+                                       ['numpy', 'scipy', 'scikit-learn']),
     packages=find_packages(),
     ext_modules=find_extensions('mlrl'),
     cmdclass={'build_ext': PrecompiledExtensionBuilder},
