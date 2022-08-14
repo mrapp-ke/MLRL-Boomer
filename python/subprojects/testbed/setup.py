@@ -16,7 +16,7 @@ def find_dependencies(requirements_file, dependency_names):
         matches = list(filter(lambda line: line.startswith(dependency_name), lines))
 
         if len(matches) != 1:
-            raise RuntimeError('Failed to determine required version for dependency "' + dependency_name + '"')
+            raise RuntimeError('Failed to determine required version of dependency "' + dependency_name + '"')
 
         dependencies.extend(matches)
 
