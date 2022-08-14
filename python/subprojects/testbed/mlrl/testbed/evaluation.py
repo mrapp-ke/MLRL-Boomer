@@ -117,7 +117,11 @@ ARGS_EXAMPLE_WISE = {
     'zero_division': 1
 }
 
-MULTI_LABEL_EVALUATION_FUNCTIONS = [
+EVALUATION_MEASURE_TRAINING_TIME = EvaluationMeasure(ARGUMENT_TRAINING_TIME, 'Training Time')
+
+EVALUATION_MEASURE_PREDICTION_TIME = EvaluationMeasure(ARGUMENT_PREDICTION_TIME, 'Prediction Time')
+
+MULTI_LABEL_EVALUATION_MEASURES: List[EvaluationMeasure] = [
     EvaluationFunction(ARGUMENT_HAMMING_ACCURACY, 'Hamm. Acc.', lambda a, b: 1 - metrics.hamming_loss(a, b)),
     EvaluationFunction(ARGUMENT_HAMMING_LOSS, 'Hamm. Loss', metrics.hamming_loss),
     EvaluationFunction(ARGUMENT_SUBSET_ACCURACY, 'Subs. Acc.', metrics.accuracy_score),
@@ -134,29 +138,31 @@ MULTI_LABEL_EVALUATION_FUNCTIONS = [
                        **ARGS_EXAMPLE_WISE),
     EvaluationFunction(ARGUMENT_EXAMPLE_WISE_RECALL, 'Ex.-based Rec.', metrics.recall_score, **ARGS_EXAMPLE_WISE),
     EvaluationFunction(ARGUMENT_EXAMPLE_WISE_F1, 'Ex.-based F1', metrics.f1_score, **ARGS_EXAMPLE_WISE),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_JACCARD, 'Ex.-based Jacc.', metrics.jaccard_score, **ARGS_EXAMPLE_WISE)
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_JACCARD, 'Ex.-based Jacc.', metrics.jaccard_score, **ARGS_EXAMPLE_WISE),
+    EVALUATION_MEASURE_TRAINING_TIME,
+    EVALUATION_MEASURE_PREDICTION_TIME
 ]
 
-SINGLE_LABEL_EVALUATION_FUNCTIONS = [
+SINGLE_LABEL_EVALUATION_MEASURES: List[EvaluationMeasure] = [
     EvaluationFunction(ARGUMENT_ACCURACY, 'Acc.', metrics.accuracy_score),
     EvaluationFunction(ARGUMENT_ZERO_ONE_LOSS, '0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
     EvaluationFunction(ARGUMENT_PRECISION, 'Prec.', metrics.precision_score),
     EvaluationFunction(ARGUMENT_RECALL, 'Rec.', metrics.recall_score),
     EvaluationFunction(ARGUMENT_F1, 'F1', metrics.f1_score),
-    EvaluationFunction(ARGUMENT_JACCARD, 'Jacc.', metrics.jaccard_score)
+    EvaluationFunction(ARGUMENT_JACCARD, 'Jacc.', metrics.jaccard_score),
+    EVALUATION_MEASURE_TRAINING_TIME,
+    EVALUATION_MEASURE_PREDICTION_TIME
 ]
 
-RANKING_EVALUATION_FUNCTIONS = [
+RANKING_EVALUATION_MEASURES: List[EvaluationMeasure] = [
     EvaluationFunction(ARGUMENT_RANK_LOSS, 'Rank Loss', metrics.label_ranking_loss),
     EvaluationFunction(ARGUMENT_COVERAGE_ERROR, 'Cov. Error', metrics.coverage_error),
     EvaluationFunction(ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, 'LRAP', metrics.label_ranking_average_precision_score),
     EvaluationFunction(ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, 'DCG', metrics.dcg_score),
-    EvaluationFunction(ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, 'NDCG', metrics.ndcg_score)
+    EvaluationFunction(ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, 'NDCG', metrics.ndcg_score),
+    EVALUATION_MEASURE_TRAINING_TIME,
+    EVALUATION_MEASURE_PREDICTION_TIME
 ]
-
-EVALUATION_MEASURE_TRAINING_TIME = EvaluationMeasure(ARGUMENT_TRAINING_TIME, 'Training Time')
-
-EVALUATION_MEASURE_PREDICTION_TIME = EvaluationMeasure(ARGUMENT_PREDICTION_TIME, 'Prediction Time')
 
 
 class Evaluation(ABC):
@@ -316,8 +322,7 @@ class EvaluationLogOutput(EvaluationOutput):
         text = ''
 
         for measure in sorted(evaluation_result.measures):
-            if measure != EVALUATION_MEASURE_TRAINING_TIME and measure != EVALUATION_MEASURE_PREDICTION_TIME \
-                    and options.get_bool(measure.argument, True):
+            if measure != EVALUATION_MEASURE_TRAINING_TIME and measure != EVALUATION_MEASURE_PREDICTION_TIME:
                 if len(text) > 0:
                     text += '\n'
 
@@ -332,8 +337,7 @@ class EvaluationLogOutput(EvaluationOutput):
         text = ''
 
         for measure in sorted(evaluation_result.measures):
-            if measure != EVALUATION_MEASURE_TRAINING_TIME and measure != EVALUATION_MEASURE_PREDICTION_TIME \
-                    and options.get_bool(measure.argument, True):
+            if measure != EVALUATION_MEASURE_TRAINING_TIME and measure != EVALUATION_MEASURE_PREDICTION_TIME:
                 if len(text) > 0:
                     text += '\n'
 
@@ -361,11 +365,6 @@ class EvaluationCsvOutput(EvaluationOutput):
     def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
         options = self.options
         columns = evaluation_result.dict(fold)
-
-        for measure in list(columns.keys()):
-            if not options.get_bool(measure.argument, True):
-                del columns[measure]
-
         header = sorted(columns.keys())
 
         with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation'), fold) as csv_file:
@@ -376,11 +375,6 @@ class EvaluationCsvOutput(EvaluationOutput):
                                          num_folds: int):
         options = self.options
         columns = evaluation_result.avg_dict() if num_folds > 1 else evaluation_result.dict(0)
-
-        for measure in list(columns.keys()):
-            if not options.get_bool(measure.argument, True):
-                del columns[measure]
-
         header = sorted(columns.keys())
 
         with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation')) as csv_file:
@@ -426,6 +420,18 @@ class AbstractEvaluation(Evaluation, ABC):
         pass
 
 
+def filter_evaluation_measures(evaluation_measures: List[EvaluationMeasure],
+                               outputs: List[EvaluationOutput]) -> List[EvaluationFunction]:
+    evaluation_functions: List[EvaluationFunction] = []
+
+    for measure in evaluation_measures:
+        if reduce(lambda result, output: result or output.options.get_bool(measure.argument, True), outputs, False) \
+                and isinstance(measure, EvaluationFunction):
+            evaluation_functions.append(measure)
+
+    return evaluation_functions
+
+
 class ClassificationEvaluation(AbstractEvaluation):
     """
     Evaluates the predictions of a single- or multi-label classifier according to commonly used bipartition measures.
@@ -433,17 +439,19 @@ class ClassificationEvaluation(AbstractEvaluation):
 
     def __init__(self, outputs: List[EvaluationOutput]):
         super(ClassificationEvaluation, self).__init__(outputs)
+        self.multi_Label_evaluation_functions = filter_evaluation_measures(MULTI_LABEL_EVALUATION_MEASURES, outputs)
+        self.single_Label_evaluation_functions = filter_evaluation_measures(SINGLE_LABEL_EVALUATION_MEASURES, outputs)
 
     def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
         num_folds = data_split.get_num_folds()
         fold = data_split.get_fold()
 
         if is_multilabel(ground_truth):
-            evaluation_functions = MULTI_LABEL_EVALUATION_FUNCTIONS
+            evaluation_functions = self.multi_Label_evaluation_functions
         else:
             predictions = np.ravel(enforce_dense(predictions, order='C', dtype=DTYPE_UINT8))
             ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8))
-            evaluation_functions = SINGLE_LABEL_EVALUATION_FUNCTIONS
+            evaluation_functions = self.single_Label_evaluation_functions
 
         for evaluation_function in evaluation_functions:
             if reduce(lambda a, b: a or b.options.get_bool(evaluation_function.argument, True), self.outputs, False):
@@ -459,6 +467,7 @@ class RankingEvaluation(AbstractEvaluation):
 
     def __init__(self, outputs: List[EvaluationOutput]):
         super(RankingEvaluation, self).__init__(outputs)
+        self.evaluation_functions = filter_evaluation_measures(RANKING_EVALUATION_MEASURES, outputs)
 
     def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
         if is_multilabel(ground_truth):
@@ -466,9 +475,7 @@ class RankingEvaluation(AbstractEvaluation):
             fold = data_split.get_fold()
             ground_truth = enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8)
 
-            for evaluation_function in RANKING_EVALUATION_FUNCTIONS:
-                if reduce(lambda a, b: a or b.options.get_bool(evaluation_function.argument, True), self.outputs,
-                          False):
-                    kwargs = evaluation_function.kwargs
-                    score = evaluation_function.evaluation_function(ground_truth, predictions, **kwargs)
-                    result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
+            for evaluation_function in self.evaluation_functions:
+                kwargs = evaluation_function.kwargs
+                score = evaluation_function.evaluation_function(ground_truth, predictions, **kwargs)
+                result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
