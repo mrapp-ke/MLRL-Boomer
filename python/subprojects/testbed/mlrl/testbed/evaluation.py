@@ -508,3 +508,10 @@ class ScoreEvaluation(AbstractEvaluation):
             score = evaluation_function.evaluation_function(ground_truth, predictions, **kwargs)
             result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
 
+
+class ProbabilityEvaluation(ScoreEvaluation):
+    """
+    Evaluates the quality of probability estimates provided by a single- or multi-label classifier according to commonly
+    used regression and ranking measures.
+    """
+    pass
