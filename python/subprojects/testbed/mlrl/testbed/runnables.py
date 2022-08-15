@@ -24,7 +24,7 @@ from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCU
     ARGUMENT_MEDIAN_ABSOLUTE_ERROR, ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR, ARGUMENT_RANK_LOSS, \
     ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, \
     ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, Evaluation, \
-    ClassificationEvaluation, RankingEvaluation, EvaluationLogOutput, EvaluationCsvOutput
+    ClassificationEvaluation, ScoreEvaluation, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment, PredictionType
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, \
@@ -225,7 +225,7 @@ class LearnerRunnable(Runnable, ABC):
 
         if len(outputs) > 0:
             if prediction_type == PredictionType.SCORES or prediction_type == PredictionType.PROBABILITIES:
-                evaluation = RankingEvaluation(outputs)
+                evaluation = ScoreEvaluation(outputs)
             else:
                 evaluation = ClassificationEvaluation(outputs)
         else:
