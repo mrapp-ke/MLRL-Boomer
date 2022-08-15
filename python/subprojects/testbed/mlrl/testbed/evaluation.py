@@ -63,6 +63,14 @@ ARGUMENT_F1 = 'f1'
 
 ARGUMENT_JACCARD = 'jaccard'
 
+ARGUMENT_MEAN_ABSOLUTE_ERROR = 'mean_absolute_error'
+
+ARGUMENT_MEAN_SQUARED_ERROR = 'mean_squared_error'
+
+ARGUMENT_MEDIAN_ABSOLUTE_ERROR = 'mean_absolute_error'
+
+ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR = 'median_absolute_percentage_error'
+
 ARGUMENT_RANK_LOSS = 'rank_loss'
 
 ARGUMENT_COVERAGE_ERROR = 'coverage_error'
@@ -150,6 +158,16 @@ SINGLE_LABEL_EVALUATION_MEASURES: List[EvaluationMeasure] = [
     EvaluationFunction(ARGUMENT_RECALL, 'Rec.', metrics.recall_score),
     EvaluationFunction(ARGUMENT_F1, 'F1', metrics.f1_score),
     EvaluationFunction(ARGUMENT_JACCARD, 'Jacc.', metrics.jaccard_score),
+    EVALUATION_MEASURE_TRAINING_TIME,
+    EVALUATION_MEASURE_PREDICTION_TIME
+]
+
+REGRESSION_EVALUATION_MEASURES: List[EvaluationMeasure] = [
+    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_ERROR, 'Mean Abs. Error', metrics.mean_absolute_error),
+    EvaluationFunction(ARGUMENT_MEAN_SQUARED_ERROR, 'Mean Sq. Error', metrics.mean_squared_error),
+    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_ERROR, 'Median Abs. Error', metrics.median_absolute_error),
+    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR, 'Median Abs. Perc. Error',
+                       metrics.mean_absolute_percentage_error),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME
 ]
@@ -462,20 +480,28 @@ class ClassificationEvaluation(AbstractEvaluation):
 
 class RankingEvaluation(AbstractEvaluation):
     """
-    Evaluates the predictions of a multi-label ranker according to commonly used ranking measures.
+    Evaluates the predictions of a multi-label ranker according to commonly used regression and ranking measures.
     """
 
     def __init__(self, outputs: List[EvaluationOutput]):
         super(RankingEvaluation, self).__init__(outputs)
-        self.evaluation_functions = filter_evaluation_measures(RANKING_EVALUATION_MEASURES, outputs)
+        self.regression_evaluation_functions = filter_evaluation_measures(REGRESSION_EVALUATION_MEASURES, outputs)
+        self.ranking_evaluation_functions = filter_evaluation_measures(RANKING_EVALUATION_MEASURES, outputs)
 
     def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
-        if is_multilabel(ground_truth):
-            num_folds = data_split.get_num_folds()
-            fold = data_split.get_fold()
-            ground_truth = enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8)
+        num_folds = data_split.get_num_folds()
+        fold = data_split.get_fold()
+        ground_truth = enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8)
 
-            for evaluation_function in self.evaluation_functions:
+        if is_multilabel(ground_truth):
+            for evaluation_function in self.ranking_evaluation_functions:
                 kwargs = evaluation_function.kwargs
                 score = evaluation_function.evaluation_function(ground_truth, predictions, **kwargs)
                 result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
+        elif predictions.shape[1] > 1:
+            predictions = predictions[:, -1]
+
+        for evaluation_function in self.regression_evaluation_functions:
+            kwargs = evaluation_function.kwargs
+            score = evaluation_function.evaluation_function(ground_truth, predictions, **kwargs)
+            result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
