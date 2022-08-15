@@ -31,6 +31,8 @@ DATASET_LANGLOG = 'langlog'
 
 DATASET_WEATHER = 'weather'
 
+DATASET_BREAST_CANCER = 'breast-cancer'
+
 PRUNING_NO = 'none'
 
 PRUNING_IREP = 'irep'
@@ -708,13 +710,14 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def __init__(self, cmd: str, dataset_default: str = DATASET_EMOTIONS, dataset_numerical: str = DATASET_LANGLOG,
                  dataset_nominal: str = DATASET_ENRON, dataset_one_hot_encoding: str = DATASET_ENRON,
-                 expected_output_dir=DIR_OUT, methodName='runTest'):
+                 dataset_single_label: str = DATASET_BREAST_CANCER, expected_output_dir=DIR_OUT, methodName='runTest'):
         """
         :param cmd:                         The command to be run by the integration tests
         :param dataset_default:             The name of the dataset that should be used by default
         :param dataset_numerical:           The name of a dataset with numerical features
         :param dataset_nominal:             The name of a dataset with nominal features
         :param dataset_one_hot_encoding:    The name of the dataset that should be used for one-hot-encoding
+        :param dataset_single_label:        The name of the dataset that comes with a single label
         :param expected_output_dir:         The path of the directory that contains the file with the expected output
         :param methodName:                  The name of the test method to be executed
         """
@@ -724,6 +727,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         self.dataset_numerical = dataset_numerical
         self.dataset_nominal = dataset_nominal
         self.dataset_one_hot_encoding = dataset_one_hot_encoding
+        self.dataset_single_label = dataset_single_label
 
     @classmethod
     def setUpClass(cls):
@@ -739,6 +743,15 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset='meka') \
             .print_evaluation(False)
         self.run_cmd(builder, 'meka-format')
+
+    def test_single_label_classification(self):
+        """
+        Tests the evaluation of the rule learning algorithm when predicting binary labels for a single-label problem.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_single_label) \
+            .prediction_type(PREDICTION_TYPE_LABELS) \
+            .print_evaluation()
+        self.run_cmd(builder, 'single-label-classification')
 
     def test_evaluation_train_test(self):
         """
