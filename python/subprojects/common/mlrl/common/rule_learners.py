@@ -236,7 +236,14 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
 
         if learner.can_predict_probabilities(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted probability estimates')
-            return learner.predict_probabilities(feature_matrix, self.model_, self.label_space_info_, num_labels)
+            prediction = learner.predict_probabilities(feature_matrix, self.model_, self.label_space_info_, num_labels)
+
+            # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the
+            # negative and positive class...
+            if prediction.shape[1] == 1:
+                prediction = np.hstack((1 - prediction, prediction))
+
+            return prediction
         else:
             return super()._predict_proba(x, **kwargs)
 
