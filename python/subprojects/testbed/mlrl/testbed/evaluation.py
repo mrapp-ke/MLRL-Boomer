@@ -452,7 +452,8 @@ def filter_evaluation_measures(evaluation_measures: List[EvaluationMeasure],
 
 class ClassificationEvaluation(AbstractEvaluation):
     """
-    Evaluates the predictions of a single- or multi-label classifier according to commonly used bipartition measures.
+    Evaluates the quality of binary predictions provided by a single- or multi-label classifier according to commonly
+    used bipartition measures.
     """
 
     def __init__(self, outputs: List[EvaluationOutput]):
@@ -478,13 +479,14 @@ class ClassificationEvaluation(AbstractEvaluation):
                 result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
 
 
-class RankingEvaluation(AbstractEvaluation):
+class ScoreEvaluation(AbstractEvaluation):
     """
-    Evaluates the predictions of a multi-label ranker according to commonly used regression and ranking measures.
+    Evaluates the quality of regression scores provided by a single- or multi-output regressor according to commonly
+    used regression and ranking measures.
     """
 
     def __init__(self, outputs: List[EvaluationOutput]):
-        super(RankingEvaluation, self).__init__(outputs)
+        super(ScoreEvaluation, self).__init__(outputs)
         self.regression_evaluation_functions = filter_evaluation_measures(REGRESSION_EVALUATION_MEASURES, outputs)
         self.ranking_evaluation_functions = filter_evaluation_measures(RANKING_EVALUATION_MEASURES, outputs)
 
@@ -505,3 +507,4 @@ class RankingEvaluation(AbstractEvaluation):
             kwargs = evaluation_function.kwargs
             score = evaluation_function.evaluation_function(ground_truth, predictions, **kwargs)
             result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
+
