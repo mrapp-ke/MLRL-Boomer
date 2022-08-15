@@ -157,6 +157,25 @@ class BoostingIntegrationTests(CommonIntegrationTests):
                                                        expected_output_dir=path.join(DIR_OUT, CMD_BOOMER),
                                                        methodName=methodName)
 
+    def test_single_label_regression(self):
+        """
+        Tests the evaluation of the rule learning algorithm when predicting regression scores for a single-label
+        problem.
+        """
+        builder = BoostingCmdBuilder(dataset=self.dataset_single_label) \
+            .prediction_type(PREDICTION_TYPE_SCORES) \
+            .print_evaluation()
+        self.run_cmd(builder, 'single-label-regression')
+
+    def test_single_label_probabilities(self):
+        """
+        Tests the evaluation of the rule learning algorithm when predicting probabilities for a single-label problem.
+        """
+        builder = BoostingCmdBuilder(dataset=self.dataset_single_label) \
+            .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
+            .print_evaluation()
+        self.run_cmd(builder, 'single-label-probabilities')
+
     def test_feature_binning_equal_width_nominal_features_dense(self):
         """
         Tests the BOOMER algorithm's ability to use equal-width feature binning when applied to a dataset with nominal
