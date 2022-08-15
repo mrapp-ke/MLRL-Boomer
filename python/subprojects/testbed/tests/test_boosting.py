@@ -162,7 +162,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the evaluation of the rule learning algorithm when predicting regression scores for a single-label
         problem.
         """
-        builder = BoostingCmdBuilder(self.cmd, dataset=self.dataset_single_label) \
+        builder = BoostingCmdBuilder(dataset=self.dataset_single_label) \
             .prediction_type(PREDICTION_TYPE_SCORES) \
             .print_evaluation()
         self.run_cmd(builder, 'single-label-regression')
@@ -171,7 +171,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the evaluation of the rule learning algorithm when predicting probabilities for a single-label problem.
         """
-        builder = BoostingCmdBuilder(self.cmd, dataset=self.dataset_single_label) \
+        builder = BoostingCmdBuilder(dataset=self.dataset_single_label) \
             .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
             .print_evaluation()
         self.run_cmd(builder, 'single-label-probabilities')
