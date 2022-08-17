@@ -336,7 +336,6 @@ class EvaluationLogOutput(EvaluationOutput):
         super().__init__(options)
 
     def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
-        options = self.options
         text = ''
 
         for measure in sorted(evaluation_result.measures):
@@ -351,7 +350,6 @@ class EvaluationLogOutput(EvaluationOutput):
 
     def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
                                          num_folds: int):
-        options = self.options
         text = ''
 
         for measure in sorted(evaluation_result.measures):
@@ -381,7 +379,6 @@ class EvaluationCsvOutput(EvaluationOutput):
         self.output_dir = output_dir
 
     def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
-        options = self.options
         columns = evaluation_result.dict(fold)
         header = sorted(columns.keys())
 
@@ -391,7 +388,6 @@ class EvaluationCsvOutput(EvaluationOutput):
 
     def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
                                          num_folds: int):
-        options = self.options
         columns = evaluation_result.avg_dict() if num_folds > 1 else evaluation_result.dict(0)
         header = sorted(columns.keys())
 
