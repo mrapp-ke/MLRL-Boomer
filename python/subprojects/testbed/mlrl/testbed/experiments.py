@@ -332,7 +332,8 @@ class Experiment(DataSplitter.Callback):
         changes = []
 
         for key, expected_value in expected_params.items():
-            actual_value = actual_params[key]
+            expected_value = str(expected_value)
+            actual_value = str(actual_params[key])
 
             if actual_value != expected_value:
                 changes.append((key, expected_value, actual_value))
@@ -340,5 +341,6 @@ class Experiment(DataSplitter.Callback):
         if len(changes) > 0:
             log.warning(
                 'The loaded model\'s values for the following parameters differ from the expected configuration: %s',
-                reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b[0] + '" is "' + str(
-                    b[2]) + '" instead of "' + str(b[1] + '"'), changes, ''))
+                reduce(
+                    lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b[0] + '" is "' + b[2] + '" instead of "' + b[
+                        1] + '"', changes, ''))
