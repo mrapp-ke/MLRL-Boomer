@@ -58,6 +58,15 @@ class DataSplit(ABC):
         """
         pass
 
+    @abstractmethod
+    def is_last_fold(self) -> bool:
+        """
+        Returns whether this split corresponds to the last fold of a cross validation or not.
+
+        :return: True, if this split corresponds to the last fold, False otherwise
+        """
+        pass
+
     def is_cross_validation_used(self) -> bool:
         """
         Returns whether cross validation is used or not.
@@ -65,14 +74,6 @@ class DataSplit(ABC):
         :return: True, if cross validation is used, False otherwise
         """
         return self.get_num_folds() > 1
-
-    def is_last_fold(self) -> bool:
-        """
-        Returns whether this split corresponds to the last fold of a cross validation or not.
-
-        :return: True, if this split corresponds to the last fold, False otherwise
-        """
-        return not self.is_cross_validation_used() or self.get_fold() == self.get_num_folds() - 1
 
 
 class TrainingTestSplit(DataSplit):
@@ -86,25 +87,33 @@ class TrainingTestSplit(DataSplit):
     def get_fold(self) -> Optional[int]:
         return None
 
+    def is_last_fold(self) -> bool:
+        return True
+
 
 class CrossValidationFold(DataSplit):
     """
     Provides information a split of the available data that is used by a single fold of a cross validation.
     """
 
-    def __init__(self, num_folds: int, fold: int):
+    def __init__(self, num_folds: int, fold: int, current_fold: int):
         """
-        :param num_folds:   The total number of folds
-        :param fold:        The fold, starting at 0
+        :param num_folds:       The total number of folds
+        :param fold:            The fold, starting at 0
+        :param current_fold:    The cross validation fold to be performed or -1, if all folds are performed
         """
         self.num_folds = num_folds
         self.fold = fold
+        self.current_fold = current_fold
 
     def get_num_folds(self) -> int:
         return self.num_folds
 
     def get_fold(self) -> Optional[int]:
         return self.fold
+
+    def is_last_fold(self) -> bool:
+        return self.current_fold < 0 and self.fold == self.num_folds - 1
 
 
 class DataType(Enum):
@@ -345,7 +354,7 @@ class CrossValidationSplitter(DataSplitter):
             test_x, test_y = data[fold]
 
             # Train and evaluate classifier...
-            data_split = CrossValidationFold(num_folds=num_folds, fold=fold)
+            data_split = CrossValidationFold(num_folds=num_folds, fold=fold, current_fold=current_fold)
             callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split,
                                         train_x, train_y, test_x, test_y)
 
@@ -376,6 +385,6 @@ class CrossValidationSplitter(DataSplitter):
                 test_y = y[test_indices]
 
                 # Train and evaluate classifier...
-                data_split = CrossValidationFold(num_folds=num_folds, fold=fold)
+                data_split = CrossValidationFold(num_folds=num_folds, fold=fold, current_fold=current_fold)
                 callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data,
                                             data_split, train_x, train_y, test_x, test_y)
