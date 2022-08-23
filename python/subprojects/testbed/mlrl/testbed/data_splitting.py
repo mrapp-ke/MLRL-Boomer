@@ -85,6 +85,24 @@ class DataSplit(ABC):
         return self.get_num_folds() > 1
 
 
+class NoSplit(DataSplit):
+    """
+    Provides information about data that has not been split into separate training and test data.
+    """
+
+    def is_train_test_separated(self) -> bool:
+        return False
+
+    def get_num_folds(self) -> int:
+        return 1
+
+    def get_fold(self) -> Optional[int]:
+        return None
+
+    def is_last_fold(self) -> bool:
+        return True
+
+
 class TrainingTestSplit(DataSplit):
     """
     Provides information about a split of the available data into training and test data.
