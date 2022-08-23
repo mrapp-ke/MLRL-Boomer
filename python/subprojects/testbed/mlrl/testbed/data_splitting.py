@@ -208,8 +208,8 @@ class TrainTestSplitter(DataSplitter):
 
     def __init__(self, data_set: DataSet, test_size: float, random_state: int):
         """
-        :param data_set:    The properties of the data set to be used
-        :param test_size:   The fraction of the available data to be used as the test set
+        :param data_set:        The properties of the data set to be used
+        :param test_size:       The fraction of the available data to be used as the test set
         :param random_state:    The seed to be used by RNGs. Must be at least 1
         """
         self.data_set = data_set
