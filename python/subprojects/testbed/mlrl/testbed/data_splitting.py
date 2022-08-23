@@ -105,7 +105,7 @@ class TrainingTestSplit(DataSplit):
 
 class CrossValidationFold(DataSplit):
     """
-    Provides information a split of the available data that is used by a single fold of a cross validation.
+    Provides information about a split of the available data that is used by a single fold of a cross validation.
     """
 
     def __init__(self, num_folds: int, fold: int, current_fold: int):
