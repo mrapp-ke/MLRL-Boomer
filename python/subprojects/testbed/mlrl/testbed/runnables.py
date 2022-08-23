@@ -9,12 +9,13 @@ from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 from typing import Optional, Dict, Set
 
+from mlrl.common.config import NONE
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.common.strings import format_enum_values
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
-from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, DataSet
+from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, NoSplitter, DataSet
 from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCURACY, ARGUMENT_SUBSET_ZERO_ONE_LOSS, \
     ARGUMENT_SUBSET_ACCURACY, ARGUMENT_MICRO_PRECISION, ARGUMENT_MICRO_RECALL, ARGUMENT_MICRO_F1, \
     ARGUMENT_MICRO_JACCARD, ARGUMENT_MACRO_PRECISION, ARGUMENT_MACRO_RECALL, ARGUMENT_MACRO_F1, \
@@ -63,6 +64,7 @@ ARGUMENT_NUM_FOLDS = 'num_folds'
 ARGUMENT_CURRENT_FOLD = 'current_fold'
 
 DATA_SPLIT_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
     DATA_SPLIT_TRAIN_TEST: {ARGUMENT_TEST_SIZE},
     DATA_SPLIT_CROSS_VALIDATION: {ARGUMENT_NUM_FOLDS, ARGUMENT_CURRENT_FOLD}
 }
@@ -166,7 +168,6 @@ class LearnerRunnable(Runnable, ABC):
     def __create_data_splitter(args) -> DataSplitter:
         data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
-        random_state = args.random_state
         value, options = parse_param_and_options(PARAM_DATA_SPLIT, args.data_split, DATA_SPLIT_VALUES)
 
         if value == DATA_SPLIT_CROSS_VALIDATION:
@@ -177,12 +178,14 @@ class LearnerRunnable(Runnable, ABC):
                 assert_greater_or_equal('current_fold', current_fold, 1)
                 assert_less_or_equal('current_fold', current_fold, num_folds)
             return CrossValidationSplitter(data_set, num_folds=num_folds, current_fold=current_fold - 1,
-                                           random_state=random_state)
-        else:
+                                           random_state=args.random_state)
+        elif value == DATA_SPLIT_TRAIN_TEST:
             test_size = options.get_float(ARGUMENT_TEST_SIZE, 0.33)
             assert_greater('test_size', test_size, 0)
             assert_less('test_size', test_size, 1)
-            return TrainTestSplitter(data_set, test_size=test_size, random_state=random_state)
+            return TrainTestSplitter(data_set, test_size=test_size, random_state=args.random_state)
+        else:
+            return NoSplitter(data_set)
 
     @staticmethod
     def __create_pre_execution_hook(args, data_splitter: DataSplitter) -> Optional[Experiment.ExecutionHook]:
