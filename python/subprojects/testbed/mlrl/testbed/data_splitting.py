@@ -41,6 +41,15 @@ class DataSplit(ABC):
     """
 
     @abstractmethod
+    def is_train_test_separated(self) -> bool:
+        """
+        Returns whether the training data is separated from the test data or not.
+
+        :return: True, if the training data is separated from the test data, False otherwise
+        """
+        pass
+
+    @abstractmethod
     def get_num_folds(self) -> int:
         """
         Returns the total number of cross validation folds.
@@ -81,6 +90,9 @@ class TrainingTestSplit(DataSplit):
     Provides information about a split of the available data into training and test data.
     """
 
+    def is_train_test_separated(self) -> bool:
+        return True
+
     def get_num_folds(self) -> int:
         return 1
 
@@ -105,6 +117,9 @@ class CrossValidationFold(DataSplit):
         self.num_folds = num_folds
         self.fold = fold
         self.current_fold = current_fold
+
+    def is_train_test_separated(self) -> bool:
+        return True
 
     def get_num_folds(self) -> int:
         return self.num_folds
