@@ -186,13 +186,14 @@ class Experiment(DataSplitter.Callback):
         prediction_characteristics_printer = None if self.prediction_type != PredictionType.LABELS else \
             self.train_prediction_characteristics_printer
 
-        if evaluation is not None or prediction_printer is not None or prediction_characteristics_printer is not None:
-            log.info('Predicting for %s training examples...', train_x.shape[0])
+        if data_split.is_train_test_separated() and (
+                evaluation is not None or prediction_printer is not None
+                or prediction_characteristics_printer is not None):
+            data_type = DataType.TRAINING
+            log.info('Predicting for %s ' + data_type.value + ' examples...', train_x.shape[0])
             predictions, predict_time = self.__predict(current_learner, train_x)
 
             if predictions is not None:
-                data_type = DataType.TRAINING
-
                 if evaluation is not None:
                     evaluation.evaluate(meta_data, data_split, data_type, predictions, train_y,
                                         train_time=train_time, predict_time=predict_time)
@@ -210,12 +211,11 @@ class Experiment(DataSplitter.Callback):
             self.test_prediction_characteristics_printer
 
         if evaluation is not None or prediction_printer is not None or prediction_characteristics_printer is not None:
-            log.info('Predicting for %s test examples...', test_x.shape[0])
+            data_type = DataType.TEST if data_split.is_train_test_separated() else DataType.TRAINING
+            log.info('Predicting for %s ' + data_type.value + ' examples...', test_x.shape[0])
             predictions, predict_time = self.__predict(current_learner, test_x)
 
             if predictions is not None:
-                data_type = DataType.TEST
-
                 if evaluation is not None:
                     evaluation.evaluate(meta_data, data_split, data_type, predictions, test_y,
                                         train_time=train_time, predict_time=predict_time)
