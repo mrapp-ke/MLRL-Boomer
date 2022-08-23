@@ -16,6 +16,8 @@ In addition to the mandatory arguments that must be provided to the command line
     * ``num_folds`` (Default value = ``10``) The total number of cross validation folds to be performed. Must be at least 2.
     * ``current_fold`` (Default value = ``0``) The cross validation fold to be performed. Must be in [1, ``num_folds``] or 0, if all folds should be performed.
 
+  * ``none`` The available data is not split into separate training and test sets, but the entire data is used for training and evaluation. This strategy should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic. Given that ``dataset-name`` is provided as the value of the argument ``--dataset``, the data must be stored in a file named ``dataset-name.arff``.
+
 * ``--prediction-type`` (Default value = ``labels``)
 
   * ``labels`` The learner is instructed to predict binary labels. In this case, bipartition evaluation measures are used for evaluation.
