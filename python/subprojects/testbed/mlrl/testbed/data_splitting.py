@@ -234,6 +234,41 @@ def check_if_files_exist(directory: str, file_names: List[str]) -> bool:
                                                           missing_files, ''))
 
 
+class NoSplitter(DataSplitter):
+    """
+    Does not split the available data into separate train and test sets.
+    """
+
+    def __init__(self, data_set: DataSet):
+        """
+        :param data_set: The properties of the data set to be used
+        """
+        self.data_set = data_set
+
+    def _split_data(self, callback: DataSplitter.Callback):
+        log.warning('Not using separate training and test sets. The model will be evaluated on the training data...')
+        data_set = self.data_set
+        data_dir = data_set.data_dir
+        data_set_name = data_set.data_set_name
+        use_one_hot_encoding = data_set.use_one_hot_encoding
+
+        # Load data set...
+        arff_file_name = get_file_name(data_set_name, SUFFIX_ARFF)
+        xml_file_name = get_file_name(data_set_name, SUFFIX_XML)
+        x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_name, xml_file_name)
+
+        # Apply one-hot-encoding, if necessary...
+        if use_one_hot_encoding:
+            x, _, encoded_meta_data = one_hot_encode(x, y, meta_data)
+        else:
+            encoded_meta_data = None
+
+        # Train and evaluate classifier...
+        data_split = NoSplit()
+        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split, x, y,
+                                    x, y)
+
+
 class TrainTestSplitter(DataSplitter):
     """
     Splits the available data into a single train and test set.
