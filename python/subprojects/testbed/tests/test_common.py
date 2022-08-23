@@ -83,6 +83,7 @@ class CmdBuilder:
         self.num_folds = 0
         self.current_fold = 0
         self.training_data_evaluated = False
+        self.separate_train_test_sets = True
         self.evaluation_stored = True
         self.parameters_stored = False
         self.predictions_stored = False
@@ -135,6 +136,19 @@ class CmdBuilder:
             self.args.append(parameter_dir)
         return self
 
+    def no_data_split(self):
+        """
+        Configures the rule learner to not use separate training and test data.
+
+        :return: The builder itself
+        """
+        self.num_folds = 0
+        self.current_fold = 0
+        self.separate_train_test_sets = False
+        self.args.append('--data-split')
+        self.args.append('none')
+        return self
+
     def cross_validation(self, num_folds: int = 10, current_fold: int = 0):
         """
         Configures the rule learner to use a cross validation.
@@ -145,6 +159,7 @@ class CmdBuilder:
         """
         self.num_folds = num_folds
         self.current_fold = current_fold
+        self.separate_train_test_sets = True
         self.args.append('--data-split')
         self.args.append('cross-validation{num_folds=' + str(num_folds) + ',current_fold=' + str(current_fold) + '}')
         return self
@@ -561,10 +576,12 @@ class IntegrationTests(ABC, TestCase):
         if builder.evaluation_stored:
             prefix = 'evaluation'
             suffix = 'csv'
-            self.__assert_output_files_exist(builder, self.__get_output_name(prefix), suffix)
+            training_data = not builder.separate_train_test_sets
+            self.__assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=training_data),
+                                             suffix)
 
             if builder.training_data_evaluated:
-                self.__assert_output_files_exist(builder, self.__get_output_name(prefix, True), suffix)
+                self.__assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=True), suffix)
 
     def __assert_parameter_files_exist(self, builder: CmdBuilder):
         """
@@ -584,10 +601,12 @@ class IntegrationTests(ABC, TestCase):
         if builder.predictions_stored:
             prefix = 'predictions'
             suffix = 'arff'
-            self.__assert_output_files_exist(builder, self.__get_output_name(prefix), suffix)
+            training_data = not builder.separate_train_test_sets
+            self.__assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=training_data),
+                                             suffix)
 
             if builder.training_data_evaluated:
-                self.__assert_output_files_exist(builder, self.__get_output_name(prefix, True), suffix)
+                self.__assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=True), suffix)
 
     def __assert_prediction_characteristic_files_exist(self, builder: CmdBuilder):
         """
@@ -598,10 +617,12 @@ class IntegrationTests(ABC, TestCase):
         if builder.prediction_characteristics_stored:
             prefix = 'prediction_characteristics'
             suffix = 'csv'
-            self.__assert_output_files_exist(builder, self.__get_output_name(prefix), suffix)
+            training_data = not builder.separate_train_test_sets
+            self.__assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=training_data),
+                                             suffix)
 
             if builder.training_data_evaluated:
-                self.__assert_output_files_exist(builder, self.__get_output_name(prefix, True), suffix)
+                self.__assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=True), suffix)
 
     def __assert_data_characteristic_files_exist(self, builder: CmdBuilder):
         """
@@ -752,6 +773,18 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .prediction_type(PREDICTION_TYPE_LABELS) \
             .print_evaluation()
         self.run_cmd(builder, 'single-label-classification')
+
+    def test_evaluation_no_data_split(self):
+        """
+        Tests the evaluation of the rule learning algorithm when not using a split of the dataset into training and test
+        data.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .no_data_split() \
+            .set_output_dir() \
+            .print_evaluation() \
+            .store_evaluation()
+        self.run_cmd(builder, 'evaluation_no-data-split')
 
     def test_evaluation_train_test(self):
         """
