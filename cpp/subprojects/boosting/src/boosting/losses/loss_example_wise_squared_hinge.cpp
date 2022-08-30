@@ -195,6 +195,34 @@ namespace boosting {
         }
     }
 
+    template<typename LabelIterator>
+    static inline float64 evaluateInternally(CContiguousConstView<float64>::value_const_iterator scoreIterator,
+                                             LabelIterator labelIterator, uint32 numLabels) {
+        // The example-wise squared hinge loss calculates as `sqrt((L_1 + ...)` with
+        // `L_i = max(1 - predictedScore_i, 0)^2` if `trueLabel_i = 1` or `L_i = max(predictedScore_i, 0)^2` if
+        // `trueLabel_i = 0`.
+        float64 sumOfSquares = 0;
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            float64 predictedScore = scoreIterator[i];
+            bool trueLabel = *labelIterator;
+
+            if (trueLabel) {
+                if (predictedScore < 1) {
+                    sumOfSquares += ((1 - predictedScore) * (1 - predictedScore));
+                }
+            } else {
+                if (predictedScore > 0) {
+                    sumOfSquares += (predictedScore * predictedScore);
+                }
+            }
+
+            labelIterator++;
+        }
+
+        return std::sqrt(sumOfSquares);
+    }
+
     /**
      * An implementation of the type `IExampleWiseLoss` that implements a multi-label variant of the squared hinge loss
      * that is applied example-wise.
@@ -273,8 +301,8 @@ namespace boosting {
              */
             float64 evaluate(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override {
-                // TODO Implement
-                return 0;
+                return evaluateInternally(scoreMatrix.row_values_cbegin(exampleIndex),
+                                          labelMatrix.row_values_cbegin(exampleIndex), labelMatrix.getNumCols());
             }
 
             /**
@@ -282,8 +310,10 @@ namespace boosting {
              */
             float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                              const CContiguousConstView<float64>& scoreMatrix) const override {
-                // TODO Implement
-                return 0;
+                auto labelIterator = make_binary_forward_iterator(labelMatrix.row_indices_cbegin(exampleIndex),
+                                                                  labelMatrix.row_indices_cend(exampleIndex));
+                return evaluateInternally(scoreMatrix.row_values_cbegin(exampleIndex), labelIterator,
+                                          labelMatrix.getNumCols());
             }
 
             /**
