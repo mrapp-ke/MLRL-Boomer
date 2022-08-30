@@ -322,8 +322,10 @@ namespace boosting {
             float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
                                     CContiguousView<float64>::value_const_iterator scoresBegin,
                                     CContiguousView<float64>::value_const_iterator scoresEnd) const override {
-                // TODO Implement
-                return 0;
+                uint32 numLabels = scoresEnd - scoresBegin;
+                auto labelIterator = make_binary_forward_iterator(relevantLabelIndices.cbegin(),
+                                                                  relevantLabelIndices.cend());
+                return evaluateInternally(scoresBegin, labelIterator, numLabels);
             }
 
     };
