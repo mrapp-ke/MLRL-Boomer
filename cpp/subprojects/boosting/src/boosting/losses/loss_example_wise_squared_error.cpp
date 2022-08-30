@@ -224,11 +224,11 @@ namespace boosting {
             }
 
             /**
-             * @see `ISimilarityMeasure::measureSimilarity`
+             * @see `IDistanceMeasure::measureDistance`
              */
-            float64 measureSimilarity(const VectorConstView<uint32>& relevantLabelIndices,
-                                      CContiguousView<float64>::value_const_iterator scoresBegin,
-                                      CContiguousView<float64>::value_const_iterator scoresEnd) const override {
+            float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
+                                    CContiguousView<float64>::value_const_iterator scoresBegin,
+                                    CContiguousView<float64>::value_const_iterator scoresEnd) const override {
                 uint32 numLabels = scoresEnd - scoresBegin;
                 auto labelIterator = make_binary_forward_iterator(relevantLabelIndices.cbegin(),
                                                                   relevantLabelIndices.cend());

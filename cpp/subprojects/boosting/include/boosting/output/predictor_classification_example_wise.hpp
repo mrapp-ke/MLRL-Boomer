@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/output/predictor_classification.hpp"
-#include "common/measures/measure_similarity.hpp"
 #include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
 
