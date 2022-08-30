@@ -217,6 +217,7 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'squared-error-label-wise'`` A variant of the squared error loss that is applied to each label individually.
   * ``'squared-error-example-wise'`` A variant of the squared error loss that takes all labels into account at the same time.
   * ``'squared-hinge-label-wise'`` A variant of the squared hinge loss that is applied to each label individually.
+  * ``'squared-hinge-example-wise'`` A variant fot he squared hinge loss that takes all labels into account at the same time.
 
 * ``classification_predictor`` (Default value = ``'auto'``)
 
