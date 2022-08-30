@@ -10,10 +10,10 @@
 namespace boosting {
 
     /**
-     * Allows to configure a loss function that implements a multi-label variant of the logistic loss that is applied
-     * example-wise.
+     * Allows to configure a loss function that implements a multi-label variant of the squared hinge loss that is
+     * applied example-wise.
      */
-    class ExampleWiseLogisticLossConfig final : public IExampleWiseLossConfig {
+    class ExampleWiseSquaredHingeLossConfig final : public IExampleWiseLossConfig {
 
         private:
 
@@ -24,7 +24,7 @@ namespace boosting {
             /**
              * @param headConfigPtr A reference to an unique pointer that stores the configuration of rule heads
              */
-            ExampleWiseLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr);
+            ExampleWiseSquaredHingeLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
