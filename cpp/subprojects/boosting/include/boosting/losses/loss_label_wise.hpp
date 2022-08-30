@@ -103,7 +103,7 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type `ILabelWiseLoss`.
      */
-    class ILabelWiseLossFactory : public IEvaluationMeasureFactory, public ISimilarityMeasureFactory {
+    class ILabelWiseLossFactory : public IEvaluationMeasureFactory, public IDistanceMeasureFactory {
 
         public:
 
@@ -124,9 +124,9 @@ namespace boosting {
             }
 
             /**
-             * @see `ISimilarityMeasureFactory::createSimilarityMeasure`
+             * @see `IDistanceMeasureFactory::createDistanceMeasure`
              */
-            std::unique_ptr<ISimilarityMeasure> createSimilarityMeasure() const override final {
+            std::unique_ptr<IDistanceMeasure> createDistanceMeasure() const override final {
                 return this->createLabelWiseLoss();
             }
 
@@ -154,7 +154,7 @@ namespace boosting {
                 return this->createLabelWiseLossFactory();
             }
 
-            std::unique_ptr<ISimilarityMeasureFactory> createSimilarityMeasureFactory() const override final {
+            std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override final {
                 return this->createLabelWiseLossFactory();
             }
 

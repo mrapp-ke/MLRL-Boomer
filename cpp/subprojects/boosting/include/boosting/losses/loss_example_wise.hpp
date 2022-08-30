@@ -93,7 +93,7 @@ namespace boosting {
                 return this->createExampleWiseLossFactory();
             }
 
-            std::unique_ptr<ISimilarityMeasureFactory> createSimilarityMeasureFactory() const override final {
+            std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override final {
                 return this->createExampleWiseLossFactory();
             }
 

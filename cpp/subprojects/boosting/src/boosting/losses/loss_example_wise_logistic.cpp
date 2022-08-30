@@ -288,11 +288,11 @@ namespace boosting {
             }
 
             /**
-             * @see `ISimilarityMeasure::measureSimilarity`
+             * @see `IDistanceMeasure::measureDistance`
              */
-            float64 measureSimilarity(const VectorConstView<uint32>& relevantLabelIndices,
-                                      CContiguousView<float64>::value_const_iterator scoresBegin,
-                                      CContiguousView<float64>::value_const_iterator scoresEnd) const override {
+            float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
+                                    CContiguousView<float64>::value_const_iterator scoresBegin,
+                                    CContiguousView<float64>::value_const_iterator scoresEnd) const override {
                 // The example-wise logistic loss calculates as
                 // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2)
                 // + ...)`. In the following, we exploit the identity `log(exp(x_1) + exp(x_2) + ...) =

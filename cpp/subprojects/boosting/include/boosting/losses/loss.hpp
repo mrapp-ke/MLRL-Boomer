@@ -5,8 +5,8 @@
 
 #include "common/input/feature_matrix.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
+#include "common/measures/measure_distance.hpp"
 #include "common/measures/measure_evaluation.hpp"
-#include "common/measures/measure_similarity.hpp"
 #include "common/statistics/statistics_provider.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
@@ -18,7 +18,7 @@ namespace boosting {
     /**
      * Defines an interface for all loss functions.
      */
-    class ILoss : public IEvaluationMeasure, public ISimilarityMeasure {
+    class ILoss : public IEvaluationMeasure, public IDistanceMeasure {
 
         public:
 
@@ -65,12 +65,12 @@ namespace boosting {
             virtual std::unique_ptr<IEvaluationMeasureFactory> createEvaluationMeasureFactory() const = 0;
 
             /**
-             * Creates and returns a new object of type `ISimilarityMeasureFactory` according to the specified
+             * Creates and returns a new object of type `IDistanceMeasureFactory` according to the specified
              * configuration.
              *
-             * @return An unique pointer to an object of type `ISimilarityMeasureFactory` that has been created
+             * @return An unique pointer to an object of type `IDistanceMeasureFactory` that has been created
              */
-            virtual std::unique_ptr<ISimilarityMeasureFactory> createSimilarityMeasureFactory() const = 0;
+            virtual std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const = 0;
 
             /**
              * Creates and returns a new object of type `IProbabilityFunctionFactory` according to the specified
