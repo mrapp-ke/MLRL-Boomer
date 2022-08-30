@@ -22,7 +22,7 @@ namespace boosting {
         public:
 
             /**
-             * @param headConfigPtr A reference to an unique pointer that stores the configuration of rules heads
+             * @param headConfigPtr A reference to an unique pointer that stores the configuration of rule heads
              */
             ExampleWiseLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr);
 
