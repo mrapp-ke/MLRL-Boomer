@@ -166,8 +166,18 @@ class IncrementalEvaluation(Evaluation):
 
     def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
                  prediction_printer: Optional[PredictionPrinter],
-                 prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter]):
+                 prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter], min_size: int,
+                 max_size: int, step_size: int):
+        """
+        :param min_size:    The minimum number of ensemble members to be evaluated. Must be at least 1
+        :param max_size:    The maximum number of ensemble members to be evaluated. Must be greater than `min_size` or
+                            0, if all ensemble members should be evaluated
+        :param step_size:   The number of ensemble members to be added at each iteration. Must be at least 1
+        """
         super().__init__(prediction_type, evaluation_printer, prediction_printer, prediction_characteristics_printer)
+        self.min_size = min_size
+        self.max_size = max_size
+        self.step_size = step_size
 
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y):
