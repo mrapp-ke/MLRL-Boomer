@@ -27,7 +27,7 @@ from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCU
     ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, \
     EvaluationPrinter, ClassificationEvaluationPrinter, ScoreEvaluationPrinter, ProbabilityEvaluationPrinter, \
     EvaluationLogOutput, EvaluationCsvOutput
-from mlrl.testbed.experiments import Experiment, PredictionType
+from mlrl.testbed.experiments import Experiment, PredictionType, Evaluation, GlobalEvaluation
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, \
     ARGUMENT_PRINT_NOMINAL_VALUES, ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS, ModelPrinter, RulePrinter, \
@@ -278,7 +278,6 @@ class LearnerRunnable(Runnable, ABC):
     def _run(self, args):
         prediction_type = self.__create_prediction_type(args)
 
-        # Create outputs...
         if args.evaluate_training_data:
             train_evaluation_printer = self.__create_evaluation_printer(args, prediction_type)
             train_prediction_printer = self.__create_prediction_printer(args)
@@ -288,21 +287,19 @@ class LearnerRunnable(Runnable, ABC):
             train_prediction_printer = None
             train_prediction_characteristics_printer = None
 
-        test_prediction_characteristics_printer = self.__create_prediction_characteristics_printer(args)
+        train_evaluation = self._create_evaluation(args, prediction_type, train_evaluation_printer,
+                                                   train_prediction_printer, train_prediction_characteristics_printer)
+        test_evaluation = self._create_evaluation(args, prediction_type,
+                                                  self.__create_evaluation_printer(args, prediction_type),
+                                                  self.__create_prediction_printer(args),
+                                                  self.__create_prediction_characteristics_printer(args))
         data_splitter = self.__create_data_splitter(args)
-
-        # Configure experiment...
         experiment = Experiment(base_learner=self._create_learner(args),
                                 learner_name=self._get_learner_name(),
                                 data_splitter=data_splitter,
                                 pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
-                                prediction_type=prediction_type,
-                                test_evaluation_printer=self.__create_evaluation_printer(args, prediction_type),
-                                train_evaluation_printer=train_evaluation_printer,
-                                train_prediction_printer=train_prediction_printer,
-                                test_prediction_printer=self.__create_prediction_printer(args),
-                                train_prediction_characteristics_printer=train_prediction_characteristics_printer,
-                                test_prediction_characteristics_printer=test_prediction_characteristics_printer,
+                                train_evaluation=train_evaluation,
+                                test_evaluation=test_evaluation,
                                 parameter_input=self.__create_parameter_input(args),
                                 parameter_printer=self.__create_parameter_printer(args),
                                 model_printer=self._create_model_printer(args),
@@ -310,6 +307,31 @@ class LearnerRunnable(Runnable, ABC):
                                 data_characteristics_printer=self.__create_data_characteristics_printer(args),
                                 persistence=self.__create_persistence(args))
         experiment.run()
+
+    def _create_evaluation(
+            self, args, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
+            prediction_printer: Optional[PredictionPrinter],
+            prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter]) -> Optional[Evaluation]:
+        """
+        May be overridden by subclasses in order to create the `Evaluation` that should be used to evaluate predictions
+        that are obtained from a previously trained model.
+
+        :param args:                                The command line arguments
+        :param prediction_type:                     The type of the predictions to be obtained
+        :param evaluation_printer:                  The printer to be used for evaluating the predictions or None, if
+                                                    the predictions should not be evaluated
+        :param prediction_printer:                  The printer to be used for printing the predictions or None, if the
+                                                    predictions should not be printed
+        :param prediction_characteristics_printer:  The printer to be used for printing the characteristics of the
+                                                    predictions or None, if the characteristics should not be printed
+        :return:                                    The `Evaluation` that has been created
+        """
+        if evaluation_printer is not None or prediction_printer is not None \
+                or prediction_characteristics_printer is not None:
+            return GlobalEvaluation(prediction_type, evaluation_printer, prediction_printer,
+                                    prediction_characteristics_printer)
+        else:
+            return None
 
     def _create_model_printer(self, args) -> Optional[ModelPrinter]:
         """
