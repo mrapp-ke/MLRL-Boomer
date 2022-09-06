@@ -412,7 +412,8 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
             if evaluation_printer is not None or prediction_printer is not None \
                     or prediction_characteristics_printer is not None:
                 return IncrementalEvaluation(prediction_type, evaluation_printer, prediction_printer,
-                                             prediction_characteristics_printer)
+                                             prediction_characteristics_printer, min_size=min_size, max_size=max_size,
+                                             step_size=step_size)
             else:
                 return None
         else:
