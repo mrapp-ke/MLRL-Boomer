@@ -124,6 +124,7 @@ class GlobalEvaluation(Evaluation):
 
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y):
+        log.info('Predicting for %s ' + data_type.value + ' examples...', x.shape[0])
         start_time = timer()
         prediction_type = self.prediction_type
 
@@ -180,69 +181,40 @@ class Experiment(DataSplitter.Callback):
                  learner_name: str,
                  data_splitter: DataSplitter,
                  pre_execution_hook: Optional[ExecutionHook] = None,
-                 prediction_type: PredictionType = PredictionType.LABELS,
-                 train_evaluation_printer: Optional[EvaluationPrinter] = None,
-                 test_evaluation_printer: Optional[EvaluationPrinter] = None,
-                 train_prediction_printer: Optional[PredictionPrinter] = None,
-                 test_prediction_printer: Optional[PredictionPrinter] = None,
-                 train_prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter] = None,
-                 test_prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter] = None,
-                 parameter_input: Optional[ParameterInput] = None, parameter_printer: Optional[ParameterPrinter] = None,
+                 train_evaluation: Optional[Evaluation] = None,
+                 test_evaluation: Optional[Evaluation] = None,
+                 parameter_input: Optional[ParameterInput] = None,
+                 parameter_printer: Optional[ParameterPrinter] = None,
                  model_printer: Optional[ModelPrinter] = None,
                  model_characteristics_printer: Optional[ModelCharacteristicsPrinter] = None,
                  data_characteristics_printer: Optional[DataCharacteristicsPrinter] = None,
                  persistence: Optional[ModelPersistence] = None):
         """
-        :param base_learner:                                The classifier or ranker to be trained
-        :param learner_name:                                The name of the classifier or ranker
-        :param data_splitter:                               The method to be used for splitting the available data into
-                                                            training and test sets
-        :param pre_execution_hook:                          An operation that should be executed before the experiment
-        :param prediction_type:                             The type of the predictions to be obtained from the
-                                                            classifier or ranker
-        :param train_evaluation_printer:                    The printer to be used for evaluating the predictions for
-                                                            the training data or None, if the predictions should not be
-                                                            evaluated
-        :param test_evaluation_printer:                     The printer to be used for evaluating the predictions for
-                                                            the test data or None, if the predictions should not be
-                                                            evaluated
-        :param train_prediction_printer:                    The printer that should be used to print the predictions for
-                                                            the training data or None, if the predictions should not be
-                                                            printed
-        :param test_prediction_printer                      The printer that should be used to print the predictions for
-                                                            the test data or None, if the predictions should not be
-                                                            printed
-        :param train_prediction_characteristics_printer:    The printer that should be used to print the characteristics
-                                                            of binary predictions for the training data or None, if the
-                                                            characteristics should not be printed
-        :param test_prediction_characteristics_printer:     The printer that should be used to print the characteristics
-                                                            of binary predictions for the test data or None, if the
-                                                            characteristics should not be printed
-        :param parameter_input:                             The input that should be used to read the parameter settings
-        :param parameter_printer:                           The printer that should be used to print parameter settings
-        :param model_printer:                               The printer that should be used to print textual
-                                                            representations of models or None, if no textual
-                                                            representations should be printed
-        :param model_characteristics_printer:               The printer that should be used to print the characteristics
-                                                            of models or None, if the characteristics should not be
-                                                            printed
-        :param data_characteristics_printer:                The printer that should be used to print the characteristics
-                                                            of the training data or None, if the characteristics should
-                                                            not be printed
-        :param persistence:                                 The `ModelPersistence` that should be used for loading and
-                                                            saving models
+        :param base_learner:                    The classifier or ranker to be trained
+        :param learner_name:                    The name of the classifier or ranker
+        :param data_splitter:                   The method to be used for splitting the available data into training and
+                                                test sets
+        :param pre_execution_hook:              An operation that should be executed before the experiment
+        :param train_evaluation:                The method to be used for evaluating the predictions for the training
+                                                data or None, if the predictions should not be evaluated
+        :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
+                                                or None, if the predictions should not be evaluated
+        :param parameter_input:                 The input that should be used to read the parameter settings
+        :param parameter_printer:               The printer that should be used to print parameter settings
+        :param model_printer:                   The printer that should be used to print textual representations of
+                                                models or None, if no textual representations should be printed
+        :param model_characteristics_printer:   The printer that should be used to print the characteristics of models
+                                                or None, if the characteristics should not be printed
+        :param data_characteristics_printer:    The printer that should be used to print the characteristics of the
+                                                training data or None, if the characteristics should not be printed
+        :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
         """
         self.base_learner = base_learner
         self.learner_name = learner_name
         self.data_splitter = data_splitter
         self.pre_execution_hook = pre_execution_hook
-        self.prediction_type = prediction_type
-        self.train_evaluation_printer = train_evaluation_printer
-        self.test_evaluation_printer = test_evaluation_printer
-        self.train_prediction_printer = train_prediction_printer
-        self.test_prediction_printer = test_prediction_printer
-        self.train_prediction_characteristics_printer = train_prediction_characteristics_printer
-        self.test_prediction_characteristics_printer = test_prediction_characteristics_printer
+        self.train_evaluation = train_evaluation
+        self.test_evaluation = test_evaluation
         self.parameter_input = parameter_input
         self.parameter_printer = parameter_printer
         self.model_printer = model_printer
@@ -306,51 +278,20 @@ class Experiment(DataSplitter.Callback):
             self.__save_model(current_learner, data_split)
 
         # Obtain and evaluate predictions for training data, if necessary...
-        evaluation_printer = self.train_evaluation_printer
-        prediction_printer = self.train_prediction_printer
-        prediction_characteristics_printer = None if self.prediction_type != PredictionType.LABELS else \
-            self.train_prediction_characteristics_printer
+        evaluation = self.train_evaluation
 
-        if data_split.is_train_test_separated() and (
-                evaluation_printer is not None or prediction_printer is not None
-                or prediction_characteristics_printer is not None):
+        if evaluation is not None and data_split.is_train_test_separated():
             data_type = DataType.TRAINING
-            log.info('Predicting for %s ' + data_type.value + ' examples...', train_x.shape[0])
-            predictions, predict_time = self.__predict(current_learner, train_x)
-
-            if predictions is not None:
-                if evaluation_printer is not None:
-                    evaluation_printer.evaluate(data_split, data_type, predictions, train_y, train_time=train_time,
-                                                predict_time=predict_time)
-
-                if prediction_printer is not None:
-                    prediction_printer.print(meta_data, data_split, data_type, predictions, train_y)
-
-                if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(data_split, data_type, predictions)
+            evaluation.predict_and_evaluate(meta_data, data_split, data_type, train_time, current_learner, train_x,
+                                            train_y)
 
         # Obtain and evaluate predictions for test data, if necessary...
-        evaluation_printer = self.test_evaluation_printer
-        prediction_printer = self.test_prediction_printer
-        prediction_characteristics_printer = None if self.prediction_type != PredictionType.LABELS else \
-            self.test_prediction_characteristics_printer
+        evaluation = self.test_evaluation
 
-        if evaluation_printer is not None or prediction_printer is not None \
-                or prediction_characteristics_printer is not None:
+        if evaluation is not None:
             data_type = DataType.TEST if data_split.is_train_test_separated() else DataType.TRAINING
-            log.info('Predicting for %s ' + data_type.value + ' examples...', test_x.shape[0])
-            predictions, predict_time = self.__predict(current_learner, test_x)
-
-            if predictions is not None:
-                if evaluation_printer is not None:
-                    evaluation_printer.evaluate(data_split, data_type, predictions, test_y, train_time=train_time,
-                                                predict_time=predict_time)
-
-                if prediction_printer is not None:
-                    prediction_printer.print(meta_data, data_split, data_type, predictions, test_y)
-
-                if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(data_split, data_type, predictions)
+            evaluation.predict_and_evaluate(meta_data, data_split, data_type, train_time, current_learner, test_x,
+                                            test_y)
 
         # Print model characteristics, if necessary...
         model_characteristics_printer = self.model_characteristics_printer
@@ -386,46 +327,6 @@ class Experiment(DataSplitter.Callback):
         learner.fit(x, y)
         end_time = timer()
         return end_time - start_time
-
-    def __predict(self, learner, x):
-        """
-        Obtains predictions from a learner.
-
-        :param learner: The learner
-        :param x:       A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores
-                        the feature values of the query examples
-        :return:        The predictions, as well as the time needed to obtain them
-        """
-        start_time = timer()
-        prediction_type = self.prediction_type
-
-        if prediction_type == PredictionType.SCORES:
-            try:
-                if isinstance(learner, Learner):
-                    predictions = learner.predict(x, predict_scores=True)
-                elif isinstance(learner, RegressorMixin):
-                    predictions = learner.predict(x)
-                else:
-                    raise RuntimeError()
-            except RuntimeError:
-                log.error('Prediction of regression scores not supported')
-                predictions = None
-        elif prediction_type == PredictionType.PROBABILITIES:
-            try:
-                predictions = learner.predict_proba(x)
-            except RuntimeError:
-                log.error('Prediction of probabilities not supported')
-                predictions = None
-        else:
-            predictions = learner.predict(x)
-
-        end_time = timer()
-        predict_time = end_time - start_time
-
-        if predictions is not None:
-            log.info('Successfully predicted in %s seconds', predict_time)
-
-        return predictions, predict_time
 
     def __load_model(self, data_split: DataSplit):
         """
