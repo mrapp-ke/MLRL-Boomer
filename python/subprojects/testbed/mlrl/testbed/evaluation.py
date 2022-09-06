@@ -329,7 +329,7 @@ class EvaluationOutput(ABC):
 
 class EvaluationLogOutput(EvaluationOutput):
     """
-    Outputs evaluation result using the logger.
+    Outputs evaluation results using the logger.
     """
 
     def __init__(self, options: Options):
