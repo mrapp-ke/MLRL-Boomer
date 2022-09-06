@@ -181,22 +181,22 @@ class Experiment(DataSplitter.Callback):
             self.__save_model(current_learner, data_split)
 
         # Obtain and evaluate predictions for training data, if necessary...
-        evaluation = self.train_evaluation_printer
+        evaluation_printer = self.train_evaluation_printer
         prediction_printer = self.train_prediction_printer
         prediction_characteristics_printer = None if self.prediction_type != PredictionType.LABELS else \
             self.train_prediction_characteristics_printer
 
         if data_split.is_train_test_separated() and (
-                evaluation is not None or prediction_printer is not None
+                evaluation_printer is not None or prediction_printer is not None
                 or prediction_characteristics_printer is not None):
             data_type = DataType.TRAINING
             log.info('Predicting for %s ' + data_type.value + ' examples...', train_x.shape[0])
             predictions, predict_time = self.__predict(current_learner, train_x)
 
             if predictions is not None:
-                if evaluation is not None:
-                    evaluation.evaluate(meta_data, data_split, data_type, predictions, train_y,
-                                        train_time=train_time, predict_time=predict_time)
+                if evaluation_printer is not None:
+                    evaluation_printer.evaluate(meta_data, data_split, data_type, predictions, train_y,
+                                                train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
                     prediction_printer.print(meta_data, data_split, data_type, predictions, train_y)
@@ -205,20 +205,21 @@ class Experiment(DataSplitter.Callback):
                     prediction_characteristics_printer.print(data_split, data_type, predictions)
 
         # Obtain and evaluate predictions for test data, if necessary...
-        evaluation = self.test_evaluation_printer
+        evaluation_printer = self.test_evaluation_printer
         prediction_printer = self.test_prediction_printer
         prediction_characteristics_printer = None if self.prediction_type != PredictionType.LABELS else \
             self.test_prediction_characteristics_printer
 
-        if evaluation is not None or prediction_printer is not None or prediction_characteristics_printer is not None:
+        if evaluation_printer is not None or prediction_printer is not None \
+                or prediction_characteristics_printer is not None:
             data_type = DataType.TEST if data_split.is_train_test_separated() else DataType.TRAINING
             log.info('Predicting for %s ' + data_type.value + ' examples...', test_x.shape[0])
             predictions, predict_time = self.__predict(current_learner, test_x)
 
             if predictions is not None:
-                if evaluation is not None:
-                    evaluation.evaluate(meta_data, data_split, data_type, predictions, test_y,
-                                        train_time=train_time, predict_time=predict_time)
+                if evaluation_printer is not None:
+                    evaluation_printer.evaluate(meta_data, data_split, data_type, predictions, test_y,
+                                                train_time=train_time, predict_time=predict_time)
 
                 if prediction_printer is not None:
                     prediction_printer.print(meta_data, data_split, data_type, predictions, test_y)
