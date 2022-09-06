@@ -373,7 +373,7 @@ class EvaluationCsvOutput(EvaluationOutput):
             csv_writer.writerow(columns)
 
 
-class Evaluation(ABC):
+class EvaluationPrinter(ABC):
     """
     An abstract base class for all classes that evaluate the predictions provided by a classifier or ranker and allow to
     write the results to one or several outputs.
@@ -435,14 +435,14 @@ def filter_evaluation_measures(evaluation_measures: List[EvaluationMeasure],
     return evaluation_functions
 
 
-class ClassificationEvaluation(Evaluation):
+class ClassificationEvaluationPrinter(EvaluationPrinter):
     """
     Evaluates the quality of binary predictions provided by a single- or multi-label classifier according to commonly
     used bipartition measures.
     """
 
     def __init__(self, outputs: List[EvaluationOutput]):
-        super(ClassificationEvaluation, self).__init__(outputs)
+        super(ClassificationEvaluationPrinter, self).__init__(outputs)
         self.multi_Label_evaluation_functions = filter_evaluation_measures(MULTI_LABEL_EVALUATION_MEASURES, outputs)
         self.single_Label_evaluation_functions = filter_evaluation_measures(SINGLE_LABEL_EVALUATION_MEASURES, outputs)
 
@@ -464,14 +464,14 @@ class ClassificationEvaluation(Evaluation):
                 result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
 
 
-class ScoreEvaluation(Evaluation):
+class ScoreEvaluationPrinter(EvaluationPrinter):
     """
     Evaluates the quality of regression scores provided by a single- or multi-output regressor according to commonly
     used regression and ranking measures.
     """
 
     def __init__(self, outputs: List[EvaluationOutput]):
-        super(ScoreEvaluation, self).__init__(outputs)
+        super(ScoreEvaluationPrinter, self).__init__(outputs)
         self.regression_evaluation_functions = filter_evaluation_measures(REGRESSION_EVALUATION_MEASURES, outputs)
         self.ranking_evaluation_functions = filter_evaluation_measures(RANKING_EVALUATION_MEASURES, outputs)
 
@@ -494,7 +494,7 @@ class ScoreEvaluation(Evaluation):
             result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
 
 
-class ProbabilityEvaluation(ScoreEvaluation):
+class ProbabilityEvaluationPrinter(ScoreEvaluationPrinter):
     """
     Evaluates the quality of probability estimates provided by a single- or multi-label classifier according to commonly
     used regression and ranking measures.
