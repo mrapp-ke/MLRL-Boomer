@@ -24,8 +24,9 @@ from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCU
     ARGUMENT_F1, ARGUMENT_JACCARD, ARGUMENT_MEAN_ABSOLUTE_ERROR, ARGUMENT_MEAN_SQUARED_ERROR, \
     ARGUMENT_MEDIAN_ABSOLUTE_ERROR, ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR, ARGUMENT_RANK_LOSS, \
     ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, \
-    ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, Evaluation, \
-    ClassificationEvaluation, ScoreEvaluation, ProbabilityEvaluation, EvaluationLogOutput, EvaluationCsvOutput
+    ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, \
+    EvaluationPrinter, ClassificationEvaluationPrinter, ScoreEvaluationPrinter, ProbabilityEvaluationPrinter, \
+    EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment, PredictionType
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, \
@@ -214,7 +215,7 @@ class LearnerRunnable(Runnable, ABC):
         return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
 
     @staticmethod
-    def __create_evaluation(args, prediction_type: PredictionType) -> Optional[Evaluation]:
+    def __create_evaluation_printer(args, prediction_type: PredictionType) -> Optional[EvaluationPrinter]:
         outputs = []
         value, options = parse_param_and_options(PARAM_PRINT_EVALUATION, args.print_evaluation, PRINT_EVALUATION_VALUES)
 
@@ -228,11 +229,11 @@ class LearnerRunnable(Runnable, ABC):
 
         if len(outputs) > 0:
             if prediction_type == PredictionType.SCORES:
-                evaluation = ScoreEvaluation(outputs)
+                evaluation = ScoreEvaluationPrinter(outputs)
             elif prediction_type == PredictionType.PROBABILITIES:
-                evaluation = ProbabilityEvaluation(outputs)
+                evaluation = ProbabilityEvaluationPrinter(outputs)
             else:
-                evaluation = ClassificationEvaluation(outputs)
+                evaluation = ClassificationEvaluationPrinter(outputs)
         else:
             evaluation = None
 
@@ -279,11 +280,11 @@ class LearnerRunnable(Runnable, ABC):
 
         # Create outputs...
         if args.evaluate_training_data:
-            train_evaluation = self.__create_evaluation(args, prediction_type)
+            train_evaluation_printer = self.__create_evaluation_printer(args, prediction_type)
             train_prediction_printer = self.__create_prediction_printer(args)
             train_prediction_characteristics_printer = self.__create_prediction_characteristics_printer(args)
         else:
-            train_evaluation = None
+            train_evaluation_printer = None
             train_prediction_printer = None
             train_prediction_characteristics_printer = None
 
@@ -296,8 +297,8 @@ class LearnerRunnable(Runnable, ABC):
                                 data_splitter=data_splitter,
                                 pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
                                 prediction_type=prediction_type,
-                                test_evaluation=self.__create_evaluation(args, prediction_type),
-                                train_evaluation=train_evaluation,
+                                test_evaluation_printer=self.__create_evaluation_printer(args, prediction_type),
+                                train_evaluation_printer=train_evaluation_printer,
                                 train_prediction_printer=train_prediction_printer,
                                 test_prediction_printer=self.__create_prediction_printer(args),
                                 train_prediction_characteristics_printer=train_prediction_characteristics_printer,

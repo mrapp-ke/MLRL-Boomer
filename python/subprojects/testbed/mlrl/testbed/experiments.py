@@ -14,7 +14,7 @@ from mlrl.common.learners import Learner, NominalAttributeLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
-from mlrl.testbed.evaluation import Evaluation
+from mlrl.testbed.evaluation import EvaluationPrinter
 from mlrl.testbed.model_characteristics import ModelPrinter, ModelCharacteristicsPrinter
 from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
 from mlrl.testbed.persistence import ModelPersistence
@@ -56,8 +56,8 @@ class Experiment(DataSplitter.Callback):
                  data_splitter: DataSplitter,
                  pre_execution_hook: Optional[ExecutionHook] = None,
                  prediction_type: PredictionType = PredictionType.LABELS,
-                 train_evaluation: Optional[Evaluation] = None,
-                 test_evaluation: Optional[Evaluation] = None,
+                 train_evaluation_printer: Optional[EvaluationPrinter] = None,
+                 test_evaluation_printer: Optional[EvaluationPrinter] = None,
                  train_prediction_printer: Optional[PredictionPrinter] = None,
                  test_prediction_printer: Optional[PredictionPrinter] = None,
                  train_prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter] = None,
@@ -75,10 +75,10 @@ class Experiment(DataSplitter.Callback):
         :param pre_execution_hook:                          An operation that should be executed before the experiment
         :param prediction_type:                             The type of the predictions to be obtained from the
                                                             classifier or ranker
-        :param train_evaluation:                            The evaluation to be used for evaluating the predictions for
+        :param train_evaluation_printer:                    The printer to be used for evaluating the predictions for
                                                             the training data or None, if the predictions should not be
                                                             evaluated
-        :param test_evaluation:                             The evaluation to be used for evaluating the predictions for
+        :param test_evaluation_printer:                     The printer to be used for evaluating the predictions for
                                                             the test data or None, if the predictions should not be
                                                             evaluated
         :param train_prediction_printer:                    The printer that should be used to print the predictions for
@@ -112,8 +112,8 @@ class Experiment(DataSplitter.Callback):
         self.data_splitter = data_splitter
         self.pre_execution_hook = pre_execution_hook
         self.prediction_type = prediction_type
-        self.train_evaluation = train_evaluation
-        self.test_evaluation = test_evaluation
+        self.train_evaluation_printer = train_evaluation_printer
+        self.test_evaluation_printer = test_evaluation_printer
         self.train_prediction_printer = train_prediction_printer
         self.test_prediction_printer = test_prediction_printer
         self.train_prediction_characteristics_printer = train_prediction_characteristics_printer
@@ -181,7 +181,7 @@ class Experiment(DataSplitter.Callback):
             self.__save_model(current_learner, data_split)
 
         # Obtain and evaluate predictions for training data, if necessary...
-        evaluation = self.train_evaluation
+        evaluation = self.train_evaluation_printer
         prediction_printer = self.train_prediction_printer
         prediction_characteristics_printer = None if self.prediction_type != PredictionType.LABELS else \
             self.train_prediction_characteristics_printer
@@ -205,7 +205,7 @@ class Experiment(DataSplitter.Callback):
                     prediction_characteristics_printer.print(data_split, data_type, predictions)
 
         # Obtain and evaluate predictions for test data, if necessary...
-        evaluation = self.test_evaluation
+        evaluation = self.test_evaluation_printer
         prediction_printer = self.test_prediction_printer
         prediction_characteristics_printer = None if self.prediction_type != PredictionType.LABELS else \
             self.test_prediction_characteristics_printer
