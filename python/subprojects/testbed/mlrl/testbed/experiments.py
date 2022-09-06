@@ -158,6 +158,18 @@ class GlobalEvaluation(Evaluation):
                                    predictions=predictions, y=y)
 
 
+class IncrementalEvaluation(Evaluation):
+    """
+    Repeatedly obtains and evaluates predictions from a previously trained ensemble model, e.g., a model consisting of
+    several rules, using an increasing number of ensemble members.
+    """
+
+    def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
+                             learner, x, y):
+        # TODO
+        pass
+
+
 class Experiment(DataSplitter.Callback):
     """
     An experiment that trains and evaluates a single multi-label classifier or ranker on a specific data set using cross
