@@ -27,7 +27,7 @@ from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCU
     ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, \
     EvaluationPrinter, ClassificationEvaluationPrinter, ScoreEvaluationPrinter, ProbabilityEvaluationPrinter, \
     EvaluationLogOutput, EvaluationCsvOutput
-from mlrl.testbed.experiments import Experiment, PredictionType, Evaluation, GlobalEvaluation
+from mlrl.testbed.experiments import Experiment, PredictionType, Evaluation, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, \
     ARGUMENT_PRINT_NOMINAL_VALUES, ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS, ModelPrinter, RulePrinter, \
@@ -54,6 +54,8 @@ PARAM_PRINT_RULES = '--print-rules'
 
 PARAM_STORE_RULES = '--store-rules'
 
+PARAM_INCREMENTAL_EVALUATION = '--incremental-evaluation'
+
 DATA_SPLIT_TRAIN_TEST = 'train-test'
 
 ARGUMENT_TEST_SIZE = 'test_size'
@@ -63,6 +65,12 @@ DATA_SPLIT_CROSS_VALIDATION = 'cross-validation'
 ARGUMENT_NUM_FOLDS = 'num_folds'
 
 ARGUMENT_CURRENT_FOLD = 'current_fold'
+
+ARGUMENT_MIN_SIZE = 'min_size'
+
+ARGUMENT_MAX_SIZE = 'max_size'
+
+ARGUMENT_STEP_SIZE = 'step_size'
 
 DATA_SPLIT_VALUES: Dict[str, Set[str]] = {
     NONE: {},
@@ -108,6 +116,11 @@ PRINT_RULES_VALUES: Dict[str, Set[str]] = {
 }
 
 STORE_RULES_VALUES = PRINT_RULES_VALUES
+
+INCREMENTAL_EVALUATION_VALUES: Dict[str, Set[str]] = {
+    BooleanOption.TRUE.value: {ARGUMENT_MIN_SIZE, ARGUMENT_MAX_SIZE, ARGUMENT_STEP_SIZE},
+    BooleanOption.FALSE.value: {}
+}
 
 
 class Runnable(ABC):
@@ -379,6 +392,32 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
     """
     A base class for all programs that perform an experiment that involves training and evaluation of a rule learner.
     """
+
+    def _create_evaluation(
+            self, args, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
+            prediction_printer: Optional[PredictionPrinter],
+            prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter]) -> Optional[Evaluation]:
+        value, options = parse_param_and_options(PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
+                                                 INCREMENTAL_EVALUATION_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            min_size = options.get_int(ARGUMENT_MIN_SIZE, 1)
+            assert_greater_or_equal(ARGUMENT_MIN_SIZE, min_size, 1)
+            max_size = options.get_int(ARGUMENT_MAX_SIZE, 0)
+            if max_size != 0:
+                assert_greater(ARGUMENT_MAX_SIZE, max_size, min_size)
+            step_size = options.get_int(ARGUMENT_STEP_SIZE, 1)
+            assert_greater_or_equal(ARGUMENT_STEP_SIZE, step_size, 1)
+
+            if evaluation_printer is not None or prediction_printer is not None \
+                    or prediction_characteristics_printer is not None:
+                return IncrementalEvaluation(prediction_type, evaluation_printer, prediction_printer,
+                                             prediction_characteristics_printer)
+            else:
+                return None
+        else:
+            return super()._create_evaluation(args, prediction_type, evaluation_printer, prediction_printer,
+                                              prediction_characteristics_printer)
 
     def _create_model_printer(self, args) -> Optional[ModelPrinter]:
         outputs = []
