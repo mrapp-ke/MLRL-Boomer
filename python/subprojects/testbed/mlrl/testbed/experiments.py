@@ -195,8 +195,8 @@ class Experiment(DataSplitter.Callback):
 
             if predictions is not None:
                 if evaluation_printer is not None:
-                    evaluation_printer.evaluate(meta_data, data_split, data_type, predictions, train_y,
-                                                train_time=train_time, predict_time=predict_time)
+                    evaluation_printer.evaluate(data_split, data_type, predictions, train_y, train_time=train_time,
+                                                predict_time=predict_time)
 
                 if prediction_printer is not None:
                     prediction_printer.print(meta_data, data_split, data_type, predictions, train_y)
@@ -218,8 +218,8 @@ class Experiment(DataSplitter.Callback):
 
             if predictions is not None:
                 if evaluation_printer is not None:
-                    evaluation_printer.evaluate(meta_data, data_split, data_type, predictions, test_y,
-                                                train_time=train_time, predict_time=predict_time)
+                    evaluation_printer.evaluate(data_split, data_type, predictions, test_y, train_time=train_time,
+                                                predict_time=predict_time)
 
                 if prediction_printer is not None:
                     prediction_printer.print(meta_data, data_split, data_type, predictions, test_y)

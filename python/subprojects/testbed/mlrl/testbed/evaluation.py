@@ -14,7 +14,6 @@ import sklearn.metrics as metrics
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.common.options import Options
-from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from sklearn.utils.multiclass import is_multilabel
@@ -386,12 +385,11 @@ class EvaluationPrinter(ABC):
         self.outputs = outputs
         self.results: Dict[str, EvaluationResult] = {}
 
-    def evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, predictions, ground_truth,
-                 train_time: float, predict_time: float):
+    def evaluate(self, data_split: DataSplit, data_type: DataType, predictions, ground_truth, train_time: float,
+                 predict_time: float):
         """
         Evaluates the predictions provided by a classifier or ranker and prints the evaluation results.
 
-        :param meta_data:       The meta-data of the data set
         :param data_split:      The split of the available data, the predictions and ground truth labels correspond to
         :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
                                 test data
