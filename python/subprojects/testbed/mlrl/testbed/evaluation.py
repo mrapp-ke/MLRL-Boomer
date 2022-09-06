@@ -183,29 +183,6 @@ RANKING_EVALUATION_MEASURES: List[EvaluationMeasure] = [
 ]
 
 
-class Evaluation(ABC):
-    """
-    An abstract base class for all classes that evaluate the predictions provided by a classifier or ranker.
-    """
-
-    @abstractmethod
-    def evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, predictions, ground_truth,
-                 train_time: float, predict_time: float):
-        """
-        Evaluates the predictions provided by a classifier or ranker.
-
-        :param meta_data:       The meta-data of the data set
-        :param data_split:      The split of the available data, the predictions and ground truth labels correspond to
-        :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
-                                test data
-        :param predictions:     The predictions provided by the classifier
-        :param ground_truth:    The ground truth
-        :param train_time:      The time needed to train the model
-        :param predict_time:    The time needed to make predictions
-        """
-        pass
-
-
 class EvaluationResult:
     """
     Stores the evaluation results according to different measures.
@@ -396,7 +373,7 @@ class EvaluationCsvOutput(EvaluationOutput):
             csv_writer.writerow(columns)
 
 
-class AbstractEvaluation(Evaluation, ABC):
+class Evaluation(ABC):
     """
     An abstract base class for all classes that evaluate the predictions provided by a classifier or ranker and allow to
     write the results to one or several outputs.
@@ -411,6 +388,18 @@ class AbstractEvaluation(Evaluation, ABC):
 
     def evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, predictions, ground_truth,
                  train_time: float, predict_time: float):
+        """
+        Evaluates the predictions provided by a classifier or ranker and prints the evaluation results.
+
+        :param meta_data:       The meta-data of the data set
+        :param data_split:      The split of the available data, the predictions and ground truth labels correspond to
+        :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
+                                test data
+        :param predictions:     The predictions provided by the classifier
+        :param ground_truth:    The ground truth
+        :param train_time:      The time needed to train the model
+        :param predict_time:    The time needed to make predictions
+        """
         result = self.results[data_type] if data_type in self.results else EvaluationResult()
         self.results[data_type] = result
 
@@ -446,7 +435,7 @@ def filter_evaluation_measures(evaluation_measures: List[EvaluationMeasure],
     return evaluation_functions
 
 
-class ClassificationEvaluation(AbstractEvaluation):
+class ClassificationEvaluation(Evaluation):
     """
     Evaluates the quality of binary predictions provided by a single- or multi-label classifier according to commonly
     used bipartition measures.
@@ -475,7 +464,7 @@ class ClassificationEvaluation(AbstractEvaluation):
                 result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
 
 
-class ScoreEvaluation(AbstractEvaluation):
+class ScoreEvaluation(Evaluation):
     """
     Evaluates the quality of regression scores provided by a single- or multi-output regressor according to commonly
     used regression and ranking measures.
