@@ -201,10 +201,6 @@ def add_learner_arguments(parser: ArgumentParser):
 
 
 def add_rule_learner_arguments(parser: ArgumentParser):
-    parser.add_argument(PARAM_INCREMENTAL_EVALUATION, type=boolean_string, default=False,
-                        help='Whether models should be evaluated incrementally, using only a subset of the induced '
-                             + 'rules, or not. Must be one of ' + format_enum_values(BooleanOption) + '. For '
-                             + 'additional options refer to the documentation.')
     parser.add_argument(PARAM_PRINT_MODEL_CHARACTERISTICS, type=boolean_string, default=False,
                         help='Whether the characteristics of models should be printed on the console or not. Must be '
                              + 'one of ' + format_enum_values(BooleanOption) + '.')
@@ -229,6 +225,13 @@ def add_rule_learner_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_PREDICTED_LABEL_FORMAT, type=str, default=SparsePolicy.AUTO.value,
                         help='The format to be used for the representation of predicted labels. Must be one of '
                              + format_enum_values(SparsePolicy) + '.')
+
+
+def add_incremental_evaluation_argument(parser: ArgumentParser):
+    parser.add_argument(PARAM_INCREMENTAL_EVALUATION, type=str, default=BooleanOption.FALSE.value,
+                        help='Whether models should be evaluated repeatedly, using only a subset of the induced rules '
+                             + 'with increasing size, or not. Must be one of ' + format_enum_values(BooleanOption)
+                             + '. For additional options refer to the documentation.')
 
 
 def add_max_rules_argument(parser: ArgumentParser):
