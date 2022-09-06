@@ -32,6 +32,131 @@ class PredictionType(Enum):
     PROBABILITIES = 'probabilities'
 
 
+class Evaluation(ABC):
+    """
+    An abstract base class for all classes that allow to evaluate predictions that are obtained from a previously
+    trained model.
+    """
+
+    def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
+                 prediction_printer: Optional[PredictionPrinter],
+                 prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter]):
+        """
+        :param prediction_type:                     The type of the predictions to be obtained
+        :param evaluation_printer:                  The printer to be used for evaluating the predictions or None, if
+                                                    the predictions should not be evaluated
+        :param prediction_printer:                  The printer to be used for printing the predictions or None, if the
+                                                    predictions should not be printed
+        :param prediction_characteristics_printer:  The printer to be used for printing the characteristics of the
+                                                    predictions or None, if the characteristics should not be printed
+        """
+        self.prediction_type = prediction_type
+        self.evaluation_printer = evaluation_printer
+        self.prediction_printer = prediction_printer
+        self.prediction_characteristics_printer = prediction_characteristics_printer
+
+    def _evaluate_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
+                              predict_time: float, predictions, y):
+        """
+        May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
+        model.
+
+        :param meta_data:       The meta-data of the data set
+        :param data_split:      The split of the available data, the predictions and ground truth labels correspond to
+        :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
+                                test data
+        :param train_time:      The time needed to train the model
+        :param predict_time:    The time needed to obtain the predictions
+        :param predictions:     A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                stores the predictions for the query examples
+        :param y:               A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                stores the ground truth labels of the query examples
+        """
+        if predictions is not None:
+            evaluation_printer = self.evaluation_printer
+
+            if evaluation_printer is not None:
+                evaluation_printer.evaluate(data_split, data_type, predictions, y, train_time=train_time,
+                                            predict_time=predict_time)
+
+            prediction_printer = self.prediction_printer
+
+            if prediction_printer is not None:
+                prediction_printer.print(meta_data, data_split, data_type, predictions, y)
+
+            # Model characteristics can only be determined in the case of binary predictions
+            if self.prediction_type == PredictionType.LABELS:
+                prediction_characteristics_printer = self.prediction_characteristics_printer
+
+                if prediction_characteristics_printer is not None:
+                    prediction_characteristics_printer.print(data_split, data_type, predictions)
+
+    @abstractmethod
+    def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
+                             learner, x, y):
+        """
+        Must be implemented by subclasses in order to obtain and evaluate predictions for given query examples from a
+        previously trained model.
+
+        :param meta_data:   The meta-data of the data set
+        :param data_split:  The split of the available data, the predictions and ground truth labels correspond to
+        :param data_type:   Specifies whether the predictions and ground truth labels correspond to the training or test
+                            data
+        :param train_time:  The time needed to train the model
+        :param learner:     The learner, the predictions should be obtained from
+        :param x:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that
+                            stores the feature values of the query examples
+        :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores
+                            the ground truth labels of the query examples
+        """
+        pass
+
+
+class GlobalEvaluation(Evaluation):
+    """
+    Obtains and evaluates predictions from a previously trained global model.
+    """
+
+    def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
+                 prediction_printer: Optional[PredictionPrinter],
+                 prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter]):
+        super().__init__(prediction_type, evaluation_printer, prediction_printer, prediction_characteristics_printer)
+
+    def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
+                             learner, x, y):
+        start_time = timer()
+        prediction_type = self.prediction_type
+
+        if prediction_type == PredictionType.SCORES:
+            try:
+                if isinstance(learner, Learner):
+                    predictions = learner.predict(x, predict_scores=True)
+                elif isinstance(learner, RegressorMixin):
+                    predictions = learner.predict(x)
+                else:
+                    raise RuntimeError()
+            except RuntimeError:
+                log.error('Prediction of regression scores not supported')
+                predictions = None
+        elif prediction_type == PredictionType.PROBABILITIES:
+            try:
+                predictions = learner.predict_proba(x)
+            except RuntimeError:
+                log.error('Prediction of probabilities not supported')
+                predictions = None
+        else:
+            predictions = learner.predict(x)
+
+        end_time = timer()
+        predict_time = end_time - start_time
+
+        if predictions is not None:
+            log.info('Successfully predicted in %s seconds', predict_time)
+
+        self._evaluate_predictions(meta_data, data_split, data_type, train_time=train_time, predict_time=predict_time,
+                                   predictions=predictions, y=y)
+
+
 class Experiment(DataSplitter.Callback):
     """
     An experiment that trains and evaluates a single multi-label classifier or ranker on a specific data set using cross
