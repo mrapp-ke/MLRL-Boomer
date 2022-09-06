@@ -173,17 +173,17 @@ class LearnerRunnable(Runnable, ABC):
 
         if value == DATA_SPLIT_CROSS_VALIDATION:
             num_folds = options.get_int(ARGUMENT_NUM_FOLDS, 10)
-            assert_greater_or_equal('num_folds', num_folds, 2)
+            assert_greater_or_equal(ARGUMENT_NUM_FOLDS, num_folds, 2)
             current_fold = options.get_int(ARGUMENT_CURRENT_FOLD, 0)
             if current_fold != 0:
-                assert_greater_or_equal('current_fold', current_fold, 1)
-                assert_less_or_equal('current_fold', current_fold, num_folds)
+                assert_greater_or_equal(ARGUMENT_CURRENT_FOLD, current_fold, 1)
+                assert_less_or_equal(ARGUMENT_CURRENT_FOLD, current_fold, num_folds)
             return CrossValidationSplitter(data_set, num_folds=num_folds, current_fold=current_fold - 1,
                                            random_state=args.random_state)
         elif value == DATA_SPLIT_TRAIN_TEST:
             test_size = options.get_float(ARGUMENT_TEST_SIZE, 0.33)
-            assert_greater('test_size', test_size, 0)
-            assert_less('test_size', test_size, 1)
+            assert_greater(ARGUMENT_TEST_SIZE, test_size, 0)
+            assert_less(ARGUMENT_TEST_SIZE, test_size, 1)
             return TrainTestSplitter(data_set, test_size=test_size, random_state=args.random_state)
         else:
             return NoSplitter(data_set)
