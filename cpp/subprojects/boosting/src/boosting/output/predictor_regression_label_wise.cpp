@@ -41,7 +41,7 @@ namespace boosting {
                     const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
                 uint32 numExamples = featureMatrix.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
-                    std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
+                    std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
                 const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
@@ -68,7 +68,7 @@ namespace boosting {
                 uint32 numExamples = featureMatrix.getNumRows();
                 uint32 numFeatures = featureMatrix.getNumCols();
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
-                    std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
+                    std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
                 const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
                 CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
                 const Model* modelPtr = &model_;
