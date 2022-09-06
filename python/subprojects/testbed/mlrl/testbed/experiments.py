@@ -164,6 +164,11 @@ class IncrementalEvaluation(Evaluation):
     several rules, using an increasing number of ensemble members.
     """
 
+    def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
+                 prediction_printer: Optional[PredictionPrinter],
+                 prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter]):
+        super().__init__(prediction_type, evaluation_printer, prediction_printer, prediction_characteristics_printer)
+
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y):
         # TODO
