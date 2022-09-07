@@ -42,6 +42,15 @@ class IncrementalLearner(ABC):
             pass
 
         @abstractmethod
+        def get_num_next(self) -> int:
+            """
+            Returns the number of remaining ensemble members that have not been used yet.
+
+            :return: The number of remaining ensemble members
+            """
+            pass
+
+        @abstractmethod
         def apply_next(self, step_size: int):
             """
             Updates the current predictions by considering several of the remaining ensemble members. If not enough

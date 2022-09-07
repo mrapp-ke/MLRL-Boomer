@@ -163,6 +163,9 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         def has_next(self) -> bool:
             return self.num_used_rules < self.model.get_num_used_rules()
 
+        def get_num_next(self) -> int:
+            return self.model.get_num_used_rules() - self.num_used_rules
+
         def apply_next(self, step_size: int):
             if step_size < 1:
                 raise ValueError('step_size must be at least 1')
