@@ -358,6 +358,8 @@ class EvaluationCsvOutput(EvaluationOutput):
     Writes evaluation results to CSV files.
     """
 
+    COLUMN_MODEL_SIZE = 'Model size'
+
     def __init__(self, options: Options, output_dir: str):
         """
         :param output_dir: The path of the directory, the CSV files should be written to
@@ -369,8 +371,14 @@ class EvaluationCsvOutput(EvaluationOutput):
                                  evaluation_result: EvaluationResult, fold: Optional[int]):
         columns = evaluation_result.dict(fold)
         header = sorted(columns.keys())
+        incremental_prediction = not prediction_scope.is_global()
 
-        with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation'), fold) as csv_file:
+        if incremental_prediction:
+            columns[EvaluationCsvOutput.COLUMN_MODEL_SIZE] = prediction_scope.get_model_size()
+            header = [EvaluationCsvOutput.COLUMN_MODEL_SIZE] + header
+
+        with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation'), fold,
+                                    append=incremental_prediction) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
@@ -378,8 +386,14 @@ class EvaluationCsvOutput(EvaluationOutput):
                                          evaluation_result: EvaluationResult, num_folds: int):
         columns = evaluation_result.avg_dict() if num_folds > 1 else evaluation_result.dict(0)
         header = sorted(columns.keys())
+        incremental_prediction = not prediction_scope.is_global()
 
-        with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation')) as csv_file:
+        if incremental_prediction:
+            columns[EvaluationCsvOutput.COLUMN_MODEL_SIZE] = prediction_scope.get_model_size()
+            header = [EvaluationCsvOutput.COLUMN_MODEL_SIZE] + header
+
+        with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation'),
+                                    append=incremental_prediction) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
