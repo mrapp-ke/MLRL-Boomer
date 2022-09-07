@@ -161,7 +161,7 @@ class GlobalEvaluation(Evaluation):
 class IncrementalEvaluation(Evaluation):
     """
     Repeatedly obtains and evaluates predictions from a previously trained ensemble model, e.g., a model consisting of
-    several rules, using an increasing number of ensemble members.
+    several rules, using only a subset of the ensemble members with increasing size.
     """
 
     def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
@@ -172,7 +172,8 @@ class IncrementalEvaluation(Evaluation):
         :param min_size:    The minimum number of ensemble members to be evaluated. Must be at least 1
         :param max_size:    The maximum number of ensemble members to be evaluated. Must be greater than `min_size` or
                             0, if all ensemble members should be evaluated
-        :param step_size:   The number of ensemble members to be added at each iteration. Must be at least 1
+        :param step_size:   The number of additional ensemble members to be considered at each repetition. Must be at
+                            least 1
         """
         super().__init__(prediction_type, evaluation_printer, prediction_printer, prediction_characteristics_printer)
         self.min_size = min_size
