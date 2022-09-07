@@ -10,7 +10,7 @@ from functools import reduce
 from timeit import default_timer as timer
 from typing import Optional
 
-from mlrl.common.learners import Learner, NominalAttributeLearner
+from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
@@ -199,8 +199,35 @@ class IncrementalEvaluation(Evaluation):
 
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y):
-        # TODO
-        pass
+        if not isinstance(learner, IncrementalLearner):
+            raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
+
+        incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
+                                                                 learner.predict_proba_incrementally, x)
+
+        if incremental_predictor is not None:
+            step_size = self.step_size
+            total_size = incremental_predictor.get_num_next()
+            max_size = self.max_size
+
+            if max_size > 0:
+                total_size = min(max_size, total_size)
+
+            next_step_size = self.min_size
+            current_size = min(next_step_size, total_size)
+
+            while incremental_predictor.has_next():
+                log.info('Predicting for %s ' + data_type.value + ' examples using a model of size %s...', x.shape[0],
+                         current_size)
+                start_time = timer()
+                predictions = incremental_predictor.apply_next(next_step_size)
+                end_time = timer()
+                predict_time = end_time - start_time
+                log.info('Successfully predicted in %s seconds', predict_time)
+                self._evaluate_predictions(meta_data, data_split, data_type, train_time=train_time,
+                                           predict_time=predict_time, predictions=predictions, y=y)
+                next_step_size = step_size
+                current_size = min(current_size + next_step_size, total_size)
 
 
 class Experiment(DataSplitter.Callback):
