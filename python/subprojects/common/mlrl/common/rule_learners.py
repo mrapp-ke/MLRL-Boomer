@@ -10,8 +10,8 @@ from typing import Optional
 
 import numpy as np
 from mlrl.common.arrays import enforce_dense
-from mlrl.common.cython.feature_matrix import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
-    CContiguousFeatureMatrix
+from mlrl.common.cython.feature_matrix import RowWiseFeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
+    CsrFeatureMatrix, CContiguousFeatureMatrix
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.label_space_info import LabelSpaceInfo
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
@@ -269,7 +269,7 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
         else:
             return super()._predict_proba(x, **kwargs)
 
-    def __create_row_wise_feature_matrix(self, x):
+    def __create_row_wise_feature_matrix(self, x) -> RowWiseFeatureMatrix:
         sparse_format = SparseFormat.CSR
         sparse_policy = create_sparse_policy('feature_format', self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
