@@ -9,6 +9,8 @@ from typing import List
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
 
+KWARG_PREDICT_SCORES = 'predict_scores'
+
 
 class NominalAttributeLearner(ABC):
     """
@@ -48,7 +50,7 @@ class Learner(BaseEstimator, ABC):
         """
         check_is_fitted(self)
 
-        if bool(kwargs.get('predict_scores', False)):
+        if bool(kwargs.get(KWARG_PREDICT_SCORES, False)):
             return self._predict_scores(x, **kwargs)
         else:
             return self._predict_labels(x, **kwargs)
