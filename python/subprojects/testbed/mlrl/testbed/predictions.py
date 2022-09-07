@@ -15,6 +15,59 @@ from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
 
 
+class PredictionScope(ABC):
+    """
+    Provides information about whether predictions have been obtained from a global model or incrementally.
+    """
+
+    @abstractmethod
+    def is_global(self) -> bool:
+        """
+        Returns whether the predictions have been obtained from a global model or not.
+
+        :return: True, if the predictions have been obtained from a global model, False otherwise
+        """
+        pass
+
+    def get_model_size(self) -> int:
+        """
+        Returns the size of the model from which the prediction have been obtained.
+
+        :return: The size of the model or 0, if the predictions have been obtained from a global model
+        """
+        pass
+
+
+class GlobalPrediction(PredictionScope):
+    """
+    Provides information about predictions that have been obtained from a global model.
+    """
+
+    def is_global(self) -> bool:
+        return True
+
+    def get_model_size(self) -> int:
+        return 0
+
+
+class IncrementalPrediction(PredictionScope):
+    """
+    Provides information about predictions that have been obtained incrementally.
+    """
+
+    def __init__(self, model_size: int):
+        """
+        :param model_size: The size of the model, the predictions have been obtained from
+        """
+        self.model_size = model_size
+
+    def is_global(self) -> bool:
+        return False
+
+    def get_model_size(self) -> int:
+        return self.model_size
+
+
 class PredictionOutput(ABC):
     """
     An abstract base class for all outputs, predictions may be written to.
