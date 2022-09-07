@@ -16,6 +16,7 @@ from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.common.options import Options
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
+from mlrl.testbed.predictions import PredictionScope
 from sklearn.utils.multiclass import is_multilabel
 
 ARGUMENT_HAMMING_LOSS = 'hamming_loss'
@@ -385,18 +386,21 @@ class EvaluationPrinter(ABC):
         self.outputs = outputs
         self.results: Dict[str, EvaluationResult] = {}
 
-    def evaluate(self, data_split: DataSplit, data_type: DataType, predictions, ground_truth, train_time: float,
-                 predict_time: float):
+    def evaluate(self, data_split: DataSplit, data_type: DataType, prediction_scope: PredictionScope, predictions,
+                 ground_truth, train_time: float, predict_time: float):
         """
         Evaluates the predictions provided by a classifier or ranker and prints the evaluation results.
 
-        :param data_split:      The split of the available data, the predictions and ground truth labels correspond to
-        :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
-                                test data
-        :param predictions:     The predictions provided by the classifier
-        :param ground_truth:    The ground truth
-        :param train_time:      The time needed to train the model
-        :param predict_time:    The time needed to make predictions
+        :param data_split:          The split of the available data, the predictions and ground truth labels correspond
+                                    to
+        :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
+                                    or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
+        :param predictions:         The predictions provided by the classifier
+        :param ground_truth:        The ground truth
+        :param train_time:          The time needed to train the model
+        :param predict_time:        The time needed to make predictions
         """
         result = self.results[data_type] if data_type in self.results else EvaluationResult()
         self.results[data_type] = result

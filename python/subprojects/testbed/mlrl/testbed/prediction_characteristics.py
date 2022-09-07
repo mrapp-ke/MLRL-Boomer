@@ -11,6 +11,7 @@ from typing import List
 from mlrl.testbed.characteristics import LabelCharacteristics
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
+from mlrl.testbed.predictions import PredictionScope
 
 
 class PredictionCharacteristicsOutput(ABC):
@@ -92,12 +93,14 @@ class PredictionCharacteristicsPrinter:
         """
         self.outputs = outputs
 
-    def print(self, data_split: DataSplit, data_type: DataType, y):
+    def print(self, data_split: DataSplit, data_type: DataType, prediction_scope: PredictionScope, y):
         """
-        :param data_split:  The split of the available data, the characteristics correspond to
-        :param data_type:   Specifies whether the predictions correspond to the training or test data
-        :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores
-                            the predictions
+        :param data_split:          The split of the available data, the characteristics correspond to
+        :param data_type:           Specifies whether the predictions correspond to the training or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
+        :param y:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                    stores the predictions
         """
         if len(self.outputs) > 0:
             characteristics = LabelCharacteristics(y)
