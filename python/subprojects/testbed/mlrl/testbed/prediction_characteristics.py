@@ -64,6 +64,8 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
     Writes the characteristics of binary predictions to a CSV file.
     """
 
+    COLUMN_MODEL_SIZE = 'Model size'
+
     def __init__(self, output_dir: str):
         """
         :param output_dir: The path of the directory, the CSV files should be written to
@@ -81,8 +83,14 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
             'Distinct label vectors': characteristics.num_distinct_label_vectors
         }
         header = sorted(columns.keys())
+        incremental_prediction = not prediction_scope.is_global()
+
+        if incremental_prediction:
+            columns[PredictionCharacteristicsCsvOutput.COLUMN_MODEL_SIZE] = prediction_scope.get_model_size()
+            header = [PredictionCharacteristicsCsvOutput.COLUMN_MODEL_SIZE] + header
+
         with open_writable_csv_file(self.output_dir, data_type.get_file_name('prediction_characteristics'),
-                                    data_split.get_fold()) as csv_file:
+                                    data_split.get_fold(), append=incremental_prediction) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
