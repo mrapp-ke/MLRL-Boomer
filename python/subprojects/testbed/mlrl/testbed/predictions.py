@@ -29,11 +29,22 @@ class PredictionScope(ABC):
         """
         pass
 
+    @abstractmethod
     def get_model_size(self) -> int:
         """
         Returns the size of the model from which the prediction have been obtained.
 
         :return: The size of the model or 0, if the predictions have been obtained from a global model
+        """
+        pass
+
+    @abstractmethod
+    def get_file_name(self, name: str) -> str:
+        """
+        Returns a file name that corresponds to a specific prediction scope.
+
+        :param name:    The name of the file (without suffix)
+        :return:        The file name
         """
         pass
 
@@ -48,6 +59,9 @@ class GlobalPrediction(PredictionScope):
 
     def get_model_size(self) -> int:
         return 0
+
+    def get_file_name(self, name: str) -> str:
+        return name
 
 
 class IncrementalPrediction(PredictionScope):
@@ -66,6 +80,9 @@ class IncrementalPrediction(PredictionScope):
 
     def get_model_size(self) -> int:
         return self.model_size
+
+    def get_file_name(self, name: str) -> str:
+        return name + '_model-size-' + str(self.model_size)
 
 
 class PredictionOutput(ABC):
@@ -126,7 +143,8 @@ class PredictionArffOutput(PredictionOutput):
 
     def write_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType,
                           prediction_scope: PredictionScope, predictions, ground_truth):
-        file_name = get_file_name_per_fold(data_type.get_file_name('predictions'), SUFFIX_ARFF, data_split.get_fold())
+        file_name = get_file_name_per_fold(prediction_scope.get_file_name(data_type.get_file_name('predictions')),
+                                           SUFFIX_ARFF, data_split.get_fold())
         attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
         labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
         prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
