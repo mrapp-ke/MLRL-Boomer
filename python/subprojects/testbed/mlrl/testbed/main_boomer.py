@@ -5,8 +5,8 @@ from argparse import ArgumentParser
 
 from mlrl.common.config import AUTOMATIC
 from mlrl.common.strings import format_dict_keys, format_string_set
-from mlrl.testbed.args import add_learner_arguments, add_rule_learner_arguments, add_incremental_evaluation_argument, \
-    add_max_rules_argument, add_time_limit_argument, add_label_sampling_argument, add_instance_sampling_argument, \
+from mlrl.testbed.args import add_learner_arguments, add_rule_learner_arguments, add_max_rules_argument, \
+    add_time_limit_argument, add_label_sampling_argument, add_instance_sampling_argument, \
     add_feature_sampling_argument, add_partition_sampling_argument, add_early_stopping_argument, \
     add_sequential_post_optimization_argument, add_pruning_argument, add_rule_induction_argument, \
     add_parallel_prediction_argument, PARAM_FEATURE_BINNING, PARAM_HEAD_TYPE, PARAM_PARALLEL_RULE_REFINEMENT, \
@@ -59,7 +59,6 @@ class BoomerRunnable(RuleLearnerRunnable):
 def __add_arguments(parser: ArgumentParser):
     add_learner_arguments(parser)
     add_rule_learner_arguments(parser)
-    add_incremental_evaluation_argument(parser)
     add_max_rules_argument(parser)
     add_time_limit_argument(parser)
     add_label_sampling_argument(parser)
