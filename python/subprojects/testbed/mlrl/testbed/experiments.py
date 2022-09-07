@@ -55,6 +55,44 @@ class Evaluation(ABC):
         self.prediction_printer = prediction_printer
         self.prediction_characteristics_printer = prediction_characteristics_printer
 
+    def _invoke_prediction_function(self, learner, predict_function, predict_proba_function, x):
+        """
+        May be used by subclasses in order to invoke the correct prediction function, depending on the type of
+        result that should be obtained.
+
+        :param learner:                 The learner, the result should be obtained from
+        :param predict_function:        The function to be invoked if binary result or regression scores should be
+                                        obtained
+        :param predict_proba_function:  The function to be invoked if probability estimates should be obtained
+        :param x:                       A `numpy.ndarray` or `scipy.sparse` matrix, shape
+                                        `(num_examples, num_features)`, that stores the feature values of the query
+                                        examples
+        :return:                        The return value of the invoked function
+        """
+        prediction_type = self.prediction_type
+
+        if prediction_type == PredictionType.SCORES:
+            try:
+                if isinstance(learner, Learner):
+                    result = predict_function(x, predict_scores=True)
+                elif isinstance(learner, RegressorMixin):
+                    result = predict_function(x)
+                else:
+                    raise RuntimeError()
+            except RuntimeError:
+                log.error('Prediction of regression scores not supported')
+                result = None
+        elif prediction_type == PredictionType.PROBABILITIES:
+            try:
+                result = predict_proba_function(x)
+            except RuntimeError:
+                log.error('Prediction of probabilities not supported')
+                result = None
+        else:
+            result = predict_function(x)
+
+        return result
+
     def _evaluate_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                               predict_time: float, predictions, y):
         """
@@ -126,28 +164,7 @@ class GlobalEvaluation(Evaluation):
                              learner, x, y):
         log.info('Predicting for %s ' + data_type.value + ' examples...', x.shape[0])
         start_time = timer()
-        prediction_type = self.prediction_type
-
-        if prediction_type == PredictionType.SCORES:
-            try:
-                if isinstance(learner, Learner):
-                    predictions = learner.predict(x, predict_scores=True)
-                elif isinstance(learner, RegressorMixin):
-                    predictions = learner.predict(x)
-                else:
-                    raise RuntimeError()
-            except RuntimeError:
-                log.error('Prediction of regression scores not supported')
-                predictions = None
-        elif prediction_type == PredictionType.PROBABILITIES:
-            try:
-                predictions = learner.predict_proba(x)
-            except RuntimeError:
-                log.error('Prediction of probabilities not supported')
-                predictions = None
-        else:
-            predictions = learner.predict(x)
-
+        predictions = self._invoke_prediction_function(learner, learner.predict, learner.predict_proba, x)
         end_time = timer()
         predict_time = end_time - start_time
 
