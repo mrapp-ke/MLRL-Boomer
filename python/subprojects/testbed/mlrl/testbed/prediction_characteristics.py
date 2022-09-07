@@ -43,6 +43,9 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
                                          prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
         msg = 'Prediction characteristics for ' + data_type.value + ' data'
 
+        if not prediction_scope.is_global():
+            msg += ' using a model of size ' + str(prediction_scope.get_model_size())
+
         if data_split.is_cross_validation_used():
             msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 

@@ -103,6 +103,9 @@ class PredictionLogOutput(PredictionOutput):
                + np.array2string(predictions, threshold=sys.maxsize, precision=8, suppress_small=True)
         msg = 'Predictions for ' + data_type.value + ' data'
 
+        if not prediction_scope.is_global():
+            msg += ' using a model of size ' + str(prediction_scope.get_model_size())
+
         if data_split.is_cross_validation_used():
             msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 

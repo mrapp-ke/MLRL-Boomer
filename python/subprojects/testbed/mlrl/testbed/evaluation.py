@@ -329,7 +329,9 @@ class EvaluationLogOutput(EvaluationOutput):
                 score = evaluation_result.get(measure, fold)
                 text += str(measure) + ': ' + str(score)
 
-        log.info('Evaluation result on ' + data_type.value + ' data (Fold ' + str(fold + 1) + '):\n\n%s\n', text)
+        model_size = '' if prediction_scope.is_global() else 'using a model of size ' + str(
+            prediction_scope.get_model_size()) + ' '
+        log.info('Evaluation result on %s data %s(Fold %s):\n\n%s\n', data_type.value, model_size, str(fold + 1), text)
 
     def write_overall_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                          evaluation_result: EvaluationResult, num_folds: int):
@@ -346,7 +348,9 @@ class EvaluationLogOutput(EvaluationOutput):
                 if num_folds > 1:
                     text += (' ±' + str(std_dev))
 
-        log.info('Overall evaluation result on ' + data_type.value + ' data:\n\n%s\n', text)
+        model_size = '' if prediction_scope.is_global() else ' using a model of size ' + str(
+            prediction_scope.get_model_size())
+        log.info('Overall evaluation result on %s data%s:\n\n%s\n', data_type.value, model_size, text)
 
 
 class EvaluationCsvOutput(EvaluationOutput):
