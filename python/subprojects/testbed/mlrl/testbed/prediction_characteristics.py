@@ -21,13 +21,15 @@ class PredictionCharacteristicsOutput(ABC):
 
     @abstractmethod
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
-                                         characteristics: LabelCharacteristics):
+                                         prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
         """
         Writes the characteristics of a data set to the output.
 
-        :param data_split:      The split of the available data, the characteristics correspond to
-        :param data_type:       Specifies whether the predictions correspond to the training or test data
-        :param characteristics: The characteristics of the predictions
+        :param data_split:          The split of the available data, the characteristics correspond to
+        :param data_type:           Specifies whether the predictions correspond to the training or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
+        :param characteristics:     The characteristics of the predictions
         """
         pass
 
@@ -38,7 +40,7 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
     """
 
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
-                                         characteristics: LabelCharacteristics):
+                                         prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
         msg = 'Prediction characteristics for ' + data_type.value + ' data'
 
         if data_split.is_cross_validation_used():
@@ -66,7 +68,7 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
         self.output_dir = output_dir
 
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
-                                         characteristics: LabelCharacteristics):
+                                         prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
         columns = {
             'Labels': characteristics.num_labels,
             'Label density': characteristics.label_density,
@@ -106,4 +108,4 @@ class PredictionCharacteristicsPrinter:
             characteristics = LabelCharacteristics(y)
 
             for output in self.outputs:
-                output.write_prediction_characteristics(data_split, data_type, characteristics)
+                output.write_prediction_characteristics(data_split, data_type, prediction_scope, characteristics)
