@@ -11,6 +11,7 @@ from typing import List
 from mlrl.testbed.characteristics import LabelCharacteristics
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
+from mlrl.testbed.predictions import PredictionScope
 
 
 class PredictionCharacteristicsOutput(ABC):
@@ -20,13 +21,15 @@ class PredictionCharacteristicsOutput(ABC):
 
     @abstractmethod
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
-                                         characteristics: LabelCharacteristics):
+                                         prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
         """
         Writes the characteristics of a data set to the output.
 
-        :param data_split:      The split of the available data, the characteristics correspond to
-        :param data_type:       Specifies whether the predictions correspond to the training or test data
-        :param characteristics: The characteristics of the predictions
+        :param data_split:          The split of the available data, the characteristics correspond to
+        :param data_type:           Specifies whether the predictions correspond to the training or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
+        :param characteristics:     The characteristics of the predictions
         """
         pass
 
@@ -37,8 +40,11 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
     """
 
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
-                                         characteristics: LabelCharacteristics):
+                                         prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
         msg = 'Prediction characteristics for ' + data_type.value + ' data'
+
+        if not prediction_scope.is_global():
+            msg += ' using a model of size ' + str(prediction_scope.get_model_size())
 
         if data_split.is_cross_validation_used():
             msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
@@ -58,6 +64,8 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
     Writes the characteristics of binary predictions to a CSV file.
     """
 
+    COLUMN_MODEL_SIZE = 'Model size'
+
     def __init__(self, output_dir: str):
         """
         :param output_dir: The path of the directory, the CSV files should be written to
@@ -65,7 +73,7 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
         self.output_dir = output_dir
 
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
-                                         characteristics: LabelCharacteristics):
+                                         prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
         columns = {
             'Labels': characteristics.num_labels,
             'Label density': characteristics.label_density,
@@ -75,8 +83,14 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
             'Distinct label vectors': characteristics.num_distinct_label_vectors
         }
         header = sorted(columns.keys())
+        incremental_prediction = not prediction_scope.is_global()
+
+        if incremental_prediction:
+            columns[PredictionCharacteristicsCsvOutput.COLUMN_MODEL_SIZE] = prediction_scope.get_model_size()
+            header = [PredictionCharacteristicsCsvOutput.COLUMN_MODEL_SIZE] + header
+
         with open_writable_csv_file(self.output_dir, data_type.get_file_name('prediction_characteristics'),
-                                    data_split.get_fold()) as csv_file:
+                                    data_split.get_fold(), append=incremental_prediction) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
@@ -92,15 +106,17 @@ class PredictionCharacteristicsPrinter:
         """
         self.outputs = outputs
 
-    def print(self, data_split: DataSplit, data_type: DataType, y):
+    def print(self, data_split: DataSplit, data_type: DataType, prediction_scope: PredictionScope, y):
         """
-        :param data_split:  The split of the available data, the characteristics correspond to
-        :param data_type:   Specifies whether the predictions correspond to the training or test data
-        :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores
-                            the predictions
+        :param data_split:          The split of the available data, the characteristics correspond to
+        :param data_type:           Specifies whether the predictions correspond to the training or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
+        :param y:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                    stores the predictions
         """
         if len(self.outputs) > 0:
             characteristics = LabelCharacteristics(y)
 
             for output in self.outputs:
-                output.write_prediction_characteristics(data_split, data_type, characteristics)
+                output.write_prediction_characteristics(data_split, data_type, prediction_scope, characteristics)

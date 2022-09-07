@@ -3,9 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from argparse import ArgumentParser
 
-from mlrl.boosting.boosting_learners import Boomer, STATISTIC_FORMAT_VALUES, DEFAULT_RULE_VALUES, HEAD_TYPE_VALUES, \
-    LABEL_BINNING_VALUES, LOSS_VALUES, CLASSIFICATION_PREDICTOR_VALUES, \
-    PROBABILITY_PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
 from mlrl.common.config import AUTOMATIC
 from mlrl.common.strings import format_dict_keys, format_string_set
 from mlrl.testbed.args import add_learner_arguments, add_rule_learner_arguments, add_max_rules_argument, \
@@ -17,6 +14,10 @@ from mlrl.testbed.args import add_learner_arguments, add_rule_learner_arguments,
 from mlrl.testbed.args_boosting import add_shrinkage_argument, add_regularization_arguments, PARAM_STATISTIC_FORMAT, \
     PARAM_DEFAULT_RULE, PARAM_LABEL_BINNING, PARAM_LOSS, PARAM_CLASSIFICATION_PREDICTOR, PARAM_PROBABILITY_PREDICTOR
 from mlrl.testbed.runnables import RuleLearnerRunnable
+
+from mlrl.boosting.boosting_learners import Boomer, STATISTIC_FORMAT_VALUES, DEFAULT_RULE_VALUES, HEAD_TYPE_VALUES, \
+    LABEL_BINNING_VALUES, LOSS_VALUES, CLASSIFICATION_PREDICTOR_VALUES, \
+    PROBABILITY_PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
 
 
 class BoomerRunnable(RuleLearnerRunnable):

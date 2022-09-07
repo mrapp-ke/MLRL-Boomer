@@ -16,6 +16,7 @@ from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.common.options import Options
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
+from mlrl.testbed.predictions import PredictionScope
 from sklearn.utils.multiclass import is_multilabel
 
 ARGUMENT_HAMMING_LOSS = 'hamming_loss'
@@ -279,11 +280,14 @@ class EvaluationOutput(ABC):
         self.options = options
 
     @abstractmethod
-    def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
+    def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
+                                 evaluation_result: EvaluationResult, fold: Optional[int]):
         """
         Writes the evaluation results for a single fold to the output.
 
         :param data_type:           Specifies whether the evaluation results correspond to the training or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
         :param evaluation_result:   The evaluation result to be written
         :param fold:                The fold for which the results should be written or None, if no cross validation is
                                     used
@@ -291,12 +295,14 @@ class EvaluationOutput(ABC):
         pass
 
     @abstractmethod
-    def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
-                                         num_folds: int):
+    def write_overall_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
+                                         evaluation_result: EvaluationResult, num_folds: int):
         """
         Writes the overall evaluation results, averaged across all folds, to the output.
 
         :param data_type:           Specifies whether the evaluation results correspond to the training or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
         :param evaluation_result:   The evaluation result to be written
         :param num_folds:           The total number of folds
         """
@@ -311,7 +317,8 @@ class EvaluationLogOutput(EvaluationOutput):
     def __init__(self, options: Options):
         super().__init__(options)
 
-    def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
+    def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
+                                 evaluation_result: EvaluationResult, fold: Optional[int]):
         text = ''
 
         for measure in sorted(evaluation_result.measures):
@@ -322,10 +329,12 @@ class EvaluationLogOutput(EvaluationOutput):
                 score = evaluation_result.get(measure, fold)
                 text += str(measure) + ': ' + str(score)
 
-        log.info('Evaluation result on ' + data_type.value + ' data (Fold ' + str(fold + 1) + '):\n\n%s\n', text)
+        model_size = '' if prediction_scope.is_global() else 'using a model of size ' + str(
+            prediction_scope.get_model_size()) + ' '
+        log.info('Evaluation result on %s data %s(Fold %s):\n\n%s\n', data_type.value, model_size, str(fold + 1), text)
 
-    def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
-                                         num_folds: int):
+    def write_overall_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
+                                         evaluation_result: EvaluationResult, num_folds: int):
         text = ''
 
         for measure in sorted(evaluation_result.measures):
@@ -339,13 +348,17 @@ class EvaluationLogOutput(EvaluationOutput):
                 if num_folds > 1:
                     text += (' ±' + str(std_dev))
 
-        log.info('Overall evaluation result on ' + data_type.value + ' data:\n\n%s\n', text)
+        model_size = '' if prediction_scope.is_global() else ' using a model of size ' + str(
+            prediction_scope.get_model_size())
+        log.info('Overall evaluation result on %s data%s:\n\n%s\n', data_type.value, model_size, text)
 
 
 class EvaluationCsvOutput(EvaluationOutput):
     """
     Writes evaluation results to CSV files.
     """
+
+    COLUMN_MODEL_SIZE = 'Model size'
 
     def __init__(self, options: Options, output_dir: str):
         """
@@ -354,20 +367,33 @@ class EvaluationCsvOutput(EvaluationOutput):
         super().__init__(options)
         self.output_dir = output_dir
 
-    def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
+    def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
+                                 evaluation_result: EvaluationResult, fold: Optional[int]):
         columns = evaluation_result.dict(fold)
         header = sorted(columns.keys())
+        incremental_prediction = not prediction_scope.is_global()
 
-        with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation'), fold) as csv_file:
+        if incremental_prediction:
+            columns[EvaluationCsvOutput.COLUMN_MODEL_SIZE] = prediction_scope.get_model_size()
+            header = [EvaluationCsvOutput.COLUMN_MODEL_SIZE] + header
+
+        with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation'), fold,
+                                    append=incremental_prediction) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
-    def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
-                                         num_folds: int):
+    def write_overall_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
+                                         evaluation_result: EvaluationResult, num_folds: int):
         columns = evaluation_result.avg_dict() if num_folds > 1 else evaluation_result.dict(0)
         header = sorted(columns.keys())
+        incremental_prediction = not prediction_scope.is_global()
 
-        with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation')) as csv_file:
+        if incremental_prediction:
+            columns[EvaluationCsvOutput.COLUMN_MODEL_SIZE] = prediction_scope.get_model_size()
+            header = [EvaluationCsvOutput.COLUMN_MODEL_SIZE] + header
+
+        with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation'),
+                                    append=incremental_prediction) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
@@ -385,18 +411,21 @@ class EvaluationPrinter(ABC):
         self.outputs = outputs
         self.results: Dict[str, EvaluationResult] = {}
 
-    def evaluate(self, data_split: DataSplit, data_type: DataType, predictions, ground_truth, train_time: float,
-                 predict_time: float):
+    def evaluate(self, data_split: DataSplit, data_type: DataType, prediction_scope: PredictionScope, predictions,
+                 ground_truth, train_time: float, predict_time: float):
         """
         Evaluates the predictions provided by a classifier or ranker and prints the evaluation results.
 
-        :param data_split:      The split of the available data, the predictions and ground truth labels correspond to
-        :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
-                                test data
-        :param predictions:     The predictions provided by the classifier
-        :param ground_truth:    The ground truth
-        :param train_time:      The time needed to train the model
-        :param predict_time:    The time needed to make predictions
+        :param data_split:          The split of the available data, the predictions and ground truth labels correspond
+                                    to
+        :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
+                                    or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
+        :param predictions:         The predictions provided by the classifier
+        :param ground_truth:        The ground truth
+        :param train_time:          The time needed to train the model
+        :param predict_time:        The time needed to make predictions
         """
         result = self.results[data_type] if data_type in self.results else EvaluationResult()
         self.results[data_type] = result
@@ -410,11 +439,11 @@ class EvaluationPrinter(ABC):
 
         if data_split.is_cross_validation_used():
             for output in self.outputs:
-                output.write_evaluation_results(data_type, result, data_split.get_fold())
+                output.write_evaluation_results(data_type, prediction_scope, result, data_split.get_fold())
 
         if data_split.is_last_fold():
             for output in self.outputs:
-                output.write_overall_evaluation_results(data_type, result, data_split.get_num_folds())
+                output.write_overall_evaluation_results(data_type, prediction_scope, result, data_split.get_num_folds())
 
     @abstractmethod
     def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
