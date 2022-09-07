@@ -16,7 +16,7 @@ from mlrl.common.strings import format_enum_values, format_string_set, format_di
 from mlrl.testbed.experiments import PredictionType
 from mlrl.testbed.runnables import PARAM_DATA_SPLIT, PARAM_PREDICTION_TYPE, PARAM_PRINT_EVALUATION, \
     PARAM_STORE_EVALUATION, PARAM_PRINT_RULES, PARAM_STORE_RULES, DATA_SPLIT_VALUES, DATA_SPLIT_TRAIN_TEST, \
-    PRINT_RULES_VALUES, STORE_RULES_VALUES
+    PRINT_RULES_VALUES, STORE_RULES_VALUES, PARAM_INCREMENTAL_EVALUATION
 
 PARAM_LOG_LEVEL = '--log-level'
 
@@ -201,6 +201,10 @@ def add_learner_arguments(parser: ArgumentParser):
 
 
 def add_rule_learner_arguments(parser: ArgumentParser):
+    parser.add_argument(PARAM_INCREMENTAL_EVALUATION, type=str, default=BooleanOption.FALSE.value,
+                        help='Whether models should be evaluated repeatedly, using only a subset of the induced rules '
+                             + 'with increasing size, or not. Must be one of ' + format_enum_values(BooleanOption)
+                             + '. For additional options refer to the documentation.')
     parser.add_argument(PARAM_PRINT_MODEL_CHARACTERISTICS, type=boolean_string, default=False,
                         help='Whether the characteristics of models should be printed on the console or not. Must be '
                              + 'one of ' + format_enum_values(BooleanOption) + '.')

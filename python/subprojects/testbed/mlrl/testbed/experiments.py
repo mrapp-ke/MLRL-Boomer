@@ -10,7 +10,7 @@ from functools import reduce
 from timeit import default_timer as timer
 from typing import Optional
 
-from mlrl.common.learners import Learner, NominalAttributeLearner
+from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
@@ -19,7 +19,7 @@ from mlrl.testbed.model_characteristics import ModelPrinter, ModelCharacteristic
 from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
-from mlrl.testbed.predictions import PredictionPrinter
+from mlrl.testbed.predictions import PredictionScope, GlobalPrediction, IncrementalPrediction, PredictionPrinter
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 
 
@@ -55,41 +55,83 @@ class Evaluation(ABC):
         self.prediction_printer = prediction_printer
         self.prediction_characteristics_printer = prediction_characteristics_printer
 
-    def _evaluate_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
-                              predict_time: float, predictions, y):
+    def _invoke_prediction_function(self, learner, predict_function, predict_proba_function, x):
+        """
+        May be used by subclasses in order to invoke the correct prediction function, depending on the type of
+        result that should be obtained.
+
+        :param learner:                 The learner, the result should be obtained from
+        :param predict_function:        The function to be invoked if binary result or regression scores should be
+                                        obtained
+        :param predict_proba_function:  The function to be invoked if probability estimates should be obtained
+        :param x:                       A `numpy.ndarray` or `scipy.sparse` matrix, shape
+                                        `(num_examples, num_features)`, that stores the feature values of the query
+                                        examples
+        :return:                        The return value of the invoked function
+        """
+        prediction_type = self.prediction_type
+
+        if prediction_type == PredictionType.SCORES:
+            try:
+                if isinstance(learner, Learner):
+                    result = predict_function(x, predict_scores=True)
+                elif isinstance(learner, RegressorMixin):
+                    result = predict_function(x)
+                else:
+                    raise RuntimeError()
+            except RuntimeError:
+                log.error('Prediction of regression scores not supported')
+                result = None
+        elif prediction_type == PredictionType.PROBABILITIES:
+            try:
+                result = predict_proba_function(x)
+            except RuntimeError:
+                log.error('Prediction of probabilities not supported')
+                result = None
+        else:
+            result = predict_function(x)
+
+        return result
+
+    def _evaluate_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType,
+                              prediction_scope: PredictionScope, train_time: float, predict_time: float, predictions,
+                              y):
         """
         May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
         model.
 
-        :param meta_data:       The meta-data of the data set
-        :param data_split:      The split of the available data, the predictions and ground truth labels correspond to
-        :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
-                                test data
-        :param train_time:      The time needed to train the model
-        :param predict_time:    The time needed to obtain the predictions
-        :param predictions:     A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                stores the predictions for the query examples
-        :param y:               A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                stores the ground truth labels of the query examples
+        :param meta_data:           The meta-data of the data set
+        :param data_split:          The split of the available data, the predictions and ground truth labels correspond
+                                    to
+        :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
+                                    or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
+        :param train_time:          The time needed to train the model
+        :param predict_time:        The time needed to obtain the predictions
+        :param predictions:         A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                    stores the predictions for the query examples
+        :param y:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                    stores the ground truth labels of the query examples
         """
         if predictions is not None:
             evaluation_printer = self.evaluation_printer
 
             if evaluation_printer is not None:
-                evaluation_printer.evaluate(data_split, data_type, predictions, y, train_time=train_time,
-                                            predict_time=predict_time)
+                evaluation_printer.evaluate(data_split, data_type, prediction_scope, predictions, y,
+                                            train_time=train_time, predict_time=predict_time)
 
             prediction_printer = self.prediction_printer
 
             if prediction_printer is not None:
-                prediction_printer.print(meta_data, data_split, data_type, predictions, y)
+                prediction_printer.print(meta_data, data_split, data_type, prediction_scope, predictions, y)
 
             # Model characteristics can only be determined in the case of binary predictions
             if self.prediction_type == PredictionType.LABELS:
                 prediction_characteristics_printer = self.prediction_characteristics_printer
 
                 if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(data_split, data_type, predictions)
+                    prediction_characteristics_printer.print(data_split, data_type, prediction_scope, predictions)
 
     @abstractmethod
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
@@ -126,36 +168,72 @@ class GlobalEvaluation(Evaluation):
                              learner, x, y):
         log.info('Predicting for %s ' + data_type.value + ' examples...', x.shape[0])
         start_time = timer()
-        prediction_type = self.prediction_type
-
-        if prediction_type == PredictionType.SCORES:
-            try:
-                if isinstance(learner, Learner):
-                    predictions = learner.predict(x, predict_scores=True)
-                elif isinstance(learner, RegressorMixin):
-                    predictions = learner.predict(x)
-                else:
-                    raise RuntimeError()
-            except RuntimeError:
-                log.error('Prediction of regression scores not supported')
-                predictions = None
-        elif prediction_type == PredictionType.PROBABILITIES:
-            try:
-                predictions = learner.predict_proba(x)
-            except RuntimeError:
-                log.error('Prediction of probabilities not supported')
-                predictions = None
-        else:
-            predictions = learner.predict(x)
-
+        predictions = self._invoke_prediction_function(learner, learner.predict, learner.predict_proba, x)
         end_time = timer()
         predict_time = end_time - start_time
 
         if predictions is not None:
             log.info('Successfully predicted in %s seconds', predict_time)
 
-        self._evaluate_predictions(meta_data, data_split, data_type, train_time=train_time, predict_time=predict_time,
-                                   predictions=predictions, y=y)
+        prediction_scope = GlobalPrediction()
+        self._evaluate_predictions(meta_data, data_split, data_type, prediction_scope, train_time=train_time,
+                                   predict_time=predict_time, predictions=predictions, y=y)
+
+
+class IncrementalEvaluation(Evaluation):
+    """
+    Repeatedly obtains and evaluates predictions from a previously trained ensemble model, e.g., a model consisting of
+    several rules, using only a subset of the ensemble members with increasing size.
+    """
+
+    def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
+                 prediction_printer: Optional[PredictionPrinter],
+                 prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter], min_size: int,
+                 max_size: int, step_size: int):
+        """
+        :param min_size:    The minimum number of ensemble members to be evaluated. Must be at least 1
+        :param max_size:    The maximum number of ensemble members to be evaluated. Must be greater than `min_size` or
+                            0, if all ensemble members should be evaluated
+        :param step_size:   The number of additional ensemble members to be considered at each repetition. Must be at
+                            least 1
+        """
+        super().__init__(prediction_type, evaluation_printer, prediction_printer, prediction_characteristics_printer)
+        self.min_size = min_size
+        self.max_size = max_size
+        self.step_size = step_size
+
+    def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
+                             learner, x, y):
+        if not isinstance(learner, IncrementalLearner):
+            raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
+
+        incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
+                                                                 learner.predict_proba_incrementally, x)
+
+        if incremental_predictor is not None:
+            step_size = self.step_size
+            total_size = incremental_predictor.get_num_next()
+            max_size = self.max_size
+
+            if max_size > 0:
+                total_size = min(max_size, total_size)
+
+            next_step_size = self.min_size
+            current_size = min(next_step_size, total_size)
+
+            while incremental_predictor.has_next():
+                log.info('Predicting for %s ' + data_type.value + ' examples using a model of size %s...', x.shape[0],
+                         current_size)
+                start_time = timer()
+                predictions = incremental_predictor.apply_next(next_step_size)
+                end_time = timer()
+                predict_time = end_time - start_time
+                log.info('Successfully predicted in %s seconds', predict_time)
+                prediction_scope = IncrementalPrediction(current_size)
+                self._evaluate_predictions(meta_data, data_split, data_type, prediction_scope, train_time=train_time,
+                                           predict_time=predict_time, predictions=predictions, y=y)
+                next_step_size = step_size
+                current_size = min(current_size + next_step_size, total_size)
 
 
 class Experiment(DataSplitter.Callback):

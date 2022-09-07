@@ -14,6 +14,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * A new parameter `--sequential-post-optimization` has been added. It allows to optimize each rule in a previously learned model by being relearned in the context of the other rules.
 * A new parameter `--probability-predictor` has been added. It allows to specify whether probability estimates should be obtained for each label independently (`label-wise`) or via marginalization over the label vectors that are encountered in the training data (`marginalized`).
 * The arguments `--print-prediction-characteristics` and `--store-prediction-characteristics` have been added to the command line API. They allow to print certain characteristics of binary predictions or write them into output files.
+* The argument ``--incremental-prediction`` has been added to the command line API. It allows to specify whether ensemble models should be evaluated repeatedly, using only a subset of the ensemble members with increasing size, or not.
 * Fixed behavior of the argument `--label-format` when set to the value `auto`.
 * Rules are now guaranteed to not cover more examples than specified via the parameter `min_coverage`. The parameter is now also taken into account when using feature binning. Alternatively, the minimum coverage of rules can now also be specified as a fraction via the parameter `min_support`. 
 * The parameters `--folds` and `--current-fold` have been replaced with a new parameter `--data-split` that provides more control of how data is split into training and test sets.
