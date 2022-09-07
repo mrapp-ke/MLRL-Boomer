@@ -74,17 +74,20 @@ class PredictionOutput(ABC):
     """
 
     @abstractmethod
-    def write_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, predictions,
-                          ground_truth):
+    def write_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType,
+                          prediction_scope: PredictionScope, predictions, ground_truth):
         """
         Writes predictions to the output.
 
-        :param meta_data:       The meta-data of the data set
-        :param data_split:      The split of the available data, the predictions and ground truth labels correspond to
-        :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
-                                test data
-        :param predictions:     The predictions
-        :param ground_truth:    The ground truth
+        :param meta_data:           The meta-data of the data set
+        :param data_split:          The split of the available data, the predictions and ground truth labels correspond
+                                    to
+        :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
+                                    or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
+        :param predictions:         The predictions
+        :param ground_truth:        The ground truth
         """
         pass
 
@@ -94,8 +97,8 @@ class PredictionLogOutput(PredictionOutput):
     Outputs predictions and ground truth labels using the logger.
     """
 
-    def write_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, predictions,
-                          ground_truth):
+    def write_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType,
+                          prediction_scope: PredictionScope, predictions, ground_truth):
         text = 'Ground truth:\n\n' + np.array2string(ground_truth, threshold=sys.maxsize) + '\n\nPredictions:\n\n' \
                + np.array2string(predictions, threshold=sys.maxsize, precision=8, suppress_small=True)
         msg = 'Predictions for ' + data_type.value + ' data'
@@ -118,8 +121,8 @@ class PredictionArffOutput(PredictionOutput):
         """
         self.output_dir = output_dir
 
-    def write_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, predictions,
-                          ground_truth):
+    def write_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType,
+                          prediction_scope: PredictionScope, predictions, ground_truth):
         file_name = get_file_name_per_fold(data_type.get_file_name('predictions'), SUFFIX_ARFF, data_split.get_fold())
         attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
         labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
@@ -154,4 +157,4 @@ class PredictionPrinter:
                                     stores the ground truth labels
         """
         for output in self.outputs:
-            output.write_predictions(meta_data, data_split, data_type, predictions, ground_truth)
+            output.write_predictions(meta_data, data_split, data_type, prediction_scope, predictions, ground_truth)

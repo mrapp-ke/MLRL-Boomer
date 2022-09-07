@@ -280,11 +280,14 @@ class EvaluationOutput(ABC):
         self.options = options
 
     @abstractmethod
-    def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
+    def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
+                                 evaluation_result: EvaluationResult, fold: Optional[int]):
         """
         Writes the evaluation results for a single fold to the output.
 
         :param data_type:           Specifies whether the evaluation results correspond to the training or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
         :param evaluation_result:   The evaluation result to be written
         :param fold:                The fold for which the results should be written or None, if no cross validation is
                                     used
@@ -292,12 +295,14 @@ class EvaluationOutput(ABC):
         pass
 
     @abstractmethod
-    def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
-                                         num_folds: int):
+    def write_overall_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
+                                         evaluation_result: EvaluationResult, num_folds: int):
         """
         Writes the overall evaluation results, averaged across all folds, to the output.
 
         :param data_type:           Specifies whether the evaluation results correspond to the training or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
         :param evaluation_result:   The evaluation result to be written
         :param num_folds:           The total number of folds
         """
@@ -312,7 +317,8 @@ class EvaluationLogOutput(EvaluationOutput):
     def __init__(self, options: Options):
         super().__init__(options)
 
-    def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
+    def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
+                                 evaluation_result: EvaluationResult, fold: Optional[int]):
         text = ''
 
         for measure in sorted(evaluation_result.measures):
@@ -325,8 +331,8 @@ class EvaluationLogOutput(EvaluationOutput):
 
         log.info('Evaluation result on ' + data_type.value + ' data (Fold ' + str(fold + 1) + '):\n\n%s\n', text)
 
-    def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
-                                         num_folds: int):
+    def write_overall_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
+                                         evaluation_result: EvaluationResult, num_folds: int):
         text = ''
 
         for measure in sorted(evaluation_result.measures):
@@ -355,7 +361,8 @@ class EvaluationCsvOutput(EvaluationOutput):
         super().__init__(options)
         self.output_dir = output_dir
 
-    def write_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult, fold: Optional[int]):
+    def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
+                                 evaluation_result: EvaluationResult, fold: Optional[int]):
         columns = evaluation_result.dict(fold)
         header = sorted(columns.keys())
 
@@ -363,8 +370,8 @@ class EvaluationCsvOutput(EvaluationOutput):
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 
-    def write_overall_evaluation_results(self, data_type: DataType, evaluation_result: EvaluationResult,
-                                         num_folds: int):
+    def write_overall_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
+                                         evaluation_result: EvaluationResult, num_folds: int):
         columns = evaluation_result.avg_dict() if num_folds > 1 else evaluation_result.dict(0)
         header = sorted(columns.keys())
 
@@ -414,11 +421,11 @@ class EvaluationPrinter(ABC):
 
         if data_split.is_cross_validation_used():
             for output in self.outputs:
-                output.write_evaluation_results(data_type, result, data_split.get_fold())
+                output.write_evaluation_results(data_type, prediction_scope, result, data_split.get_fold())
 
         if data_split.is_last_fold():
             for output in self.outputs:
-                output.write_overall_evaluation_results(data_type, result, data_split.get_num_folds())
+                output.write_overall_evaluation_results(data_type, prediction_scope, result, data_split.get_num_folds())
 
     @abstractmethod
     def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
