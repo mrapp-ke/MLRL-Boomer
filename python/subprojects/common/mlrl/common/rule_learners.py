@@ -365,7 +365,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
     def _predict_labels_incrementally(self, x, **kwargs):
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
-        num_labels = self.num_labels
+        num_labels = self.num_labels_
 
         if learner.can_predict_labels(feature_matrix, num_labels):
             sparse_predictions = self.sparse_predictions_
