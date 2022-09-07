@@ -19,7 +19,7 @@ from mlrl.testbed.model_characteristics import ModelPrinter, ModelCharacteristic
 from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
-from mlrl.testbed.predictions import PredictionPrinter
+from mlrl.testbed.predictions import PredictionScope, GlobalPrediction, IncrementalPrediction, PredictionPrinter
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 
 
@@ -93,41 +93,45 @@ class Evaluation(ABC):
 
         return result
 
-    def _evaluate_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
-                              predict_time: float, predictions, y):
+    def _evaluate_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType,
+                              prediction_scope: PredictionScope, train_time: float, predict_time: float, predictions,
+                              y):
         """
         May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
         model.
 
-        :param meta_data:       The meta-data of the data set
-        :param data_split:      The split of the available data, the predictions and ground truth labels correspond to
-        :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
-                                test data
-        :param train_time:      The time needed to train the model
-        :param predict_time:    The time needed to obtain the predictions
-        :param predictions:     A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                stores the predictions for the query examples
-        :param y:               A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                stores the ground truth labels of the query examples
+        :param meta_data:           The meta-data of the data set
+        :param data_split:          The split of the available data, the predictions and ground truth labels correspond
+                                    to
+        :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
+                                    or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
+        :param train_time:          The time needed to train the model
+        :param predict_time:        The time needed to obtain the predictions
+        :param predictions:         A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                    stores the predictions for the query examples
+        :param y:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                    stores the ground truth labels of the query examples
         """
         if predictions is not None:
             evaluation_printer = self.evaluation_printer
 
             if evaluation_printer is not None:
-                evaluation_printer.evaluate(data_split, data_type, predictions, y, train_time=train_time,
-                                            predict_time=predict_time)
+                evaluation_printer.evaluate(data_split, data_type, prediction_scope, predictions, y,
+                                            train_time=train_time, predict_time=predict_time)
 
             prediction_printer = self.prediction_printer
 
             if prediction_printer is not None:
-                prediction_printer.print(meta_data, data_split, data_type, predictions, y)
+                prediction_printer.print(meta_data, data_split, data_type, prediction_scope, predictions, y)
 
             # Model characteristics can only be determined in the case of binary predictions
             if self.prediction_type == PredictionType.LABELS:
                 prediction_characteristics_printer = self.prediction_characteristics_printer
 
                 if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(data_split, data_type, predictions)
+                    prediction_characteristics_printer.print(data_split, data_type, prediction_scope, predictions)
 
     @abstractmethod
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
@@ -171,8 +175,9 @@ class GlobalEvaluation(Evaluation):
         if predictions is not None:
             log.info('Successfully predicted in %s seconds', predict_time)
 
-        self._evaluate_predictions(meta_data, data_split, data_type, train_time=train_time, predict_time=predict_time,
-                                   predictions=predictions, y=y)
+        prediction_scope = GlobalPrediction()
+        self._evaluate_predictions(meta_data, data_split, data_type, prediction_scope, train_time=train_time,
+                                   predict_time=predict_time, predictions=predictions, y=y)
 
 
 class IncrementalEvaluation(Evaluation):
@@ -224,7 +229,8 @@ class IncrementalEvaluation(Evaluation):
                 end_time = timer()
                 predict_time = end_time - start_time
                 log.info('Successfully predicted in %s seconds', predict_time)
-                self._evaluate_predictions(meta_data, data_split, data_type, train_time=train_time,
+                prediction_scope = IncrementalPrediction(current_size)
+                self._evaluate_predictions(meta_data, data_split, data_type, prediction_scope, train_time=train_time,
                                            predict_time=predict_time, predictions=predictions, y=y)
                 next_step_size = step_size
                 current_size = min(current_size + next_step_size, total_size)

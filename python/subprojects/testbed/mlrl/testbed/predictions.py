@@ -138,16 +138,20 @@ class PredictionPrinter:
         """
         self.outputs = outputs
 
-    def print(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, predictions, ground_truth):
+    def print(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, prediction_scope: PredictionScope,
+              predictions, ground_truth):
         """
-        :param meta_data:       The meta-data of the data set
-        :param data_split:      The split of the available data, the predictions and ground truth labels correspond to
-        :param data_type:       Specifies whether the predictions and ground truth labels correspond to the training or
-                                test data
-        :param predictions:     A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                stores the predictions
-        :param ground_truth:    A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                stores the ground truth labels
+        :param meta_data:           The meta-data of the data set
+        :param data_split:          The split of the available data, the predictions and ground truth labels correspond
+                                    to
+        :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
+                                    or test data
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally
+        :param predictions:         A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                    stores the predictions
+        :param ground_truth:        A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                    stores the ground truth labels
         """
         for output in self.outputs:
             output.write_predictions(meta_data, data_split, data_type, predictions, ground_truth)
