@@ -143,7 +143,7 @@ def predict_proba(learner: RuleLearnerWrapper, model: RuleModel, label_space_inf
     return prediction
 
 
-class RuleLearner(Learner, NominalAttributeLearner, ABC):
+class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm for multi-label classification or ranking.
     """
@@ -359,6 +359,19 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
         else:
             return super()._predict_labels(x, **kwargs)
 
+    def _predict_labels_incrementally(self, x, **kwargs):
+        learner = self._create_learner()
+        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        num_labels = self.num_labels
+
+        if learner.can_predict_labels(feature_matrix, num_labels):
+            sparse_predictions = self.sparse_predictions_
+            log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
+            return RuleLearner.IncrementalLabelPredictor(learner, self.model_, self.label_space_info_, num_labels,
+                                                         feature_matrix, sparse_predictions)
+        else:
+            return super()._predict_labels_incrementally(x, **kwargs)
+
     def _predict_scores(self, x, **kwargs):
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
@@ -370,6 +383,18 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
         else:
             return super()._predict_scores(x, **kwargs)
 
+    def _predict_scores_incrementally(self, x, **kwargs):
+        learner = self._create_learner()
+        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        num_labels = self.num_labels_
+
+        if learner.can_predict_scores(feature_matrix, num_labels):
+            log.debug('A dense matrix is used to store the predicted regression scores')
+            return RuleLearner.IncrementalScorePredictor(learner, self.model_, self.label_space_info_, num_labels,
+                                                         feature_matrix)
+        else:
+            return super()._predict_scores_incrementally(x, **kwargs)
+
     def _predict_proba(self, x, **kwargs):
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
@@ -380,6 +405,18 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
             return predict_proba(learner, self.model_, self.label_space_info_, num_labels, feature_matrix)
         else:
             return super()._predict_proba(x, **kwargs)
+
+    def _predict_proba_incrementally(self, x, **kwargs):
+        learner = self._create_learner()
+        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        num_labels = self.num_labels_
+
+        if learner.can_predict_probabilities(feature_matrix, num_labels):
+            log.debug('A dense matrix is used to store the predicted probability estimates')
+            return RuleLearner.IncrementalProbabilityPredictor(learner, self.model_, self.label_space_info_, num_labels,
+                                                               feature_matrix)
+        else:
+            return super().predict_proba_incrementally(x, **kwargs)
 
     def __create_row_wise_feature_matrix(self, x) -> RowWiseFeatureMatrix:
         sparse_format = SparseFormat.CSR
