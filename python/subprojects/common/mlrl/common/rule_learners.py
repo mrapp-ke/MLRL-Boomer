@@ -13,10 +13,12 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.cython.feature_matrix import FortranContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     CContiguousFeatureMatrix
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
+from mlrl.common.cython.label_space_info import LabelSpaceInfo
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.cython.nominal_feature_mask import EqualNominalFeatureMask, MixedNominalFeatureMask
+from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
-from mlrl.common.learners import Learner, NominalAttributeLearner
+from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
 from mlrl.common.strings import format_enum_values
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
@@ -112,6 +114,33 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
 
     raise ValueError(
         'Matrix of type ' + type(m).__name__ + ' cannot be converted to format "' + str(sparse_format) + '"')
+
+
+def predict_sparse_labels(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
+                          num_labels: int, feature_matrix):
+    return learner.predict_sparse_labels(feature_matrix, model, label_space_info, num_labels)
+
+
+def predict_labels(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
+                   feature_matrix):
+    return learner.predict_labels(feature_matrix, model, label_space_info, num_labels)
+
+
+def predict_scores(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
+                   feature_matrix):
+    return learner.predict_scores(feature_matrix, model, label_space_info, num_labels)
+
+
+def predict_proba(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
+                  feature_matrix):
+    prediction = learner.predict_probabilities(feature_matrix, model, label_space_info, num_labels)
+
+    # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the negative and
+    # positive class...
+    if prediction.shape[1] == 1:
+        prediction = np.hstack((1 - prediction, prediction))
+
+    return prediction
 
 
 class RuleLearner(Learner, NominalAttributeLearner, ABC):
@@ -210,11 +239,11 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
         if learner.can_predict_labels(feature_matrix, num_labels):
             if self.sparse_predictions_:
                 log.debug('A sparse matrix is used to store the predicted labels')
-                return learner.predict_sparse_labels(feature_matrix, self.model_, self.label_space_info_,
-                                                     self.num_labels_)
+                return predict_sparse_labels(learner, self.model_, self.label_space_info_, self.num_labels_,
+                                             feature_matrix)
             else:
                 log.debug('A dense matrix is used to store the predicted labels')
-                return learner.predict_labels(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+                return predict_labels(learner, self.model_, self.label_space_info_, self.num_labels_, feature_matrix)
         else:
             return super()._predict_labels(x, **kwargs)
 
@@ -225,7 +254,7 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
 
         if learner.can_predict_scores(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted regression scores')
-            return learner.predict_scores(feature_matrix, self.model_, self.label_space_info_, self.num_labels_)
+            return predict_scores(learner, self.model_, self.label_space_info_, self.num_labels_, feature_matrix)
         else:
             return super()._predict_scores(x, **kwargs)
 
@@ -236,14 +265,7 @@ class RuleLearner(Learner, NominalAttributeLearner, ABC):
 
         if learner.can_predict_probabilities(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted probability estimates')
-            prediction = learner.predict_probabilities(feature_matrix, self.model_, self.label_space_info_, num_labels)
-
-            # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the
-            # negative and positive class...
-            if prediction.shape[1] == 1:
-                prediction = np.hstack((1 - prediction, prediction))
-
-            return prediction
+            return predict_proba(learner, self.model_, self.label_space_info_, num_labels, feature_matrix)
         else:
             return super()._predict_proba(x, **kwargs)
 
