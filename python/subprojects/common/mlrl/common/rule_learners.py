@@ -117,22 +117,22 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
 
 
 def predict_sparse_labels(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
-                          num_labels: int, feature_matrix):
+                          num_labels: int, feature_matrix: RowWiseFeatureMatrix):
     return learner.predict_sparse_labels(feature_matrix, model, label_space_info, num_labels)
 
 
 def predict_labels(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
-                   feature_matrix):
+                   feature_matrix: RowWiseFeatureMatrix):
     return learner.predict_labels(feature_matrix, model, label_space_info, num_labels)
 
 
 def predict_scores(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
-                   feature_matrix):
+                   feature_matrix: RowWiseFeatureMatrix):
     return learner.predict_scores(feature_matrix, model, label_space_info, num_labels)
 
 
 def predict_proba(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
-                  feature_matrix):
+                  feature_matrix: RowWiseFeatureMatrix):
     prediction = learner.predict_probabilities(feature_matrix, model, label_space_info, num_labels)
 
     # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the negative and
