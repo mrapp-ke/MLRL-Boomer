@@ -177,10 +177,9 @@ class Learner(BaseEstimator, ABC):
         """
         pass
 
-    @abstractmethod
     def _predict_labels(self, x, **kwargs):
         """
-        Must be implemented by subclasses in order to obtain binary predictions for given query examples.
+        May be overridden by subclasses in order to obtain binary predictions for given query examples.
 
         :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
                     feature values of the query examples
