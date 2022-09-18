@@ -54,7 +54,7 @@ def format_float(value: float, decimals: int) -> str:
     :param decimals:    The number of decimals to be used
     :return:            The textual representation that has been created
     """
-    return ('{:.' + str(decimals) + 'f}').format(value)
+    return ('{:.' + str(decimals) + 'f}').format(round(value, decimals))
 
 
 def format_table(rows) -> str:
