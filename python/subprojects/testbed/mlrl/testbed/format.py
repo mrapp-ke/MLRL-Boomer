@@ -42,3 +42,14 @@ def format_duration(duration: float) -> str:
     return reduce(
         lambda txt, x: txt + ((' and ' if x[0] == len(substrings) - 1 else ', ') if len(txt) > 0 else '') + x[1],
         enumerate(substrings), '')
+
+
+def format_float(value: float, decimals: int):
+    """
+    Creates and returns a textual representation of a floating point value using a specific number of decimals.
+
+    :param value:       The value
+    :param decimals:    The number of decimals to be used
+    :return:            The textual representation that has been created
+    """
+    return ('{:.' + str(decimals) + 'f}').format(value)
