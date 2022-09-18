@@ -3,7 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from argparse import ArgumentParser
 
-from mlrl.common.strings import format_dict_keys
+from mlrl.common.format import format_dict_keys
+from mlrl.seco.seco_learners import MultiLabelSeCoRuleLearner, HEURISTIC_VALUES
 from mlrl.testbed.args import add_learner_arguments, add_rule_learner_arguments, add_max_rules_argument, \
     add_time_limit_argument, add_sequential_post_optimization_argument, add_label_sampling_argument, \
     add_instance_sampling_argument, add_feature_sampling_argument, add_partition_sampling_argument, \
@@ -12,8 +13,6 @@ from mlrl.testbed.args import add_learner_arguments, add_rule_learner_arguments,
 from mlrl.testbed.args_seco import add_head_type_argument, add_lift_function_argument, PARAM_HEURISTIC, \
     PARAM_PRUNING_HEURISTIC
 from mlrl.testbed.runnables import RuleLearnerRunnable
-
-from mlrl.seco.seco_learners import MultiLabelSeCoRuleLearner, HEURISTIC_VALUES
 
 
 class SeCoRunnable(RuleLearnerRunnable):

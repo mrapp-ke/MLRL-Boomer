@@ -11,8 +11,8 @@ from typing import Optional, Dict, Set
 
 from mlrl.common.config import NONE
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
+from mlrl.common.format import format_enum_values
 from mlrl.common.options import BooleanOption, parse_param_and_options
-from mlrl.common.strings import format_enum_values
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
 from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, NoSplitter, DataSet

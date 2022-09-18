@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from argparse import ArgumentParser
 
 from mlrl.common.config import AUTOMATIC
-from mlrl.common.strings import format_dict_keys, format_string_set
+from mlrl.common.format import format_dict_keys, format_string_set
 from mlrl.testbed.args import add_learner_arguments, add_rule_learner_arguments, add_max_rules_argument, \
     add_time_limit_argument, add_label_sampling_argument, add_instance_sampling_argument, \
     add_feature_sampling_argument, add_partition_sampling_argument, add_early_stopping_argument, \
