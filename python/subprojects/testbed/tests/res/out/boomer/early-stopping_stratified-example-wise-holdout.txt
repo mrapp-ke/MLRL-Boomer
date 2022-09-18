@@ -1,0 +1,40 @@
+INFO Starting experiment...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fitting model to 397 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.1402127710171044 seconds
+INFO Predicting for 196 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0008720110054127872 seconds
+INFO Overall evaluation result on test data:
+
+Ex.-based F1: 0.5539115646258503
+Ex.-based Jacc.: 0.4736394557823129
+Ex.-based Prec.: 0.7882653061224489
+Ex.-based Rec.: 0.5442176870748299
+Hamm. Acc.: 0.7882653061224489
+Hamm. Loss: 0.21173469387755103
+Ma. F1: 0.5890870849641114
+Ma. Jacc.: 0.4321308974153719
+Ma. Prec.: 0.7260125421106336
+Ma. Rec.: 0.5149984493614034
+Mi. F1: 0.6127527216174182
+Mi. Jacc.: 0.44170403587443946
+Mi. Prec.: 0.7350746268656716
+Mi. Rec.: 0.5253333333333333
+Subs. 0/1 Loss: 0.7704081632653061
+Subs. Acc.: 0.22959183673469388
+
+INFO Model characteristics:
+
+Rules: 277 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
+Conditions per rule: avg. 4.364620938628159, min. 1, max. 18
+Conditions total: 1209 (51.36476426799007% use <= operator, 48.635235732009924% use > operator, 0.0% use == operator, 0.0% use != operator)
+Predictions per rule: avg. 1.0, min. 1, max. 1
+Predictions total: 277 (45.48736462093863% positive, 54.51263537906137% negative)
+
+INFO Successfully finished after 0.20119999395683408 seconds

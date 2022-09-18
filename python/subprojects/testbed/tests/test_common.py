@@ -65,6 +65,14 @@ LABEL_SAMPLING_NO = 'none'
 
 LABEL_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
+HOLDOUT_NO = 'none'
+
+HOLDOUT_RANDOM = 'random'
+
+HOLDOUT_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
+
+HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
+
 
 class CmdBuilder:
     """
@@ -465,6 +473,17 @@ class CmdBuilder:
         """
         self.args.append('--sequential-post-optimization')
         self.args.append(str(sequential_post_optimization).lower())
+        return self
+
+    def holdout(self, holdout: str = HOLDOUT_RANDOM):
+        """
+        Configures the algorithm to use a holdout set.
+
+        :param holdout: The name of the sampling method that should be used to create the holdout set
+        :return:        The builder itself
+        """
+        self.args.append('--holdout')
+        self.args.append(holdout)
         return self
 
     def build(self) -> List[str]:
