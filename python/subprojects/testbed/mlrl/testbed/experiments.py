@@ -11,6 +11,7 @@ from timeit import default_timer as timer
 from typing import Optional
 
 from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
+from mlrl.common.strings import format_duration
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
@@ -173,7 +174,7 @@ class GlobalEvaluation(Evaluation):
         predict_time = end_time - start_time
 
         if predictions is not None:
-            log.info('Successfully predicted in %s seconds', predict_time)
+            log.info('Successfully predicted in %s', format_duration(predict_time))
 
         prediction_scope = GlobalPrediction()
         self._evaluate_predictions(meta_data, data_split, data_type, prediction_scope, train_time=train_time,
@@ -228,7 +229,7 @@ class IncrementalEvaluation(Evaluation):
                 predictions = incremental_predictor.apply_next(next_step_size)
                 end_time = timer()
                 predict_time = end_time - start_time
-                log.info('Successfully predicted in %s seconds', predict_time)
+                log.info('Successfully predicted in %s', format_duration(predict_time))
                 prediction_scope = IncrementalPrediction(current_size)
                 self._evaluate_predictions(meta_data, data_split, data_type, prediction_scope, train_time=train_time,
                                            predict_time=predict_time, predictions=predictions, y=y)
@@ -350,7 +351,7 @@ class Experiment(DataSplitter.Callback):
         else:
             log.info('Fitting model to %s training examples...', train_x.shape[0])
             train_time = self.__train(current_learner, train_x, train_y)
-            log.info('Successfully fit model in %s seconds', train_time)
+            log.info('Successfully fit model in %s', format_duration(train_time))
 
             # Save model to disk...
             self.__save_model(current_learner, data_split)
