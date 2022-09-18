@@ -44,7 +44,7 @@ def format_duration(duration: float) -> str:
         enumerate(substrings), '')
 
 
-def format_float(value: float, decimals: int):
+def format_float(value: float, decimals: int) -> str:
     """
     Creates and returns a textual representation of a floating point value using a specific number of decimals.
 
