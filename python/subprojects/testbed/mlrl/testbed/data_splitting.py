@@ -12,6 +12,7 @@ from functools import reduce
 from timeit import default_timer as timer
 from typing import Optional, List
 
+from mlrl.common.strings import format_duration
 from mlrl.testbed.data import MetaData, load_data_set_and_meta_data, load_data_set, one_hot_encode
 from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
 from scipy.sparse import vstack
@@ -201,7 +202,7 @@ class DataSplitter(ABC):
         self._split_data(callback)
         end_time = timer()
         run_time = end_time - start_time
-        log.info('Successfully finished after %s seconds', run_time)
+        log.info('Successfully finished after %s', format_duration(run_time))
 
     @abstractmethod
     def _split_data(self, callback: Callback):

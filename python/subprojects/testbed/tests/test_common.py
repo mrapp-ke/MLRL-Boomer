@@ -726,7 +726,10 @@ class IntegrationTests(ABC, TestCase):
                     for i, line in enumerate(f):
                         line = line.strip('\n')
 
-                        if not line.endswith('seconds'):
+                        if not line.endswith('days') and not line.endswith('day') \
+                                and not line.endswith('hours') and not line.endswith('hour') \
+                                and not line.endswith('minutes') and not line.endswith('minute') \
+                                and not line.endswith('seconds') and not line.endswith('second'):
                             self.assertEqual(stdout[i], line, 'Output of command "' + self.__format_cmd(args)
                                              + '" differs at line ' + str(i + 1))
 
