@@ -344,7 +344,7 @@ class EvaluationLogOutput(EvaluationOutput):
                 row = [str(measure), format_float(score * 100, decimals=4)]
 
                 if num_folds > 1:
-                    row.append('±' + format_float(std_dev, decimals=4))
+                    row.append('±' + format_float(std_dev * 100, decimals=4))
 
                 rows.append(row)
 
