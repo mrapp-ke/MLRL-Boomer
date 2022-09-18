@@ -22,6 +22,16 @@ HEURISTIC_F_MEASURE = 'f-measure'
 
 HEURISTIC_M_ESTIMATE = 'm-estimate'
 
+HEAD_TYPE_SINGLE_LABEL = 'single-label'
+
+HEAD_TYPE_PARTIAL = 'partial'
+
+LIFT_FUNCTION_NO = 'none'
+
+LIFT_FUNCTION_PEAK = 'peak'
+
+LIFT_FUNCTION_KLN = 'kln'
+
 
 class SeCoCmdBuilder(CmdBuilder):
     """
@@ -51,6 +61,29 @@ class SeCoCmdBuilder(CmdBuilder):
         """
         self.args.append('--pruning-heuristic')
         self.args.append(heuristic)
+        return self
+
+    def head_type(self, head_type: str = HEAD_TYPE_SINGLE_LABEL):
+        """
+        Configures the algorithm to use a specific type of rule heads.
+
+        :param head_type:   The type of rule heads to be used
+        :return:            The builder itself
+        """
+        self.args.append('--head-type')
+        self.args.append(head_type)
+        return self
+
+    def lift_function(self, lift_function: str = LIFT_FUNCTION_PEAK):
+        """
+        Configures the algorithm to use a specific lift function for the induction of rules with partial heads.
+
+        :param lift_function:   The name of the lift function that should be used for the induction of rules with
+                                partial heads
+        :return:                The builder itself
+        """
+        self.args.append('--lift-function')
+        self.args.append(lift_function)
         return self
 
 
@@ -185,3 +218,42 @@ class SeCoIntegrationTests(CommonIntegrationTests):
             .pruning(PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_M_ESTIMATE)
         self.run_cmd(builder, 'pruning-heuristic_m-estimate')
+
+    def test_single_label_heads(self):
+        """
+        Tests the SeCo algorithm when inducing rules with single-label heads.
+        """
+        builder = SeCoCmdBuilder() \
+            .head_type(HEAD_TYPE_SINGLE_LABEL) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, 'single-label-heads')
+
+    def test_partial_heads_no_lift_function(self):
+        """
+        Tests the SeCo algorithm when inducing partial rules using no lift function.
+        """
+        builder = SeCoCmdBuilder() \
+            .head_type(HEAD_TYPE_PARTIAL) \
+            .lift_function(LIFT_FUNCTION_NO) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, 'partial-heads_no-lift-function')
+
+    def test_partial_heads_peak_lift_function(self):
+        """
+        Tests the SeCo algorithm when inducing partial rules using the peak lift function.
+        """
+        builder = SeCoCmdBuilder() \
+            .head_type(HEAD_TYPE_PARTIAL) \
+            .lift_function(LIFT_FUNCTION_PEAK) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, 'partial-heads_peak-lift-function')
+
+    def test_partial_heads_kln_lift_function(self):
+        """
+        Tests the SeCo algorithm when inducing partial rules using the KLN lift function.
+        """
+        builder = SeCoCmdBuilder() \
+            .head_type(HEAD_TYPE_PARTIAL) \
+            .lift_function(LIFT_FUNCTION_KLN) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, 'partial-heads_kln-lift-function')
