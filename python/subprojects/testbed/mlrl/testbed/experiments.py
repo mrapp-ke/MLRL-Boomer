@@ -10,12 +10,12 @@ from functools import reduce
 from timeit import default_timer as timer
 from typing import Optional
 
-from mlrl.common.format import format_duration
 from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
 from mlrl.testbed.evaluation import EvaluationPrinter
+from mlrl.testbed.format import format_duration
 from mlrl.testbed.model_characteristics import ModelPrinter, ModelCharacteristicsPrinter
 from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
 from mlrl.testbed.persistence import ModelPersistence
