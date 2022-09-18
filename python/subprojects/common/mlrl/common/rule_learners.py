@@ -18,8 +18,8 @@ from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.cython.nominal_feature_mask import EqualNominalFeatureMask, MixedNominalFeatureMask
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
+from mlrl.common.format import format_enum_values
 from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
-from mlrl.common.strings import format_enum_values
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 

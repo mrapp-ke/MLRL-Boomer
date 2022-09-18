@@ -5,10 +5,9 @@ Provides functions for parsing command line arguments that are specific to separ
 """
 from argparse import ArgumentParser
 
-from mlrl.common.strings import format_dict_keys, format_string_set
-from mlrl.testbed.args import PARAM_HEAD_TYPE
-
+from mlrl.common.format import format_dict_keys, format_string_set
 from mlrl.seco.config import LIFT_FUNCTION_VALUES, HEAD_TYPE_PARTIAL, HEAD_TYPE_VALUES
+from mlrl.testbed.args import PARAM_HEAD_TYPE
 
 PARAM_LIFT_FUNCTION = '--lift-function'
 

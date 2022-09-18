@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides utility functions for dealing with strings.
+Provides utility functions for creating textual representations.
 """
 from functools import reduce
 from typing import Set, Dict
