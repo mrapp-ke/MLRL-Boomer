@@ -65,3 +65,59 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         super(SeCoIntegrationTests, self).__init__(cmd=CMD_SECO, dataset_one_hot_encoding=DATASET_WEATHER,
                                                    expected_output_dir=path.join(DIR_OUT, CMD_SECO),
                                                    methodName=methodName)
+
+    def test_heuristic_accuracy(self):
+        """
+        Tests the rule learning algorithm when using the accuracy heuristic for learning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .heuristic(HEURISTIC_ACCURACY)
+        self.run_cmd(builder, 'heuristic_accuracy')
+
+    def test_heuristic_precision(self):
+        """
+        Tests the rule learning algorithm when using the precision heuristic for learning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .heuristic(HEURISTIC_PRECISION)
+        self.run_cmd(builder, 'heuristic_precision')
+
+    def test_heuristic_recall(self):
+        """
+        Tests the rule learning algorithm when using the recall heuristic for learning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .heuristic(HEURISTIC_RECALL)
+        self.run_cmd(builder, 'heuristic_recall')
+
+    def test_heuristic_laplace(self):
+        """
+        Tests the rule learning algorithm when using the Laplace heuristic for learning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .heuristic(HEURISTIC_LAPLACE)
+        self.run_cmd(builder, 'heuristic_laplace')
+
+    def test_heuristic_wra(self):
+        """
+        Tests the rule learning algorithm when using the WRA heuristic for learning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .heuristic(HEURISTIC_WRA)
+        self.run_cmd(builder, 'heuristic_wra')
+
+    def test_heuristic_f_measure(self):
+        """
+        Tests the rule learning algorithm when using the F-measure heuristic for learning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .heuristic(HEURISTIC_F_MEASURE)
+        self.run_cmd(builder, 'heuristic_f-measure')
+
+    def test_heuristic_m_estimate(self):
+        """
+        Tests the rule learning algorithm when using the m-estimate heuristic for learning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .heuristic(HEURISTIC_M_ESTIMATE)
+        self.run_cmd(builder, 'heuristic_m-estimate')
