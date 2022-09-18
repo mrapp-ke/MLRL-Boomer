@@ -131,53 +131,55 @@ EVALUATION_MEASURE_TRAINING_TIME = EvaluationMeasure(ARGUMENT_TRAINING_TIME, 'Tr
 EVALUATION_MEASURE_PREDICTION_TIME = EvaluationMeasure(ARGUMENT_PREDICTION_TIME, 'Prediction Time')
 
 MULTI_LABEL_EVALUATION_MEASURES: List[EvaluationMeasure] = [
-    EvaluationFunction(ARGUMENT_HAMMING_ACCURACY, 'Hamm. Acc.', lambda a, b: 1 - metrics.hamming_loss(a, b)),
-    EvaluationFunction(ARGUMENT_HAMMING_LOSS, 'Hamm. Loss', metrics.hamming_loss),
-    EvaluationFunction(ARGUMENT_SUBSET_ACCURACY, 'Subs. Acc.', metrics.accuracy_score),
-    EvaluationFunction(ARGUMENT_SUBSET_ZERO_ONE_LOSS, 'Subs. 0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
-    EvaluationFunction(ARGUMENT_MICRO_PRECISION, 'Mi. Prec.', metrics.precision_score, **ARGS_MICRO),
-    EvaluationFunction(ARGUMENT_MICRO_RECALL, 'Mi. Rec.', metrics.recall_score, **ARGS_MICRO),
-    EvaluationFunction(ARGUMENT_MICRO_F1, 'Mi. F1', metrics.f1_score, **ARGS_MICRO),
-    EvaluationFunction(ARGUMENT_MICRO_JACCARD, 'Mi. Jacc.', metrics.jaccard_score, **ARGS_MICRO),
-    EvaluationFunction(ARGUMENT_MACRO_PRECISION, 'Ma. Prec.', metrics.precision_score, **ARGS_MACRO),
-    EvaluationFunction(ARGUMENT_MACRO_RECALL, 'Ma. Rec.', metrics.recall_score, **ARGS_MACRO),
-    EvaluationFunction(ARGUMENT_MACRO_F1, 'Ma. F1', metrics.f1_score, **ARGS_MACRO),
-    EvaluationFunction(ARGUMENT_MACRO_JACCARD, 'Ma. Jacc.', metrics.jaccard_score, **ARGS_MACRO),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_PRECISION, 'Ex.-based Prec.', metrics.precision_score,
+    EvaluationFunction(ARGUMENT_HAMMING_ACCURACY, 'Hamming Accuracy', lambda a, b: 1 - metrics.hamming_loss(a, b)),
+    EvaluationFunction(ARGUMENT_HAMMING_LOSS, 'Hamming Loss', metrics.hamming_loss),
+    EvaluationFunction(ARGUMENT_SUBSET_ACCURACY, 'Subset Accuracy', metrics.accuracy_score),
+    EvaluationFunction(ARGUMENT_SUBSET_ZERO_ONE_LOSS, 'Subset 0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
+    EvaluationFunction(ARGUMENT_MICRO_PRECISION, 'Micro Precision', metrics.precision_score, **ARGS_MICRO),
+    EvaluationFunction(ARGUMENT_MICRO_RECALL, 'Micro Recall', metrics.recall_score, **ARGS_MICRO),
+    EvaluationFunction(ARGUMENT_MICRO_F1, 'Micro F1', metrics.f1_score, **ARGS_MICRO),
+    EvaluationFunction(ARGUMENT_MICRO_JACCARD, 'Micro Jaccard', metrics.jaccard_score, **ARGS_MICRO),
+    EvaluationFunction(ARGUMENT_MACRO_PRECISION, 'Macro Precision', metrics.precision_score, **ARGS_MACRO),
+    EvaluationFunction(ARGUMENT_MACRO_RECALL, 'Macro Recall', metrics.recall_score, **ARGS_MACRO),
+    EvaluationFunction(ARGUMENT_MACRO_F1, 'Macro F1', metrics.f1_score, **ARGS_MACRO),
+    EvaluationFunction(ARGUMENT_MACRO_JACCARD, 'Macro Jaccard', metrics.jaccard_score, **ARGS_MACRO),
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_PRECISION, 'Example-wise Precision', metrics.precision_score,
                        **ARGS_EXAMPLE_WISE),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_RECALL, 'Ex.-based Rec.', metrics.recall_score, **ARGS_EXAMPLE_WISE),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_F1, 'Ex.-based F1', metrics.f1_score, **ARGS_EXAMPLE_WISE),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_JACCARD, 'Ex.-based Jacc.', metrics.jaccard_score, **ARGS_EXAMPLE_WISE),
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_RECALL, 'Example-wise Recall', metrics.recall_score, **ARGS_EXAMPLE_WISE),
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_F1, 'Example-wise F1', metrics.f1_score, **ARGS_EXAMPLE_WISE),
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_JACCARD, 'Example-wise Jaccard', metrics.jaccard_score,
+                       **ARGS_EXAMPLE_WISE),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME
 ]
 
 SINGLE_LABEL_EVALUATION_MEASURES: List[EvaluationMeasure] = [
-    EvaluationFunction(ARGUMENT_ACCURACY, 'Acc.', metrics.accuracy_score),
+    EvaluationFunction(ARGUMENT_ACCURACY, 'Accuracy', metrics.accuracy_score),
     EvaluationFunction(ARGUMENT_ZERO_ONE_LOSS, '0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
-    EvaluationFunction(ARGUMENT_PRECISION, 'Prec.', metrics.precision_score),
-    EvaluationFunction(ARGUMENT_RECALL, 'Rec.', metrics.recall_score),
+    EvaluationFunction(ARGUMENT_PRECISION, 'Precision', metrics.precision_score),
+    EvaluationFunction(ARGUMENT_RECALL, 'Recall', metrics.recall_score),
     EvaluationFunction(ARGUMENT_F1, 'F1', metrics.f1_score),
-    EvaluationFunction(ARGUMENT_JACCARD, 'Jacc.', metrics.jaccard_score),
+    EvaluationFunction(ARGUMENT_JACCARD, 'Jaccard', metrics.jaccard_score),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME
 ]
 
 REGRESSION_EVALUATION_MEASURES: List[EvaluationMeasure] = [
-    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_ERROR, 'Mean Abs. Error', metrics.mean_absolute_error),
-    EvaluationFunction(ARGUMENT_MEAN_SQUARED_ERROR, 'Mean Sq. Error', metrics.mean_squared_error),
-    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_ERROR, 'Median Abs. Error', metrics.median_absolute_error),
-    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR, 'Median Abs. Perc. Error',
+    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_ERROR, 'Mean Absolute Error', metrics.mean_absolute_error),
+    EvaluationFunction(ARGUMENT_MEAN_SQUARED_ERROR, 'Mean Squared Error', metrics.mean_squared_error),
+    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_ERROR, 'Median Absolute Error', metrics.median_absolute_error),
+    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR, 'Median Absolute Percentage Error',
                        metrics.mean_absolute_percentage_error),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME
 ]
 
 RANKING_EVALUATION_MEASURES: List[EvaluationMeasure] = [
-    EvaluationFunction(ARGUMENT_RANK_LOSS, 'Rank Loss', metrics.label_ranking_loss),
-    EvaluationFunction(ARGUMENT_COVERAGE_ERROR, 'Cov. Error', metrics.coverage_error),
-    EvaluationFunction(ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, 'LRAP', metrics.label_ranking_average_precision_score),
-    EvaluationFunction(ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, 'DCG', metrics.dcg_score),
+    EvaluationFunction(ARGUMENT_RANK_LOSS, 'Ranking Loss', metrics.label_ranking_loss),
+    EvaluationFunction(ARGUMENT_COVERAGE_ERROR, 'Coverage Error', metrics.coverage_error),
+    EvaluationFunction(ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, 'Label Ranking Average Precision',
+                       metrics.label_ranking_average_precision_score),
+    EvaluationFunction(ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, 'Discounted Cumulative Gain', metrics.dcg_score),
     EvaluationFunction(ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, 'NDCG', metrics.ndcg_score),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME
