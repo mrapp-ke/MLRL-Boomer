@@ -1,7 +1,6 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-
 from os import path
 
 from test_common import CommonIntegrationTests, CmdBuilder, DIR_OUT, DIR_DATA, DATASET_EMOTIONS, DATASET_WEATHER
