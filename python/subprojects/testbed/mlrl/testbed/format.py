@@ -5,6 +5,8 @@ Provides utility functions for creating textual representations.
 """
 from functools import reduce
 
+from tabulate import tabulate
+
 
 def format_duration(duration: float) -> str:
     """
@@ -53,3 +55,13 @@ def format_float(value: float, decimals: int) -> str:
     :return:            The textual representation that has been created
     """
     return ('{:.' + str(decimals) + 'f}').format(value)
+
+
+def format_table(rows) -> str:
+    """
+    Creates and returns a textual representation of tabular data.
+
+    :param rows:    A list of lists that stores the tabular data
+    :return:        The textual representation that has been created
+    """
+    return tabulate(rows, tablefmt='plain')
