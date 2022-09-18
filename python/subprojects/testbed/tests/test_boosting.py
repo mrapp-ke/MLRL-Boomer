@@ -4,7 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from os import path
 
 from test_common import CommonIntegrationTests, CmdBuilder, DIR_OUT, DIR_DATA, DATASET_EMOTIONS, \
-    PREDICTION_TYPE_SCORES, PREDICTION_TYPE_PROBABILITIES
+    PREDICTION_TYPE_SCORES, PREDICTION_TYPE_PROBABILITIES, HOLDOUT_NO, HOLDOUT_RANDOM, HOLDOUT_STRATIFIED_LABEL_WISE, \
+    HOLDOUT_STRATIFIED_EXAMPLE_WISE
 
 CMD_BOOMER = 'boomer'
 
@@ -47,6 +48,8 @@ PROBABILITY_PREDICTOR_AUTO = 'auto'
 PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
 
 PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
+
+EARLY_STOPPING_OBJECTIVE = 'objective'
 
 
 class BoostingCmdBuilder(CmdBuilder):
@@ -143,6 +146,17 @@ class BoostingCmdBuilder(CmdBuilder):
         """
         self.args.append('--statistic-format')
         self.args.append('sparse' if sparse else 'dense')
+        return self
+
+    def early_stopping(self, early_stopping: str = EARLY_STOPPING_OBJECTIVE):
+        """
+        Configures the algorithm to use a specific method for early stopping.
+
+        :param early_stopping:  The name of the method that should be used for early stopping
+        :return:                The builder itself
+        """
+        self.args.append('--early-stopping')
+        self.args.append(early_stopping)
         return self
 
 
@@ -560,3 +574,45 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics(True)
         self.run_cmd(builder, 'example-wise-partial-dynamic-heads_equal-width-label-binning')
+
+    def test_early_stopping_no_holdout(self):
+        """
+        Tests the BOOMER algorithm when using no holdout for early stopping.
+        """
+        builder = BoostingCmdBuilder() \
+            .early_stopping() \
+            .holdout(HOLDOUT_NO) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, 'early-stopping_no-holdout')
+
+    def test_early_stopping_random_holdout(self):
+        """
+        Tests the BOOMER algorithm when using a holdout set that is created via random sampling for early stopping.
+        """
+        builder = BoostingCmdBuilder() \
+            .early_stopping() \
+            .holdout(HOLDOUT_RANDOM) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, 'early-stopping_random-holdout')
+
+    def test_early_stopping_stratified_label_wise_holdout(self):
+        """
+        Tests the BOOMER algorithm when using a holdout set that is created via label-wise stratified sampling for early
+        stopping.
+        """
+        builder = BoostingCmdBuilder() \
+            .early_stopping() \
+            .holdout(HOLDOUT_STRATIFIED_LABEL_WISE) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, 'early-stopping_stratified-label-wise-holdout')
+
+    def test_early_stopping_stratified_example_wise_holdout(self):
+        """
+        Tests the BOOMER algorithm when using a holdout set that is created via example-wise stratified sampling for
+        early stopping.
+        """
+        builder = BoostingCmdBuilder() \
+            .early_stopping() \
+            .holdout(HOLDOUT_STRATIFIED_EXAMPLE_WISE) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, 'early-stopping_stratified-example-wise-holdout')
