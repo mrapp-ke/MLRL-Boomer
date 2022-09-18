@@ -3,7 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from test_common import CommonIntegrationTests, CmdBuilder, DIR_OUT, DIR_DATA, DATASET_EMOTIONS, DATASET_WEATHER
+from test_common import CommonIntegrationTests, CmdBuilder, DIR_OUT, DIR_DATA, DATASET_EMOTIONS, DATASET_WEATHER, \
+    PRUNING_IREP
 
 CMD_SECO = 'seco'
 
@@ -121,3 +122,66 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         builder = SeCoCmdBuilder() \
             .heuristic(HEURISTIC_M_ESTIMATE)
         self.run_cmd(builder, 'heuristic_m-estimate')
+
+    def test_pruning_heuristic_accuracy(self):
+        """
+        Tests the rule learning algorithm when using the accuracy heuristic for pruning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .pruning(PRUNING_IREP) \
+            .pruning_heuristic(HEURISTIC_ACCURACY)
+        self.run_cmd(builder, 'pruning-heuristic_accuracy')
+
+    def test_pruning_heuristic_precision(self):
+        """
+        Tests the rule learning algorithm when using the precision heuristic for pruning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .pruning(PRUNING_IREP) \
+            .pruning_heuristic(HEURISTIC_PRECISION)
+        self.run_cmd(builder, 'pruning-heuristic_precision')
+
+    def test_pruning_heuristic_recall(self):
+        """
+        Tests the rule learning algorithm when using the recall heuristic for pruning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .pruning(PRUNING_IREP) \
+            .pruning_heuristic(HEURISTIC_RECALL)
+        self.run_cmd(builder, 'pruning-heuristic_recall')
+
+    def test_pruning_heuristic_laplace(self):
+        """
+        Tests the rule learning algorithm when using the Laplace heuristic for pruning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .pruning(PRUNING_IREP) \
+            .pruning_heuristic(HEURISTIC_LAPLACE)
+        self.run_cmd(builder, 'pruning-heuristic_laplace')
+
+    def test_pruning_heuristic_wra(self):
+        """
+        Tests the rule learning algorithm when using the WRA heuristic for pruning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .pruning(PRUNING_IREP) \
+            .pruning_heuristic(HEURISTIC_WRA)
+        self.run_cmd(builder, 'pruning-heuristic_wra')
+
+    def test_pruning_heuristic_f_measure(self):
+        """
+        Tests the rule learning algorithm when using the F-measure heuristic for pruning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .pruning(PRUNING_IREP) \
+            .pruning_heuristic(HEURISTIC_F_MEASURE)
+        self.run_cmd(builder, 'pruning-heuristic_f-measure')
+
+    def test_pruning_heuristic_m_estimate(self):
+        """
+        Tests the rule learning algorithm when using the m-estimate heuristic for pruning rules.
+        """
+        builder = SeCoCmdBuilder() \
+            .pruning(PRUNING_IREP) \
+            .pruning_heuristic(HEURISTIC_M_ESTIMATE)
+        self.run_cmd(builder, 'pruning-heuristic_m-estimate')

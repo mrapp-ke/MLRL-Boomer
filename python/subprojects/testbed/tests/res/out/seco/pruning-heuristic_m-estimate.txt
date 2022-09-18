@@ -1,0 +1,32 @@
+INFO Starting experiment...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fitting model to 397 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 0.17724482400808483 seconds
+INFO Predicting for 196 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0.0007512340089306235 seconds
+INFO Overall evaluation result on test data:
+
+Ex.-based F1: 0.5802721088435375
+Ex.-based Jacc.: 0.47950680272108837
+Ex.-based Prec.: 0.6526360544217688
+Ex.-based Rec.: 0.6360544217687074
+Hamm. Acc.: 0.7482993197278911
+Hamm. Loss: 0.25170068027210885
+Ma. F1: 0.5297336555417234
+Ma. Jacc.: 0.39189407819225003
+Ma. Prec.: 0.552715480142874
+Ma. Rec.: 0.5826360070577964
+Mi. F1: 0.6053333333333333
+Mi. Jacc.: 0.4340344168260038
+Mi. Prec.: 0.6053333333333333
+Mi. Rec.: 0.6053333333333333
+Subs. 0/1 Loss: 0.8010204081632653
+Subs. Acc.: 0.1989795918367347
+
+INFO Successfully finished after 0.23226552398409694 seconds
