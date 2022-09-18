@@ -15,6 +15,7 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.common.options import Options
 from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.format import format_float, format_table
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from mlrl.testbed.predictions import PredictionScope
 from sklearn.utils.multiclass import is_multilabel
@@ -319,38 +320,35 @@ class EvaluationLogOutput(EvaluationOutput):
 
     def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                  evaluation_result: EvaluationResult, fold: Optional[int]):
-        text = ''
+        rows = []
 
         for measure in sorted(evaluation_result.measures):
             if measure != EVALUATION_MEASURE_TRAINING_TIME and measure != EVALUATION_MEASURE_PREDICTION_TIME:
-                if len(text) > 0:
-                    text += '\n'
-
                 score = evaluation_result.get(measure, fold)
-                text += str(measure) + ': ' + str(score)
+                rows.append([str(measure), format_float(score * 100, decimals=4)])
 
         model_size = '' if prediction_scope.is_global() else 'using a model of size ' + str(
             prediction_scope.get_model_size()) + ' '
-        log.info('Evaluation result on %s data %s(Fold %s):\n\n%s\n', data_type.value, model_size, str(fold + 1), text)
+        log.info('Evaluation result on %s data %s(Fold %s):\n\n%s\n', data_type.value, model_size, str(fold + 1),
+                 format_table(rows))
 
     def write_overall_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                          evaluation_result: EvaluationResult, num_folds: int):
-        text = ''
+        rows = []
 
         for measure in sorted(evaluation_result.measures):
             if measure != EVALUATION_MEASURE_TRAINING_TIME and measure != EVALUATION_MEASURE_PREDICTION_TIME:
-                if len(text) > 0:
-                    text += '\n'
-
                 score, std_dev = evaluation_result.avg(measure)
-                text += (str(measure) + ': ' + str(score))
+                row = [str(measure), format_float(score * 100, decimals=4)]
 
                 if num_folds > 1:
-                    text += (' ±' + str(std_dev))
+                    row.append('±' + format_float(std_dev, decimals=4))
+
+                rows.append(row)
 
         model_size = '' if prediction_scope.is_global() else ' using a model of size ' + str(
             prediction_scope.get_model_size())
-        log.info('Overall evaluation result on %s data%s:\n\n%s\n', data_type.value, model_size, text)
+        log.info('Overall evaluation result on %s data%s:\n\n%s\n', data_type.value, model_size, format_table(rows))
 
 
 class EvaluationCsvOutput(EvaluationOutput):
