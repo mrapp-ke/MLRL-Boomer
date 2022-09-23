@@ -51,10 +51,13 @@ def format_float(value: float, decimals: int) -> str:
     Creates and returns a textual representation of a floating point value using a specific number of decimals.
 
     :param value:       The value
-    :param decimals:    The number of decimals to be used
+    :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
     :return:            The textual representation that has been created
     """
-    return ('{:.' + str(decimals) + 'f}').format(round(value, decimals))
+    if decimals > 0:
+        return ('{:.' + str(decimals) + 'f}').format(round(value, decimals))
+    else:
+        return str(value)
 
 
 def format_table(rows) -> str:
