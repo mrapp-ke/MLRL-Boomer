@@ -86,6 +86,10 @@ ARGUMENT_TRAINING_TIME = 'training_time'
 
 ARGUMENT_PREDICTION_TIME = 'prediction_time'
 
+ARGUMENT_DECIMALS = 'decimals'
+
+ARGUMENT_PERCENTAGE = 'percentage'
+
 
 class EvaluationMeasure:
 

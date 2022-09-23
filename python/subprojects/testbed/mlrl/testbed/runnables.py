@@ -25,8 +25,8 @@ from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCU
     ARGUMENT_MEDIAN_ABSOLUTE_ERROR, ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR, ARGUMENT_RANK_LOSS, \
     ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, \
     ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, \
-    EvaluationPrinter, ClassificationEvaluationPrinter, ScoreEvaluationPrinter, ProbabilityEvaluationPrinter, \
-    EvaluationLogOutput, EvaluationCsvOutput
+    ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE, EvaluationPrinter, ClassificationEvaluationPrinter, \
+    ScoreEvaluationPrinter, ProbabilityEvaluationPrinter, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment, PredictionType, Evaluation, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, \
@@ -89,7 +89,8 @@ PRINT_EVALUATION_VALUES: Dict[str, Set[str]] = {
                                ARGUMENT_MEAN_ABSOLUTE_ERROR, ARGUMENT_MEAN_SQUARED_ERROR,
                                ARGUMENT_MEDIAN_ABSOLUTE_ERROR, ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR,
                                ARGUMENT_RANK_LOSS, ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION,
-                               ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN},
+                               ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN,
+                               ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE},
     BooleanOption.FALSE.value: {}
 }
 
@@ -105,7 +106,8 @@ STORE_EVALUATION_VALUES: Dict[str, Set[str]] = {
                                ARGUMENT_MEDIAN_ABSOLUTE_ERROR, ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR,
                                ARGUMENT_RANK_LOSS, ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION,
                                ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN,
-                               ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME},
+                               ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME, ARGUMENT_DECIMALS,
+                               ARGUMENT_PERCENTAGE},
     BooleanOption.FALSE.value: {}
 }
 
