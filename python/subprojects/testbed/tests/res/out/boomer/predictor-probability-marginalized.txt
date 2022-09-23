@@ -12,15 +12,15 @@ DEBUG A dense matrix is used to store the predicted probability estimates
 INFO Successfully predicted in 0.008669832008308731 seconds
 INFO Overall evaluation result on test data:
 
-Cov. Error: 2.704081632653061
-DCG: 1.3875561803011665
-LRAP: 0.8256802721088435
-Mean Abs. Error: 0.21922808539409266
-Mean Sq. Error: 0.14348805748169466
-Median Abs. Error: 0.05423182979624163
-Median Abs. Perc. Error: 400004377324805.2
-NDCG: 0.8829115784500288
-Rank Loss: 0.1397534013605442
+Coverage Error                    2.7
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.83
+Mean Absolute Error               0.22
+Mean Absolute Percentage Error    4.00004e+14
+Mean Squared Error                0.14
+Median Absolute Error             0.05
+NDCG                             88.29
+Ranking Loss                      0.14
 
 INFO Predictions for test data:
 
