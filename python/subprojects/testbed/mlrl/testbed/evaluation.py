@@ -70,7 +70,7 @@ ARGUMENT_MEAN_SQUARED_ERROR = 'mean_squared_error'
 
 ARGUMENT_MEDIAN_ABSOLUTE_ERROR = 'mean_absolute_error'
 
-ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR = 'median_absolute_percentage_error'
+ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR = 'mean_absolute_percentage_error'
 
 ARGUMENT_RANK_LOSS = 'rank_loss'
 
@@ -172,7 +172,7 @@ REGRESSION_EVALUATION_MEASURES: List[EvaluationMeasure] = [
     EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_ERROR, 'Mean Absolute Error', metrics.mean_absolute_error),
     EvaluationFunction(ARGUMENT_MEAN_SQUARED_ERROR, 'Mean Squared Error', metrics.mean_squared_error),
     EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_ERROR, 'Median Absolute Error', metrics.median_absolute_error),
-    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR, 'Median Absolute Percentage Error',
+    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR, 'Mean Absolute Percentage Error',
                        metrics.mean_absolute_percentage_error),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME
