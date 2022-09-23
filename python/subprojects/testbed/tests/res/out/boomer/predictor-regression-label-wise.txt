@@ -12,15 +12,15 @@ DEBUG A dense matrix is used to store the predicted regression scores
 INFO Successfully predicted in 0.0022875370050314814 seconds
 INFO Overall evaluation result on test data:
 
-Cov. Error: 2.683673469387755
-DCG: 1.390238456416682
-LRAP: 0.8287414965986395
-Mean Abs. Error: 3.4596874181931536
-Mean Sq. Error: 17.293989466281754
-Median Abs. Error: 3.1679943275386666
-Median Abs. Perc. Error: 1.2418960501119982e+16
-NDCG: 0.8854498019763432
-Rank Loss: 0.1348497732426304
+Coverage Error                    2.68
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.83
+Mean Absolute Error               3.46
+Mean Absolute Percentage Error    1.2419e+16
+Mean Squared Error               17.29
+Median Absolute Error             3.17
+NDCG                             88.54
+Ranking Loss                      0.13
 
 INFO Predictions for test data:
 

@@ -12,9 +12,9 @@ DEBUG A dense matrix is used to store the predicted probability estimates
 INFO Successfully predicted in 0.0012532309992820956 seconds
 INFO Overall evaluation result on test data:
 
-Mean Abs. Error: 0.39267642523973006
-Mean Sq. Error: 0.31406670851718266
-Median Abs. Error: 0.14206822376900602
-Median Abs. Perc. Error: 783260917202935.8
+Mean Absolute Error             0.39
+Mean Absolute Percentage Error  7.83261e+14
+Mean Squared Error              0.31
+Median Absolute Error           0.14
 
 INFO Successfully finished after 0.1017885689943796 seconds

@@ -12,9 +12,9 @@ DEBUG A dense matrix is used to store the predicted regression scores
 INFO Successfully predicted in 0.0013207669981056824 seconds
 INFO Overall evaluation result on test data:
 
-Mean Abs. Error: 3.385805921964902
-Mean Sq. Error: 16.369649979072456
-Median Abs. Error: 2.760471959923012
-Median Abs. Perc. Error: 1.0532215782625468e+16
+Mean Absolute Error              3.39
+Mean Absolute Percentage Error   1.05322e+16
+Mean Squared Error              16.37
+Median Absolute Error            2.76
 
 INFO Successfully finished after 0.0994744380004704 seconds
