@@ -12,22 +12,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.005627153906971216 seconds
 INFO Overall evaluation result on test data:
 
-Ex.-based F1: 0.6146258503401361
-Ex.-based Jacc.: 0.5361394557823129
-Ex.-based Prec.: 0.8129251700680271
-Ex.-based Rec.: 0.5977891156462585
-Hamm. Acc.: 0.814625850340136
-Hamm. Loss: 0.18537414965986396
-Ma. F1: 0.6500603823827301
-Ma. Jacc.: 0.49051154622252074
-Ma. Prec.: 0.7770985640550858
-Ma. Rec.: 0.5789223471613408
-Mi. F1: 0.6696969696969697
-Mi. Jacc.: 0.5034168564920274
-Mi. Prec.: 0.775438596491228
-Mi. Rec.: 0.5893333333333334
-Subs. 0/1 Loss: 0.7142857142857143
-Subs. Acc.: 0.2857142857142857
+Example-wise F1         61.46
+Example-wise Jaccard    53.61
+Example-wise Precision  81.29
+Example-wise Recall     59.78
+Hamming Accuracy        81.46
+Hamming Loss            18.54
+Macro F1                65.01
+Macro Jaccard           49.05
+Macro Precision         77.71
+Macro Recall            57.89
+Micro F1                66.97
+Micro Jaccard           50.34
+Micro Precision         77.54
+Micro Recall            58.93
+Subset 0/1 Loss         71.43
+Subset Accuracy         28.57
 
 INFO Model characteristics:
 

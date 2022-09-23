@@ -15,6 +15,7 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.common.options import Options
 from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.format import format_float, format_table
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from mlrl.testbed.predictions import PredictionScope
 from sklearn.utils.multiclass import is_multilabel
@@ -69,7 +70,7 @@ ARGUMENT_MEAN_SQUARED_ERROR = 'mean_squared_error'
 
 ARGUMENT_MEDIAN_ABSOLUTE_ERROR = 'mean_absolute_error'
 
-ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR = 'median_absolute_percentage_error'
+ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR = 'mean_absolute_percentage_error'
 
 ARGUMENT_RANK_LOSS = 'rank_loss'
 
@@ -85,12 +86,17 @@ ARGUMENT_TRAINING_TIME = 'training_time'
 
 ARGUMENT_PREDICTION_TIME = 'prediction_time'
 
+ARGUMENT_DECIMALS = 'decimals'
+
+ARGUMENT_PERCENTAGE = 'percentage'
+
 
 class EvaluationMeasure:
 
-    def __init__(self, argument: str, name: str):
+    def __init__(self, argument: str, name: str, percentage: bool = False):
         self.argument = argument
         self.name = name
+        self.percentage = percentage
 
     def __str__(self):
         return self.name
@@ -104,8 +110,8 @@ class EvaluationMeasure:
 
 class EvaluationFunction(EvaluationMeasure):
 
-    def __init__(self, argument: str, name: str, evaluation_function, **kwargs):
-        super().__init__(argument, name)
+    def __init__(self, argument: str, name: str, evaluation_function, percentage: bool = True, **kwargs):
+        super().__init__(argument, name, percentage)
         self.evaluation_function = evaluation_function
         self.kwargs = kwargs
 
@@ -130,53 +136,58 @@ EVALUATION_MEASURE_TRAINING_TIME = EvaluationMeasure(ARGUMENT_TRAINING_TIME, 'Tr
 EVALUATION_MEASURE_PREDICTION_TIME = EvaluationMeasure(ARGUMENT_PREDICTION_TIME, 'Prediction Time')
 
 MULTI_LABEL_EVALUATION_MEASURES: List[EvaluationMeasure] = [
-    EvaluationFunction(ARGUMENT_HAMMING_ACCURACY, 'Hamm. Acc.', lambda a, b: 1 - metrics.hamming_loss(a, b)),
-    EvaluationFunction(ARGUMENT_HAMMING_LOSS, 'Hamm. Loss', metrics.hamming_loss),
-    EvaluationFunction(ARGUMENT_SUBSET_ACCURACY, 'Subs. Acc.', metrics.accuracy_score),
-    EvaluationFunction(ARGUMENT_SUBSET_ZERO_ONE_LOSS, 'Subs. 0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
-    EvaluationFunction(ARGUMENT_MICRO_PRECISION, 'Mi. Prec.', metrics.precision_score, **ARGS_MICRO),
-    EvaluationFunction(ARGUMENT_MICRO_RECALL, 'Mi. Rec.', metrics.recall_score, **ARGS_MICRO),
-    EvaluationFunction(ARGUMENT_MICRO_F1, 'Mi. F1', metrics.f1_score, **ARGS_MICRO),
-    EvaluationFunction(ARGUMENT_MICRO_JACCARD, 'Mi. Jacc.', metrics.jaccard_score, **ARGS_MICRO),
-    EvaluationFunction(ARGUMENT_MACRO_PRECISION, 'Ma. Prec.', metrics.precision_score, **ARGS_MACRO),
-    EvaluationFunction(ARGUMENT_MACRO_RECALL, 'Ma. Rec.', metrics.recall_score, **ARGS_MACRO),
-    EvaluationFunction(ARGUMENT_MACRO_F1, 'Ma. F1', metrics.f1_score, **ARGS_MACRO),
-    EvaluationFunction(ARGUMENT_MACRO_JACCARD, 'Ma. Jacc.', metrics.jaccard_score, **ARGS_MACRO),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_PRECISION, 'Ex.-based Prec.', metrics.precision_score,
+    EvaluationFunction(ARGUMENT_HAMMING_ACCURACY, 'Hamming Accuracy', lambda a, b: 1 - metrics.hamming_loss(a, b)),
+    EvaluationFunction(ARGUMENT_HAMMING_LOSS, 'Hamming Loss', metrics.hamming_loss),
+    EvaluationFunction(ARGUMENT_SUBSET_ACCURACY, 'Subset Accuracy', metrics.accuracy_score),
+    EvaluationFunction(ARGUMENT_SUBSET_ZERO_ONE_LOSS, 'Subset 0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
+    EvaluationFunction(ARGUMENT_MICRO_PRECISION, 'Micro Precision', metrics.precision_score, **ARGS_MICRO),
+    EvaluationFunction(ARGUMENT_MICRO_RECALL, 'Micro Recall', metrics.recall_score, **ARGS_MICRO),
+    EvaluationFunction(ARGUMENT_MICRO_F1, 'Micro F1', metrics.f1_score, **ARGS_MICRO),
+    EvaluationFunction(ARGUMENT_MICRO_JACCARD, 'Micro Jaccard', metrics.jaccard_score, **ARGS_MICRO),
+    EvaluationFunction(ARGUMENT_MACRO_PRECISION, 'Macro Precision', metrics.precision_score, **ARGS_MACRO),
+    EvaluationFunction(ARGUMENT_MACRO_RECALL, 'Macro Recall', metrics.recall_score, **ARGS_MACRO),
+    EvaluationFunction(ARGUMENT_MACRO_F1, 'Macro F1', metrics.f1_score, **ARGS_MACRO),
+    EvaluationFunction(ARGUMENT_MACRO_JACCARD, 'Macro Jaccard', metrics.jaccard_score, **ARGS_MACRO),
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_PRECISION, 'Example-wise Precision', metrics.precision_score,
                        **ARGS_EXAMPLE_WISE),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_RECALL, 'Ex.-based Rec.', metrics.recall_score, **ARGS_EXAMPLE_WISE),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_F1, 'Ex.-based F1', metrics.f1_score, **ARGS_EXAMPLE_WISE),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_JACCARD, 'Ex.-based Jacc.', metrics.jaccard_score, **ARGS_EXAMPLE_WISE),
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_RECALL, 'Example-wise Recall', metrics.recall_score, **ARGS_EXAMPLE_WISE),
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_F1, 'Example-wise F1', metrics.f1_score, **ARGS_EXAMPLE_WISE),
+    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_JACCARD, 'Example-wise Jaccard', metrics.jaccard_score,
+                       **ARGS_EXAMPLE_WISE),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME
 ]
 
 SINGLE_LABEL_EVALUATION_MEASURES: List[EvaluationMeasure] = [
-    EvaluationFunction(ARGUMENT_ACCURACY, 'Acc.', metrics.accuracy_score),
+    EvaluationFunction(ARGUMENT_ACCURACY, 'Accuracy', metrics.accuracy_score),
     EvaluationFunction(ARGUMENT_ZERO_ONE_LOSS, '0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
-    EvaluationFunction(ARGUMENT_PRECISION, 'Prec.', metrics.precision_score),
-    EvaluationFunction(ARGUMENT_RECALL, 'Rec.', metrics.recall_score),
+    EvaluationFunction(ARGUMENT_PRECISION, 'Precision', metrics.precision_score),
+    EvaluationFunction(ARGUMENT_RECALL, 'Recall', metrics.recall_score),
     EvaluationFunction(ARGUMENT_F1, 'F1', metrics.f1_score),
-    EvaluationFunction(ARGUMENT_JACCARD, 'Jacc.', metrics.jaccard_score),
+    EvaluationFunction(ARGUMENT_JACCARD, 'Jaccard', metrics.jaccard_score),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME
 ]
 
 REGRESSION_EVALUATION_MEASURES: List[EvaluationMeasure] = [
-    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_ERROR, 'Mean Abs. Error', metrics.mean_absolute_error),
-    EvaluationFunction(ARGUMENT_MEAN_SQUARED_ERROR, 'Mean Sq. Error', metrics.mean_squared_error),
-    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_ERROR, 'Median Abs. Error', metrics.median_absolute_error),
-    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_PERCENTAGE_ERROR, 'Median Abs. Perc. Error',
-                       metrics.mean_absolute_percentage_error),
+    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_ERROR, 'Mean Absolute Error', metrics.mean_absolute_error,
+                       percentage=False),
+    EvaluationFunction(ARGUMENT_MEAN_SQUARED_ERROR, 'Mean Squared Error', metrics.mean_squared_error, percentage=False),
+    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_ERROR, 'Median Absolute Error', metrics.median_absolute_error,
+                       percentage=False),
+    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR, 'Mean Absolute Percentage Error',
+                       metrics.mean_absolute_percentage_error, percentage=False),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME
 ]
 
 RANKING_EVALUATION_MEASURES: List[EvaluationMeasure] = [
-    EvaluationFunction(ARGUMENT_RANK_LOSS, 'Rank Loss', metrics.label_ranking_loss),
-    EvaluationFunction(ARGUMENT_COVERAGE_ERROR, 'Cov. Error', metrics.coverage_error),
-    EvaluationFunction(ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, 'LRAP', metrics.label_ranking_average_precision_score),
-    EvaluationFunction(ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, 'DCG', metrics.dcg_score),
+    EvaluationFunction(ARGUMENT_RANK_LOSS, 'Ranking Loss', metrics.label_ranking_loss, percentage=False),
+    EvaluationFunction(ARGUMENT_COVERAGE_ERROR, 'Coverage Error', metrics.coverage_error, percentage=False),
+    EvaluationFunction(ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, 'Label Ranking Average Precision',
+                       metrics.label_ranking_average_precision_score, percentage=False),
+    EvaluationFunction(ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, 'Discounted Cumulative Gain', metrics.dcg_score,
+                       percentage=False),
     EvaluationFunction(ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, 'NDCG', metrics.ndcg_score),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME
@@ -210,60 +221,93 @@ class EvaluationResult:
         values = self.results[fold if fold is not None else 0]
         values[measure] = score
 
-    def get(self, measure: EvaluationMeasure, fold: Optional[int]) -> float:
+    def get(self, measure: EvaluationMeasure, fold: Optional[int], percentage: bool = False, decimals: int = 0) -> str:
         """
         Returns the score according to a specific measure.
 
-        :param measure: The measure
-        :param fold:    The fold, the score corresponds to, or None, if no cross validation is used
-        :return:        The score
+        :param measure:     The measure
+        :param fold:        The fold, the score corresponds to, or None, if no cross validation is used
+        :param percentage:  True, if the score should be given as a percentage, if possible, False otherwise
+        :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
+        :return:            A textual representation of the score
         """
         if self.results is None:
             raise AssertionError('No evaluation results available')
 
-        return self.results[fold if fold is not None else 0][measure]
+        score = self.results[fold if fold is not None else 0][measure]
 
-    def dict(self, fold: Optional[int]) -> Dict:
+        if percentage and measure.percentage:
+            score = score * 100
+
+        return format_float(score, decimals=decimals)
+
+    def dict(self, fold: Optional[int], percentage: bool = False, decimals: int = 0) -> Dict[EvaluationMeasure, str]:
         """
         Returns a dictionary that stores the scores for a specific fold according to each measure.
 
-        :param fold:    The fold, the scores correspond to, or None, if no cross validation is used
-        :return:        A dictionary that stores the scores for the given fold according to each measure
+        :param fold:        The fold, the scores correspond to, or None, if no cross validation is used
+        :param percentage:  True, if the scores should be given as percentages, if possible, False otherwise
+        :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
+        :return:            A dictionary that stores textual representations of the scores for the given fold according
+                            to each measure
         """
         if self.results is None:
             raise AssertionError('No evaluation results available')
 
-        return self.results[fold if fold is not None else 0].copy()
+        results: Dict[EvaluationMeasure, str] = {}
 
-    def avg(self, measure: EvaluationMeasure) -> (float, float):
+        for measure, score in self.results[fold if fold is not None else 0].items():
+            if percentage and measure.percentage:
+                score = score * 100
+
+            results[measure] = format_float(score, decimals=decimals)
+
+        return results
+
+    def avg(self, measure: EvaluationMeasure, percentage: bool = False, decimals: int = 0) -> (str, str):
         """
         Returns the score and standard deviation according to a specific measure averaged over all available folds.
 
-        :param measure: The measure
-        :return:        A tuple consisting of the averaged score and standard deviation
+        :param measure:     The measure
+        :param percentage:  True, if the score should be given as a percentage, if possible, False otherwise
+        :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
+        :return:            A tuple consisting of textual representations of the averaged score and standard deviation
         """
         values = []
 
         for i in range(len(self.results)):
-            if len(self.results[i]) > 0:
-                values.append(self.get(measure, i))
+            results = self.results[i]
+
+            if len(results) > 0:
+                values.append(results[measure])
 
         values = np.array(values)
-        return np.average(values), np.std(values)
+        avg = np.average(values)
+        std_dev = np.std(values)
 
-    def avg_dict(self) -> Dict:
+        if percentage and measure.percentage:
+            avg = avg * 100
+            std_dev = std_dev * 100
+
+        return format_float(avg, decimals=decimals), format_float(std_dev, decimals=decimals)
+
+    def avg_dict(self, percentage: bool = False, decimals: int = 0) -> Dict[EvaluationMeasure, str]:
         """
         Returns a dictionary that stores the scores, averaged across all folds, as well as the standard deviation,
         according to each measure.
 
-        :return: A dictionary that stores the scores and standard deviation according to each measure
+        :param percentage:  True, if the scores should be given as a percentage, if possible, False otherwise
+        :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
+        :return:            A dictionary that stores textual representations of the scores and standard deviation
+                            according to each measure
         """
-        result: Dict[EvaluationMeasure, float] = {}
+        result: Dict[EvaluationMeasure, str] = {}
 
         for measure in self.measures:
-            score, std_dev = self.avg(measure)
+            score, std_dev = self.avg(measure, percentage=percentage, decimals=decimals)
             result[measure] = score
-            result[EvaluationMeasure(measure.argument, 'Std.-dev. ' + measure.name)] = std_dev.item()
+            result[EvaluationMeasure(measure.argument, 'Std.-dev. ' + measure.name,
+                                     measure.percentage)] = std_dev
 
         return result
 
@@ -316,41 +360,40 @@ class EvaluationLogOutput(EvaluationOutput):
 
     def __init__(self, options: Options):
         super().__init__(options)
+        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
+        self.decimals = options.get_int(ARGUMENT_DECIMALS, 2)
 
     def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                  evaluation_result: EvaluationResult, fold: Optional[int]):
-        text = ''
+        rows = []
 
         for measure in sorted(evaluation_result.measures):
             if measure != EVALUATION_MEASURE_TRAINING_TIME and measure != EVALUATION_MEASURE_PREDICTION_TIME:
-                if len(text) > 0:
-                    text += '\n'
-
-                score = evaluation_result.get(measure, fold)
-                text += str(measure) + ': ' + str(score)
+                score = evaluation_result.get(measure, fold, percentage=self.percentage, decimals=self.decimals)
+                rows.append([str(measure), score])
 
         model_size = '' if prediction_scope.is_global() else 'using a model of size ' + str(
             prediction_scope.get_model_size()) + ' '
-        log.info('Evaluation result on %s data %s(Fold %s):\n\n%s\n', data_type.value, model_size, str(fold + 1), text)
+        log.info('Evaluation result on %s data %s(Fold %s):\n\n%s\n', data_type.value, model_size, str(fold + 1),
+                 format_table(rows))
 
     def write_overall_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                          evaluation_result: EvaluationResult, num_folds: int):
-        text = ''
+        rows = []
 
         for measure in sorted(evaluation_result.measures):
             if measure != EVALUATION_MEASURE_TRAINING_TIME and measure != EVALUATION_MEASURE_PREDICTION_TIME:
-                if len(text) > 0:
-                    text += '\n'
-
-                score, std_dev = evaluation_result.avg(measure)
-                text += (str(measure) + ': ' + str(score))
+                score, std_dev = evaluation_result.avg(measure, percentage=self.percentage, decimals=self.decimals)
+                row = [str(measure), score]
 
                 if num_folds > 1:
-                    text += (' ±' + str(std_dev))
+                    row.append('±' + std_dev)
+
+                rows.append(row)
 
         model_size = '' if prediction_scope.is_global() else ' using a model of size ' + str(
             prediction_scope.get_model_size())
-        log.info('Overall evaluation result on %s data%s:\n\n%s\n', data_type.value, model_size, text)
+        log.info('Overall evaluation result on %s data%s:\n\n%s\n', data_type.value, model_size, format_table(rows))
 
 
 class EvaluationCsvOutput(EvaluationOutput):
@@ -366,10 +409,12 @@ class EvaluationCsvOutput(EvaluationOutput):
         """
         super().__init__(options)
         self.output_dir = output_dir
+        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
+        self.decimals = options.get_int(ARGUMENT_DECIMALS, 0)
 
     def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                  evaluation_result: EvaluationResult, fold: Optional[int]):
-        columns = evaluation_result.dict(fold)
+        columns: Dict = evaluation_result.dict(fold, percentage=self.percentage, decimals=self.decimals)
         header = sorted(columns.keys())
         incremental_prediction = not prediction_scope.is_global()
 
@@ -384,7 +429,8 @@ class EvaluationCsvOutput(EvaluationOutput):
 
     def write_overall_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                          evaluation_result: EvaluationResult, num_folds: int):
-        columns = evaluation_result.avg_dict() if num_folds > 1 else evaluation_result.dict(0)
+        columns: Dict = evaluation_result.avg_dict(self.percentage, self.decimals) if num_folds > 1 \
+            else evaluation_result.dict(0, self.percentage, self.decimals)
         header = sorted(columns.keys())
         incremental_prediction = not prediction_scope.is_global()
 

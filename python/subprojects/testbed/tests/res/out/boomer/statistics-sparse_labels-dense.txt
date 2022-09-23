@@ -12,21 +12,21 @@ DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in 0.020502096973359585 seconds
 INFO Overall evaluation result on test data:
 
-Ex.-based F1: 0.21887966804979253
-Ex.-based Jacc.: 0.21369294605809128
-Ex.-based Prec.: 0.9429460580912863
-Ex.-based Rec.: 0.21473029045643152
-Hamm. Acc.: 0.9847856154910097
-Hamm. Loss: 0.015214384508990318
-Ma. F1: 0.1035031707098122
-Ma. Jacc.: 0.09427344139381903
-Ma. Prec.: 0.8965704099821747
-Ma. Rec.: 0.09695616614610394
-Mi. F1: 0.12974683544303797
-Mi. Jacc.: 0.06937394247038917
-Mi. Prec.: 0.5857142857142857
-Mi. Rec.: 0.07295373665480427
-Subs. 0/1 Loss: 0.8008298755186722
-Subs. Acc.: 0.1991701244813278
+Example-wise F1         21.89
+Example-wise Jaccard    21.37
+Example-wise Precision  94.29
+Example-wise Recall     21.47
+Hamming Accuracy        98.48
+Hamming Loss             1.52
+Macro F1                10.35
+Macro Jaccard            9.43
+Macro Precision         89.66
+Macro Recall             9.7
+Micro F1                12.97
+Micro Jaccard            6.94
+Micro Precision         58.57
+Micro Recall             7.3
+Subset 0/1 Loss         80.08
+Subset Accuracy         19.92
 
 INFO Successfully finished after 0.6613421919755638 seconds
