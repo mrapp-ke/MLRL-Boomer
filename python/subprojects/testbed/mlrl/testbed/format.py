@@ -5,6 +5,8 @@ Provides utility functions for creating textual representations.
 """
 from functools import reduce
 
+from tabulate import tabulate
+
 
 def format_duration(duration: float) -> str:
     """
@@ -42,3 +44,27 @@ def format_duration(duration: float) -> str:
     return reduce(
         lambda txt, x: txt + ((' and ' if x[0] == len(substrings) - 1 else ', ') if len(txt) > 0 else '') + x[1],
         enumerate(substrings), '')
+
+
+def format_float(value: float, decimals: int) -> str:
+    """
+    Creates and returns a textual representation of a floating point value using a specific number of decimals.
+
+    :param value:       The value
+    :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
+    :return:            The textual representation that has been created
+    """
+    if decimals > 0:
+        return ('{:.' + str(decimals) + 'f}').format(round(value, decimals))
+    else:
+        return str(value)
+
+
+def format_table(rows) -> str:
+    """
+    Creates and returns a textual representation of tabular data.
+
+    :param rows:    A list of lists that stores the tabular data
+    :return:        The textual representation that has been created
+    """
+    return tabulate(rows, tablefmt='plain')

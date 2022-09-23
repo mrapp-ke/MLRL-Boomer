@@ -7,3 +7,4 @@ numpy==1.23.3
 scipy==1.9.1
 scikit-learn==1.1.2
 liac-arff==2.5.0
+tabulate==0.8.10

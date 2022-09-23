@@ -58,7 +58,7 @@ setup(
     install_requires=[
         'mlrl-common==' + VERSION,
         *find_dependencies(Path(__file__).resolve().parent.parent.parent / 'requirements.txt',
-                           ['liac-arff'])
+                           ['liac-arff', 'tabulate'])
     ],
     extras_require={
         'BOOMER': ['mlrl-boomer==' + VERSION],
