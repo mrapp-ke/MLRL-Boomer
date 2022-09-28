@@ -21,12 +21,6 @@ class PredictionCharacteristicsOutput(ABC):
     An abstract base class for all outputs, the characteristics of binary predictions may be written to.
     """
 
-    def __init__(self, options: Options):
-        """
-        :param options: The options that should be used for writing the characteristics of predictions to the output
-        """
-        self.options = options
-
     @abstractmethod
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
                                          prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
@@ -48,7 +42,9 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
     """
 
     def __init__(self, options: Options):
-        super().__init__(options)
+        """
+        :param options: The options that should be used for writing the characteristics of predictions to the output
+        """
         self.formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
         self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
         self.decimals = options.get_int(ARGUMENT_DECIMALS, 2)
@@ -82,9 +78,9 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
 
     def __init__(self, options: Options, output_dir: str):
         """
-        :param output_dir: The path of the directory, the CSV files should be written to
+        :param options:     The options that should be used for writing the characteristics of predictions to the output
+        :param output_dir:  The path of the directory, the CSV files should be written to
         """
-        super().__init__(options)
         self.output_dir = output_dir
         self.formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
         self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
