@@ -336,10 +336,12 @@ class EvaluationLogOutput(EvaluationOutput):
 
     def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                  evaluation_result: EvaluationResult, fold: Optional[int]):
+        options = self.options
         rows = []
 
         for measure in sorted(evaluation_result.measures):
-            if measure != EVALUATION_MEASURE_TRAINING_TIME and measure != EVALUATION_MEASURE_PREDICTION_TIME:
+            if options.get_bool(measure.argument, True) and measure != EVALUATION_MEASURE_TRAINING_TIME \
+                    and measure != EVALUATION_MEASURE_PREDICTION_TIME:
                 score = evaluation_result.get(measure, fold, percentage=self.percentage, decimals=self.decimals)
                 rows.append([str(measure), score])
 
@@ -350,10 +352,12 @@ class EvaluationLogOutput(EvaluationOutput):
 
     def write_overall_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                          evaluation_result: EvaluationResult, num_folds: int):
+        options = self.options
         rows = []
 
         for measure in sorted(evaluation_result.measures):
-            if measure != EVALUATION_MEASURE_TRAINING_TIME and measure != EVALUATION_MEASURE_PREDICTION_TIME:
+            if options.get_bool(measure.argument, True) and measure != EVALUATION_MEASURE_TRAINING_TIME \
+                    and measure != EVALUATION_MEASURE_PREDICTION_TIME:
                 score, std_dev = evaluation_result.avg(measure, percentage=self.percentage, decimals=self.decimals)
                 row = [str(measure), score]
 
@@ -386,6 +390,13 @@ class EvaluationCsvOutput(EvaluationOutput):
     def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                  evaluation_result: EvaluationResult, fold: Optional[int]):
         columns: Dict = evaluation_result.dict(fold, percentage=self.percentage, decimals=self.decimals)
+        header = columns.keys()
+        options = self.options
+
+        for formattable in header:
+            if not options.get_bool(formattable.argument, True):
+                del columns[formattable]
+
         header = sorted(columns.keys())
         incremental_prediction = not prediction_scope.is_global()
 
@@ -402,6 +413,13 @@ class EvaluationCsvOutput(EvaluationOutput):
                                          evaluation_result: EvaluationResult, num_folds: int):
         columns: Dict = evaluation_result.avg_dict(percentage=self.percentage, decimals=self.decimals) \
             if num_folds > 1 else evaluation_result.dict(0, percentage=self.percentage, decimals=self.decimals)
+        header = columns.keys()
+        options = self.options
+
+        for formattable in header:
+            if not options.get_bool(formattable.argument, True):
+                del columns[formattable]
+
         header = sorted(columns.keys())
         incremental_prediction = not prediction_scope.is_global()
 
