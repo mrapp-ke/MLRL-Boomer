@@ -6,11 +6,12 @@ written to one or several outputs, e.g., to the console or to a file. They can a
 """
 import logging as log
 from abc import ABC, abstractmethod
-from typing import List
 
 from mlrl.testbed.data_splitting import DataSplit
+from mlrl.testbed.format import format_table
 from mlrl.testbed.io import create_csv_dict_reader, open_readable_csv_file, open_writable_csv_file, \
     create_csv_dict_writer
+from typing import List
 
 
 class ParameterInput(ABC):
@@ -68,16 +69,17 @@ class ParameterLogOutput(ParameterOutput):
         if data_split.is_cross_validation_used():
             msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
-        msg += ':\n\n'
+        msg += ':\n\n%s\n'
         params = learner.get_params()
+        rows = []
 
         for key in sorted(params):
             value = params[key]
 
             if value is not None:
-                msg += key + ': ' + str(value) + '\n'
+                rows.append([str(key), str(value)])
 
-        log.info(msg)
+        log.info(msg, format_table(rows))
 
 
 class ParameterCsvOutput(ParameterOutput):
