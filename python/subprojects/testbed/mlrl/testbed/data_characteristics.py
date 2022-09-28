@@ -101,7 +101,7 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
             [COLUMN_FEATURE_SPARSITY, str(1 - feature_characteristics.feature_density)],
             [COLUMN_LABELS, str(label_characteristics.num_labels)],
             [COLUMN_LABEL_DENSITY, str(label_characteristics.label_density)],
-            [COLUMN_LABEL_SPARSITY, str(1 - label_characteristics.label_density)],
+            [COLUMN_LABEL_SPARSITY, str(label_characteristics.label_sparsity)],
             [COLUMN_LABEL_IMBALANCE_RATIO, str(label_characteristics.avg_label_imbalance_ratio)],
             [COLUMN_LABEL_CARDINALITY, str(label_characteristics.avg_label_cardinality)],
             [COLUMN_DISTINCT_LABEL_VECTORS, str(label_characteristics.num_distinct_label_vectors)]
@@ -131,7 +131,7 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
             COLUMN_FEATURE_SPARSITY: 1 - feature_characteristics.feature_density,
             COLUMN_LABELS: label_characteristics.num_labels,
             COLUMN_LABEL_DENSITY: label_characteristics.label_density,
-            COLUMN_LABEL_SPARSITY: 1 - label_characteristics.label_density,
+            COLUMN_LABEL_SPARSITY: label_characteristics.label_sparsity,
             COLUMN_LABEL_IMBALANCE_RATIO: label_characteristics.avg_label_imbalance_ratio,
             COLUMN_LABEL_CARDINALITY: label_characteristics.avg_label_cardinality,
             COLUMN_DISTINCT_LABEL_VECTORS: label_characteristics.num_distinct_label_vectors
