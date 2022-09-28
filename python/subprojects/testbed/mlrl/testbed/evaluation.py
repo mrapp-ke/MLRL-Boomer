@@ -6,8 +6,6 @@ measures. The evaluation results can be written to one or several outputs, e.g.,
 """
 import logging as log
 from abc import ABC, abstractmethod
-from functools import reduce
-from typing import List, Dict, Set, Optional
 
 import numpy as np
 import sklearn.metrics as metrics
@@ -15,10 +13,11 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.common.options import Options
 from mlrl.testbed.data_splitting import DataSplit, DataType
-from mlrl.testbed.format import format_float, format_table
+from mlrl.testbed.format import Formattable, filter_formattables, format_table, ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from mlrl.testbed.predictions import PredictionScope
 from sklearn.utils.multiclass import is_multilabel
+from typing import List, Dict, Set, Optional
 
 ARGUMENT_HAMMING_LOSS = 'hamming_loss'
 
@@ -86,34 +85,29 @@ ARGUMENT_TRAINING_TIME = 'training_time'
 
 ARGUMENT_PREDICTION_TIME = 'prediction_time'
 
-ARGUMENT_DECIMALS = 'decimals'
 
-ARGUMENT_PERCENTAGE = 'percentage'
-
-
-class EvaluationMeasure:
-
-    def __init__(self, argument: str, name: str, percentage: bool = False):
-        self.argument = argument
-        self.name = name
-        self.percentage = percentage
-
-    def __str__(self):
-        return self.name
-
-    def __lt__(self, other):
-        return self.name < other.name
-
-    def __hash__(self):
-        return hash(self.name)
-
-
-class EvaluationFunction(EvaluationMeasure):
+class EvaluationFunction(Formattable):
+    """
+    An evaluation function.
+    """
 
     def __init__(self, argument: str, name: str, evaluation_function, percentage: bool = True, **kwargs):
+        """
+        :param evaluation_function: The function that should be invoked for evaluation
+        """
         super().__init__(argument, name, percentage)
         self.evaluation_function = evaluation_function
         self.kwargs = kwargs
+
+    def evaluate(self, ground_truth, predictions) -> float:
+        """
+        Applies the evaluation function to given predictions and ground truth labels.
+
+        :param ground_truth:    The ground truth
+        :param predictions:     The predictions
+        :return:                An evaluation score
+        """
+        return self.evaluation_function(ground_truth, predictions, **self.kwargs)
 
 
 ARGS_MICRO = {
@@ -131,11 +125,11 @@ ARGS_EXAMPLE_WISE = {
     'zero_division': 1
 }
 
-EVALUATION_MEASURE_TRAINING_TIME = EvaluationMeasure(ARGUMENT_TRAINING_TIME, 'Training Time')
+EVALUATION_MEASURE_TRAINING_TIME = Formattable(ARGUMENT_TRAINING_TIME, 'Training Time')
 
-EVALUATION_MEASURE_PREDICTION_TIME = EvaluationMeasure(ARGUMENT_PREDICTION_TIME, 'Prediction Time')
+EVALUATION_MEASURE_PREDICTION_TIME = Formattable(ARGUMENT_PREDICTION_TIME, 'Prediction Time')
 
-MULTI_LABEL_EVALUATION_MEASURES: List[EvaluationMeasure] = [
+MULTI_LABEL_EVALUATION_MEASURES: List[Formattable] = [
     EvaluationFunction(ARGUMENT_HAMMING_ACCURACY, 'Hamming Accuracy', lambda a, b: 1 - metrics.hamming_loss(a, b)),
     EvaluationFunction(ARGUMENT_HAMMING_LOSS, 'Hamming Loss', metrics.hamming_loss),
     EvaluationFunction(ARGUMENT_SUBSET_ACCURACY, 'Subset Accuracy', metrics.accuracy_score),
@@ -158,7 +152,7 @@ MULTI_LABEL_EVALUATION_MEASURES: List[EvaluationMeasure] = [
     EVALUATION_MEASURE_PREDICTION_TIME
 ]
 
-SINGLE_LABEL_EVALUATION_MEASURES: List[EvaluationMeasure] = [
+SINGLE_LABEL_EVALUATION_MEASURES: List[Formattable] = [
     EvaluationFunction(ARGUMENT_ACCURACY, 'Accuracy', metrics.accuracy_score),
     EvaluationFunction(ARGUMENT_ZERO_ONE_LOSS, '0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
     EvaluationFunction(ARGUMENT_PRECISION, 'Precision', metrics.precision_score),
@@ -169,7 +163,7 @@ SINGLE_LABEL_EVALUATION_MEASURES: List[EvaluationMeasure] = [
     EVALUATION_MEASURE_PREDICTION_TIME
 ]
 
-REGRESSION_EVALUATION_MEASURES: List[EvaluationMeasure] = [
+REGRESSION_EVALUATION_MEASURES: List[Formattable] = [
     EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_ERROR, 'Mean Absolute Error', metrics.mean_absolute_error,
                        percentage=False),
     EvaluationFunction(ARGUMENT_MEAN_SQUARED_ERROR, 'Mean Squared Error', metrics.mean_squared_error, percentage=False),
@@ -181,7 +175,7 @@ REGRESSION_EVALUATION_MEASURES: List[EvaluationMeasure] = [
     EVALUATION_MEASURE_PREDICTION_TIME
 ]
 
-RANKING_EVALUATION_MEASURES: List[EvaluationMeasure] = [
+RANKING_EVALUATION_MEASURES: List[Formattable] = [
     EvaluationFunction(ARGUMENT_RANK_LOSS, 'Ranking Loss', metrics.label_ranking_loss, percentage=False),
     EvaluationFunction(ARGUMENT_COVERAGE_ERROR, 'Coverage Error', metrics.coverage_error, percentage=False),
     EvaluationFunction(ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, 'Label Ranking Average Precision',
@@ -200,10 +194,10 @@ class EvaluationResult:
     """
 
     def __init__(self):
-        self.measures: Set[EvaluationMeasure] = set()
-        self.results: Optional[List[Dict[EvaluationMeasure, float]]] = None
+        self.measures: Set[Formattable] = set()
+        self.results: Optional[List[Dict[Formattable, float]]] = None
 
-    def put(self, measure: EvaluationMeasure, score: float, num_folds: int, fold: Optional[int]):
+    def put(self, measure: Formattable, score: float, num_folds: int, fold: Optional[int]):
         """
         Adds a new score according to a specific measure to the evaluation result.
 
@@ -221,57 +215,44 @@ class EvaluationResult:
         values = self.results[fold if fold is not None else 0]
         values[measure] = score
 
-    def get(self, measure: EvaluationMeasure, fold: Optional[int], percentage: bool = False, decimals: int = 0) -> str:
+    def get(self, measure: Formattable, fold: Optional[int], **kwargs) -> str:
         """
         Returns the score according to a specific measure.
 
-        :param measure:     The measure
-        :param fold:        The fold, the score corresponds to, or None, if no cross validation is used
-        :param percentage:  True, if the score should be given as a percentage, if possible, False otherwise
-        :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
-        :return:            A textual representation of the score
+        :param measure: The measure
+        :param fold:    The fold, the score corresponds to, or None, if no cross validation is used
+        :return:        A textual representation of the score
         """
         if self.results is None:
             raise AssertionError('No evaluation results available')
 
         score = self.results[fold if fold is not None else 0][measure]
+        return measure.format(score, **kwargs)
 
-        if percentage and measure.percentage:
-            score = score * 100
-
-        return format_float(score, decimals=decimals)
-
-    def dict(self, fold: Optional[int], percentage: bool = False, decimals: int = 0) -> Dict[EvaluationMeasure, str]:
+    def dict(self, fold: Optional[int], **kwargs) -> Dict[Formattable, str]:
         """
         Returns a dictionary that stores the scores for a specific fold according to each measure.
 
-        :param fold:        The fold, the scores correspond to, or None, if no cross validation is used
-        :param percentage:  True, if the scores should be given as percentages, if possible, False otherwise
-        :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
-        :return:            A dictionary that stores textual representations of the scores for the given fold according
-                            to each measure
+        :param fold:    The fold, the scores correspond to, or None, if no cross validation is used
+        :return:        A dictionary that stores textual representations of the scores for the given fold according to
+                        each measure
         """
         if self.results is None:
             raise AssertionError('No evaluation results available')
 
-        results: Dict[EvaluationMeasure, str] = {}
+        results: Dict[Formattable, str] = {}
 
         for measure, score in self.results[fold if fold is not None else 0].items():
-            if percentage and measure.percentage:
-                score = score * 100
-
-            results[measure] = format_float(score, decimals=decimals)
+            results[measure] = measure.format(score, **kwargs)
 
         return results
 
-    def avg(self, measure: EvaluationMeasure, percentage: bool = False, decimals: int = 0) -> (str, str):
+    def avg(self, measure: Formattable, **kwargs) -> (str, str):
         """
         Returns the score and standard deviation according to a specific measure averaged over all available folds.
 
-        :param measure:     The measure
-        :param percentage:  True, if the score should be given as a percentage, if possible, False otherwise
-        :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
-        :return:            A tuple consisting of textual representations of the averaged score and standard deviation
+        :param measure: The measure
+        :return:        A tuple consisting of textual representations of the averaged score and standard deviation
         """
         values = []
 
@@ -282,32 +263,22 @@ class EvaluationResult:
                 values.append(results[measure])
 
         values = np.array(values)
-        avg = np.average(values)
-        std_dev = np.std(values)
+        return measure.format(np.average(values), **kwargs), measure.format(np.std(values), **kwargs)
 
-        if percentage and measure.percentage:
-            avg = avg * 100
-            std_dev = std_dev * 100
-
-        return format_float(avg, decimals=decimals), format_float(std_dev, decimals=decimals)
-
-    def avg_dict(self, percentage: bool = False, decimals: int = 0) -> Dict[EvaluationMeasure, str]:
+    def avg_dict(self, **kwargs) -> Dict[Formattable, str]:
         """
         Returns a dictionary that stores the scores, averaged across all folds, as well as the standard deviation,
         according to each measure.
 
-        :param percentage:  True, if the scores should be given as a percentage, if possible, False otherwise
-        :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
-        :return:            A dictionary that stores textual representations of the scores and standard deviation
-                            according to each measure
+        :return: A dictionary that stores textual representations of the scores and standard deviation according to each
+                 measure
         """
-        result: Dict[EvaluationMeasure, str] = {}
+        result: Dict[Formattable, str] = {}
 
         for measure in self.measures:
-            score, std_dev = self.avg(measure, percentage=percentage, decimals=decimals)
+            score, std_dev = self.avg(measure, **kwargs)
             result[measure] = score
-            result[EvaluationMeasure(measure.argument, 'Std.-dev. ' + measure.name,
-                                     measure.percentage)] = std_dev
+            result[Formattable(measure.argument, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
 
         return result
 
@@ -429,8 +400,8 @@ class EvaluationCsvOutput(EvaluationOutput):
 
     def write_overall_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                          evaluation_result: EvaluationResult, num_folds: int):
-        columns: Dict = evaluation_result.avg_dict(self.percentage, self.decimals) if num_folds > 1 \
-            else evaluation_result.dict(0, self.percentage, self.decimals)
+        columns: Dict = evaluation_result.avg_dict(percentage=self.percentage, decimals=self.decimals) \
+            if num_folds > 1 else evaluation_result.dict(0, percentage=self.percentage, decimals=self.decimals)
         header = sorted(columns.keys())
         incremental_prediction = not prediction_scope.is_global()
 
@@ -496,18 +467,6 @@ class EvaluationPrinter(ABC):
         pass
 
 
-def filter_evaluation_measures(evaluation_measures: List[EvaluationMeasure],
-                               outputs: List[EvaluationOutput]) -> List[EvaluationFunction]:
-    evaluation_functions: List[EvaluationFunction] = []
-
-    for measure in evaluation_measures:
-        if reduce(lambda result, output: result or output.options.get_bool(measure.argument, True), outputs, False) \
-                and isinstance(measure, EvaluationFunction):
-            evaluation_functions.append(measure)
-
-    return evaluation_functions
-
-
 class ClassificationEvaluationPrinter(EvaluationPrinter):
     """
     Evaluates the quality of binary predictions provided by a single- or multi-label classifier according to commonly
@@ -516,8 +475,9 @@ class ClassificationEvaluationPrinter(EvaluationPrinter):
 
     def __init__(self, outputs: List[EvaluationOutput]):
         super(ClassificationEvaluationPrinter, self).__init__(outputs)
-        self.multi_Label_evaluation_functions = filter_evaluation_measures(MULTI_LABEL_EVALUATION_MEASURES, outputs)
-        self.single_Label_evaluation_functions = filter_evaluation_measures(SINGLE_LABEL_EVALUATION_MEASURES, outputs)
+        options = [output.options for output in outputs]
+        self.multi_Label_evaluation_functions = filter_formattables(MULTI_LABEL_EVALUATION_MEASURES, options)
+        self.single_Label_evaluation_functions = filter_formattables(SINGLE_LABEL_EVALUATION_MEASURES, options)
 
     def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
         num_folds = data_split.get_num_folds()
@@ -531,9 +491,8 @@ class ClassificationEvaluationPrinter(EvaluationPrinter):
             evaluation_functions = self.single_Label_evaluation_functions
 
         for evaluation_function in evaluation_functions:
-            if reduce(lambda a, b: a or b.options.get_bool(evaluation_function.argument, True), self.outputs, False):
-                kwargs = evaluation_function.kwargs
-                score = evaluation_function.evaluation_function(ground_truth, predictions, **kwargs)
+            if isinstance(evaluation_function, EvaluationFunction):
+                score = evaluation_function.evaluate(ground_truth, predictions)
                 result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
 
 
@@ -545,8 +504,9 @@ class ScoreEvaluationPrinter(EvaluationPrinter):
 
     def __init__(self, outputs: List[EvaluationOutput]):
         super(ScoreEvaluationPrinter, self).__init__(outputs)
-        self.regression_evaluation_functions = filter_evaluation_measures(REGRESSION_EVALUATION_MEASURES, outputs)
-        self.ranking_evaluation_functions = filter_evaluation_measures(RANKING_EVALUATION_MEASURES, outputs)
+        options = [output.options for output in outputs]
+        self.regression_evaluation_functions = filter_formattables(REGRESSION_EVALUATION_MEASURES, options)
+        self.ranking_evaluation_functions = filter_formattables(RANKING_EVALUATION_MEASURES, options)
 
     def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
         num_folds = data_split.get_num_folds()
@@ -554,17 +514,17 @@ class ScoreEvaluationPrinter(EvaluationPrinter):
         ground_truth = enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8)
 
         if is_multilabel(ground_truth):
-            for evaluation_function in self.ranking_evaluation_functions:
-                kwargs = evaluation_function.kwargs
-                score = evaluation_function.evaluation_function(ground_truth, predictions, **kwargs)
-                result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
-        elif predictions.shape[1] > 1:
-            predictions = predictions[:, -1]
+            evaluation_functions = self.ranking_evaluation_functions + self.regression_evaluation_functions
+        else:
+            evaluation_functions = self.regression_evaluation_functions
 
-        for evaluation_function in self.regression_evaluation_functions:
-            kwargs = evaluation_function.kwargs
-            score = evaluation_function.evaluation_function(ground_truth, predictions, **kwargs)
-            result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
+            if predictions.shape[1] > 1:
+                predictions = predictions[:, -1]
+
+        for evaluation_function in evaluation_functions:
+            if isinstance(evaluation_function, EvaluationFunction):
+                score = evaluation_function.evaluate(ground_truth, predictions)
+                result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
 
 
 class ProbabilityEvaluationPrinter(ScoreEvaluationPrinter):
