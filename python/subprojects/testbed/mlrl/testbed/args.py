@@ -15,8 +15,11 @@ from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy
 from mlrl.testbed.experiments import PredictionType
 from mlrl.testbed.runnables import PARAM_DATA_SPLIT, PARAM_PREDICTION_TYPE, PARAM_PRINT_EVALUATION, \
-    PARAM_STORE_EVALUATION, PARAM_PRINT_RULES, PARAM_STORE_RULES, DATA_SPLIT_VALUES, DATA_SPLIT_TRAIN_TEST, \
-    PRINT_RULES_VALUES, STORE_RULES_VALUES, PARAM_INCREMENTAL_EVALUATION
+    PARAM_STORE_EVALUATION, PARAM_PRINT_DATA_CHARACTERISTICS, PARAM_STORE_DATA_CHARACTERISTICS, \
+    PARAM_PRINT_PREDICTION_CHARACTERISTICS, PARAM_STORE_PREDICTION_CHARACTERISTICS, PARAM_PRINT_RULES, \
+    PARAM_STORE_RULES, DATA_SPLIT_VALUES, DATA_SPLIT_TRAIN_TEST, PRINT_EVALUATION_VALUES, STORE_EVALUATION_VALUES, \
+    PRINT_DATA_CHARACTERISTICS_VALUES, STORE_DATA_CHARACTERISTICS_VALUES, PRINT_PREDICTION_CHARACTERISTICS_VALUES, \
+    STORE_PREDICTION_CHARACTERISTICS_VALUES, PRINT_RULES_VALUES, STORE_RULES_VALUES, PARAM_INCREMENTAL_EVALUATION
 
 PARAM_LOG_LEVEL = '--log-level'
 
@@ -43,14 +46,6 @@ PARAM_STORE_PARAMETERS = '--store-parameters'
 PARAM_PRINT_PREDICTIONS = '--print-predictions'
 
 PARAM_STORE_PREDICTIONS = '--store-predictions'
-
-PARAM_PRINT_PREDICTION_CHARACTERISTICS = '--print-prediction-characteristics'
-
-PARAM_STORE_PREDICTION_CHARACTERISTICS = '--store-prediction-characteristics'
-
-PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
-
-PARAM_STORE_DATA_CHARACTERISTICS = '--store-data-characteristics'
 
 PARAM_PRINT_MODEL_CHARACTERISTICS = '--print-model-characteristics'
 
@@ -144,33 +139,35 @@ def add_learner_arguments(parser: ArgumentParser):
                              + 'refer to the documentation.')
     parser.add_argument(PARAM_PRINT_EVALUATION, type=str, default=BooleanOption.TRUE.value,
                         help='Whether the evaluation results should be printed on the console or not. Must be one of '
-                             + format_enum_values(BooleanOption) + '. For additional options refer to the '
+                             + format_dict_keys(PRINT_EVALUATION_VALUES) + '. For additional options refer to the '
                              + 'documentation.')
     parser.add_argument(PARAM_STORE_EVALUATION, type=str, default=BooleanOption.TRUE.value,
                         help='Whether the evaluation results should be written into output files or not. Must be one '
-                             + 'of ' + format_enum_values(BooleanOption) + '. Does only have an effect if the '
+                             + 'of ' + format_dict_keys(STORE_EVALUATION_VALUES) + '. Does only have an effect if the '
                              + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
                              + 'documentation.')
     parser.add_argument(PARAM_EVALUATE_TRAINING_DATA, type=boolean_string, default=False,
                         help='Whether the models should not only be evaluated on the test data, but also on the '
                              + 'training data. Must be one of ' + format_enum_values(BooleanOption) + '.')
-    parser.add_argument(PARAM_PRINT_PREDICTION_CHARACTERISTICS, type=boolean_string, default=False,
+    parser.add_argument(PARAM_PRINT_PREDICTION_CHARACTERISTICS, type=str, default=BooleanOption.FALSE.value,
                         help='Whether the characteristics of binary predictions should be printed on the console or '
-                             + 'not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an '
-                             + 'effect if the parameter ' + PARAM_PREDICTION_TYPE + ' is set to '
-                             + PredictionType.LABELS.value + '.')
-    parser.add_argument(PARAM_STORE_PREDICTION_CHARACTERISTICS, type=boolean_string, default=False,
+                             + 'not. Must be one of ' + format_dict_keys(PRINT_PREDICTION_CHARACTERISTICS_VALUES) + '. '
+                             + 'Does only have an effect if the parameter ' + PARAM_PREDICTION_TYPE + ' is set to '
+                             + PredictionType.LABELS.value + '. For additional options refer to the documentation.')
+    parser.add_argument(PARAM_STORE_PREDICTION_CHARACTERISTICS, type=str, default=BooleanOption.FALSE.value,
                         help='Whether the characteristics of binary predictions should be written into output files or '
-                             + 'not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an '
-                             + 'effect if the parameter ' + PARAM_PREDICTION_TYPE + ' is set to '
-                             + PredictionType.LABELS.value + '.')
-    parser.add_argument(PARAM_PRINT_DATA_CHARACTERISTICS, type=boolean_string, default=False,
+                             + 'not. Must be one of ' + format_dict_keys(STORE_PREDICTION_CHARACTERISTICS_VALUES) + '. '
+                             + 'Does only have an effect if the parameter ' + PARAM_PREDICTION_TYPE + ' is set to '
+                             + PredictionType.LABELS.value + '. For additional options refer to the documentation.')
+    parser.add_argument(PARAM_PRINT_DATA_CHARACTERISTICS, type=str, default=BooleanOption.FALSE.value,
                         help='Whether the characteristics of the training data should be printed on the console or '
-                             + 'not. Must be one of ' + format_enum_values(BooleanOption) + '.')
-    parser.add_argument(PARAM_STORE_DATA_CHARACTERISTICS, type=boolean_string, default=False,
+                             + 'not. Must be one of ' + format_dict_keys(PRINT_DATA_CHARACTERISTICS_VALUES) + '. For '
+                             + 'additional options refer to the documentation.')
+    parser.add_argument(PARAM_STORE_DATA_CHARACTERISTICS, type=str, default=BooleanOption.FALSE.value,
                         help='Whether the characteristics of the training data should be written into output files or '
-                             + 'not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an '
-                             + 'effect if the parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
+                             + 'not. Must be one of ' + format_dict_keys(STORE_DATA_CHARACTERISTICS_VALUES) + '. Does '
+                             + 'only have an effect if the parameter ' + PARAM_OUTPUT_DIR + ' is specified. For '
+                             + 'additional options refer to the documentation')
     parser.add_argument(PARAM_ONE_HOT_ENCODING, type=boolean_string, default=False,
                         help='Whether one-hot-encoding should be used to encode nominal attributes or not. Must be one '
                              + 'of ' + format_enum_values(BooleanOption) + '.')

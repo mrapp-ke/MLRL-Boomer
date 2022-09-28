@@ -6,12 +6,14 @@ or several outputs, e.g., to the console or to a file.
 """
 import logging as log
 from abc import ABC, abstractmethod
-from typing import List
 
-from mlrl.testbed.characteristics import LabelCharacteristics
+from mlrl.common.options import Options
+from mlrl.testbed.characteristics import LabelCharacteristics, LABEL_CHARACTERISTICS
 from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.format import filter_formattables, format_table, ARGUMENT_PERCENTAGE, ARGUMENT_DECIMALS
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from mlrl.testbed.predictions import PredictionScope
+from typing import List
 
 
 class PredictionCharacteristicsOutput(ABC):
@@ -39,6 +41,14 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
     Outputs the characteristics of binary predictions using the logger.
     """
 
+    def __init__(self, options: Options):
+        """
+        :param options: The options that should be used for writing the characteristics of predictions to the output
+        """
+        self.formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
+        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
+        self.decimals = options.get_int(ARGUMENT_DECIMALS, 2)
+
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
                                          prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
         msg = 'Prediction characteristics for ' + data_type.value + ' data'
@@ -49,14 +59,14 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
         if data_split.is_cross_validation_used():
             msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
-        msg += ':\n\n'
-        msg += 'Labels: ' + str(characteristics.num_labels) + '\n'
-        msg += 'Label density: ' + str(characteristics.label_density) + '\n'
-        msg += 'Label sparsity: ' + str(1 - characteristics.label_density) + '\n'
-        msg += 'Label imbalance ratio: ' + str(characteristics.avg_label_imbalance_ratio) + '\n'
-        msg += 'Label cardinality: ' + str(characteristics.avg_label_cardinality) + '\n'
-        msg += 'Distinct label vectors: ' + str(characteristics.num_distinct_label_vectors) + '\n'
-        log.info(msg)
+        msg += ':\n\n%s\n'
+        rows = []
+
+        for formattable in self.formattables:
+            rows.append([formattable.name, formattable.format(characteristics, percentage=self.percentage,
+                                                              decimals=self.decimals)])
+
+        log.info(msg, format_table(rows))
 
 
 class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
@@ -66,22 +76,24 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
 
     COLUMN_MODEL_SIZE = 'Model size'
 
-    def __init__(self, output_dir: str):
+    def __init__(self, options: Options, output_dir: str):
         """
-        :param output_dir: The path of the directory, the CSV files should be written to
+        :param options:     The options that should be used for writing the characteristics of predictions to the output
+        :param output_dir:  The path of the directory, the CSV files should be written to
         """
         self.output_dir = output_dir
+        self.formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
+        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
+        self.decimals = options.get_int(ARGUMENT_DECIMALS, 0)
 
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
                                          prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
-        columns = {
-            'Labels': characteristics.num_labels,
-            'Label density': characteristics.label_density,
-            'Label sparsity': 1 - characteristics.label_density,
-            'Label imbalance ratio': characteristics.avg_label_imbalance_ratio,
-            'Label cardinality': characteristics.avg_label_cardinality,
-            'Distinct label vectors': characteristics.num_distinct_label_vectors
-        }
+        columns = {}
+
+        for formattable in self.formattables:
+            columns[formattable] = formattable.format(characteristics, percentage=self.percentage,
+                                                      decimals=self.decimals)
+
         header = sorted(columns.keys())
         incremental_prediction = not prediction_scope.is_global()
 
