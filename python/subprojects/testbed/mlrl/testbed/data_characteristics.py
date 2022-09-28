@@ -12,7 +12,7 @@ from mlrl.common.options import Options
 from mlrl.testbed.characteristics import LabelCharacteristics, density, Characteristic, LABEL_CHARACTERISTICS
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_splitting import DataSplit
-from mlrl.testbed.format import Formattable, filter_formattables, format_table, ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE
+from mlrl.testbed.format import filter_formattables, format_table, ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from typing import List
 
@@ -85,28 +85,16 @@ class DataCharacteristicsOutput(ABC):
     An abstract base class for all outputs, the characteristics of a data set may be written to.
     """
 
-    def __init__(self, options: Options):
-        """
-        :param options: The options that should be used for writing the characteristics of a data set to the output
-        """
-        self.options = options
-
     @abstractmethod
-    def write_data_characteristics(self, data_split: DataSplit, feature_characteristic_formattables: List[Formattable],
-                                   feature_characteristics: FeatureCharacteristics,
-                                   label_characteristic_formattables: List[Formattable],
+    def write_data_characteristics(self, data_split: DataSplit, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
         """
         Writes the characteristics of a data set to the output.
 
-        :param data_split:                          Information about the split of the available data, the
-                                                    characteristics correspond to
-        :param feature_characteristic_formattables: A list of `Formattable` objects that should be used to create
-                                                    textual representations of the characteristics of the feature matrix
-        :param feature_characteristics:             The characteristics of the feature matrix
-        :param label_characteristic_formattables:   A list of `Formattable``objects that should be used to create
-                                                    textual representations of the characteristics of the label matrix
-        :param label_characteristics:               The characteristics of the label matrix
+        :param data_split:              Information about the split of the available data, the characteristics
+                                        correspond to
+        :param feature_characteristics: The characteristics of the feature matrix
+        :param label_characteristics:   The characteristics of the label matrix
         """
         pass
 
@@ -117,13 +105,16 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
     """
 
     def __init__(self, options: Options):
+        """
+        :param options: The options that should be used for writing the characteristics of a data set to the output
+        """
         super().__init__(options)
+        self.feature_characteristic_formattables = filter_formattables(FEATURE_CHARACTERISTICS, [options])
+        self.label_characteristic_formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
         self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
         self.decimals = options.get_int(ARGUMENT_DECIMALS, 2)
 
-    def write_data_characteristics(self, data_split: DataSplit, feature_characteristic_formattables: List[Formattable],
-                                   feature_characteristics: FeatureCharacteristics,
-                                   label_characteristic_formattables: List[Formattable],
+    def write_data_characteristics(self, data_split: DataSplit, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
         msg = 'Data characteristics'
 
@@ -133,11 +124,11 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
         msg += ':\n\n%s\n'
         rows = []
 
-        for characteristic in feature_characteristic_formattables:
+        for characteristic in self.feature_characteristic_formattables:
             rows.append([characteristic.name, characteristic.format(feature_characteristics, percentage=self.percentage,
                                                                     decimals=self.decimals)])
 
-        for characteristic in label_characteristic_formattables:
+        for characteristic in self.label_characteristic_formattables:
             rows.append([characteristic.name, characteristic.format(label_characteristics, percentage=self.percentage,
                                                                     decimals=self.decimals)])
 
@@ -151,24 +142,25 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
 
     def __init__(self, options: Options, output_dir: str):
         """
-        :param output_dir: The path of the directory, the CSV files should be written to
+        :param options:     The options that should be used for writing the characteristics of a data set to the output
+        :param output_dir:  The path of the directory, the CSV files should be written to
         """
         super().__init__(options)
         self.output_dir = output_dir
+        self.feature_characteristic_formattables = filter_formattables(FEATURE_CHARACTERISTICS, [options])
+        self.label_characteristic_formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
         self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
         self.decimals = options.get_int(ARGUMENT_DECIMALS, 0)
 
-    def write_data_characteristics(self, data_split: DataSplit, feature_characteristic_formattables: List[Formattable],
-                                   feature_characteristics: FeatureCharacteristics,
-                                   label_characteristic_formattables: List[Formattable],
+    def write_data_characteristics(self, data_split: DataSplit, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
         columns = {}
 
-        for formattable in feature_characteristic_formattables:
+        for formattable in self.feature_characteristic_formattables:
             columns[formattable] = formattable.format(feature_characteristics, percentage=self.percentage,
                                                       decimals=self.decimals)
 
-        for formattable in label_characteristic_formattables:
+        for formattable in self.label_characteristic_formattables:
             columns[formattable] = formattable.format(label_characteristics, percentage=self.percentage,
                                                       decimals=self.decimals)
 
@@ -188,9 +180,6 @@ class DataCharacteristicsPrinter:
         :param outputs: The outputs, the characteristics of data sets should be written to
         """
         self.outputs = outputs
-        options = [output.options for output in outputs]
-        self.feature_characteristic_formattables = filter_formattables(FEATURE_CHARACTERISTICS, options)
-        self.label_characteristic_formattables = filter_formattables(LABEL_CHARACTERISTICS, options)
 
     def print(self, meta_data: MetaData, data_split: DataSplit, x, y):
         """
@@ -202,12 +191,8 @@ class DataCharacteristicsPrinter:
                             the ground truth labels
         """
         if len(self.outputs) > 0:
-            feature_characteristic_formattables = self.feature_characteristic_formattables
-            label_characteristic_formattables = self.label_characteristic_formattables
             feature_characteristics = FeatureCharacteristics(meta_data, x)
             label_characteristics = LabelCharacteristics(y)
 
             for output in self.outputs:
-                output.write_data_characteristics(data_split, feature_characteristic_formattables,
-                                                  feature_characteristics, label_characteristic_formattables,
-                                                  label_characteristics)
+                output.write_data_characteristics(data_split, feature_characteristics, label_characteristics)
