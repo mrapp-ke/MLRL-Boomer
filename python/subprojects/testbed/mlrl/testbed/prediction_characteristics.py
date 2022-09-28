@@ -7,9 +7,10 @@ or several outputs, e.g., to the console or to a file.
 import logging as log
 from abc import ABC, abstractmethod
 
+from mlrl.common.options import Options
 from mlrl.testbed.characteristics import LabelCharacteristics, LABEL_CHARACTERISTICS
 from mlrl.testbed.data_splitting import DataSplit, DataType
-from mlrl.testbed.format import format_table
+from mlrl.testbed.format import format_table, ARGUMENT_PERCENTAGE, ARGUMENT_DECIMALS
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from mlrl.testbed.predictions import PredictionScope
 from typing import List
@@ -19,6 +20,12 @@ class PredictionCharacteristicsOutput(ABC):
     """
     An abstract base class for all outputs, the characteristics of binary predictions may be written to.
     """
+
+    def __init__(self, options: Options):
+        """
+        :param options: The options that should be used for writing the characteristics of predictions to the output
+        """
+        self.options = options
 
     @abstractmethod
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
@@ -40,6 +47,11 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
     Outputs the characteristics of binary predictions using the logger.
     """
 
+    def __init__(self, options: Options):
+        super().__init__(options)
+        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
+        self.decimals = options.get_int(ARGUMENT_DECIMALS, 2)
+
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
                                          prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
         msg = 'Prediction characteristics for ' + data_type.value + ' data'
@@ -54,7 +66,8 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
         rows = []
 
         for characteristic in LABEL_CHARACTERISTICS:
-            rows.append([characteristic.name, characteristic.format(characteristics)])
+            rows.append([characteristic.name,
+                         characteristic.format(characteristics, percentage=self.percentage, decimals=self.decimals)])
 
         log.info(msg, format_table(rows))
 
@@ -66,18 +79,22 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
 
     COLUMN_MODEL_SIZE = 'Model size'
 
-    def __init__(self, output_dir: str):
+    def __init__(self, options: Options, output_dir: str):
         """
         :param output_dir: The path of the directory, the CSV files should be written to
         """
+        super().__init__(options)
         self.output_dir = output_dir
+        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
+        self.decimals = options.get_int(ARGUMENT_DECIMALS, 0)
 
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
                                          prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
         columns = {}
 
         for characteristic in LABEL_CHARACTERISTICS:
-            columns[characteristic] = characteristic.format(characteristics)
+            columns[characteristic] = characteristic.format(characteristics, percentage=self.percentage,
+                                                            decimals=self.decimals)
 
         header = sorted(columns.keys())
         incremental_prediction = not prediction_scope.is_global()

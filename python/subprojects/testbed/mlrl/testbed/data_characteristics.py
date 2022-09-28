@@ -8,10 +8,11 @@ import logging as log
 from abc import ABC, abstractmethod
 from functools import reduce
 
+from mlrl.common.options import Options
 from mlrl.testbed.characteristics import LabelCharacteristics, density, Characteristic, LABEL_CHARACTERISTICS
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_splitting import DataSplit
-from mlrl.testbed.format import format_table
+from mlrl.testbed.format import format_table, ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from typing import List
 
@@ -67,6 +68,12 @@ class DataCharacteristicsOutput(ABC):
     An abstract base class for all outputs, the characteristics of a data set may be written to.
     """
 
+    def __init__(self, options: Options):
+        """
+        :param options: The options that should be used for writing the characteristics of a data set to the output
+        """
+        self.options = options
+
     @abstractmethod
     def write_data_characteristics(self, data_split: DataSplit, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
@@ -86,6 +93,11 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
     Outputs the characteristics of a data set using the logger.
     """
 
+    def __init__(self, options: Options):
+        super().__init__(options)
+        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
+        self.decimals = options.get_int(ARGUMENT_DECIMALS, 2)
+
     def write_data_characteristics(self, data_split: DataSplit, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
         msg = 'Data characteristics'
@@ -97,10 +109,12 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
         rows = []
 
         for characteristic in FEATURE_CHARACTERISTICS:
-            rows.append([characteristic.name, characteristic.format(feature_characteristics)])
+            rows.append([characteristic.name, characteristic.format(feature_characteristics, percentage=self.percentage,
+                                                                    decimals=self.decimals)])
 
         for characteristic in LABEL_CHARACTERISTICS:
-            rows.append([characteristic.name, characteristic.format(label_characteristics)])
+            rows.append([characteristic.name, characteristic.format(label_characteristics, percentage=self.percentage,
+                                                                    decimals=self.decimals)])
 
         log.info(msg, format_table(rows))
 
@@ -110,21 +124,26 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
     Writes the characteristics of a data set to a CSV file.
     """
 
-    def __init__(self, output_dir: str):
+    def __init__(self, options: Options, output_dir: str):
         """
         :param output_dir: The path of the directory, the CSV files should be written to
         """
+        super().__init__(options)
         self.output_dir = output_dir
+        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
+        self.decimals = options.get_int(ARGUMENT_DECIMALS, 0)
 
     def write_data_characteristics(self, data_split: DataSplit, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
         columns = {}
 
         for characteristic in FEATURE_CHARACTERISTICS:
-            columns[characteristic] = characteristic.format(feature_characteristics)
+            columns[characteristic] = characteristic.format(feature_characteristics, percentage=self.percentage,
+                                                            decimals=self.decimals)
 
         for characteristic in LABEL_CHARACTERISTICS:
-            columns[characteristic] = characteristic.format(label_characteristics)
+            columns[characteristic] = characteristic.format(label_characteristics, percentage=self.percentage,
+                                                            decimals=self.decimals)
 
         header = sorted(columns.keys())
         with open_writable_csv_file(self.output_dir, 'data_characteristics', data_split.get_fold()) as csv_file:
