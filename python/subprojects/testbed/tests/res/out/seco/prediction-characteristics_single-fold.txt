@@ -13,11 +13,11 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0017615919932723045 seconds
 INFO Prediction characteristics for test data (Fold 1):
 
-Labels: 6
-Label density: 0.3194444444444444
-Label sparsity: 0.6805555555555556
-Label imbalance ratio: 1.5744178628389154
-Label cardinality: 1.9166666666666667
-Distinct label vectors: 17
+Labels                   6
+Label Density           31.94
+Label Sparsity          68.06
+Label Imbalance Ratio    1.57
+Label Cardinality        1.92
+Distinct Label Vectors  17
 
 INFO Successfully finished after 0.3161613629781641 seconds
