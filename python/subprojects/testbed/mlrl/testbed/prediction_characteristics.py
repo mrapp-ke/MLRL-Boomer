@@ -7,8 +7,9 @@ or several outputs, e.g., to the console or to a file.
 import logging as log
 from abc import ABC, abstractmethod
 
-from mlrl.testbed.characteristics import LabelCharacteristics
+from mlrl.testbed.characteristics import LabelCharacteristics, LABEL_CHARACTERISTICS
 from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.format import format_table
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from mlrl.testbed.predictions import PredictionScope
 from typing import List
@@ -49,14 +50,13 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
         if data_split.is_cross_validation_used():
             msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
-        msg += ':\n\n'
-        msg += 'Labels: ' + str(characteristics.num_labels) + '\n'
-        msg += 'Label density: ' + str(characteristics.label_density) + '\n'
-        msg += 'Label sparsity: ' + str(characteristics.label_sparsity) + '\n'
-        msg += 'Label imbalance ratio: ' + str(characteristics.avg_label_imbalance_ratio) + '\n'
-        msg += 'Label cardinality: ' + str(characteristics.avg_label_cardinality) + '\n'
-        msg += 'Distinct label vectors: ' + str(characteristics.num_distinct_label_vectors) + '\n'
-        log.info(msg)
+        msg += ':\n\n%s\n'
+        rows = []
+
+        for characteristic in LABEL_CHARACTERISTICS:
+            rows.append([characteristic.name, characteristic.format(characteristics)])
+
+        log.info(msg, format_table(rows))
 
 
 class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
@@ -74,14 +74,11 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
 
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
                                          prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
-        columns = {
-            'Labels': characteristics.num_labels,
-            'Label density': characteristics.label_density,
-            'Label sparsity': characteristics.label_sparsity,
-            'Label imbalance ratio': characteristics.avg_label_imbalance_ratio,
-            'Label cardinality': characteristics.avg_label_cardinality,
-            'Distinct label vectors': characteristics.num_distinct_label_vectors
-        }
+        columns = {}
+
+        for characteristic in LABEL_CHARACTERISTICS:
+            columns[characteristic] = characteristic.format(characteristics)
+
         header = sorted(columns.keys())
         incremental_prediction = not prediction_scope.is_global()
 
