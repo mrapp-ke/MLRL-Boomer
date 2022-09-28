@@ -59,6 +59,10 @@ class FeatureCharacteristics:
         self.num_numerical_features = self.num_features - self.num_nominal_features
         self.feature_density = density(x)
 
+    @property
+    def feature_sparsity(self):
+        return 1 - self.feature_density
+
 
 class DataCharacteristicsOutput(ABC):
     """
@@ -98,7 +102,7 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
             [COLUMN_NUMERICAL_FEATURES, str(feature_characteristics.num_numerical_features)],
             [COLUMN_NOMINAL_FEATURES, str(feature_characteristics.num_nominal_features)],
             [COLUMN_FEATURE_DENSITY, str(feature_characteristics.feature_density)],
-            [COLUMN_FEATURE_SPARSITY, str(1 - feature_characteristics.feature_density)],
+            [COLUMN_FEATURE_SPARSITY, str(feature_characteristics.feature_sparsity)],
             [COLUMN_LABELS, str(label_characteristics.num_labels)],
             [COLUMN_LABEL_DENSITY, str(label_characteristics.label_density)],
             [COLUMN_LABEL_SPARSITY, str(label_characteristics.label_sparsity)],
@@ -128,7 +132,7 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
             COLUMN_NUMERICAL_FEATURES: feature_characteristics.num_numerical_features,
             COLUMN_NOMINAL_FEATURES: feature_characteristics.num_nominal_features,
             COLUMN_FEATURE_DENSITY: feature_characteristics.feature_density,
-            COLUMN_FEATURE_SPARSITY: 1 - feature_characteristics.feature_density,
+            COLUMN_FEATURE_SPARSITY: feature_characteristics.feature_sparsity,
             COLUMN_LABELS: label_characteristics.num_labels,
             COLUMN_LABEL_DENSITY: label_characteristics.label_density,
             COLUMN_LABEL_SPARSITY: label_characteristics.label_sparsity,
