@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from mlrl.common.options import Options
 from mlrl.testbed.characteristics import LabelCharacteristics, LABEL_CHARACTERISTICS
 from mlrl.testbed.data_splitting import DataSplit, DataType
-from mlrl.testbed.format import format_table, ARGUMENT_PERCENTAGE, ARGUMENT_DECIMALS
+from mlrl.testbed.format import Formattable, filter_formattables, format_table, ARGUMENT_PERCENTAGE, ARGUMENT_DECIMALS
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from mlrl.testbed.predictions import PredictionScope
 from typing import List
@@ -29,7 +29,8 @@ class PredictionCharacteristicsOutput(ABC):
 
     @abstractmethod
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
-                                         prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
+                                         prediction_scope: PredictionScope, formattables: List[Formattable],
+                                         characteristics: LabelCharacteristics):
         """
         Writes the characteristics of a data set to the output.
 
@@ -37,6 +38,8 @@ class PredictionCharacteristicsOutput(ABC):
         :param data_type:           Specifies whether the predictions correspond to the training or test data
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                     incrementally
+        :param formattables:        A list of `Formattable` objects that should be used to create textual
+                                    representations of the characteristics of predictions
         :param characteristics:     The characteristics of the predictions
         """
         pass
@@ -53,7 +56,8 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
         self.decimals = options.get_int(ARGUMENT_DECIMALS, 2)
 
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
-                                         prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
+                                         prediction_scope: PredictionScope, formattables: List[Formattable],
+                                         characteristics: LabelCharacteristics):
         msg = 'Prediction characteristics for ' + data_type.value + ' data'
 
         if not prediction_scope.is_global():
@@ -65,9 +69,9 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
         msg += ':\n\n%s\n'
         rows = []
 
-        for characteristic in LABEL_CHARACTERISTICS:
-            rows.append([characteristic.name,
-                         characteristic.format(characteristics, percentage=self.percentage, decimals=self.decimals)])
+        for formattable in formattables:
+            rows.append([formattable.name, formattable.format(characteristics, percentage=self.percentage,
+                                                              decimals=self.decimals)])
 
         log.info(msg, format_table(rows))
 
@@ -89,12 +93,13 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
         self.decimals = options.get_int(ARGUMENT_DECIMALS, 0)
 
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
-                                         prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
+                                         prediction_scope: PredictionScope, formattables: List[Formattable],
+                                         characteristics: LabelCharacteristics):
         columns = {}
 
-        for characteristic in LABEL_CHARACTERISTICS:
-            columns[characteristic] = characteristic.format(characteristics, percentage=self.percentage,
-                                                            decimals=self.decimals)
+        for formattable in formattables:
+            columns[formattable] = formattable.format(characteristics, percentage=self.percentage,
+                                                      decimals=self.decimals)
 
         header = sorted(columns.keys())
         incremental_prediction = not prediction_scope.is_global()
@@ -119,6 +124,8 @@ class PredictionCharacteristicsPrinter:
         :param outputs: The outputs, the characteristics of binary predictions should be written to
         """
         self.outputs = outputs
+        options = [output.options for output in outputs]
+        self.formattables = filter_formattables(LABEL_CHARACTERISTICS, options)
 
     def print(self, data_split: DataSplit, data_type: DataType, prediction_scope: PredictionScope, y):
         """
@@ -130,7 +137,9 @@ class PredictionCharacteristicsPrinter:
                                     stores the predictions
         """
         if len(self.outputs) > 0:
+            formattables = self.formattables
             characteristics = LabelCharacteristics(y)
 
             for output in self.outputs:
-                output.write_prediction_characteristics(data_split, data_type, prediction_scope, characteristics)
+                output.write_prediction_characteristics(data_split, data_type, prediction_scope, formattables,
+                                                        characteristics)
