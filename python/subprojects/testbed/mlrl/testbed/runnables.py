@@ -51,6 +51,14 @@ PARAM_PRINT_EVALUATION = '--print-evaluation'
 
 PARAM_STORE_EVALUATION = '--store-evaluation'
 
+PARAM_PRINT_PREDICTION_CHARACTERISTICS = '--print-prediction-characteristics'
+
+PARAM_STORE_PREDICTION_CHARACTERISTICS = '--store-prediction-characteristics'
+
+PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
+
+PARAM_STORE_DATA_CHARACTERISTICS = '--store-data-characteristics'
+
 PARAM_PRINT_RULES = '--print-rules'
 
 PARAM_STORE_RULES = '--store-rules'
@@ -111,6 +119,20 @@ STORE_EVALUATION_VALUES: Dict[str, Set[str]] = {
                                ARGUMENT_PERCENTAGE},
     BooleanOption.FALSE.value: {}
 }
+
+PRINT_DATA_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
+    BooleanOption.TRUE.value: {ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE},
+    BooleanOption.FALSE.value: {}
+}
+
+STORE_DATA_CHARACTERISTICS_VALUES = PRINT_DATA_CHARACTERISTICS_VALUES
+
+PRINT_PREDICTION_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
+    BooleanOption.TRUE.value: {ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE},
+    BooleanOption.FALSE.value: {}
+}
+
+STORE_PREDICTION_CHARACTERISTICS_VALUES = PRINT_PREDICTION_CHARACTERISTICS_VALUES
 
 PRINT_RULES_VALUES: Dict[str, Set[str]] = {
     BooleanOption.TRUE.value: {ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, ARGUMENT_PRINT_NOMINAL_VALUES,
@@ -271,11 +293,19 @@ class LearnerRunnable(Runnable, ABC):
     def __create_prediction_characteristics_printer(args) -> Optional[PredictionCharacteristicsPrinter]:
         outputs = []
 
-        if args.print_prediction_characteristics:
-            outputs.append(PredictionCharacteristicsLogOutput())
+        value, options = parse_param_and_options(PARAM_PRINT_PREDICTION_CHARACTERISTICS,
+                                                 args.print_prediction_characteristics,
+                                                 PRINT_PREDICTION_CHARACTERISTICS_VALUES)
 
-        if args.store_prediction_characteristics and args.output_dir is not None:
-            outputs.append(PredictionCharacteristicsCsvOutput(output_dir=args.output_dir))
+        if value == BooleanOption.TRUE.value:
+            outputs.append(PredictionCharacteristicsLogOutput(options))
+
+        value, options = parse_param_and_options(PARAM_STORE_PREDICTION_CHARACTERISTICS,
+                                                 args.store_prediction_characteristics,
+                                                 STORE_PREDICTION_CHARACTERISTICS_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            outputs.append(PredictionCharacteristicsCsvOutput(options, output_dir=args.output_dir))
 
         return PredictionCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
 
@@ -283,11 +313,17 @@ class LearnerRunnable(Runnable, ABC):
     def __create_data_characteristics_printer(args) -> (Optional[DataCharacteristicsPrinter], bool):
         outputs = []
 
-        if args.print_data_characteristics:
-            outputs.append(DataCharacteristicsLogOutput())
+        value, options = parse_param_and_options(PARAM_PRINT_DATA_CHARACTERISTICS, args.print_data_characteristics,
+                                                 PRINT_DATA_CHARACTERISTICS_VALUES)
 
-        if args.store_data_characteristics and args.output_dir is not None:
-            outputs.append(DataCharacteristicsCsvOutput(output_dir=args.output_dir))
+        if value == BooleanOption.TRUE.value:
+            outputs.append(DataCharacteristicsLogOutput(options))
+
+        value, options = parse_param_and_options(PARAM_STORE_DATA_CHARACTERISTICS, args.store_data_characteristics,
+                                                 STORE_DATA_CHARACTERISTICS_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            outputs.append(DataCharacteristicsCsvOutput(options, output_dir=args.output_dir))
 
         return DataCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
 
