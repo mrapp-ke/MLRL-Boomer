@@ -93,3 +93,7 @@ class LabelCharacteristics:
         self.avg_label_imbalance_ratio = label_imbalance_ratio(y)
         self.avg_label_cardinality = label_cardinality(y)
         self.num_distinct_label_vectors = distinct_label_vectors(y)
+
+    @property
+    def label_sparsity(self):
+        return 1 - self.label_density
