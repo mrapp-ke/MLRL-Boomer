@@ -5,16 +5,18 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emot
 INFO Fold 1 / 10:
 INFO Data characteristics (Fold 1):
 
-Examples: 533
-Features: 72 (72 numerical, 0 nominal)
-Feature density: 0.9966906399833229
-Feature sparsity: 0.003309360016677143
-Labels: 6
-Label density: 0.30988117573483426
-Label sparsity: 0.6901188242651657
-Label imbalance ratio: 1.4847239997553696
-Label cardinality: 1.8592870544090057
-Distinct label vectors: 26
+Examples                533
+Features                 72
+Numerical Features        0
+Nominal Features         72
+Feature Density          99.67
+Feature Sparsity          0.33
+Labels                    6
+Label Density            30.99
+Label Sparsity           69.01
+Label Imbalance Ratio     1.48
+Label Cardinality         1.86
+Distinct Label Vectors   26
 
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples

@@ -13,12 +13,12 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0015925809857435524 seconds
 INFO Prediction characteristics for test data (Fold 1):
 
-Labels: 6
-Label density: 0.3194444444444444
-Label sparsity: 0.6805555555555556
-Label imbalance ratio: 1.5744178628389154
-Label cardinality: 1.9166666666666667
-Distinct label vectors: 17
+Labels                   6
+Label Density           31.94
+Label Sparsity          68.06
+Label Imbalance Ratio    1.57
+Label Cardinality        1.92
+Distinct Label Vectors  17
 
 INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
@@ -31,12 +31,12 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0015937910065986216 seconds
 INFO Prediction characteristics for test data (Fold 2):
 
-Labels: 6
-Label density: 0.30277777777777776
-Label sparsity: 0.6972222222222222
-Label imbalance ratio: 1.9501298701298704
-Label cardinality: 1.8166666666666667
-Distinct label vectors: 15
+Labels                   6
+Label Density           30.28
+Label Sparsity          69.72
+Label Imbalance Ratio    1.95
+Label Cardinality        1.82
+Distinct Label Vectors  15
 
 INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
@@ -49,12 +49,12 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0021737070055678487 seconds
 INFO Prediction characteristics for test data (Fold 3):
 
-Labels: 6
-Label density: 0.3194444444444444
-Label sparsity: 0.6805555555555556
-Label imbalance ratio: 1.5632414369256475
-Label cardinality: 1.9166666666666667
-Distinct label vectors: 17
+Labels                   6
+Label Density           31.94
+Label Sparsity          68.06
+Label Imbalance Ratio    1.56
+Label Cardinality        1.92
+Distinct Label Vectors  17
 
 INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
@@ -67,12 +67,12 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0015714479959569871 seconds
 INFO Prediction characteristics for test data (Fold 4):
 
-Labels: 6
-Label density: 0.2909604519774011
-Label sparsity: 0.7090395480225988
-Label imbalance ratio: 1.8589068825910928
-Label cardinality: 1.7457627118644068
-Distinct label vectors: 13
+Labels                   6
+Label Density           29.1
+Label Sparsity          70.9
+Label Imbalance Ratio    1.86
+Label Cardinality        1.75
+Distinct Label Vectors  13
 
 INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
@@ -85,12 +85,12 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0018342459807172418 seconds
 INFO Prediction characteristics for test data (Fold 5):
 
-Labels: 6
-Label density: 0.2994350282485876
-Label sparsity: 0.7005649717514124
-Label imbalance ratio: 1.5666136495083864
-Label cardinality: 1.7966101694915255
-Distinct label vectors: 10
+Labels                   6
+Label Density           29.94
+Label Sparsity          70.06
+Label Imbalance Ratio    1.57
+Label Cardinality        1.8
+Distinct Label Vectors  10
 
 INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
@@ -103,12 +103,12 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0016007510130293667 seconds
 INFO Prediction characteristics for test data (Fold 6):
 
-Labels: 6
-Label density: 0.3050847457627119
-Label sparsity: 0.6949152542372881
-Label imbalance ratio: 4.639254385964912
-Label cardinality: 1.8305084745762712
-Distinct label vectors: 15
+Labels                   6
+Label Density           30.51
+Label Sparsity          69.49
+Label Imbalance Ratio    4.64
+Label Cardinality        1.83
+Distinct Label Vectors  15
 
 INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
@@ -121,12 +121,12 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0017158889677375555 seconds
 INFO Prediction characteristics for test data (Fold 7):
 
-Labels: 6
-Label density: 0.3163841807909605
-Label sparsity: 0.6836158192090396
-Label imbalance ratio: 2.11815210932858
-Label cardinality: 1.8983050847457628
-Distinct label vectors: 15
+Labels                   6
+Label Density           31.64
+Label Sparsity          68.36
+Label Imbalance Ratio    2.12
+Label Cardinality        1.9
+Distinct Label Vectors  15
 
 INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
@@ -139,12 +139,12 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0019535989849828184 seconds
 INFO Prediction characteristics for test data (Fold 8):
 
-Labels: 6
-Label density: 0.3192090395480226
-Label sparsity: 0.6807909604519774
-Label imbalance ratio: 2.0222591021779666
-Label cardinality: 1.9152542372881356
-Distinct label vectors: 11
+Labels                   6
+Label Density           31.92
+Label Sparsity          68.08
+Label Imbalance Ratio    2.02
+Label Cardinality        1.92
+Distinct Label Vectors  11
 
 INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
@@ -157,12 +157,12 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0015919649740681052 seconds
 INFO Prediction characteristics for test data (Fold 9):
 
-Labels: 6
-Label density: 0.3220338983050847
-Label sparsity: 0.6779661016949152
-Label imbalance ratio: 2.202153846153846
-Label cardinality: 1.9322033898305084
-Distinct label vectors: 10
+Labels                   6
+Label Density           32.2
+Label Sparsity          67.8
+Label Imbalance Ratio    2.2
+Label Cardinality        1.93
+Distinct Label Vectors  10
 
 INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
@@ -175,11 +175,11 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0015581100014969707 seconds
 INFO Prediction characteristics for test data (Fold 10):
 
-Labels: 6
-Label density: 0.2655367231638418
-Label sparsity: 0.7344632768361582
-Label imbalance ratio: 1.8123665223665224
-Label cardinality: 1.5932203389830508
-Distinct label vectors: 13
+Labels                   6
+Label Density           26.55
+Label Sparsity          73.45
+Label Imbalance Ratio    1.81
+Label Cardinality        1.59
+Distinct Label Vectors  13
 
 INFO Successfully finished after 2.642746256024111 seconds

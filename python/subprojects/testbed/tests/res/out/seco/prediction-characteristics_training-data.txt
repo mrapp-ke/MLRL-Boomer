@@ -12,12 +12,12 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.007419428962748498 seconds
 INFO Prediction characteristics for training data:
 
-Labels: 6
-Label density: 0.30856423173803527
-Label sparsity: 0.6914357682619647
-Label imbalance ratio: 4.245291494206476
-Label cardinality: 1.8513853904282116
-Distinct label vectors: 28
+Labels                   6
+Label Density           30.86
+Label Sparsity          69.14
+Label Imbalance Ratio    4.25
+Label Cardinality        1.85
+Distinct Label Vectors  28
 
 INFO Predicting for 196 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
@@ -25,11 +25,11 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.005934583023190498 seconds
 INFO Prediction characteristics for test data:
 
-Labels: 6
-Label density: 0.31887755102040816
-Label sparsity: 0.6811224489795918
-Label imbalance ratio: 10.50038980970979
-Label cardinality: 1.913265306122449
-Distinct label vectors: 22
+Labels                   6
+Label Density           31.89
+Label Sparsity          68.11
+Label Imbalance Ratio   10.5
+Label Cardinality        1.91
+Distinct Label Vectors  22
 
 INFO Successfully finished after 0.21247219701763242 seconds
