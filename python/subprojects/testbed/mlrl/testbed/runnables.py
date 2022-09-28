@@ -7,7 +7,6 @@ import logging as log
 import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
-from typing import Optional, Dict, Set
 
 from mlrl.common.config import NONE
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
@@ -25,9 +24,10 @@ from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCU
     ARGUMENT_MEDIAN_ABSOLUTE_ERROR, ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR, ARGUMENT_RANK_LOSS, \
     ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, \
     ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, \
-    ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE, EvaluationPrinter, ClassificationEvaluationPrinter, \
+    EvaluationPrinter, ClassificationEvaluationPrinter, \
     ScoreEvaluationPrinter, ProbabilityEvaluationPrinter, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment, PredictionType, Evaluation, GlobalEvaluation, IncrementalEvaluation
+from mlrl.testbed.format import ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, \
     ARGUMENT_PRINT_NOMINAL_VALUES, ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS, ModelPrinter, RulePrinter, \
@@ -39,6 +39,7 @@ from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter, \
     PredictionCharacteristicsLogOutput, PredictionCharacteristicsCsvOutput
 from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, PredictionArffOutput
+from typing import Optional, Dict, Set
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 

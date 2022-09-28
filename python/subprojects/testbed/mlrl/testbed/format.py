@@ -5,7 +5,13 @@ Provides utility functions for creating textual representations.
 """
 from functools import reduce
 
+from mlrl.common.options import Options
 from tabulate import tabulate
+from typing import List
+
+ARGUMENT_DECIMALS = 'decimals'
+
+ARGUMENT_PERCENTAGE = 'percentage'
 
 
 def format_duration(duration: float) -> str:
@@ -68,3 +74,59 @@ def format_table(rows) -> str:
     :return:        The textual representation that has been created
     """
     return tabulate(rows, tablefmt='plain')
+
+
+class Formattable:
+    """
+    Allows to create textual representations of values.
+    """
+
+    def __init__(self, argument: str, name: str, percentage: bool = False):
+        """
+        :param argument:    The name of the argument that can be used for filtering
+        :param name:        A name that describes the type of values
+        :param percentage:  True, if the values can be formatted as a percentage, False otherwise
+        """
+        self.argument = argument
+        self.name = name
+        self.percentage = percentage
+
+    def __str__(self):
+        return self.name
+
+    def __lt__(self, other):
+        return self.name < other.name
+
+    def __hash__(self):
+        return hash(self.name)
+
+    def format(self, value, **kwargs) -> str:
+        """
+        Creates and returns a textual representation of a given value
+
+        :param value:   The value
+        :return:        The textual representation that has been created
+        """
+        decimals = kwargs.get(ARGUMENT_DECIMALS, 0)
+
+        if self.percentage and kwargs.get(ARGUMENT_PERCENTAGE, False):
+            value = value * 100
+
+        return format_float(value, decimals=decimals)
+
+
+def filter_formattables(formattables: List[Formattable], options: List[Options]) -> List[Formattable]:
+    """
+    Allows to filter a list of `Formattable` objects.
+
+    :param formattables:    A list of `Formattable` objects
+    :param options:         A list of `Options` objects that should be used for filtering
+    :return:                A filtered list of the given `Formattable` objects
+    """
+    filtered: List[Formattable] = []
+
+    for formattable in formattables:
+        if reduce(lambda a, b: a | b.get_bool(formattable.argument, True), options, False):
+            filtered.append(formattable)
+
+    return filtered
