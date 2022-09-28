@@ -108,7 +108,6 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
         """
         :param options: The options that should be used for writing the characteristics of a data set to the output
         """
-        super().__init__(options)
         self.feature_characteristic_formattables = filter_formattables(FEATURE_CHARACTERISTICS, [options])
         self.label_characteristic_formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
         self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
@@ -145,7 +144,6 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
         :param options:     The options that should be used for writing the characteristics of a data set to the output
         :param output_dir:  The path of the directory, the CSV files should be written to
         """
-        super().__init__(options)
         self.output_dir = output_dir
         self.feature_characteristic_formattables = filter_formattables(FEATURE_CHARACTERISTICS, [options])
         self.label_characteristic_formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
