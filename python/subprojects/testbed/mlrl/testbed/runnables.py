@@ -12,8 +12,11 @@ from mlrl.common.config import NONE
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.format import format_enum_values
 from mlrl.common.options import BooleanOption, parse_param_and_options
-from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
-    DataCharacteristicsCsvOutput
+from mlrl.testbed.characteristics import ARGUMENT_LABELS, ARGUMENT_LABEL_DENSITY, ARGUMENT_LABEL_SPARSITY, \
+    ARGUMENT_LABEL_IMBALANCE_RATIO, ARGUMENT_LABEL_CARDINALITY, ARGUMENT_DISTINCT_LABEL_VECTORS
+from mlrl.testbed.data_characteristics import ARGUMENT_EXAMPLES, ARGUMENT_FEATURES, ARGUMENT_NUMERICAL_FEATURES, \
+    ARGUMENT_NOMINAL_FEATURES, ARGUMENT_FEATURE_DENSITY, ARGUMENT_FEATURE_SPARSITY, DataCharacteristicsPrinter, \
+    DataCharacteristicsLogOutput, DataCharacteristicsCsvOutput
 from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, NoSplitter, DataSet
 from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCURACY, ARGUMENT_SUBSET_ZERO_ONE_LOSS, \
     ARGUMENT_SUBSET_ACCURACY, ARGUMENT_MICRO_PRECISION, ARGUMENT_MICRO_RECALL, ARGUMENT_MICRO_F1, \
@@ -24,8 +27,8 @@ from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCU
     ARGUMENT_MEDIAN_ABSOLUTE_ERROR, ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR, ARGUMENT_RANK_LOSS, \
     ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, \
     ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, \
-    EvaluationPrinter, ClassificationEvaluationPrinter, \
-    ScoreEvaluationPrinter, ProbabilityEvaluationPrinter, EvaluationLogOutput, EvaluationCsvOutput
+    EvaluationPrinter, ClassificationEvaluationPrinter, ScoreEvaluationPrinter, ProbabilityEvaluationPrinter, \
+    EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment, PredictionType, Evaluation, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.format import ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE
 from mlrl.testbed.io import clear_directory
@@ -121,14 +124,20 @@ STORE_EVALUATION_VALUES: Dict[str, Set[str]] = {
 }
 
 PRINT_DATA_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
-    BooleanOption.TRUE.value: {ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE},
+    BooleanOption.TRUE.value: {ARGUMENT_EXAMPLES, ARGUMENT_FEATURES, ARGUMENT_NUMERICAL_FEATURES,
+                               ARGUMENT_NOMINAL_FEATURES, ARGUMENT_FEATURE_DENSITY, ARGUMENT_FEATURE_SPARSITY,
+                               ARGUMENT_LABELS, ARGUMENT_LABEL_DENSITY, ARGUMENT_LABEL_SPARSITY,
+                               ARGUMENT_LABEL_IMBALANCE_RATIO, ARGUMENT_LABEL_CARDINALITY,
+                               ARGUMENT_DISTINCT_LABEL_VECTORS, ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE},
     BooleanOption.FALSE.value: {}
 }
 
 STORE_DATA_CHARACTERISTICS_VALUES = PRINT_DATA_CHARACTERISTICS_VALUES
 
 PRINT_PREDICTION_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
-    BooleanOption.TRUE.value: {ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE},
+    BooleanOption.TRUE.value: {ARGUMENT_LABELS, ARGUMENT_LABEL_DENSITY, ARGUMENT_LABEL_SPARSITY,
+                               ARGUMENT_LABEL_IMBALANCE_RATIO, ARGUMENT_LABEL_CARDINALITY,
+                               ARGUMENT_DISTINCT_LABEL_VECTORS, ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE},
     BooleanOption.FALSE.value: {}
 }
 
