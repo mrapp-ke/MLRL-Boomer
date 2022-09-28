@@ -40,13 +40,30 @@ class FeatureCharacteristics:
         :param x:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that
                             stores the feature values
         """
+        self._x = x
+        self._meta_data = meta_data
         self.num_examples = x.shape[0]
         self.num_features = x.shape[1]
-        self.num_nominal_features = reduce(
-            lambda num, attribute: num + (1 if attribute.attribute_type == AttributeType.NOMINAL else 0),
-            meta_data.attributes, 0)
-        self.num_numerical_features = self.num_features - self.num_nominal_features
-        self.feature_density = density(x)
+        self._num_nominal_features = None
+        self._feature_density = None
+
+    @property
+    def num_nominal_features(self):
+        if self._num_nominal_features is None:
+            self._num_nominal_features = reduce(
+                lambda num, attribute: num + (1 if attribute.attribute_type == AttributeType.NOMINAL else 0),
+                self._meta_data.attributes, 0)
+        return self._num_nominal_features
+
+    @property
+    def num_numerical_features(self):
+        return self.num_features - self.num_nominal_features
+
+    @property
+    def feature_density(self):
+        if self._feature_density is None:
+            self._feature_density = density(self._x)
+        return self._feature_density
 
     @property
     def feature_sparsity(self):
