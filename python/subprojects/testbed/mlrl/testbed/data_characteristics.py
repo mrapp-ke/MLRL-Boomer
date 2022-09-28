@@ -7,12 +7,37 @@ one or several outputs, e.g., to the console or to a file.
 import logging as log
 from abc import ABC, abstractmethod
 from functools import reduce
-from typing import List
 
 from mlrl.testbed.characteristics import LabelCharacteristics, density
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_splitting import DataSplit
+from mlrl.testbed.format import format_table
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
+from typing import List
+
+COLUMN_EXAMPLES = 'Examples'
+
+COLUMN_FEATURES = 'Features'
+
+COLUMN_NUMERICAL_FEATURES = 'Numerical features'
+
+COLUMN_NOMINAL_FEATURES = 'Nominal features'
+
+COLUMN_FEATURE_DENSITY = 'Feature density'
+
+COLUMN_FEATURE_SPARSITY = 'Feature sparsity'
+
+COLUMN_LABELS = 'Labels'
+
+COLUMN_LABEL_DENSITY = 'Label density'
+
+COLUMN_LABEL_SPARSITY = 'Label sparsity'
+
+COLUMN_LABEL_IMBALANCE_RATIO = 'Label imbalance ratio'
+
+COLUMN_LABEL_CARDINALITY = 'Label cardinality'
+
+COLUMN_DISTINCT_LABEL_VECTORS = 'Distinct label vectors'
 
 
 class FeatureCharacteristics:
@@ -66,20 +91,22 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
         if data_split.is_cross_validation_used():
             msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
-        msg += ':\n\n'
-        msg += 'Examples: ' + str(feature_characteristics.num_examples) + '\n'
-        msg += 'Features: ' + str(feature_characteristics.num_features) + ' (' + str(
-            feature_characteristics.num_numerical_features) + ' numerical, ' + str(
-            feature_characteristics.num_nominal_features) + ' nominal)\n'
-        msg += 'Feature density: ' + str(feature_characteristics.feature_density) + '\n'
-        msg += 'Feature sparsity: ' + str(1 - feature_characteristics.feature_density) + '\n'
-        msg += 'Labels: ' + str(label_characteristics.num_labels) + '\n'
-        msg += 'Label density: ' + str(label_characteristics.label_density) + '\n'
-        msg += 'Label sparsity: ' + str(1 - label_characteristics.label_density) + '\n'
-        msg += 'Label imbalance ratio: ' + str(label_characteristics.avg_label_imbalance_ratio) + '\n'
-        msg += 'Label cardinality: ' + str(label_characteristics.avg_label_cardinality) + '\n'
-        msg += 'Distinct label vectors: ' + str(label_characteristics.num_distinct_label_vectors) + '\n'
-        log.info(msg)
+        msg += ':\n\n%s\n'
+        rows = [
+            [COLUMN_EXAMPLES, str(feature_characteristics.num_examples)],
+            [COLUMN_FEATURES, str(feature_characteristics.num_features)],
+            [COLUMN_NUMERICAL_FEATURES, str(feature_characteristics.num_numerical_features)],
+            [COLUMN_NOMINAL_FEATURES, str(feature_characteristics.num_nominal_features)],
+            [COLUMN_FEATURE_DENSITY, str(feature_characteristics.feature_density)],
+            [COLUMN_FEATURE_SPARSITY, str(1 - feature_characteristics.feature_density)],
+            [COLUMN_LABELS, str(label_characteristics.num_labels)],
+            [COLUMN_LABEL_DENSITY, str(label_characteristics.label_density)],
+            [COLUMN_LABEL_SPARSITY, str(1 - label_characteristics.label_density)],
+            [COLUMN_LABEL_IMBALANCE_RATIO, str(label_characteristics.avg_label_imbalance_ratio)],
+            [COLUMN_LABEL_CARDINALITY, str(label_characteristics.avg_label_cardinality)],
+            [COLUMN_DISTINCT_LABEL_VECTORS, str(label_characteristics.num_distinct_label_vectors)]
+        ]
+        log.info(msg, format_table(rows))
 
 
 class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
@@ -96,18 +123,18 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
     def write_data_characteristics(self, data_split: DataSplit, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
         columns = {
-            'Examples': feature_characteristics.num_examples,
-            'Features': feature_characteristics.num_features,
-            'Numerical features': feature_characteristics.num_numerical_features,
-            'Nominal features': feature_characteristics.num_nominal_features,
-            'Feature density': feature_characteristics.feature_density,
-            'Feature sparsity': 1 - feature_characteristics.feature_density,
-            'Labels': label_characteristics.num_labels,
-            'Label density': label_characteristics.label_density,
-            'Label sparsity': 1 - label_characteristics.label_density,
-            'Label imbalance ratio': label_characteristics.avg_label_imbalance_ratio,
-            'Label cardinality': label_characteristics.avg_label_cardinality,
-            'Distinct label vectors': label_characteristics.num_distinct_label_vectors
+            COLUMN_EXAMPLES: feature_characteristics.num_examples,
+            COLUMN_FEATURES: feature_characteristics.num_features,
+            COLUMN_NUMERICAL_FEATURES: feature_characteristics.num_numerical_features,
+            COLUMN_NOMINAL_FEATURES: feature_characteristics.num_nominal_features,
+            COLUMN_FEATURE_DENSITY: feature_characteristics.feature_density,
+            COLUMN_FEATURE_SPARSITY: 1 - feature_characteristics.feature_density,
+            COLUMN_LABELS: label_characteristics.num_labels,
+            COLUMN_LABEL_DENSITY: label_characteristics.label_density,
+            COLUMN_LABEL_SPARSITY: 1 - label_characteristics.label_density,
+            COLUMN_LABEL_IMBALANCE_RATIO: label_characteristics.avg_label_imbalance_ratio,
+            COLUMN_LABEL_CARDINALITY: label_characteristics.avg_label_cardinality,
+            COLUMN_DISTINCT_LABEL_VECTORS: label_characteristics.num_distinct_label_vectors
         }
         header = sorted(columns.keys())
         with open_writable_csv_file(self.output_dir, 'data_characteristics', data_split.get_fold()) as csv_file:
