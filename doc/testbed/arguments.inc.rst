@@ -102,37 +102,37 @@ In addition to the mandatory arguments that must be provided to the command line
 
     * ``decimals`` (Default value = ``0``) The number of decimals to be used for evaluation scores or 0, if the number of decimals should not be restricted.
     * ``percentage`` (Default value = ``true``) ``true``, if evaluation scores should be given as a percentage, if possible, ``false`` otherwise.
-    * ``hamming_loss`` (Default value = ``true``) ``true``, if evaluation scores according to the Hamming loss should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``hamming_accuracy`` (Default value = ``true``) ``true``, if evaluation scores according to the Hamming accuracy metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``subset_zero_one_loss`` (Default value = ``true``) ``true``, if evaluation scores according to the subset 0/1 loss should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``subset_accuracy`` (Default value = ``true``) ``true``, if evaluation scores according to the subset accuracy metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``micro_precision`` (Default value = ``true``) ``true``, if evaluation scores according to the micro-averaged precision metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``micro_recall`` (Default value = ``true``) ``true``, if evaluation scores according to the micro-averaged recall metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``micro_f1`` (Default value = ``true``) ``true``, if evaluation scores according to the micro-averaged F1-measure should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``micro_jaccard`` (Default value = ``true``) ``true``, if evaluation scores according to the micro-averaged Jaccard metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``macro_precision`` (Default value = ``true``) ``true``, if evaluation scores according to the macro-averaged precision metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``macro_recall`` (Default value = ``true``) ``true``, if evaluation scores according to the macro-averaged recall metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``macro_f1`` (Default value = ``true``) ``true``, if evaluation scores according to the macro-averaged F1-measure should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``macro_jaccard`` (Default value = ``true``) ``true``, if evaluation scores according to the macro-averaged Jaccard metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``example_wise_precision`` (Default value = ``true``) ``true``, if evaluation scores according to the example-wise precision metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``example_wise_recall`` (Default value = ``true``) ``true``, if evaluation scores according to the example-wise recall metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``example_wise_f1`` (Default value = ``true``) ``true``, if evaluation scores according to the example-wise F1-measure should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``example_wise_jaccard`` (Default value = ``true``) ``true``, if evaluation scores according to the example-wise Jaccard metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``accuracy`` (Default value = ``true``) ``true``, if evaluation scores according to the accuracy metric should be printed, ``false`` otherwise. Does only have an effect when dealing with single-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``zero_one_loss`` (Default value = ``true``) ``true``, if evaluation scores according to the 0/1 loss should be printed, ``false`` otherwise. Does only have an effect when dealing with single-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``precision`` (Default value = ``true``) ``true``, if evaluation scores according to the precision metric should be printed, ``false`` otherwise. Does only have an effect when dealing with single-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``recall`` (Default value = ``true``) ``true``, if evaluation scores according to the recall metric should be printed, ``false`` otherwise. Does only have an effect when dealing with single-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``f1`` (Default value = ``true``) ``true``, if evaluation scores according to the F1-measure should be printed, ``false`` otherwise. Does only have an effect when dealing with single-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``jaccard`` (Default value = ``true``) ``true``, if evaluation scores according to the Jaccard metric should be printed, ``false`` otherwise. Does only have an effect when dealing with single-label data and if the parameter ``--prediction-type`` is set to ``labels``.
-    * ``mean_absolute_error`` (Default value = ``true``) ``true``, if evaluation scores according to the mean absolute error metric should be printed, ``false`` otherwise. Does only have an effect if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
-    * ``mean_squared_error`` (Default value = ``true``) ``true``, if evaluation scores according to the mean squared error metric should be printed, ``false`` otherwise. Does only have an effect if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
-    * ``mean_absolute_error`` (Default value = ``true``) ``true``, if evaluation scores according to the mean absolute error metric should be printed, ``false`` otherwise. Does only have an effect if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
-    * ``mean_absolute_percentage_error`` (Default value = ``true``) ``true``, if evaluation scores according to the mean absolute percentage error metric should be printed, ``false`` otherwise. Does only have an effect if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
-    * ``rank_loss`` (Default value = ``true``) ``true``, if evaluation scores according to the rank loss should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
-    * ``coverage_error`` (Default value = ``true``) ``true``, if evaluation scores according to the coverage error metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
-    * ``lrap`` (Default value = ``true``) ``true``, if evaluation scores according to the label ranking average precision metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
-    * ``dcg`` (Default value = ``true``) ``true``, if evaluation scores according to the discounted cumulative gain metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
-    * ``ndcg`` (Default value = ``true``) ``true``, if evaluation scores according to the normalized discounted cumulative gain metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
+    * ``hamming_loss`` (Default value = ``true``) ``true``, if evaluation scores according to the Hamming loss should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``hamming_accuracy`` (Default value = ``true``) ``true``, if evaluation scores according to the Hamming accuracy metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``subset_zero_one_loss`` (Default value = ``true``) ``true``, if evaluation scores according to the subset 0/1 loss should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``subset_accuracy`` (Default value = ``true``) ``true``, if evaluation scores according to the subset accuracy metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``micro_precision`` (Default value = ``true``) ``true``, if evaluation scores according to the micro-averaged precision metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``micro_recall`` (Default value = ``true``) ``true``, if evaluation scores according to the micro-averaged recall metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``micro_f1`` (Default value = ``true``) ``true``, if evaluation scores according to the micro-averaged F1-measure should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``micro_jaccard`` (Default value = ``true``) ``true``, if evaluation scores according to the micro-averaged Jaccard metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``macro_precision`` (Default value = ``true``) ``true``, if evaluation scores according to the macro-averaged precision metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``macro_recall`` (Default value = ``true``) ``true``, if evaluation scores according to the macro-averaged recall metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``macro_f1`` (Default value = ``true``) ``true``, if evaluation scores according to the macro-averaged F1-measure should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``macro_jaccard`` (Default value = ``true``) ``true``, if evaluation scores according to the macro-averaged Jaccard metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``example_wise_precision`` (Default value = ``true``) ``true``, if evaluation scores according to the example-wise precision metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``example_wise_recall`` (Default value = ``true``) ``true``, if evaluation scores according to the example-wise recall metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``example_wise_f1`` (Default value = ``true``) ``true``, if evaluation scores according to the example-wise F1-measure should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``example_wise_jaccard`` (Default value = ``true``) ``true``, if evaluation scores according to the example-wise Jaccard metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``accuracy`` (Default value = ``true``) ``true``, if evaluation scores according to the accuracy metric should be stored, ``false`` otherwise. Does only have an effect when dealing with single-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``zero_one_loss`` (Default value = ``true``) ``true``, if evaluation scores according to the 0/1 loss should be stored, ``false`` otherwise. Does only have an effect when dealing with single-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``precision`` (Default value = ``true``) ``true``, if evaluation scores according to the precision metric should be stored, ``false`` otherwise. Does only have an effect when dealing with single-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``recall`` (Default value = ``true``) ``true``, if evaluation scores according to the recall metric should be stored, ``false`` otherwise. Does only have an effect when dealing with single-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``f1`` (Default value = ``true``) ``true``, if evaluation scores according to the F1-measure should be stored, ``false`` otherwise. Does only have an effect when dealing with single-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``jaccard`` (Default value = ``true``) ``true``, if evaluation scores according to the Jaccard metric should be stored, ``false`` otherwise. Does only have an effect when dealing with single-label data and if the parameter ``--prediction-type`` is set to ``labels``.
+    * ``mean_absolute_error`` (Default value = ``true``) ``true``, if evaluation scores according to the mean absolute error metric should be stored, ``false`` otherwise. Does only have an effect if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
+    * ``mean_squared_error`` (Default value = ``true``) ``true``, if evaluation scores according to the mean squared error metric should be stored, ``false`` otherwise. Does only have an effect if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
+    * ``mean_absolute_error`` (Default value = ``true``) ``true``, if evaluation scores according to the mean absolute error metric should be stored, ``false`` otherwise. Does only have an effect if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
+    * ``mean_absolute_percentage_error`` (Default value = ``true``) ``true``, if evaluation scores according to the mean absolute percentage error metric should be stored, ``false`` otherwise. Does only have an effect if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
+    * ``rank_loss`` (Default value = ``true``) ``true``, if evaluation scores according to the rank loss should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
+    * ``coverage_error`` (Default value = ``true``) ``true``, if evaluation scores according to the coverage error metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
+    * ``lrap`` (Default value = ``true``) ``true``, if evaluation scores according to the label ranking average precision metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
+    * ``dcg`` (Default value = ``true``) ``true``, if evaluation scores according to the discounted cumulative gain metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
+    * ``ndcg`` (Default value = ``true``) ``true``, if evaluation scores according to the normalized discounted cumulative gain metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``probabilities`` or ``scores``.
     * ``training_time`` (Default value = ``true``) ``true``, if the time that was needed for training should be stored, ``false`` otherwise.
     * ``prediction_time`` (Default value = ``true``) ``true``, if the time that was needed for prediction should be stored, ``false`` otherwise.
 
@@ -161,21 +161,73 @@ In addition to the mandatory arguments that must be provided to the command line
 * ``--print-prediction-characteristics`` (Default value = ``false``)
 
   * ``true`` The characteristics of binary predictions are printed on the console. Does only have an effect if the parameter ``--predict-probabilities`` is set to ``false``.
+
+    * ``decimals`` (Default value = ``2``) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
+    * ``percentage`` (Default value = ``true``) ``true``, if the characteristics should be given as a percentage, if possible, ``false`` otherwise.
+    * ``labels``(Default value = ``true``) ``true``, if the number of labels should be printed, ``false`` otherwise.
+    * ``label_density``(Default value = ``true``) ``true``, if the label density should be printed, ``false`` otherwise.
+    * ``label_sparsity``(Default value = ``true``) ``true``, if the label sparsity should be printed, ``false`` otherwise.
+    * ``label_imbalance_ratio``(Default value = ``true``) ``true``, if the label imbalance ratio should be printed, ``false`` otherwise.
+    * ``label_cardinality``(Default value = ``true``) ``true``, if the average label cardinality should be printed, ``false`` otherwise.
+    * ``distinct_label_vectors``(Default value = ``true``) ``true``, if the number of distinct label vectors should be printed, ``false`` otherwise.
+
   * ``false`` The characteristics of predictions are not printed on the console.
 
 * ``--store-prediction-characteristics`` (Default value = ``false``)
 
   * ``true`` The characteristics of binary predictions are written into .csv files. Does only have an effect if the parameter ``--predict-probabilities`` is set to ``false``.
+
+    * ``decimals`` (Default value = ``0``) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
+    * ``percentage`` (Default value = ``true``) ``true``, if the characteristics should be given as a percentage, if possible, ``false`` otherwise.
+    * ``labels``(Default value = ``true``) ``true``, if the number of labels should be stored, ``false`` otherwise.
+    * ``label_density``(Default value = ``true``) ``true``, if the label density should be stored, ``false`` otherwise.
+    * ``label_sparsity``(Default value = ``true``) ``true``, if the label sparsity should be stored, ``false`` otherwise.
+    * ``label_imbalance_ratio``(Default value = ``true``) ``true``, if the label imbalance ratio should be stored, ``false`` otherwise.
+    * ``label_cardinality``(Default value = ``true``) ``true``, if the average label cardinality should be stored, ``false`` otherwise.
+    * ``distinct_label_vectors``(Default value = ``true``) ``true``, if the number of distinct label vectors should be stored, ``false`` otherwise.
+
   * ``false`` The characteristics of predictions are not written into .csv files.
 
 * ``--print-data-characteristics`` (Default value = ``false``)
 
   * ``true`` The characteristics of the training data set are printed on the console
+
+    * ``decimals`` (Default value = ``2``) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
+    * ``percentage`` (Default value = ``true``) ``true``, if the characteristics should be given as a percentage, if possible, ``false`` otherwise.
+    * ``labels``(Default value = ``true``) ``true``, if the number of labels should be printed, ``false`` otherwise.
+    * ``label_density``(Default value = ``true``) ``true``, if the label density should be printed, ``false`` otherwise.
+    * ``label_sparsity``(Default value = ``true``) ``true``, if the label sparsity should be printed, ``false`` otherwise.
+    * ``label_imbalance_ratio``(Default value = ``true``) ``true``, if the label imbalance ratio should be printed, ``false`` otherwise.
+    * ``label_cardinality``(Default value = ``true``) ``true``, if the average label cardinality should be printed, ``false`` otherwise.
+    * ``distinct_label_vectors``(Default value = ``true``) ``true``, if the number of distinct label vectors should be printed, ``false`` otherwise.
+    * ``examples`` (Default value = ``true``) ``true``, if the number of examples should be printed, ``false`` otherwise.
+    * ``features`` (Default value = ``true``) ``true``, if the number of features should be printed, ``false`` otherwise.
+    * ``numerical_features`` (Default value = ``true``) ``true``, if the number of numerical features should be printed, ``false`` otherwise.
+    * ``nominal_features`` (Default value = ``true``) ``true``, if the number of nominal features should be printed, ``false`` otherwise.
+    * ``feature_density`` (Default value = ``true``) ``true``, if the feature density should be printed, ``false`` otherwise.
+    * ``feature_sparsity`` (Default value = ``true``) ``true``, if the feature sparsity should be printed, ``false`` otherwise.
+
   * ``false`` The characteristics of the training data set are not printed on the console
 
 * ``--store-data-characteristics`` (Default value = ``false``)
 
   * ``true`` The characteristics of the training data set are written into a .csv file. Does only have an effect if the parameter ``--output-dir`` is specified.
+
+    * ``decimals`` (Default value = ``0``) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
+    * ``percentage`` (Default value = ``true``) ``true``, if the characteristics should be given as a percentage, if possible, ``false`` otherwise.
+    * ``labels``(Default value = ``true``) ``true``, if the number of labels should be stored, ``false`` otherwise.
+    * ``label_density``(Default value = ``true``) ``true``, if the label density should be stored, ``false`` otherwise.
+    * ``label_sparsity``(Default value = ``true``) ``true``, if the label sparsity should be stored, ``false`` otherwise.
+    * ``label_imbalance_ratio``(Default value = ``true``) ``true``, if the label imbalance ratio should be stored, ``false`` otherwise.
+    * ``label_cardinality``(Default value = ``true``) ``true``, if the average label cardinality should be stored, ``false`` otherwise.
+    * ``distinct_label_vectors``(Default value = ``true``) ``true``, if the number of distinct label vectors should be stored, ``false`` otherwise.
+    * ``examples`` (Default value = ``true``) ``true``, if the number of examples should be stored, ``false`` otherwise.
+    * ``features`` (Default value = ``true``) ``true``, if the number of features should be stored, ``false`` otherwise.
+    * ``numerical_features`` (Default value = ``true``) ``true``, if the number of numerical features should be stored, ``false`` otherwise.
+    * ``nominal_features`` (Default value = ``true``) ``true``, if the number of nominal features should be stored, ``false`` otherwise.
+    * ``feature_density`` (Default value = ``true``) ``true``, if the feature density should be stored, ``false`` otherwise.
+    * ``feature_sparsity`` (Default value = ``true``) ``true``, if the feature sparsity should be stored, ``false`` otherwise.
+
   * ``false`` The characteristics of the training data set are not written into a .csv file.
 
 * ``--print-model-characteristics`` (Default value = ``false``)
