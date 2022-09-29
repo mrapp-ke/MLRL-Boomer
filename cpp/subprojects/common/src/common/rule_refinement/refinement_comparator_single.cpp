@@ -30,7 +30,7 @@ bool SingleRefinementComparator::isImprovement(const IScoreVector& scoreVector) 
 }
 
 void SingleRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
-    bestQualityScore_ = scoreVector.overallQualityScore;;
+    bestQualityScore_ = scoreVector.overallQualityScore;
     scoreProcessor_.processScores(scoreVector);
     bestRefinement_ = refinement;
 }
