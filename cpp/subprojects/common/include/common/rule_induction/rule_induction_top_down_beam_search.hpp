@@ -152,7 +152,7 @@ class MLRLCOMMON_API IBeamSearchTopDownRuleInductionConfig {
  * Allows to configure an algorithm for the induction of individual rules that uses a top-down beam search.
  */
 class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
-                                               public IBeamSearchTopDownRuleInductionConfig {
+                                                   public IBeamSearchTopDownRuleInductionConfig {
 
     private:
 
