@@ -94,7 +94,7 @@ static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry) {
     newEntry.labelIndices = nullptr;
 }
 
-static inline float64 updateOrder(std::vector<std::reference_wrapper<BeamEntry>>& order, BeamEntry& entry) {
+static inline float64 updateOrder(std::vector<std::reference_wrapper<BeamEntry>>& order) {
     std::sort(order.begin(), order.end(), BeamEntry::Compare());
     const BeamEntry& worstEntry = order.back();
     return worstEntry.headPtr->overallQualityScore;
@@ -223,7 +223,7 @@ class Beam final {
                                 copyEntry(newEntry, entry, refinement, entry.thresholdsSubsetPtr->copy(),
                                           std::make_unique<ConditionList>(*entry.conditionListPtr), keepHeads,
                                           minCoverage);
-                                minQualityScore = updateOrder(newOrder, newEntry);
+                                minQualityScore = updateOrder(newOrder);
                             }
                         }
 
@@ -241,7 +241,7 @@ class Beam final {
                             BeamEntry& newEntry = newOrder.back();
                             copyEntry(newEntry, entry, refinement, std::move(entry.thresholdsSubsetPtr),
                                       std::move(entry.conditionListPtr), keepHeads, minCoverage);
-                            minQualityScore = updateOrder(newOrder, newEntry);
+                            minQualityScore = updateOrder(newOrder);
                         }
                     }
                 }
@@ -258,7 +258,7 @@ class Beam final {
                     } else if (entry.headPtr->overallQualityScore <= minQualityScore) {
                         BeamEntry& newEntry = newOrder.back();
                         copyEntry(newEntry, entry);
-                        minQualityScore = updateOrder(newOrder, newEntry);
+                        minQualityScore = updateOrder(newOrder);
                     }
                 }
             }
