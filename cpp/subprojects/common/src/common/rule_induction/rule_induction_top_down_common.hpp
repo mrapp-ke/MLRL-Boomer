@@ -25,7 +25,7 @@ struct RuleRefinement final {
 
     /**
      * An unique pointer to an object of template type `RefinementComparator` that allows comparing different
-     * refinements and keeping track of the best ones(s).
+     * refinements and keeping track of the best one(s).
      */
     std::unique_ptr<RefinementComparator> comparatorPtr;
 
