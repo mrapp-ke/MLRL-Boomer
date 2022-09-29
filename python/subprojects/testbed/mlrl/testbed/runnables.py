@@ -8,33 +8,27 @@ import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 
-from mlrl.common.config import NONE
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.format import format_enum_values
 from mlrl.common.options import BooleanOption, parse_param_and_options
-from mlrl.testbed.characteristics import ARGUMENT_LABELS, ARGUMENT_LABEL_DENSITY, ARGUMENT_LABEL_SPARSITY, \
-    ARGUMENT_LABEL_IMBALANCE_RATIO, ARGUMENT_LABEL_CARDINALITY, ARGUMENT_DISTINCT_LABEL_VECTORS
-from mlrl.testbed.data_characteristics import ARGUMENT_EXAMPLES, ARGUMENT_FEATURES, ARGUMENT_NUMERICAL_FEATURES, \
-    ARGUMENT_NOMINAL_FEATURES, ARGUMENT_FEATURE_DENSITY, ARGUMENT_FEATURE_SPARSITY, DataCharacteristicsPrinter, \
-    DataCharacteristicsLogOutput, DataCharacteristicsCsvOutput
+from mlrl.testbed.args import PARAM_DATA_SPLIT, PARAM_PREDICTION_TYPE, PARAM_PRINT_EVALUATION, PARAM_STORE_EVALUATION, \
+    PARAM_PRINT_DATA_CHARACTERISTICS, PARAM_STORE_DATA_CHARACTERISTICS, PARAM_PRINT_PREDICTION_CHARACTERISTICS, \
+    PARAM_STORE_PREDICTION_CHARACTERISTICS, PARAM_PRINT_RULES, PARAM_STORE_RULES, PARAM_INCREMENTAL_EVALUATION, \
+    DATA_SPLIT_VALUES, DATA_SPLIT_CROSS_VALIDATION, DATA_SPLIT_TRAIN_TEST, ARGUMENT_NUM_FOLDS, ARGUMENT_CURRENT_FOLD, \
+    ARGUMENT_TEST_SIZE, PRINT_EVALUATION_VALUES, STORE_EVALUATION_VALUES, PRINT_DATA_CHARACTERISTICS_VALUES, \
+    STORE_DATA_CHARACTERISTICS_VALUES, PRINT_PREDICTION_CHARACTERISTICS_VALUES, \
+    STORE_PREDICTION_CHARACTERISTICS_VALUES, PRINT_RULES_VALUES, STORE_RULES_VALUES, INCREMENTAL_EVALUATION_VALUES, \
+    ARGUMENT_MIN_SIZE, ARGUMENT_MAX_SIZE, ARGUMENT_STEP_SIZE
+from mlrl.testbed.args import add_log_level_argument, add_learner_arguments, add_rule_learner_arguments
+from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
+    DataCharacteristicsCsvOutput
 from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, NoSplitter, DataSet
-from mlrl.testbed.evaluation import ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCURACY, ARGUMENT_SUBSET_ZERO_ONE_LOSS, \
-    ARGUMENT_SUBSET_ACCURACY, ARGUMENT_MICRO_PRECISION, ARGUMENT_MICRO_RECALL, ARGUMENT_MICRO_F1, \
-    ARGUMENT_MICRO_JACCARD, ARGUMENT_MACRO_PRECISION, ARGUMENT_MACRO_RECALL, ARGUMENT_MACRO_F1, \
-    ARGUMENT_MACRO_JACCARD, ARGUMENT_EXAMPLE_WISE_PRECISION, ARGUMENT_EXAMPLE_WISE_RECALL, ARGUMENT_EXAMPLE_WISE_F1, \
-    ARGUMENT_EXAMPLE_WISE_JACCARD, ARGUMENT_ACCURACY, ARGUMENT_ZERO_ONE_LOSS, ARGUMENT_PRECISION, ARGUMENT_RECALL, \
-    ARGUMENT_F1, ARGUMENT_JACCARD, ARGUMENT_MEAN_ABSOLUTE_ERROR, ARGUMENT_MEAN_SQUARED_ERROR, \
-    ARGUMENT_MEDIAN_ABSOLUTE_ERROR, ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR, ARGUMENT_RANK_LOSS, \
-    ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, \
-    ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, \
-    EvaluationPrinter, ClassificationEvaluationPrinter, ScoreEvaluationPrinter, ProbabilityEvaluationPrinter, \
-    EvaluationLogOutput, EvaluationCsvOutput
+from mlrl.testbed.evaluation import EvaluationPrinter, ClassificationEvaluationPrinter, ScoreEvaluationPrinter, \
+    ProbabilityEvaluationPrinter, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment, PredictionType, Evaluation, GlobalEvaluation, IncrementalEvaluation
-from mlrl.testbed.format import ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE
 from mlrl.testbed.io import clear_directory
-from mlrl.testbed.model_characteristics import ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, \
-    ARGUMENT_PRINT_NOMINAL_VALUES, ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS, ModelPrinter, RulePrinter, \
-    ModelPrinterLogOutput, ModelPrinterTxtOutput, ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, \
+from mlrl.testbed.model_characteristics import ModelPrinter, RulePrinter, ModelPrinterLogOutput, \
+    ModelPrinterTxtOutput, ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, \
     RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
 from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterPrinter, ParameterLogOutput, \
     ParameterCsvOutput
@@ -42,119 +36,9 @@ from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter, \
     PredictionCharacteristicsLogOutput, PredictionCharacteristicsCsvOutput
 from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, PredictionArffOutput
-from typing import Optional, Dict, Set
+from typing import Optional
 
 LOG_FORMAT = '%(levelname)s %(message)s'
-
-PARAM_DATA_SPLIT = '--data-split'
-
-PARAM_PREDICTION_TYPE = '--prediction-type'
-
-PARAM_PRINT_EVALUATION = '--print-evaluation'
-
-PARAM_STORE_EVALUATION = '--store-evaluation'
-
-PARAM_PRINT_PREDICTION_CHARACTERISTICS = '--print-prediction-characteristics'
-
-PARAM_STORE_PREDICTION_CHARACTERISTICS = '--store-prediction-characteristics'
-
-PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
-
-PARAM_STORE_DATA_CHARACTERISTICS = '--store-data-characteristics'
-
-PARAM_PRINT_RULES = '--print-rules'
-
-PARAM_STORE_RULES = '--store-rules'
-
-PARAM_INCREMENTAL_EVALUATION = '--incremental-evaluation'
-
-DATA_SPLIT_TRAIN_TEST = 'train-test'
-
-ARGUMENT_TEST_SIZE = 'test_size'
-
-DATA_SPLIT_CROSS_VALIDATION = 'cross-validation'
-
-ARGUMENT_NUM_FOLDS = 'num_folds'
-
-ARGUMENT_CURRENT_FOLD = 'current_fold'
-
-ARGUMENT_MIN_SIZE = 'min_size'
-
-ARGUMENT_MAX_SIZE = 'max_size'
-
-ARGUMENT_STEP_SIZE = 'step_size'
-
-DATA_SPLIT_VALUES: Dict[str, Set[str]] = {
-    NONE: {},
-    DATA_SPLIT_TRAIN_TEST: {ARGUMENT_TEST_SIZE},
-    DATA_SPLIT_CROSS_VALIDATION: {ARGUMENT_NUM_FOLDS, ARGUMENT_CURRENT_FOLD}
-}
-
-PRINT_EVALUATION_VALUES: Dict[str, Set[str]] = {
-    BooleanOption.TRUE.value: {ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCURACY, ARGUMENT_SUBSET_ZERO_ONE_LOSS,
-                               ARGUMENT_SUBSET_ACCURACY, ARGUMENT_MICRO_PRECISION, ARGUMENT_MICRO_RECALL,
-                               ARGUMENT_MICRO_F1, ARGUMENT_MICRO_JACCARD, ARGUMENT_MACRO_PRECISION,
-                               ARGUMENT_MACRO_RECALL, ARGUMENT_MACRO_F1, ARGUMENT_MACRO_JACCARD,
-                               ARGUMENT_EXAMPLE_WISE_PRECISION, ARGUMENT_EXAMPLE_WISE_RECALL, ARGUMENT_EXAMPLE_WISE_F1,
-                               ARGUMENT_EXAMPLE_WISE_JACCARD, ARGUMENT_ACCURACY, ARGUMENT_ZERO_ONE_LOSS,
-                               ARGUMENT_PRECISION, ARGUMENT_RECALL, ARGUMENT_F1, ARGUMENT_JACCARD,
-                               ARGUMENT_MEAN_ABSOLUTE_ERROR, ARGUMENT_MEAN_SQUARED_ERROR,
-                               ARGUMENT_MEDIAN_ABSOLUTE_ERROR, ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR,
-                               ARGUMENT_RANK_LOSS, ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION,
-                               ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN,
-                               ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE},
-    BooleanOption.FALSE.value: {}
-}
-
-STORE_EVALUATION_VALUES: Dict[str, Set[str]] = {
-    BooleanOption.TRUE.value: {ARGUMENT_HAMMING_LOSS, ARGUMENT_HAMMING_ACCURACY, ARGUMENT_SUBSET_ZERO_ONE_LOSS,
-                               ARGUMENT_SUBSET_ACCURACY, ARGUMENT_MICRO_PRECISION, ARGUMENT_MICRO_RECALL,
-                               ARGUMENT_MICRO_F1, ARGUMENT_MICRO_JACCARD, ARGUMENT_MACRO_PRECISION,
-                               ARGUMENT_MACRO_RECALL, ARGUMENT_MACRO_F1, ARGUMENT_MACRO_JACCARD,
-                               ARGUMENT_EXAMPLE_WISE_PRECISION, ARGUMENT_EXAMPLE_WISE_RECALL, ARGUMENT_EXAMPLE_WISE_F1,
-                               ARGUMENT_EXAMPLE_WISE_JACCARD, ARGUMENT_ACCURACY, ARGUMENT_ZERO_ONE_LOSS,
-                               ARGUMENT_PRECISION, ARGUMENT_RECALL, ARGUMENT_F1, ARGUMENT_JACCARD,
-                               ARGUMENT_MEAN_ABSOLUTE_ERROR, ARGUMENT_MEAN_SQUARED_ERROR,
-                               ARGUMENT_MEDIAN_ABSOLUTE_ERROR, ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR,
-                               ARGUMENT_RANK_LOSS, ARGUMENT_COVERAGE_ERROR, ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION,
-                               ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN,
-                               ARGUMENT_TRAINING_TIME, ARGUMENT_PREDICTION_TIME, ARGUMENT_DECIMALS,
-                               ARGUMENT_PERCENTAGE},
-    BooleanOption.FALSE.value: {}
-}
-
-PRINT_DATA_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
-    BooleanOption.TRUE.value: {ARGUMENT_EXAMPLES, ARGUMENT_FEATURES, ARGUMENT_NUMERICAL_FEATURES,
-                               ARGUMENT_NOMINAL_FEATURES, ARGUMENT_FEATURE_DENSITY, ARGUMENT_FEATURE_SPARSITY,
-                               ARGUMENT_LABELS, ARGUMENT_LABEL_DENSITY, ARGUMENT_LABEL_SPARSITY,
-                               ARGUMENT_LABEL_IMBALANCE_RATIO, ARGUMENT_LABEL_CARDINALITY,
-                               ARGUMENT_DISTINCT_LABEL_VECTORS, ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE},
-    BooleanOption.FALSE.value: {}
-}
-
-STORE_DATA_CHARACTERISTICS_VALUES = PRINT_DATA_CHARACTERISTICS_VALUES
-
-PRINT_PREDICTION_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
-    BooleanOption.TRUE.value: {ARGUMENT_LABELS, ARGUMENT_LABEL_DENSITY, ARGUMENT_LABEL_SPARSITY,
-                               ARGUMENT_LABEL_IMBALANCE_RATIO, ARGUMENT_LABEL_CARDINALITY,
-                               ARGUMENT_DISTINCT_LABEL_VECTORS, ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE},
-    BooleanOption.FALSE.value: {}
-}
-
-STORE_PREDICTION_CHARACTERISTICS_VALUES = PRINT_PREDICTION_CHARACTERISTICS_VALUES
-
-PRINT_RULES_VALUES: Dict[str, Set[str]] = {
-    BooleanOption.TRUE.value: {ARGUMENT_PRINT_FEATURE_NAMES, ARGUMENT_PRINT_LABEL_NAMES, ARGUMENT_PRINT_NOMINAL_VALUES,
-                               ARGUMENT_PRINT_BODIES, ARGUMENT_PRINT_HEADS},
-    BooleanOption.FALSE.value: {}
-}
-
-STORE_RULES_VALUES = PRINT_RULES_VALUES
-
-INCREMENTAL_EVALUATION_VALUES: Dict[str, Set[str]] = {
-    BooleanOption.TRUE.value: {ARGUMENT_MIN_SIZE, ARGUMENT_MAX_SIZE, ARGUMENT_STEP_SIZE},
-    BooleanOption.FALSE.value: {}
-}
 
 
 class Runnable(ABC):
@@ -162,7 +46,15 @@ class Runnable(ABC):
     A base class for all programs that can be configured via command line arguments.
     """
 
-    def run(self, parser: ArgumentParser):
+    def __init__(self, description: str):
+        """
+        :param description: A description of the program
+        """
+        self.parser = ArgumentParser(description=description)
+
+    def run(self):
+        parser = self.parser
+        self._configure_arguments(parser)
         args = parser.parse_args()
 
         # Configure the logger...
@@ -175,6 +67,14 @@ class Runnable(ABC):
         root.addHandler(out_handler)
 
         self._run(args)
+
+    def _configure_arguments(self, parser: ArgumentParser):
+        """
+        May be overridden by subclasses in order to configure the command line arguments of the program.
+
+        :param parser:  An `ArgumentParser` that is used for parsing command line arguments
+        """
+        add_log_level_argument(parser)
 
     @abstractmethod
     def _run(self, args):
@@ -190,6 +90,9 @@ class LearnerRunnable(Runnable, ABC):
     """
     A base class for all programs that perform an experiment that involves training and evaluation of a learner.
     """
+
+    def __init__(self, description: str):
+        super().__init__(description)
 
     class ClearOutputDirHook(Experiment.ExecutionHook):
         """
@@ -336,6 +239,10 @@ class LearnerRunnable(Runnable, ABC):
 
         return DataCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
 
+    def _configure_arguments(self, parser: ArgumentParser):
+        super()._configure_arguments(parser)
+        add_learner_arguments(parser)
+
     def _run(self, args):
         prediction_type = self.__create_prediction_type(args)
 
@@ -440,6 +347,13 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
     """
     A base class for all programs that perform an experiment that involves training and evaluation of a rule learner.
     """
+
+    def __init__(self, description: str):
+        super().__init__(description)
+
+    def _configure_arguments(self, parser: ArgumentParser):
+        super()._configure_arguments(parser)
+        add_rule_learner_arguments(parser)
 
     def _create_evaluation(
             self, args, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
