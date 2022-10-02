@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/rule_evaluation/rule_compare_function.hpp"
+#include <limits>
 
 
 namespace boosting {
@@ -24,6 +25,7 @@ namespace boosting {
      * An object of type `RuleCompareFunction` that defines the function that should be used for comparing the quality
      * of boosted rules.
      */
-    static const RuleCompareFunction BOOSTED_RULE_COMPARE_FUNCTION(compareBoostedRuleQuality);
+    static const RuleCompareFunction BOOSTED_RULE_COMPARE_FUNCTION(compareBoostedRuleQuality,
+                                                                   std::numeric_limits<float64>::infinity());
 
 }
