@@ -1,9 +1,8 @@
 #include "common/rule_refinement/refinement_comparator_single.hpp"
-#include <limits>
 
 
 SingleRefinementComparator::SingleRefinementComparator(RuleCompareFunction ruleCompareFunction)
-    : ruleCompareFunction_(ruleCompareFunction), bestQuality_(std::numeric_limits<float64>::infinity()),
+    : ruleCompareFunction_(ruleCompareFunction), bestQuality_(ruleCompareFunction.minQuality),
       scoreProcessor_(ScoreProcessor(bestRefinement_.headPtr)) {
 
 }

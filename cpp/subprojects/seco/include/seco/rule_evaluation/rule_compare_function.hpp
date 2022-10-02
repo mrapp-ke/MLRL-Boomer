@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/rule_evaluation/rule_compare_function.hpp"
+#include <limits>
 
 
 namespace seco {
@@ -24,6 +25,7 @@ namespace seco {
      * An object of type `RuleCompareFunction` that defines the function that should be used for comparing the quality
      * of SeCo rules.
      */
-    static const RuleCompareFunction SECO_RULE_COMPARE_FUNCTION(compareSeCoRuleQuality);
+    static const RuleCompareFunction SECO_RULE_COMPARE_FUNCTION(compareSeCoRuleQuality,
+                                                                std::numeric_limits<float64>::infinity());
 
 }

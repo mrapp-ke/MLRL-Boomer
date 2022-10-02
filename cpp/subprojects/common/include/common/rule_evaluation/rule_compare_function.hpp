@@ -13,12 +13,18 @@ struct RuleCompareFunction {
 
     /**
      * @param f A function of type `Quality::CompareFunction` for comparing the quality of different rules
+     * @param m The minimum quality of a rule
      */
-    RuleCompareFunction(Quality::CompareFunction f) : function(f) { };
+    RuleCompareFunction(Quality::CompareFunction f, float64 m) : function(f), minQuality(m) { };
 
     /**
      * A function of type `Quality::CompareFunction` for comparing the quality of different rules.
      */
     Quality::CompareFunction function;
+
+    /**
+     * The minimum quality of a rule.
+     */
+    float64 minQuality;
 
 };
