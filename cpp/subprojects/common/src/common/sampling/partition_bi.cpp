@@ -96,7 +96,7 @@ std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(const IIn
     return labelMatrix.createInstanceSampling(factory, *this, statistics);
 }
 
-float64 BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
+Quality BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
                                          const AbstractPrediction& head) {
     return coverageState.evaluateOutOfSample(thresholdsSubset, *this, head);
 }

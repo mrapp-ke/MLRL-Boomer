@@ -32,7 +32,7 @@ std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(const
     return labelMatrix.createInstanceSampling(factory, *this, statistics);
 }
 
-float64 SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
+Quality SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
                                              const ICoverageState& coverageState, const AbstractPrediction& head) {
     return coverageState.evaluateOutOfSample(thresholdsSubset, *this, head);
 }

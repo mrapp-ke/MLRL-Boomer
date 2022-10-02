@@ -1,14 +1,15 @@
 #include "common/rule_refinement/refinement_comparator_single.hpp"
-#include <limits>
 
 
-SingleRefinementComparator::SingleRefinementComparator()
-    : bestQuality_(std::numeric_limits<float64>::infinity()), scoreProcessor_(ScoreProcessor(bestRefinement_.headPtr)) {
+SingleRefinementComparator::SingleRefinementComparator(RuleCompareFunction ruleCompareFunction)
+    : ruleCompareFunction_(ruleCompareFunction), bestQuality_(ruleCompareFunction.minQuality),
+      scoreProcessor_(ScoreProcessor(bestRefinement_.headPtr)) {
 
 }
 
 SingleRefinementComparator::SingleRefinementComparator(const SingleRefinementComparator& comparator)
-    : bestQuality_(comparator.bestQuality_), scoreProcessor_(ScoreProcessor(bestRefinement_.headPtr)) {
+    : ruleCompareFunction_(comparator.ruleCompareFunction_), bestQuality_(comparator.bestQuality_),
+      scoreProcessor_(ScoreProcessor(bestRefinement_.headPtr)) {
 
 }
 
@@ -25,27 +26,22 @@ uint32 SingleRefinementComparator::getNumElements() const {
 }
 
 bool SingleRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
-    return scoreVector.quality < bestQuality_;
+    return ruleCompareFunction_.compare(scoreVector, bestQuality_);
 }
 
 void SingleRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
-    bestQuality_ = scoreVector.quality;
-    scoreProcessor_.processScores(scoreVector);
     bestRefinement_ = refinement;
+    scoreProcessor_.processScores(scoreVector);
+    bestQuality_ = *bestRefinement_.headPtr;
 }
 
 bool SingleRefinementComparator::merge(SingleRefinementComparator& comparator) {
-    Refinement& refinement = comparator.bestRefinement_;
-
-    if (refinement.headPtr) {
-        float64 quality = comparator.bestQuality_;
-
-        if (!bestRefinement_.headPtr || quality < bestQuality_) {
-            bestQuality_ = quality;
-            bestRefinement_ = refinement;
-            bestRefinement_.headPtr = std::move(refinement.headPtr);
-            return true;
-        }
+    if (ruleCompareFunction_.compare(comparator.bestQuality_, bestQuality_)) {
+        Refinement& otherRefinement = comparator.bestRefinement_;
+        bestRefinement_ = otherRefinement;
+        bestRefinement_.headPtr = std::move(otherRefinement.headPtr);
+        bestQuality_ = *bestRefinement_.headPtr;
+        return true;
     }
 
     return false;

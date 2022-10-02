@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/util/quality.hpp"
 #include <memory>
 
 // Forward declarations
@@ -39,9 +39,9 @@ class ICoverageState {
          *                          indices of the training examples that belong to the training set
          * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
          *                          are predicted by the rule
-         * @return                  The calculated quality
+         * @return                  An object of type `Quality` that stores the calculated quality
          */
-        virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
+        virtual Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
                                             const AbstractPrediction& head) const = 0;
 
         /**
@@ -54,9 +54,9 @@ class ICoverageState {
          *                          of the training examples that belong to the training set
          * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
          *                          are predicted by the rule
-         * @return                  The calculated quality
+         * @return                  An object of type `Quality` that stores the calculated quality
          */
-        virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
+        virtual Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                             const AbstractPrediction& head) const = 0;
 
         /**

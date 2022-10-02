@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/rule_refinement/refinement.hpp"
+#include "common/rule_evaluation/rule_compare_function.hpp"
 #include "common/rule_evaluation/score_vector.hpp"
 #include <functional>
 #include <vector>
@@ -16,26 +17,33 @@ class FixedRefinementComparator final {
 
     private:
 
+        RuleCompareFunction ruleCompareFunction_;
+
         uint32 maxRefinements_;
 
         Refinement* refinements_;
 
         std::vector<std::reference_wrapper<Refinement>> order_;
 
-        float64 minQuality_;
+        Quality minQuality_;
 
     public:
 
         /**
-         * @param maxRefinements    The maximum number of refinements to keep track of
-         * @param minQuality        The minimum quality of a refinement to be considered as an improvement
+         * @param ruleCompareFunction   An object of type `RuleCompareFunction` that defines the function that should be
+         *                              used for comparing the quality of different rules
+         * @param maxRefinements        The maximum number of refinements to keep track of
+         * @param minQuality            A reference to an object of type `Quality` a refinement must improve on
          */
-        FixedRefinementComparator(uint32 maxRefinements, float64 minQuality);
+        FixedRefinementComparator(RuleCompareFunction ruleCompareFunction, uint32 maxRefinements,
+                                  const Quality& minQuality);
 
         /**
-         * @param maxRefinements The maximum number of refinements to keep track of
+         * @param ruleCompareFunction   An object of type `RuleCompareFunction` that defines the function that should be
+         *                              used for comparing the quality of different rules
+         * @param maxRefinements        The maximum number of refinements to keep track of
          */
-        FixedRefinementComparator(uint32 maxRefinements);
+        FixedRefinementComparator(RuleCompareFunction ruleCompareFunction, uint32 maxRefinements);
 
         /**
          * @param comparator A reference to an object of type `FixedRefinementComparator` that keeps track of the best

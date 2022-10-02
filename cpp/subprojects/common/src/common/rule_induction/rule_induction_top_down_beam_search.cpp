@@ -15,26 +15,6 @@
 struct BeamEntry final {
 
     /**
-     * Allows to compare two objects of type `BeamEntry` according to the following strict weak ordering: If the quality
-     * of the rule that corresponds to the first object is better, it goes before the second one. Otherwise, the first
-     * object goes after the second one.
-     */
-    struct Compare final {
-
-        /**
-         * Returns whether the a given object of type `BeamEntry` should go before a second one.
-         *
-         * @param lhs   A reference to a first object of type `BeamEntry`
-         * @param rhs   A reference to a second object of type `BeamEntry`
-         * @return      True, if the first object should go before the second one, false otherwise
-         */
-        inline bool operator()(const BeamEntry& lhs, const BeamEntry& rhs) const {
-            return lhs.headPtr->quality < rhs.headPtr->quality;
-        }
-
-    };
-
-    /**
      * An unique pointer to an object of type `ConditionList` that stores the conditions of the rule.
      */
     std::unique_ptr<ConditionList> conditionListPtr;
@@ -94,10 +74,13 @@ static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry) {
     newEntry.labelIndices = nullptr;
 }
 
-static inline float64 updateOrder(std::vector<std::reference_wrapper<BeamEntry>>& order) {
-    std::sort(order.begin(), order.end(), BeamEntry::Compare());
+static inline const Quality& updateOrder(RuleCompareFunction ruleCompareFunction,
+                                         std::vector<std::reference_wrapper<BeamEntry>>& order) {
+    std::sort(order.begin(), order.end(), [=](const BeamEntry& a, const BeamEntry& b) {
+        return ruleCompareFunction.compare(*a.headPtr, *b.headPtr);
+    });
     const BeamEntry& worstEntry = order.back();
-    return worstEntry.headPtr->quality;
+    return *worstEntry.headPtr;
 }
 
 /**
@@ -160,28 +143,31 @@ class Beam final {
          * Searches for the best refinements of the rules that are kept track of by a given beam and updates the beam
          * accordingly.
          *
-         * @param beamPtr           A reference to an unique pointer of type `Beam` that represents the beam to be
-         *                          updated
-         * @param beamWidth         The number of rules the new beam should keep track of
-         * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
-         *                          the features that may be used by potential refinements
-         * @param keepHeads         True, if further refinements should predict for the same labels as before, false
-         *                          otherwise
-         * @param minCoverage       The number of training examples that must be covered by potential refinements
-         * @param numThreads        The number of CPU threads to be used to search for potential refinements of a rule
-         *                          in parallel
-         * @param rng               A reference to an object of type `RNG` that implements the random number generator
-         *                          to be used
-         * @return                  True, if any refinements have been found, false otherwise
+         * @param ruleCompareFunction   An object of type `RuleCompareFunction` that defines the function that should be
+         *                              used for comparing the quality of different rules
+         * @param beamPtr               A reference to an unique pointer of type `Beam` that represents the beam to be
+         *                              updated
+         * @param beamWidth             The number of rules the new beam should keep track of
+         * @param featureSampling       A reference to an object of type `IFeatureSampling` that should be used for
+         *                              sampling the features that may be used by potential refinements
+         * @param keepHeads             True, if further refinements should predict for the same labels as before, false
+         *                              otherwise
+         * @param minCoverage           The number of training examples that must be covered by potential refinements
+         * @param numThreads            The number of CPU threads to be used to search for potential refinements of a
+         *                              rule in parallel
+         * @param rng                   A reference to an object of type `RNG` that implements the random number
+         *                              generator to be used
+         * @return                      True, if any refinements have been found, false otherwise
          */
-        static bool refine(std::unique_ptr<Beam>& beamPtr, uint32 beamWidth, IFeatureSampling& featureSampling,
-                           bool keepHeads, uint32 minCoverage, uint32 numThreads, RNG& rng) {
+        static bool refine(RuleCompareFunction ruleCompareFunction, std::unique_ptr<Beam>& beamPtr, uint32 beamWidth,
+                           IFeatureSampling& featureSampling, bool keepHeads, uint32 minCoverage, uint32 numThreads,
+                           RNG& rng) {
             std::vector<std::reference_wrapper<BeamEntry>>& order = beamPtr->order_;
             std::unique_ptr<Beam> newBeamPtr = std::make_unique<Beam>(beamWidth);
             BeamEntry* newEntries = newBeamPtr->entries_;
             std::vector<std::reference_wrapper<BeamEntry>>& newOrder = newBeamPtr->order_;
             const BeamEntry& worstEntry = order.back();
-            float64 minQuality = worstEntry.headPtr->quality;
+            Quality minQuality(*worstEntry.headPtr);
             uint32 n = 0;
             bool result = false;
 
@@ -196,7 +182,7 @@ class Beam final {
                     const IIndexVector& featureIndices = featureSampling.sample(rng);
 
                     // Search for refinements of the existing beam entry...
-                    FixedRefinementComparator refinementComparator(beamWidth, minQuality);
+                    FixedRefinementComparator refinementComparator(ruleCompareFunction, beamWidth, minQuality);
                     foundRefinement = findRefinement(refinementComparator, *entry.thresholdsSubsetPtr, featureIndices,
                                                      *entry.labelIndices, minCoverage, numThreads);
 
@@ -223,7 +209,7 @@ class Beam final {
                                 copyEntry(newEntry, entry, refinement, entry.thresholdsSubsetPtr->copy(),
                                           std::make_unique<ConditionList>(*entry.conditionListPtr), keepHeads,
                                           minCoverage);
-                                minQuality = updateOrder(newOrder);
+                                minQuality = updateOrder(ruleCompareFunction, newOrder);
                             }
                         }
 
@@ -241,7 +227,7 @@ class Beam final {
                             BeamEntry& newEntry = newOrder.back();
                             copyEntry(newEntry, entry, refinement, std::move(entry.thresholdsSubsetPtr),
                                       std::move(entry.conditionListPtr), keepHeads, minCoverage);
-                            minQuality = updateOrder(newOrder);
+                            minQuality = updateOrder(ruleCompareFunction, newOrder);
                         }
                     }
                 }
@@ -255,10 +241,10 @@ class Beam final {
                         copyEntry(newEntry, entry);
                         newOrder.push_back(newEntry);
                         n++;
-                    } else if (entry.headPtr->quality <= minQuality) {
+                    } else if (!ruleCompareFunction.compare(minQuality, *entry.headPtr)) {
                         BeamEntry& newEntry = newOrder.back();
                         copyEntry(newEntry, entry);
-                        minQuality = updateOrder(newOrder);
+                        minQuality = updateOrder(ruleCompareFunction, newOrder);
                     }
                 }
             }
@@ -287,6 +273,8 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
     private:
 
+        RuleCompareFunction ruleCompareFunction_;
+
         uint32 beamWidth_;
 
         bool resampleFeatures_;
@@ -302,6 +290,8 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
     public:
 
         /**
+         * @param ruleCompareFunction       An object of type `RuleCompareFunction` that defines the function that
+         *                                  should be used for comparing the quality of different rules
          * @param beamWidth                 The width that should be used by the beam search. Must be at least 2
          * @param resampleFeatures          True, if a new sample of the available features should be created for each
          *                                  rule that is refined during the beam search, false otherwise
@@ -317,12 +307,13 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        BeamSearchTopDownRuleInduction(uint32 beamWidth, bool resampleFeatures, uint32 minCoverage,
-                                       uint32 maxConditions, uint32 maxHeadRefinements, bool recalculatePredictions,
-                                       uint32 numThreads)
+        BeamSearchTopDownRuleInduction(RuleCompareFunction ruleCompareFunction, uint32 beamWidth, bool resampleFeatures,
+                                       uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
+                                       bool recalculatePredictions, uint32 numThreads)
             : AbstractRuleInduction(recalculatePredictions),
-              beamWidth_(beamWidth), resampleFeatures_(resampleFeatures), minCoverage_(minCoverage),
-              maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements), numThreads_(numThreads) {
+              ruleCompareFunction_(ruleCompareFunction), beamWidth_(beamWidth), resampleFeatures_(resampleFeatures),
+              minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
+              numThreads_(numThreads) {
 
         }
 
@@ -340,7 +331,7 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
             const IIndexVector& sampledFeatureIndices = featureSampling.sample(rng);
 
             // Search for the best refinements using a single condition...
-            FixedRefinementComparator refinementComparator(beamWidth_);
+            FixedRefinementComparator refinementComparator(ruleCompareFunction_, beamWidth_);
             bool foundRefinement = findRefinement(refinementComparator, *thresholdsSubsetPtr, sampledFeatureIndices,
                                                   labelIndices, minCoverage_, numThreads_);
 
@@ -360,8 +351,9 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
                         featureSampling.createBeamSearchFeatureSampling(rng, resampleFeatures_);
 
                     // Search for the best refinements within the current beam...
-                    foundRefinement = beamPtr->refine(beamPtr, beamWidth_, *beamSearchFeatureSamplingPtr, keepHeads,
-                                                      minCoverage_, numThreads_, rng);
+                    foundRefinement = beamPtr->refine(ruleCompareFunction_, beamPtr, beamWidth_,
+                                                      *beamSearchFeatureSamplingPtr, keepHeads, minCoverage_,
+                                                      numThreads_, rng);
                 }
 
                 BeamEntry& entry = beamPtr->getBestEntry();
@@ -384,6 +376,8 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 
     private:
 
+        RuleCompareFunction ruleCompareFunction_;
+
         uint32 beamWidth_;
 
         bool resampleFeatures_;
@@ -401,6 +395,8 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
     public:
 
         /**
+         * @param ruleCompareFunction       An object of type `RuleCompareFunction` that defines the function that
+         *                                  should be used for comparing the quality of different rules
          * @param beamWidth                 The width that should be used by the beam search. Must be at least 2
          * @param resampleFeatures          True, if a new sample of the available features should be created for each
          *                                  rule that is refined during the beam search, false otherwise
@@ -416,18 +412,18 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        BeamSearchTopDownRuleInductionFactory(uint32 beamWidth, bool resampleFeatures, uint32 minCoverage,
-                                              uint32 maxConditions, uint32 maxHeadRefinements,
-                                              bool recalculatePredictions, uint32 numThreads)
-            : beamWidth_(beamWidth), resampleFeatures_(resampleFeatures), minCoverage_(minCoverage),
-              maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
+        BeamSearchTopDownRuleInductionFactory(RuleCompareFunction ruleCompareFunction, uint32 beamWidth,
+                                              bool resampleFeatures, uint32 minCoverage, uint32 maxConditions,
+                                              uint32 maxHeadRefinements, bool recalculatePredictions, uint32 numThreads)
+            : ruleCompareFunction_(ruleCompareFunction), beamWidth_(beamWidth), resampleFeatures_(resampleFeatures),
+              minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
               recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
 
         }
 
         std::unique_ptr<IRuleInduction> create() const override {
-            return std::make_unique<BeamSearchTopDownRuleInduction>(beamWidth_, resampleFeatures_, minCoverage_,
-                                                                    maxConditions_, maxHeadRefinements_,
+            return std::make_unique<BeamSearchTopDownRuleInduction>(ruleCompareFunction_, beamWidth_, resampleFeatures_,
+                                                                    minCoverage_, maxConditions_, maxHeadRefinements_,
                                                                     recalculatePredictions_, numThreads_);
         }
 
@@ -435,9 +431,10 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 
 
 BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
-        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : beamWidth_(4), resampleFeatures_(false), minCoverage_(1), minSupport_(0.0f), maxConditions_(0),
-      maxHeadRefinements_(1), recalculatePredictions_(true), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
+        RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+    : ruleCompareFunction_(ruleCompareFunction), beamWidth_(4), resampleFeatures_(false), minCoverage_(1),
+      minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
+      multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
 }
 
@@ -525,7 +522,7 @@ std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::cre
     }
 
     uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
-    return std::make_unique<BeamSearchTopDownRuleInductionFactory>(beamWidth_, resampleFeatures_, minCoverage,
-                                                                   maxConditions_, maxHeadRefinements_,
+    return std::make_unique<BeamSearchTopDownRuleInductionFactory>(ruleCompareFunction_, beamWidth_, resampleFeatures_,
+                                                                   minCoverage, maxConditions_, maxHeadRefinements_,
                                                                    recalculatePredictions_, numThreads);
 }

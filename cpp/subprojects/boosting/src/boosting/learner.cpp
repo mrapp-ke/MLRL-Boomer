@@ -7,13 +7,15 @@
 #include "boosting/output/predictor_probability_label_wise.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
+#include "boosting/rule_evaluation/rule_compare_function.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
 #include "common/output/label_space_info_no.hpp"
 
 
 namespace boosting {
 
-    AbstractBoostingRuleLearner::Config::Config() {
+    AbstractBoostingRuleLearner::Config::Config()
+        : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION) {
         this->useCompleteHeads();
         this->useDenseStatistics();
         this->useNoL1Regularization();

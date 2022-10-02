@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/util/quality.hpp"
 
 // Forward declarations
 class ScoreProcessor;
@@ -15,16 +15,11 @@ class AbstractEvaluatedPrediction;
  * Defines an interface for all one-dimensional vectors that store the scores that may be predicted by a rule, as well
  * as a numerical score that assess the overall quality of the rule.
  */
-class IScoreVector {
+class IScoreVector : public Quality {
 
     public:
 
         virtual ~IScoreVector() { };
-
-        /**
-         * A numerical score that assesses the overall quality of the predicted scores.
-         */
-        float64 quality;
 
         /**
          * Sets the scores of a specific prediction to the scores that are stored in this vector.
