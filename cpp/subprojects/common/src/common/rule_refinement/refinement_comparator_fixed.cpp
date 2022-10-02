@@ -4,8 +4,8 @@
 #include <limits>
 
 
-FixedRefinementComparator::FixedRefinementComparator(uint32 maxRefinements, float64 minQualityScore)
-    : maxRefinements_(maxRefinements), refinements_(new Refinement[maxRefinements]), minQualityScore_(minQualityScore) {
+FixedRefinementComparator::FixedRefinementComparator(uint32 maxRefinements, float64 minQuality)
+    : maxRefinements_(maxRefinements), refinements_(new Refinement[maxRefinements]), minQuality_(minQuality) {
     order_.reserve(maxRefinements);
 }
 
@@ -15,7 +15,7 @@ FixedRefinementComparator::FixedRefinementComparator(uint32 maxRefinements)
 }
 
 FixedRefinementComparator::FixedRefinementComparator(const FixedRefinementComparator& comparator)
-    : FixedRefinementComparator(comparator.maxRefinements_, comparator.minQualityScore_) {
+    : FixedRefinementComparator(comparator.maxRefinements_, comparator.minQuality_) {
 
 }
 
@@ -36,7 +36,7 @@ FixedRefinementComparator::iterator FixedRefinementComparator::end() {
 }
 
 bool FixedRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
-    return scoreVector.overallQualityScore < minQualityScore_;
+    return scoreVector.overallQualityScore < minQuality_;
 }
 
 void FixedRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
@@ -60,7 +60,7 @@ void FixedRefinementComparator::pushRefinement(const Refinement& refinement, con
     });
 
     const Refinement& worstRefinement = order_.back();
-    minQualityScore_ = worstRefinement.headPtr->overallQualityScore;
+    minQuality_ = worstRefinement.headPtr->overallQualityScore;
 }
 
 bool FixedRefinementComparator::merge(FixedRefinementComparator& comparator) {
@@ -118,7 +118,7 @@ bool FixedRefinementComparator::merge(FixedRefinementComparator& comparator) {
 
     if (n > 0) {
         const Refinement& worstRefinement = order_.back();
-        minQualityScore_ = worstRefinement.headPtr->overallQualityScore;
+        minQuality_ = worstRefinement.headPtr->overallQualityScore;
     }
 
     delete[] refinements_;

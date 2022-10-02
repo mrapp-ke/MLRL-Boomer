@@ -16,7 +16,7 @@ class SingleRefinementComparator final {
 
         Refinement bestRefinement_;
 
-        float64 bestQualityScore_;
+        float64 bestQuality_;
 
         ScoreProcessor scoreProcessor_;
 
