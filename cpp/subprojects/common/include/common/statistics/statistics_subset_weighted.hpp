@@ -43,13 +43,13 @@ class IWeightedStatisticsSubset : virtual public IStatisticsSubset {
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
-         * to the subset via the function `addToSubset`, as well as an overall quality score that assesses the quality
-         * of the predicted scores. All statistics that have been added since the subset was created via the function
+         * to the subset via the function `addToSubset`, as well as a numerical score that assesses the quality of the
+         * predicted scores. All statistics that have been added since the subset was created via the function
          * `IImmutableWeightedStatistics::createSubset` are taken into account even if the function `resetSubset` was
          * called since then.
          *
          * @return A reference to an object of type `IScoreVector` that stores the scores to be predicted by the rule
-         *         for each considered label, as well as an overall quality score
+         *         for each considered label, as well as a numerical score that assesses their overall quality
          */
         virtual const IScoreVector& calculateScoresAccumulated() = 0;
 
@@ -57,11 +57,11 @@ class IWeightedStatisticsSubset : virtual public IStatisticsSubset {
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that correspond to the
          * difference between the statistics that have been added to the subset via the function `addToSubset` and those
          * that have been marked as covered via the function `IWeightedStatistics::addCoveredStatistic` or
-         * `IWeightedStatistics::removeCoveredStatistic`, as well as an overall quality score that assesses the quality
-         * of the predicted scores.
+         * `IWeightedStatistics::removeCoveredStatistic`, as well as a numerical score that assesses the quality of the
+         * predicted scores.
          *
          * @return A reference to an object of type `IScoreVector` that stores the scores to be predicted by the rule
-         *         for each considered label, as well as an overall quality score
+         *         for each considered label, as well as a numerical score that assesses their overall quality
          */
         virtual const IScoreVector& calculateScoresUncovered() = 0;
 
@@ -69,13 +69,13 @@ class IWeightedStatisticsSubset : virtual public IStatisticsSubset {
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that correspond to the
          * difference between the statistics that have been added to the subset via the function `addToSubset` and those
          * that have been marked as covered via the function `IWeightedStatistics::addCoveredStatistic` or
-         * `IWeightedStatistics::removeCoveredStatistic`, as well as an overall quality score that assesses the quality
-         * of the predicted scores. All statistics that have been added since the subset was created via the function
+         * `IWeightedStatistics::removeCoveredStatistic`, as well as a numerical score that assesses the quality of the
+         * predicted scores. All statistics that have been added since the subset was created via the function
          * `IImmutableWeightedStatistics::createSubset` are taken into account even if the function `resetSubset` was
          * called since then.
          *
          * @return A reference to an object of type `IScoreVector` that stores the scores to be predicted by the rule
-         *         for each considered label, as well as an overall quality score
+         *         for each considered label, as well as a numerical score that assesses their overall quality
          */
         virtual const IScoreVector& calculateScoresUncoveredAccumulated() = 0;
 

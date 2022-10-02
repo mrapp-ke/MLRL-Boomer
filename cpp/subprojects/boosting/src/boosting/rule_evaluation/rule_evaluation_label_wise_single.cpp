@@ -6,7 +6,7 @@
 namespace boosting {
 
     /**
-     * Allows to calculate the predictions of single-label rules, as well as an overall quality score, based on the
+     * Allows to calculate the predictions of single-label rules, as well as their overall quality, based on the
      * gradients and Hessians that are stored by a vector using L1 and L2 regularization.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians

@@ -17,7 +17,7 @@ class Irep final : public IPruning {
 
             // Only rules with more than one condition can be pruned...
             if (numConditions > 1) {
-                // Calculate the quality score of the original rule on the prune set...
+                // Calculate the quality of the original rule on the prune set...
                 const ICoverageState& originalCoverageState = thresholdsSubset.getCoverageState();
                 float64 bestQualityScore =
                     partition.evaluateOutOfSample(thresholdsSubset, originalCoverageState, head);
@@ -29,8 +29,8 @@ class Irep final : public IPruning {
                 thresholdsSubset.resetThresholds();
 
                 // We process the existing rule's conditions (except for the last one) in the order they have been
-                // learned. At each iteration, we calculate the quality score of a rule that only contains the
-                // conditions processed so far and keep track of the best rule...
+                // learned. At each iteration, we calculate the quality of a rule that only contains the conditions
+                // processed so far and keep track of the best rule...
                 ConditionList::const_iterator conditionIterator = conditions.cbegin();
                 uint32 numPrunedConditions = 0;
 
@@ -39,13 +39,12 @@ class Irep final : public IPruning {
                     const Condition& condition = *conditionIterator;
                     thresholdsSubset.filterThresholds(condition);
 
-                    // Calculate the quality score of a rule that contains the conditions that have been processed so
-                    // far...
+                    // Calculate the quality of a rule that contains the conditions that have been processed so far...
                     const ICoverageState& coverageState = thresholdsSubset.getCoverageState();
                     float64 qualityScore = partition.evaluateOutOfSample(thresholdsSubset, coverageState, head);
 
-                    // Check if the quality score is better than the best quality score known so far (reaching the same
-                    // score with fewer conditions is considered an improvement)...
+                    // Check if the quality is better than the best quality seen so far (reaching the same quality with
+                    // fewer conditions is considered an improvement)...
                     if (qualityScore < bestQualityScore || (numPrunedConditions == 0
                                                             && qualityScore == bestQualityScore)) {
                         bestQualityScore = qualityScore;

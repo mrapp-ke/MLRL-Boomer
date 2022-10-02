@@ -44,11 +44,11 @@ class IStatisticsSubset {
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that have been added
-         * to the subset via the function `addToSubset`, as well as an overall quality score that assesses the quality
+         * to the subset via the function `addToSubset`, as well as a numerical score that assesses the overall quality
          * of the predicted scores.
          *
          * @return A reference to an object of type `IScoreVector` that stores the scores to be predicted by the rule
-         *         for each considered label, as well as an overall quality score
+         *         for each considered label, as well as a numerical score that assesses their overall quality
          */
         virtual const IScoreVector& calculateScores() = 0;
 

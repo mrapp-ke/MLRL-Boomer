@@ -10,9 +10,9 @@
 namespace boosting {
 
     /**
-     * An abstract base class for all classes that allow to calculate the predictions of rules, as well as corresponding
-     * quality scores, based on the gradients and Hessians that have been calculated according to a loss function that
-     * is applied example-wise.
+     * An abstract base class for all classes that allow to calculate the predictions of rules, as well as their overall
+     * quality, based on the gradients and Hessians that have been calculated according to a loss function that is
+     * applied example-wise.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should

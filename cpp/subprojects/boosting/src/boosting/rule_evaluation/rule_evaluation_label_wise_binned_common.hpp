@@ -12,8 +12,7 @@
 namespace boosting {
 
     /**
-     * Calculates the score to be predicted for individual bins and returns an overall quality score that assesses the
-     * quality of the predictions.
+     * Calculates the score to be predicted for individual bins and returns the overall quality of the predictions.
      *
      * @tparam ScoreIterator            The type of the iterator that provides access to the gradients and Hessians
      * @param statisticIterator         An iterator that provides random access to the gradients and Hessians
@@ -22,7 +21,7 @@ namespace boosting {
      * @param numElements               The number of bins
      * @param l1RegularizationWeight    The L1 regularization weight
      * @param l2RegularizationWeight    The L2 regularization weight
-     * @return                          The overall quality score that has been calculated
+     * @return                          The overall quality that has been calculated
      */
     template<typename ScoreIterator>
     static inline float64 calculateBinnedScores(DenseLabelWiseStatisticVector::const_iterator statisticIterator,
@@ -45,9 +44,9 @@ namespace boosting {
     }
 
     /**
-     * An abstract base class for all classes that allow to calculate the predictions of rules, as well as corresponding
-     * quality scores, based on the gradients and Hessians that have been calculated according to a loss function that
-     * is applied label-wise and using gradient-based label binning.
+     * An abstract base class for all classes that allow to calculate the predictions of rules, as well as their overall
+     * quality, based on the gradients and Hessians that have been calculated according to a loss function that is
+     * applied label-wise and using gradient-based label binning.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
@@ -159,7 +158,7 @@ namespace boosting {
                 };
                 binningPtr_->createBins(labelInfo, criteria_, numCriteria, callback, zeroCallback);
 
-                // Compute predictions, as well as an overall quality score...
+                // Compute predictions, as well as their overall quality...
                 typename DenseBinnedScoreVector<IndexVector>::score_binned_iterator scoreIterator =
                     scoreVector_.scores_binned_begin();
                 scoreVector_.overallQualityScore = calculateBinnedScores(aggregatedStatisticIterator, scoreIterator,
@@ -172,9 +171,9 @@ namespace boosting {
     };
 
     /**
-     * Allows to calculate the predictions of complete rules, as well as an overall quality score, based on the
-     * gradients and Hessians that are stored by a vector using L1 and L2 regularization. The labels are assigned to
-     * bins based on the gradients and Hessians.
+     * Allows to calculate the predictions of complete rules, as well as their overall quality, based on the gradients
+     * Hessians that are stored by a vector using L1 and L2 regularization. The labels are assigned to bins based on the
+     * gradients and Hessians.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
      * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should

@@ -242,10 +242,9 @@ class EarlyStoppingCriterion final : public IStoppingCriterion {
          * @param stopInterval              The interval to be used to decide whether the induction of rules should be
          *                                  stopped, e.g., a value of 10 means that the rule induction might be stopped
          *                                  after 10, 20, ... rules. Must be a multiple of `updateInterval`
-         * @param numPast                   The number of quality scores of past iterations to be stored in a buffer.
-         *                                  Must be at least 1
-         * @param numCurrent                The number of quality scores of the most recent iterations to be stored in a
-         *                                  buffer. Must be at least 1
+         * @param numPast                   The number of past iterations to be stored in a buffer. Must be at least 1
+         * @param numCurrent                The number of the most recent iterations to be stored in a buffer. Must be
+         *                                  at least 1
          * @param minImprovement            The minimum improvement in percent that must be reached for the rule
          *                                  induction to be continued. Must be in [0, 1]
          * @param forceStop                 True, if the induction of rules should be forced to be stopped, if the
@@ -343,10 +342,10 @@ class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
          * @param stopInterval                  The interval to be used to decide whether the induction of rules should
          *                                      be stopped, e.g., a value of 10 means that the rule induction might be
          *                                      stopped after 10, 20, ... rules. Must be a multiple of `updateInterval`
-         * @param numPast                       The number of quality scores of past iterations to be stored in a
-         *                                      buffer. Must be at least 1
-         * @param numCurrent                    The number of quality scores of the most recent iterations to be stored
-         *                                      in a buffer. Must be at least 1
+         * @param numPast                       The number of past iterations to be stored in a buffer. Must be at least
+         *                                      1
+         * @param numCurrent                    The number of the most recent iterations to be stored in a buffer. Must
+         *                                      be at least 1
          * @param minImprovement                The minimum improvement in percent that must be reached for the rule
          *                                      induction to be continued. Must be in [0, 1]
          * @param forceStop                     True, if the induction of rules should be forced to be stopped, if the

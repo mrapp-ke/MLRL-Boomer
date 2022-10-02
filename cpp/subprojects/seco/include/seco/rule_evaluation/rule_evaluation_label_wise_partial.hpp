@@ -29,8 +29,7 @@ namespace seco {
              * @param heuristicFactoryPtr       An unique pointer to an object of type `IHeuristicFactory`, that allows
              *                                  to create implementations of the heuristic to be optimized
              * @param liftFunctionFactoryPtr    An unique pointer to an object of type `ILiftFunction` that should
-             *                                  affect the quality scores of rules, depending on how many labels they
-             *                                  predict
+             *                                  affect the quality of rules, depending on how many labels they predict
              */
             LabelWisePartialRuleEvaluationFactory(std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr,
                                                   std::unique_ptr<ILiftFunctionFactory> liftFunctionFactoryPtr);

@@ -72,13 +72,13 @@ cdef class EarlyStoppingCriterionConfig:
     Allow to configure a stopping criterion that stops the induction of rules as soon as the quality of a model's
     predictions for the examples in a holdout set do not improve according to a certain measure.
 
-    This stopping criterion assesses the performance of the current model after every `update_interval` rules and stores
-    the resulting quality score in a buffer that keeps track of the last `num_current` scores. If the capacity of this
-    buffer is already reached, the oldest score is passed to a buffer of size `numPast`. Every `stopInterval` rules, it
-    is decided whether the rule induction should be stopped. For this reason, the `num_current` scores in the first
-    buffer, as well as the `num_past` scores in the second buffer are aggregated according to a certain
-    `aggregation_function`. If the percentage improvement, which results from comparing the more recent scores from the
-    first buffer to the older scores from the second buffer, is greater than a certain `min_improvement`, the rule
+    This stopping criterion assesses the performance of the current model after every `updateInterval` rules and stores
+    its quality in a buffer that keeps track of the last `numCurrent` iterations. If the capacity of this buffer is
+    already reached, the oldest quality is passed to a buffer of size `numPast`. Every `stopInterval` rules, it is
+    decided whether the rule induction should be stopped. For this reason, the `numCurrent` qualities in the first
+    buffer, as well as the `numPast` qualities in the second buffer are aggregated according to a certain
+    `aggregation_function`. If the percentage improvement, which results from comparing the more recent qualities from
+    the first buffer to the older qualities from the second buffer, is greater than a certain `minImprovement`, the rule
     induction is continued, otherwise it is stopped.
     """
 
@@ -182,10 +182,9 @@ cdef class EarlyStoppingCriterionConfig:
 
     def set_num_past(self, num_past: int) -> EarlyStoppingCriterionConfig:
         """
-        Sets the number of quality scores of past iterations that should be stored in a buffer.
+        Sets the number of past iterations that should be stored in a buffer.
 
-        :param num_past:    The number of quality scores of past iterations that should be be stored in a buffer. Must
-                            be at least 1
+        :param num_past:    The number of past iterations that should be be stored in a buffer. Must be at least 1
         :return:            An `EarlyStoppingCriterionConfig` that allows further configuration of the stopping
                             criterion
         """
@@ -195,18 +194,18 @@ cdef class EarlyStoppingCriterionConfig:
 
     def get_num_current(self) -> int:
         """
-        Returns the number of quality scores of the most recent iterations that are stored in a buffer.
+        Returns the number of the most recent iterations that are stored in a buffer.
 
-        :return: The number of quality scores of the most recent iterations that are stored in a buffer
+        :return: The number of the most recent iterations that are stored in a buffer
         """
         return self.config_ptr.getNumCurrent()
 
     def set_num_current(self, num_current: int) -> EarlyStoppingCriterionConfig:
         """
-        Sets the number of quality scores of the most recent iterations that should be stored in a buffer.
+        Sets the number of the most recent iterations that should be stored in a buffer.
 
-        :param num_current: The number of quality scores of the most recent iterations that should be stored in a
-                            buffer. Must be at least 1
+        :param num_current: The number of the most recent iterations that should be stored in a buffer. Must be at least
+                            1
         :return:            An `EarlyStoppingCriterionConfig` that allows further configuration of the stopping
                             criterion
         """

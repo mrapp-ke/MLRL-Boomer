@@ -31,7 +31,7 @@ namespace seco {
              *                                  stores the predictions of the default rule
              * @param ruleEvaluationFactory     A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
              *                                  allows to create instances of the class that is used for calculating the
-             *                                  predictions, as well as corresponding quality scores, of rules
+             *                                  predictions of rules, as well as their overall quality
              */
             DenseLabelWiseStatistics(const LabelMatrix& labelMatrix,
                                      std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr,

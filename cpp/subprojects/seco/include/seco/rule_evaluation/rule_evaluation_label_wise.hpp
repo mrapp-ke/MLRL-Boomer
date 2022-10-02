@@ -14,8 +14,7 @@ namespace seco {
 
     /**
      * Defines an interface for all factories that allow to create instances of the type `IRuleEvaluation` that allow to
-     * calculate the predictions of rules, as well as corresponding quality scores, based on label-wise confusion
-     * matrices.
+     * calculate the predictions of rules, as well as their overall quality, based on label-wise confusion matrices.
      */
     class ILabelWiseRuleEvaluationFactory {
 

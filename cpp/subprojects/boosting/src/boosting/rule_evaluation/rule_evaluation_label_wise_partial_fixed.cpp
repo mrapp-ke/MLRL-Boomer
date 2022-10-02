@@ -7,7 +7,7 @@ namespace boosting {
 
     /**
      * Allows to calculate the predictions of partial rules that predict for a predefined number of labels, as well as
-     * an overall quality score, based on the gradients and Hessians that are stored by a vector using L1 and L2
+     * their overall quality, based on the gradients and Hessians that are stored by a vector using L1 and L2
      * regularization.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians

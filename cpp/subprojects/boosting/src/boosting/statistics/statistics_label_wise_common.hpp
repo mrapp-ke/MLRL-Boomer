@@ -78,7 +78,7 @@ namespace boosting {
 
             /**
              * An unique pointer to an object of type `IRuleEvaluation` that is used to calculate the predictions of
-             * rules, as well as corresponding quality scores.
+             * rules, as well as their overall quality.
              */
             std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
 
@@ -89,7 +89,7 @@ namespace boosting {
              *                              access to the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that is used for calculating the
-             *                              predictions of rules, as well as corresponding quality scores
+             *                              predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              * @param labelIndices          A reference to an object of template type `IndexVector` that provides access
@@ -245,7 +245,7 @@ namespace boosting {
 
             /**
              * A reference to an object of template type `RuleEvaluationFactory` that is used to create instances of the
-             * class that is used for calculating the predictions of rules, as well as corresponding quality scores.
+             * class that is used for calculating the predictions of rules, as well as their overall quality.
              */
             const RuleEvaluationFactory& ruleEvaluationFactory_;
 
@@ -262,7 +262,7 @@ namespace boosting {
              *                              access to the the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`, that
              *                              allows to create instances of the class that should be used for calculating
-             *                              the predictions of rules, as well as corresponding quality scores
+             *                              the predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
@@ -399,7 +399,7 @@ namespace boosting {
              *                              total sums of gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows to
              *                              create instances of the class that should be used for calculating the
-             *                              predictions of rules, as well as corresponding quality scores
+             *                              predictions of rules, as well as their overall quality
              */
             LabelWiseHistogram(std::unique_ptr<Histogram> histogramPtr,
                                std::unique_ptr<BinWeightVector> binWeightVectorPtr,
@@ -596,7 +596,7 @@ namespace boosting {
              *                              access to the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows to
              *                              create instances of the class that should be used for calculating the
-             *                              predictions of rules, as well as corresponding quality scores
+             *                              predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
@@ -766,7 +766,7 @@ namespace boosting {
              *                              of predictions for a specific statistic
              * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows to
              *                              create instances of the class that should be used for calculating the
-             *                              predictions of rules, as well as corresponding quality scores
+             *                              predictions of rules, as well as their overall quality
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
              *                              to the labels of the training examples
              * @param statisticViewPtr      An unique pointer to an object of template type `StatisticView` that

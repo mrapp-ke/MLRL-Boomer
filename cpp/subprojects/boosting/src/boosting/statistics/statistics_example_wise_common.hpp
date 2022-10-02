@@ -84,7 +84,7 @@ namespace boosting {
 
             /**
              * An unique pointer to an object of type `IRuleEvaluation` that is used to calculate the predictions of
-             * rules, as well as corresponding quality scores.
+             * rules, as well as their overall quality.
              */
             std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
 
@@ -99,7 +99,7 @@ namespace boosting {
              *                              access to the weights of individual statistics
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
-             *                              the predictions of rules, as well as corresponding quality scores
+             *                              the predictions of rules, as well as their overall quality
              */
             ExampleWiseStatisticsSubset(const StatisticView& statisticView,
                                         const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights,
@@ -263,7 +263,7 @@ namespace boosting {
 
             /**
              * A reference to an object of template type `RuleEvaluationFactory` that allows to create instances of the
-             * class that is used for calculating the predictions of rules, as well as corresponding quality scores.
+             * class that is used for calculating the predictions of rules, as well as their overall quality.
              */
             const RuleEvaluationFactory& ruleEvaluationFactory_;
 
@@ -280,7 +280,7 @@ namespace boosting {
              *                              access to the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
-             *                              the predictions of rules, as well as corresponding quality scores
+             *                              the predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
@@ -418,7 +418,7 @@ namespace boosting {
              *                              total sums of gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows to
              *                              create instances of the class that should be used for calculating the
-             *                              predictions of rules, as well as corresponding quality scores
+             *                              predictions of rules, as well as their overall quality
              */
             ExampleWiseHistogram(std::unique_ptr<Histogram> histogramPtr,
                                  std::unique_ptr<BinWeightVector> binWeightVectorPtr,
@@ -630,7 +630,7 @@ namespace boosting {
              *                              access to the gradients and Hessians
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
-             *                              the predictions of rules, as well as corresponding quality scores
+             *                              the predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
@@ -753,11 +753,11 @@ namespace boosting {
      * @tparam EvaluationMeasure                The type of the evaluation measure that is used to assess the quality of
      *                                          predictions for a specific statistic
      * @tparam ExampleWiseRuleEvaluationFactory The type of the factory that allows to create instances of the class
-     *                                          that is used for calculating the example-wise predictions of rules , as
-     *                                          well as corresponding quality scores
+     *                                          that is used for calculating the example-wise predictions of rules, as
+     *                                          well as their overall quality
      * @tparam LabelWiseRuleEvaluationFactory   The type of the factory that allows to create instances of the class
      *                                          that is used for calculating the label-wise predictions of rules, as
-     *                                          well as corresponding quality scores
+     *                                          well as their overall quality
      */
     template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename Histogram,
              typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure,
