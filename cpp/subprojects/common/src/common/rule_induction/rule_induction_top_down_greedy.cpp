@@ -13,7 +13,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
     private:
 
-        Quality::CompareFunction ruleCompareFunction_;
+        RuleCompareFunction ruleCompareFunction_;
 
         uint32 minCoverage_;
 
@@ -26,8 +26,8 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
     public:
 
         /**
-         * @param ruleCompareFunction       The function that should be used for comparing the quality of different
-         *                                  rules
+         * @param ruleCompareFunction       An object of type `RuleCompareFunction` that defines the function that
+         *                                  should be used for comparing the quality of different rules
          * @param minCoverage               The minimum number of training examples that must be covered by a rule. Must
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
@@ -40,9 +40,8 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        GreedyTopDownRuleInduction(Quality::CompareFunction ruleCompareFunction, uint32 minCoverage,
-                                   uint32 maxConditions, uint32 maxHeadRefinements, bool recalculatePredictions,
-                                   uint32 numThreads)
+        GreedyTopDownRuleInduction(RuleCompareFunction ruleCompareFunction, uint32 minCoverage, uint32 maxConditions,
+                                   uint32 maxHeadRefinements, bool recalculatePredictions, uint32 numThreads)
             : AbstractRuleInduction(recalculatePredictions),
               ruleCompareFunction_(ruleCompareFunction), minCoverage_(minCoverage), maxConditions_(maxConditions),
               maxHeadRefinements_(maxHeadRefinements), numThreads_(numThreads) {
@@ -118,7 +117,7 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
 
     private:
 
-        Quality::CompareFunction ruleCompareFunction_;
+        RuleCompareFunction ruleCompareFunction_;
 
         uint32 minCoverage_;
 
@@ -133,8 +132,8 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
     public:
 
         /**
-         * @param ruleCompareFunction       The function that should be used for comparing the quality of different
-         *                                  rules
+         * @param ruleCompareFunction       An object of type `RuleCompareFunction` that defines the function that
+         *                                  should be used for comparing the quality of different rules
          * @param minCoverage               The minimum number of training examples that must be covered by a rule. Must
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
@@ -147,7 +146,7 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        GreedyTopDownRuleInductionFactory(Quality::CompareFunction ruleCompareFunction, uint32 minCoverage,
+        GreedyTopDownRuleInductionFactory(RuleCompareFunction ruleCompareFunction, uint32 minCoverage,
                                           uint32 maxConditions, uint32 maxHeadRefinements, bool recalculatePredictions,
                                           uint32 numThreads)
             : ruleCompareFunction_(ruleCompareFunction), minCoverage_(minCoverage), maxConditions_(maxConditions),
@@ -166,8 +165,7 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
 
 
 GreedyTopDownRuleInductionConfig::GreedyTopDownRuleInductionConfig(
-        Quality::CompareFunction ruleCompareFunction,
-        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
     : ruleCompareFunction_(ruleCompareFunction), minCoverage_(1), minSupport_(0.0f), maxConditions_(0),
       maxHeadRefinements_(1), recalculatePredictions_(true), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 

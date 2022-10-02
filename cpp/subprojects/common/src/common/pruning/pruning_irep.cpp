@@ -9,14 +9,15 @@ class Irep final : public IPruning {
 
     private:
 
-        Quality::CompareFunction ruleCompareFunction_;
+        RuleCompareFunction ruleCompareFunction_;
 
     public:
 
         /**
-         * @param ruleCompareFunction The function that should be used for comparing the quality of different rules
+         * @param ruleCompareFunction An object of type `RuleCompareFunction` that defines the function that should be
+         *                            used for comparing the quality of different rules
          */
-        Irep(Quality::CompareFunction ruleCompareFunction)
+        Irep(RuleCompareFunction ruleCompareFunction)
             : ruleCompareFunction_(ruleCompareFunction) {
 
         }
@@ -56,8 +57,9 @@ class Irep final : public IPruning {
 
                     // Check if the quality is better than the best quality seen so far (reaching the same quality with
                     // fewer conditions is considered an improvement)...
-                    if (compareQuality(ruleCompareFunction_, quality, bestQuality)
-                        || (numPrunedConditions == 0 && !compareQuality(ruleCompareFunction_, bestQuality, quality))) {
+                    if (compareQuality(ruleCompareFunction_.function, quality, bestQuality)
+                        || (numPrunedConditions == 0
+                            && !compareQuality(ruleCompareFunction_.function, bestQuality, quality))) {
                         bestQuality = quality;
                         bestCoverageStatePtr = coverageState.copy();
                         numPrunedConditions = (numConditions - n);
@@ -88,14 +90,15 @@ class IrepFactory final : public IPruningFactory {
 
     private:
 
-        Quality::CompareFunction ruleCompareFunction_;
+        RuleCompareFunction ruleCompareFunction_;
 
     public:
 
         /**
-         * @param ruleCompareFunction The function that should be used for comparing the quality of different rules
+         * @param ruleCompareFunction An object of type `RuleCompareFunction` that defines the function that should be
+         *                            used for comparing the quality of different rules
          */
-        IrepFactory(Quality::CompareFunction ruleCompareFunction)
+        IrepFactory(RuleCompareFunction ruleCompareFunction)
             : ruleCompareFunction_(ruleCompareFunction) {
 
         }
@@ -106,7 +109,7 @@ class IrepFactory final : public IPruningFactory {
 
 };
 
-IrepConfig::IrepConfig(Quality::CompareFunction ruleCompareFunction)
+IrepConfig::IrepConfig(RuleCompareFunction ruleCompareFunction)
     : ruleCompareFunction_(ruleCompareFunction) {
 
 }

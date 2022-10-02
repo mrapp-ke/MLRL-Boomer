@@ -63,7 +63,7 @@ class TrainingResult final : public ITrainingResult {
 
 };
 
-AbstractRuleLearner::Config::Config(Quality::CompareFunction ruleCompareFunction)
+AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
     : ruleCompareFunction_(ruleCompareFunction) {
     this->useDefaultRule();
     this->useSequentialRuleModelAssemblage();
@@ -84,7 +84,7 @@ AbstractRuleLearner::Config::Config(Quality::CompareFunction ruleCompareFunction
     this->useNoSequentialPostOptimization();
 }
 
-Quality::CompareFunction AbstractRuleLearner::Config::getRuleCompareFunction() const {
+RuleCompareFunction AbstractRuleLearner::Config::getRuleCompareFunction() const {
     return ruleCompareFunction_;
 }
 

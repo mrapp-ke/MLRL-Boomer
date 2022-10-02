@@ -143,8 +143,8 @@ class Beam final {
          * Searches for the best refinements of the rules that are kept track of by a given beam and updates the beam
          * accordingly.
          *
-         * @param ruleCompareFunction   The function that should be used for comparing the quality of different
-         *                              rules
+         * @param ruleCompareFunction   An object of type `RuleCompareFunction` that defines the function that should be
+         *                              used for comparing the quality of different rules
          * @param beamPtr               A reference to an unique pointer of type `Beam` that represents the beam to be
          *                              updated
          * @param beamWidth             The number of rules the new beam should keep track of
@@ -159,9 +159,9 @@ class Beam final {
          *                              generator to be used
          * @return                      True, if any refinements have been found, false otherwise
          */
-        static bool refine(Quality::CompareFunction ruleCompareFunction, std::unique_ptr<Beam>& beamPtr,
-                           uint32 beamWidth, IFeatureSampling& featureSampling, bool keepHeads, uint32 minCoverage,
-                           uint32 numThreads, RNG& rng) {
+        static bool refine(RuleCompareFunction ruleCompareFunction, std::unique_ptr<Beam>& beamPtr, uint32 beamWidth,
+                           IFeatureSampling& featureSampling, bool keepHeads, uint32 minCoverage, uint32 numThreads,
+                           RNG& rng) {
             std::vector<std::reference_wrapper<BeamEntry>>& order = beamPtr->order_;
             std::unique_ptr<Beam> newBeamPtr = std::make_unique<Beam>(beamWidth);
             BeamEntry* newEntries = newBeamPtr->entries_;
@@ -209,7 +209,7 @@ class Beam final {
                                 copyEntry(newEntry, entry, refinement, entry.thresholdsSubsetPtr->copy(),
                                           std::make_unique<ConditionList>(*entry.conditionListPtr), keepHeads,
                                           minCoverage);
-                                minQuality = updateOrder(ruleCompareFunction, newOrder);
+                                minQuality = updateOrder(ruleCompareFunction.function, newOrder);
                             }
                         }
 
@@ -227,7 +227,7 @@ class Beam final {
                             BeamEntry& newEntry = newOrder.back();
                             copyEntry(newEntry, entry, refinement, std::move(entry.thresholdsSubsetPtr),
                                       std::move(entry.conditionListPtr), keepHeads, minCoverage);
-                            minQuality = updateOrder(ruleCompareFunction, newOrder);
+                            minQuality = updateOrder(ruleCompareFunction.function, newOrder);
                         }
                     }
                 }
@@ -241,10 +241,10 @@ class Beam final {
                         copyEntry(newEntry, entry);
                         newOrder.push_back(newEntry);
                         n++;
-                    } else if (!compareQuality(ruleCompareFunction, minQuality, *entry.headPtr)) {
+                    } else if (!compareQuality(ruleCompareFunction.function, minQuality, *entry.headPtr)) {
                         BeamEntry& newEntry = newOrder.back();
                         copyEntry(newEntry, entry);
-                        minQuality = updateOrder(ruleCompareFunction, newOrder);
+                        minQuality = updateOrder(ruleCompareFunction.function, newOrder);
                     }
                 }
             }
@@ -273,7 +273,7 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
     private:
 
-        Quality::CompareFunction ruleCompareFunction_;
+        RuleCompareFunction ruleCompareFunction_;
 
         uint32 beamWidth_;
 
@@ -290,8 +290,8 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
     public:
 
         /**
-         * @param ruleCompareFunction       The function that should be used for comparing the quality of different
-         *                                  rules
+         * @param ruleCompareFunction       An object of type `RuleCompareFunction` that defines the function that
+         *                                  should be used for comparing the quality of different rules
          * @param beamWidth                 The width that should be used by the beam search. Must be at least 2
          * @param resampleFeatures          True, if a new sample of the available features should be created for each
          *                                  rule that is refined during the beam search, false otherwise
@@ -307,9 +307,9 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        BeamSearchTopDownRuleInduction(Quality::CompareFunction ruleCompareFunction, uint32 beamWidth,
-                                       bool resampleFeatures, uint32 minCoverage, uint32 maxConditions,
-                                       uint32 maxHeadRefinements, bool recalculatePredictions, uint32 numThreads)
+        BeamSearchTopDownRuleInduction(RuleCompareFunction ruleCompareFunction, uint32 beamWidth, bool resampleFeatures,
+                                       uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
+                                       bool recalculatePredictions, uint32 numThreads)
             : AbstractRuleInduction(recalculatePredictions),
               ruleCompareFunction_(ruleCompareFunction), beamWidth_(beamWidth), resampleFeatures_(resampleFeatures),
               minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
@@ -376,7 +376,7 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 
     private:
 
-        Quality::CompareFunction ruleCompareFunction_;
+        RuleCompareFunction ruleCompareFunction_;
 
         uint32 beamWidth_;
 
@@ -395,8 +395,8 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
     public:
 
         /**
-         * @param ruleCompareFunction       The function that should be used for comparing the quality of different
-         *                                  rules
+         * @param ruleCompareFunction       An object of type `RuleCompareFunction` that defines the function that
+         *                                  should be used for comparing the quality of different rules
          * @param beamWidth                 The width that should be used by the beam search. Must be at least 2
          * @param resampleFeatures          True, if a new sample of the available features should be created for each
          *                                  rule that is refined during the beam search, false otherwise
@@ -412,7 +412,7 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        BeamSearchTopDownRuleInductionFactory(Quality::CompareFunction ruleCompareFunction, uint32 beamWidth,
+        BeamSearchTopDownRuleInductionFactory(RuleCompareFunction ruleCompareFunction, uint32 beamWidth,
                                               bool resampleFeatures, uint32 minCoverage, uint32 maxConditions,
                                               uint32 maxHeadRefinements, bool recalculatePredictions, uint32 numThreads)
             : ruleCompareFunction_(ruleCompareFunction), beamWidth_(beamWidth), resampleFeatures_(resampleFeatures),
@@ -431,8 +431,7 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 
 
 BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
-        Quality::CompareFunction ruleCompareFunction,
-        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
     : ruleCompareFunction_(ruleCompareFunction), beamWidth_(4), resampleFeatures_(false), minCoverage_(1),
       minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
       multiThreadingConfigPtr_(multiThreadingConfigPtr) {

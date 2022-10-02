@@ -3,13 +3,13 @@
  */
 #pragma once
 
-#include "common/util/quality.hpp"
+#include "common/rule_evaluation/rule_compare_function.hpp"
 
 
 namespace seco {
 
     /**
-     * Returns whether the quality of a rule is better than the quality of a second one.
+     * Returns whether the quality of a SeCo rule is better than the quality of a second one.
      *
      * @param first     An object of type `Quality` that represents the quality of the first rule
      * @param second    An object of type `Quality` that represents the quality of the second rule
@@ -19,5 +19,11 @@ namespace seco {
     static inline constexpr bool compareSeCoRuleQuality(const Quality& first, const Quality& second) {
         return first.quality < second.quality;
     }
+
+    /**
+     * An object of type `RuleCompareFunction` that defines the function that should be used for comparing the quality
+     * of SeCo rules.
+     */
+    static const RuleCompareFunction SECO_RULE_COMPARE_FUNCTION(compareSeCoRuleQuality);
 
 }
