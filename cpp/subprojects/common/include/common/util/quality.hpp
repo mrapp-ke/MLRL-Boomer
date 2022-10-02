@@ -7,7 +7,7 @@
 
 
 /**
- * A struct that stores a quality.
+ * A struct that stores a numerical score that represents a quality.
  */
 struct Quality {
 
@@ -24,7 +24,7 @@ struct Quality {
     Quality(const Quality& q) : quality(q.quality) { };
 
     /**
-     * Assigns the quality of an existing object to this object.
+     * Assigns the numerical score of an existing object to this object.
      *
      * @param q A reference to the existing object
      * @return  A reference to the modified object
