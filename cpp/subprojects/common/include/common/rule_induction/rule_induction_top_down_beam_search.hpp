@@ -156,6 +156,8 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
 
     private:
 
+        Quality::CompareFunction ruleCompareFunction_;
+
         uint32 beamWidth_;
 
         bool resampleFeatures_;
@@ -175,11 +177,14 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
     public:
 
         /**
-         * @param multiThreadingConfigPtr A reference to an unique pointer that stores the configuration of the
-         *                                multi-threading behavior that should be used for the parallel refinement of
-         *                                rules
+         * @param ruleCompareFunction       The function that should be used for comparing the quality of different
+         *                                  rules
+         * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
+         *                                  multi-threading behavior that should be used for the parallel refinement of
+         *                                  rules
          */
-        BeamSearchTopDownRuleInductionConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+        BeamSearchTopDownRuleInductionConfig(Quality::CompareFunction ruleCompareFunction,
+                                             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
         uint32 getBeamWidth() const override;
 

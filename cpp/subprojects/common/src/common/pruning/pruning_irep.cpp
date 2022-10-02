@@ -7,7 +7,19 @@
  */
 class Irep final : public IPruning {
 
+    private:
+
+        Quality::CompareFunction ruleCompareFunction_;
+
     public:
+
+        /**
+         * @param ruleCompareFunction The function that should be used for comparing the quality of different rules
+         */
+        Irep(Quality::CompareFunction ruleCompareFunction)
+            : ruleCompareFunction_(ruleCompareFunction) {
+
+        }
 
         std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
                                               ConditionList& conditions,
@@ -44,8 +56,8 @@ class Irep final : public IPruning {
 
                     // Check if the quality is better than the best quality seen so far (reaching the same quality with
                     // fewer conditions is considered an improvement)...
-                    if (compareQuality(quality, bestQuality)
-                        || (numPrunedConditions == 0 && !compareQuality(bestQuality, quality))) {
+                    if (compareQuality(ruleCompareFunction_, quality, bestQuality)
+                        || (numPrunedConditions == 0 && !compareQuality(ruleCompareFunction_, bestQuality, quality))) {
                         bestQuality = quality;
                         bestCoverageStatePtr = coverageState.copy();
                         numPrunedConditions = (numConditions - n);
@@ -74,14 +86,31 @@ class Irep final : public IPruning {
  */
 class IrepFactory final : public IPruningFactory {
 
+    private:
+
+        Quality::CompareFunction ruleCompareFunction_;
+
     public:
 
+        /**
+         * @param ruleCompareFunction The function that should be used for comparing the quality of different rules
+         */
+        IrepFactory(Quality::CompareFunction ruleCompareFunction)
+            : ruleCompareFunction_(ruleCompareFunction) {
+
+        }
+
         std::unique_ptr<IPruning> create() const override {
-            return std::make_unique<Irep>();
+            return std::make_unique<Irep>(ruleCompareFunction_);
         }
 
 };
 
+IrepConfig::IrepConfig(Quality::CompareFunction ruleCompareFunction)
+    : ruleCompareFunction_(ruleCompareFunction) {
+
+}
+
 std::unique_ptr<IPruningFactory> IrepConfig::createPruningFactory() const {
-    return std::make_unique<IrepFactory>();
+    return std::make_unique<IrepFactory>(ruleCompareFunction_);
 }

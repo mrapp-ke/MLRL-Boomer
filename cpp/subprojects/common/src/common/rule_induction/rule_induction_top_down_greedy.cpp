@@ -13,6 +13,8 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
     private:
 
+        Quality::CompareFunction ruleCompareFunction_;
+
         uint32 minCoverage_;
 
         uint32 maxConditions_;
@@ -24,6 +26,8 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
     public:
 
         /**
+         * @param ruleCompareFunction       The function that should be used for comparing the quality of different
+         *                                  rules
          * @param minCoverage               The minimum number of training examples that must be covered by a rule. Must
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
@@ -36,11 +40,12 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        GreedyTopDownRuleInduction(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
-                                   bool recalculatePredictions, uint32 numThreads)
+        GreedyTopDownRuleInduction(Quality::CompareFunction ruleCompareFunction, uint32 minCoverage,
+                                   uint32 maxConditions, uint32 maxHeadRefinements, bool recalculatePredictions,
+                                   uint32 numThreads)
             : AbstractRuleInduction(recalculatePredictions),
-              minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
-              numThreads_(numThreads) {
+              ruleCompareFunction_(ruleCompareFunction), minCoverage_(minCoverage), maxConditions_(maxConditions),
+              maxHeadRefinements_(maxHeadRefinements), numThreads_(numThreads) {
 
         }
 
@@ -56,7 +61,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
             // A list that contains the conditions in the rule's body (in the order they have been learned)
             conditionListPtr = std::make_unique<ConditionList>();
             // The comparator that is used to keep track of the best refinement of the rule
-            SingleRefinementComparator refinementComparator;
+            SingleRefinementComparator refinementComparator(ruleCompareFunction_);
             // Whether a refinement of the current rule has been found
             bool foundRefinement = true;
 
@@ -113,6 +118,8 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
 
     private:
 
+        Quality::CompareFunction ruleCompareFunction_;
+
         uint32 minCoverage_;
 
         uint32 maxConditions_;
@@ -126,6 +133,8 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
     public:
 
         /**
+         * @param ruleCompareFunction       The function that should be used for comparing the quality of different
+         *                                  rules
          * @param minCoverage               The minimum number of training examples that must be covered by a rule. Must
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
@@ -138,25 +147,29 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
          * @param numThreads                The number of CPU threads to be used to search for potential refinements of
          *                                  a rule in parallel. Must be at least 1
          */
-        GreedyTopDownRuleInductionFactory(uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
-                                          bool recalculatePredictions, uint32 numThreads)
-            : minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
-              recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
+        GreedyTopDownRuleInductionFactory(Quality::CompareFunction ruleCompareFunction, uint32 minCoverage,
+                                          uint32 maxConditions, uint32 maxHeadRefinements, bool recalculatePredictions,
+                                          uint32 numThreads)
+            : ruleCompareFunction_(ruleCompareFunction), minCoverage_(minCoverage), maxConditions_(maxConditions),
+              maxHeadRefinements_(maxHeadRefinements), recalculatePredictions_(recalculatePredictions),
+              numThreads_(numThreads) {
 
         }
 
         std::unique_ptr<IRuleInduction> create() const override {
-            return std::make_unique<GreedyTopDownRuleInduction>(minCoverage_, maxConditions_, maxHeadRefinements_,
-                                                                recalculatePredictions_, numThreads_);
+            return std::make_unique<GreedyTopDownRuleInduction>(ruleCompareFunction_, minCoverage_, maxConditions_,
+                                                                maxHeadRefinements_, recalculatePredictions_,
+                                                                numThreads_);
         }
 
 };
 
 
 GreedyTopDownRuleInductionConfig::GreedyTopDownRuleInductionConfig(
+        Quality::CompareFunction ruleCompareFunction,
         const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : minCoverage_(1), minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
-      multiThreadingConfigPtr_(multiThreadingConfigPtr) {
+    : ruleCompareFunction_(ruleCompareFunction), minCoverage_(1), minSupport_(0.0f), maxConditions_(0),
+      maxHeadRefinements_(1), recalculatePredictions_(true), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
 }
 
@@ -223,6 +236,7 @@ std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createR
     }
 
     uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
-    return std::make_unique<GreedyTopDownRuleInductionFactory>(minCoverage, maxConditions_, maxHeadRefinements_,
-                                                               recalculatePredictions_, numThreads);
+    return std::make_unique<GreedyTopDownRuleInductionFactory>(ruleCompareFunction_, minCoverage, maxConditions_,
+                                                               maxHeadRefinements_, recalculatePredictions_,
+                                                               numThreads);
 }

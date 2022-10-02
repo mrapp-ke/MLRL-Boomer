@@ -14,6 +14,8 @@ class SingleRefinementComparator final {
 
     private:
 
+        Quality::CompareFunction compareFunction_;
+
         Refinement bestRefinement_;
 
         Quality bestQuality_;
@@ -22,7 +24,10 @@ class SingleRefinementComparator final {
 
     public:
 
-        SingleRefinementComparator();
+        /**
+         * @param compareFunction The function that should be used to compare the quality of different refinements
+         */
+        SingleRefinementComparator(Quality::CompareFunction compareFunction);
 
         /**
          * @param comparator A reference to an object of type `SingleRefinementComparator` that keeps track of the best
