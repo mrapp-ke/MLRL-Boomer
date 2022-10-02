@@ -111,16 +111,15 @@ namespace boosting {
                               this->dsysvLwork_);
 
                 // Calculate the overall quality...
-                float64 overallQualityScore = calculateOverallQualityScore(scoreIterator,
-                                                                           statisticVector.gradients_begin(),
-                                                                           statisticVector.hessians_begin(),
-                                                                           this->dspmvTmpArray_, n, blas_);
+                float64 quality = calculateOverallQuality(scoreIterator, statisticVector.gradients_begin(),
+                                                          statisticVector.hessians_begin(), this->dspmvTmpArray_, n,
+                                                          blas_);
 
                 // Evaluate regularization term...
-                overallQualityScore += calculateRegularizationTerm(scoreIterator, n, l1RegularizationWeight_,
-                                                                   l2RegularizationWeight_);
+                quality += calculateRegularizationTerm(scoreIterator, n, l1RegularizationWeight_,
+                                                       l2RegularizationWeight_);
 
-                scoreVector_.overallQualityScore = overallQualityScore;
+                scoreVector_.overallQualityScore = quality;
                 return scoreVector_;
             }
 

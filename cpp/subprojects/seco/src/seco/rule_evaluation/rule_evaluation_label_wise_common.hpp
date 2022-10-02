@@ -19,9 +19,9 @@ namespace seco {
      * @param heuristic                 The heuristic that should be used to assess the quality
      * @return                          The quality that has been calculated
      */
-    static inline float64 calculateLabelWiseQualityScore(const ConfusionMatrix& totalConfusionMatrix,
-                                                         const ConfusionMatrix& coveredConfusionMatrix,
-                                                         const IHeuristic& heuristic) {
+    static inline float64 calculateLabelWiseQuality(const ConfusionMatrix& totalConfusionMatrix,
+                                                    const ConfusionMatrix& coveredConfusionMatrix,
+                                                    const IHeuristic& heuristic) {
         const ConfusionMatrix uncoveredConfusionMatrix = totalConfusionMatrix - coveredConfusionMatrix;
         return heuristic.evaluateConfusionMatrix(
             coveredConfusionMatrix.in, coveredConfusionMatrix.ip, coveredConfusionMatrix.rn, coveredConfusionMatrix.rp,

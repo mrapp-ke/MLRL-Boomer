@@ -27,7 +27,7 @@ namespace boosting {
     static inline float64 calculateBinnedScores(DenseLabelWiseStatisticVector::const_iterator statisticIterator,
                                                 ScoreIterator scoreIterator, const uint32* weights, uint32 numElements,
                                                 float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
-        float64 overallQualityScore = 0;
+        float64 quality = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 weight = weights[i];
@@ -35,12 +35,11 @@ namespace boosting {
             float64 predictedScore = calculateLabelWiseScore(tuple.first, tuple.second, weight * l1RegularizationWeight,
                                                              weight * l2RegularizationWeight);
             scoreIterator[i] = predictedScore;
-            overallQualityScore += calculateLabelWiseQualityScore(predictedScore, tuple.first, tuple.second,
-                                                                  weight * l1RegularizationWeight,
-                                                                  weight * l2RegularizationWeight);
+            quality += calculateLabelWiseQuality(predictedScore, tuple.first, tuple.second,
+                                                 weight * l1RegularizationWeight, weight * l2RegularizationWeight);
         }
 
-        return overallQualityScore;
+        return quality;
     }
 
     /**

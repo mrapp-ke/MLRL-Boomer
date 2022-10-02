@@ -67,7 +67,7 @@ namespace boosting {
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
-                float64 overallQualityScore = 0;
+                float64 quality = 0;
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
@@ -78,15 +78,14 @@ namespace boosting {
                     if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
                         indexIterator[n] = labelIndexIterator[i];
                         scoreIterator[n] = score;
-                        overallQualityScore += calculateLabelWiseQualityScore(score, tuple.first, tuple.second,
-                                                                              l1RegularizationWeight_,
-                                                                              l2RegularizationWeight_);
+                        quality += calculateLabelWiseQuality(score, tuple.first, tuple.second, l1RegularizationWeight_,
+                                                             l2RegularizationWeight_);
                         n++;
                     }
                 }
 
                 indexVector_.setNumElements(n, false);
-                scoreVector_.overallQualityScore = overallQualityScore;
+                scoreVector_.overallQualityScore = quality;
                 return scoreVector_;
             }
 
