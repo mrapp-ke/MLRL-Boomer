@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/util/quality.hpp"
+#include <functional>
 
 
 /**
@@ -12,15 +13,21 @@
 struct RuleCompareFunction {
 
     /**
-     * @param f A function of type `Quality::CompareFunction` for comparing the quality of different rules
-     * @param m The minimum quality of a rule
+     * A function for comparing two objects of type `Quality`. It should return true, if the first object is better than
+     * the second one, false otherwise.
      */
-    RuleCompareFunction(Quality::CompareFunction f, float64 m) : function(f), minQuality(m) { };
+    typedef std::function<bool(const Quality&, const Quality&)> CompareFunction;
 
     /**
-     * A function of type `Quality::CompareFunction` for comparing the quality of different rules.
+     * @param c A function of type `CompareFunction` for comparing the quality of different rules
+     * @param m The minimum quality of a rule
      */
-    Quality::CompareFunction function;
+    RuleCompareFunction(CompareFunction c, float64 m) : compare(c), minQuality(m) { };
+
+    /**
+     * A function of type `CompareFunction` for comparing the quality of different rules.
+     */
+    CompareFunction compare;
 
     /**
      * The minimum quality of a rule.
