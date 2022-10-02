@@ -27,7 +27,7 @@ static inline float64 evaluateOutOfSampleInternally(IndexIterator indexIterator,
     }
 
     const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
-    return scoreVector.overallQualityScore;
+    return scoreVector.quality;
 }
 
 template<typename WeightVector>
@@ -49,7 +49,7 @@ static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights,
     }
 
     const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
-    return scoreVector.overallQualityScore;
+    return scoreVector.quality;
 }
 
 template<typename WeightVector>
@@ -72,7 +72,7 @@ static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights,
     }
 
     const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
-    return scoreVector.overallQualityScore;
+    return scoreVector.quality;
 }
 
 template<typename IndexIterator>

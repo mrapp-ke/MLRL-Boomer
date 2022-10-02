@@ -29,7 +29,7 @@ struct BeamEntry final {
          * @return      True, if the first object should go before the second one, false otherwise
          */
         inline bool operator()(const BeamEntry& lhs, const BeamEntry& rhs) const {
-            return lhs.headPtr->overallQualityScore < rhs.headPtr->overallQualityScore;
+            return lhs.headPtr->quality < rhs.headPtr->quality;
         }
 
     };
@@ -97,7 +97,7 @@ static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry) {
 static inline float64 updateOrder(std::vector<std::reference_wrapper<BeamEntry>>& order) {
     std::sort(order.begin(), order.end(), BeamEntry::Compare());
     const BeamEntry& worstEntry = order.back();
-    return worstEntry.headPtr->overallQualityScore;
+    return worstEntry.headPtr->quality;
 }
 
 /**
@@ -181,7 +181,7 @@ class Beam final {
             BeamEntry* newEntries = newBeamPtr->entries_;
             std::vector<std::reference_wrapper<BeamEntry>>& newOrder = newBeamPtr->order_;
             const BeamEntry& worstEntry = order.back();
-            float64 minQuality = worstEntry.headPtr->overallQualityScore;
+            float64 minQuality = worstEntry.headPtr->quality;
             uint32 n = 0;
             bool result = false;
 
@@ -255,7 +255,7 @@ class Beam final {
                         copyEntry(newEntry, entry);
                         newOrder.push_back(newEntry);
                         n++;
-                    } else if (entry.headPtr->overallQualityScore <= minQuality) {
+                    } else if (entry.headPtr->quality <= minQuality) {
                         BeamEntry& newEntry = newOrder.back();
                         copyEntry(newEntry, entry);
                         minQuality = updateOrder(newOrder);

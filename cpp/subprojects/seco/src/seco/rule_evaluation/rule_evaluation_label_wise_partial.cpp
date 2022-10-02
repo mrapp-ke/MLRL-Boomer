@@ -71,8 +71,7 @@ namespace seco {
                     previousIndex = index;
                 }
 
-                scoreVector_.overallQualityScore = (1 - calculateLiftedQuality(sumOfQualities, numElements,
-                                                                               *liftFunctionPtr_));
+                scoreVector_.quality = (1 - calculateLiftedQuality(sumOfQualities, numElements, *liftFunctionPtr_));
                 return scoreVector_;
             }
 
@@ -175,7 +174,7 @@ namespace seco {
                 }
 
                 indexVector_.setNumElements(bestNumPredictions, false);
-                scoreVector_.overallQualityScore = (1 - bestQuality);
+                scoreVector_.quality = (1 - bestQuality);
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 PartialIndexVector::iterator predictedIndexIterator = indexVector_.begin();
 

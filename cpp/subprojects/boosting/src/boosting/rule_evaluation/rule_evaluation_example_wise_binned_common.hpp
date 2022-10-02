@@ -339,10 +339,10 @@ namespace boosting {
                     quality += calculateRegularizationTerm(scoreIterator, numElementsPerBin_, numBins,
                                                            l1RegularizationWeight_, l2RegularizationWeight_);
 
-                    scoreVector_.overallQualityScore = quality;
+                    scoreVector_.quality = quality;
                 } else {
                     setArrayToValue(scoreVector_.indices_binned_begin(), numCriteria, maxBins_);
-                    scoreVector_.overallQualityScore = 0;
+                    scoreVector_.quality = 0;
                 }
 
                 return scoreVector_;

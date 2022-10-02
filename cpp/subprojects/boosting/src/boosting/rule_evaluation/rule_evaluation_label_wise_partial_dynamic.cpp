@@ -85,7 +85,7 @@ namespace boosting {
                 }
 
                 indexVector_.setNumElements(n, false);
-                scoreVector_.overallQualityScore = quality;
+                scoreVector_.quality = quality;
                 return scoreVector_;
             }
 
