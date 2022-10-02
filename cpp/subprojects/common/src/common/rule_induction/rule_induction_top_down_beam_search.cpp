@@ -74,10 +74,10 @@ static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry) {
     newEntry.labelIndices = nullptr;
 }
 
-static inline const Quality& updateOrder(Quality::CompareFunction compareFunction,
+static inline const Quality& updateOrder(RuleCompareFunction ruleCompareFunction,
                                          std::vector<std::reference_wrapper<BeamEntry>>& order) {
     std::sort(order.begin(), order.end(), [=](const BeamEntry& a, const BeamEntry& b) {
-        return compareQuality(compareFunction, *a.headPtr, *b.headPtr);
+        return ruleCompareFunction.compare(*a.headPtr, *b.headPtr);
     });
     const BeamEntry& worstEntry = order.back();
     return *worstEntry.headPtr;
@@ -209,7 +209,7 @@ class Beam final {
                                 copyEntry(newEntry, entry, refinement, entry.thresholdsSubsetPtr->copy(),
                                           std::make_unique<ConditionList>(*entry.conditionListPtr), keepHeads,
                                           minCoverage);
-                                minQuality = updateOrder(ruleCompareFunction.function, newOrder);
+                                minQuality = updateOrder(ruleCompareFunction, newOrder);
                             }
                         }
 
@@ -227,7 +227,7 @@ class Beam final {
                             BeamEntry& newEntry = newOrder.back();
                             copyEntry(newEntry, entry, refinement, std::move(entry.thresholdsSubsetPtr),
                                       std::move(entry.conditionListPtr), keepHeads, minCoverage);
-                            minQuality = updateOrder(ruleCompareFunction.function, newOrder);
+                            minQuality = updateOrder(ruleCompareFunction, newOrder);
                         }
                     }
                 }
@@ -241,10 +241,10 @@ class Beam final {
                         copyEntry(newEntry, entry);
                         newOrder.push_back(newEntry);
                         n++;
-                    } else if (!compareQuality(ruleCompareFunction.function, minQuality, *entry.headPtr)) {
+                    } else if (!ruleCompareFunction.compare(minQuality, *entry.headPtr)) {
                         BeamEntry& newEntry = newOrder.back();
                         copyEntry(newEntry, entry);
-                        minQuality = updateOrder(ruleCompareFunction.function, newOrder);
+                        minQuality = updateOrder(ruleCompareFunction, newOrder);
                     }
                 }
             }

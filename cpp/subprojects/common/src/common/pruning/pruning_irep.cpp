@@ -57,9 +57,8 @@ class Irep final : public IPruning {
 
                     // Check if the quality is better than the best quality seen so far (reaching the same quality with
                     // fewer conditions is considered an improvement)...
-                    if (compareQuality(ruleCompareFunction_.function, quality, bestQuality)
-                        || (numPrunedConditions == 0
-                            && !compareQuality(ruleCompareFunction_.function, bestQuality, quality))) {
+                    if (ruleCompareFunction_.compare(quality, bestQuality)
+                        || (numPrunedConditions == 0 && !ruleCompareFunction_.compare(bestQuality, quality))) {
                         bestQuality = quality;
                         bestCoverageStatePtr = coverageState.copy();
                         numPrunedConditions = (numConditions - n);
