@@ -25,27 +25,22 @@ uint32 SingleRefinementComparator::getNumElements() const {
 }
 
 bool SingleRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
-    return scoreVector.quality < bestQuality_;
+    return scoreVector.quality < bestQuality_.quality;
 }
 
 void SingleRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
-    bestQuality_ = scoreVector.quality;
-    scoreProcessor_.processScores(scoreVector);
     bestRefinement_ = refinement;
+    scoreProcessor_.processScores(scoreVector);
+    bestQuality_ = *bestRefinement_.headPtr;
 }
 
 bool SingleRefinementComparator::merge(SingleRefinementComparator& comparator) {
-    Refinement& refinement = comparator.bestRefinement_;
-
-    if (refinement.headPtr) {
-        float64 quality = comparator.bestQuality_;
-
-        if (!bestRefinement_.headPtr || quality < bestQuality_) {
-            bestQuality_ = quality;
-            bestRefinement_ = refinement;
-            bestRefinement_.headPtr = std::move(refinement.headPtr);
-            return true;
-        }
+    if (comparator.bestQuality_.quality < bestQuality_.quality) {
+        Refinement& otherRefinement = comparator.bestRefinement_;
+        bestRefinement_ = otherRefinement;
+        bestRefinement_.headPtr = std::move(otherRefinement.headPtr);
+        bestQuality_ = *bestRefinement_.headPtr;
+        return true;
     }
 
     return false;
