@@ -11,8 +11,8 @@
 namespace seco {
 
     /**
-     * Defines an interface for all classes that allow to calculate the predictions of rules, as well as corresponding
-     * quality scores, based on confusion matrices.
+     * Defines an interface for all classes that allow to calculate the predictions of rules, as well as their overall
+     * quality, based on confusion matrices.
      */
     class IRuleEvaluation {
 
@@ -21,7 +21,7 @@ namespace seco {
             virtual ~IRuleEvaluation() { };
 
             /**
-             * Calculates the scores to be predicted by a rule, as well as an overall quality score, based on label-wise
+             * Calculates the scores to be predicted by a rule, as well as their overall quality, based on label-wise
              * confusion matrices.
              *
              * @param majorityLabelIndices      A reference to an object of type `VectorConstView` that stores the
@@ -33,7 +33,7 @@ namespace seco {
              *                                  stores confusion matrices that take into account all examples, which are
              *                                  covered by the rule
              * @return                          A reference to an object of type `IScoreVector` that stores the
-             *                                  predicted scores, as well as an overall quality score
+             *                                  predicted scores, as well as their overall quality
              */
             virtual const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
                                                         const DenseConfusionMatrixVector& confusionMatricesTotal,

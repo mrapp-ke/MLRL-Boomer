@@ -25,14 +25,14 @@ class IStatisticsProvider {
         virtual IStatistics& get() const = 0;
 
         /**
-         * Switches the implementation that is used for calculating the predictions of rules, as well as corresponding
-         * quality scores, to the one that should be used for learning regular rules.
+         * Switches the implementation that is used for calculating the predictions of rules, as well their overall
+         * quality, to the one that should be used for learning regular rules.
          */
         virtual void switchToRegularRuleEvaluation() = 0;
 
         /**
-         * Switches the implementation that is used for calculating the predictions of rules, as well as corresponding
-         * quality scores, to the one that should be used for pruning rules.
+         * Switches the implementation that is used for calculating the predictions of rules, as well as their overall
+         * quality, to the one that should be used for pruning rules.
          */
         virtual void switchToPruningRuleEvaluation() = 0;
 

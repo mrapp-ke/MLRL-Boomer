@@ -54,8 +54,8 @@ class IPartition {
                                                                           IStatistics& statistics) = 0;
 
         /**
-         * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that
-         * do not belong to the current sample and are marked as covered according to a given object of type
+         * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
+         * that do not belong to the current sample and are marked as covered according to a given object of type
          * `ICoverageState`.
          *
          * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to
@@ -64,7 +64,7 @@ class IPartition {
          *                          that are covered by the rule
          * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
          *                          are predicted by the rule
-         * @return                  The calculated quality score
+         * @return                  The calculated quality
          */
         virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
                                             const ICoverageState& coverageState,

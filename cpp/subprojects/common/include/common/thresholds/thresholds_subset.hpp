@@ -81,11 +81,11 @@ class IThresholdsSubset {
         virtual const ICoverageState& getCoverageState() const = 0;
 
         /**
-         * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that
-         * do not belong to the current sub-sample and are marked as covered according to a given object of type
+         * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
+         * that do not belong to the current sub-sample and are marked as covered according to a given object of type
          * `CoverageMask`.
          *
-         * For calculating the quality score, only examples that belong to the training set and are not included in the
+         * For calculating the quality, only examples that belong to the training set and are not included in the
          * current sub-sample, i.e., only examples with zero weights, are considered.
          *
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
@@ -94,18 +94,18 @@ class IThresholdsSubset {
          *                      are covered by the rule
          * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
          *                      predicted by the rule
-         * @return              The calculated quality score
+         * @return              The calculated quality
          */
         virtual float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
 
         /**
-         * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that
-         * do not belong to the current sub-sample and are marked as covered according to a given object of type
+         * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
+         * that do not belong to the current sub-sample and are marked as covered according to a given object of type
          * `CoverageMask`.
          *
-         * For calculating the quality score, only examples that belong to the training set and are not included in the
+         * For calculating the quality, only examples that belong to the training set and are not included in the
          * current sub-sample, i.e., only examples with zero weights, are considered.
          *
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
@@ -114,17 +114,17 @@ class IThresholdsSubset {
          *                      are covered by the rule
          * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
          *                      predicted by the rule
-         * @return              The calculated quality score
+         * @return              The calculated quality
          */
         virtual float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
         /**
-         * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that
-         * do not belong to the current sub-sample and are marked as covered according to a given object of type
+         * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
+         * that do not belong to the current sub-sample and are marked as covered according to a given object of type
          * `CoverageSet`.
          *
-         * For calculating the quality score, only examples that belong to the training set and are not included in the
+         * For calculating the quality, only examples that belong to the training set and are not included in the
          * current sub-sample, i.e., only examples with zero weights, are considered.
          *
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
@@ -133,18 +133,18 @@ class IThresholdsSubset {
          *                      covered by the rule
          * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
          *                      predicted by the rule
-         * @return              The calculated quality score
+         * @return              The calculated quality
          */
         virtual float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
 
         /**
-         * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that
-         * do not belong to the current sub-sample and are marked as covered according to a given object of type
+         * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
+         * that do not belong to the current sub-sample and are marked as covered according to a given object of type
          * `CoverageSet`.
          *
-         * For calculating the quality score, only examples that belong to the training set and are not included in the
+         * For calculating the quality, only examples that belong to the training set and are not included in the
          * current sub-sample, i.e., only examples with zero weights, are considered.
          *
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
@@ -153,7 +153,7 @@ class IThresholdsSubset {
          *                      covered by the rule
          * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
          *                      predicted by the rule
-         * @return              The calculated quality score
+         * @return              The calculated quality
          */
         virtual float64 evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const = 0;

@@ -13,12 +13,12 @@
  * certain measure.
  *
  * This stopping criterion assesses the performance of the current model after every `updateInterval` rules and stores
- * the resulting quality score in a buffer that keeps track of the last `numCurrent` scores. If the capacity of this
- * buffer is already reached, the oldest score is passed to a buffer of size `numPast`. Every `stopInterval` rules, it
- * is decided whether the rule induction should be stopped. For this reason, the `numCurrent` scores in the first
- * buffer, as well as the `numPast` scores in the second buffer are aggregated according to a certain
- * `aggregationFunction`. If the percentage improvement, which results from comparing the more recent scores from the
- * first buffer to the older scores from the second buffer, is greater than a certain `minImprovement`, the rule
+ * its quality in a buffer that keeps track of the last `numCurrent` iterations. If the capacity of this buffer is
+ * already reached, the oldest quality is passed to a buffer of size `numPast`. Every `stopInterval` rules, it is
+ * decided whether the rule induction should be stopped. For this reason, the `numCurrent` qualities in the first
+ * buffer, as well as the `numPast` qualities in the second buffer are aggregated according to a certain
+ * `aggregationFunction`. If the percentage improvement, which results from comparing the more recent qualities from the
+ * first buffer to the older qualities from the second buffer, is greater than a certain `minImprovement`, the rule
  * induction is continued, otherwise it is stopped.
  */
 class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
@@ -133,27 +133,26 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
         virtual uint32 getNumPast() const = 0;
 
         /**
-         * Sets the number of quality scores of past iterations that should be stored in a buffer.
+         * Sets the number of past iterations that should be stored in a buffer.
          *
-         * @param numPast   The number of quality scores of past iterations that should be be stored in a buffer. Must
-         *                  be at least 1
+         * @param numPast   The number of past iterations that should be be stored in a buffer. Must be at least 1
          * @return          A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
          *                  configuration of the stopping criterion
          */
         virtual IEarlyStoppingCriterionConfig& setNumPast(uint32 numPast) = 0;
 
         /**
-         * Returns the number of quality scores of the most recent iterations that are stored in a buffer.
+         * Returns the number of the most recent iterations that are stored in a buffer.
          *
-         * @return The number of quality scores of the most recent iterations that are stored in a buffer
+         * @return The number of the most recent iterations that are stored in a buffer
          */
         virtual uint32 getNumCurrent() const = 0;
 
         /**
-         * Sets the number of quality scores of the most recent iterations that should be stored in a buffer.
+         * Sets the number of the most recent iterations that should be stored in a buffer.
          *
-         * @param numCurrent    The number of quality scores of the most recent iterations that should be stored in a
-         *                      buffer. Must be at least 1
+         * @param numCurrent    The number of the most recent iterations that should be stored in a buffer. Must be at
+         *                      least 1
          * @return              A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
          *                      configuration of the stopping criterion
          */

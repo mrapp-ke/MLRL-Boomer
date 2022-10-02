@@ -21,8 +21,8 @@ class IPruning {
 
         /**
          * Prunes the conditions of an existing rule by modifying a given list of conditions in-place. The rule is
-         * pruned by removing individual conditions in a way that improves over its original quality score as measured
-         * on the the prune set.
+         * pruned by removing individual conditions in a way that improves over its original quality, measured on the
+         * prune set.
          *
          * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset`, which contains the thresholds
          *                          that correspond to the subspace of the instance space that is covered by the

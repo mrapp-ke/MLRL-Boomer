@@ -10,8 +10,8 @@ namespace seco {
     /**
      * Provides access to an object of type `ILabelWiseStatistics`.
      *
-     * @tparam RuleEvaluationFactory The type of the classes that may be used for calculating the predictions, as well
-     *                               as corresponding quality scores, of rules
+     * @tparam RuleEvaluationFactory The type of the classes that may be used for calculating the predictions of rules,
+     *                               as well as their overall quality
      */
     template<typename RuleEvaluationFactory>
     class LabelWiseStatisticsProvider final : public IStatisticsProvider {

@@ -8,8 +8,8 @@ namespace boosting {
 
     /**
      * Allows to calculate the predictions of partial rules that predict for a subset of the available labels that is
-     * determined dynamically, as well as an overall quality score, based on the gradients and Hessians that are stored
-     * by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization.
+     * determined dynamically, as well as their overall quality, based on the gradients and Hessians that are stored by
+     * a `DenseExampleWiseStatisticVector` using L1 and L2 regularization.
      *
      * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
      *                     calculated
@@ -110,7 +110,7 @@ namespace boosting {
                 lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator, n,
                               this->dsysvLwork_);
 
-                // Calculate the overall quality score...
+                // Calculate the overall quality...
                 float64 overallQualityScore = calculateOverallQualityScore(scoreIterator,
                                                                            statisticVector.gradients_begin(),
                                                                            statisticVector.hessians_begin(),

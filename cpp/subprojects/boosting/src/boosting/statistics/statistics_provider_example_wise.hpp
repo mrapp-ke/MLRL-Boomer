@@ -14,10 +14,9 @@ namespace boosting {
      * Provides access to an object of type `IExampleWiseStatistics`.
      *
      * @tparam LabelWiseRuleEvaluationFactory   The type of the classes that may be used for calculating the label-wise
-     *                                          predictions, as well as corresponding quality scores, of rules
+     *                                          predictions of rules, as well as their overall quality
      * @tparam ExampleWiseRuleEvaluationFactory The type of the classes that may be used for calculating the
-     *                                          example-wise predictions, as well as corresponding quality scores, of
-     *                                          rules
+     *                                          example-wise predictions of rules, as well as their overall quality
      */
     template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
     class ExampleWiseStatisticsProvider final : public IStatisticsProvider {
@@ -80,10 +79,9 @@ namespace boosting {
      * `ILabelWiseStatistics`.
      *
      * @tparam LabelWiseRuleEvaluationFactory   The type of the classes that may be used for calculating the label-wise
-     *                                          predictions, as well as corresponding quality scores, of rules
+     *                                          predictions of rules, as well as their overall quality
      * @tparam ExampleWiseRuleEvaluationFactory The type of the classes that may be used for calculating the
-     *                                          example-wise predictions, as well as corresponding quality scores, of
-     *                                          rules
+     *                                          example-wise predictions of rules, as well as their overall quality
      */
     template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
     class ConvertibleExampleWiseStatisticsProvider final : public IStatisticsProvider {

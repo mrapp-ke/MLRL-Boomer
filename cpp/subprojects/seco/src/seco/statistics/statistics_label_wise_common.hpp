@@ -103,7 +103,7 @@ namespace seco {
 
             /**
              * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
-             * rules, as well as corresponding quality scores.
+             * rules, as well as their overall quality.
              */
             std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr_;
 
@@ -120,7 +120,7 @@ namespace seco {
              *                              stores the total sums of confusion matrix elements
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
-             *                              the predictions of rules, as well as corresponding quality scores
+             *                              the predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              * @param labelIndices          A reference to an object of template type `IndexVector` that
@@ -229,7 +229,7 @@ namespace seco {
              *                              predictions of the default rule
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
-             *                              the predictions of rules, as well as corresponding quality scores
+             *                              the predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              * @param labelIndices          A reference to an object of template type `IndexVector` that
@@ -447,7 +447,7 @@ namespace seco {
              *                              predictions of the default rule
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that is used for calculating the
-             *                              predictions of rules, as well as corresponding quality scores
+             *                              predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */

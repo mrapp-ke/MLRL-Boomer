@@ -64,7 +64,7 @@ namespace boosting {
              *                              predictions for a specific statistic
              * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory`, that
              *                              allows to create instances of the class that is used for calculating the
-             *                              predictions, as well as corresponding quality scores, of rules
+             *                              predictions of rules, as well as their overall quality
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
              *                              to the labels of the training examples
              * @param statisticViewPtr      An unique pointer to an object of type `DenseLabelWiseStatisticView` that

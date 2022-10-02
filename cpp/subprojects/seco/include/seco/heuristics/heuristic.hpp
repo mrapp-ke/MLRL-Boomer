@@ -11,15 +11,15 @@
 namespace seco {
 
     /**
-     * Defines an interface for all heuristics that allows to calculate quality scores based on the elements of
-     * confusion matrices. Given the elements of a confusion matrix, such a heuristic calculates a quality score in
-     * [0, 1].
+     * Defines an interface for all heuristics that allows to calculate numerical scores that assess the quality of
+     * rules, based on the elements of confusion matrices. Given the elements of a confusion matrix, such a heuristic
+     * calculates a numerical score in [0, 1].
      *
-     * All heuristics must be implemented as loss functions, i.e., rules with a smaller quality score are considered
-     * better than those with a large quality score.
+     * All heuristics must be implemented as loss functions, i.e., rules with a smaller numerical score are considered
+     * better than those with a large numerical score.
      *
      * All heuristics must treat positive and negative labels equally, i.e., if the ground truth and a rule's
-     * predictions would be inverted, the resulting quality scores must be the same as before.
+     * predictions would be inverted, the resulting numerical scores must be the same as before.
      */
     class IHeuristic {
 
@@ -28,9 +28,9 @@ namespace seco {
             virtual ~IHeuristic() { };
 
             /**
-             * Calculates and returns a quality score in [0, 1] given the elements of a confusion matrix. All elements
+             * Calculates and returns a numerical score in [0, 1] given the elements of a confusion matrix. All elements
              * must be equal to or greater than 0. If a rule does not cover any elements, i.e., if
-             * `CIN + CIP + CRN + CRP == 0`, the worst possible quality score 1 must be returned.
+             * `CIN + CIP + CRN + CRP == 0`, the worst possible quality 1 must be returned.
              *
              * According to the notation in http://www.ke.tu-darmstadt.de/bibtex/publications/show/3201, a confusion
              * matrix consists of 8 elements, namely CIN, CIP, CRN, CRP, UIN, UIP, URN and URP. The individual symbols
@@ -75,7 +75,7 @@ namespace seco {
              *              for which the prediction in the rule's head is negative (N)
              * @param urp   The number of uncovered (U) labels that are relevant (R) according to the ground truth and
              *              for which the prediction in the rule's head is positive (P)
-             * @return      The quality score that has been calculated
+             * @return      The quality that has been calculated
              */
             virtual float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                                     float64 uip, float64 urn, float64 urp) const = 0;

@@ -7,9 +7,9 @@ namespace boosting {
 
     /**
      * Allows to calculate the predictions of partial rules that predict for a subset of the available labels that is
-     * determined dynamically, as well as an overall quality score, based on the gradients and Hessians that are stored
-     * by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization. The labels are assigned to bins based on
-     * the gradients and Hessians.
+     * determined dynamically, as well as their overall quality, based on the gradients and Hessians that are stored by
+     * a `DenseExampleWiseStatisticVector` using L1 and L2 regularization. The labels are assigned to bins based on the
+     * gradients and Hessians.
      *
      * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
      *                     calculated

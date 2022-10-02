@@ -83,7 +83,7 @@ namespace boosting {
     }
 
     /**
-     * Calculates and returns an overall quality score that assesses the quality of predictions for several labels.
+     * Calculates and returns the overall quality of predictions for several labels.
      *
      * @tparam ScoreIterator    The type of the iterator that provides access to the predicted scores
      * @tparam GradientIterator The type of the iterator that provides access to the gradients
@@ -95,7 +95,7 @@ namespace boosting {
      *                          by BLAS' DSPMV routine to store temporary values
      * @param numPredictions    The number of predictions
      * @param blas              A reference to an object of type `Blas` that allows to execute different BLAS routines
-     * @return                  The quality score that has been calculated
+     * @return                  The quality that has been calculated
      */
     template<typename ScoreIterator, typename GradientIterator, typename HessianIterator>
     static inline float64 calculateOverallQualityScore(ScoreIterator scores, GradientIterator gradients,
@@ -133,8 +133,8 @@ namespace boosting {
     }
 
     /**
-     * Allows to calculate the predictions of complete rules, as well as an overall quality score, based on the
-     * gradients and Hessians that are stored by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization.
+     * Allows to calculate the predictions of complete rules, as well as their overall quality, based on the gradients
+     * and Hessians that are stored by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization.
      *
      * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
      *                     calculated
@@ -199,7 +199,7 @@ namespace boosting {
                 lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
                               numPredictions, this->dsysvLwork_);
 
-                // Calculate the overall quality score...
+                // Calculate the overall quality...
                 float64 overallQualityScore = calculateOverallQualityScore(scoreIterator,
                                                                            statisticVector.gradients_begin(),
                                                                            statisticVector.hessians_begin(),

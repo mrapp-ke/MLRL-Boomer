@@ -174,8 +174,8 @@ namespace boosting {
     }
 
     /**
-     * An abstract base class for all classes that allow to calculate the predictions of rules, as well as an overall
-     * quality score, based on the gradients and Hessians that have been calculated according to a loss function that is
+     * An abstract base class for all classes that allow to calculate the predictions of rules, as well as their overall
+     * quality, based on the gradients and Hessians that have been calculated according to a loss function that is
      * applied example-wise and using gradient-based label binning.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
@@ -331,7 +331,7 @@ namespace boosting {
                     lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
                                   numBins, this->dsysvLwork_);
 
-                    // Calculate the overall quality score...
+                    // Calculate the overall quality...
                     float64 overallQualityScore = calculateOverallQualityScore(scoreIterator, aggregatedGradients_,
                                                                                aggregatedHessians_,
                                                                                this->dspmvTmpArray_, numBins, blas_);
@@ -353,9 +353,9 @@ namespace boosting {
     };
 
     /**
-     * Allows to calculate the predictions of complete rules, as well as an overall quality score, based on the
-     * gradients and Hessians that are stored by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization. The
-     * labels are assigned to bins based on the gradients and Hessians.
+     * Allows to calculate the predictions of complete rules, as well as their overall quality, based on the gradients
+     * and Hessians that are stored by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization. The labels
+     * are assigned to bins based on the gradients and Hessians.
      *
      * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
      *                     calculated

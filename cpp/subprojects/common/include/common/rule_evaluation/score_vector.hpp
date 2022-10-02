@@ -13,7 +13,7 @@ class AbstractEvaluatedPrediction;
 
 /**
  * Defines an interface for all one-dimensional vectors that store the scores that may be predicted by a rule, as well
- * as a quality score that assess the overall quality of the rule.
+ * as a numerical score that assess the overall quality of the rule.
  */
 class IScoreVector {
 

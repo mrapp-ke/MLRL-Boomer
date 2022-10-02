@@ -30,8 +30,8 @@ class ICoverageState {
         virtual std::unique_ptr<ICoverageState> copy() const = 0;
 
         /**
-         * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that
-         * do not belong to the current sub-sample and are marked as covered.
+         * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
+         * that do not belong to the current sub-sample and are marked as covered.
          *
          * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to
          *                          evaluate the prediction
@@ -39,14 +39,14 @@ class ICoverageState {
          *                          indices of the training examples that belong to the training set
          * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
          *                          are predicted by the rule
-         * @return                  The calculated quality score
+         * @return                  The calculated quality
          */
         virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
                                             const AbstractPrediction& head) const = 0;
 
         /**
-         * Calculates and returns a quality score that assesses the quality of a rule's prediction for all examples that
-         * do not belong to the current sub-sample and are marked as covered.
+         * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
+         * that do not belong to the current sub-sample and are marked as covered.
          *
          * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to
          *                          evaluate the prediction
@@ -54,7 +54,7 @@ class ICoverageState {
          *                          of the training examples that belong to the training set
          * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
          *                          are predicted by the rule
-         * @return                  The calculated quality score
+         * @return                  The calculated quality
          */
         virtual float64 evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                             const AbstractPrediction& head) const = 0;

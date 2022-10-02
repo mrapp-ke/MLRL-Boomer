@@ -7,8 +7,8 @@
 
 
 /**
- * An abstract base class for all classes that store the scores that are predicted by a rule, as well as a quality score
- * that assesses the overall quality of the rule.
+ * An abstract base class for all classes that store the scores that are predicted by a rule, as well as a numerical
+ * score that assesses the overall quality of the rule.
  */
 class AbstractEvaluatedPrediction : public AbstractPrediction {
 

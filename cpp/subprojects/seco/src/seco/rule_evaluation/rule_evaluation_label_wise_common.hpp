@@ -10,15 +10,14 @@
 namespace seco {
 
     /**
-     * Calculates and returns a quality score that assesses the quality of the score that is predicted by a rule for a
-     * single label.
+     * Calculates and returns the quality of a rule's prediction for a single label.
      *
      * @param totalConfusionMatrix      A reference to an object of type `ConfusionMatrix` that takes into account all
      *                                  examples
      * @param coveredConfusionMatrix    A reference to an object of type `ConfusionMatrix` that takes into account all
      *                                  examples that are covered by the rule
      * @param heuristic                 The heuristic that should be used to assess the quality
-     * @return                          The quality score that has been calculated
+     * @return                          The quality that has been calculated
      */
     static inline float64 calculateLabelWiseQualityScore(const ConfusionMatrix& totalConfusionMatrix,
                                                          const ConfusionMatrix& coveredConfusionMatrix,

@@ -8,8 +8,8 @@
 namespace seco {
 
     /**
-     * Allows to calculate the predictions of single-label rules, as well as corresponding quality scores, such that
-     * they optimize a heuristic that is applied using label-wise averaging.
+     * Allows to calculate the predictions of single-label rules, as well as their overall quality, such that they
+     * optimize a heuristic that is applied using label-wise averaging.
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */

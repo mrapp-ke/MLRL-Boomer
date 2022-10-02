@@ -43,15 +43,15 @@ namespace boosting {
     }
 
     /**
-     * Calculates and returns a quality score that assesses the quality of the score that is predicted for a single
-     * label, taking L1 and L2 regularization into account.
+     * Calculates and returns the quality of the prediction for a single label, taking L1 and L2 regularization into
+     * account.
      *
      * @param score                     The predicted score
      * @param gradient                  The gradient
      * @param hessian                   The Hessian
      * @param l1RegularizationWeight    The weight of the L1 regularization
      * @param l2RegularizationWeight    The weight of the L2 regularization
-     * @return                          The quality score that has been calculated
+     * @return                          The quality that has been calculated
      */
     static inline float64 calculateLabelWiseQualityScore(float64 score, float64 gradient, float64 hessian,
                                                          float64 l1RegularizationWeight,
