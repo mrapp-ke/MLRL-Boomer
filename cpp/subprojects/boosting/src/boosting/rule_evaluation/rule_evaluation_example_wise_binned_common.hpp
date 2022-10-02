@@ -332,16 +332,14 @@ namespace boosting {
                                   numBins, this->dsysvLwork_);
 
                     // Calculate the overall quality...
-                    float64 overallQualityScore = calculateOverallQualityScore(scoreIterator, aggregatedGradients_,
-                                                                               aggregatedHessians_,
-                                                                               this->dspmvTmpArray_, numBins, blas_);
+                    float64 quality = calculateOverallQuality(scoreIterator, aggregatedGradients_, aggregatedHessians_,
+                                                              this->dspmvTmpArray_, numBins, blas_);
 
                     // Evaluate regularization term...
-                    overallQualityScore += calculateRegularizationTerm(scoreIterator, numElementsPerBin_, numBins,
-                                                                       l1RegularizationWeight_,
-                                                                       l2RegularizationWeight_);
+                    quality += calculateRegularizationTerm(scoreIterator, numElementsPerBin_, numBins,
+                                                           l1RegularizationWeight_, l2RegularizationWeight_);
 
-                    scoreVector_.overallQualityScore = overallQualityScore;
+                    scoreVector_.overallQualityScore = quality;
                 } else {
                     setArrayToValue(scoreVector_.indices_binned_begin(), numCriteria, maxBins_);
                     scoreVector_.overallQualityScore = 0;

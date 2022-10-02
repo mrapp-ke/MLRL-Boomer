@@ -61,7 +61,7 @@ namespace boosting {
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
-                float64 overallQualityScore = 0;
+                float64 quality = 0;
 
                 for (uint32 i = 0; i < numPredictions; i++) {
                     const IndexedValue<float64>& entry = tmpIterator[i];
@@ -70,12 +70,11 @@ namespace boosting {
                     indexIterator[i] = labelIndexIterator[index];
                     scoreIterator[i] = predictedScore;
                     const Tuple<float64>& tuple = statisticIterator[index];
-                    overallQualityScore += calculateLabelWiseQualityScore(predictedScore, tuple.first, tuple.second,
-                                                                          l1RegularizationWeight_,
-                                                                          l2RegularizationWeight_);
+                    quality += calculateLabelWiseQuality(predictedScore, tuple.first, tuple.second,
+                                                         l1RegularizationWeight_, l2RegularizationWeight_);
                 }
 
-                scoreVector_.overallQualityScore = overallQualityScore;
+                scoreVector_.overallQualityScore = quality;
                 return scoreVector_;
             }
 

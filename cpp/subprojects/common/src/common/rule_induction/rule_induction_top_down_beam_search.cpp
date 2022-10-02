@@ -181,7 +181,7 @@ class Beam final {
             BeamEntry* newEntries = newBeamPtr->entries_;
             std::vector<std::reference_wrapper<BeamEntry>>& newOrder = newBeamPtr->order_;
             const BeamEntry& worstEntry = order.back();
-            float64 minQualityScore = worstEntry.headPtr->overallQualityScore;
+            float64 minQuality = worstEntry.headPtr->overallQualityScore;
             uint32 n = 0;
             bool result = false;
 
@@ -196,7 +196,7 @@ class Beam final {
                     const IIndexVector& featureIndices = featureSampling.sample(rng);
 
                     // Search for refinements of the existing beam entry...
-                    FixedRefinementComparator refinementComparator(beamWidth, minQualityScore);
+                    FixedRefinementComparator refinementComparator(beamWidth, minQuality);
                     foundRefinement = findRefinement(refinementComparator, *entry.thresholdsSubsetPtr, featureIndices,
                                                      *entry.labelIndices, minCoverage, numThreads);
 
@@ -223,7 +223,7 @@ class Beam final {
                                 copyEntry(newEntry, entry, refinement, entry.thresholdsSubsetPtr->copy(),
                                           std::make_unique<ConditionList>(*entry.conditionListPtr), keepHeads,
                                           minCoverage);
-                                minQualityScore = updateOrder(newOrder);
+                                minQuality = updateOrder(newOrder);
                             }
                         }
 
@@ -241,7 +241,7 @@ class Beam final {
                             BeamEntry& newEntry = newOrder.back();
                             copyEntry(newEntry, entry, refinement, std::move(entry.thresholdsSubsetPtr),
                                       std::move(entry.conditionListPtr), keepHeads, minCoverage);
-                            minQualityScore = updateOrder(newOrder);
+                            minQuality = updateOrder(newOrder);
                         }
                     }
                 }
@@ -255,10 +255,10 @@ class Beam final {
                         copyEntry(newEntry, entry);
                         newOrder.push_back(newEntry);
                         n++;
-                    } else if (entry.headPtr->overallQualityScore <= minQualityScore) {
+                    } else if (entry.headPtr->overallQualityScore <= minQuality) {
                         BeamEntry& newEntry = newOrder.back();
                         copyEntry(newEntry, entry);
-                        minQualityScore = updateOrder(newOrder);
+                        minQuality = updateOrder(newOrder);
                     }
                 }
             }

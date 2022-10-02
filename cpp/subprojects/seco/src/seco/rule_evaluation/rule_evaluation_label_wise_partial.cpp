@@ -10,9 +10,9 @@
 
 namespace seco {
 
-    static inline float64 calculateLiftedQualityScore(float64 qualityScore, uint32 numPredictions,
-                                                      const ILiftFunction& liftFunction) {
-        return (qualityScore / numPredictions) * liftFunction.calculateLift(numPredictions);
+    static inline float64 calculateLiftedQuality(float64 quality, uint32 numPredictions,
+                                                 const ILiftFunction& liftFunction) {
+        return (quality / numPredictions) * liftFunction.calculateLift(numPredictions);
     }
 
     /**
@@ -59,20 +59,20 @@ namespace seco {
                 auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
                                                                   majorityLabelIndices.cend());
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                float64 sumOfQualityScores = 0;
+                float64 sumOfQualities = 0;
                 uint32 previousIndex = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
                     scoreIterator[i] = (float64) !(*labelIterator);
-                    sumOfQualityScores += (1 - calculateLabelWiseQualityScore(totalIterator[index], coveredIterator[i],
-                                                                              *heuristicPtr_));
+                    sumOfQualities += (1 - calculateLabelWiseQuality(totalIterator[index], coveredIterator[i],
+                                                                     *heuristicPtr_));
                     previousIndex = index;
                 }
 
-                scoreVector_.overallQualityScore = (1 - calculateLiftedQualityScore(sumOfQualityScores, numElements,
-                                                                                    *liftFunctionPtr_));
+                scoreVector_.overallQualityScore = (1 - calculateLiftedQuality(sumOfQualities, numElements,
+                                                                               *liftFunctionPtr_));
                 return scoreVector_;
             }
 
@@ -139,8 +139,7 @@ namespace seco {
                     IndexedValue<Tuple<float64>>& entry = sortedIterator[i];
                     Tuple<float64>& tuple = entry.value;
                     entry.index = index;
-                    tuple.first = calculateLabelWiseQualityScore(totalIterator[index], coveredIterator[i],
-                                                                 *heuristicPtr_);
+                    tuple.first = calculateLabelWiseQuality(totalIterator[index], coveredIterator[i], *heuristicPtr_);
                     tuple.second = (float64) !(*labelIterator);
                     previousIndex = index;
                 }
@@ -150,19 +149,18 @@ namespace seco {
                     return a.value.first < b.value.first;
                 });
 
-                float64 sumOfQualityScores = (1 - sortedIterator[0].value.first);
-                float64 bestQualityScore = calculateLiftedQualityScore(sumOfQualityScores, 1, *liftFunctionPtr_);
+                float64 sumOfQualities = (1 - sortedIterator[0].value.first);
+                float64 bestQuality = calculateLiftedQuality(sumOfQualities, 1, *liftFunctionPtr_);
                 uint32 bestNumPredictions = 1;
                 float64 maxLift = liftFunctionPtr_->getMaxLift(bestNumPredictions);
 
                 for (uint32 i = 1; i < numElements; i++) {
                     uint32 numPredictions = i + 1;
-                    sumOfQualityScores += (1 - sortedIterator[i].value.first);
-                    float64 qualityScore = calculateLiftedQualityScore(sumOfQualityScores, numPredictions,
-                                                                       *liftFunctionPtr_);
+                    sumOfQualities += (1 - sortedIterator[i].value.first);
+                    float64 quality = calculateLiftedQuality(sumOfQualities, numPredictions, *liftFunctionPtr_);
 
-                    if (qualityScore > bestQualityScore) {
-                        bestQualityScore = qualityScore;
+                    if (quality > bestQuality) {
+                        bestQuality = quality;
                         bestNumPredictions = numPredictions;
 
                         if (bestNumPredictions < numElements) {
@@ -170,14 +168,14 @@ namespace seco {
                         }
                     }
 
-                    if (qualityScore * maxLift < bestQualityScore) {
+                    if (quality * maxLift < bestQuality) {
                         // Prunable by decomposability...
                         break;
                     }
                 }
 
                 indexVector_.setNumElements(bestNumPredictions, false);
-                scoreVector_.overallQualityScore = (1 - bestQualityScore);
+                scoreVector_.overallQualityScore = (1 - bestQuality);
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 PartialIndexVector::iterator predictedIndexIterator = indexVector_.begin();
 

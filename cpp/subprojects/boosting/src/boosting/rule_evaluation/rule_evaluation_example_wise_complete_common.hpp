@@ -98,9 +98,9 @@ namespace boosting {
      * @return                  The quality that has been calculated
      */
     template<typename ScoreIterator, typename GradientIterator, typename HessianIterator>
-    static inline float64 calculateOverallQualityScore(ScoreIterator scores, GradientIterator gradients,
-                                                       HessianIterator hessians, float64* tmpArray,
-                                                       uint32 numPredictions, const Blas& blas) {
+    static inline float64 calculateOverallQuality(ScoreIterator scores, GradientIterator gradients,
+                                                  HessianIterator hessians, float64* tmpArray, uint32 numPredictions,
+                                                  const Blas& blas) {
         blas.dspmv(hessians, scores, tmpArray, numPredictions);
         return blas.ddot(scores, gradients, numPredictions) + (0.5 * blas.ddot(scores, tmpArray, numPredictions));
     }
@@ -200,16 +200,15 @@ namespace boosting {
                               numPredictions, this->dsysvLwork_);
 
                 // Calculate the overall quality...
-                float64 overallQualityScore = calculateOverallQualityScore(scoreIterator,
-                                                                           statisticVector.gradients_begin(),
-                                                                           statisticVector.hessians_begin(),
-                                                                           this->dspmvTmpArray_, numPredictions, blas_);
+                float64 quality = calculateOverallQuality(scoreIterator, statisticVector.gradients_begin(),
+                                                          statisticVector.hessians_begin(), this->dspmvTmpArray_,
+                                                          numPredictions, blas_);
 
                 // Evaluate regularization term...
-                overallQualityScore += calculateRegularizationTerm(scoreIterator, numPredictions,
-                                                                   l1RegularizationWeight_, l2RegularizationWeight_);
+                quality += calculateRegularizationTerm(scoreIterator, numPredictions, l1RegularizationWeight_,
+                                                       l2RegularizationWeight_);
 
-                scoreVector_.overallQualityScore = overallQualityScore;
+                scoreVector_.overallQualityScore = quality;
                 return scoreVector_;
             }
 
