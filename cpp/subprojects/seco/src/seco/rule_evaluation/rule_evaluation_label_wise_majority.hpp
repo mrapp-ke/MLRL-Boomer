@@ -32,7 +32,7 @@ namespace seco {
              */
             LabelWiseMajorityRuleEvaluation(const T& labelIndices)
                 : scoreVector_(DenseScoreVector<T>(labelIndices, true)) {
-                scoreVector_.overallQualityScore = 0;
+                scoreVector_.quality = 0;
             }
 
             const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,

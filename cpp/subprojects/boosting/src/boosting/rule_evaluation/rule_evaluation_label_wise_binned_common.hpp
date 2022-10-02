@@ -160,10 +160,9 @@ namespace boosting {
                 // Compute predictions, as well as their overall quality...
                 typename DenseBinnedScoreVector<IndexVector>::score_binned_iterator scoreIterator =
                     scoreVector_.scores_binned_begin();
-                scoreVector_.overallQualityScore = calculateBinnedScores(aggregatedStatisticIterator, scoreIterator,
-                                                                         numElementsPerBin_, numBins,
-                                                                         l1RegularizationWeight_,
-                                                                         l2RegularizationWeight_);
+                scoreVector_.quality = calculateBinnedScores(aggregatedStatisticIterator, scoreIterator,
+                                                             numElementsPerBin_, numBins, l1RegularizationWeight_,
+                                                             l2RegularizationWeight_);
                 return scoreVector_;
             }
 

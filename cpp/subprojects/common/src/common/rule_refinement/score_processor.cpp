@@ -15,7 +15,7 @@ static inline void processCompleteScores(std::unique_ptr<AbstractEvaluatedPredic
     }
 
     copyArray(scoreVector.scores_cbegin(), existingHeadPtr->scores_begin(), numElements);
-    existingHeadPtr->overallQualityScore = scoreVector.overallQualityScore;
+    existingHeadPtr->quality = scoreVector.quality;
 }
 
 template<typename T>
@@ -39,7 +39,7 @@ static inline void processPartialScores(std::unique_ptr<AbstractEvaluatedPredict
 
     copyArray(scoreVector.scores_cbegin(), existingHead->scores_begin(), numElements);
     copyArray(scoreVector.indices_cbegin(), existingHead->indices_begin(), numElements);
-    existingHead->overallQualityScore = scoreVector.overallQualityScore;
+    existingHead->quality = scoreVector.quality;
 }
 
 ScoreProcessor::ScoreProcessor(std::unique_ptr<AbstractEvaluatedPrediction>& headPtr)

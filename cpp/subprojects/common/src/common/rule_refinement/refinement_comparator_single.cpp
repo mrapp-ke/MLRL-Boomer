@@ -25,11 +25,11 @@ uint32 SingleRefinementComparator::getNumElements() const {
 }
 
 bool SingleRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
-    return scoreVector.overallQualityScore < bestQuality_;
+    return scoreVector.quality < bestQuality_;
 }
 
 void SingleRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
-    bestQuality_ = scoreVector.overallQualityScore;
+    bestQuality_ = scoreVector.quality;
     scoreProcessor_.processScores(scoreVector);
     bestRefinement_ = refinement;
 }

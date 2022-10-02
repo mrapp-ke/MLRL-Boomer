@@ -20,8 +20,8 @@ class AbstractEvaluatedPrediction : public AbstractPrediction {
         AbstractEvaluatedPrediction(uint32 numElements);
 
         /**
-         * A score that assesses the overall quality of the rule.
+         * A numerical score that assesses the overall quality of the rule.
          */
-        float64 overallQualityScore;
+        float64 quality;
 
 };

@@ -60,7 +60,7 @@ namespace boosting {
                                                          l1RegularizationWeight_, l2RegularizationWeight_);
                 }
 
-                scoreVector_.overallQualityScore = quality;
+                scoreVector_.quality = quality;
                 return scoreVector_;
             }
 
