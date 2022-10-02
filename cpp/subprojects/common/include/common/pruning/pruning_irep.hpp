@@ -14,14 +14,15 @@ class IrepConfig final : public IPruningConfig {
 
     private:
 
-        Quality::CompareFunction ruleCompareFunction_;
+        RuleCompareFunction ruleCompareFunction_;
 
     public:
 
         /**
-         * @param ruleCompareFunction The function that should be used for comparing the quality of different rules
+         * @param ruleCompareFunction An object of type `RuleCompareFunction` that defines the function that should be
+         *                            used for comparing the quality of different rules
          */
-        IrepConfig(Quality::CompareFunction compareFunction);
+        IrepConfig(RuleCompareFunction compareFunction);
 
         std::unique_ptr<IPruningFactory> createPruningFactory() const override;
 

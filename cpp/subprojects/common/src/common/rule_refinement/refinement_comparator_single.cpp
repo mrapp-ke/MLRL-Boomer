@@ -2,14 +2,14 @@
 #include <limits>
 
 
-SingleRefinementComparator::SingleRefinementComparator(Quality::CompareFunction compareFunction)
-    : compareFunction_(compareFunction), bestQuality_(std::numeric_limits<float64>::infinity()),
+SingleRefinementComparator::SingleRefinementComparator(RuleCompareFunction ruleCompareFunction)
+    : ruleCompareFunction_(ruleCompareFunction), bestQuality_(std::numeric_limits<float64>::infinity()),
       scoreProcessor_(ScoreProcessor(bestRefinement_.headPtr)) {
 
 }
 
 SingleRefinementComparator::SingleRefinementComparator(const SingleRefinementComparator& comparator)
-    : compareFunction_(comparator.compareFunction_), bestQuality_(comparator.bestQuality_),
+    : ruleCompareFunction_(comparator.ruleCompareFunction_), bestQuality_(comparator.bestQuality_),
       scoreProcessor_(ScoreProcessor(bestRefinement_.headPtr)) {
 
 }
@@ -27,7 +27,7 @@ uint32 SingleRefinementComparator::getNumElements() const {
 }
 
 bool SingleRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
-    return compareQuality(compareFunction_, scoreVector, bestQuality_);
+    return compareQuality(ruleCompareFunction_.function, scoreVector, bestQuality_);
 }
 
 void SingleRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
@@ -37,7 +37,7 @@ void SingleRefinementComparator::pushRefinement(const Refinement& refinement, co
 }
 
 bool SingleRefinementComparator::merge(SingleRefinementComparator& comparator) {
-    if (compareQuality(compareFunction_, comparator.bestQuality_, bestQuality_)) {
+    if (compareQuality(ruleCompareFunction_.function, comparator.bestQuality_, bestQuality_)) {
         Refinement& otherRefinement = comparator.bestRefinement_;
         bestRefinement_ = otherRefinement;
         bestRefinement_.headPtr = std::move(otherRefinement.headPtr);

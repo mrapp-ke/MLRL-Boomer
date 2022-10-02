@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/rule_refinement/refinement.hpp"
+#include "common/rule_evaluation/rule_compare_function.hpp"
 #include "common/rule_evaluation/score_vector.hpp"
 #include <functional>
 #include <vector>
@@ -16,7 +17,7 @@ class FixedRefinementComparator final {
 
     private:
 
-        Quality::CompareFunction compareFunction_;
+        RuleCompareFunction ruleCompareFunction_;
 
         uint32 maxRefinements_;
 
@@ -29,18 +30,20 @@ class FixedRefinementComparator final {
     public:
 
         /**
-         * @param compareFunction   The function that should be used to compare the quality of different refinements
-         * @param maxRefinements    The maximum number of refinements to keep track of
-         * @param minQuality        A reference to an object of type `Quality` a refinement must improve on
+         * @param ruleCompareFunction   An object of type `RuleCompareFunction` that defines the function that should be
+         *                              used for comparing the quality of different rules
+         * @param maxRefinements        The maximum number of refinements to keep track of
+         * @param minQuality            A reference to an object of type `Quality` a refinement must improve on
          */
-        FixedRefinementComparator(Quality::CompareFunction compareFunction, uint32 maxRefinements,
+        FixedRefinementComparator(RuleCompareFunction ruleCompareFunction, uint32 maxRefinements,
                                   const Quality& minQuality);
 
         /**
-         * @param compareFunction   The function that should be used to compare the quality of different refinements
-         * @param maxRefinements    The maximum number of refinements to keep track of
+         * @param ruleCompareFunction   An object of type `RuleCompareFunction` that defines the function that should be
+         *                              used for comparing the quality of different rules
+         * @param maxRefinements        The maximum number of refinements to keep track of
          */
-        FixedRefinementComparator(Quality::CompareFunction compareFunction, uint32 maxRefinements);
+        FixedRefinementComparator(RuleCompareFunction ruleCompareFunction, uint32 maxRefinements);
 
         /**
          * @param comparator A reference to an object of type `FixedRefinementComparator` that keeps track of the best

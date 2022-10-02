@@ -105,12 +105,13 @@ class MLRLCOMMON_API IRuleLearner {
             protected:
 
                 /**
-                 * Returns the function that should be used for comparing the quality of different rules.
+                 * Returns the definition of the function that should be used for comparing the quality of different
+                 * rules.
                  *
-                 * @return A function of type `Quality::CompareFunction` that should be used for comparing the quality
-                 *         of different rules
+                 * @return An object of type `RuleCompareFunction` that defines the function that should be used for
+                 *         comparing the quality of different rules
                  */
-                virtual Quality::CompareFunction getRuleCompareFunction() const = 0;
+                virtual RuleCompareFunction getRuleCompareFunction() const = 0;
 
                 /**
                  * Returns an unique pointer to the configuration of the default that is included in a rule-based model.
@@ -1171,9 +1172,9 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
             private:
 
-                Quality::CompareFunction ruleCompareFunction_;
+                RuleCompareFunction ruleCompareFunction_;
 
-                Quality::CompareFunction getRuleCompareFunction() const override final;
+                RuleCompareFunction getRuleCompareFunction() const override final;
 
                 std::unique_ptr<IDefaultRuleConfig>& getDefaultRuleConfigPtr() override final;
 
@@ -1212,10 +1213,10 @@ class AbstractRuleLearner : virtual public IRuleLearner {
             public:
 
                 /**
-                 * @param ruleCompareFunction A function of type `Quality::CompareFunction` that should be used for
-                 *                            comparing the quality of different rules
+                 * @param ruleCompareFunction An object of type `RuleCompareFunction` that defines the function that
+                 *                            should be used for comparing the quality of different rules
                  */
-                Config(Quality::CompareFunction ruleCompareFunction);
+                Config(RuleCompareFunction ruleCompareFunction);
 
                 void useDefaultRule() override;
 

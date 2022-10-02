@@ -11,7 +11,7 @@
 namespace seco {
 
     AbstractSeCoRuleLearner::Config::Config()
-        : AbstractRuleLearner::Config(compareSeCoRuleQuality) {
+        : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION) {
         this->useNoCoverageStoppingCriterion();
         this->useSingleLabelHeads();
         this->useNoLiftFunction();
