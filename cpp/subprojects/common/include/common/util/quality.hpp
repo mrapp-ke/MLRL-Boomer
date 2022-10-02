@@ -11,6 +11,29 @@
  */
 struct Quality {
 
+    Quality() { };
+
+    /**
+     * @param q A numerical score that represents the quality
+     */
+    Quality(float64 q) : quality(q) { };
+
+    /**
+     * @param q A reference to an object of type `Quality` to be copied
+     */
+    Quality(const Quality& q) : quality(q.quality) { };
+
+    /**
+     * Assigns the quality of an existing object to this object.
+     *
+     * @param q A reference to the existing object
+     * @return  A reference to the modified object
+     */
+    Quality& operator=(const Quality& q) {
+        quality = q.quality;
+        return *this;
+    }
+
     /**
      * A numerical score that represents the quality.
      */

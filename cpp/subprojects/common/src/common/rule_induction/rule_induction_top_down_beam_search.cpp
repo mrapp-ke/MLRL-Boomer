@@ -94,10 +94,10 @@ static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry) {
     newEntry.labelIndices = nullptr;
 }
 
-static inline float64 updateOrder(std::vector<std::reference_wrapper<BeamEntry>>& order) {
+static inline const Quality& updateOrder(std::vector<std::reference_wrapper<BeamEntry>>& order) {
     std::sort(order.begin(), order.end(), BeamEntry::Compare());
     const BeamEntry& worstEntry = order.back();
-    return worstEntry.headPtr->quality;
+    return *worstEntry.headPtr;
 }
 
 /**
@@ -181,7 +181,7 @@ class Beam final {
             BeamEntry* newEntries = newBeamPtr->entries_;
             std::vector<std::reference_wrapper<BeamEntry>>& newOrder = newBeamPtr->order_;
             const BeamEntry& worstEntry = order.back();
-            float64 minQuality = worstEntry.headPtr->quality;
+            Quality minQuality(*worstEntry.headPtr);
             uint32 n = 0;
             bool result = false;
 
@@ -255,7 +255,7 @@ class Beam final {
                         copyEntry(newEntry, entry);
                         newOrder.push_back(newEntry);
                         n++;
-                    } else if (entry.headPtr->quality <= minQuality) {
+                    } else if (entry.headPtr->quality <= minQuality.quality) {
                         BeamEntry& newEntry = newOrder.back();
                         copyEntry(newEntry, entry);
                         minQuality = updateOrder(newOrder);

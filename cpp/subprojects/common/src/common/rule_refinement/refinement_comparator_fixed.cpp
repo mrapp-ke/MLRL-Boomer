@@ -4,7 +4,7 @@
 #include <limits>
 
 
-FixedRefinementComparator::FixedRefinementComparator(uint32 maxRefinements, float64 minQuality)
+FixedRefinementComparator::FixedRefinementComparator(uint32 maxRefinements, const Quality& minQuality)
     : maxRefinements_(maxRefinements), refinements_(new Refinement[maxRefinements]), minQuality_(minQuality) {
     order_.reserve(maxRefinements);
 }
@@ -36,7 +36,7 @@ FixedRefinementComparator::iterator FixedRefinementComparator::end() {
 }
 
 bool FixedRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
-    return scoreVector.quality < minQuality_;
+    return scoreVector.quality < minQuality_.quality;
 }
 
 void FixedRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
@@ -60,7 +60,7 @@ void FixedRefinementComparator::pushRefinement(const Refinement& refinement, con
     });
 
     const Refinement& worstRefinement = order_.back();
-    minQuality_ = worstRefinement.headPtr->quality;
+    minQuality_ = *worstRefinement.headPtr;
 }
 
 bool FixedRefinementComparator::merge(FixedRefinementComparator& comparator) {
@@ -118,7 +118,7 @@ bool FixedRefinementComparator::merge(FixedRefinementComparator& comparator) {
 
     if (n > 0) {
         const Refinement& worstRefinement = order_.back();
-        minQuality_ = worstRefinement.headPtr->quality;
+        minQuality_ = *worstRefinement.headPtr;
     }
 
     delete[] refinements_;

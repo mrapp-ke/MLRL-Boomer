@@ -19,7 +19,7 @@ class Irep final : public IPruning {
             if (numConditions > 1) {
                 // Calculate the quality of the original rule on the prune set...
                 const ICoverageState& originalCoverageState = thresholdsSubset.getCoverageState();
-                float64 bestQuality = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageState, head);
+                Quality bestQuality = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageState, head);
 
                 // Create a copy of the original coverage mask...
                 bestCoverageStatePtr = originalCoverageState.copy();
@@ -40,11 +40,12 @@ class Irep final : public IPruning {
 
                     // Calculate the quality of a rule that contains the conditions that have been processed so far...
                     const ICoverageState& coverageState = thresholdsSubset.getCoverageState();
-                    float64 quality = partition.evaluateOutOfSample(thresholdsSubset, coverageState, head);
+                    Quality quality = partition.evaluateOutOfSample(thresholdsSubset, coverageState, head);
 
                     // Check if the quality is better than the best quality seen so far (reaching the same quality with
                     // fewer conditions is considered an improvement)...
-                    if (quality < bestQuality || (numPrunedConditions == 0 && quality == bestQuality)) {
+                    if (quality.quality < bestQuality.quality
+                        || (numPrunedConditions == 0 && quality.quality == bestQuality.quality)) {
                         bestQuality = quality;
                         bestCoverageStatePtr = coverageState.copy();
                         numPrunedConditions = (numConditions - n);
