@@ -120,6 +120,8 @@ class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig, publ
 
     private:
 
+        RuleCompareFunction ruleCompareFunction_;
+
         uint32 minCoverage_;
 
         float32 minSupport_;
@@ -135,11 +137,14 @@ class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig, publ
     public:
 
         /**
-         * @param multiThreadingConfigPtr A reference to an unique pointer that stores the configuration of the
-         *                                multi-threading behavior that should be used for the parallel refinement of
-         *                                rules
+         * @param ruleCompareFunction       An object of type `RuleCompareFunction` that defines the function that
+         *                                  should be used for comparing the quality of different rules
+         * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
+         *                                  multi-threading behavior that should be used for the parallel refinement of
+         *                                  rules
          */
-        GreedyTopDownRuleInductionConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+        GreedyTopDownRuleInductionConfig(RuleCompareFunction ruleCompareFunction,
+                                         const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
         uint32 getMinCoverage() const override;
 

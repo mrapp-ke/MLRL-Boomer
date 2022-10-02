@@ -5,6 +5,7 @@
 
 #include "common/rule_refinement/refinement.hpp"
 #include "common/rule_refinement/score_processor.hpp"
+#include "common/rule_evaluation/rule_compare_function.hpp"
 
 
 /**
@@ -14,15 +15,21 @@ class SingleRefinementComparator final {
 
     private:
 
+        RuleCompareFunction ruleCompareFunction_;
+
         Refinement bestRefinement_;
 
-        float64 bestQuality_;
+        Quality bestQuality_;
 
         ScoreProcessor scoreProcessor_;
 
     public:
 
-        SingleRefinementComparator();
+        /**
+         * @param ruleCompareFunction An object of type `RuleCompareFunction` that defines the function that should be
+         *                            used for comparing the quality of different rules
+         */
+        SingleRefinementComparator(RuleCompareFunction ruleCompareFunction);
 
         /**
          * @param comparator A reference to an object of type `SingleRefinementComparator` that keeps track of the best

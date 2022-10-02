@@ -10,7 +10,7 @@
 
 
 template<typename IndexIterator, typename WeightVector>
-static inline float64 evaluateOutOfSampleInternally(IndexIterator indexIterator, uint32 numExamples,
+static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator, uint32 numExamples,
                                                     const WeightVector& weights, const CoverageMask& coverageMask,
                                                     const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
@@ -26,12 +26,11 @@ static inline float64 evaluateOutOfSampleInternally(IndexIterator indexIterator,
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
-    return scoreVector.quality;
+    return statisticsSubsetPtr->calculateScores();
 }
 
 template<typename WeightVector>
-static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
+static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
                                                     const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
     OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
@@ -48,12 +47,11 @@ static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights,
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
-    return scoreVector.quality;
+    return statisticsSubsetPtr->calculateScores();
 }
 
 template<typename WeightVector>
-static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
+static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
                                                     BiPartition& partition, const IStatistics& statistics,
                                                     const AbstractPrediction& prediction) {
     OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
@@ -71,8 +69,7 @@ static inline float64 evaluateOutOfSampleInternally(const WeightVector& weights,
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
-    return scoreVector.quality;
+    return statisticsSubsetPtr->calculateScores();
 }
 
 template<typename IndexIterator>

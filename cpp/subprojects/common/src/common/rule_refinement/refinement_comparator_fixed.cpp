@@ -1,21 +1,22 @@
 #include "common/rule_refinement/refinement_comparator_fixed.hpp"
 #include "common/rule_refinement/score_processor.hpp"
 #include <algorithm>
-#include <limits>
 
 
-FixedRefinementComparator::FixedRefinementComparator(uint32 maxRefinements, float64 minQuality)
-    : maxRefinements_(maxRefinements), refinements_(new Refinement[maxRefinements]), minQuality_(minQuality) {
+FixedRefinementComparator::FixedRefinementComparator(RuleCompareFunction ruleCompareFunction, uint32 maxRefinements,
+                                                     const Quality& minQuality)
+    : ruleCompareFunction_(ruleCompareFunction), maxRefinements_(maxRefinements),
+      refinements_(new Refinement[maxRefinements]), minQuality_(minQuality) {
     order_.reserve(maxRefinements);
 }
 
-FixedRefinementComparator::FixedRefinementComparator(uint32 maxRefinements)
-    : FixedRefinementComparator(maxRefinements, std::numeric_limits<float64>::infinity()) {
+FixedRefinementComparator::FixedRefinementComparator(RuleCompareFunction ruleCompareFunction, uint32 maxRefinements)
+    : FixedRefinementComparator(ruleCompareFunction, maxRefinements, ruleCompareFunction.minQuality) {
 
 }
 
 FixedRefinementComparator::FixedRefinementComparator(const FixedRefinementComparator& comparator)
-    : FixedRefinementComparator(comparator.maxRefinements_, comparator.minQuality_) {
+    : FixedRefinementComparator(comparator.ruleCompareFunction_, comparator.maxRefinements_, comparator.minQuality_) {
 
 }
 
@@ -36,7 +37,7 @@ FixedRefinementComparator::iterator FixedRefinementComparator::end() {
 }
 
 bool FixedRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
-    return scoreVector.quality < minQuality_;
+    return ruleCompareFunction_.compare(scoreVector, minQuality_);
 }
 
 void FixedRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
@@ -56,11 +57,11 @@ void FixedRefinementComparator::pushRefinement(const Refinement& refinement, con
     }
 
     std::sort(order_.begin(), order_.end(), [=](const Refinement& a, const Refinement& b) {
-        return a.headPtr->quality < b.headPtr->quality;
+        return ruleCompareFunction_.compare(*a.headPtr, *b.headPtr);
     });
 
     const Refinement& worstRefinement = order_.back();
-    minQuality_ = worstRefinement.headPtr->quality;
+    minQuality_ = *worstRefinement.headPtr;
 }
 
 bool FixedRefinementComparator::merge(FixedRefinementComparator& comparator) {
@@ -78,7 +79,7 @@ bool FixedRefinementComparator::merge(FixedRefinementComparator& comparator) {
         Refinement& refinement2 = *it2;
         Refinement& newRefinement = tmp[n];
 
-        if (refinement1.headPtr->quality < refinement2.headPtr->quality) {
+        if (ruleCompareFunction_.compare(*refinement1.headPtr, *refinement2.headPtr)) {
             newRefinement = refinement1;
             newRefinement.headPtr = std::move(refinement1.headPtr);
             it1++;
@@ -118,7 +119,7 @@ bool FixedRefinementComparator::merge(FixedRefinementComparator& comparator) {
 
     if (n > 0) {
         const Refinement& worstRefinement = order_.back();
-        minQuality_ = worstRefinement.headPtr->quality;
+        minQuality_ = *worstRefinement.headPtr;
     }
 
     delete[] refinements_;

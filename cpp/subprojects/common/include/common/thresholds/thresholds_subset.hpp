@@ -94,9 +94,9 @@ class IThresholdsSubset {
          *                      are covered by the rule
          * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
          *                      predicted by the rule
-         * @return              The calculated quality
+         * @return              An object of type `Quality` that stores the calculated quality
          */
-        virtual float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
+        virtual Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
 
@@ -114,9 +114,9 @@ class IThresholdsSubset {
          *                      are covered by the rule
          * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
          *                      predicted by the rule
-         * @return              The calculated quality
+         * @return              An object of type `Quality` that stores the calculated quality
          */
-        virtual float64 evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
+        virtual Quality evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
         /**
@@ -133,9 +133,9 @@ class IThresholdsSubset {
          *                      covered by the rule
          * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
          *                      predicted by the rule
-         * @return              The calculated quality
+         * @return              An object of type `Quality` that stores the calculated quality
          */
-        virtual float64 evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
+        virtual Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
 
@@ -153,9 +153,9 @@ class IThresholdsSubset {
          *                      covered by the rule
          * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
          *                      predicted by the rule
-         * @return              The calculated quality
+         * @return              An object of type `Quality` that stores the calculated quality
          */
-        virtual float64 evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
+        virtual Quality evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
         /**

@@ -105,6 +105,15 @@ class MLRLCOMMON_API IRuleLearner {
             protected:
 
                 /**
+                 * Returns the definition of the function that should be used for comparing the quality of different
+                 * rules.
+                 *
+                 * @return An object of type `RuleCompareFunction` that defines the function that should be used for
+                 *         comparing the quality of different rules
+                 */
+                virtual RuleCompareFunction getRuleCompareFunction() const = 0;
+
+                /**
                  * Returns an unique pointer to the configuration of the default that is included in a rule-based model.
                  *
                  * @return A reference to an unique pointer of type `IDefaultRuleConfig` that stores the configuration
@@ -388,7 +397,7 @@ class MLRLCOMMON_API IRuleLearner {
                     std::unique_ptr<IRuleInductionConfig>& ruleInductionConfigPtr = this->getRuleInductionConfigPtr();
                     std::unique_ptr<BeamSearchTopDownRuleInductionConfig> ptr =
                         std::make_unique<BeamSearchTopDownRuleInductionConfig>(
-                            this->getParallelRuleRefinementConfigPtr());
+                            this->getRuleCompareFunction(), this->getParallelRuleRefinementConfigPtr());
                     IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
                     ruleInductionConfigPtr = std::move(ptr);
                     return ref;
@@ -659,7 +668,7 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual void useIrepPruning() {
                     std::unique_ptr<IPruningConfig>& pruningConfigPtr = this->getPruningConfigPtr();
-                    pruningConfigPtr = std::make_unique<IrepConfig>();
+                    pruningConfigPtr = std::make_unique<IrepConfig>(this->getRuleCompareFunction());
                 }
 
         };
@@ -1163,6 +1172,10 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
             private:
 
+                RuleCompareFunction ruleCompareFunction_;
+
+                RuleCompareFunction getRuleCompareFunction() const override final;
+
                 std::unique_ptr<IDefaultRuleConfig>& getDefaultRuleConfigPtr() override final;
 
                 std::unique_ptr<IRuleModelAssemblageConfig>& getRuleModelAssemblageConfigPtr() override final;
@@ -1199,7 +1212,11 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
             public:
 
-                Config();
+                /**
+                 * @param ruleCompareFunction An object of type `RuleCompareFunction` that defines the function that
+                 *                            should be used for comparing the quality of different rules
+                 */
+                Config(RuleCompareFunction ruleCompareFunction);
 
                 void useDefaultRule() override;
 
