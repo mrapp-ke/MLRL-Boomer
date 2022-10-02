@@ -36,7 +36,7 @@ FixedRefinementComparator::iterator FixedRefinementComparator::end() {
 }
 
 bool FixedRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
-    return scoreVector.quality < minQuality_.quality;
+    return compareQuality(scoreVector, minQuality_);
 }
 
 void FixedRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
@@ -56,7 +56,7 @@ void FixedRefinementComparator::pushRefinement(const Refinement& refinement, con
     }
 
     std::sort(order_.begin(), order_.end(), [=](const Refinement& a, const Refinement& b) {
-        return a.headPtr->quality < b.headPtr->quality;
+        return compareQuality(*a.headPtr, *b.headPtr);
     });
 
     const Refinement& worstRefinement = order_.back();
@@ -78,7 +78,7 @@ bool FixedRefinementComparator::merge(FixedRefinementComparator& comparator) {
         Refinement& refinement2 = *it2;
         Refinement& newRefinement = tmp[n];
 
-        if (refinement1.headPtr->quality < refinement2.headPtr->quality) {
+        if (compareQuality(*refinement1.headPtr, *refinement2.headPtr)) {
             newRefinement = refinement1;
             newRefinement.headPtr = std::move(refinement1.headPtr);
             it1++;

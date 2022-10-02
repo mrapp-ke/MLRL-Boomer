@@ -40,3 +40,14 @@ struct Quality {
     float64 quality;
 
 };
+
+/**
+ * Returns whether a specific object of type `Quality` is better than a second one or not.
+ *
+ * @param first     A reference to the first object of type `Quality`
+ * @param second    A reference to the second object of type `Quality`
+ * @return          True, if the first object is better than the second one, false otherwise
+ */
+static inline bool compareQuality(const Quality& first, const Quality& second) {
+    return first.quality < second.quality;
+}

@@ -25,7 +25,7 @@ uint32 SingleRefinementComparator::getNumElements() const {
 }
 
 bool SingleRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
-    return scoreVector.quality < bestQuality_.quality;
+    return compareQuality(scoreVector, bestQuality_);
 }
 
 void SingleRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
@@ -35,7 +35,7 @@ void SingleRefinementComparator::pushRefinement(const Refinement& refinement, co
 }
 
 bool SingleRefinementComparator::merge(SingleRefinementComparator& comparator) {
-    if (comparator.bestQuality_.quality < bestQuality_.quality) {
+    if (compareQuality(comparator.bestQuality_, bestQuality_)) {
         Refinement& otherRefinement = comparator.bestRefinement_;
         bestRefinement_ = otherRefinement;
         bestRefinement_.headPtr = std::move(otherRefinement.headPtr);

@@ -15,26 +15,6 @@
 struct BeamEntry final {
 
     /**
-     * Allows to compare two objects of type `BeamEntry` according to the following strict weak ordering: If the quality
-     * of the rule that corresponds to the first object is better, it goes before the second one. Otherwise, the first
-     * object goes after the second one.
-     */
-    struct Compare final {
-
-        /**
-         * Returns whether the a given object of type `BeamEntry` should go before a second one.
-         *
-         * @param lhs   A reference to a first object of type `BeamEntry`
-         * @param rhs   A reference to a second object of type `BeamEntry`
-         * @return      True, if the first object should go before the second one, false otherwise
-         */
-        inline bool operator()(const BeamEntry& lhs, const BeamEntry& rhs) const {
-            return lhs.headPtr->quality < rhs.headPtr->quality;
-        }
-
-    };
-
-    /**
      * An unique pointer to an object of type `ConditionList` that stores the conditions of the rule.
      */
     std::unique_ptr<ConditionList> conditionListPtr;
@@ -95,7 +75,9 @@ static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry) {
 }
 
 static inline const Quality& updateOrder(std::vector<std::reference_wrapper<BeamEntry>>& order) {
-    std::sort(order.begin(), order.end(), BeamEntry::Compare());
+    std::sort(order.begin(), order.end(), [=](const BeamEntry& a, const BeamEntry& b) {
+        return compareQuality(*a.headPtr, *b.headPtr);
+    });
     const BeamEntry& worstEntry = order.back();
     return *worstEntry.headPtr;
 }
@@ -255,7 +237,7 @@ class Beam final {
                         copyEntry(newEntry, entry);
                         newOrder.push_back(newEntry);
                         n++;
-                    } else if (entry.headPtr->quality <= minQuality.quality) {
+                    } else if (!compareQuality(minQuality, *entry.headPtr)) {
                         BeamEntry& newEntry = newOrder.back();
                         copyEntry(newEntry, entry);
                         minQuality = updateOrder(newOrder);
