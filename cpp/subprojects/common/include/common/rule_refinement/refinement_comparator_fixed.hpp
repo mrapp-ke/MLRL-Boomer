@@ -16,6 +16,8 @@ class FixedRefinementComparator final {
 
     private:
 
+        Quality::CompareFunction compareFunction_;
+
         uint32 maxRefinements_;
 
         Refinement* refinements_;
@@ -27,15 +29,18 @@ class FixedRefinementComparator final {
     public:
 
         /**
+         * @param compareFunction   The function that should be used to compare the quality of different refinements
          * @param maxRefinements    The maximum number of refinements to keep track of
          * @param minQuality        A reference to an object of type `Quality` a refinement must improve on
          */
-        FixedRefinementComparator(uint32 maxRefinements, const Quality& minQuality);
+        FixedRefinementComparator(Quality::CompareFunction compareFunction, uint32 maxRefinements,
+                                  const Quality& minQuality);
 
         /**
-         * @param maxRefinements The maximum number of refinements to keep track of
+         * @param compareFunction   The function that should be used to compare the quality of different refinements
+         * @param maxRefinements    The maximum number of refinements to keep track of
          */
-        FixedRefinementComparator(uint32 maxRefinements);
+        FixedRefinementComparator(Quality::CompareFunction compareFunction, uint32 maxRefinements);
 
         /**
          * @param comparator A reference to an object of type `FixedRefinementComparator` that keeps track of the best

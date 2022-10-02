@@ -63,7 +63,8 @@ class TrainingResult final : public ITrainingResult {
 
 };
 
-AbstractRuleLearner::Config::Config() {
+AbstractRuleLearner::Config::Config(Quality::CompareFunction ruleCompareFunction)
+    : ruleCompareFunction_(ruleCompareFunction) {
     this->useDefaultRule();
     this->useSequentialRuleModelAssemblage();
     this->useGreedyTopDownRuleInduction();
@@ -81,6 +82,10 @@ AbstractRuleLearner::Config::Config() {
     this->useNoTimeStoppingCriterion();
     this->useNoEarlyStoppingCriterion();
     this->useNoSequentialPostOptimization();
+}
+
+Quality::CompareFunction AbstractRuleLearner::Config::getRuleCompareFunction() const {
+    return ruleCompareFunction_;
 }
 
 std::unique_ptr<IDefaultRuleConfig>& AbstractRuleLearner::Config::getDefaultRuleConfigPtr() {
@@ -161,7 +166,7 @@ void AbstractRuleLearner::Config::useSequentialRuleModelAssemblage() {
 
 IGreedyTopDownRuleInductionConfig& AbstractRuleLearner::Config::useGreedyTopDownRuleInduction() {
     std::unique_ptr<GreedyTopDownRuleInductionConfig> ptr =
-        std::make_unique<GreedyTopDownRuleInductionConfig>(parallelRuleRefinementConfigPtr_);
+        std::make_unique<GreedyTopDownRuleInductionConfig>(ruleCompareFunction_, parallelRuleRefinementConfigPtr_);
     IGreedyTopDownRuleInductionConfig& ref = *ptr;
     ruleInductionConfigPtr_ = std::move(ptr);
     return ref;
