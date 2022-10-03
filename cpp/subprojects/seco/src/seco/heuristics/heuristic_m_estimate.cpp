@@ -35,15 +35,15 @@ namespace seco {
                     // Trade-off between precision and weighted relative accuracy
                     float64 numCoveredEqual = cin + crp;
                     float64 numCovered = numCoveredEqual + cip + crn;
+                    float64 numUncoveredEqual = uin + urp;
+                    float64 numEqual = numCoveredEqual + numUncoveredEqual;
+                    float64 numTotal = numCovered + numUncoveredEqual + uip + urn;
 
-                    if (numCovered == 0) {
-                        return 1;
+                    if (numTotal == 0) {
+                        return 0;
                     }
 
-                    float64 numUncoveredEqual = uin + urp;
-                    float64 numTotal = numCovered + numUncoveredEqual + uip + urn;
-                    float64 numEqual = numCoveredEqual + numUncoveredEqual;
-                    return 1 - ((numCoveredEqual + (m_ * (numEqual / numTotal))) / (numCovered + m_));
+                    return (numCoveredEqual + (m_ * (numEqual / numTotal))) / (numCovered + m_);
                 } else {
                     // Equivalent to precision
                     return precision(cin, cip, crn, crp);
