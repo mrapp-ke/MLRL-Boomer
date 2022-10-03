@@ -57,7 +57,7 @@ namespace seco {
                     float64 quality = calculateLabelWiseQuality(totalIterator[index], coveredIterator[i],
                                                                 *heuristicPtr_);
 
-                    if (quality < bestQuality) {
+                    if (quality > bestQuality) {
                         bestIndex = index;
                         bestQuality = quality;
                     }

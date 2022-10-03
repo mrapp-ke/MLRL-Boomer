@@ -10,7 +10,7 @@
 namespace seco {
 
     /**
-     * Allows to configure a heuristic that measures the fraction of incorrectly predicted labels among all labels that
+     * Allows to configure a heuristic that measures the fraction of correctly predicted labels among all labels that
      * are covered by a rule.
      *
      * This heuristic is equivalent to the pruning heuristic used by RIPPER ("Fast Effective Rule Induction", Cohen

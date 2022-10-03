@@ -4,31 +4,21 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/math/math.hpp"
 
 
 namespace seco {
 
     static inline constexpr float64 precision(float64 cin, float64 cip, float64 crn, float64 crp) {
-        float64 numCoveredIncorrect = cip + crn;
-        float64 numCovered = numCoveredIncorrect + cin + crp;
-
-        if (numCovered == 0) {
-            return 1;
-        }
-
-        return numCoveredIncorrect / numCovered;
+        float64 numCoveredCorrect = cin + crp;
+        float64 numCovered = numCoveredCorrect + cip + crn;
+        return divideOrZero(numCoveredCorrect, numCovered);
     }
 
     static inline constexpr float64 recall(float64 cin, float64 crp, float64 uin, float64 urp) {
-        float64 numUncoveredEqual = uin + urp;
-        float64 numEqual = numUncoveredEqual + cin + crp;
-
-        if (numEqual == 0) {
-            return 1;
-        }
-
-        return numUncoveredEqual / numEqual;
+        float64 numCoveredEqual = cin + crp;
+        float64 numEqual = numCoveredEqual + uin + urp;
+        return divideOrZero(numCoveredEqual, numEqual);
     }
 
     static inline constexpr float64 wra(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,
@@ -41,10 +31,10 @@ namespace seco {
         float64 numTotal = numCovered + numUncovered;
 
         if (numCovered == 0 || numTotal == 0) {
-            return 1;
+            return 0;
         }
 
-        return 1 - ((numCovered / numTotal) * ((numCoveredEqual / numCovered) - (numEqual / numTotal)));
+        return (numCovered / numTotal) * ((numCoveredEqual / numCovered) - (numEqual / numTotal));
     }
 
 }
