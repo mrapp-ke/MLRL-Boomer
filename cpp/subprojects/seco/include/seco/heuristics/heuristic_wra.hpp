@@ -10,8 +10,7 @@
 namespace seco {
 
     /**
-     * Allows to configure a heuristic that calculates as `1 - wra`, where `wra` corresponds to the "Weighted Relative
-     * Accuracy" metric.
+     * Allows to configure a heuristic that corresponds to the "Weighted Relative Accuracy" (WRA) metric.
      */
     class WraConfig final : public IHeuristicConfig {
 

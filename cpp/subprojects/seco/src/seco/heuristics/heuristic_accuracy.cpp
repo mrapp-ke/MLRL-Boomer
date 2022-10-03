@@ -4,7 +4,7 @@
 namespace seco {
 
     /**
-     * An implementation of the type `IHeuristic` that measures the fraction of incorrectly predicted labels among all
+     * An implementation of the type `IHeuristic` that measures the fraction of correctly predicted labels among all
      * labels.
      */
     class Accuracy final : public IHeuristic {
@@ -22,9 +22,9 @@ namespace seco {
     };
 
     /**
-     * Allows to create instances of the type `IHeuristic` that measure the fraction of incorrectly predicted labels
-     * among all labels, i.e., in contrast to the "Precision" metric, examples that are not covered by a rule are taken
-     * into account as well.
+     * Allows to create instances of the type `IHeuristic` that measure the fraction of correctly predicted labels among
+     * all labels, i.e., in contrast to the "Precision" metric, examples that are not covered by a rule are taken into
+     * account as well.
      */
     class AccuracyFactory final : public IHeuristicFactory {
 

@@ -5,8 +5,7 @@
 namespace seco {
 
     /**
-     * An implementation of the type `IHeuristic` that calculates as `1 - wra`, where `wra` corresponds to the "Weighted
-     * Relative Accuracy" metric.
+     * An implementation of the type `IHeuristic` that corresponds to the "Weighted Relative Accuracy" (WRA) metric.
      */
     class Wra final : public IHeuristic {
 
@@ -20,8 +19,8 @@ namespace seco {
     };
 
     /**
-     * Allows to create instances of the type `IHeuristic` that calculate as `1 - wra`, where `wra` corresponds to the
-     * "Weighted Relative Accuracy" metric.
+     * Allows to create instances of the type `IHeuristic` that corresponds to the "Weighted Relative Accuracy" (WRA)
+     * metric.
      */
     class WraFactory final : public IHeuristicFactory {
 
