@@ -33,16 +33,13 @@ namespace seco {
                     return recall(cin, crp, uin, urp);
                 } else if (beta_ > 0) {
                     // Weighted harmonic mean between precision and recall
-                    float64 numCoveredEqual = cin + crp;
                     float64 betaPow = beta_ * beta_;
+                    float64 numCoveredEqual = cin + crp;
+                    float64 numUncoveredCorrect = uin + urp;
+                    float64 numCoveredIncorrect = cip + crn;
                     float64 numerator = (1 + betaPow) * numCoveredEqual;
-                    float64 denominator = numerator + (betaPow * (uin + urp)) + (cip + crn);
-
-                    if (denominator == 0) {
-                        return 1;
-                    }
-
-                    return 1 - (numerator / denominator);
+                    float64 denominator = numerator + (betaPow * numUncoveredCorrect) + numCoveredIncorrect;
+                    return divideOrZero(numerator, denominator);
                 } else {
                     // Equivalent to precision
                     return precision(cin, cip, crn, crp);
