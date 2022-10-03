@@ -1,4 +1,5 @@
 #include "seco/heuristics/heuristic_accuracy.hpp"
+#include "common/math/math.hpp"
 
 
 namespace seco {
@@ -13,10 +14,11 @@ namespace seco {
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) const override {
-                float64 numUncoveredCorrect = urp + uin;
-                float64 numCoveredIncorrect = cip + crn;
-                float64 numTotal = numUncoveredCorrect + numCoveredIncorrect + cin + crp + uip + urn;
-                return (numUncoveredCorrect + numCoveredIncorrect) / numTotal;
+                float64 numCoveredCorrect = cin + crp;
+                float64 numUncoveredCorrect = uin + uip;
+                float64 numCorrect = numCoveredCorrect + numUncoveredCorrect;
+                float64 numTotal = numCorrect + cip + crn + urn + urp;
+                return divideOrZero(numCorrect, numTotal);
             }
 
     };
