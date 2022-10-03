@@ -15,8 +15,8 @@ namespace seco {
      * rules, based on the elements of confusion matrices. Given the elements of a confusion matrix, such a heuristic
      * calculates a numerical score in [0, 1].
      *
-     * All heuristics must be implemented as loss functions, i.e., rules with a smaller numerical score are considered
-     * better than those with a large numerical score.
+     * All heuristics must be implemented as gain metrics, i.e., rules with a greater numerical score are considered
+     * better than those with a smaller numerical score.
      *
      * All heuristics must treat positive and negative labels equally, i.e., if the ground truth and a rule's
      * predictions would be inverted, the resulting numerical scores must be the same as before.
@@ -30,7 +30,7 @@ namespace seco {
             /**
              * Calculates and returns a numerical score in [0, 1] given the elements of a confusion matrix. All elements
              * must be equal to or greater than 0. If a rule does not cover any elements, i.e., if
-             * `CIN + CIP + CRN + CRP == 0`, the worst possible quality 1 must be returned.
+             * `CIN + CIP + CRN + CRP == 0`, the worst possible quality 0 must be returned.
              *
              * According to the notation in http://www.ke.tu-darmstadt.de/bibtex/publications/show/3201, a confusion
              * matrix consists of 8 elements, namely CIN, CIP, CRN, CRP, UIN, UIP, URN and URP. The individual symbols
@@ -38,8 +38,7 @@ namespace seco {
              *
              * - The first symbol denotes whether the corresponding labels are covered (C) or uncovered (U) by the rule.
              * - The second symbol denotes relevant (R) or irrelevant (I) labels according to the ground truth.
-             * - The third symbol denotes labels for which the prediction in the rule's head is positive (P) or negative
-             *   (N).
+             * - The third symbol denotes labels for which the prediction of a rule is positive (P) or negative (N).
              *
              * This results in the terminology given in the following table:
              *
@@ -56,7 +55,7 @@ namespace seco {
              *            |         1 |         0 | URN
              *            |         1 |         1 | URP
              *
-             * Real numbers may be used for the individual elements, if different weights are assigned to the
+             * Real numbers may be used for the individual elements, if real-valued weights are assigned to the
              * corresponding labels.
              *
              * @param cin   The number of covered (C) labels that are irrelevant (I) according to the ground truth and
