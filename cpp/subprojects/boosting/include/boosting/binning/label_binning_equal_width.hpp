@@ -23,7 +23,7 @@ namespace boosting {
             /**
              * Returns the percentage that specifies how many bins are used.
              *
-             * @param The percentage that specifies how many bins are used
+             * @return The percentage that specifies how many bins are used
              */
             virtual float32 getBinRatio() const = 0;
 

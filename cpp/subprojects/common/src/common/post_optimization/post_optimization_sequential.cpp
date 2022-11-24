@@ -59,7 +59,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
     public:
 
         /**
-         * @param modelBuilderPtr   A reference to an object of type `IntermediateModelBuilder` that provides access to
+         * @param modelBuilder      A reference to an object of type `IntermediateModelBuilder` that provides access to
          *                          the existing rules
          * @param numIterations     The number of iterations to be performed. Must be at least 1
          * @param refineHeads       True, if the heads of rules should be refined when being relearned, false otherwise

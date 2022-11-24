@@ -69,6 +69,9 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IRuleEvaluation::evaluate`
+             */
             const IScoreVector& calculateScores(DenseExampleWiseStatisticVector& statisticVector) override {
                 uint32 numLabels = statisticVector.getNumElements();
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
