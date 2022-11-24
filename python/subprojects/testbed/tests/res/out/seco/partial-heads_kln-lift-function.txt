@@ -31,10 +31,26 @@ Subset Accuracy         19.9
 
 INFO Model characteristics:
 
-Rules: 59 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.1864406779661016, min. 1, max. 4
-Conditions total: 70 (55.714285714285715% use <= operator, 44.285714285714285% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.11864406779661, min. 1, max. 2
-Predictions total: 66 (100.0% positive, 0.0% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 59 local rules                │      70 │        55.71% │       44.29% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 59 local rules                 │      66 │    100.00% │      0.00% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      1.19 │         4 │
+│ Predictions                 │         1 │      1.12 │         2 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Successfully finished after 0.2878678989945911 seconds

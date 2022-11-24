@@ -9,10 +9,26 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.28295642702141777 seconds
 INFO Model characteristics (Fold 1):
 
-Rules: 72 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.2638888888888888, min. 1, max. 3
-Conditions total: 91 (54.94505494505495% use <= operator, 45.05494505494506% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 72 (100.0% positive, 0.0% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 72 local rules                │      91 │        54.95% │       45.05% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 72 local rules                 │      72 │    100.00% │      0.00% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      1.26 │         3 │
+│ Predictions                 │         1 │      1    │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Successfully finished after 0.33504665800137445 seconds

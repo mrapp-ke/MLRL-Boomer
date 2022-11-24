@@ -9,11 +9,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.3805021320004016 seconds
 INFO Model characteristics (Fold 1):
 
-Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 5.857857857857858, min. 1, max. 18
-Conditions total: 5852 (49.98291182501709% use <= operator, 50.017088174982916% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 999 (46.346346346346344% positive, 53.653653653653656% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 999 local rules               │    5852 │        49.98% │       50.02% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 999 local rules                │     999 │     46.35% │     53.65% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      5.86 │        18 │
+│ Predictions                 │         1 │      1    │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
@@ -22,11 +38,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.33979292899311986 seconds
 INFO Model characteristics (Fold 2):
 
-Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 6.073073073073073, min. 1, max. 19
-Conditions total: 6067 (49.563210812592715% use <= operator, 50.436789187407285% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 999 (46.046046046046044% positive, 53.953953953953956% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 999 local rules               │    6067 │        49.56% │       50.44% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 999 local rules                │     999 │     46.05% │     53.95% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      6.07 │        19 │
+│ Predictions                 │         1 │      1    │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
@@ -35,11 +67,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.326528400008101 seconds
 INFO Model characteristics (Fold 3):
 
-Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 6.122122122122122, min. 1, max. 19
-Conditions total: 6116 (50.52321778940484% use <= operator, 49.47678221059516% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 999 (45.94594594594595% positive, 54.054054054054056% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 999 local rules               │    6116 │        50.52% │       49.48% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 999 local rules                │     999 │     45.95% │     54.05% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      6.12 │        19 │
+│ Predictions                 │         1 │      1    │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
@@ -48,11 +96,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.31107347800571006 seconds
 INFO Model characteristics (Fold 4):
 
-Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 5.974974974974975, min. 1, max. 19
-Conditions total: 5969 (49.69006533757748% use <= operator, 50.30993466242252% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 999 (45.94594594594595% positive, 54.054054054054056% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 999 local rules               │    5969 │        49.69% │       50.31% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 999 local rules                │     999 │     45.95% │     54.05% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      5.97 │        19 │
+│ Predictions                 │         1 │      1    │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
@@ -61,11 +125,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.3154327399970498 seconds
 INFO Model characteristics (Fold 5):
 
-Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 5.97997997997998, min. 1, max. 19
-Conditions total: 5974 (49.564780716437895% use <= operator, 50.435219283562105% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 999 (45.14514514514514% positive, 54.85485485485485% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 999 local rules               │    5974 │        49.56% │       50.44% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 999 local rules                │     999 │     45.15% │     54.85% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      5.98 │        19 │
+│ Predictions                 │         1 │      1    │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
@@ -74,11 +154,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.31921271099417936 seconds
 INFO Model characteristics (Fold 6):
 
-Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 5.937937937937938, min. 1, max. 17
-Conditions total: 5932 (49.46055293324342% use <= operator, 50.53944706675657% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 999 (45.645645645645644% positive, 54.35435435435435% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 999 local rules               │    5932 │        49.46% │       50.54% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 999 local rules                │     999 │     45.65% │     54.35% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      5.94 │        17 │
+│ Predictions                 │         1 │      1    │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
@@ -87,11 +183,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.31612683201092295 seconds
 INFO Model characteristics (Fold 7):
 
-Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 5.926926926926927, min. 1, max. 21
-Conditions total: 5921 (49.299104880932276% use <= operator, 50.700895119067724% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 999 (46.94694694694695% positive, 53.053053053053056% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 999 local rules               │    5921 │        49.30% │       50.70% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 999 local rules                │     999 │     46.95% │     53.05% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      5.93 │        21 │
+│ Predictions                 │         1 │      1    │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
@@ -100,11 +212,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.307397155003855 seconds
 INFO Model characteristics (Fold 8):
 
-Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 5.915915915915916, min. 1, max. 18
-Conditions total: 5910 (50.38917089678511% use <= operator, 49.61082910321489% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 999 (45.44544544544545% positive, 54.55455455455456% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 999 local rules               │    5910 │        50.39% │       49.61% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 999 local rules                │     999 │     45.45% │     54.55% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      5.92 │        18 │
+│ Predictions                 │         1 │      1    │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
@@ -113,11 +241,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.315289523001411 seconds
 INFO Model characteristics (Fold 9):
 
-Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 5.930930930930931, min. 1, max. 20
-Conditions total: 5925 (50.16033755274262% use <= operator, 49.83966244725738% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 999 (46.846846846846844% positive, 53.153153153153156% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 999 local rules               │    5925 │        50.16% │       49.84% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 999 local rules                │     999 │     46.85% │     53.15% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      5.93 │        20 │
+│ Predictions                 │         1 │      1    │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
@@ -126,10 +270,26 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.3068046330008656 seconds
 INFO Model characteristics (Fold 10):
 
-Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 5.887887887887888, min. 1, max. 19
-Conditions total: 5882 (50.57803468208093% use <= operator, 49.421965317919074% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 999 (45.94594594594595% positive, 54.054054054054056% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 999 local rules               │    5882 │        50.58% │       49.42% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 999 local rules                │     999 │     45.95% │     54.05% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      5.89 │        19 │
+│ Predictions                 │         1 │      1    │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Successfully finished after 3.5965631769940956 seconds
