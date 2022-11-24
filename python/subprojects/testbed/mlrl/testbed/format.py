@@ -52,7 +52,7 @@ def format_duration(duration: float) -> str:
         enumerate(substrings), '')
 
 
-def format_float(value: float, decimals: int) -> str:
+def format_float(value: float, decimals: int = 2) -> str:
     """
     Creates and returns a textual representation of a floating point value using a specific number of decimals.
 
@@ -66,14 +66,31 @@ def format_float(value: float, decimals: int) -> str:
         return str(value)
 
 
-def format_table(rows) -> str:
+def format_percentage(value: float, decimals: int = 2) -> str:
+    """
+    Creates and returns a textual representation of a percentage using a specific number of decimals.
+
+    :param value:       The percentage
+    :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
+    :return:            The textual representation that has been created
+    """
+    return format_float(value, decimals) + '%'
+
+
+def format_table(rows, header=None, alignment=None) -> str:
     """
     Creates and returns a textual representation of tabular data.
 
-    :param rows:    A list of lists that stores the tabular data
-    :return:        The textual representation that has been created
+    :param rows:        A list of lists that stores the tabular data
+    :param header:      A list that stores the header columns
+    :param alignment:   A list of strings that specify the alignment of the corresponding colum as either 'left',
+                        'center', or 'right'
+    :return:            The textual representation that has been created
     """
-    return tabulate(rows, tablefmt='plain')
+    if header is None:
+        return tabulate(rows, colalign=alignment, tablefmt='plain')
+    else:
+        return tabulate(rows, headers=header, colalign=alignment, tablefmt='simple_outline')
 
 
 class Formattable:

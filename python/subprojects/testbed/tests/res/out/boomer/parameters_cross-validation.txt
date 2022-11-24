@@ -19,11 +19,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.012552440981380641 seconds
 INFO Model characteristics (Fold 1):
 
-Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (44.44444444444444% use <= operator, 55.55555555555556% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 9 (55.55555555555556% positive, 44.44444444444444% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 9 local rules                 │       9 │        44.44% │       55.56% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 9 local rules                  │       9 │     55.56% │     44.44% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │         1 │         1 │
+│ Predictions                 │         1 │         1 │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 2 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -42,11 +58,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.016776095988461748 seconds
 INFO Model characteristics (Fold 2):
 
-Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (44.44444444444444% use <= operator, 55.55555555555556% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 9 (55.55555555555556% positive, 44.44444444444444% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 9 local rules                 │       9 │        44.44% │       55.56% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 9 local rules                  │       9 │     55.56% │     44.44% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │         1 │         1 │
+│ Predictions                 │         1 │         1 │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 3 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -65,11 +97,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.02748604500084184 seconds
 INFO Model characteristics (Fold 3):
 
-Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (44.44444444444444% use <= operator, 55.55555555555556% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 9 (55.55555555555556% positive, 44.44444444444444% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 9 local rules                 │       9 │        44.44% │       55.56% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 9 local rules                  │       9 │     55.56% │     44.44% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │         1 │         1 │
+│ Predictions                 │         1 │         1 │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 4 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -88,11 +136,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.041129539982648566 seconds
 INFO Model characteristics (Fold 4):
 
-Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (44.44444444444444% use <= operator, 55.55555555555556% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 9 (55.55555555555556% positive, 44.44444444444444% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 9 local rules                 │       9 │        44.44% │       55.56% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 9 local rules                  │       9 │     55.56% │     44.44% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │         1 │         1 │
+│ Predictions                 │         1 │         1 │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 5 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -111,11 +175,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.030212832003599033 seconds
 INFO Model characteristics (Fold 5):
 
-Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (44.44444444444444% use <= operator, 55.55555555555556% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 9 (55.55555555555556% positive, 44.44444444444444% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 9 local rules                 │       9 │        44.44% │       55.56% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 9 local rules                  │       9 │     55.56% │     44.44% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │         1 │         1 │
+│ Predictions                 │         1 │         1 │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 6 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -134,11 +214,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.028375796013278887 seconds
 INFO Model characteristics (Fold 6):
 
-Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (44.44444444444444% use <= operator, 55.55555555555556% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 9 (55.55555555555556% positive, 44.44444444444444% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 9 local rules                 │       9 │        44.44% │       55.56% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 9 local rules                  │       9 │     55.56% │     44.44% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │         1 │         1 │
+│ Predictions                 │         1 │         1 │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 7 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -157,11 +253,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.02934421499958262 seconds
 INFO Model characteristics (Fold 7):
 
-Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (44.44444444444444% use <= operator, 55.55555555555556% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 9 (55.55555555555556% positive, 44.44444444444444% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 9 local rules                 │       9 │        44.44% │       55.56% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 9 local rules                  │       9 │     55.56% │     44.44% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │         1 │         1 │
+│ Predictions                 │         1 │         1 │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 8 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -180,11 +292,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.03041500799008645 seconds
 INFO Model characteristics (Fold 8):
 
-Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (55.55555555555556% use <= operator, 44.44444444444444% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 9 (55.55555555555556% positive, 44.44444444444444% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 9 local rules                 │       9 │        55.56% │       44.44% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 9 local rules                  │       9 │     55.56% │     44.44% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │         1 │         1 │
+│ Predictions                 │         1 │         1 │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 9 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -203,11 +331,27 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.028202856017742306 seconds
 INFO Model characteristics (Fold 9):
 
-Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (55.55555555555556% use <= operator, 44.44444444444444% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 9 (55.55555555555556% positive, 44.44444444444444% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 9 local rules                 │       9 │        55.56% │       44.44% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 9 local rules                  │       9 │     55.56% │     44.44% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │         1 │         1 │
+│ Predictions                 │         1 │         1 │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Fold 10 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -226,10 +370,26 @@ DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in 0.029230718995677307 seconds
 INFO Model characteristics (Fold 10):
 
-Rules: 9 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 1.0, min. 1, max. 1
-Conditions total: 9 (55.55555555555556% use <= operator, 44.44444444444444% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.0, min. 1, max. 1
-Predictions total: 9 (55.55555555555556% positive, 44.44444444444444% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 9 local rules                 │       9 │        55.56% │       44.44% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 9 local rules                  │       9 │     55.56% │     44.44% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │         1 │         1 │
+│ Predictions                 │         1 │         1 │         1 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Successfully finished after 0.3649988149991259 seconds

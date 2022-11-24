@@ -31,10 +31,26 @@ Subset Accuracy         31.63
 
 INFO Model characteristics:
 
-Rules: 999 (plus a default rule with 0 positive and 6 negative predictions that is excluded from the following statistics)
-Conditions per rule: avg. 4.984984984984985, min. 1, max. 26
-Conditions total: 4980 (51.70682730923695% use <= operator, 48.29317269076305% use > operator, 0.0% use == operator, 0.0% use != operator)
-Predictions per rule: avg. 1.5255255255255256, min. 1, max. 4
-Predictions total: 1524 (39.501312335958005% positive, 60.498687664041995% negative)
+┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
+│ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
+├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
+│ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
+│ 999 local rules               │    4980 │        51.71% │       48.29% │         0.00% │         0.00% │
+└───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
+
+┌────────────────────────────────┬─────────┬────────────┬────────────┐
+│ Statistics about predictions   │   Total │   Positive │   Negative │
+├────────────────────────────────┼─────────┼────────────┼────────────┤
+│ Default rule                   │       6 │      0.00% │    100.00% │
+│ 999 local rules                │    1524 │     39.50% │     60.50% │
+└────────────────────────────────┴─────────┴────────────┴────────────┘
+
+┌─────────────────────────────┬───────────┬───────────┬───────────┐
+│ Statistics per local rule   │   Minimum │   Average │   Maximum │
+├─────────────────────────────┼───────────┼───────────┼───────────┤
+│ Conditions                  │         1 │      4.98 │        26 │
+│ Predictions                 │         1 │      1.53 │         4 │
+└─────────────────────────────┴───────────┴───────────┴───────────┘
+
 
 INFO Successfully finished after 7.2824588840594515 seconds
