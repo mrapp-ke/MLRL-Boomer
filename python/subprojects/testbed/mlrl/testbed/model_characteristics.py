@@ -12,6 +12,7 @@ from mlrl.common.cython.rule_model import RuleModel, RuleModelVisitor, EmptyBody
     PartialHead
 from mlrl.common.learners import Learner
 from mlrl.testbed.data_splitting import DataSplit
+from mlrl.testbed.format import format_table, format_percentage, format_float
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from typing import List
 
@@ -176,24 +177,41 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
             msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
         msg += ':\n\n'
-        msg += 'Rules: ' + str(num_rules)
+        header = ['Statistics about conditions', 'Total', '<= operator', '> operator', '== operator', '!= operator']
+        alignment = ['left', 'right', 'right', 'right', 'right', 'right']
+        rows = []
 
         if default_rule_index is not None:
-            msg += ' (plus a default rule with ' + str(
-                characteristics.default_rule_pos_predictions) + ' positive and ' + str(
-                characteristics.default_rule_neg_predictions) + ' negative predictions that is excluded from the ' \
-                   + 'following statistics)'
+            rows.append(['Default rule', str(0), format_percentage(0), format_percentage(0), format_percentage(0),
+                         format_percentage(0)])
 
-        msg += '\n'
-        msg += 'Conditions per rule: avg. ' + str(num_conditions_mean) + ', min. ' + str(
-            num_conditions_min) + ', max. ' + str(num_conditions_max) + '\n'
-        msg += 'Conditions total: ' + str(num_total_conditions) + ' (' + str(frac_leq) + '% use <= operator, ' + str(
-            frac_gr) + '% use > operator, ' + str(frac_eq) + '% use == operator, ' + str(
-            frac_neq) + '% use != operator)\n'
-        msg += 'Predictions per rule: avg. ' + str(num_predictions_mean) + ', min. ' + str(
-            num_predictions_min) + ', max. ' + str(num_predictions_max) + '\n'
-        msg += 'Predictions total: ' + str(num_total_predictions) + ' (' + str(frac_pos) + '% positive, ' + str(
-            frac_neg) + '% negative)\n'
+        rows.append([str(num_rules) + ' local rules', str(num_total_conditions), format_percentage(frac_leq),
+                     format_percentage(frac_gr), format_percentage(frac_eq), format_percentage(frac_neq)])
+        msg += format_table(rows, header=header, alignment=alignment) + '\n\n'
+
+        header = ['Statistics about predictions', 'Total', 'Positive', 'Negative']
+        alignment = ['left', 'right', 'right', 'right']
+        rows = []
+
+        if default_rule_index is not None:
+            default_rule_num_predictions = characteristics.default_rule_pos_predictions \
+                                           + characteristics.default_rule_neg_predictions
+            default_rule_frac_pos = characteristics.default_rule_pos_predictions / default_rule_num_predictions * 100
+            default_rule_frac_neg = characteristics.default_rule_neg_predictions / default_rule_num_predictions * 100
+            rows.append(
+                ['Default rule', str(default_rule_num_predictions), format_percentage(default_rule_frac_pos),
+                 format_percentage(default_rule_frac_neg)])
+
+        rows.append([str(num_rules) + ' local rules', str(num_total_predictions), format_percentage(frac_pos),
+                     format_percentage(frac_neg)])
+        msg += format_table(rows, header=header, alignment=alignment) + '\n\n'
+
+        header = ['Statistics per local rule', 'Minimum', 'Average', 'Maximum']
+        rows = [['Conditions', format_float(num_conditions_min), format_float(num_conditions_mean),
+                 format_float(num_conditions_max)],
+                ['Predictions', format_float(num_predictions_min), format_float(num_predictions_mean),
+                 format_float(num_predictions_max)]]
+        msg += format_table(rows, header=header) + '\n\n'
         log.info(msg)
 
 
