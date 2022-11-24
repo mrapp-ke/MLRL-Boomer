@@ -27,9 +27,9 @@ from mlrl.testbed.evaluation import EvaluationPrinter, ClassificationEvaluationP
     ProbabilityEvaluationPrinter, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment, PredictionType, Evaluation, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.io import clear_directory
-from mlrl.testbed.model_characteristics import ModelPrinter, RulePrinter, ModelPrinterLogOutput, \
-    ModelPrinterTxtOutput, ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, \
+from mlrl.testbed.model_characteristics import ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, \
     RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
+from mlrl.testbed.models import ModelPrinter, RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
 from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterPrinter, ParameterLogOutput, \
     ParameterCsvOutput
 from mlrl.testbed.persistence import ModelPersistence
