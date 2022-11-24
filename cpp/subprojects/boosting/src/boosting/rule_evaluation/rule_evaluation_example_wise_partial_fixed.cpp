@@ -63,6 +63,9 @@ namespace boosting {
 
             }
 
+            /**
+             * @see `IRuleEvaluation::evaluate`
+             */
             const IScoreVector& calculateScores(DenseExampleWiseStatisticVector& statisticVector) override {
                 uint32 numLabels = statisticVector.getNumElements();
                 uint32 numPredictions = indexVector_.getNumElements();
