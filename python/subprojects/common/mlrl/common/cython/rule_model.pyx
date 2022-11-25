@@ -167,7 +167,7 @@ cdef class RuleModel:
 
     def visit_used(self, visitor: RuleModelVisitor):
         """
-        Visits the bodies and heads of all rules that are contained in this model, including the default rule, if
+        Visits the bodies and heads of all used rules that are contained in this model, including the default rule, if
         available.
 
         :param visitor: The `RuleModelVisitor` that should be used to access the bodies and heads
