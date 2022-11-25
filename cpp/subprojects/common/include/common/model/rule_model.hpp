@@ -27,23 +27,23 @@ class MLRLCOMMON_API IRuleModel {
         virtual ~IRuleModel() { };
 
         /**
-         * Returns the total number of rules in the model.
+         * Returns the total number of rules in the model, including the default rule, if available.
          *
          * @return The number of rules
          */
         virtual uint32 getNumRules() const = 0;
 
         /**
-         * Returns the number of used rules.
+         * Returns the number of used rules, including the default rule, if available.
          *
          * @return The number of used rules
          */
         virtual uint32 getNumUsedRules() const = 0;
 
         /**
-         * Sets the number of used rules.
+         * Sets the number of used rules, including the default rule, if available.
          *
-         * @param numUsedRules The number of used rules to be set or 0, if all rules are used
+         * @param numUsedRules The number of used rules to be set or 0, if all rules should be used
          */
         virtual void setNumUsedRules(uint32 numUsedRules) = 0;
 
