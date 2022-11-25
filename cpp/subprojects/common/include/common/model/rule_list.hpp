@@ -42,7 +42,7 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
 
         /**
          * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
-         * of the rules that are contained in this model.
+         * of all rules that are contained in this model, including the default rule, if available.
          *
          * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
          * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
@@ -57,7 +57,7 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
 
         /**
          * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
-         * of the used rules that are contained in this model.
+         * of all used rules that are contained in this model, including the default rule, if available.
          *
          * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
          * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
@@ -140,7 +140,7 @@ class RuleList final : public IRuleList {
         RuleList();
 
         /**
-         * An iterator that provides read-only access to the rules.
+         * An iterator that provides read-only access to rules.
          */
         typedef std::vector<Rule>::const_iterator const_iterator;
 

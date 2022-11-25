@@ -143,7 +143,7 @@ cdef class RuleModel:
 
     def get_num_rules(self) -> int:
         """
-        Returns the total number of rules in the model.
+        Returns the total number of rules in the model, including the default rule, if available.
 
         :return The total number of rules in the model
         """
@@ -151,7 +151,7 @@ cdef class RuleModel:
 
     def get_num_used_rules(self) -> int:
         """
-        Returns the number of used rules in the model.
+        Returns the number of used rules in the model, including the default rule, if available.
 
         :return The number of used rules in the model
         """
@@ -159,7 +159,7 @@ cdef class RuleModel:
 
     def set_num_used_rules(self, num_used_rules: int):
         """
-        Sets the number of used rules in the model.
+        Sets the number of used rules in the model, including the default rule, if available.
 
         :param num_used_rules: The number of used rules to be set
         """
@@ -167,7 +167,8 @@ cdef class RuleModel:
 
     def visit(self, visitor: RuleModelVisitor):
         """
-        Visits the bodies and heads of the rules in the model.
+        Visits the bodies and heads of all rules that are contained in this model, including the default rule, if
+        available.
 
         :param visitor: The `RuleModelVisitor` that should be used to access the bodies and heads
         """
