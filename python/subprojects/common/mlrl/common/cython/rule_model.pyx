@@ -165,6 +165,15 @@ cdef class RuleModel:
         """
         self.get_rule_model_ptr().setNumUsedRules(num_used_rules)
 
+    def visit(self, visitor: RuleModelVisitor):
+        """
+        Visits the bodies and heads of all rules that are contained in this model, including the default rule, if
+        available.
+
+        :param visitor: The `RuleModelVisitor` that should be used to access the bodies and heads
+        """
+        pass
+
     def visit_used(self, visitor: RuleModelVisitor):
         """
         Visits the bodies and heads of all used rules that are contained in this model, including the default rule, if
@@ -336,6 +345,15 @@ cdef class RuleList(RuleModel):
             index_iterator[i] = indices[i]
 
         return <unique_ptr[IHead]>move(head_ptr)
+
+    def visit(self, visitor: RuleModelVisitor):
+        self.visitor = visitor
+        self.rule_list_ptr.get().visit(
+            wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
+            wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
+            wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
+            wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
+        self.visitor = None
 
     def visit_used(self, visitor: RuleModelVisitor):
         self.visitor = visitor
