@@ -165,7 +165,7 @@ cdef class RuleModel:
         """
         self.get_rule_model_ptr().setNumUsedRules(num_used_rules)
 
-    def visit(self, visitor: RuleModelVisitor):
+    def visit_used(self, visitor: RuleModelVisitor):
         """
         Visits the bodies and heads of all rules that are contained in this model, including the default rule, if
         available.
@@ -337,7 +337,7 @@ cdef class RuleList(RuleModel):
 
         return <unique_ptr[IHead]>move(head_ptr)
 
-    def visit(self, visitor: RuleModelVisitor):
+    def visit_used(self, visitor: RuleModelVisitor):
         self.visitor = visitor
         self.rule_list_ptr.get().visitUsed(
             wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
