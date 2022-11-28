@@ -16,7 +16,7 @@ namespace boosting {
         public:
 
             RuleListBuilder()
-                : modelPtr_(std::make_unique<RuleList>()) {
+                : modelPtr_(std::make_unique<RuleList>(true)) {
 
             }
 
