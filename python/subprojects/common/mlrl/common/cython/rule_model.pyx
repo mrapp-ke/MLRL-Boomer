@@ -8,7 +8,7 @@ from abc import abstractmethod
 
 import numpy as np
 
-SERIALIZATION_VERSION = 2
+SERIALIZATION_VERSION = 3
 
 
 cdef class EmptyBody:
@@ -346,6 +346,22 @@ cdef class RuleList(RuleModel):
 
         return <unique_ptr[IHead]>move(head_ptr)
 
+    def contains_default_rule(self) -> bool:
+        """
+        Returns whether the model contains a default rule or not.
+
+        :return: True, if the model contains a default rule, False otherwise
+        """
+        return self.rule_list_ptr.get().containsDefaultRule()
+
+    def is_default_rule_taking_precedence(self) -> bool:
+        """
+        Returns whether the default rule takes precedence over the remaining rules or not.
+
+        :return: True, if the default rule takes precedence over the remaining rules, False otherwise
+        """
+        return self.rule_list_ptr.get().isDefaultRuleTakingPrecedence()
+
     def visit(self, visitor: RuleModelVisitor):
         self.visitor = visitor
         self.rule_list_ptr.get().visit(
@@ -371,8 +387,9 @@ cdef class RuleList(RuleModel):
             wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__serialize_conjunctive_body),
             wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__serialize_complete_head),
             wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__serialize_partial_head))
+        cdef bint default_rule_takes_precedence = self.rule_list_ptr.get().isDefaultRuleTakingPrecedence()
         cdef uint32 num_used_rules = self.rule_list_ptr.get().getNumUsedRules()
-        cdef object state = (SERIALIZATION_VERSION, (self.state, num_used_rules))
+        cdef object state = (SERIALIZATION_VERSION, (self.state, default_rule_takes_precedence, num_used_rules))
         self.state = None
         return (RuleList, (), state)
 
@@ -385,8 +402,9 @@ cdef class RuleList(RuleModel):
 
         cdef object model_state = state[1]
         cdef list rule_list = model_state[0]
+        cdef bint default_rule_takes_precedence = model_state[1]
         cdef uint32 num_rules = len(rule_list)
-        cdef unique_ptr[IRuleList] rule_list_ptr = createRuleList()
+        cdef unique_ptr[IRuleList] rule_list_ptr = createRuleList(default_rule_takes_precedence)
         cdef object rule_state
         cdef unique_ptr[IBody] body_ptr
         cdef unique_ptr[IHead] head_ptr
@@ -402,6 +420,6 @@ cdef class RuleList(RuleModel):
             else:
                 rule_list_ptr.get().addRule(move(body_ptr), move(head_ptr))
 
-        cdef uint32 num_used_rules = model_state[1]
+        cdef uint32 num_used_rules = model_state[2]
         rule_list_ptr.get().setNumUsedRules(num_used_rules)
         self.rule_list_ptr = move(rule_list_ptr)

@@ -1,5 +1,6 @@
 from mlrl.common.cython._types cimport uint32, float32, float64
 
+from libcpp cimport bool
 from libcpp.cast cimport dynamic_cast
 from libcpp.memory cimport unique_ptr
 
@@ -157,6 +158,10 @@ cdef extern from "common/model/rule_list.hpp" nogil:
 
         void addRule(unique_ptr[IBody] bodyPtr, unique_ptr[IHead] headPtr)
 
+        bool containsDefaultRule() const
+
+        bool isDefaultRuleTakingPrecedence() const
+
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                    CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const
 
@@ -164,7 +169,7 @@ cdef extern from "common/model/rule_list.hpp" nogil:
                        CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const
 
 
-    unique_ptr[IRuleList] createRuleList()
+    unique_ptr[IRuleList] createRuleList(bool defaultRuleTakesPrecedence)
 
 
 ctypedef IRuleList* RuleListPtr
