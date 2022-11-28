@@ -10,7 +10,8 @@
 
 
 /**
- * Defines an interface for all rule-based models that store several rules in an ordered list.
+ * Defines an interface for all rule-based models that store several rules in an ordered list. Optionally, the model may
+ * also contain a default rule that either takes precedence over the remaining rules or not.
  */
 class MLRLCOMMON_API IRuleList : public IRuleModel {
 
@@ -19,7 +20,7 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
         virtual ~IRuleList() override { };
 
         /**
-         * Creates a new default rule from a given head and adds it to the end of the model.
+         * Creates a new default rule from a given head and adds it to the model.
          *
          * @param headPtr An unique pointer to an object of type `IHead` that should be used as the head of the rule
          */
@@ -39,6 +40,13 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
          * @return True, if the model contains a default rule, false otherwise
          */
         virtual bool containsDefaultRule() const = 0;
+
+        /**
+         * Returns whether the default rule takes precedence over the remaining rules or not.
+         *
+         * @return True, if the default rule takes precedence over the remaining rules, false otherwise
+         */
+        virtual bool isDefaultRuleTakingPrecedence() const = 0;
 
         /**
          * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
@@ -72,7 +80,8 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
 };
 
 /**
- * An implementation of the type `IRuleList` that stores several rules in a single-linked list.
+ * An implementation of the type `IRuleList` that stores several rules in the order of their induction. Optionally, the
+ * model may also contain a default rule that either takes precedence over the remaining rules or not.
  */
 class RuleList final : public IRuleList {
 
@@ -129,44 +138,145 @@ class RuleList final : public IRuleList {
 
     private:
 
-        std::vector<Rule> list_;
+        /**
+         * A forward iterator that provides access to the rules in a model, including the default rule, if available.
+         */
+        class ConstIterator final {
+
+            private:
+
+                const Rule* defaultRule_;
+
+                std::vector<Rule>::const_iterator iterator_;
+
+                uint32 offset_;
+
+                uint32 defaultRuleIndex_;
+
+                uint32 index_;
+
+            public:
+
+                /**
+                 * @param defaultRuleTakesPrecedence    True, if the default rule takes precedence over the remaining
+                 *                                      rules, false otherwise
+                 * @param defaultRule                   A pointer to an object of type `Rule` that stores the default
+                 *                                      rule or a null pointer, if no default rule is available
+                 * @param iterator                      An iterator to the beginning of the remaining rules
+                 * @param start                         The index of the rule to start at
+                 * @param end                           The index of the rule to end at (exclusive)
+                 */
+                ConstIterator(bool defaultRuleTakesPrecedence, const Rule* defaultRule,
+                              const std::vector<Rule>::const_iterator iterator, uint32 start, uint32 end);
+
+                /**
+                 * The type that is used to represent the difference between two iterators.
+                 */
+                typedef int difference_type;
+
+                /**
+                 * The type of the elements, the iterator provides access to.
+                 */
+                typedef const Rule value_type;
+
+                /**
+                 * The type of a pointer to an element, the iterator provides access to.
+                 */
+                typedef const Rule* pointer;
+
+                /**
+                 * The type of a reference to an element, the iterator provides access to.
+                 */
+                typedef const Rule& reference;
+
+                /**
+                 * The tag that specifies the capabilities of the iterator.
+                 */
+                typedef std::forward_iterator_tag iterator_category;
+
+                /**
+                 * Returns the element, the iterator currently refers to.
+                 *
+                 * @return The element, the iterator currently refers to
+                 */
+                reference operator*() const;
+
+                /**
+                 * Returns an iterator to the next element.
+                 *
+                 * @return A reference to an iterator that refers to the next element
+                 */
+                ConstIterator& operator++();
+
+                /**
+                 * Returns an iterator to the next element.
+                 *
+                 * @return A reference to an iterator that refers to the next element
+                 */
+                ConstIterator& operator++(int n);
+
+                /**
+                 * Returns whether this iterator and another one refer to the same element.
+                 *
+                 * @param rhs   A reference to another iterator
+                 * @return      True, if the iterators do not refer to the same element, false otherwise
+                 */
+                bool operator!=(const ConstIterator& rhs) const;
+
+                /**
+                 * Returns whether this iterator and another one refer to the same element.
+                 *
+                 * @param rhs   A reference to another iterator
+                 * @return      True, if the iterators refer to the same element, false otherwise
+                 */
+                bool operator==(const ConstIterator& rhs) const;
+
+        };
+
+        std::unique_ptr<Rule> defaultRulePtr_;
+
+        std::vector<Rule> ruleList_;
 
         uint32 numUsedRules_;
 
-        bool containsDefaultRule_;
+        bool defaultRuleTakesPrecedence_;
 
     public:
 
-        RuleList();
+        /**
+         * @param defaultRuleTakesPrecedence True, if the default rule should take precedence over the remaining rules,
+         *                                   false otherwise
+         */
+        RuleList(bool defaultRuleTakesPrecedence);
 
         /**
          * An iterator that provides read-only access to rules.
          */
-        typedef std::vector<Rule>::const_iterator const_iterator;
+        typedef ConstIterator const_iterator;
 
         /**
-         * Returns a `const_iterator` to the beginning of all rules.
+         * Returns a `const_iterator` to the beginning of all rules, including the default rule, if available.
          *
          * @return A `const_iterator` to the beginning
          */
         const_iterator cbegin() const;
 
         /**
-         * Returns a `const_iterator` to the end of all rules.
+         * Returns a `const_iterator` to the end of all rules, including the default rule, if available.
          *
          * @return A `const_iterator` to the end
          */
         const_iterator cend() const;
 
         /**
-         * Returns a `const_iterator` to the beginning of the used rules.
+         * Returns a `const_iterator` to the beginning of all used rules, including the default rule, if available.
          *
          * @return A `const_iterator` to the beginning
          */
         const_iterator used_cbegin() const;
 
         /**
-         * Returns a `const_iterator` to the end of the used rules.
+         * Returns a `const_iterator` to the end of all used rules, including the default rule, if available.
          *
          * @return A `const_iterator` to the end
          */
@@ -183,6 +293,8 @@ class RuleList final : public IRuleList {
         void addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) override;
 
         bool containsDefaultRule() const override;
+
+        bool isDefaultRuleTakingPrecedence() const override;
 
         void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
                    IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
@@ -209,6 +321,8 @@ class RuleList final : public IRuleList {
 /**
  * Creates and returns a new instance of the type `IRuleList`.
  *
- * @return An unique pointer to an object of type `IRuleList` that has been created
+ * @param defaultRuleTakesPrecedence    True, if the default rule should take precedence over the remaining rules, false
+ *                                      otherwise
+ * @return                              An unique pointer to an object of type `IRuleList` that has been created
  */
-MLRLCOMMON_API std::unique_ptr<IRuleList> createRuleList();
+MLRLCOMMON_API std::unique_ptr<IRuleList> createRuleList(bool defaultRuleTakesPrecedence);

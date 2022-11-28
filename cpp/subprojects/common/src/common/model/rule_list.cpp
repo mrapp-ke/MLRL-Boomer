@@ -27,29 +27,76 @@ void RuleList::Rule::visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
     headPtr_->visit(completeHeadVisitor, partialHeadVisitor);
 }
 
-RuleList::RuleList()
-    : numUsedRules_(0), containsDefaultRule_(false) {
+RuleList::ConstIterator::ConstIterator(bool defaultRuleTakesPrecedence, const Rule* defaultRule,
+                                       std::vector<Rule>::const_iterator iterator, uint32 start, uint32 end)
+    : defaultRule_(defaultRule), iterator_(iterator),
+      offset_(defaultRuleTakesPrecedence && defaultRule != nullptr ? 1 : 0),
+      defaultRuleIndex_(offset_ > 0 ? 0 : end - (defaultRule != nullptr ? 1 : 0)), index_(start) {
+
+}
+
+RuleList::ConstIterator::reference RuleList::ConstIterator::operator*() const {
+    uint32 index = index_;
+
+    if (index == defaultRuleIndex_) {
+        return *defaultRule_;
+    } else {
+        return iterator_[index - offset_];
+    }
+}
+
+RuleList::ConstIterator& RuleList::ConstIterator::operator++() {
+    ++index_;
+    return *this;
+}
+
+RuleList::ConstIterator& RuleList::ConstIterator::operator++(int n) {
+    index_++;
+    return *this;
+}
+
+bool RuleList::ConstIterator::operator!=(const ConstIterator& rhs) const {
+    return index_ != rhs.index_;
+}
+
+bool RuleList::ConstIterator::operator==(const ConstIterator& rhs) const {
+    return index_ == rhs.index_;
+}
+
+RuleList::RuleList(bool defaultRuleTakesPrecedence)
+    : numUsedRules_(0), defaultRuleTakesPrecedence_(defaultRuleTakesPrecedence) {
 
 }
 
 RuleList::const_iterator RuleList::cbegin() const {
-    return list_.cbegin();
+    return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), 0,
+                         this->getNumRules());
 }
 
 RuleList::const_iterator RuleList::cend() const {
-    return list_.cend();
+    uint32 numRules = this->getNumRules();
+    return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), numRules, numRules);
 }
 
 RuleList::const_iterator RuleList::used_cbegin() const {
-    return list_.cbegin();
+    return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), 0,
+                         this->getNumUsedRules());
 }
 
 RuleList::const_iterator RuleList::used_cend() const {
-    return list_.cbegin() + this->getNumUsedRules();
+    uint32 numUsedRules = this->getNumUsedRules();
+    return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), numUsedRules,
+                         numUsedRules);
 }
 
 uint32 RuleList::getNumRules() const {
-    return (uint32) list_.size();
+    uint32 numRules = (uint32) ruleList_.size();
+
+    if (this->containsDefaultRule()) {
+        numRules++;
+    }
+
+    return numRules;
 }
 
 uint32 RuleList::getNumUsedRules() const {
@@ -61,22 +108,25 @@ void RuleList::setNumUsedRules(uint32 numUsedRules) {
 }
 
 void RuleList::addDefaultRule(std::unique_ptr<IHead> headPtr) {
-    containsDefaultRule_ = true;
-    this->addRule(std::make_unique<EmptyBody>(), std::move(headPtr));
+    defaultRulePtr_ = std::make_unique<Rule>(std::make_unique<EmptyBody>(), std::move(headPtr));
 }
 
 void RuleList::addRule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr) {
-    list_.emplace_back(std::move(bodyPtr), std::move(headPtr));
+    ruleList_.emplace_back(std::move(bodyPtr), std::move(headPtr));
 }
 
 bool RuleList::containsDefaultRule() const {
-    return containsDefaultRule_;
+    return defaultRulePtr_ != nullptr;
+}
+
+bool RuleList::isDefaultRuleTakingPrecedence() const {
+    return defaultRuleTakesPrecedence_;
 }
 
 void RuleList::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                       IHead::CompleteHeadVisitor completeHeadVisitor,
                       IHead::PartialHeadVisitor partialHeadVisitor) const {
-    for (auto it = list_.cbegin(); it != list_.cend(); it++) {
+    for (auto it = this->cbegin(); it != this->cend(); it++) {
         const Rule& rule = *it;
         rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, completeHeadVisitor, partialHeadVisitor);
     }
@@ -107,6 +157,6 @@ std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
     return labelSpaceInfo.createProbabilityPredictor(factory, *this);
 }
 
-std::unique_ptr<IRuleList> createRuleList() {
-    return std::make_unique<RuleList>();
+std::unique_ptr<IRuleList> createRuleList(bool defaultRuleTakesPrecedence) {
+    return std::make_unique<RuleList>(defaultRuleTakesPrecedence);
 }
