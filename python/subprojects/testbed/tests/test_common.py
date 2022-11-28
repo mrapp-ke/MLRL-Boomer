@@ -6,8 +6,9 @@ import subprocess
 from abc import ABC
 from functools import reduce
 from os import path, makedirs
-from typing import List, Optional
 from unittest import TestCase, SkipTest
+
+from typing import List, Optional
 
 OVERWRITE_EXPECTED_OUTPUT_FILES = False
 
@@ -183,6 +184,24 @@ class CmdBuilder:
         self.training_data_evaluated = evaluate_training_data
         self.args.append('--evaluate-training-data')
         self.args.append(str(evaluate_training_data).lower())
+        return self
+
+    def incremental_evaluation(self, incremental_evaluation: bool = True, step_size: int = 50):
+        """
+        Configures whether the model that is learned by the rule learner should be evaluated repeatedly, using only a
+        subset of the rules with increasing size.
+
+        :param incremental_evaluation:  True, if the rule learner should be evaluated incrementally, False otherwise
+        :param step_size:               The number of additional rules to be evaluated at each repetition
+        :return:                        The builder itself
+        """
+        self.args.append('--incremental-evaluation')
+        value = str(incremental_evaluation).lower()
+
+        if incremental_evaluation:
+            value += '{step_size=' + str(step_size) + '}'
+
+        self.args.append(value)
         return self
 
     def print_evaluation(self, print_evaluation: bool = True):
@@ -874,6 +893,18 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .print_evaluation() \
             .store_evaluation()
         self.run_cmd(builder, 'evaluation_training-data')
+
+    def test_evaluation_incremental(self):
+        """
+        Tests the repeated evaluation of the model that is learned by a rule learning algorithm, using subsets of the
+        induced rules with increasing size.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .incremental_evaluation() \
+            .set_output_dir() \
+            .print_evaluation() \
+            .store_evaluation()
+        self.run_cmd(builder, 'evaluation_incremental')
 
     def test_model_persistence_train_test(self):
         """
