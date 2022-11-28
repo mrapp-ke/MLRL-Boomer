@@ -353,7 +353,7 @@ class RuleModelCharacteristicsPrinter(ModelCharacteristicsPrinter):
 
         if len(self.outputs) > 0:
             visitor = RuleModelCharacteristicsVisitor()
-            model.visit(visitor)
+            model.visit_used(visitor)
             characteristics = RuleModelCharacteristics(
                 default_rule_index=visitor.default_rule_index,
                 default_rule_pos_predictions=visitor.default_rule_pos_predictions,

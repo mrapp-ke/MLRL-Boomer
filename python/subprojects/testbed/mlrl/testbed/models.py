@@ -300,5 +300,5 @@ class RulePrinter(ModelPrinter):
             raise ValueError('Cannot create a textual representation of a model of type ' + type(model).__name__)
 
         formatter = RuleModelFormatter(options, meta_data)
-        model.visit(formatter)
+        model.visit_used(formatter)
         return formatter.get_text()
