@@ -3,10 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for saving/loading models to/from disk.
 """
-import _pickle as pickle
 import logging as log
 import os.path as path
 
+import _pickle as pickle
 from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.io import get_file_name_per_fold
 
@@ -43,15 +43,13 @@ class ModelPersistence:
         except IOError:
             log.exception('Failed to save model to file \"%s\"', file_path)
 
-    def load_model(self, model_name: str, data_split: DataSplit, raise_exception: bool = False):
+    def load_model(self, model_name: str, data_split: DataSplit):
         """
         Loads a model from a file.
 
-        :param model_name:      The name of the model to be loaded
-        :param data_split:      Information about the split of the available data, the model corresponds to
-        :param raise_exception: True, if an exception should be raised if an error occurs, False, if None should be
-                                returned in such case
-        :return:                The loaded model
+        :param model_name:  The name of the model to be loaded
+        :param data_split:  Information about the split of the available data, the model corresponds to
+        :return:            The loaded model
         """
         file_name = get_file_name_per_fold(model_name, SUFFIX_MODEL, data_split.get_fold())
         file_path = path.join(self.model_dir, file_name)
@@ -62,10 +60,6 @@ class ModelPersistence:
                 model = pickle.load(input_stream)
                 log.info('Successfully loaded model from file \"%s\"', file_path)
                 return model
-        except IOError as e:
+        except IOError:
             log.error('Failed to load model from file \"%s\"', file_path)
-
-            if raise_exception:
-                raise e
-            else:
-                return None
+            return None
