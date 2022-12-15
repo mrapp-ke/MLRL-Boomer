@@ -131,4 +131,4 @@ cdef inline LabelSpaceInfo create_label_space_info(unique_ptr[ILabelSpaceInfo] l
             return no_label_space_info
         else:
             del ptr
-            raise RuntimeError('Encountered unknown label space info type')
+            raise RuntimeError('Encountered unsupported ILabelSpaceInfo object')

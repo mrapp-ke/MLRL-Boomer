@@ -330,4 +330,4 @@ cdef inline RuleModel create_rule_model(unique_ptr[IRuleModel] rule_model_ptr):
         return rule_list
     else:
         del ptr
-        raise RuntimeError('Encountered unknown model type')
+        raise RuntimeError('Encountered unsupported IRuleModel object')
