@@ -20,7 +20,7 @@ class AbstractRuleInduction : public IRuleInduction {
     protected:
 
         /**
-         * Must be implemented by subclasses in order to grow rule.
+         * Must be implemented by subclasses in order to grow a rule.
          *
          * @param thresholds        A reference to an object of type `IThresholds` that provides access to the
          *                          thresholds that may be used by the conditions of the rule
