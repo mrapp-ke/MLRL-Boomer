@@ -75,7 +75,7 @@ cdef class LabelVectorSet(LabelSpaceInfo):
         cdef int version = state[0]
 
         if version != SERIALIZATION_VERSION:
-            raise AssertionError('Version of the serialized LabelVectorSet is ' + str(version) + ', expected '
+            raise AssertionError('Version of the serialized LabelSpaceInfo is ' + str(version) + ', expected '
                                  + str(SERIALIZATION_VERSION))
 
         cdef list label_vector_list = state[1]
