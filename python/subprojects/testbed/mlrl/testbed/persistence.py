@@ -41,7 +41,7 @@ class ModelPersistence:
                 pickle.dump(model, output_stream, -1)
                 log.info('Successfully saved model to file \"%s\"', file_path)
         except IOError:
-            log.exception('Failed to save model to file \"%s\"', file_path)
+            log.error('Failed to save model to file \"%s\"', file_path)
 
     def load_model(self, model_name: str, data_split: DataSplit):
         """
