@@ -397,8 +397,8 @@ cdef class RuleList(RuleModel):
         cdef int version = state[0]
 
         if version != SERIALIZATION_VERSION:
-            raise AssertionError(
-                'Version of the serialized model is ' + str(version) + ', expected ' + str(SERIALIZATION_VERSION))
+            raise AssertionError('Version of the serialized RuleModel is ' + str(version) + ', expected '
+                                 + str(SERIALIZATION_VERSION))
 
         cdef object model_state = state[1]
         cdef list rule_list = model_state[0]
