@@ -10,13 +10,13 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from functools import reduce
 from timeit import default_timer as timer
-from typing import Optional, List
 
 from mlrl.testbed.data import MetaData, load_data_set_and_meta_data, load_data_set, one_hot_encode
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold, train_test_split
+from typing import Optional, List
 
 
 class DataSet:
@@ -230,7 +230,7 @@ def check_if_files_exist(directory: str, file_names: List[str]) -> bool:
     elif num_missing_files == len(file_names):
         return False
     else:
-        raise RuntimeError(
+        raise IOError(
             'The following files do not exist: ' + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b + '"',
                                                           missing_files, ''))
 
