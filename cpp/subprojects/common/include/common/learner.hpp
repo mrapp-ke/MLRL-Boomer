@@ -972,7 +972,7 @@ class MLRLCOMMON_API IRuleLearner {
 
         /**
          * Obtains and returns regression scores for given query examples. If the prediction of regression scores is not
-         * supported by the rule learner, an exception is thrown.
+         * supported by the rule learner, a `std::runtime_error` is thrown.
          *
          * @param featureMatrix     A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise
          *                          access to the feature values of the query examples
@@ -986,7 +986,7 @@ class MLRLCOMMON_API IRuleLearner {
 
         /**
          * Obtains and returns regression scores for given query examples. If the prediction of regression scores is not
-         * supported by the rule learner, an exception is thrown.
+         * supported by the rule learner, a `std::runtime_error` is thrown.
          *
          * @param featureMatrix     A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise
          *                          access to the feature values of the query examples
@@ -1026,7 +1026,7 @@ class MLRLCOMMON_API IRuleLearner {
 
         /**
          * Obtains and returns probability estimates for given query examples. If the prediction of probabilities is not
-         * supported by the rule learner, an exception is thrown.
+         * supported by the rule learner, a `std::runtime_error` is thrown.
          *
          * @param featureMatrix     A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise
          *                          access to the feature values of the query examples
@@ -1040,7 +1040,7 @@ class MLRLCOMMON_API IRuleLearner {
 
         /**
          * Obtains and returns probability estimates for given query examples. If the prediction of probabilities is not
-         * supported by the rule learner, an exception is thrown.
+         * supported by the rule learner, a `std::runtime_error` is thrown.
          *
          * @param featureMatrix     A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise
          *                          access to the feature values of the query examples
