@@ -6,10 +6,9 @@ Provides base classes for implementing single- or multi-label rule learning algo
 import logging as log
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Optional
 
 import numpy as np
-from mlrl.common.arrays import enforce_dense
+from mlrl.common.arrays import enforce_dense, enforce_2d
 from mlrl.common.cython.feature_matrix import RowWiseFeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, CContiguousFeatureMatrix
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
@@ -22,6 +21,7 @@ from mlrl.common.format import format_enum_values
 from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
+from typing import Optional
 
 
 class SparsePolicy(Enum):
@@ -311,9 +311,8 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         y_sparse_policy = create_sparse_policy('label_format', self.label_format)
         y_enforce_sparse = should_enforce_sparse(y, sparse_format=y_sparse_format, policy=y_sparse_policy,
                                                  dtype=DTYPE_UINT8, sparse_values=False)
-        y = check_array((y if y_enforce_sparse else enforce_dense(y, order='C', dtype=DTYPE_UINT8)),
-                        accept_sparse=(y_sparse_format.value if y_enforce_sparse else False), ensure_2d=False,
-                        dtype=DTYPE_UINT8)
+        y = check_array((y if y_enforce_sparse else enforce_2d(enforce_dense(y, order='C', dtype=DTYPE_UINT8))),
+                        accept_sparse=(y_sparse_format.value if y_enforce_sparse else False), dtype=DTYPE_UINT8)
 
         if issparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
@@ -322,11 +321,6 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             label_matrix = CsrLabelMatrix(y.shape[0], y.shape[1], y_row_indices, y_col_indices)
         else:
             log.debug('A dense matrix is used to store the labels of the training examples')
-
-            # Convert y into two-dimensional array, if necessary...
-            if y.ndim == 1:
-                y = np.expand_dims(y, axis=1)
-
             label_matrix = CContiguousLabelMatrix(y)
 
         # Create a mask that provides access to the information whether individual features are nominal or not...
