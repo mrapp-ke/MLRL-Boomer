@@ -110,6 +110,10 @@ class EvaluationFunction(Formattable):
         return self.evaluation_function(ground_truth, predictions, **self.kwargs)
 
 
+ARGS_SINGLE_LABEL = {
+    'zero_division': 1
+}
+
 ARGS_MICRO = {
     'average': 'micro',
     'zero_division': 1
@@ -155,10 +159,10 @@ MULTI_LABEL_EVALUATION_MEASURES: List[Formattable] = [
 SINGLE_LABEL_EVALUATION_MEASURES: List[Formattable] = [
     EvaluationFunction(ARGUMENT_ACCURACY, 'Accuracy', metrics.accuracy_score),
     EvaluationFunction(ARGUMENT_ZERO_ONE_LOSS, '0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
-    EvaluationFunction(ARGUMENT_PRECISION, 'Precision', metrics.precision_score),
-    EvaluationFunction(ARGUMENT_RECALL, 'Recall', metrics.recall_score),
-    EvaluationFunction(ARGUMENT_F1, 'F1', metrics.f1_score),
-    EvaluationFunction(ARGUMENT_JACCARD, 'Jaccard', metrics.jaccard_score),
+    EvaluationFunction(ARGUMENT_PRECISION, 'Precision', metrics.precision_score, **ARGS_SINGLE_LABEL),
+    EvaluationFunction(ARGUMENT_RECALL, 'Recall', metrics.recall_score, **ARGS_SINGLE_LABEL),
+    EvaluationFunction(ARGUMENT_F1, 'F1', metrics.f1_score, **ARGS_SINGLE_LABEL),
+    EvaluationFunction(ARGUMENT_JACCARD, 'Jaccard', metrics.jaccard_score, **ARGS_SINGLE_LABEL),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME
 ]
