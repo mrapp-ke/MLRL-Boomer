@@ -4,6 +4,7 @@ project('common', 'cython', 'cpp')
 cython_dir = 'cython'
 cython_module_names = [
     'feature_binning',
+    'feature_info',
     'feature_matrix',
     'feature_sampling',
     'instance_sampling',
