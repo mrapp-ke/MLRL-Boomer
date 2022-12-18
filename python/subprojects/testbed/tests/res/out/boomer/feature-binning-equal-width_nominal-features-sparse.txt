@@ -1,32 +1,32 @@
 INFO Starting experiment...
 INFO Using separate training and test sets...
-DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/enron.xml"...
-DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/enron.arff"...
-INFO Fitting model to 1140 training examples...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/weather.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/weather.arff"...
+INFO Fitting model to 9 training examples...
 DEBUG A sparse matrix is used to store the feature values of the training examples
-DEBUG A sparse matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.4792761999415234 seconds
-INFO Predicting for 562 test examples...
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 14 milliseconds
+INFO Predicting for 5 test examples...
 DEBUG A sparse matrix is used to store the feature values of the query examples
-DEBUG A sparse matrix is used to store the predicted labels
-INFO Successfully predicted in 0.014764120918698609 seconds
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in 0 milliseconds
 INFO Overall evaluation result on test data:
 
-Example-wise F1         41.13
-Example-wise Jaccard    29.58
-Example-wise Precision  62.75
-Example-wise Recall     33.2
-Hamming Accuracy        94.62
-Hamming Loss             5.38
-Macro F1                 7.92
-Macro Jaccard            6.25
-Macro Precision         94.94
-Macro Recall             7.58
-Micro F1                44.85
-Micro Jaccard           28.91
-Micro Precision         64.39
-Micro Recall            34.41
-Subset 0/1 Loss         96.98
-Subset Accuracy          3.02
+Example-wise F1         46.67
+Example-wise Jaccard    40
+Example-wise Precision  60
+Example-wise Recall     40
+Hamming Accuracy        60
+Hamming Loss            40
+Macro F1                41.67
+Macro Jaccard           31.11
+Macro Precision         58.33
+Macro Recall            36.11
+Micro F1                57.14
+Micro Jaccard           40
+Micro Precision         66.67
+Micro Recall            50
+Subset 0/1 Loss         80
+Subset Accuracy         20
 
-INFO Successfully finished after 0.7487196819856763 seconds
+INFO Successfully finished after 39 milliseconds

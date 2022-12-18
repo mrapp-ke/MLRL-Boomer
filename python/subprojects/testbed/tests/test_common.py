@@ -771,12 +771,14 @@ class CommonIntegrationTests(IntegrationTests, ABC):
     """
 
     def __init__(self, cmd: str, dataset_default: str = DATASET_EMOTIONS, dataset_numerical: str = DATASET_LANGLOG,
-                 dataset_nominal: str = DATASET_ENRON, dataset_one_hot_encoding: str = DATASET_ENRON,
-                 dataset_single_label: str = DATASET_BREAST_CANCER, expected_output_dir=DIR_OUT, methodName='runTest'):
+                 dataset_binary: str = DATASET_ENRON, dataset_nominal: str = DATASET_WEATHER,
+                 dataset_one_hot_encoding: str = DATASET_ENRON, dataset_single_label: str = DATASET_BREAST_CANCER,
+                 expected_output_dir=DIR_OUT, methodName='runTest'):
         """
         :param cmd:                         The command to be run by the integration tests
         :param dataset_default:             The name of the dataset that should be used by default
         :param dataset_numerical:           The name of a dataset with numerical features
+        :param dataset_binary:              The name of a dataset with binary features
         :param dataset_nominal:             The name of a dataset with nominal features
         :param dataset_one_hot_encoding:    The name of the dataset that should be used for one-hot-encoding
         :param dataset_single_label:        The name of the dataset that comes with a single label
@@ -787,6 +789,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         self.cmd = cmd
         self.dataset_default = dataset_default
         self.dataset_numerical = dataset_numerical
+        self.dataset_binary = dataset_binary
         self.dataset_nominal = dataset_nominal
         self.dataset_one_hot_encoding = dataset_one_hot_encoding
         self.dataset_single_label = dataset_single_label
@@ -1178,6 +1181,23 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical) \
             .sparse_feature_format(True)
         self.run_cmd(builder, 'numeric-features-sparse')
+
+    def test_binary_features_dense(self):
+        """
+        Tests the rule learning algorithm on a dataset with binary attributes when using a dense feature representation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_binary) \
+            .sparse_feature_format(False)
+        self.run_cmd(builder, 'binary-features-dense')
+
+    def test_binary_features_sparse(self):
+        """
+        Tests the rule learning algorithm on a dataset with binary attributes when using a sparse feature
+        representation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_binary) \
+            .sparse_feature_format(True)
+        self.run_cmd(builder, 'binary-features-sparse')
 
     def test_nominal_features_dense(self):
         """
