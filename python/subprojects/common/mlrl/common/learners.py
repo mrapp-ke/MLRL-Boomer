@@ -4,10 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for implementing single- or multi-label classifiers or rankers.
 """
 from abc import ABC, abstractmethod
-from typing import List
 
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
+from typing import Optional, List
 
 KWARG_PREDICT_SCORES = 'predict_scores'
 
@@ -17,7 +17,7 @@ class NominalAttributeLearner(ABC):
     A base class for all single- or multi-label classifiers or rankers that natively support nominal attributes.
     """
 
-    nominal_attribute_indices: List[int] = None
+    nominal_attribute_indices: Optional[List[int]] = None
 
 
 class IncrementalLearner(ABC):
