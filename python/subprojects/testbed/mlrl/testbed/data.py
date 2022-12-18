@@ -16,17 +16,16 @@ from mlrl.testbed.io import write_xml_file
 from scipy.sparse import coo_matrix, lil_matrix, csc_matrix, issparse, dok_matrix
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
-from typing import List, Optional
+from typing import List, Set, Optional
 
 
 class AttributeType(Enum):
     """
     All supported types of attributes.
     """
-
-    NUMERIC = auto()
-
+    BINARY = auto()
     NOMINAL = auto()
+    NUMERICAL_OR_ORDINAL = auto()
 
 
 class Attribute:
@@ -51,7 +50,7 @@ class Label(Attribute):
     """
 
     def __init__(self, name: str):
-        super(Label, self).__init__(name, AttributeType.NOMINAL, [str(0), str(1)])
+        super(Label, self).__init__(name, AttributeType.BINARY, [str(0), str(1)])
 
 
 class MetaData:
@@ -69,16 +68,17 @@ class MetaData:
         self.labels = labels
         self.labels_at_start = labels_at_start
 
-    def get_attribute_indices(self, attribute_type: AttributeType = None) -> List[int]:
+    def get_attribute_indices(self, attribute_types: Optional[Set[AttributeType]] = None) -> List[int]:
         """
-        Returns a list that contains the indices of all attributes of a specific type (in ascending order).
+        Returns a list that contains the indices of all attributes with one out of a set of given types (in ascending
+        order).
 
-        :param attribute_type:  The type of the attributes whose indices should be returned or None, if all indices
-                                should be returned
-        :return:                A list that contains the indices of all attributes of the given type
+        :param attribute_types: A set that contains the types of the attributes whose indices should be returned or
+                                None, if all indices should be returned
+        :return:                A list that contains the indices of all attributes of the given types
         """
         return [i for i, attribute in enumerate(self.attributes) if
-                attribute_type is None or attribute.attribute_type == attribute_type]
+                attribute_types is None or attribute.attribute_type in attribute_types]
 
 
 def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_name: str,
@@ -175,7 +175,7 @@ def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nda
     """
 
     num_attributes = x.shape[1]
-    attributes = [Attribute('X' + str(i), AttributeType.NUMERIC) for i in range(num_attributes)]
+    attributes = [Attribute('X' + str(i), AttributeType.NUMERICAL_OR_ORDINAL) for i in range(num_attributes)]
     num_labels = y.shape[1]
     labels = [Label('y' + str(i)) for i in range(num_labels)]
     meta_data = MetaData(attributes, labels, labels_at_start=False)
@@ -206,13 +206,13 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     attributes = meta_data.attributes
     x_attributes = [(u'{}'.format(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i)),
                      u'NUMERIC' if len(attributes) <= i or attributes[i].nominal_values is None or attributes[
-                         i].attribute_type == AttributeType.NUMERIC else attributes[i].nominal_values)
+                         i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else attributes[i].nominal_values)
                     for i in range(x.shape[1])]
 
     labels = meta_data.labels
     y_attributes = [(u'{}'.format(labels[i].attribute_name if len(labels) > i else 'y' + str(i)),
                      u'NUMERIC' if len(labels) <= i or labels[i].nominal_values is None or labels[
-                         i].attribute_type == AttributeType.NUMERIC else labels[i].nominal_values)
+                         i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else labels[i].nominal_values)
                     for i in range(y.shape[1])]
 
     if meta_data.labels_at_start:
@@ -276,7 +276,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     :return:            A `np.ndarray`, shape `(num_examples, num_encoded_features)`, representing the encoded features
                         of the given examples, the encoder that has been used, as well as the updated meta-data
     """
-    nominal_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
+    nominal_indices = meta_data.get_attribute_indices({AttributeType.BINARY, AttributeType.NOMINAL})
     num_nominal_attributes = len(nominal_indices)
     log.info('Data set contains %s nominal and %s numerical attributes.', num_nominal_attributes,
              (len(meta_data.attributes) - num_nominal_attributes))
@@ -426,10 +426,10 @@ def __create_meta_data(attributes: list, labels: List[Attribute]) -> MetaData:
             type_definition = attribute[1]
 
             if isinstance(type_definition, list):
-                attribute_type = AttributeType.NOMINAL
+                attribute_type = AttributeType.NOMINAL if len(type_definition) > 2 else AttributeType.BINARY
                 nominal_values = type_definition
             else:
-                attribute_type = AttributeType.NUMERIC
+                attribute_type = AttributeType.NUMERICAL_OR_ORDINAL
                 nominal_values = None
 
             attribute_list.append(Attribute(attribute_name, attribute_type, nominal_values))

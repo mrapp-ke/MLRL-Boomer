@@ -1,5 +1,6 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
 from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, IEqualFrequencyFeatureBinningConfig
+from mlrl.common.cython.feature_info cimport IFeatureInfo
 from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWiseFeatureMatrix
 from mlrl.common.cython.feature_sampling cimport IFeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
@@ -9,7 +10,6 @@ from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
 from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_space_info cimport LabelSpaceInfo, ILabelSpaceInfo
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
-from mlrl.common.cython.nominal_feature_mask cimport INominalFeatureMask
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
@@ -200,8 +200,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         # Functions:
 
-        unique_ptr[ITrainingResult] fit(const INominalFeatureMask& nominalFeatureMask,
-                                        const IColumnWiseFeatureMatrix& featureMatrix,
+        unique_ptr[ITrainingResult] fit(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
                                         const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const
 
         bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const

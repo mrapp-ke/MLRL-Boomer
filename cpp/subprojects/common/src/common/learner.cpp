@@ -338,9 +338,10 @@ std::unique_ptr<IProbabilityPredictorFactory> AbstractRuleLearner::createProbabi
     return nullptr;
 }
 
-std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
-        const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,
-        const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const {
+std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& featureInfo,
+                                                          const IColumnWiseFeatureMatrix& featureMatrix,
+                                                          const IRowWiseLabelMatrix& labelMatrix,
+                                                          uint32 randomState) const {
     assertGreaterOrEqual<uint32>("randomState", randomState, 1);
 
     // Create stopping criteria...
@@ -363,8 +364,8 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(
         this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(featureMatrix),
         this->createPartitionSamplingFactory(), this->createPruningFactory(), this->createPostProcessorFactory(),
         std::move(postOptimizationFactoryPtr), std::move(stoppingCriterionFactoryPtr));
-    std::unique_ptr<IRuleModel> ruleModelPtr = ruleModelAssemblagePtr->induceRules(
-        nominalFeatureMask, featureMatrix, labelMatrix, randomState);
+    std::unique_ptr<IRuleModel> ruleModelPtr = ruleModelAssemblagePtr->induceRules(featureInfo, featureMatrix,
+                                                                                   labelMatrix, randomState);
     return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), std::move(ruleModelPtr),
                                             std::move(labelSpaceInfoPtr));
 }

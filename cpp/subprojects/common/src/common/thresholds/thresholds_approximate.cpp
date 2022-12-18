@@ -204,7 +204,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                         thresholds_.cache_.emplace(featureIndex, IFeatureBinning::Result());
                     }
 
-                    bool nominal = thresholds_.nominalFeatureMask_.isNominal(featureIndex);
+                    IFeatureInfo::FeatureType featureType = thresholds_.featureInfo_.getFeatureType(featureIndex);
+                    bool nominal = featureType != IFeatureInfo::FeatureType::NUMERICAL_OR_ORDINAL;
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
                     return std::make_unique<ApproximateRuleRefinement<T>>(labelIndices, coverageSet_.getNumCovered(),
                                                                           featureIndex, nominal,
@@ -368,8 +369,8 @@ class ApproximateThresholds final : public AbstractThresholds {
          * @param featureMatrix                 A reference to an object of type `IColumnWiseFeatureMatrix` that
          *                                      provides column-wise access to the feature values of individual training
          *                                      examples
-         * @param nominalFeatureMask            A reference  to an object of type `INominalFeatureMask` that provides
-         *                                      access to the information whether individual features are nominal or not
+         * @param featureInfo                   A reference to an object of type `IFeatureInfo` that provides
+         *                                      information about the types of individual features
          * @param statisticsProvider            A reference to an object of type `IStatisticsProvider` that provides
          *                                      access to statistics about the labels of the training examples
          * @param numericalFeatureBinningPtr    An unique pointer to an object of type `IFeatureBinning` that should be
@@ -378,11 +379,11 @@ class ApproximateThresholds final : public AbstractThresholds {
          *                                      used to assign nominal feature values to bins
          * @param numThreads                    The number of CPU threads to be used to update statistics in parallel
          */
-        ApproximateThresholds(const IColumnWiseFeatureMatrix& featureMatrix,
-                              const INominalFeatureMask& nominalFeatureMask, IStatisticsProvider& statisticsProvider,
+        ApproximateThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
+                              IStatisticsProvider& statisticsProvider,
                               std::unique_ptr<IFeatureBinning> numericalFeatureBinningPtr,
                               std::unique_ptr<IFeatureBinning> nominalFeatureBinningPtr, uint32 numThreads)
-            : AbstractThresholds(featureMatrix, nominalFeatureMask, statisticsProvider),
+            : AbstractThresholds(featureMatrix, featureInfo, statisticsProvider),
               numericalFeatureBinningPtr_(std::move(numericalFeatureBinningPtr)),
               nominalFeatureBinningPtr_(std::move(nominalFeatureBinningPtr)), numThreads_(numThreads) {
 
@@ -419,12 +420,12 @@ ApproximateThresholdsFactory::ApproximateThresholdsFactory(
 
 }
 
-std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(
-        const IColumnWiseFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
-        IStatisticsProvider& statisticsProvider) const {
+std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(const IColumnWiseFeatureMatrix& featureMatrix,
+                                                                  const IFeatureInfo& featureInfo,
+                                                                  IStatisticsProvider& statisticsProvider) const {
     std::unique_ptr<IFeatureBinning> numericalFeatureBinningPtr = numericalFeatureBinningFactoryPtr_->create();
     std::unique_ptr<IFeatureBinning> nominalFeatureBinningPtr = nominalFeatureBinningFactoryPtr_->create();
-    return std::make_unique<ApproximateThresholds>(featureMatrix, nominalFeatureMask, statisticsProvider,
+    return std::make_unique<ApproximateThresholds>(featureMatrix, featureInfo, statisticsProvider,
                                                    std::move(numericalFeatureBinningPtr),
                                                    std::move(nominalFeatureBinningPtr), numThreads_);
 }

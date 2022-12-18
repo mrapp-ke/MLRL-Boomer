@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "common/input/feature_info.hpp"
 #include "common/input/feature_matrix_column_wise.hpp"
-#include "common/input/nominal_feature_mask.hpp"
 #include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/weight_vector_dense.hpp"
 #include "common/sampling/weight_vector_equal.hpp"
@@ -73,14 +73,14 @@ class IThresholdsFactory {
          *
          * @param featureMatrix         A reference to an object of type `IColumnWiseFeatureMatrix` that provides
          *                              column-wise access to the feature values of individual training examples
-         * @param nominalFeatureMask    A reference  to an object of type `INominalFeatureMask` that provides access to
-         *                              the information whether individual features are nominal or not
+         * @param featureInfo           A reference  to an object of type `IFeatureInfo` that provides information about
+         *                              the types of individual features
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
          *                              statistics about the labels of the training examples
          * @return                      An unique pointer to an object of type `IThresholds` that has been created
          */
         virtual std::unique_ptr<IThresholds> create(const IColumnWiseFeatureMatrix& featureMatrix,
-                                                    const INominalFeatureMask& nominalFeatureMask,
+                                                    const IFeatureInfo& featureInfo,
                                                     IStatisticsProvider& statisticsProvider) const = 0;
 
 };
