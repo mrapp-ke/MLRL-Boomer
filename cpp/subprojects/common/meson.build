@@ -30,6 +30,7 @@ source_files = [
     'src/common/indices/index_iterator.cpp',
     'src/common/indices/index_vector_complete.cpp',
     'src/common/indices/index_vector_partial.cpp',
+    'src/common/input/feature_info_mixed.cpp',
     'src/common/input/feature_matrix_c_contiguous.cpp',
     'src/common/input/feature_matrix_csc.cpp',
     'src/common/input/feature_matrix_csr.cpp',
