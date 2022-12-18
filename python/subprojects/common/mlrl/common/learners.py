@@ -14,8 +14,11 @@ KWARG_PREDICT_SCORES = 'predict_scores'
 
 class NominalAttributeLearner(ABC):
     """
-    A base class for all single- or multi-label classifiers or rankers that natively support nominal attributes.
+    A base class for all single- or multi-label classifiers or rankers that natively support binary and nominal
+    attributes.
     """
+
+    binary_attribute_indices: Optional[List[int]] = None
 
     nominal_attribute_indices: Optional[List[int]] = None
 

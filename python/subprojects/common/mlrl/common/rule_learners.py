@@ -324,13 +324,17 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         # Obtain information about the types of the individual features...
         num_features = feature_matrix.get_num_cols()
+        num_binary_features = 0 if self.binary_attribute_indices is None else len(self.binary_attribute_indices)
+        num_nominal_features = 0 if self.nominal_attribute_indices is None else len(self.nominal_attribute_indices)
 
-        if self.nominal_attribute_indices is None or len(self.nominal_attribute_indices) == 0:
+        if num_binary_features == 0 and num_nominal_features == 0:
             feature_info = EqualFeatureInfo(FeatureType.NUMERICAL_OR_ORDINAL)
-        elif len(self.nominal_attribute_indices) == num_features:
+        elif num_binary_features == num_features:
+            feature_info = EqualFeatureInfo(FeatureType.BINARY)
+        elif num_nominal_features == num_features:
             feature_info = EqualFeatureInfo(FeatureType.NOMINAL)
         else:
-            feature_info = MixedFeatureInfo(num_features, [], self.nominal_attribute_indices)
+            feature_info = MixedFeatureInfo(num_features, self.binary_attribute_indices, self.nominal_attribute_indices)
 
         # Induce rules...
         learner = self._create_learner()
