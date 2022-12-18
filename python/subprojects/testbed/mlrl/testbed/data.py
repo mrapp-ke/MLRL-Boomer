@@ -7,7 +7,6 @@ import logging as log
 import os.path as path
 import xml.etree.ElementTree as XmlTree
 from enum import Enum, auto
-from typing import List, Optional
 from xml.dom import minidom
 
 import arff
@@ -17,6 +16,7 @@ from mlrl.testbed.io import write_xml_file
 from scipy.sparse import coo_matrix, lil_matrix, csc_matrix, issparse, dok_matrix
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
+from typing import List, Set, Optional
 
 
 class AttributeType(Enum):
@@ -69,16 +69,17 @@ class MetaData:
         self.labels = labels
         self.labels_at_start = labels_at_start
 
-    def get_attribute_indices(self, attribute_type: Optional[AttributeType] = None) -> List[int]:
+    def get_attribute_indices(self, attribute_types: Optional[Set[AttributeType]] = None) -> List[int]:
         """
-        Returns a list that contains the indices of all attributes of a specific type (in ascending order).
+        Returns a list that contains the indices of all attributes with one out of a set of given types (in ascending
+        order).
 
-        :param attribute_type:  The type of the attributes whose indices should be returned or None, if all indices
-                                should be returned
-        :return:                A list that contains the indices of all attributes of the given type
+        :param attribute_types: A set that contains the types of the attributes whose indices should be returned or
+                                None, if all indices should be returned
+        :return:                A list that contains the indices of all attributes of the given types
         """
         return [i for i, attribute in enumerate(self.attributes) if
-                attribute_type is None or attribute.attribute_type == attribute_type]
+                attribute_types is None or attribute.attribute_type in attribute_types]
 
 
 def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_name: str,
@@ -276,7 +277,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     :return:            A `np.ndarray`, shape `(num_examples, num_encoded_features)`, representing the encoded features
                         of the given examples, the encoder that has been used, as well as the updated meta-data
     """
-    nominal_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
+    nominal_indices = meta_data.get_attribute_indices({AttributeType.BINARY, AttributeType.NOMINAL})
     num_nominal_attributes = len(nominal_indices)
     log.info('Data set contains %s nominal and %s numerical attributes.', num_nominal_attributes,
              (len(meta_data.attributes) - num_nominal_attributes))
