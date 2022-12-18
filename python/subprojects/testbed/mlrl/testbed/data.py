@@ -28,6 +28,8 @@ class AttributeType(Enum):
 
     NOMINAL = auto()
 
+    BINARY = auto()
+
 
 class Attribute:
     """
@@ -51,7 +53,7 @@ class Label(Attribute):
     """
 
     def __init__(self, name: str):
-        super(Label, self).__init__(name, AttributeType.NOMINAL, [str(0), str(1)])
+        super(Label, self).__init__(name, AttributeType.BINARY, [str(0), str(1)])
 
 
 class MetaData:
@@ -427,7 +429,7 @@ def __create_meta_data(attributes: list, labels: List[Attribute]) -> MetaData:
             type_definition = attribute[1]
 
             if isinstance(type_definition, list):
-                attribute_type = AttributeType.NOMINAL
+                attribute_type = AttributeType.NOMINAL if len(type_definition) > 2 else AttributeType.BINARY
                 nominal_values = type_definition
             else:
                 attribute_type = AttributeType.NUMERIC
