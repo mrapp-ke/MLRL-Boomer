@@ -9,7 +9,7 @@ from enum import Enum
 
 import numpy as np
 from mlrl.common.arrays import enforce_dense, enforce_2d
-from mlrl.common.cython.feature_info import EqualFeatureInfo, MixedFeatureInfo, FeatureType
+from mlrl.common.cython.feature_info import FeatureInfo, EqualFeatureInfo, MixedFeatureInfo, FeatureType
 from mlrl.common.cython.feature_matrix import RowWiseFeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, CContiguousFeatureMatrix
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
@@ -323,18 +323,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             label_matrix = CContiguousLabelMatrix(y)
 
         # Obtain information about the types of the individual features...
-        num_features = feature_matrix.get_num_cols()
-        num_binary_features = 0 if self.binary_attribute_indices is None else len(self.binary_attribute_indices)
-        num_nominal_features = 0 if self.nominal_attribute_indices is None else len(self.nominal_attribute_indices)
-
-        if num_binary_features == 0 and num_nominal_features == 0:
-            feature_info = EqualFeatureInfo(FeatureType.NUMERICAL_OR_ORDINAL)
-        elif num_binary_features == num_features:
-            feature_info = EqualFeatureInfo(FeatureType.BINARY)
-        elif num_nominal_features == num_features:
-            feature_info = EqualFeatureInfo(FeatureType.NOMINAL)
-        else:
-            feature_info = MixedFeatureInfo(num_features, self.binary_attribute_indices, self.nominal_attribute_indices)
+        feature_info = self.__create_feature_info(feature_matrix.get_num_cols())
 
         # Induce rules...
         learner = self._create_learner()
@@ -342,6 +331,27 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         self.num_labels_ = training_result.num_labels
         self.label_space_info_ = training_result.label_space_info
         return training_result.rule_model
+
+    def __create_feature_info(self, num_features: int) -> FeatureInfo:
+        """
+        Creates and returns a `FeatureInfo` that provides information about the types of individual features.
+
+        :param num_features:    The total number of available features
+        :return:                The `FeatureInfo` that has been created
+        """
+        binary_attribute_indices = self.binary_attribute_indices
+        nominal_attribute_indices = self.nominal_attribute_indices
+        num_binary_features = 0 if binary_attribute_indices is None else len(binary_attribute_indices)
+        num_nominal_features = 0 if nominal_attribute_indices is None else len(nominal_attribute_indices)
+
+        if num_binary_features == 0 and num_nominal_features == 0:
+            return EqualFeatureInfo(FeatureType.NUMERICAL_OR_ORDINAL)
+        elif num_binary_features == num_features:
+            return EqualFeatureInfo(FeatureType.BINARY)
+        elif num_nominal_features == num_features:
+            return EqualFeatureInfo(FeatureType.NOMINAL)
+        else:
+            return MixedFeatureInfo(num_features, binary_attribute_indices, nominal_attribute_indices)
 
     def _predict_labels(self, x, **kwargs):
         learner = self._create_learner()
