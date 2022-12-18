@@ -324,7 +324,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             log.debug('A dense matrix is used to store the labels of the training examples')
             label_matrix = CContiguousLabelMatrix(y)
 
-        # Create a mask that provides access to the information whether individual features are nominal or not...
+        # Obtain information about the types of the individual features...
         num_features = feature_matrix.get_num_cols()
 
         if self.nominal_attribute_indices is None or len(self.nominal_attribute_indices) == 0:
