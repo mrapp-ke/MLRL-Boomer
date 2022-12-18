@@ -302,8 +302,6 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         # Validate label matrix and convert it to the preferred format...
         y_sparse_format = SparseFormat.CSR
-
-        # Check if predictions should be sparse...
         prediction_sparse_policy = create_sparse_policy('predicted_label_format', self.predicted_label_format)
         self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
                 prediction_sparse_policy == SparsePolicy.FORCE_SPARSE or
