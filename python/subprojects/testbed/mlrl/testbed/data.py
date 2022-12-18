@@ -69,7 +69,7 @@ class MetaData:
         self.labels = labels
         self.labels_at_start = labels_at_start
 
-    def get_attribute_indices(self, attribute_type: AttributeType = None) -> List[int]:
+    def get_attribute_indices(self, attribute_type: Optional[AttributeType] = None) -> List[int]:
         """
         Returns a list that contains the indices of all attributes of a specific type (in ascending order).
 
