@@ -5,10 +5,10 @@
 
 #include "common/binning/feature_binning_equal_frequency.hpp"
 #include "common/binning/feature_binning_equal_width.hpp"
+#include "common/input/feature_info.hpp"
 #include "common/input/feature_matrix_column_wise.hpp"
 #include "common/input/feature_matrix_row_wise.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
-#include "common/input/nominal_feature_mask.hpp"
 #include "common/multi_threading/multi_threading_manual.hpp"
 #include "common/output/label_space_info.hpp"
 #include "common/output/prediction_matrix_dense.hpp"
@@ -852,19 +852,20 @@ class MLRLCOMMON_API IRuleLearner {
         /**
          * Applies the rule learner to given training examples and corresponding ground truth labels.
          *
-         * @param nominalFeatureMask    A reference to an object of type `INominalFeatureMask` that allows to check
-         *                              whether individual features are nominal or not.
-         * @param featureMatrix         A reference to an object of type `IColumnWiseFeatureMatrix` that provides
-         *                              column-wise access to the feature values of the training examples
-         * @param labelMatrix           A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise
-         *                              access to the ground truth labels of the training examples
-         * @param randomState           The seed to be used by random number generators
-         * @return                      An unique pointer to an object of type `ITrainingResult` that provides access to
-         *                              the results of fitting the rule learner to the training data
+         * @param featureInfo       A reference to an object of type `IFeatureInfo` that provides information about the
+         *                          types of individual features
+         * @param featureMatrix     A reference to an object of type `IColumnWiseFeatureMatrix` that provides
+         *                          column-wise access to the feature values of the training examples
+         * @param labelMatrix       A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access
+         *                          to the ground truth labels of the training examples
+         * @param randomState       The seed to be used by random number generators
+         * @return                  An unique pointer to an object of type `ITrainingResult` that provides access to the
+         *                          results of fitting the rule learner to the training data
          */
-        virtual std::unique_ptr<ITrainingResult> fit(
-            const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,
-            const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const = 0;
+        virtual std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
+                                                     const IColumnWiseFeatureMatrix& featureMatrix,
+                                                     const IRowWiseLabelMatrix& labelMatrix,
+                                                     uint32 randomState) const = 0;
 
         /**
          * Returns whether the rule learner is able to predict binary labels or not.
@@ -1388,9 +1389,9 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          */
         AbstractRuleLearner(IRuleLearner::IConfig& config);
 
-        std::unique_ptr<ITrainingResult> fit(
-            const INominalFeatureMask& nominalFeatureMask, const IColumnWiseFeatureMatrix& featureMatrix,
-            const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const override;
+        std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
+                                             const IColumnWiseFeatureMatrix& featureMatrix,
+                                             const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const override;
 
         bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix,
                               const ITrainingResult& trainingResult) const override;

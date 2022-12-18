@@ -9,12 +9,12 @@ from enum import Enum
 
 import numpy as np
 from mlrl.common.arrays import enforce_dense, enforce_2d
+from mlrl.common.cython.feature_info import EqualFeatureInfo, MixedFeatureInfo, FeatureType
 from mlrl.common.cython.feature_matrix import RowWiseFeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, CContiguousFeatureMatrix
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.label_space_info import LabelSpaceInfo
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.cython.nominal_feature_mask import EqualNominalFeatureMask, MixedNominalFeatureMask
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from mlrl.common.format import format_enum_values
@@ -328,15 +328,15 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         num_features = feature_matrix.get_num_cols()
 
         if self.nominal_attribute_indices is None or len(self.nominal_attribute_indices) == 0:
-            nominal_feature_mask = EqualNominalFeatureMask(False)
+            feature_info = EqualFeatureInfo(FeatureType.NUMERICAL_OR_ORDINAL)
         elif len(self.nominal_attribute_indices) == num_features:
-            nominal_feature_mask = EqualNominalFeatureMask(True)
+            feature_info = EqualFeatureInfo(FeatureType.NOMINAL)
         else:
-            nominal_feature_mask = MixedNominalFeatureMask(num_features, self.nominal_attribute_indices)
+            feature_info = MixedFeatureInfo(num_features, [], self.nominal_attribute_indices)
 
         # Induce rules...
         learner = self._create_learner()
-        training_result = learner.fit(nominal_feature_mask, feature_matrix, label_matrix, self.random_state)
+        training_result = learner.fit(feature_info, feature_matrix, label_matrix, self.random_state)
         self.num_labels_ = training_result.num_labels
         self.label_space_info_ = training_result.label_space_info
         return training_result.rule_model
