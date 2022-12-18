@@ -25,7 +25,7 @@ class AttributeType(Enum):
     """
     BINARY = auto()
     NOMINAL = auto()
-    NUMERIC = auto()
+    NUMERICAL_OR_ORDINAL = auto()
 
 
 class Attribute:
@@ -175,7 +175,7 @@ def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nda
     """
 
     num_attributes = x.shape[1]
-    attributes = [Attribute('X' + str(i), AttributeType.NUMERIC) for i in range(num_attributes)]
+    attributes = [Attribute('X' + str(i), AttributeType.NUMERICAL_OR_ORDINAL) for i in range(num_attributes)]
     num_labels = y.shape[1]
     labels = [Label('y' + str(i)) for i in range(num_labels)]
     meta_data = MetaData(attributes, labels, labels_at_start=False)
@@ -206,13 +206,13 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     attributes = meta_data.attributes
     x_attributes = [(u'{}'.format(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i)),
                      u'NUMERIC' if len(attributes) <= i or attributes[i].nominal_values is None or attributes[
-                         i].attribute_type == AttributeType.NUMERIC else attributes[i].nominal_values)
+                         i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else attributes[i].nominal_values)
                     for i in range(x.shape[1])]
 
     labels = meta_data.labels
     y_attributes = [(u'{}'.format(labels[i].attribute_name if len(labels) > i else 'y' + str(i)),
                      u'NUMERIC' if len(labels) <= i or labels[i].nominal_values is None or labels[
-                         i].attribute_type == AttributeType.NUMERIC else labels[i].nominal_values)
+                         i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else labels[i].nominal_values)
                     for i in range(y.shape[1])]
 
     if meta_data.labels_at_start:
@@ -429,7 +429,7 @@ def __create_meta_data(attributes: list, labels: List[Attribute]) -> MetaData:
                 attribute_type = AttributeType.NOMINAL if len(type_definition) > 2 else AttributeType.BINARY
                 nominal_values = type_definition
             else:
-                attribute_type = AttributeType.NUMERIC
+                attribute_type = AttributeType.NUMERICAL_OR_ORDINAL
                 nominal_values = None
 
             attribute_list.append(Attribute(attribute_name, attribute_type, nominal_values))
