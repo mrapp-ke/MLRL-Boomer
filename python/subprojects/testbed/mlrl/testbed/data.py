@@ -144,7 +144,7 @@ def load_data_set(data_dir: str, arff_file_name: str, meta_data: MetaData, featu
 def save_data_set_and_meta_data(output_dir: str, arff_file_name: str, xml_file_name: str, x: np.ndarray,
                                 y: np.ndarray) -> MetaData:
     """
-    Saves a multi-label data set to an ARFF file and its meta-data to a XML file. All attributes in the data set are
+    Saves a multi-label data set to an ARFF file and its meta-data to an XML file. All attributes in the data set are
     considered to be numerical.
 
     :param output_dir:      The path of the directory where the ARFF file and the XML file should be saved
@@ -247,7 +247,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
 
 def save_meta_data(output_dir: str, xml_file_name: str, meta_data: MetaData):
     """
-    Saves the meta-data of a multi-label data set to a XML file.
+    Saves the meta-data of a multi-label data set to an XML file.
 
     :param output_dir:      The path of the directory where the XML file should be saved
     :param xml_file_name:   The name of the XML file (including the suffix)

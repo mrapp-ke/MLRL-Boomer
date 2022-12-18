@@ -7,8 +7,9 @@ import os
 import os.path as path
 import xml.etree.ElementTree as XmlTree
 from csv import DictReader, DictWriter, QUOTE_MINIMAL
-from typing import Optional
 from xml.dom import minidom
+
+from typing import Optional
 
 # The delimiter used to separate the columns in a CSV file
 CSV_DELIMITER = ','
@@ -25,7 +26,7 @@ SUFFIX_CSV = 'csv'
 # The suffix of an ARFF file
 SUFFIX_ARFF = 'arff'
 
-# The suffix of a XML file
+# The suffix of an XML file
 SUFFIX_XML = 'xml'
 
 
@@ -129,7 +130,7 @@ def create_csv_dict_writer(csv_file, header) -> DictWriter:
 
 def write_xml_file(xml_file, root_element: XmlTree.Element, encoding='utf-8'):
     """
-    Writes a XML structure to a file.
+    Writes an XML structure to a file.
 
     :param xml_file:        The XML file
     :param root_element:    The root element of the XML structure
