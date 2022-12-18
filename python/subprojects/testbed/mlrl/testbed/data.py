@@ -23,12 +23,9 @@ class AttributeType(Enum):
     """
     All supported types of attributes.
     """
-
-    NUMERIC = auto()
-
-    NOMINAL = auto()
-
     BINARY = auto()
+    NOMINAL = auto()
+    NUMERIC = auto()
 
 
 class Attribute:
