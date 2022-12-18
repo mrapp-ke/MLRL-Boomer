@@ -337,7 +337,8 @@ class Experiment(DataSplitter.Callback):
 
         # Set the indices of nominal attributes, if supported...
         if isinstance(current_learner, NominalAttributeLearner):
-            current_learner.nominal_attribute_indices = meta_data.get_attribute_indices(AttributeType.NOMINAL)
+            current_learner.binary_attribute_indices = meta_data.get_attribute_indices({AttributeType.BINARY})
+            current_learner.nominal_attribute_indices = meta_data.get_attribute_indices({AttributeType.NOMINAL})
 
         # Load model from disc, if possible, otherwise train a new model...
         loaded_learner = self.__load_model(data_split)

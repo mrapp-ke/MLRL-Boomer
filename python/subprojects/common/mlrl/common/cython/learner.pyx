@@ -3,11 +3,11 @@
 """
 from mlrl.common.cython._arrays cimport array_uint32, c_matrix_uint8, c_matrix_float64
 from mlrl.common.cython.validation import assert_greater_or_equal
+from mlrl.common.cython.feature_info cimport FeatureInfo
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
 from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
-from mlrl.common.cython.nominal_feature_mask cimport NominalFeatureMask
 from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
 
@@ -186,24 +186,23 @@ cdef class RuleLearner:
     cdef IRuleLearner* get_rule_learner_ptr(self):
         pass
 
-    def fit(self, NominalFeatureMask nominal_feature_mask not None, ColumnWiseFeatureMatrix feature_matrix not None,
+    def fit(self, FeatureInfo feature_info not None, ColumnWiseFeatureMatrix feature_matrix not None,
             RowWiseLabelMatrix label_matrix not None, uint32 random_state) -> TrainingResult:
         """
         Applies the rule learner to given training examples and corresponding ground truth labels.
 
-        :param nominal_feature_mask:    A `NominalFeatureMask` that allows to check whether individual features are
-                                        nominal or not
-        :param feature_matrix:          A `ColumnWiseFeatureMatrix` that provides column-wise access to the feature
-                                        values of the training examples
-        :param label_matrix:            A `RowWiseLabelMatrix` that provides row-wise access to the ground truth labels
-                                        of the training examples
-        :param random_state:            The seed to be used by random number generators
-        :return:                        The `TrainingResult` that provides access to the result of fitting the rule
-                                        learner to the training data
+        :param feature_info:    A `FeatureInfo` that provides information about the types of individual features
+        :param feature_matrix:  A `ColumnWiseFeatureMatrix` that provides column-wise access to the feature values of
+                                the training examples
+        :param label_matrix:    A `RowWiseLabelMatrix` that provides row-wise access to the ground truth labels of the
+                                training examples
+        :param random_state:    The seed to be used by random number generators
+        :return:                The `TrainingResult` that provides access to the result of fitting the rule learner to
+                                the training data
         """
         assert_greater_or_equal("random_state", random_state, 1)
         cdef unique_ptr[ITrainingResult] training_result_ptr = self.get_rule_learner_ptr().fit(
-            dereference(nominal_feature_mask.get_nominal_feature_mask_ptr()),
+            dereference(feature_info.get_feature_info_ptr()),
             dereference(feature_matrix.get_column_wise_feature_matrix_ptr()),
             dereference(label_matrix.get_row_wise_label_matrix_ptr()), random_state)
         cdef uint32 num_labels = training_result_ptr.get().getNumLabels()

@@ -318,7 +318,8 @@ class ExactThresholds final : public AbstractThresholds {
                         thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>());
                     }
 
-                    bool nominal = thresholds_.nominalFeatureMask_.isNominal(featureIndex);
+                    IFeatureInfo::FeatureType featureType = thresholds_.featureInfo_.getFeatureType(featureIndex);
+                    bool nominal = featureType != IFeatureInfo::FeatureType::NUMERICAL_OR_ORDINAL;
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
                     return std::make_unique<ExactRuleRefinement<T>>(labelIndices, numCoveredExamples_, featureIndex,
                                                                     nominal, weights_.hasZeroWeights(),
@@ -503,15 +504,15 @@ class ExactThresholds final : public AbstractThresholds {
         /**
          * @param featureMatrix         A reference to an object of type `IColumnWiseFeatureMatrix` that provides
          *                              column-wise access to the feature values of individual training examples
-         * @param nominalFeatureMask    A reference  to an object of type `INominalFeatureMask` that provides access to
-         *                              the information whether individual features are nominal or not
+         * @param featureInfo           A reference to an object of type `IFeatureInfo` that provides information about
+         *                              the types of individual features
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
          *                              statistics about the labels of the training examples
          * @param numThreads            The number of CPU threads to be used to update statistics in parallel
          */
-        ExactThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
+        ExactThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
                         IStatisticsProvider& statisticsProvider, uint32 numThreads)
-            : AbstractThresholds(featureMatrix, nominalFeatureMask, statisticsProvider), numThreads_(numThreads) {
+            : AbstractThresholds(featureMatrix, featureInfo, statisticsProvider), numThreads_(numThreads) {
 
         }
 
@@ -543,8 +544,8 @@ ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads)
 
 }
 
-std::unique_ptr<IThresholds> ExactThresholdsFactory::create(
-        const IColumnWiseFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
-        IStatisticsProvider& statisticsProvider) const {
-    return std::make_unique<ExactThresholds>(featureMatrix, nominalFeatureMask, statisticsProvider, numThreads_);
+std::unique_ptr<IThresholds> ExactThresholdsFactory::create(const IColumnWiseFeatureMatrix& featureMatrix,
+                                                            const IFeatureInfo& featureInfo,
+                                                            IStatisticsProvider& statisticsProvider) const {
+    return std::make_unique<ExactThresholds>(featureMatrix, featureInfo, statisticsProvider, numThreads_);
 }

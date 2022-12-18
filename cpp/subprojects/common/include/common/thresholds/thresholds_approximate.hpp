@@ -38,7 +38,7 @@ class ApproximateThresholdsFactory final : public IThresholdsFactory {
                                      uint32 numThreads);
 
         std::unique_ptr<IThresholds> create(const IColumnWiseFeatureMatrix& featureMatrix,
-                                            const INominalFeatureMask& nominalFeatureMask,
+                                            const IFeatureInfo& featureInfo,
                                             IStatisticsProvider& statisticsProvider) const override;
 
 };

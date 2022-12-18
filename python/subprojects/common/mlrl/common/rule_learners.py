@@ -9,12 +9,12 @@ from enum import Enum
 
 import numpy as np
 from mlrl.common.arrays import enforce_dense, enforce_2d
+from mlrl.common.cython.feature_info import FeatureInfo, EqualFeatureInfo, MixedFeatureInfo, FeatureType
 from mlrl.common.cython.feature_matrix import RowWiseFeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, CContiguousFeatureMatrix
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.label_space_info import LabelSpaceInfo
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.cython.nominal_feature_mask import EqualNominalFeatureMask, MixedNominalFeatureMask
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from mlrl.common.format import format_enum_values
@@ -302,8 +302,6 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         # Validate label matrix and convert it to the preferred format...
         y_sparse_format = SparseFormat.CSR
-
-        # Check if predictions should be sparse...
         prediction_sparse_policy = create_sparse_policy('predicted_label_format', self.predicted_label_format)
         self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
                 prediction_sparse_policy == SparsePolicy.FORCE_SPARSE or
@@ -324,22 +322,36 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             log.debug('A dense matrix is used to store the labels of the training examples')
             label_matrix = CContiguousLabelMatrix(y)
 
-        # Create a mask that provides access to the information whether individual features are nominal or not...
-        num_features = feature_matrix.get_num_cols()
-
-        if self.nominal_attribute_indices is None or len(self.nominal_attribute_indices) == 0:
-            nominal_feature_mask = EqualNominalFeatureMask(False)
-        elif len(self.nominal_attribute_indices) == num_features:
-            nominal_feature_mask = EqualNominalFeatureMask(True)
-        else:
-            nominal_feature_mask = MixedNominalFeatureMask(num_features, self.nominal_attribute_indices)
+        # Obtain information about the types of the individual features...
+        feature_info = self.__create_feature_info(feature_matrix.get_num_cols())
 
         # Induce rules...
         learner = self._create_learner()
-        training_result = learner.fit(nominal_feature_mask, feature_matrix, label_matrix, self.random_state)
+        training_result = learner.fit(feature_info, feature_matrix, label_matrix, self.random_state)
         self.num_labels_ = training_result.num_labels
         self.label_space_info_ = training_result.label_space_info
         return training_result.rule_model
+
+    def __create_feature_info(self, num_features: int) -> FeatureInfo:
+        """
+        Creates and returns a `FeatureInfo` that provides information about the types of individual features.
+
+        :param num_features:    The total number of available features
+        :return:                The `FeatureInfo` that has been created
+        """
+        binary_attribute_indices = self.binary_attribute_indices
+        nominal_attribute_indices = self.nominal_attribute_indices
+        num_binary_features = 0 if binary_attribute_indices is None else len(binary_attribute_indices)
+        num_nominal_features = 0 if nominal_attribute_indices is None else len(nominal_attribute_indices)
+
+        if num_binary_features == 0 and num_nominal_features == 0:
+            return EqualFeatureInfo(FeatureType.NUMERICAL_OR_ORDINAL)
+        elif num_binary_features == num_features:
+            return EqualFeatureInfo(FeatureType.BINARY)
+        elif num_nominal_features == num_features:
+            return EqualFeatureInfo(FeatureType.NOMINAL)
+        else:
+            return MixedFeatureInfo(num_features, binary_attribute_indices, nominal_attribute_indices)
 
     def _predict_labels(self, x, **kwargs):
         learner = self._create_learner()

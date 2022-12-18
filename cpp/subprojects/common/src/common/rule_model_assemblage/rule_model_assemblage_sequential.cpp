@@ -104,7 +104,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
         }
 
-        std::unique_ptr<IRuleModel> induceRules(const INominalFeatureMask& nominalFeatureMask,
+        std::unique_ptr<IRuleModel> induceRules(const IFeatureInfo& featureInfo,
                                                 const IColumnWiseFeatureMatrix& featureMatrix,
                                                 const IRowWiseLabelMatrix& labelMatrix,
                                                 uint32 randomState) const override {
@@ -132,8 +132,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             statisticsProviderPtr->switchToRegularRuleEvaluation();
 
             // Induce the remaining rules...
-            std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(featureMatrix,
-                                                                                       nominalFeatureMask,
+            std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(featureMatrix, featureInfo,
                                                                                        *statisticsProviderPtr);
             std::unique_ptr<IInstanceSampling> instanceSamplingPtr = partition.createInstanceSampling(
                 *instanceSamplingFactoryPtr_, labelMatrix, statisticsProviderPtr->get());
