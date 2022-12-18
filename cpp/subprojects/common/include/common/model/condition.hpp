@@ -9,7 +9,7 @@
 /**
  * An enum that specifies all possible types of operators used by a condition of a rule.
  */
-enum Comparator : uint32 {
+enum Comparator : uint8 {
     LEQ = 0,
     GR = 1,
     EQ = 2,
