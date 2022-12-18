@@ -4,8 +4,8 @@
 #pragma once
 
 #include "common/thresholds/thresholds.hpp"
+#include "common/input/feature_info.hpp"
 #include "common/input/feature_matrix.hpp"
-#include "common/input/nominal_feature_mask.hpp"
 #include "omp.h"
 
 
@@ -144,10 +144,10 @@ class AbstractThresholds : public IThresholds {
         const IColumnWiseFeatureMatrix& featureMatrix_;
 
         /**
-         * A reference to an object of type `INominalFeatureMask` that provides access to the information whether
-         * individual feature are nominal or not.
+         * A reference to an object of type `IFeatureInfo` that provides information about the types of individual
+         * features.
          */
-        const INominalFeatureMask& nominalFeatureMask_;
+        const IFeatureInfo& featureInfo_;
 
         /**
          * A reference to an object of type `IStatisticsProvider` that provides access to statistics about the labels of
@@ -160,15 +160,14 @@ class AbstractThresholds : public IThresholds {
         /**
          * @param featureMatrix         A reference to an object of type `IColumnWiseFeatureMatrix` that provides
          *                              column-wise access to the feature values of individual training examples
-         * @param nominalFeatureMask    A reference  to an object of type `INominalFeatureMask` that provides access to
-         *                              the information whether individual features are nominal or not
+         * @param featureInfo           A reference  to an object of type `IFeatureInfo` that provides information about
+         *                              the types of individual features
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
          *                              statistics about the labels of the training examples
          */
-        AbstractThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const INominalFeatureMask& nominalFeatureMask,
+        AbstractThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
                            IStatisticsProvider& statisticsProvider)
-            : featureMatrix_(featureMatrix), nominalFeatureMask_(nominalFeatureMask),
-              statisticsProvider_(statisticsProvider) {
+            : featureMatrix_(featureMatrix), featureInfo_(featureInfo), statisticsProvider_(statisticsProvider) {
 
         }
 
