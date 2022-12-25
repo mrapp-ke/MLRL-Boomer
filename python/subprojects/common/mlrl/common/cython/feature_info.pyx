@@ -36,14 +36,12 @@ cdef class EqualFeatureInfo(FeatureInfo):
         """
         :param feature_type: A value of the enum `FeatureType` that specifies the type of all features
         """
-        cdef unique_ptr[IEqualFeatureInfo] feature_info_ptr = createEqualFeatureInfo()
-
-        if feature_type == BINARY:
-            feature_info_ptr.get().setAllBinary()
-        elif feature_type == NOMINAL:
-            feature_info_ptr.get().setAllNominal()
-
-        self.feature_info_ptr = move(feature_info_ptr)
+        if feature_type == FeatureType.BINARY:
+            self.feature_info_ptr = createBinaryFeatureInfo()
+        elif feature_type == FeatureType.NOMINAL:
+            self.feature_info_ptr = createNominalFeatureInfo()
+        else:
+            self.feature_info_ptr = createNumericalFeatureInfo()
 
 
     cdef IFeatureInfo* get_feature_info_ptr(self):

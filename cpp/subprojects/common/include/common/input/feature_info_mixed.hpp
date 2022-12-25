@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/input/feature_info.hpp"
-#include <memory>
 
 
 /**

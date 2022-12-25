@@ -1,4 +1,7 @@
 #include "common/input/feature_info_mixed.hpp"
+#include "common/input/feature_type_binary.hpp"
+#include "common/input/feature_type_nominal.hpp"
+#include "common/input/feature_type_numerical.hpp"
 #include "common/data/vector_bit.hpp"
 
 
@@ -24,13 +27,13 @@ class BitFeatureInfo final : public IMixedFeatureInfo {
 
         }
 
-        FeatureType getFeatureType(uint32 featureIndex) const override {
+        std::unique_ptr<IFeatureType> getFeatureType(uint32 featureIndex) const override {
             if (binaryBitVector_[featureIndex]) {
-                return FeatureType::BINARY;
+                return std::make_unique<BinaryFeatureType>();
             } else if (nominalBitVector_[featureIndex]) {
-                return FeatureType::NOMINAL;
+                return std::make_unique<NominalFeatureType>();
             } else {
-                return FeatureType::NUMERICAL_OR_ORDINAL;
+                return std::make_unique<NumericalFeatureType>();
             }
         }
 
