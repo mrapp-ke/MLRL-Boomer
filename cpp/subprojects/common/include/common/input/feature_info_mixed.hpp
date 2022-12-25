@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/input/feature_info.hpp"
-#include <memory>
 
 
 /**
@@ -18,12 +17,25 @@ class MLRLCOMMON_API IMixedFeatureInfo : public IFeatureInfo {
         virtual ~IMixedFeatureInfo() override { };
 
         /**
-         * Sets the type of the feature at a specific index.
+         * Marks the feature at a specific index as numerical/ordinal.
          *
-         * @param featureIndex  The index of the feature
-         * @param featureType   A value of the enum `FeatureType` that specifies the type of the feature
+         * @param featureIndex The index of the feature
          */
-        virtual void setFeatureType(uint32 featureIndex, FeatureType featureType) = 0;
+        virtual void setNumerical(uint32 featureIndex) = 0;
+
+        /**
+         * Marks the feature at a specific index as binary.
+         *
+         * @param featureIndex The index of the feature
+         */
+        virtual void setBinary(uint32 featureIndex) = 0;
+
+        /**
+         * Marks the feature at a specific index as nominal.
+         *
+         * @param featureIndex The index of the feature
+         */
+        virtual void setNominal(uint32 featureIndex) = 0;
 
 };
 

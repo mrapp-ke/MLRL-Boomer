@@ -1,4 +1,7 @@
 #include "common/input/feature_info_mixed.hpp"
+#include "common/input/feature_type_binary.hpp"
+#include "common/input/feature_type_nominal.hpp"
+#include "common/input/feature_type_numerical.hpp"
 #include "common/data/vector_bit.hpp"
 
 
@@ -24,19 +27,29 @@ class BitFeatureInfo final : public IMixedFeatureInfo {
 
         }
 
-        FeatureType getFeatureType(uint32 featureIndex) const override {
+        std::unique_ptr<IFeatureType> getFeatureType(uint32 featureIndex) const override {
             if (binaryBitVector_[featureIndex]) {
-                return FeatureType::BINARY;
+                return std::make_unique<BinaryFeatureType>();
             } else if (nominalBitVector_[featureIndex]) {
-                return FeatureType::NOMINAL;
+                return std::make_unique<NominalFeatureType>();
             } else {
-                return FeatureType::NUMERICAL_OR_ORDINAL;
+                return std::make_unique<NumericalFeatureType>();
             }
         }
 
-        void setFeatureType(uint32 featureIndex, FeatureType featureType) override {
-            binaryBitVector_.set(featureIndex, featureType == FeatureType::BINARY);
-            nominalBitVector_.set(featureIndex, featureType == FeatureType::NOMINAL);
+        void setNumerical(uint32 featureIndex) override {
+            binaryBitVector_.set(featureIndex, false);
+            nominalBitVector_.set(featureIndex, false);
+        }
+
+        void setBinary(uint32 featureIndex) override {
+            binaryBitVector_.set(featureIndex, true);
+            nominalBitVector_.set(featureIndex, false);
+        }
+
+        void setNominal(uint32 featureIndex) override {
+            binaryBitVector_.set(featureIndex, false);
+            nominalBitVector_.set(featureIndex, true);
         }
 
 };
