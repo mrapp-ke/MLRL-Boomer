@@ -12,11 +12,8 @@ class EqualFeatureInfo final : public IEqualFeatureInfo {
 
     public:
 
-        /**
-         * @param featureType A value of the enum `FeatureType` that specifies the type of all features
-         */
-        EqualFeatureInfo(FeatureType featureType)
-            : featureType_(featureType) {
+        EqualFeatureInfo()
+            : featureType_(FeatureType::NUMERICAL_OR_ORDINAL) {
 
         }
 
@@ -24,8 +21,20 @@ class EqualFeatureInfo final : public IEqualFeatureInfo {
             return featureType_;
         }
 
+        void setAllNumerical() override {
+            featureType_ = FeatureType::NUMERICAL_OR_ORDINAL;
+        }
+
+        void setAllBinary() override {
+            featureType_ = FeatureType::BINARY;
+        }
+
+        void setAllNominal() override {
+            featureType_ = FeatureType::NOMINAL;
+        }
+
 };
 
-std::unique_ptr<IEqualFeatureInfo> createEqualFeatureInfo(IFeatureInfo::FeatureType featureType) {
-    return std::make_unique<EqualFeatureInfo>(featureType);
+std::unique_ptr<IEqualFeatureInfo> createEqualFeatureInfo() {
+    return std::make_unique<EqualFeatureInfo>();
 }

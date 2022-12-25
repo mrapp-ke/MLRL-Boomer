@@ -21,10 +21,17 @@ cdef extern from "common/input/feature_info.hpp" nogil:
 cdef extern from "common/input/feature_info_equal.hpp" nogil:
 
     cdef cppclass IEqualFeatureInfo(IFeatureInfo):
-        pass
+
+        # Functions:
+
+        void setAllNumerical()
+
+        void setAllBinary()
+
+        void setAllNominal()
 
 
-    unique_ptr[IEqualFeatureInfo] createEqualFeatureInfo(FeatureTypeImpl featureType)
+    unique_ptr[IEqualFeatureInfo] createEqualFeatureInfo()
 
 
 cdef extern from "common/input/feature_info_mixed.hpp" nogil:
