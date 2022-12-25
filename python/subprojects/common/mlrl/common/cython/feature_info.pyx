@@ -1,20 +1,9 @@
 """
 @author Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython._types cimport uint8, uint32
+from mlrl.common.cython._types cimport uint32
 
 from libcpp.utility cimport move
-
-from enum import Enum
-
-
-class FeatureType(Enum):
-    """
-    Specifies all supported types of features.
-    """
-    BINARY = 0
-    NOMINAL = 1
-    NUMERICAL_OR_ORDINAL = 2
 
 
 cdef class FeatureInfo:
@@ -32,16 +21,23 @@ cdef class EqualFeatureInfo(FeatureInfo):
     where all features are either binary, nominal or numerical/ordinal.
     """
 
-    def __cinit__(self, feature_type: FeatureType):
-        """
-        :param feature_type: A value of the enum `FeatureType` that specifies the type of all features
-        """
-        if feature_type == FeatureType.BINARY:
-            self.feature_info_ptr = createBinaryFeatureInfo()
-        elif feature_type == FeatureType.NOMINAL:
-            self.feature_info_ptr = createNominalFeatureInfo()
-        else:
-            self.feature_info_ptr = createNumericalFeatureInfo()
+    @classmethod
+    def create_binary(cls) -> 'EqualFeatureInfo':
+        cdef EqualFeatureInfo equal_feature_info = EqualFeatureInfo.__new__(EqualFeatureInfo)
+        equal_feature_info.feature_info_ptr = createBinaryFeatureInfo()
+        return equal_feature_info
+
+    @classmethod
+    def create_nominal(cls) -> 'EqualFeatureInfo':
+        cdef EqualFeatureInfo equal_feature_info = EqualFeatureInfo.__new__(EqualFeatureInfo)
+        equal_feature_info.feature_info_ptr = createNominalFeatureInfo()
+        return equal_feature_info
+
+    @classmethod
+    def create_numerical(cls) -> 'EqualFeatureInfo':
+        cdef EqualFeatureInfo equal_feature_info = EqualFeatureInfo.__new__(EqualFeatureInfo)
+        equal_feature_info.feature_info_ptr = createNumericalFeatureInfo()
+        return equal_feature_info
 
 
     cdef IFeatureInfo* get_feature_info_ptr(self):
