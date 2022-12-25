@@ -33,7 +33,11 @@ cdef extern from "common/input/feature_info_mixed.hpp" nogil:
 
         # Functions:
 
-        void setFeatureType(uint32 featureIndex, FeatureTypeImpl featureType)
+        void setNumerical(uint32 featureIndex)
+
+        void setBinary(uint32 featureIndex)
+
+        void setNominal(uint32 featureIndex)
 
 
     unique_ptr[IMixedFeatureInfo] createMixedFeatureInfo(uint32 numFeatures)

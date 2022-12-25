@@ -34,9 +34,19 @@ class BitFeatureInfo final : public IMixedFeatureInfo {
             }
         }
 
-        void setFeatureType(uint32 featureIndex, FeatureType featureType) override {
-            binaryBitVector_.set(featureIndex, featureType == FeatureType::BINARY);
-            nominalBitVector_.set(featureIndex, featureType == FeatureType::NOMINAL);
+        void setNumerical(uint32 featureIndex) override {
+            binaryBitVector_.set(featureIndex, false);
+            nominalBitVector_.set(featureIndex, false);
+        }
+
+        void setBinary(uint32 featureIndex) override {
+            binaryBitVector_.set(featureIndex, true);
+            nominalBitVector_.set(featureIndex, false);
+        }
+
+        void setNominal(uint32 featureIndex) override {
+            binaryBitVector_.set(featureIndex, false);
+            nominalBitVector_.set(featureIndex, true);
         }
 
 };
