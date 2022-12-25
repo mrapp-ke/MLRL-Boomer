@@ -3,7 +3,7 @@ meson==1.0.0
 ninja==1.11.1
 wheel==0.38.4
 build==0.9.0
-numpy==1.23.5
+numpy==1.24.0
 scipy==1.9.3
 scikit-learn==1.2.0
 liac-arff==2.5.0
