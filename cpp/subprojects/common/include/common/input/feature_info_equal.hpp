@@ -18,12 +18,26 @@ class MLRLCOMMON_API IEqualFeatureInfo : public IFeatureInfo {
 
         virtual ~IEqualFeatureInfo() override { };
 
+        /**
+         * Marks all features as numerical/ordinal.
+         */
+        virtual void setAllNumerical() = 0;
+
+        /**
+         * Marks all features as binary.
+         */
+        virtual void setAllBinary() = 0;
+
+        /**
+         * Marks all features as nominal.
+         */
+        virtual void setAllNominal() = 0;
+
 };
 
 /**
  * Creates and returns a new object of type `IEqualFeatureInfo`.
  *
- * @param nominal   A value of the enum `IFeatureInfo::FeatureType` that specifies the type of all features
- * @return          An unique pointer to an object of type `IEqualFeatureInfo` that has been created
+ * @return An unique pointer to an object of type `IEqualFeatureInfo` that has been created
  */
-MLRLCOMMON_API std::unique_ptr<IEqualFeatureInfo> createEqualFeatureInfo(IFeatureInfo::FeatureType featureType);
+MLRLCOMMON_API std::unique_ptr<IEqualFeatureInfo> createEqualFeatureInfo();
