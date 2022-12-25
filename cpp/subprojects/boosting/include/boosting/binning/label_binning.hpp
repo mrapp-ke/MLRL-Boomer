@@ -93,7 +93,7 @@ namespace boosting {
              * @param criteria                  An array of type `float64` that stores the label-wise criteria that
              *                                  should be used to assign individual labels to bins
              * @param numElements               The number of elements in the array `criteria`
-             * @return                          A struct of `type `LabelInfo` that stores the information
+             * @return                          A struct of type `LabelInfo` that stores the information
              */
             virtual LabelInfo getLabelInfo(const float64* criteria, uint32 numElements) const = 0;
 
