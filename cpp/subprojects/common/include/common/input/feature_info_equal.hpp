@@ -4,8 +4,6 @@
 #pragma once
 
 #include "common/input/feature_info.hpp"
-#include "common/macros.hpp"
-#include <memory>
 
 
 /**
@@ -18,26 +16,25 @@ class MLRLCOMMON_API IEqualFeatureInfo : public IFeatureInfo {
 
         virtual ~IEqualFeatureInfo() override { };
 
-        /**
-         * Marks all features as numerical/ordinal.
-         */
-        virtual void setAllNumerical() = 0;
-
-        /**
-         * Marks all features as binary.
-         */
-        virtual void setAllBinary() = 0;
-
-        /**
-         * Marks all features as nominal.
-         */
-        virtual void setAllNominal() = 0;
-
 };
 
 /**
- * Creates and returns a new object of type `IEqualFeatureInfo`.
+ * Creates and returns a new object of type `IEqualFeatureInfo` in cases where all features are binary.
  *
  * @return An unique pointer to an object of type `IEqualFeatureInfo` that has been created
  */
-MLRLCOMMON_API std::unique_ptr<IEqualFeatureInfo> createEqualFeatureInfo();
+MLRLCOMMON_API std::unique_ptr<IEqualFeatureInfo> createBinaryFeatureInfo();
+
+/**
+ * Creates and returns a new object of type `IEqualFeatureInfo` in cases where all features are nominal.
+ *
+ * @return An unique pointer to an object of type `IEqualFeatureInfo` that has been created
+ */
+MLRLCOMMON_API std::unique_ptr<IEqualFeatureInfo> createNominalFeatureInfo();
+
+/**
+ * Creates and returns a new object of type `IEqualFeatureInfo` in cases where all features are numerical.
+ *
+ * @return An unique pointer to an object of type `IEqualFeatureInfo` that has been created
+ */
+MLRLCOMMON_API std::unique_ptr<IEqualFeatureInfo> createNumericalFeatureInfo();
