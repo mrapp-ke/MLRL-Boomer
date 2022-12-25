@@ -5,15 +5,6 @@ from libcpp.memory cimport unique_ptr
 
 cdef extern from "common/input/feature_info.hpp" nogil:
 
-    cpdef enum FeatureTypeImpl"IFeatureInfo::FeatureType":
-
-        BINARY"IFeatureInfo::FeatureType::BINARY" = 0
-
-        NOMINAL"IFeatureInfo::FeatureType::NOMINAL" = 1
-
-        NUMERICAL_OR_ORDINAL"IFeatureInfo::FeatureType::NUMERICAL_OR_ORDINAL" = 2
-
-
     cdef cppclass IFeatureInfo:
         pass
 
@@ -24,7 +15,11 @@ cdef extern from "common/input/feature_info_equal.hpp" nogil:
         pass
 
 
-    unique_ptr[IEqualFeatureInfo] createEqualFeatureInfo(FeatureTypeImpl featureType)
+    unique_ptr[IEqualFeatureInfo] createBinaryFeatureInfo()
+
+    unique_ptr[IEqualFeatureInfo] createNominalFeatureInfo()
+
+    unique_ptr[IEqualFeatureInfo] createNumericalFeatureInfo()
 
 
 cdef extern from "common/input/feature_info_mixed.hpp" nogil:
@@ -33,7 +28,11 @@ cdef extern from "common/input/feature_info_mixed.hpp" nogil:
 
         # Functions:
 
-        void setFeatureType(uint32 featureIndex, FeatureTypeImpl featureType)
+        void setNumerical(uint32 featureIndex)
+
+        void setBinary(uint32 featureIndex)
+
+        void setNominal(uint32 featureIndex)
 
 
     unique_ptr[IMixedFeatureInfo] createMixedFeatureInfo(uint32 numFeatures)

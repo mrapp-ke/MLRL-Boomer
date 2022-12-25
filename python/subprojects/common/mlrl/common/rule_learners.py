@@ -9,7 +9,7 @@ from enum import Enum
 
 import numpy as np
 from mlrl.common.arrays import enforce_dense, enforce_2d
-from mlrl.common.cython.feature_info import FeatureInfo, EqualFeatureInfo, MixedFeatureInfo, FeatureType
+from mlrl.common.cython.feature_info import FeatureInfo, EqualFeatureInfo, MixedFeatureInfo
 from mlrl.common.cython.feature_matrix import RowWiseFeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, CContiguousFeatureMatrix
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
@@ -345,11 +345,11 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         num_nominal_features = 0 if nominal_attribute_indices is None else len(nominal_attribute_indices)
 
         if num_binary_features == 0 and num_nominal_features == 0:
-            return EqualFeatureInfo(FeatureType.NUMERICAL_OR_ORDINAL)
+            return EqualFeatureInfo.create_numerical()
         elif num_binary_features == num_features:
-            return EqualFeatureInfo(FeatureType.BINARY)
+            return EqualFeatureInfo.create_binary()
         elif num_nominal_features == num_features:
-            return EqualFeatureInfo(FeatureType.NOMINAL)
+            return EqualFeatureInfo.create_nominal()
         else:
             return MixedFeatureInfo(num_features, binary_attribute_indices, nominal_attribute_indices)
 

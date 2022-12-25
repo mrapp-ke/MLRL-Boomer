@@ -4,8 +4,6 @@
 #pragma once
 
 #include "common/input/feature_info.hpp"
-#include "common/macros.hpp"
-#include <memory>
 
 
 /**
@@ -21,9 +19,22 @@ class MLRLCOMMON_API IEqualFeatureInfo : public IFeatureInfo {
 };
 
 /**
- * Creates and returns a new object of type `IEqualFeatureInfo`.
+ * Creates and returns a new object of type `IEqualFeatureInfo` in cases where all features are binary.
  *
- * @param nominal   A value of the enum `IFeatureInfo::FeatureType` that specifies the type of all features
- * @return          An unique pointer to an object of type `IEqualFeatureInfo` that has been created
+ * @return An unique pointer to an object of type `IEqualFeatureInfo` that has been created
  */
-MLRLCOMMON_API std::unique_ptr<IEqualFeatureInfo> createEqualFeatureInfo(IFeatureInfo::FeatureType featureType);
+MLRLCOMMON_API std::unique_ptr<IEqualFeatureInfo> createBinaryFeatureInfo();
+
+/**
+ * Creates and returns a new object of type `IEqualFeatureInfo` in cases where all features are nominal.
+ *
+ * @return An unique pointer to an object of type `IEqualFeatureInfo` that has been created
+ */
+MLRLCOMMON_API std::unique_ptr<IEqualFeatureInfo> createNominalFeatureInfo();
+
+/**
+ * Creates and returns a new object of type `IEqualFeatureInfo` in cases where all features are numerical.
+ *
+ * @return An unique pointer to an object of type `IEqualFeatureInfo` that has been created
+ */
+MLRLCOMMON_API std::unique_ptr<IEqualFeatureInfo> createNumericalFeatureInfo();

@@ -1,20 +1,9 @@
 """
 @author Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython._types cimport uint8, uint32
+from mlrl.common.cython._types cimport uint32
 
 from libcpp.utility cimport move
-
-from enum import Enum
-
-
-class FeatureType(Enum):
-    """
-    Specifies all supported types of features.
-    """
-    BINARY = 0
-    NOMINAL = 1
-    NUMERICAL_OR_ORDINAL = 2
 
 
 cdef class FeatureInfo:
@@ -32,12 +21,23 @@ cdef class EqualFeatureInfo(FeatureInfo):
     where all features are either binary, nominal or numerical/ordinal.
     """
 
-    def __cinit__(self, feature_type: FeatureType):
-        """
-        :param feature_type: A value of the enum `FeatureType` that specifies the type of all features
-        """
-        cdef uint8 enum_value = feature_type.value
-        self.feature_info_ptr = createEqualFeatureInfo(<FeatureTypeImpl>enum_value)
+    @classmethod
+    def create_binary(cls) -> 'EqualFeatureInfo':
+        cdef EqualFeatureInfo equal_feature_info = EqualFeatureInfo.__new__(EqualFeatureInfo)
+        equal_feature_info.feature_info_ptr = createBinaryFeatureInfo()
+        return equal_feature_info
+
+    @classmethod
+    def create_nominal(cls) -> 'EqualFeatureInfo':
+        cdef EqualFeatureInfo equal_feature_info = EqualFeatureInfo.__new__(EqualFeatureInfo)
+        equal_feature_info.feature_info_ptr = createNominalFeatureInfo()
+        return equal_feature_info
+
+    @classmethod
+    def create_numerical(cls) -> 'EqualFeatureInfo':
+        cdef EqualFeatureInfo equal_feature_info = EqualFeatureInfo.__new__(EqualFeatureInfo)
+        equal_feature_info.feature_info_ptr = createNumericalFeatureInfo()
+        return equal_feature_info
 
 
     cdef IFeatureInfo* get_feature_info_ptr(self):
@@ -58,13 +58,13 @@ cdef class MixedFeatureInfo(FeatureInfo):
         :param nominal_feature_indices: A list which contains the indices of all nominal features
         """
         cdef unique_ptr[IMixedFeatureInfo] feature_info_ptr = createMixedFeatureInfo(num_features)
-        cdef uint32 i
+        cdef uint32 feature_index
 
-        for i in nominal_feature_indices:
-            feature_info_ptr.get().setFeatureType(i, FeatureTypeImpl.NOMINAL)
+        for feature_index in nominal_feature_indices:
+            feature_info_ptr.get().setNominal(feature_index)
 
-        for i in binary_feature_indices:
-            feature_info_ptr.get().setFeatureType(i, FeatureTypeImpl.BINARY)
+        for feature_index in binary_feature_indices:
+            feature_info_ptr.get().setBinary(feature_index)
 
         self.feature_info_ptr = move(feature_info_ptr)
 
