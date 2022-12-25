@@ -58,13 +58,13 @@ cdef class MixedFeatureInfo(FeatureInfo):
         :param nominal_feature_indices: A list which contains the indices of all nominal features
         """
         cdef unique_ptr[IMixedFeatureInfo] feature_info_ptr = createMixedFeatureInfo(num_features)
-        cdef uint32 i
+        cdef uint32 feature_index
 
-        for i in nominal_feature_indices:
-            feature_info_ptr.get().setFeatureType(i, FeatureTypeImpl.NOMINAL)
+        for feature_index in nominal_feature_indices:
+            feature_info_ptr.get().setNominal(feature_index)
 
-        for i in binary_feature_indices:
-            feature_info_ptr.get().setFeatureType(i, FeatureTypeImpl.BINARY)
+        for feature_index in binary_feature_indices:
+            feature_info_ptr.get().setBinary(feature_index)
 
         self.feature_info_ptr = move(feature_info_ptr)
 
