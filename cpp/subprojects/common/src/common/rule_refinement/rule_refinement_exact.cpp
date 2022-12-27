@@ -39,10 +39,9 @@ static inline void findRefinementInternally(
     refinement.featureIndex = featureIndex;
 
     // Invoke the callback...
-    std::unique_ptr<IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>::Result> callbackResultPtr =
-        callback.get();
-    const IImmutableWeightedStatistics& statistics = callbackResultPtr->statistics;
-    const FeatureVector& featureVector = callbackResultPtr->vector;
+    IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>::Result callbackResult = callback.get();
+    const IImmutableWeightedStatistics& statistics = callbackResult.statistics;
+    const FeatureVector& featureVector = callbackResult.vector;
     FeatureVector::const_iterator featureVectorIterator = featureVector.cbegin();
     uint32 numFeatureValues = featureVector.getNumElements();
 
