@@ -530,22 +530,23 @@ static inline void findRefinementInternally(
     }
 }
 
-template<typename T>
-ExactRuleRefinement<T>::ExactRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex,
-                                            bool nominal, bool hasZeroWeights, std::unique_ptr<Callback> callbackPtr)
+template<typename IndexVector>
+ExactRuleRefinement<IndexVector>::ExactRuleRefinement(const IndexVector& labelIndices, uint32 numExamples,
+                                                      uint32 featureIndex, bool nominal, bool hasZeroWeights,
+                                                      std::unique_ptr<Callback> callbackPtr)
     : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
       hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {
 
 }
 
-template<typename T>
-void ExactRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) {
+template<typename IndexVector>
+void ExactRuleRefinement<IndexVector>::findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) {
     findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, minCoverage, hasZeroWeights_,
                              *callbackPtr_, comparator);
 }
 
-template<typename T>
-void ExactRuleRefinement<T>::findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) {
+template<typename IndexVector>
+void ExactRuleRefinement<IndexVector>::findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) {
     findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, minCoverage, hasZeroWeights_,
                              *callbackPtr_, comparator);
 }

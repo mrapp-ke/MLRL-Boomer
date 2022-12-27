@@ -191,8 +191,8 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                 std::unordered_map<uint32, std::unique_ptr<IHistogram>> cacheHistogram_;
 
-                template<typename T>
-                std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const T& labelIndices,
+                template<typename IndexVector>
+                std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const IndexVector& labelIndices,
                                                                                  uint32 featureIndex) {
                     // Retrieve `unique_ptr` from the cache, or insert an empty one if it does not already exist...
                     auto cacheHistogramIterator = cacheHistogram_.emplace(featureIndex,
@@ -208,9 +208,10 @@ class ApproximateThresholds final : public AbstractThresholds {
                         thresholds_.featureInfo_.getFeatureType(featureIndex);
                     bool nominal = !featureTypePtr->isNumerical();
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
-                    return std::make_unique<ApproximateRuleRefinement<T>>(labelIndices, coverageSet_.getNumCovered(),
-                                                                          featureIndex, nominal,
-                                                                          std::move(callbackPtr));
+                    return std::make_unique<ApproximateRuleRefinement<IndexVector>>(labelIndices,
+                                                                                    coverageSet_.getNumCovered(),
+                                                                                    featureIndex, nominal,
+                                                                                    std::move(callbackPtr));
                 }
 
             public:

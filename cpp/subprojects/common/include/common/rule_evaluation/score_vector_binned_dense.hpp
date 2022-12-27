@@ -12,14 +12,15 @@
  * same prediction is made, as well as a numeric score that assesses the overall quality of the rule, in a C-contiguous
  * array.
  *
- * @tparam T The type of the vector that provides access to the indices of the labels for which the rule may predict
+ * @tparam IndexVector The type of the vector that provides access to the indices of the labels for which the rule may
+ *                     predict
  */
-template<typename T>
+template<typename IndexVector>
 class DenseBinnedScoreVector final : virtual public IScoreVector {
 
     private:
 
-        const T& labelIndices_;
+        const IndexVector& labelIndices_;
 
         DenseBinnedVector<float64> binnedVector_;
 
@@ -28,18 +29,18 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
     public:
 
         /**
-         * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of
-         *                      the labels for which the rule may predict
+         * @param labelIndices  A reference to an object of template type `IndexVector` that provides access to the
+         *                      indices of the labels for which the rule may predict
          * @param numBins       The number of bins
          * @param sorted        True, if the indices of the labels for which the rule may predict are sorted in
          *                      increasing order, false otherwise
          */
-        DenseBinnedScoreVector(const T& labelIndices, uint32 numBins, bool sorted);
+        DenseBinnedScoreVector(const IndexVector& labelIndices, uint32 numBins, bool sorted);
 
         /**
          * An iterator that provides read-only access to the indices of the labels for which the rule predicts.
          */
-        typedef typename T::const_iterator index_const_iterator;
+        typedef typename IndexVector::const_iterator index_const_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores that correspond to individual labels.

@@ -4,19 +4,19 @@
 #include "common/sampling/weight_vector_dense.hpp"
 
 
-template<typename T>
-OutOfSampleWeightVector<T>::OutOfSampleWeightVector(const T& vector)
+template<typename WeightVector>
+OutOfSampleWeightVector<WeightVector>::OutOfSampleWeightVector(const WeightVector& vector)
     : vector_(vector) {
 
 }
 
-template<typename T>
-uint32 OutOfSampleWeightVector<T>::getNumElements() const {
+template<typename WeightVector>
+uint32 OutOfSampleWeightVector<WeightVector>::getNumElements() const {
     return vector_.getNumElements();
 }
 
-template<typename T>
-bool OutOfSampleWeightVector<T>::operator[](uint32 pos) const {
+template<typename WeightVector>
+bool OutOfSampleWeightVector<WeightVector>::operator[](uint32 pos) const {
     return vector_[pos] == 0;
 }
 

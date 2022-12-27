@@ -5,65 +5,65 @@
 #include "common/indices/index_vector_partial.hpp"
 
 
-template<typename T>
-DenseScoreVector<T>::DenseScoreVector(const T& labelIndices, bool sorted)
+template<typename IndexVector>
+DenseScoreVector<IndexVector>::DenseScoreVector(const IndexVector& labelIndices, bool sorted)
     : labelIndices_(labelIndices), predictedScoreVector_(DenseVector<float64>(labelIndices.getNumElements())),
       sorted_(sorted) {
 
 }
 
-template<typename T>
-typename DenseScoreVector<T>::index_const_iterator DenseScoreVector<T>::indices_cbegin() const {
+template<typename IndexVector>
+typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<IndexVector>::indices_cbegin() const {
     return labelIndices_.cbegin();
 }
 
-template<typename T>
-typename DenseScoreVector<T>::index_const_iterator DenseScoreVector<T>::indices_cend() const {
+template<typename IndexVector>
+typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<IndexVector>::indices_cend() const {
     return labelIndices_.cend();
 }
 
-template<typename T>
-typename DenseScoreVector<T>::score_iterator DenseScoreVector<T>::scores_begin() {
+template<typename IndexVector>
+typename DenseScoreVector<IndexVector>::score_iterator DenseScoreVector<IndexVector>::scores_begin() {
     return predictedScoreVector_.begin();
 }
 
-template<typename T>
-typename DenseScoreVector<T>::score_iterator DenseScoreVector<T>::scores_end() {
+template<typename IndexVector>
+typename DenseScoreVector<IndexVector>::score_iterator DenseScoreVector<IndexVector>::scores_end() {
     return &predictedScoreVector_.begin()[labelIndices_.getNumElements()];
 }
 
-template<typename T>
-typename DenseScoreVector<T>::score_const_iterator DenseScoreVector<T>::scores_cbegin() const {
+template<typename IndexVector>
+typename DenseScoreVector<IndexVector>::score_const_iterator DenseScoreVector<IndexVector>::scores_cbegin() const {
     return predictedScoreVector_.cbegin();
 }
 
-template<typename T>
-typename DenseScoreVector<T>::score_const_iterator DenseScoreVector<T>::scores_cend() const {
+template<typename IndexVector>
+typename DenseScoreVector<IndexVector>::score_const_iterator DenseScoreVector<IndexVector>::scores_cend() const {
     return &predictedScoreVector_.cbegin()[labelIndices_.getNumElements()];
 }
 
-template<typename T>
-uint32 DenseScoreVector<T>::getNumElements() const {
+template<typename IndexVector>
+uint32 DenseScoreVector<IndexVector>::getNumElements() const {
     return labelIndices_.getNumElements();
 }
 
-template<typename T>
-bool DenseScoreVector<T>::isPartial() const {
+template<typename IndexVector>
+bool DenseScoreVector<IndexVector>::isPartial() const {
     return labelIndices_.isPartial();
 }
 
-template<typename T>
-bool DenseScoreVector<T>::isSorted() const {
+template<typename IndexVector>
+bool DenseScoreVector<IndexVector>::isSorted() const {
     return sorted_;
 }
 
-template<typename T>
-void DenseScoreVector<T>::updatePrediction(AbstractPrediction& prediction) const {
+template<typename IndexVector>
+void DenseScoreVector<IndexVector>::updatePrediction(AbstractPrediction& prediction) const {
     prediction.set(this->scores_cbegin(), this->scores_cend());
 }
 
-template<typename T>
-void DenseScoreVector<T>::processScores(ScoreProcessor& scoreProcessor) const {
+template<typename IndexVector>
+void DenseScoreVector<IndexVector>::processScores(ScoreProcessor& scoreProcessor) const {
     scoreProcessor.processScores(*this);
 }
 

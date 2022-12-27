@@ -305,8 +305,9 @@ class ExactThresholds final : public AbstractThresholds {
 
                 std::unordered_map<uint32, FilteredCacheEntry> cacheFiltered_;
 
-                template<typename T>
-                std::unique_ptr<IRuleRefinement> createExactRuleRefinement(const T& labelIndices, uint32 featureIndex) {
+                template<typename IndexVector>
+                std::unique_ptr<IRuleRefinement> createExactRuleRefinement(const IndexVector& labelIndices,
+                                                                           uint32 featureIndex) {
                     // Retrieve the `FilteredCacheEntry` from the cache, or insert a new one if it does not already
                     // exist...
                     auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
@@ -322,9 +323,10 @@ class ExactThresholds final : public AbstractThresholds {
                         thresholds_.featureInfo_.getFeatureType(featureIndex);
                     bool nominal = !featureTypePtr->isNumerical();
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
-                    return std::make_unique<ExactRuleRefinement<T>>(labelIndices, numCoveredExamples_, featureIndex,
-                                                                    nominal, weights_.hasZeroWeights(),
-                                                                    std::move(callbackPtr));
+                    return std::make_unique<ExactRuleRefinement<IndexVector>>(labelIndices, numCoveredExamples_,
+                                                                              featureIndex, nominal,
+                                                                              weights_.hasZeroWeights(),
+                                                                              std::move(callbackPtr));
                 }
 
             public:
