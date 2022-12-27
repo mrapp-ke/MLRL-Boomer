@@ -22,32 +22,27 @@ class IRuleRefinementCallback {
         /**
          * The data that is provided via the callback's `get` function.
          */
-        class Result final {
+        struct Result final {
 
-            public:
+            /**
+             * @param s A reference to an object of template type `Statistics` that should be used to search for
+             *          potential refinements
+             * @param v A reference to an object of template type `Vector` that should be used to search for potential
+             *          refinements
+             */
+            Result(const Statistics& s, const Vector& v) : statistics(s), vector(v) { }
 
-                /**
-                 * @param statistics    A reference to an object of template type `Statistics` that should be used to
-                 *                      search for potential refinements
-                 * @param vector        A reference to an object of template type `Vector` that should be used to search
-                 *                      for potential refinements
-                 */
-                Result(const Statistics& statistics, const Vector& vector)
-                    : statistics_(statistics), vector_(vector) {
+            /**
+             * A reference to an object of template type `Statistics` that should be used to search for potential
+             * refinements.
+             */
+            const Statistics& statistics;
 
-                }
-
-                /**
-                 * A reference to an object of template type `Statistics` that should be used to search for potential
-                 * refinements.
-                 */
-                const Statistics& statistics_;
-
-                /**
-                 * A reference to an object of template type `Vector` that should be used to search for potential
-                 * refinements.
-                 */
-                const Vector& vector_;
+            /**
+             * A reference to an object of template type `Vector` that should be used to search for potential
+             * refinements.
+             */
+            const Vector& vector;
 
         };
 

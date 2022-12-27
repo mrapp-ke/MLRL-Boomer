@@ -12,8 +12,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
 
     // Invoke the callback...
     std::unique_ptr<IRuleRefinementCallback<IHistogram, ThresholdVector>::Result> callbackResultPtr = callback.get();
-    const IHistogram& statistics = callbackResultPtr->statistics_;
-    const ThresholdVector& thresholdVector = callbackResultPtr->vector_;
+    const IHistogram& statistics = callbackResultPtr->statistics;
+    const ThresholdVector& thresholdVector = callbackResultPtr->vector;
     ThresholdVector::const_iterator thresholdIterator = thresholdVector.cbegin();
     uint32 numBins = thresholdVector.getNumElements();
     uint32 sparseBinIndex = thresholdVector.getSparseBinIndex();
