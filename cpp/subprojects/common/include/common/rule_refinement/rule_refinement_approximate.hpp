@@ -15,15 +15,15 @@
  * certain feature. The thresholds that may be used by the new condition result from the boundaries between the bins
  * that have been created using a binning method.
  *
- * @tparam T The type of the vector that provides access to the indices of the labels for which the refined rule is
- *           allowed to predict
+ * @tparam IndexVector The type of the vector that provides access to the indices of the labels for which the refined
+ *                     rule is allowed to predict
  */
-template<typename T>
+template<typename IndexVector>
 class ApproximateRuleRefinement final : public IRuleRefinement {
 
     private:
 
-        const T& labelIndices_;
+        const IndexVector& labelIndices_;
 
         uint32 numExamples_;
 
@@ -38,8 +38,8 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
     public:
 
         /**
-         * @param labelIndices      A reference to an object of template type `T` that provides access to the indices of
-         *                          the labels for which the refined rule is allowed to predict
+         * @param labelIndices      A reference to an object of template type `IndexVector` that provides access to the
+         *                          indices of the labels for which the refined rule is allowed to predict
          * @param numExamples       The total number of training examples with non-zero weights that are covered by the
          *                          existing rule
          * @param featureIndex      The index of the feature, the new condition corresponds to
@@ -47,8 +47,8 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
          * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback` that allows to
          *                          retrieve the information that is required to search for potential refinements
          */
-        ApproximateRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal,
-                                  std::unique_ptr<Callback> callbackPtr);
+        ApproximateRuleRefinement(const IndexVector& labelIndices, uint32 numExamples, uint32 featureIndex,
+                                  bool nominal, std::unique_ptr<Callback> callbackPtr);
 
         void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) override;
 

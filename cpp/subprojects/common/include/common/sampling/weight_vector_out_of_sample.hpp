@@ -9,21 +9,22 @@
  * An one-dimensional vector that provides random access to a fixed number of weights that are obtained from another
  * vector by setting zero weights to one and non-zero weights to zero.
  *
- * @tparam T The type of the other vector
+ * @tparam WeightVector The type of the other vector
  */
-template<typename T>
+template<typename WeightVector>
 class OutOfSampleWeightVector final {
 
     private:
 
-        const T& vector_;
+        const WeightVector& vector_;
 
     public:
 
         /**
-         * @param vector A reference to an object of template type `T` that provides access to the original weights
+         * @param vector A reference to an object of template type `WeightVector` that provides access to the original
+         *               weights
          */
-        OutOfSampleWeightVector(const T& vector);
+        OutOfSampleWeightVector(const WeightVector& vector);
 
         /**
          * Returns the number of elements in the vector.

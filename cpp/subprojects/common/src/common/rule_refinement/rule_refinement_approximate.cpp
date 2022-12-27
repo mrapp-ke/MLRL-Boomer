@@ -353,22 +353,24 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
     }
 }
 
-template<typename T>
-ApproximateRuleRefinement<T>::ApproximateRuleRefinement(const T& labelIndices, uint32 numExamples, uint32 featureIndex,
-                                                        bool nominal, std::unique_ptr<Callback> callbackPtr)
+template<typename IndexVector>
+ApproximateRuleRefinement<IndexVector>::ApproximateRuleRefinement(const IndexVector& labelIndices, uint32 numExamples,
+                                                                  uint32 featureIndex, bool nominal,
+                                                                  std::unique_ptr<Callback> callbackPtr)
     : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
       callbackPtr_(std::move(callbackPtr)) {
 
 }
 
-template<typename T>
-void ApproximateRuleRefinement<T>::findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) {
+template<typename IndexVector>
+void ApproximateRuleRefinement<IndexVector>::findRefinement(SingleRefinementComparator& comparator,
+                                                            uint32 minCoverage) {
     findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, minCoverage, *callbackPtr_,
                              comparator);
 }
 
-template<typename T>
-void ApproximateRuleRefinement<T>::findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) {
+template<typename IndexVector>
+void ApproximateRuleRefinement<IndexVector>::findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) {
     findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, minCoverage, *callbackPtr_,
                              comparator);
 }

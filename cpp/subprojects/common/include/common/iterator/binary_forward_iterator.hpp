@@ -12,16 +12,16 @@
  * such that it acts as a forward iterator that returns a boolean value for each possible index, indicating whether the
  * respective index is present in the original iterator or not.
  *
- * @tparam T The type of the iterator to be adapted
+ * @tparam Iterator The type of the iterator to be adapted
  */
-template<typename T>
+template<typename Iterator>
 class BinaryForwardIterator final {
 
     private:
 
-        T iterator_;
+        Iterator iterator_;
 
-        T end_;
+        Iterator end_;
 
         uint32 index_;
 
@@ -34,7 +34,7 @@ class BinaryForwardIterator final {
          * @param end   An iterator to the end of the indices
          * @param index The index to start at
          */
-        BinaryForwardIterator(T begin, T end, uint32 index)
+        BinaryForwardIterator(Iterator begin, Iterator end, uint32 index)
             : iterator_(begin), end_(end), index_(index), iteratorIndex_(iterator_ != end_ ? *iterator_ : 0) {
 
         }
@@ -78,7 +78,7 @@ class BinaryForwardIterator final {
          *
          * @return A reference to an iterator that refers to the next element
          */
-        BinaryForwardIterator<T>& operator++() {
+        BinaryForwardIterator<Iterator>& operator++() {
             ++index_;
 
             if (iterator_ != end_ && iteratorIndex_ < index_) {
@@ -94,7 +94,7 @@ class BinaryForwardIterator final {
          *
          * @return A reference to an iterator that refers to the next element
          */
-        BinaryForwardIterator<T>& operator++(int n) {
+        BinaryForwardIterator<Iterator>& operator++(int n) {
             index_++;
 
             if (iterator_ != end_ && iteratorIndex_ < index_) {
@@ -111,7 +111,7 @@ class BinaryForwardIterator final {
          * @param rhs   A reference to another iterator
          * @return      True, if the iterators do not refer to the same element, false otherwise
          */
-        bool operator!=(const BinaryForwardIterator<T>& rhs) const {
+        bool operator!=(const BinaryForwardIterator<Iterator>& rhs) const {
             return index_ != rhs.index_;
         }
 
@@ -121,7 +121,7 @@ class BinaryForwardIterator final {
          * @param rhs   A reference to another iterator
          * @return      True, if the iterators refer to the same element, false otherwise
          */
-        bool operator==(const BinaryForwardIterator<T>& rhs) const {
+        bool operator==(const BinaryForwardIterator<Iterator>& rhs) const {
             return index_ == rhs.index_;
         }
 
@@ -130,12 +130,14 @@ class BinaryForwardIterator final {
 /**
  * Creates and returns a new `BinaryForwardIterator`.
  *
- * @param begin An iterator to the beginning of the indices
- * @param end   An iterator to the end of the indices
- * @param index The index to start at
- * @return      A `BinaryForwardIterator` that has been created
+ * @tparam Iterator The type of the iterator to be adapted
+ * @param begin     An iterator to the beginning of the indices
+ * @param end       An iterator to the end of the indices
+ * @param index     The index to start at
+ * @return          A `BinaryForwardIterator` that has been created
  */
-template<typename T>
-static inline BinaryForwardIterator<T> make_binary_forward_iterator(T begin, T end, uint32 index = 0) {
-    return BinaryForwardIterator<T>(begin, end, index);
+template<typename Iterator>
+static inline BinaryForwardIterator<Iterator> make_binary_forward_iterator(Iterator begin, Iterator end,
+                                                                           uint32 index = 0) {
+    return BinaryForwardIterator<Iterator>(begin, end, index);
 }

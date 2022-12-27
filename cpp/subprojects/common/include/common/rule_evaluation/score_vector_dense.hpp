@@ -11,14 +11,15 @@
  * An one-dimensional vector that stores the scores that may be predicted by a rule, as well as an overall quality
  * score that assesses the overall quality of the rule, in a C-contiguous array.
  *
- * @tparam T The type of the vector that provides access to the indices of the labels for which the rule may predict
+ * @tparam IndexVector The type of the vector that provides access to the indices of the labels for which the rule may
+ *                     predict
  */
-template<typename T>
+template<typename IndexVector>
 class DenseScoreVector final : virtual public IScoreVector {
 
     private:
 
-        const T& labelIndices_;
+        const IndexVector& labelIndices_;
 
         DenseVector<float64> predictedScoreVector_;
 
@@ -27,17 +28,17 @@ class DenseScoreVector final : virtual public IScoreVector {
     public:
 
         /**
-         * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of the
-         *                      labels for which the rule may predict
+         * @param labelIndices  A reference to an object of template type `IndexVector` that provides access to the
+         *                      indices of the labels for which the rule may predict
          * @param sorted        True, if the indices of the labels for which the rule may predict are sorted in
          *                      increasing order, false otherwise
          */
-        DenseScoreVector(const T& labelIndices, bool sorted);
+        DenseScoreVector(const IndexVector& labelIndices, bool sorted);
 
         /**
          * An iterator that provides read-only access to the indices.
          */
-        typedef typename T::const_iterator index_const_iterator;
+        typedef typename IndexVector::const_iterator index_const_iterator;
 
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
