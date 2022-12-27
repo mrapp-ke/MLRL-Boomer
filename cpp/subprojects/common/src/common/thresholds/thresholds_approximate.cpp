@@ -138,7 +138,7 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                         }
 
-                        std::unique_ptr<Result> get() override {
+                        Result get() override {
                             auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
                             IFeatureBinning::Result& cacheEntry = cacheIterator->second;
                             ThresholdVector* thresholdVector = cacheEntry.thresholdVectorPtr.get();
@@ -176,7 +176,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                             IHistogram& histogram = *cacheHistogramIterator->second;
                             rebuildHistogram(*thresholdVector, histogram, thresholdsSubset_.coverageSet_);
 
-                            return std::make_unique<Result>(histogram, *thresholdVector);
+                            return Result(histogram, *thresholdVector);
                         }
 
                 };

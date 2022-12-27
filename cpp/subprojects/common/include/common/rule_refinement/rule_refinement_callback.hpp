@@ -3,8 +3,6 @@
  */
 #pragma once
 
-#include <memory>
-
 
 /**
  * Defines an interface for callbacks that may be invoked by subclasses of the the class `IRuleRefinement` in order to
@@ -51,9 +49,9 @@ class IRuleRefinementCallback {
         /**
          * Invokes the callback and returns its result.
          *
-         * @return An unique pointer to an object of type `Result` that stores references to the statistics and the
-         *         vector that may be used to search for potential refinements
+         * @return An object of type `Result` that stores references to the statistics and the vector that may be used
+         *         to search for potential refinements
          */
-        virtual std::unique_ptr<Result> get() = 0;
+        virtual Result get() = 0;
 
 };

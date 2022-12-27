@@ -259,7 +259,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                         }
 
-                        std::unique_ptr<Result> get() override {
+                        Result get() override {
                             auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
                             FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
                             FeatureVector* featureVector = cacheEntry.vectorPtr.get();
@@ -286,7 +286,7 @@ class ExactThresholds final : public AbstractThresholds {
                                 featureVector = cacheEntry.vectorPtr.get();
                             }
 
-                            return std::make_unique<Result>(*thresholdsSubset_.weightedStatisticsPtr_, *featureVector);
+                            return Result(*thresholdsSubset_.weightedStatisticsPtr_, *featureVector);
                         }
 
                 };
