@@ -182,7 +182,7 @@ cdef extern from "common/learner.hpp" nogil:
         ITimeStoppingCriterionConfig& useTimeStoppingCriterion()
 
 
-    cdef cppclass IEarlyStoppingCriterionMixin"IRuleLearner::IEarlyStoppingCriterionMixin":
+    cdef cppclass IPrePruningMixin"IRuleLearner::IPrePruningMixin":
 
         # Functions:
 

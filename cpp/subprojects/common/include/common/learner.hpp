@@ -791,11 +791,11 @@ class MLRLCOMMON_API IRuleLearner {
          * stops the induction of rules as soon as the quality of a model's predictions for the examples in a holdout
          * set do not improve according to a certain measure.
          */
-        class IEarlyStoppingCriterionMixin : virtual public IRuleLearner::IConfig {
+        class IPrePruningMixin : virtual public IRuleLearner::IConfig {
 
             public:
 
-                virtual ~IEarlyStoppingCriterionMixin() { };
+                virtual ~IPrePruningMixin() { };
 
 
                 /**
