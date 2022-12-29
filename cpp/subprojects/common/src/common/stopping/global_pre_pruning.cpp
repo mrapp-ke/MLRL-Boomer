@@ -397,18 +397,18 @@ class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
 };
 
 EarlyStoppingCriterionConfig::EarlyStoppingCriterionConfig()
-    : aggregationFunction_(EarlyStoppingCriterionConfig::AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true),
+    : aggregationFunction_(AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true),
       minRules_(100), updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005),
       forceStop_(true) {
 
 }
 
-EarlyStoppingCriterionConfig::AggregationFunction EarlyStoppingCriterionConfig::getAggregationFunction() const {
+AggregationFunction EarlyStoppingCriterionConfig::getAggregationFunction() const {
     return aggregationFunction_;
 }
 
 IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setAggregationFunction(
-        EarlyStoppingCriterionConfig::AggregationFunction aggregationFunction) {
+        AggregationFunction aggregationFunction) {
     aggregationFunction_ = aggregationFunction;
     return *this;
 }
@@ -496,9 +496,9 @@ std::unique_ptr<IStoppingCriterionFactory> EarlyStoppingCriterionConfig::createS
     std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr;
 
     switch (aggregationFunction_) {
-        case EarlyStoppingCriterionConfig::AggregationFunction::MIN:
+        case AggregationFunction::MIN:
             aggregationFunctionFactoryPtr = std::make_unique<MinAggregationFunctionFactory>();
-        case EarlyStoppingCriterionConfig::AggregationFunction::MAX:
+        case AggregationFunction::MAX:
             aggregationFunctionFactoryPtr = std::make_unique<MaxAggregationFunctionFactory>();
         default:
             aggregationFunctionFactoryPtr = std::make_unique<ArithmeticMeanAggregationFunctionFactory>();
