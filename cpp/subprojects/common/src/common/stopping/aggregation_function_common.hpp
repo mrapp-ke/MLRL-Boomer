@@ -5,6 +5,7 @@
 
 #include "common/data/ring_buffer.hpp"
 #include "common/math/math.hpp"
+#include <memory>
 
 
 /**
@@ -162,3 +163,21 @@ class ArithmeticMeanAggregationFunctionFactory final : public IAggregationFuncti
         }
 
 };
+
+/**
+ * Creates and returns a new object of type `IAggregationFunctionFactory` according to a given `AggregationFunction`.
+ *
+ * @param aggregationFunction   A value of the enum `AggregationFunction`
+ * @return                      An unique pointer to an object of type `IAggregationFunctionFactory` that has been
+ *                              created
+ */
+std::unique_ptr<IAggregationFunctionFactory> createAggregationFunctionFactory(AggregationFunction aggregationFunction) {
+    switch (aggregationFunction) {
+        case AggregationFunction::MIN:
+            return std::make_unique<MinAggregationFunctionFactory>();
+        case AggregationFunction::MAX:
+            return std::make_unique<MaxAggregationFunctionFactory>();
+        default:
+            return std::make_unique<ArithmeticMeanAggregationFunctionFactory>();
+    }
+}
