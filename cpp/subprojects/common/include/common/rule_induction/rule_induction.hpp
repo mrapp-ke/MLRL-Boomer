@@ -7,7 +7,7 @@
 #include "common/input/label_matrix.hpp"
 #include "common/model/model_builder.hpp"
 #include "common/post_processing/post_processor.hpp"
-#include "common/pruning/pruning.hpp"
+#include "common/rule_pruning/rule_pruning.hpp"
 #include "common/sampling/feature_sampling.hpp"
 #include "common/sampling/weight_vector.hpp"
 #include "common/sampling/partition.hpp"

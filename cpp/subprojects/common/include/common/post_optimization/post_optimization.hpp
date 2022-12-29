@@ -5,8 +5,8 @@
 
 #include "common/post_optimization/model_builder_intermediate.hpp"
 #include "common/post_processing/post_processor.hpp"
-#include "common/pruning/pruning.hpp"
 #include "common/rule_induction/rule_induction.hpp"
+#include "common/rule_pruning/rule_pruning.hpp"
 #include "common/sampling/feature_sampling.hpp"
 #include "common/sampling/label_sampling.hpp"
 #include "common/thresholds/thresholds.hpp"

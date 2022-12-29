@@ -1,4 +1,4 @@
-#include "common/pruning/pruning_no.hpp"
+#include "common/rule_pruning/rule_pruning_no.hpp"
 
 
 /**
