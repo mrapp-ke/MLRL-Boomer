@@ -44,6 +44,10 @@ cdef extern from "common/stopping/stopping_criterion_early.hpp" nogil:
 
         IEarlyStoppingCriterionConfig& setAggregationFunction(AggregationFunctionImpl aggregationFunction) except +
 
+        bool isHoldoutSetUsed() const
+
+        IEarlyStoppingCriterionConfig& setUseHoldoutSet(bool useHoldoutSet) except +
+
         uint32 getMinRules() const
 
         IEarlyStoppingCriterionConfig& setMinRules(uint32 minRules) except +
