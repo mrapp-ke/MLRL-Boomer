@@ -134,7 +134,7 @@ FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
     BINNING_EQUAL_WIDTH: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS}
 }
 
-EARLY_STOPPING_VALUES: Dict[str, Set[str]] = {
+GLOBAL_PRUNING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
     EARLY_STOPPING_OBJECTIVE: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_MIN_RULES,
                                ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT,
@@ -255,7 +255,7 @@ def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: 
 
 def configure_early_stopping_criterion(config: RuleLearnerConfig, early_stopping: Optional[str]):
     if early_stopping is not None:
-        value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
+        value, options = parse_param_and_options('early_stopping', early_stopping, GLOBAL_PRUNING_VALUES)
 
         if value == NONE:
             config.use_no_global_pruning()
