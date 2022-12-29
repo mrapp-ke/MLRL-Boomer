@@ -253,7 +253,7 @@ def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: 
             c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
 
 
-def configure_early_stopping_criterion(config: RuleLearnerConfig, early_stopping: Optional[str]):
+def configure_global_pruning(config: RuleLearnerConfig, early_stopping: Optional[str]):
     if early_stopping is not None:
         value, options = parse_param_and_options('early_stopping', early_stopping, GLOBAL_PRUNING_VALUES)
 
