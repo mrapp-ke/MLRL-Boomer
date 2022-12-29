@@ -86,7 +86,7 @@ ARGUMENT_MIN_BINS = 'min_bins'
 
 ARGUMENT_MAX_BINS = 'max_bins'
 
-PRUNING_IREP = 'irep'
+RULE_PRUNING_IREP = 'irep'
 
 ARGUMENT_NUM_THREADS = 'num_threads'
 
@@ -143,7 +143,7 @@ EARLY_STOPPING_VALUES: Dict[str, Set[str]] = {
 
 PRUNING_VALUES: Set[str] = {
     NONE,
-    PRUNING_IREP
+    RULE_PRUNING_IREP
 }
 
 PARALLEL_VALUES: Dict[str, Set[str]] = {
@@ -259,7 +259,7 @@ def configure_pruning(config: RuleLearnerConfig, pruning: Optional[str]):
 
         if value == NONE:
             config.use_no_pruning()
-        elif value == PRUNING_IREP:
+        elif value == RULE_PRUNING_IREP:
             config.use_irep_pruning()
 
 
