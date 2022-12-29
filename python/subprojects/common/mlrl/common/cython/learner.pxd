@@ -91,7 +91,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoTimeStoppingCriterion()
 
-        void useNoEarlyStoppingCriterion()
+        void useNoGlobalPruning()
 
         void useNoSequentialPostOptimization()
 
