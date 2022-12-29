@@ -40,7 +40,7 @@ class SeCoRunnable(RuleLearnerRunnable):
                                  + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
                                  + 'documentation.')
         parser.add_argument(PARAM_PRUNING_HEURISTIC, type=str,
-                            help='The name of the heuristic to be used for pruning rules. Must be one of '
+                            help='The name of the heuristic to be used for pruning individual rules. Must be one of '
                                  + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
                                  + 'documentation.')
 
