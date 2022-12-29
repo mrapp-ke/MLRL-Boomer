@@ -615,7 +615,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics(True)
         self.run_cmd(builder, 'example-wise-partial-dynamic-heads_equal-width-label-binning')
 
-    def test_early_stopping_no_holdout(self):
+    def test_global_pre_pruning_no_holdout(self):
         """
         Tests the BOOMER algorithm when using no holdout for early stopping.
         """
@@ -625,7 +625,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics(True)
         self.run_cmd(builder, 'early-stopping_no-holdout')
 
-    def test_early_stopping_random_holdout(self):
+    def test_global_pre_pruning_random_holdout(self):
         """
         Tests the BOOMER algorithm when using a holdout set that is created via random sampling for early stopping.
         """
@@ -635,7 +635,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics(True)
         self.run_cmd(builder, 'early-stopping_random-holdout')
 
-    def test_early_stopping_stratified_label_wise_holdout(self):
+    def test_global_pre_pruning_stratified_label_wise_holdout(self):
         """
         Tests the BOOMER algorithm when using a holdout set that is created via label-wise stratified sampling for early
         stopping.
@@ -646,7 +646,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics(True)
         self.run_cmd(builder, 'early-stopping_stratified-label-wise-holdout')
 
-    def test_early_stopping_stratified_example_wise_holdout(self):
+    def test_global_pruning_stratified_example_wise_holdout(self):
         """
         Tests the BOOMER algorithm when using a holdout set that is created via example-wise stratified sampling for
         early stopping.
