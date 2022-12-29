@@ -72,6 +72,26 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
         virtual IEarlyStoppingCriterionConfig& setAggregationFunction(AggregationFunction aggregationFunction) = 0;
 
         /**
+         * Returns whether the quality of the current model's predictions is measured on the holdout set, if available,
+         * or if the training set is used instead.
+         *
+         * @return True, if the quality of the current model's predictions is measured on the holdout set, if available,
+         *         false, if the training set is used instead
+         */
+        virtual bool isHoldoutSetUsed() const = 0;
+
+        /**
+         * Sets whether the quality of he current model's predictions should be measured on the holdout set, if
+         * available, or if the training set should be used instead.
+         *
+         * @param useHoldoutSet True, if the quality of the current model's predictions should be measured on the
+         *                      holdout set, if available, false, if the training set should be used instead
+         * @return              A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
+         *                      configuration of the stopping criterion
+         */
+        virtual IEarlyStoppingCriterionConfig& setUseHoldoutSet(bool useHoldoutSet) = 0;
+
+        /**
          * Returns the minimum number of rules that must have been learned until the induction of rules might be
          * stopped.
          *
@@ -205,6 +225,8 @@ class EarlyStoppingCriterionConfig final : public IStoppingCriterionConfig, publ
 
         AggregationFunction aggregationFunction_;
 
+        bool useHoldoutSet_;
+
         uint32 minRules_;
 
         uint32 updateInterval_;
@@ -226,6 +248,10 @@ class EarlyStoppingCriterionConfig final : public IStoppingCriterionConfig, publ
         AggregationFunction getAggregationFunction() const override;
 
         IEarlyStoppingCriterionConfig& setAggregationFunction(AggregationFunction aggregationFunction) override;
+
+        bool isHoldoutSetUsed() const override;
+
+        IEarlyStoppingCriterionConfig& setUseHoldoutSet(bool useHoldoutSet) override;
 
         uint32 getMinRules() const override;
 
