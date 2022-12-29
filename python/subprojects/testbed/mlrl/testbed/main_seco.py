@@ -7,8 +7,9 @@ from mlrl.common.format import format_dict_keys
 from mlrl.seco.seco_learners import MultiLabelSeCoRuleLearner, HEURISTIC_VALUES
 from mlrl.testbed.args import add_max_rules_argument, add_time_limit_argument, \
     add_sequential_post_optimization_argument, add_label_sampling_argument, add_instance_sampling_argument, \
-    add_feature_sampling_argument, add_partition_sampling_argument, add_pruning_argument, add_rule_induction_argument, \
-    add_parallel_prediction_argument, add_parallel_statistic_update_argument, add_parallel_rule_refinement_argument
+    add_feature_sampling_argument, add_partition_sampling_argument, add_rule_pruning_argument, \
+    add_rule_induction_argument, add_parallel_prediction_argument, add_parallel_statistic_update_argument, \
+    add_parallel_rule_refinement_argument
 from mlrl.testbed.args_seco import add_head_type_argument, add_lift_function_argument, PARAM_HEURISTIC, \
     PARAM_PRUNING_HEURISTIC
 from mlrl.testbed.runnables import RuleLearnerRunnable
@@ -28,7 +29,7 @@ class SeCoRunnable(RuleLearnerRunnable):
         add_instance_sampling_argument(parser)
         add_feature_sampling_argument(parser)
         add_partition_sampling_argument(parser)
-        add_pruning_argument(parser)
+        add_rule_pruning_argument(parser)
         add_rule_induction_argument(parser)
         add_parallel_prediction_argument(parser)
         add_parallel_rule_refinement_argument(parser)

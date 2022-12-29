@@ -413,7 +413,7 @@ def add_early_stopping_argument(parser: ArgumentParser):
                              + 'documentation.')
 
 
-def add_pruning_argument(parser: ArgumentParser):
+def add_rule_pruning_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_RULE_PRUNING, type=str,
                         help='The name of the strategy to be used for pruning individual rules. Must be one of '
                              + format_string_set(RULE_PRUNING_VALUES) + '. Does only have an effect if the parameter '
