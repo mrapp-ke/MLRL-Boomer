@@ -162,7 +162,7 @@ class ArithmeticMeanAggregationFunctionFactory final : public IAggregationFuncti
 
 };
 
-static inline float64 evaluate(const SinglePartition& partition, const IStatistics& statistics) {
+static inline float64 evaluate(const SinglePartition& partition, bool useHoldoutSet, const IStatistics& statistics) {
     uint32 numExamples = partition.getNumElements();
     SinglePartition::const_iterator iterator = partition.cbegin();
     float64 mean = 0;
@@ -176,12 +176,21 @@ static inline float64 evaluate(const SinglePartition& partition, const IStatisti
     return mean;
 }
 
-static inline float64 evaluate(const BiPartition& partition, const IStatistics& statistics) {
-    uint32 numHoldoutExamples = partition.getNumSecond();
-    BiPartition::const_iterator iterator = partition.second_cbegin();
+static inline float64 evaluate(const BiPartition& partition, bool useHoldoutSet, const IStatistics& statistics) {
+    uint32 numExamples;
+    BiPartition::const_iterator iterator;
+
+    if (useHoldoutSet) {
+        numExamples = partition.getNumSecond();
+        iterator = partition.second_cbegin();
+    } else {
+        numExamples = partition.getNumFirst();
+        iterator = partition.first_cbegin();
+    }
+
     float64 mean = 0;
 
-    for (uint32 i = 0; i < numHoldoutExamples; i++) {
+    for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = iterator[i];
         float64 score = statistics.evaluatePrediction(exampleIndex);
         mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
@@ -205,6 +214,8 @@ class EarlyStoppingCriterion final : public IStoppingCriterion {
         Partition& partition_;
 
         std::unique_ptr<IAggregationFunction> aggregationFunctionPtr_;
+
+        bool useHoldoutSet_;
 
         uint32 updateInterval_;
 
@@ -235,6 +246,8 @@ class EarlyStoppingCriterion final : public IStoppingCriterion {
          * @param aggregationFunctionPtr    An unique pointer to an object of type `IAggregationFunctionFactory` that
          *                                  allows to create implementations of the aggregation function that should be
          *                                  used to aggregate the scores in the buffer
+         * @param useHoldoutSet             True, if the quality of the current model's predictions should be measured
+         *                                  on the holdout set, if available, false otherwise
          * @param minRules                  The minimum number of rules that must have been learned until the induction
          *                                  of rules might be stopped. Must be at least 1
          * @param updateInterval            The interval to be used to update the quality of the current model, e.g., a
@@ -253,12 +266,12 @@ class EarlyStoppingCriterion final : public IStoppingCriterion {
          *                                  stored
          */
         EarlyStoppingCriterion(Partition& partition, std::unique_ptr<IAggregationFunction> aggregationFunctionPtr,
-                               uint32 minRules, uint32 updateInterval, uint32 stopInterval, uint32 numPast,
-                               uint32 numCurrent, float64 minImprovement, bool forceStop)
+                               bool useHoldoutSet, uint32 minRules, uint32 updateInterval, uint32 stopInterval,
+                               uint32 numPast, uint32 numCurrent, float64 minImprovement, bool forceStop)
             : partition_(partition), aggregationFunctionPtr_(std::move(aggregationFunctionPtr)),
-              updateInterval_(updateInterval), stopInterval_(stopInterval), minImprovement_(minImprovement),
-              pastBuffer_(RingBuffer<float64>(numPast)), recentBuffer_(RingBuffer<float64>(numCurrent)),
-              stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
+              useHoldoutSet_(useHoldoutSet), updateInterval_(updateInterval), stopInterval_(stopInterval),
+              minImprovement_(minImprovement), pastBuffer_(RingBuffer<float64>(numPast)),
+              recentBuffer_(RingBuffer<float64>(numCurrent)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
               bestScore_(std::numeric_limits<float64>::infinity()), stopped_(false) {
             uint32 bufferInterval = (numPast * updateInterval) + (numCurrent * updateInterval);
             offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
@@ -269,7 +282,7 @@ class EarlyStoppingCriterion final : public IStoppingCriterion {
             result.action = CONTINUE;
 
             if (!stopped_ && numRules > offset_ && numRules % updateInterval_ == 0) {
-                float64 currentScore = evaluate(partition_, statistics);
+                float64 currentScore = evaluate(partition_, useHoldoutSet_, statistics);
 
                 if (pastBuffer_.isFull()) {
                     if (currentScore < bestScore_) {
@@ -316,6 +329,8 @@ class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
         std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr_;
 
+        bool useHoldoutSet_;
+
         uint32 minRules_;
 
         uint32 updateInterval_;
@@ -336,6 +351,8 @@ class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
          * @param aggregationFunctionFactoryPtr An unique pointer to an object of type `IAggregationFunctionFactory`
          *                                      that allows to create implementations of the aggregation function that
          *                                      should be used to aggregate the scores in the buffer
+         * @param useHoldoutSet                 True, if the quality of the current model's predictions should be
+         *                                      measured on the holdout set, if available, false otherwise
          * @param minRules                      The minimum number of rules that must have been learned until the
          *                                      induction of rules might be stopped. Must be at least 1
          * @param updateInterval                The interval to be used to update the quality of the current model,
@@ -355,33 +372,34 @@ class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
          *                                      stored
          */
         EarlyStoppingCriterionFactory(std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr,
-                                      uint32 minRules, uint32 updateInterval, uint32 stopInterval, uint32 numPast,
-                                      uint32 numCurrent, float64 minImprovement, bool forceStop)
-            : aggregationFunctionFactoryPtr_(std::move(aggregationFunctionFactoryPtr)), minRules_(minRules),
-              updateInterval_(updateInterval), stopInterval_(stopInterval), numPast_(numPast), numCurrent_(numCurrent),
-              minImprovement_(minImprovement), forceStop_(forceStop) {
+                                      bool useHoldoutSet, uint32 minRules, uint32 updateInterval, uint32 stopInterval,
+                                      uint32 numPast, uint32 numCurrent, float64 minImprovement, bool forceStop)
+            : aggregationFunctionFactoryPtr_(std::move(aggregationFunctionFactoryPtr)), useHoldoutSet_(useHoldoutSet),
+              minRules_(minRules), updateInterval_(updateInterval), stopInterval_(stopInterval), numPast_(numPast),
+              numCurrent_(numCurrent), minImprovement_(minImprovement), forceStop_(forceStop) {
 
         }
 
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
             return std::make_unique<EarlyStoppingCriterion<const SinglePartition>>(
-                partition, std::move(aggregationFunctionPtr), minRules_, updateInterval_, stopInterval_, numPast_,
-                numCurrent_, minImprovement_, forceStop_);
+                partition, std::move(aggregationFunctionPtr), useHoldoutSet_, minRules_, updateInterval_, stopInterval_,
+                numPast_, numCurrent_, minImprovement_, forceStop_);
         }
 
         std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
             return std::make_unique<EarlyStoppingCriterion<BiPartition>>(
-                partition, std::move(aggregationFunctionPtr), minRules_, updateInterval_, stopInterval_, numPast_,
-                numCurrent_, minImprovement_, forceStop_);
+                partition, std::move(aggregationFunctionPtr), useHoldoutSet_, minRules_, updateInterval_, stopInterval_,
+                numPast_, numCurrent_, minImprovement_, forceStop_);
         }
 
 };
 
 EarlyStoppingCriterionConfig::EarlyStoppingCriterionConfig()
-    : aggregationFunction_(EarlyStoppingCriterionConfig::AggregationFunction::ARITHMETIC_MEAN), minRules_(100),
-      updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005), forceStop_(true) {
+    : aggregationFunction_(EarlyStoppingCriterionConfig::AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true),
+      minRules_(100), updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005),
+      forceStop_(true) {
 
 }
 
@@ -392,6 +410,15 @@ EarlyStoppingCriterionConfig::AggregationFunction EarlyStoppingCriterionConfig::
 IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setAggregationFunction(
         EarlyStoppingCriterionConfig::AggregationFunction aggregationFunction) {
     aggregationFunction_ = aggregationFunction;
+    return *this;
+}
+
+bool EarlyStoppingCriterionConfig::isHoldoutSetUsed() const {
+    return useHoldoutSet_;
+}
+
+IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setUseHoldoutSet(bool useHoldoutSet) {
+    useHoldoutSet_ = useHoldoutSet;
     return *this;
 }
 
@@ -477,7 +504,7 @@ std::unique_ptr<IStoppingCriterionFactory> EarlyStoppingCriterionConfig::createS
             aggregationFunctionFactoryPtr = std::make_unique<ArithmeticMeanAggregationFunctionFactory>();
     }
 
-    return std::make_unique<EarlyStoppingCriterionFactory>(std::move(aggregationFunctionFactoryPtr), minRules_,
-                                                           updateInterval_, stopInterval_, numPast_, numCurrent_,
-                                                           minImprovement_, forceStop_);
+    return std::make_unique<EarlyStoppingCriterionFactory>(std::move(aggregationFunctionFactoryPtr), useHoldoutSet_,
+                                                           minRules_, updateInterval_, stopInterval_, numPast_,
+                                                           numCurrent_, minImprovement_, forceStop_);
 }
