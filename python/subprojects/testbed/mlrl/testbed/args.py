@@ -415,7 +415,7 @@ def add_early_stopping_argument(parser: ArgumentParser):
 
 def add_pruning_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_PRUNING, type=str,
-                        help='The name of the strategy to be used for pruning rules. Must be one of '
+                        help='The name of the strategy to be used for pruning individual rules. Must be one of '
                              + format_string_set(PRUNING_VALUES) + '. Does only have an effect if the parameter '
                              + PARAM_INSTANCE_SAMPLING + ' is not set to "none".')
 
