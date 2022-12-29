@@ -186,7 +186,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         # Functions:
 
-        IPrePruningConfig& useEarlyStoppingCriterion()
+        IPrePruningConfig& usePrePruning()
 
 
     cdef cppclass ISequentialPostOptimizationMixin"IRuleLearner::ISequentialPostOptimizationMixin":

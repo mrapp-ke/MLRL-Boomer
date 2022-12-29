@@ -798,14 +798,13 @@ class MLRLCOMMON_API IRuleLearner {
 
 
                 /**
-                 * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as
-                 * the quality of a model's predictions for the examples in a holdout set do not improve according to a
-                 * certain measure.
+                 * Configures the rule learner to use a stopping criterion that allows to decide for how many rules
+                 * should be included in a model, such that its performance is optimized globally.
                  *
                  * @return A reference to an object of the type `IPrePruningConfig` that allows further configuration of
                  *         the stopping criterion
                  */
-                virtual IPrePruningConfig& useEarlyStoppingCriterion() {
+                virtual IPrePruningConfig& usePrePruning() {
                     std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = this->getGlobalPruningConfigPtr();
                     std::unique_ptr<PrePruningConfig> ptr = std::make_unique<PrePruningConfig>();
                     IPrePruningConfig& ref = *ptr;
