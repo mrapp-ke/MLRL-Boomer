@@ -3,11 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility function for configuring rule learning algorithms.
 """
-from typing import Dict, Set, Optional
-
 from mlrl.common.cython.learner import RuleLearnerConfig
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption, parse_param, parse_param_and_options
+from typing import Dict, Set, Optional
 
 AUTOMATIC = 'auto'
 
@@ -58,6 +57,8 @@ AGGREGATION_FUNCTION_ARITHMETIC_MEAN = 'avg'
 ARGUMENT_NUM_ITERATIONS = 'num_iterations'
 
 ARGUMENT_REFINE_HEADS = 'refine_heads'
+
+ARGUMENT_USE_HOLDOUT_SET = 'use_holdout_set'
 
 ARGUMENT_MIN_RULES = 'min_rules'
 
@@ -124,9 +125,9 @@ PARTITION_SAMPLING_VALUES: Dict[str, Set[str]] = {
 
 EARLY_STOPPING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
-    EARLY_STOPPING_OBJECTIVE: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_MIN_RULES, ARGUMENT_UPDATE_INTERVAL,
-                               ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT, ARGUMENT_MIN_IMPROVEMENT,
-                               ARGUMENT_FORCE_STOP}
+    EARLY_STOPPING_OBJECTIVE: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_MIN_RULES,
+                               ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT,
+                               ARGUMENT_MIN_IMPROVEMENT, ARGUMENT_FORCE_STOP}
 }
 
 SEQUENTIAL_POST_OPTIMIZATION_VALUES: Dict[str, Set[str]] = {
@@ -323,6 +324,7 @@ def configure_early_stopping_criterion(config: RuleLearnerConfig, early_stopping
             aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
             c.set_aggregation_function(__create_aggregation_function(
                 aggregation_function) if aggregation_function is not None else c.get_aggregation_function())
+            c.set_use_holdout_set(options.get_bool(ARGUMENT_USE_HOLDOUT_SET, c.is_holdout_set_used()))
             c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
             c.set_update_interval(options.get_int(ARGUMENT_UPDATE_INTERVAL, c.get_update_interval()))
             c.set_stop_interval(options.get_int(ARGUMENT_STOP_INTERVAL, c.get_stop_interval()))

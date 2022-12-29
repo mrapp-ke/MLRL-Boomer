@@ -108,6 +108,29 @@ cdef class EarlyStoppingCriterionConfig:
         self.config_ptr.setAggregationFunction(<AggregationFunctionImpl>enum_value)
         return self
 
+    def is_holdout_set_used(self) -> bool:
+        """
+        Returns whether the quality of the current model's predictions is measured on the holdout set, if available, or
+        if the training set is used instead.
+
+        :return: True, if the quality of the current model's predictions is measured on the holdout set, if available,
+                 False, if the training set is used instead
+        """
+        return self.config_ptr.isHoldoutSetUsed()
+
+    def set_use_holdout_set(self, use_holdout_set: bool) -> EarlyStoppingCriterionConfig:
+        """
+        Sets whether the quality of he current model's predictions should be measured on the holdout set, if available,
+        or if the training set should be used instead.
+
+        :param use_holdout_set: True, if the quality of the current model's predictions should be measured on the
+                                holdout set, if available, False, if the training set should be used instead
+        :return:                An `EarlyStoppingCriterionConfig` that allows further configuration of the stopping
+                                criterion
+        """
+        self.config_ptr.setUseHoldoutSet(use_holdout_set)
+        return self
+
     def get_min_rules(self) -> int:
         """
         Returns the minimum number of rules that must have been learned until the induction of rules might be stopped.

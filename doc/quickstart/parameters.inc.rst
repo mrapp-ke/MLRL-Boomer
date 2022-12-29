@@ -135,6 +135,7 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'none'`` No strategy for early-stopping is used.
   * ``'objective'`` Stops the induction of new rules as soon as the performance of the model does not improve on a holdout set, according to the loss function. This parameter does only have an effect if the parameter ``holdout`` is set to a value greater than 0. The following options may be provided using the bracket notation:
 
+    * ``use_holdout_set`` (Default value = ``'true'``) ``'true'``, if the quality of the current model should be measured on a holdout set, if available, ``'false'``, if the training set should be used instead.
     * ``min_rules`` (Default value = ``100``) The minimum number of rules. Must be at least 1.
     * ``update_interval`` (Default value = ``1``) The interval to be used to update the quality of the current model. For example, a value of 5 means that the model quality is assessed every 5 rules. Must be at least 1.
     * ``stop_interval`` (Default value = ``1``) The interval to be used to decide whether the induction of rules should be stopped. For example, a value of 10 means that the rule induction might be stopped after 10, 20, ... rules. Must be a multiple of update_interval.
