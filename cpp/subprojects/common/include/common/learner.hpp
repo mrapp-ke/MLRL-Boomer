@@ -1281,7 +1281,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IStoppingCriterionFactory> createTimeStoppingCriterionFactory() const;
 
-        std::unique_ptr<IStoppingCriterionFactory> createEarlyStoppingCriterionFactory() const;
+        std::unique_ptr<IStoppingCriterionFactory> createGlobalPruningFactory() const;
 
         std::unique_ptr<IPostOptimizationPhaseFactory> createSequentialPostOptimizationFactory() const;
 
