@@ -623,7 +623,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .global_pruning(GLOBAL_PRE_PRUNING) \
             .holdout(HOLDOUT_NO) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, 'early-stopping_no-holdout')
+        self.run_cmd(builder, 'pre-pruning_no-holdout')
 
     def test_global_pre_pruning_random_holdout(self):
         """
@@ -633,7 +633,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .global_pruning(GLOBAL_PRE_PRUNING) \
             .holdout(HOLDOUT_RANDOM) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, 'early-stopping_random-holdout')
+        self.run_cmd(builder, 'pre-pruning_random-holdout')
 
     def test_global_pre_pruning_stratified_label_wise_holdout(self):
         """
@@ -644,7 +644,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .global_pruning(GLOBAL_PRE_PRUNING) \
             .holdout(HOLDOUT_STRATIFIED_LABEL_WISE) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, 'early-stopping_stratified-label-wise-holdout')
+        self.run_cmd(builder, 'pre-pruning_stratified-label-wise-holdout')
 
     def test_global_pruning_stratified_example_wise_holdout(self):
         """
@@ -655,4 +655,4 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .global_pruning(GLOBAL_PRE_PRUNING) \
             .holdout(HOLDOUT_STRATIFIED_EXAMPLE_WISE) \
             .print_model_characteristics(True)
-        self.run_cmd(builder, 'early-stopping_stratified-example-wise-holdout')
+        self.run_cmd(builder, 'pre-pruning_stratified-example-wise-holdout')
