@@ -166,7 +166,7 @@ class PrePruning final : public IStoppingCriterion {
  * quality of a model's predictions for the examples in the training or holdout set do not improve according a certain
  * measure.
  */
-class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
+class PrePruningFactory final : public IStoppingCriterionFactory {
 
     private:
 
@@ -214,9 +214,9 @@ class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
          *                                      stopping criterion is met, false, if only the time of stopping should be
          *                                      stored
          */
-        EarlyStoppingCriterionFactory(std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr,
-                                      bool useHoldoutSet, uint32 minRules, uint32 updateInterval, uint32 stopInterval,
-                                      uint32 numPast, uint32 numCurrent, float64 minImprovement, bool forceStop)
+        PrePruningFactory(std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr,
+                          bool useHoldoutSet, uint32 minRules, uint32 updateInterval, uint32 stopInterval,
+                          uint32 numPast, uint32 numCurrent, float64 minImprovement, bool forceStop)
             : aggregationFunctionFactoryPtr_(std::move(aggregationFunctionFactoryPtr)), useHoldoutSet_(useHoldoutSet),
               minRules_(minRules), updateInterval_(updateInterval), stopInterval_(stopInterval), numPast_(numPast),
               numCurrent_(numCurrent), minImprovement_(minImprovement), forceStop_(forceStop) {
@@ -339,7 +339,7 @@ IPrePruningConfig& PrePruningConfig::setForceStop(bool forceStop) {
 std::unique_ptr<IStoppingCriterionFactory> PrePruningConfig::createStoppingCriterionFactory() const {
     std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr =
         createAggregationFunctionFactory(aggregationFunction_);
-    return std::make_unique<EarlyStoppingCriterionFactory>(std::move(aggregationFunctionFactoryPtr), useHoldoutSet_,
-                                                           minRules_, updateInterval_, stopInterval_, numPast_,
-                                                           numCurrent_, minImprovement_, forceStop_);
+    return std::make_unique<PrePruningFactory>(std::move(aggregationFunctionFactoryPtr), useHoldoutSet_, minRules_,
+                                               updateInterval_, stopInterval_, numPast_, numCurrent_, minImprovement_,
+                                               forceStop_);
 }
