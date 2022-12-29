@@ -9,7 +9,7 @@ from enum import Enum
 
 from mlrl.common.config import NONE, RULE_INDUCTION_VALUES, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, \
     INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, EARLY_STOPPING_VALUES, \
-    PRUNING_VALUES, PARALLEL_VALUES
+    RULE_PRUNING_VALUES, PARALLEL_VALUES
 from mlrl.common.format import format_enum_values, format_string_set, format_dict_keys
 from mlrl.common.options import BooleanOption
 from mlrl.common.rule_learners import SparsePolicy
@@ -416,7 +416,7 @@ def add_early_stopping_argument(parser: ArgumentParser):
 def add_pruning_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_RULE_PRUNING, type=str,
                         help='The name of the strategy to be used for pruning individual rules. Must be one of '
-                             + format_string_set(PRUNING_VALUES) + '. Does only have an effect if the parameter '
+                             + format_string_set(RULE_PRUNING_VALUES) + '. Does only have an effect if the parameter '
                              + PARAM_INSTANCE_SAMPLING + ' is not set to "none".')
 
 
