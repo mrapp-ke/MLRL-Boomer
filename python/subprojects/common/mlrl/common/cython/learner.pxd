@@ -150,11 +150,11 @@ cdef extern from "common/learner.hpp" nogil:
         IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
 
 
-    cdef cppclass IPruningMixin"IRuleLearner::IPruningMixin":
+    cdef cppclass IRulePruningMixin"IRuleLearner::IRulePruningMixin":
 
         # Functions:
 
-        void useIrepPruning()
+        void useIrepRulePruning()
 
 
     cdef cppclass IMultiThreadingMixin"IRuleLearner::IMultiThreadingMixin":

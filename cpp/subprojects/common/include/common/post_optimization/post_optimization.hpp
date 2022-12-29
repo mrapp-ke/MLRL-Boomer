@@ -37,7 +37,8 @@ class IPostOptimizationPhase {
          *                          sampling examples
          * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
          *                          the features that may be used by the conditions of new rules
-         * @param pruning           A reference to an object of type `IPruning` that should be used to prune new rules
+         * @param rulePruning       A reference to an object of type `IRulePruning` that should be used to prune new
+         *                          rules
          * @param postProcessor     A reference to an object of type `IPostProcessor` that should be used to
          *                          post-process the predictions of new rules
          * @param rng               A reference to an object of type `RNG` that implements the random number generator
@@ -45,7 +46,7 @@ class IPostOptimizationPhase {
          */
         virtual void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
                                    ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
-                                   IFeatureSampling& featureSampling, const IPruning& pruning,
+                                   IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
                                    const IPostProcessor& postProcessor, RNG& rng) const = 0;
 
 };

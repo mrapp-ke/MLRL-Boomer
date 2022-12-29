@@ -83,8 +83,8 @@ class IRuleModelAssemblageFactory {
          * @param partitionSamplingFactoryPtr   An unique pointer to an object of type `IPartitionSamplingFactory` that
          *                                      allows to create the implementation to be used for partitioning the
          *                                      training examples into a training set and a holdout set
-         * @param pruningFactoryPtr             An unique pointer to an object of type `IPruningFactory` that allows to
-         *                                      create the implementation to be used for pruning rules
+         * @param rulePruningFactoryPtr         An unique pointer to an object of type `IRulePruningFactory` that allows
+         *                                      to create the implementation to be used for pruning rules
          * @param postProcessorFactoryPtr       An unique pointer to an object of type `IPostProcessorFactory` that
          *                                      allows to create the implementation to be used for post-processing the
          *                                      predictions of rules
@@ -104,7 +104,7 @@ class IRuleModelAssemblageFactory {
             std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
             std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
             std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-            std::unique_ptr<IPruningFactory> pruningFactoryPtr,
+            std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
             std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
             std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const = 0;

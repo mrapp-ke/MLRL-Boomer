@@ -85,7 +85,7 @@ class AbstractRuleInduction : public IRuleInduction {
         }
 
         bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
-                        IPartition& partition, IFeatureSampling& featureSampling, const IPruning& pruning,
+                        IPartition& partition, IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
                         const IPostProcessor& postProcessor, RNG& rng,
                         IModelBuilder& modelBuilder) const override final {
             std::unique_ptr<ConditionList> conditionListPtr;
@@ -99,8 +99,9 @@ class AbstractRuleInduction : public IRuleInduction {
                     // Prune rule...
                     IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
                     statisticsProvider.switchToPruningRuleEvaluation();
-                    std::unique_ptr<ICoverageState> coverageStatePtr = pruning.prune(*thresholdsSubsetPtr, partition,
-                                                                                     *conditionListPtr, *headPtr);
+                    std::unique_ptr<ICoverageState> coverageStatePtr = rulePruning.prune(*thresholdsSubsetPtr,
+                                                                                         partition, *conditionListPtr,
+                                                                                         *headPtr);
                     statisticsProvider.switchToRegularRuleEvaluation();
 
                     // Re-calculate the scores in the head based on the entire training data...

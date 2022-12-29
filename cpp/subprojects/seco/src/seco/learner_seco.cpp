@@ -8,7 +8,7 @@ namespace seco {
         this->useCoverageStoppingCriterion();
         this->useSizeStoppingCriterion();
         this->useLabelWiseStratifiedInstanceSampling();
-        this->useIrepPruning();
+        this->useIrepRulePruning();
         this->useFMeasureHeuristic();
         this->useAccuracyPruningHeuristic();
         this->usePeakLiftFunction();

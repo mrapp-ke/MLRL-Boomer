@@ -75,7 +75,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 
         void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
                            ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
-                           IFeatureSampling& featureSampling, const IPruning& pruning,
+                           IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
                            const IPostProcessor& postProcessor, RNG& rng) const override {
             for (uint32 i = 0; i < numIterations_; i++) {
                 for (auto it = modelBuilder_.begin(); it != modelBuilder_.end(); it++) {
@@ -101,8 +101,8 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                     RuleReplacementBuilder ruleReplacementBuilder(intermediateRule);
 
                     if (resampleFeatures_) {
-                        ruleInduction.induceRule(thresholds, labelIndices, weights, partition, featureSampling, pruning,
-                                                 postProcessor, rng, ruleReplacementBuilder);
+                        ruleInduction.induceRule(thresholds, labelIndices, weights, partition, featureSampling,
+                                                 rulePruning, postProcessor, rng, ruleReplacementBuilder);
                     } else {
                         std::unordered_set<uint32> uniqueFeatureIndices;
 
@@ -121,7 +121,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 
                         PredefinedFeatureSampling predefinedFeatureSampling(indexVector);
                         ruleInduction.induceRule(thresholds, labelIndices, weights, partition,
-                                                 predefinedFeatureSampling, pruning, postProcessor, rng,
+                                                 predefinedFeatureSampling, rulePruning, postProcessor, rng,
                                                  ruleReplacementBuilder);
                     }
                 }

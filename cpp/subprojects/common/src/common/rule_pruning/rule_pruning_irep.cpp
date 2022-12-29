@@ -2,10 +2,10 @@
 
 
 /**
- * An implementation of the class `IPruning` that prunes rules by following the ideas of "incremental reduced error
+ * An implementation of the class `IRulePruning` that prunes rules by following the ideas of "incremental reduced error
  * pruning" (IREP).
  */
-class Irep final : public IPruning {
+class Irep final : public IRulePruning {
 
     private:
 
@@ -80,12 +80,12 @@ class Irep final : public IPruning {
 };
 
 /**
- * Allows to create instances of the type `IPruning` that prune rules by following the ideas of "incremental reduced
+ * Allows to create instances of the type `IRulePruning` that prune rules by following the ideas of "incremental reduced
  * error pruning" (IREP). Given `n` conditions in the order of their induction, IREP may remove up to `n - 1` trailing
  * conditions, depending on which of the resulting rules comes with the greatest improvement in terms of quality as
  * measured on the prune set.
  */
-class IrepFactory final : public IPruningFactory {
+class IrepFactory final : public IRulePruningFactory {
 
     private:
 
@@ -102,7 +102,7 @@ class IrepFactory final : public IPruningFactory {
 
         }
 
-        std::unique_ptr<IPruning> create() const override {
+        std::unique_ptr<IRulePruning> create() const override {
             return std::make_unique<Irep>(ruleCompareFunction_);
         }
 
@@ -113,6 +113,6 @@ IrepConfig::IrepConfig(RuleCompareFunction ruleCompareFunction)
 
 }
 
-std::unique_ptr<IPruningFactory> IrepConfig::createPruningFactory() const {
+std::unique_ptr<IRulePruningFactory> IrepConfig::createRulePruningFactory() const {
     return std::make_unique<IrepFactory>(ruleCompareFunction_);
 }

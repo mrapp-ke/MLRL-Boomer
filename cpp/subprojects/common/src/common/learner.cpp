@@ -120,8 +120,8 @@ std::unique_ptr<IPartitionSamplingConfig>& AbstractRuleLearner::Config::getParti
     return partitionSamplingConfigPtr_;
 }
 
-std::unique_ptr<IPruningConfig>& AbstractRuleLearner::Config::getPruningConfigPtr() {
-    return pruningConfigPtr_;
+std::unique_ptr<IRulePruningConfig>& AbstractRuleLearner::Config::getRulePruningConfigPtr() {
+    return rulePruningConfigPtr_;
 }
 
 std::unique_ptr<IPostProcessorConfig>& AbstractRuleLearner::Config::getPostProcessorConfigPtr() {
@@ -193,7 +193,7 @@ void AbstractRuleLearner::Config::useNoPartitionSampling() {
 }
 
 void AbstractRuleLearner::Config::useNoRulePruning() {
-    pruningConfigPtr_ = std::make_unique<NoPruningConfig>();
+    rulePruningConfigPtr_ = std::make_unique<NoRulePruningConfig>();
 }
 
 void AbstractRuleLearner::Config::useNoPostProcessor() {
@@ -266,8 +266,8 @@ std::unique_ptr<IPartitionSamplingFactory> AbstractRuleLearner::createPartitionS
     return config_.getPartitionSamplingConfigPtr()->createPartitionSamplingFactory();
 }
 
-std::unique_ptr<IPruningFactory> AbstractRuleLearner::createPruningFactory() const {
-    return config_.getPruningConfigPtr()->createPruningFactory();
+std::unique_ptr<IRulePruningFactory> AbstractRuleLearner::createRulePruningFactory() const {
+    return config_.getRulePruningConfigPtr()->createRulePruningFactory();
 }
 
 std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorFactory() const {
@@ -362,7 +362,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
         this->createThresholdsFactory(featureMatrix, labelMatrix),
         this->createRuleInductionFactory(featureMatrix, labelMatrix), this->createLabelSamplingFactory(labelMatrix),
         this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(featureMatrix),
-        this->createPartitionSamplingFactory(), this->createPruningFactory(), this->createPostProcessorFactory(),
+        this->createPartitionSamplingFactory(), this->createRulePruningFactory(), this->createPostProcessorFactory(),
         std::move(postOptimizationFactoryPtr), std::move(stoppingCriterionFactoryPtr));
     std::unique_ptr<IRuleModel> ruleModelPtr = ruleModelAssemblagePtr->induceRules(featureInfo, featureMatrix,
                                                                                    labelMatrix, randomState);

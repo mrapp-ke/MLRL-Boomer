@@ -43,7 +43,7 @@ namespace seco {
                             virtual public IRuleLearner::IInstanceSamplingMixin,
                             virtual public IRuleLearner::IFeatureSamplingMixin,
                             virtual public IRuleLearner::IPartitionSamplingMixin,
-                            virtual public IRuleLearner::IPruningMixin,
+                            virtual public IRuleLearner::IRulePruningMixin,
                             virtual public IRuleLearner::IMultiThreadingMixin,
                             virtual public IRuleLearner::ISizeStoppingCriterionMixin,
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,

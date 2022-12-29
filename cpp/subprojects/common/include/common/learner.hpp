@@ -186,10 +186,10 @@ class MLRLCOMMON_API IRuleLearner {
                 /**
                  * Returns an unique pointer to the configuration of the method for pruning individual rules.
                  *
-                 * @return A reference to an unique pointer of type `IPruningConfig` that stores the configuration of
-                 *         the method for pruning individual rules
+                 * @return A reference to an unique pointer of type `IRulePruningConfig` that stores the configuration
+                 *         of the method for pruning individual rules
                  */
-                virtual std::unique_ptr<IPruningConfig>& getPruningConfigPtr() = 0;
+                virtual std::unique_ptr<IRulePruningConfig>& getRulePruningConfigPtr() = 0;
 
                 /**
                  * Returns an unique pointer to the configuration of the method for post-processing the predictions of
@@ -656,19 +656,19 @@ class MLRLCOMMON_API IRuleLearner {
         /**
          * Defines an interface for all classes that allow to configure a rule learner to use pruning.
          */
-        class IPruningMixin : virtual public IRuleLearner::IConfig {
+        class IRulePruningMixin : virtual public IRuleLearner::IConfig {
 
             public:
 
-                virtual ~IPruningMixin() { };
+                virtual ~IRulePruningMixin() { };
 
                 /**
                  * Configures the rule learner to prune individual rules by following the principles of "incremental
                  * reduced error pruning" (IREP).
                  */
-                virtual void useIrepPruning() {
-                    std::unique_ptr<IPruningConfig>& pruningConfigPtr = this->getPruningConfigPtr();
-                    pruningConfigPtr = std::make_unique<IrepConfig>(this->getRuleCompareFunction());
+                virtual void useIrepRulePruning() {
+                    std::unique_ptr<IRulePruningConfig>& rulePruningConfigPtr = this->getRulePruningConfigPtr();
+                    rulePruningConfigPtr = std::make_unique<IrepConfig>(this->getRuleCompareFunction());
                 }
 
         };
@@ -1121,7 +1121,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 /**
                  * An unique pointer that stores the configuration of the method for pruning individual rules.
                  */
-                std::unique_ptr<IPruningConfig> pruningConfigPtr_;
+                std::unique_ptr<IRulePruningConfig> rulePruningConfigPtr_;
 
                 /**
                  * An unique pointer that stores the configuration of the method for post-processing the predictions of
@@ -1193,7 +1193,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IPartitionSamplingConfig>& getPartitionSamplingConfigPtr() override final;
 
-                std::unique_ptr<IPruningConfig>& getPruningConfigPtr() override final;
+                std::unique_ptr<IRulePruningConfig>& getRulePruningConfigPtr() override final;
 
                 std::unique_ptr<IPostProcessorConfig>& getPostProcessorConfigPtr() override final;
 
@@ -1277,7 +1277,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const;
 
-        std::unique_ptr<IPruningFactory> createPruningFactory() const;
+        std::unique_ptr<IRulePruningFactory> createRulePruningFactory() const;
 
         std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const;
 
