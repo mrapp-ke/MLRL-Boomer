@@ -155,7 +155,7 @@ class BoostingCmdBuilder(CmdBuilder):
         :param early_stopping:  The name of the method that should be used for early stopping
         :return:                The builder itself
         """
-        self.args.append('--early-stopping')
+        self.args.append('--global-pruning')
         self.args.append(early_stopping)
         return self
 

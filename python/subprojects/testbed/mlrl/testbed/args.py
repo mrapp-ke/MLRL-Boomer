@@ -104,6 +104,8 @@ PARAM_FEATURE_BINNING = '--feature-binning'
 
 PARAM_RULE_PRUNING = '--rule-pruning'
 
+PARAM_GLOBAL_PRUNING = '--global-pruning'
+
 PARAM_RULE_MODEL_ASSEMBLAGE = '--rule-model-assemblage'
 
 PARAM_SEQUENTIAL_POST_OPTIMIZATION = '--sequential-post-optimization'
@@ -405,7 +407,7 @@ def add_feature_binning_argument(parser: ArgumentParser):
 
 
 def add_global_pruning_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_EARLY_STOPPING, type=str,
+    parser.add_argument(PARAM_GLOBAL_PRUNING, type=str,
                         help='The name of the strategy to be used for pruning entire rules. Must be one of '
                              + format_dict_keys(GLOBAL_PRUNING_VALUES) + '. For additional options refer to the '
                              + 'documentation.')
