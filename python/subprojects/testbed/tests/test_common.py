@@ -450,15 +450,15 @@ class CmdBuilder:
         self.args.append(label_sampling)
         return self
 
-    def pruning(self, pruning: str = PRUNING_IREP):
+    def pruning(self, rule_pruning: str = PRUNING_IREP):
         """
         Configures the rule learner to use a specific method for pruning individual rules.
 
-        :param pruning: The name of the pruning method that should be used
-        :return:        The builder itself
+        :param rule_pruning:    The name of the pruning method that should be used
+        :return:                The builder itself
         """
         self.args.append('--rule-pruning')
-        self.args.append(pruning)
+        self.args.append(rule_pruning)
         return self
 
     def rule_induction(self, rule_induction=RULE_INDUCTION_TOP_DOWN_GREEDY):
