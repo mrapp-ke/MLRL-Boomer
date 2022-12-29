@@ -10,7 +10,7 @@
  * Allows to configure a strategy for pruning individual rules that prunes rules by following the principles of
  * "incremental reduced error pruning" (IREP).
  */
-class IrepConfig final : public IPruningConfig {
+class IrepConfig final : public IRulePruningConfig {
 
     private:
 
@@ -24,6 +24,6 @@ class IrepConfig final : public IPruningConfig {
          */
         IrepConfig(RuleCompareFunction compareFunction);
 
-        std::unique_ptr<IPruningFactory> createPruningFactory() const override;
+        std::unique_ptr<IRulePruningFactory> createRulePruningFactory() const override;
 
 };

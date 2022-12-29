@@ -48,7 +48,8 @@ class IRuleInduction {
          *                          respectively
          * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
          *                          the features that may be used by a new condition
-         * @param pruning           A reference to an object of type `IPruning` that should be used to prune the rule
+         * @param rulePruning       A reference to an object of type `IRulePruning` that should be used to prune the
+         *                          rule
          * @param postProcessor     A reference to an object of type `IPostProcessor` that should be used to
          *                          post-process the predictions of the rule
          * @param rng               A reference to an object of type `RNG` that implements the random number generator
@@ -58,7 +59,7 @@ class IRuleInduction {
          */
         virtual bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
                                 const IWeightVector& weights, IPartition& partition, IFeatureSampling& featureSampling,
-                                const IPruning& pruning, const IPostProcessor& postProcessor, RNG& rng,
+                                const IRulePruning& rulePruning, const IPostProcessor& postProcessor, RNG& rng,
                                 IModelBuilder& modelBuilder) const = 0;
 
 };

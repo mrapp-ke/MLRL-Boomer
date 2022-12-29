@@ -9,10 +9,10 @@
 /**
  * Allows to configure a method for pruning individual rules that does not actually perform any pruning.
  */
-class NoPruningConfig final : public IPruningConfig {
+class NoRulePruningConfig final : public IRulePruningConfig {
 
     public:
 
-        std::unique_ptr<IPruningFactory> createPruningFactory() const override;
+        std::unique_ptr<IRulePruningFactory> createRulePruningFactory() const override;
 
 };

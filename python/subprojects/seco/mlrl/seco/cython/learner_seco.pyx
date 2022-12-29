@@ -333,13 +333,13 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
-    def use_irep_pruning(self):
+    def use_irep_rule_pruning(self):
         """
         Configures the rule learner to prune individual rules by following the principles of "incremental reduced error
         pruning" (IREP).
         """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useIrepPruning()
+        rule_learner_config_ptr.useIrepRulePruning()
 
     def use_parallel_rule_refinement(self) -> ManualMultiThreadingConfig:
         """

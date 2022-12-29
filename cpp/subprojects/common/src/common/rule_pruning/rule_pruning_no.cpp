@@ -2,9 +2,9 @@
 
 
 /**
- * An implementation of the class `IPruning` that does not actually perform any pruning.
+ * An implementation of the class `IRulePruning` that does not actually perform any pruning.
  */
-class NoPruning final : public IPruning {
+class NoRulePruning final : public IRulePruning {
 
     public:
 
@@ -17,19 +17,19 @@ class NoPruning final : public IPruning {
 };
 
 /**
- * Allows to create instances of the type `IPruning` that do not actually perform any pruning.
+ * Allows to create instances of the type `IRulePruning` that do not actually perform any pruning.
  */
-class NoPruningFactory final : public IPruningFactory {
+class NoRulePruningFactory final : public IRulePruningFactory {
 
     public:
 
-        std::unique_ptr<IPruning> create() const override {
-            return std::make_unique<NoPruning>();
+        std::unique_ptr<IRulePruning> create() const override {
+            return std::make_unique<NoRulePruning>();
         }
 
 };
 
 
-std::unique_ptr<IPruningFactory> NoPruningConfig::createPruningFactory() const {
-    return std::make_unique<NoPruningFactory>();
+std::unique_ptr<IRulePruningFactory> NoRulePruningConfig::createRulePruningFactory() const {
+    return std::make_unique<NoRulePruningFactory>();
 }

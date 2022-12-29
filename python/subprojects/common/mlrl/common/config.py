@@ -281,7 +281,7 @@ def configure_rule_pruning(config: RuleLearnerConfig, rule_pruning: Optional[str
         if value == NONE:
             config.use_no_rule_pruning()
         elif value == RULE_PRUNING_IREP:
-            config.use_irep_pruning()
+            config.use_irep_rule_pruning()
 
 
 def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_refinement: Optional[str]):

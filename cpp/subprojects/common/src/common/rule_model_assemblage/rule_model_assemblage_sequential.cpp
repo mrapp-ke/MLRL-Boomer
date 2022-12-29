@@ -25,7 +25,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
         std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr_;
 
-        std::unique_ptr<IPruningFactory> pruningFactoryPtr_;
+        std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr_;
 
         std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr_;
 
@@ -61,8 +61,8 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
          * @param partitionSamplingFactoryPtr   An unique pointer to an object of type `IPartitionSamplingFactory` that
          *                                      allows to create the implementation to be used for partitioning the
          *                                      training examples into a training set and a holdout set
-         * @param pruningFactoryPtr             An unique pointer to an object of type `IPruningFactory` that allows to
-         *                                      create the implementation to be used for pruning rules
+         * @param rulePruningFactoryPtr         An unique pointer to an object of type `IRulePruningFactory` that allows
+         *                                      to create the implementation to be used for pruning rules
          * @param postProcessorFactoryPtr       An unique pointer to an object of type `IPostProcessorFactory` that
          *                                      allows to create the implementation to be used for post-processing the
          *                                      predictions of rules
@@ -83,7 +83,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
             std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
             std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-            std::unique_ptr<IPruningFactory> pruningFactoryPtr,
+            std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
             std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
             std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr,
@@ -96,7 +96,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
               instanceSamplingFactoryPtr_(std::move(instanceSamplingFactoryPtr)),
               featureSamplingFactoryPtr_(std::move(featureSamplingFactoryPtr)),
               partitionSamplingFactoryPtr_(std::move(partitionSamplingFactoryPtr)),
-              pruningFactoryPtr_(std::move(pruningFactoryPtr)),
+              rulePruningFactoryPtr_(std::move(rulePruningFactoryPtr)),
               postProcessorFactoryPtr_(std::move(postProcessorFactoryPtr)),
               postOptimizationFactoryPtr_(std::move(postOptimizationFactoryPtr)),
               stoppingCriterionFactoryPtr_(std::move(stoppingCriterionFactoryPtr)),
@@ -138,7 +138,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 *instanceSamplingFactoryPtr_, labelMatrix, statisticsProviderPtr->get());
             std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr_->create();
             std::unique_ptr<ILabelSampling> labelSamplingPtr = labelSamplingFactoryPtr_->create();
-            std::unique_ptr<IPruning> pruningPtr = pruningFactoryPtr_->create();
+            std::unique_ptr<IRulePruning> rulePruningPtr = rulePruningFactoryPtr_->create();
             std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr_->create();
             std::unique_ptr<IStoppingCriterion> stoppingCriterionPtr =
                 partition.createStoppingCriterion(*stoppingCriterionFactoryPtr_);
@@ -153,8 +153,8 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 const IWeightVector& weights = instanceSamplingPtr->sample(rng);
                 const IIndexVector& labelIndices = labelSamplingPtr->sample(rng);
                 bool success = ruleInductionPtr->induceRule(*thresholdsPtr, labelIndices, weights, partition,
-                                                            *featureSamplingPtr, *pruningPtr, *postProcessorPtr, rng,
-                                                            modelBuilder);
+                                                            *featureSamplingPtr, *rulePruningPtr, *postProcessorPtr,
+                                                            rng, modelBuilder);
 
                 if (success) {
                     numRules++;
@@ -165,7 +165,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
             // Post-optimize the model...
             postOptimizationPtr->optimizeModel(*thresholdsPtr, *ruleInductionPtr, partition, *labelSamplingPtr,
-                                               *instanceSamplingPtr, *featureSamplingPtr, *pruningPtr,
+                                               *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr,
                                                *postProcessorPtr, rng);
 
             // Build and return the final model...
@@ -203,7 +203,7 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
                 std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
                 std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
                 std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-                std::unique_ptr<IPruningFactory> pruningFactoryPtr,
+                std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
                 std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
                 std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
                 std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const override {
@@ -215,7 +215,7 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
                                                                    std::move(instanceSamplingFactoryPtr),
                                                                    std::move(featureSamplingFactoryPtr),
                                                                    std::move(partitionSamplingFactoryPtr),
-                                                                   std::move(pruningFactoryPtr),
+                                                                   std::move(rulePruningFactoryPtr),
                                                                    std::move(postProcessorFactoryPtr),
                                                                    std::move(postOptimizationFactoryPtr),
                                                                    std::move(stoppingCriterionFactoryPtr),

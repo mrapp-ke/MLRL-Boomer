@@ -13,11 +13,11 @@
  * i.e., based on the examples that are not contained in the sub-sample of the training data that has been used to learn
  * the rule, referred to as the "grow set".
  */
-class IPruning {
+class IRulePruning {
 
     public:
 
-        virtual ~IPruning() { };
+        virtual ~IRulePruning() { };
 
         /**
          * Prunes the conditions of an existing rule by modifying a given list of conditions in-place. The rule is
@@ -45,37 +45,37 @@ class IPruning {
 };
 
 /**
- * Defines an interface for all factories that allow to create instances of the type `IPruning`.
+ * Defines an interface for all factories that allow to create instances of the type `IRulePruning`.
  */
-class IPruningFactory {
+class IRulePruningFactory {
 
     public:
 
-        virtual ~IPruningFactory() { };
+        virtual ~IRulePruningFactory() { };
 
         /**
-         * Creates and returns a new object of type `IPruning`.
+         * Creates and returns a new object of type `IRulePruning`.
          *
-         * @return An unique pointer to an object of type `IPruning` that has been created
+         * @return An unique pointer to an object of type `IRulePruning` that has been created
          */
-        virtual std::unique_ptr<IPruning> create() const = 0;
+        virtual std::unique_ptr<IRulePruning> create() const = 0;
 
 };
 
 /**
  * Defines an interface for all classes that allow to configure a strategy for pruning individual rules.
  */
-class IPruningConfig {
+class IRulePruningConfig {
 
     public:
 
-        virtual ~IPruningConfig() { };
+        virtual ~IRulePruningConfig() { };
 
         /**
-         * Creates and returns a new object of type `IPruningFactory` according to the specified configuration.
+         * Creates and returns a new object of type `IRulePruningFactory` according to the specified configuration.
          *
-         * @return An unique pointer to an object of type `IPruningFactory` that has been created
+         * @return An unique pointer to an object of type `IRulePruningFactory` that has been created
          */
-        virtual std::unique_ptr<IPruningFactory> createPruningFactory() const = 0;
+        virtual std::unique_ptr<IRulePruningFactory> createRulePruningFactory() const = 0;
 
 };
