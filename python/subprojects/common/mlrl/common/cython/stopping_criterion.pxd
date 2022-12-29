@@ -93,7 +93,7 @@ cdef class TimeStoppingCriterionConfig:
     cdef ITimeStoppingCriterionConfig* config_ptr
 
 
-cdef class EarlyStoppingCriterionConfig:
+cdef class PrePruningConfig:
 
     # Attributes:
 
