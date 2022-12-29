@@ -56,7 +56,7 @@ class SeCoRunnable(RuleLearnerRunnable):
                                          sequential_post_optimization=args.sequential_post_optimization,
                                          heuristic=args.heuristic,
                                          pruning_heuristic=args.pruning_heuristic,
-                                         pruning=args.pruning,
+                                         rule_pruning=args.rule_pruning,
                                          label_sampling=args.label_sampling,
                                          instance_sampling=args.instance_sampling,
                                          feature_sampling=args.feature_sampling,

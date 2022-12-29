@@ -255,7 +255,7 @@ def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: 
 
 def configure_rule_pruning(config: RuleLearnerConfig, rule_pruning: Optional[str]):
     if rule_pruning is not None:
-        value = parse_param('pruning', rule_pruning, RULE_PRUNING_VALUES)
+        value = parse_param('rule_pruning', rule_pruning, RULE_PRUNING_VALUES)
 
         if value == NONE:
             config.use_no_pruning()

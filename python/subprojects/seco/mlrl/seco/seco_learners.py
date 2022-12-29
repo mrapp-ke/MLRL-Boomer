@@ -56,7 +56,7 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
                  instance_sampling: Optional[str] = None,
                  feature_sampling: Optional[str] = None,
                  holdout: Optional[str] = None,
-                 pruning: Optional[str] = None,
+                 rule_pruning: Optional[str] = None,
                  parallel_rule_refinement: Optional[str] = None,
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
@@ -100,7 +100,7 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
                                                 Must be 'random', 'stratified-label-wise', 'stratified-example-wise' or
                                                 'none', if no holdout set should be used. For additional options refer
                                                 to the documentation
-        :param pruning:                         The strategy that should be used to prune individual rules. Must be
+        :param rule_pruning:                    The strategy that should be used to prune individual rules. Must be
                                                 'irep' or 'none', if no pruning should be used
         :param parallel_rule_refinement:        Whether potential refinements of rules should be searched for in
                                                 parallel or not. Must be 'true', 'false' or 'auto', if the most suitable
@@ -127,7 +127,7 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
         self.instance_sampling = instance_sampling
         self.feature_sampling = feature_sampling
         self.holdout = holdout
-        self.pruning = pruning
+        self.rule_pruning = rule_pruning
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
@@ -139,7 +139,7 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
         configure_instance_sampling(config, get_string(self.instance_sampling))
         configure_feature_sampling(config, get_string(self.feature_sampling))
         configure_partition_sampling(config, get_string(self.holdout))
-        configure_rule_pruning(config, get_string(self.pruning))
+        configure_rule_pruning(config, get_string(self.rule_pruning))
         configure_parallel_rule_refinement(config, get_string(self.parallel_rule_refinement))
         configure_parallel_statistic_update(config, get_string(self.parallel_statistic_update))
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
