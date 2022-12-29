@@ -89,7 +89,6 @@ cdef class TimeStoppingCriterionConfig:
 
 cdef class EarlyStoppingCriterionConfig:
 
-
     # Attributes:
 
     cdef IEarlyStoppingCriterionConfig* config_ptr
