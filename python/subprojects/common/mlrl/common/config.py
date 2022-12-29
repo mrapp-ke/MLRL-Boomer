@@ -253,9 +253,9 @@ def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: 
             c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
 
 
-def configure_global_pruning(config: RuleLearnerConfig, early_stopping: Optional[str]):
-    if early_stopping is not None:
-        value, options = parse_param_and_options('early_stopping', early_stopping, GLOBAL_PRUNING_VALUES)
+def configure_global_pruning(config: RuleLearnerConfig, global_pruning: Optional[str]):
+    if global_pruning is not None:
+        value, options = parse_param_and_options('early_stopping', global_pruning, GLOBAL_PRUNING_VALUES)
 
         if value == NONE:
             config.use_no_global_pruning()
