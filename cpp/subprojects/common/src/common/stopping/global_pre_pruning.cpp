@@ -336,17 +336,8 @@ IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setForceStop(bool f
 }
 
 std::unique_ptr<IStoppingCriterionFactory> EarlyStoppingCriterionConfig::createStoppingCriterionFactory() const {
-    std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr;
-
-    switch (aggregationFunction_) {
-        case AggregationFunction::MIN:
-            aggregationFunctionFactoryPtr = std::make_unique<MinAggregationFunctionFactory>();
-        case AggregationFunction::MAX:
-            aggregationFunctionFactoryPtr = std::make_unique<MaxAggregationFunctionFactory>();
-        default:
-            aggregationFunctionFactoryPtr = std::make_unique<ArithmeticMeanAggregationFunctionFactory>();
-    }
-
+    std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr =
+        createAggregationFunctionFactory(aggregationFunction_);
     return std::make_unique<EarlyStoppingCriterionFactory>(std::move(aggregationFunctionFactoryPtr), useHoldoutSet_,
                                                            minRules_, updateInterval_, stopInterval_, numPast_,
                                                            numCurrent_, minImprovement_, forceStop_);
