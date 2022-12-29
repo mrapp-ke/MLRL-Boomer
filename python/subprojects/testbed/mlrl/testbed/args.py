@@ -94,8 +94,6 @@ PARAM_MAX_RULES = '--max-rules'
 
 PARAM_TIME_LIMIT = '--time-limit'
 
-PARAM_EARLY_STOPPING = '--early-stopping'
-
 PARAM_LABEL_SAMPLING = '--label-sampling'
 
 PARAM_FEATURE_SAMPLING = '--feature-sampling'

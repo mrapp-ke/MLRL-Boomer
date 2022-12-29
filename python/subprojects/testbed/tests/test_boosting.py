@@ -49,7 +49,7 @@ PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
 
 PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
 
-EARLY_STOPPING_OBJECTIVE = 'objective'
+GLOBAL_PRE_PRUNING = 'pre-pruning'
 
 
 class BoostingCmdBuilder(CmdBuilder):
@@ -148,7 +148,7 @@ class BoostingCmdBuilder(CmdBuilder):
         self.args.append('sparse' if sparse else 'dense')
         return self
 
-    def early_stopping(self, early_stopping: str = EARLY_STOPPING_OBJECTIVE):
+    def early_stopping(self, early_stopping: str = GLOBAL_PRE_PRUNING):
         """
         Configures the algorithm to use a specific method for early stopping.
 

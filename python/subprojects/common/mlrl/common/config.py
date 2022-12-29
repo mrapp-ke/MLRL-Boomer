@@ -46,7 +46,7 @@ PARTITION_SAMPLING_RANDOM = 'random'
 
 ARGUMENT_HOLDOUT_SET_SIZE = 'holdout_set_size'
 
-EARLY_STOPPING_OBJECTIVE = 'objective'
+GLOBAL_PRE_PRUNING = 'pre-pruning'
 
 AGGREGATION_FUNCTION_MIN = 'min'
 
@@ -136,9 +136,9 @@ FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
 
 GLOBAL_PRUNING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
-    EARLY_STOPPING_OBJECTIVE: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_MIN_RULES,
-                               ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT,
-                               ARGUMENT_MIN_IMPROVEMENT, ARGUMENT_FORCE_STOP}
+    GLOBAL_PRE_PRUNING: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_MIN_RULES,
+                         ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT,
+                         ARGUMENT_MIN_IMPROVEMENT, ARGUMENT_FORCE_STOP}
 }
 
 RULE_PRUNING_VALUES: Set[str] = {
@@ -259,7 +259,7 @@ def configure_early_stopping_criterion(config: RuleLearnerConfig, early_stopping
 
         if value == NONE:
             config.use_no_global_pruning()
-        elif value == EARLY_STOPPING_OBJECTIVE:
+        elif value == GLOBAL_PRE_PRUNING:
             c = config.use_pre_pruning()
             aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
             c.set_aggregation_function(__create_aggregation_function(
