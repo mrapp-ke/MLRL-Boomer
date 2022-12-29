@@ -285,15 +285,15 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
-    def use_early_stopping_criterion(self) -> PrePruningConfig:
+    def use_pre_pruning(self) -> PrePruningConfig:
         """
-        Configures the rule learner to use a stopping criterion stops the induction of rules as soon as the quality of a
-        model's predictions for the examples in a holdout set do not improve according to a certain measure.
+        Configures the rule learner to use a stopping criterion that allows to decide how many rules should be included
+        in a model, such that its performance is optimized globally.
 
         :return: A `PrePruningConfig` that allows further configuration of the stopping criterion
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IPrePruningConfig* config_ptr = &rule_learner_config_ptr.useEarlyStoppingCriterion()
+        cdef IPrePruningConfig* config_ptr = &rule_learner_config_ptr.usePrePruning()
         cdef PrePruningConfig config = PrePruningConfig.__new__(PrePruningConfig)
         config.config_ptr = config_ptr
         return config
