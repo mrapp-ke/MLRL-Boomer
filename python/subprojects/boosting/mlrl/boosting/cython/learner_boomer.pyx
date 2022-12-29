@@ -26,8 +26,7 @@ from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationCon
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
     BeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, SizeStoppingCriterionConfig, \
-    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig, IEarlyStoppingCriterionConfig, \
-    EarlyStoppingCriterionConfig
+    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig, IPrePruningConfig, EarlyStoppingCriterionConfig
 
 from libcpp.utility cimport move
 
@@ -294,7 +293,7 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         :return: An `EarlyStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef IEarlyStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useEarlyStoppingCriterion()
+        cdef IPrePruningConfig* config_ptr = &rule_learner_config_ptr.useEarlyStoppingCriterion()
         cdef EarlyStoppingCriterionConfig config = EarlyStoppingCriterionConfig.__new__(EarlyStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config

@@ -22,11 +22,11 @@
  * first buffer to the older qualities from the second buffer, is greater than a certain `minImprovement`, the rule
  * induction is continued, otherwise it is stopped.
  */
-class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
+class MLRLCOMMON_API IPrePruningConfig {
 
     public:
 
-        virtual ~IEarlyStoppingCriterionConfig() { };
+        virtual ~IPrePruningConfig() { };
 
         /**
          * Returns the type of the aggregation function that is used to aggregate the values that are stored in a
@@ -44,10 +44,10 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
          * @param aggregationFunction   A value of the enum `AggregationFunction` that specifies the type of the
          *                              aggregation function that should be used to aggregate the values that are stored
          *                              in a buffer
-         * @return                      A reference to an object of type `IEarlyStoppingCriterionConfig` that allows
-         *                              further configuration of the stopping criterion
+         * @return                      A reference to an object of type `IPrePruningConfig` that allows further
+         *                              configuration of the stopping criterion
          */
-        virtual IEarlyStoppingCriterionConfig& setAggregationFunction(AggregationFunction aggregationFunction) = 0;
+        virtual IPrePruningConfig& setAggregationFunction(AggregationFunction aggregationFunction) = 0;
 
         /**
          * Returns whether the quality of the current model's predictions is measured on the holdout set, if available,
@@ -64,10 +64,10 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
          *
          * @param useHoldoutSet True, if the quality of the current model's predictions should be measured on the
          *                      holdout set, if available, false, if the training set should be used instead
-         * @return              A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
-         *                      configuration of the stopping criterion
+         * @return              A reference to an object of type `IPrePruningConfig` that allows further configuration
+         *                      of the stopping criterion
          */
-        virtual IEarlyStoppingCriterionConfig& setUseHoldoutSet(bool useHoldoutSet) = 0;
+        virtual IPrePruningConfig& setUseHoldoutSet(bool useHoldoutSet) = 0;
 
         /**
          * Returns the minimum number of rules that must have been learned until the induction of rules might be
@@ -82,10 +82,10 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
          *
          * @param minRules  The minimum number of rules that must have been learned until the induction of rules might
          *                  be stopped. Must be at least 1
-         * @return          A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
-         *                  configuration of the stopping criterion
+         * @return          A reference to an object of type `IPrePruningConfig` that allows further configuration of
+         *                  the stopping criterion
          */
-        virtual IEarlyStoppingCriterionConfig& setMinRules(uint32 minRules) = 0;
+        virtual IPrePruningConfig& setMinRules(uint32 minRules) = 0;
 
         /**
          * Returns the interval that is used to update the quality of the current model.
@@ -100,10 +100,10 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
          * @param updateInterval    The interval that should be used to update the quality of the current model, e.g., a
          *                          value of 5 means that the model quality is assessed every 5 rules. Must be at least
          *                          1
-         * @return                  A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
+         * @return                  A reference to an object of type `IPrePruningConfig` that allows further
          *                          configuration of the stopping criterion
          */
-        virtual IEarlyStoppingCriterionConfig& setUpdateInterval(uint32 updateInterval) = 0;
+        virtual IPrePruningConfig& setUpdateInterval(uint32 updateInterval) = 0;
 
         /**
          * Returns the interval that is used to decide whether the induction of rules should be stopped.
@@ -118,10 +118,10 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
          * @param stopInterval  The interval that should be used to decide whether the induction of rules should be
          *                      stopped, e.g., a value of 10 means that the rule induction might be stopped after 10,
          *                      20, ... rules. Must be a multiple of the update interval
-         * @return              A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
-         *                      configuration of the stopping criterion
+         * @return              A reference to an object of type `IPrePruningConfig` that allows further configuration
+         *                      of the stopping criterion
          */
-        virtual IEarlyStoppingCriterionConfig& setStopInterval(uint32 stopInterval) = 0;
+        virtual IPrePruningConfig& setStopInterval(uint32 stopInterval) = 0;
 
         /**
          * Returns the number of quality stores of past iterations that are stored in a buffer.
@@ -134,10 +134,10 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
          * Sets the number of past iterations that should be stored in a buffer.
          *
          * @param numPast   The number of past iterations that should be be stored in a buffer. Must be at least 1
-         * @return          A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
-         *                  configuration of the stopping criterion
+         * @return          A reference to an object of type `IPrePruningConfig` that allows further configuration of
+         *                  the stopping criterion
          */
-        virtual IEarlyStoppingCriterionConfig& setNumPast(uint32 numPast) = 0;
+        virtual IPrePruningConfig& setNumPast(uint32 numPast) = 0;
 
         /**
          * Returns the number of the most recent iterations that are stored in a buffer.
@@ -151,10 +151,10 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
          *
          * @param numCurrent    The number of the most recent iterations that should be stored in a buffer. Must be at
          *                      least 1
-         * @return              A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
-         *                      configuration of the stopping criterion
+         * @return              A reference to an object of type `IPrePruningConfig` that allows further configuration
+         *                      of the stopping criterion
          */
-        virtual IEarlyStoppingCriterionConfig& setNumCurrent(uint32 numCurrent) = 0;
+        virtual IPrePruningConfig& setNumCurrent(uint32 numCurrent) = 0;
 
         /**
          * Returns the minimum improvement that must be reached for the rule induction to be continued.
@@ -168,10 +168,10 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
          *
          * @param minImprovement    The minimum improvement in percent that must be reached for the rule induction to be
          *                          continued. Must be in [0, 1]
-         * @return                  A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
+         * @return                  A reference to an object of type `IPrePruningConfig` that allows further
          *                          configuration of the stopping criterion
          */
-        virtual IEarlyStoppingCriterionConfig& setMinImprovement(float64 minImprovement) = 0;
+        virtual IPrePruningConfig& setMinImprovement(float64 minImprovement) = 0;
 
         /**
          * Returns whether the induction of rules is forced to be stopped, if the stopping criterion is met.
@@ -186,10 +186,10 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
          *
          * @param forceStop True, if the induction of rules should be forced to be stopped, if the stopping criterion is
          *                  met, false, if only the time of stopping should be stored
-         * @return          A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
-         *                  configuration of the stopping criterion
+         * @return          A reference to an object of type `IPrePruningConfig` that allows further configuration of
+         *                  the stopping criterion
          */
-        virtual IEarlyStoppingCriterionConfig& setForceStop(bool forceStop) = 0;
+        virtual IPrePruningConfig& setForceStop(bool forceStop) = 0;
 
 };
 
@@ -197,7 +197,7 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
  * Allows to configure a stopping criterion that stops the induction of rules as soon as the quality of a model's
  * predictions for the examples in the training or holdout set do not improve according to a certain measure.
  */
-class EarlyStoppingCriterionConfig final : public IGlobalPruningConfig, public IEarlyStoppingCriterionConfig {
+class EarlyStoppingCriterionConfig final : public IGlobalPruningConfig, public IPrePruningConfig {
 
     private:
 
@@ -225,39 +225,39 @@ class EarlyStoppingCriterionConfig final : public IGlobalPruningConfig, public I
 
         AggregationFunction getAggregationFunction() const override;
 
-        IEarlyStoppingCriterionConfig& setAggregationFunction(AggregationFunction aggregationFunction) override;
+        IPrePruningConfig& setAggregationFunction(AggregationFunction aggregationFunction) override;
 
         bool isHoldoutSetUsed() const override;
 
-        IEarlyStoppingCriterionConfig& setUseHoldoutSet(bool useHoldoutSet) override;
+        IPrePruningConfig& setUseHoldoutSet(bool useHoldoutSet) override;
 
         uint32 getMinRules() const override;
 
-        IEarlyStoppingCriterionConfig& setMinRules(uint32 minRules) override;
+        IPrePruningConfig& setMinRules(uint32 minRules) override;
 
         uint32 getUpdateInterval() const override;
 
-        IEarlyStoppingCriterionConfig& setUpdateInterval(uint32 updateInterval) override;
+        IPrePruningConfig& setUpdateInterval(uint32 updateInterval) override;
 
         uint32 getStopInterval() const override;
 
-        IEarlyStoppingCriterionConfig& setStopInterval(uint32 stopInterval) override;
+        IPrePruningConfig& setStopInterval(uint32 stopInterval) override;
 
         uint32 getNumPast() const override;
 
-        IEarlyStoppingCriterionConfig& setNumPast(uint32 numPast) override;
+        IPrePruningConfig& setNumPast(uint32 numPast) override;
 
         uint32 getNumCurrent() const override;
 
-        IEarlyStoppingCriterionConfig& setNumCurrent(uint32 numCurrent) override;
+        IPrePruningConfig& setNumCurrent(uint32 numCurrent) override;
 
         float64 getMinImprovement() const override;
 
-        IEarlyStoppingCriterionConfig& setMinImprovement(float64 minImprovement) override;
+        IPrePruningConfig& setMinImprovement(float64 minImprovement) override;
 
         bool isStopForced() const override;
 
-        IEarlyStoppingCriterionConfig& setForceStop(bool forceStop) override;
+        IPrePruningConfig& setForceStop(bool forceStop) override;
 
         std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
 

@@ -803,15 +803,15 @@ class MLRLCOMMON_API IRuleLearner {
                  * the quality of a model's predictions for the examples in a holdout set do not improve according to a
                  * certain measure.
                  *
-                 * @return A reference to an object of the type `IEarlyStoppingCriterionConfig` that allows further
-                 *         configuration of the stopping criterion
+                 * @return A reference to an object of the type `IPrePruningConfig` that allows further configuration of
+                 *         the stopping criterion
                  */
-                virtual IEarlyStoppingCriterionConfig& useEarlyStoppingCriterion() {
+                virtual IPrePruningConfig& useEarlyStoppingCriterion() {
                     std::unique_ptr<EarlyStoppingCriterionConfig>& earlyStoppingCriterionConfigPtr =
                         this->getEarlyStoppingCriterionConfigPtr();
                     std::unique_ptr<EarlyStoppingCriterionConfig> ptr =
                         std::make_unique<EarlyStoppingCriterionConfig>();
-                    IEarlyStoppingCriterionConfig& ref = *ptr;
+                    IPrePruningConfig& ref = *ptr;
                     earlyStoppingCriterionConfigPtr = std::move(ptr);
                     return ref;
                 }

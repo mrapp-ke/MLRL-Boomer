@@ -250,7 +250,7 @@ AggregationFunction EarlyStoppingCriterionConfig::getAggregationFunction() const
     return aggregationFunction_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setAggregationFunction(
+IPrePruningConfig& EarlyStoppingCriterionConfig::setAggregationFunction(
         AggregationFunction aggregationFunction) {
     aggregationFunction_ = aggregationFunction;
     return *this;
@@ -260,7 +260,7 @@ bool EarlyStoppingCriterionConfig::isHoldoutSetUsed() const {
     return useHoldoutSet_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setUseHoldoutSet(bool useHoldoutSet) {
+IPrePruningConfig& EarlyStoppingCriterionConfig::setUseHoldoutSet(bool useHoldoutSet) {
     useHoldoutSet_ = useHoldoutSet;
     return *this;
 }
@@ -269,7 +269,7 @@ uint32 EarlyStoppingCriterionConfig::getMinRules() const {
     return minRules_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setMinRules(uint32 minRules) {
+IPrePruningConfig& EarlyStoppingCriterionConfig::setMinRules(uint32 minRules) {
     assertGreaterOrEqual<uint32>("minRules", minRules, 1);
     minRules_ = minRules;
     return *this;
@@ -279,7 +279,7 @@ uint32 EarlyStoppingCriterionConfig::getUpdateInterval() const {
     return updateInterval_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setUpdateInterval(uint32 updateInterval) {
+IPrePruningConfig& EarlyStoppingCriterionConfig::setUpdateInterval(uint32 updateInterval) {
     assertGreaterOrEqual<uint32>("updateInterval", updateInterval, 1);
     updateInterval_ = updateInterval;
     return *this;
@@ -289,7 +289,7 @@ uint32 EarlyStoppingCriterionConfig::getStopInterval() const {
     return stopInterval_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setStopInterval(uint32 stopInterval) {
+IPrePruningConfig& EarlyStoppingCriterionConfig::setStopInterval(uint32 stopInterval) {
     assertMultiple<uint32>("stopInterval", stopInterval, updateInterval_);
     stopInterval_ = stopInterval;
     return *this;
@@ -299,7 +299,7 @@ uint32 EarlyStoppingCriterionConfig::getNumPast() const {
     return numPast_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setNumPast(uint32 numPast) {
+IPrePruningConfig& EarlyStoppingCriterionConfig::setNumPast(uint32 numPast) {
     assertGreaterOrEqual<uint32>("numPast", numPast, 1);
     numPast_ = numPast;
     return *this;
@@ -309,7 +309,7 @@ uint32 EarlyStoppingCriterionConfig::getNumCurrent() const {
     return numCurrent_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setNumCurrent(uint32 numCurrent) {
+IPrePruningConfig& EarlyStoppingCriterionConfig::setNumCurrent(uint32 numCurrent) {
     assertGreaterOrEqual<uint32>("numCurrent", numCurrent, 1);
     numCurrent_ = numCurrent;
     return *this;
@@ -319,7 +319,7 @@ float64 EarlyStoppingCriterionConfig::getMinImprovement() const {
     return minImprovement_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setMinImprovement(float64 minImprovement) {
+IPrePruningConfig& EarlyStoppingCriterionConfig::setMinImprovement(float64 minImprovement) {
     assertGreaterOrEqual<float64>("minImprovement", minImprovement, 0);
     assertLessOrEqual<float64>("minImprovement", minImprovement, 1);
     minImprovement_ = minImprovement;
@@ -330,7 +330,7 @@ bool EarlyStoppingCriterionConfig::isStopForced() const{
     return forceStop_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setForceStop(bool forceStop) {
+IPrePruningConfig& EarlyStoppingCriterionConfig::setForceStop(bool forceStop) {
     forceStop_ = forceStop;
     return *this;
 }
