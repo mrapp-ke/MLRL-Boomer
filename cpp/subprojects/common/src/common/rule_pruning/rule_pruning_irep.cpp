@@ -1,4 +1,4 @@
-#include "common/pruning/pruning_irep.hpp"
+#include "common/rule_pruning/rule_pruning_irep.hpp"
 
 
 /**

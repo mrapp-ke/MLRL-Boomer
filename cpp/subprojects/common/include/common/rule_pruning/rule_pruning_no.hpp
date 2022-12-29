@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/pruning/pruning.hpp"
+#include "common/rule_pruning/rule_pruning.hpp"
 
 
 /**
