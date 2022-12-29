@@ -77,7 +77,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoPartitionSampling()
 
-        void useNoPruning()
+        void useNoRulePruning()
 
         void useNoPostProcessor()
 

@@ -279,7 +279,7 @@ def configure_rule_pruning(config: RuleLearnerConfig, rule_pruning: Optional[str
         value = parse_param('rule_pruning', rule_pruning, RULE_PRUNING_VALUES)
 
         if value == NONE:
-            config.use_no_pruning()
+            config.use_no_rule_pruning()
         elif value == RULE_PRUNING_IREP:
             config.use_irep_pruning()
 
