@@ -50,7 +50,7 @@ static inline float64 evaluate(const BiPartition& partition, bool useHoldoutSet,
  *                   training and holdout set, respectively
  */
 template<typename Partition>
-class EarlyStoppingCriterion final : public IStoppingCriterion {
+class PrePruning final : public IStoppingCriterion {
 
     private:
 
@@ -108,9 +108,9 @@ class EarlyStoppingCriterion final : public IStoppingCriterion {
          *                                  stopping criterion is met, false, if the time of stopping should only be
          *                                  stored
          */
-        EarlyStoppingCriterion(Partition& partition, std::unique_ptr<IAggregationFunction> aggregationFunctionPtr,
-                               bool useHoldoutSet, uint32 minRules, uint32 updateInterval, uint32 stopInterval,
-                               uint32 numPast, uint32 numCurrent, float64 minImprovement, bool forceStop)
+        PrePruning(Partition& partition, std::unique_ptr<IAggregationFunction> aggregationFunctionPtr,
+                   bool useHoldoutSet, uint32 minRules, uint32 updateInterval, uint32 stopInterval, uint32 numPast,
+                   uint32 numCurrent, float64 minImprovement, bool forceStop)
             : partition_(partition), aggregationFunctionPtr_(std::move(aggregationFunctionPtr)),
               useHoldoutSet_(useHoldoutSet), updateInterval_(updateInterval), stopInterval_(stopInterval),
               minImprovement_(minImprovement), pastBuffer_(RingBuffer<float64>(numPast)),
@@ -225,16 +225,17 @@ class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
-            return std::make_unique<EarlyStoppingCriterion<const SinglePartition>>(
-                partition, std::move(aggregationFunctionPtr), useHoldoutSet_, minRules_, updateInterval_, stopInterval_,
-                numPast_, numCurrent_, minImprovement_, forceStop_);
+            return std::make_unique<PrePruning<const SinglePartition>>(partition, std::move(aggregationFunctionPtr),
+                                                                       useHoldoutSet_, minRules_, updateInterval_,
+                                                                       stopInterval_, numPast_, numCurrent_,
+                                                                       minImprovement_, forceStop_);
         }
 
         std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
-            return std::make_unique<EarlyStoppingCriterion<BiPartition>>(
-                partition, std::move(aggregationFunctionPtr), useHoldoutSet_, minRules_, updateInterval_, stopInterval_,
-                numPast_, numCurrent_, minImprovement_, forceStop_);
+            return std::make_unique<PrePruning<BiPartition>>(partition, std::move(aggregationFunctionPtr),
+                                                             useHoldoutSet_, minRules_, updateInterval_, stopInterval_,
+                                                             numPast_, numCurrent_, minImprovement_, forceStop_);
         }
 
 };
