@@ -81,7 +81,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
                  time_limit: Optional[int] = None,
-                 early_stopping: Optional[str] = None,
+                 global_pruning: Optional[str] = None,
                  sequential_post_optimization: Optional[str] = None,
                  head_type: Optional[str] = None,
                  loss: Optional[str] = None,
@@ -114,11 +114,11 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                                                 Must be at least 1 or 0, if the number of rules should not be restricted
         :param time_limit:                      The duration in seconds after which the induction of rules should be
                                                 canceled. Must be at least 1 or 0, if no time limit should be set
-        :param early_stopping:                  The strategy that should be used for early stopping. Must be
-                                                'objective', if the induction of new rules should be stopped as soon as
-                                                the performance of the model does not improve on a holdout set according
-                                                to the loss function or 'none', if no early stopping should be used. For
-                                                additional options refer to the documentation
+        :param global_pruning:                  The strategy that should be used for pruning entire rules. Must be
+                                                'pre-pruning', if the induction of new rules should be stopped as soon
+                                                as the performance of the model does not improve on a holdout set or
+                                                'none', if no pruning should be used. For additional options refer to
+                                                the documentation
         :param sequential_post_optimization:    Whether each rule in a previously learned model should be optimized by
                                                 being relearned in the context of the other rules or not. Must be 'true'
                                                 or 'false'. For additional options refer to the documentation
@@ -188,7 +188,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         self.rule_induction = rule_induction
         self.max_rules = max_rules
         self.time_limit = time_limit
-        self.early_stopping = early_stopping
+        self.global_pruning = global_pruning
         self.sequential_post_optimization = sequential_post_optimization
         self.head_type = head_type
         self.loss = loss
@@ -219,7 +219,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
-        configure_global_pruning(config, get_string(self.early_stopping))
+        configure_global_pruning(config, get_string(self.global_pruning))
         configure_sequential_post_optimization(config, get_string(self.sequential_post_optimization))
         configure_post_processor(config, shrinkage=get_float(self.shrinkage))
         configure_l1_regularization(config, l1_regularization_weight=get_float(self.l1_regularization_weight))
