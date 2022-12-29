@@ -20,6 +20,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * The parameters `--folds` and `--current-fold` have been replaced with a new parameter `--data-split` that provides more control of how data is split into training and test sets.
 * The parameter `--predict-probabilities` has been replaced with a new parameter `--prediction-type` that allows to specify whether binary labels (`labels`), regression scores (`scores`) or probability estimates (`probabilities`) should be predicted.
 * The parameters `--print-evaluation` and `--store-evaluation` do now allow to specify whether individual evaluation measures should be used or not.
+* The parameter `--pruning` has been renamed to `--rule-pruning`.
 * Data sets in the MEKA format can now be used for experiments.
 
 ### Version 0.8.2 (Apr. 11th, 2022)
