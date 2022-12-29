@@ -450,7 +450,7 @@ class CmdBuilder:
         self.args.append(label_sampling)
         return self
 
-    def pruning(self, rule_pruning: str = PRUNING_IREP):
+    def rule_pruning(self, rule_pruning: str = PRUNING_IREP):
         """
         Configures the rule learner to use a specific method for pruning individual rules.
 
@@ -1398,7 +1398,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the rule learning algorithm when not using a pruning method.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .pruning(PRUNING_NO)
+            .rule_pruning(PRUNING_NO)
         self.run_cmd(builder, 'pruning-no')
 
     def test_pruning_irep(self):
@@ -1407,7 +1407,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .instance_sampling() \
-            .pruning(PRUNING_IREP)
+            .rule_pruning(PRUNING_IREP)
         self.run_cmd(builder, 'pruning-irep')
 
     def test_rule_induction_top_down_beam_search(self):

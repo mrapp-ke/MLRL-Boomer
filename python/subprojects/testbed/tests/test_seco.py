@@ -161,7 +161,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         Tests the SeCo algorithm when using the accuracy heuristic for pruning rules.
         """
         builder = SeCoCmdBuilder() \
-            .pruning(PRUNING_IREP) \
+            .rule_pruning(PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_ACCURACY)
         self.run_cmd(builder, 'pruning-heuristic_accuracy')
 
@@ -170,7 +170,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         Tests the SeCo algorithm when using the precision heuristic for pruning rules.
         """
         builder = SeCoCmdBuilder() \
-            .pruning(PRUNING_IREP) \
+            .rule_pruning(PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_PRECISION)
         self.run_cmd(builder, 'pruning-heuristic_precision')
 
@@ -179,7 +179,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         Tests the SeCo algorithm when using the recall heuristic for pruning rules.
         """
         builder = SeCoCmdBuilder() \
-            .pruning(PRUNING_IREP) \
+            .rule_pruning(PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_RECALL)
         self.run_cmd(builder, 'pruning-heuristic_recall')
 
@@ -188,7 +188,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         Tests the SeCo algorithm when using the Laplace heuristic for pruning rules.
         """
         builder = SeCoCmdBuilder() \
-            .pruning(PRUNING_IREP) \
+            .rule_pruning(PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_LAPLACE)
         self.run_cmd(builder, 'pruning-heuristic_laplace')
 
@@ -197,7 +197,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         Tests the SeCo algorithm when using the WRA heuristic for pruning rules.
         """
         builder = SeCoCmdBuilder() \
-            .pruning(PRUNING_IREP) \
+            .rule_pruning(PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_WRA)
         self.run_cmd(builder, 'pruning-heuristic_wra')
 
@@ -206,7 +206,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         Tests the SeCo algorithm when using the F-measure heuristic for pruning rules.
         """
         builder = SeCoCmdBuilder() \
-            .pruning(PRUNING_IREP) \
+            .rule_pruning(PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_F_MEASURE)
         self.run_cmd(builder, 'pruning-heuristic_f-measure')
 
@@ -215,7 +215,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         Tests the SeCo algorithm when using the m-estimate heuristic for pruning rules.
         """
         builder = SeCoCmdBuilder() \
-            .pruning(PRUNING_IREP) \
+            .rule_pruning(PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_M_ESTIMATE)
         self.run_cmd(builder, 'pruning-heuristic_m-estimate')
 
