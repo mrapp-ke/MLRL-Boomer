@@ -73,7 +73,7 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
     this->useNoInstanceSampling();
     this->useNoFeatureSampling();
     this->useNoPartitionSampling();
-    this->useNoPruning();
+    this->useNoRulePruning();
     this->useNoPostProcessor();
     this->useNoParallelRuleRefinement();
     this->useNoParallelStatisticUpdate();
@@ -192,7 +192,7 @@ void AbstractRuleLearner::Config::useNoPartitionSampling() {
     partitionSamplingConfigPtr_ = std::make_unique<NoPartitionSamplingConfig>();
 }
 
-void AbstractRuleLearner::Config::useNoPruning() {
+void AbstractRuleLearner::Config::useNoRulePruning() {
     pruningConfigPtr_ = std::make_unique<NoPruningConfig>();
 }
 
