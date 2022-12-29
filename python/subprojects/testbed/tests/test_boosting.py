@@ -148,15 +148,15 @@ class BoostingCmdBuilder(CmdBuilder):
         self.args.append('sparse' if sparse else 'dense')
         return self
 
-    def early_stopping(self, early_stopping: str = GLOBAL_PRE_PRUNING):
+    def early_stopping(self, global_pruning: str = GLOBAL_PRE_PRUNING):
         """
         Configures the algorithm to use a specific method for early stopping.
 
-        :param early_stopping:  The name of the method that should be used for early stopping
+        :param global_pruning:  The name of the method that should be used for pruning entire rules
         :return:                The builder itself
         """
         self.args.append('--global-pruning')
-        self.args.append(early_stopping)
+        self.args.append(global_pruning)
         return self
 
 
