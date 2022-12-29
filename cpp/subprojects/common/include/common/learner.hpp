@@ -808,8 +808,7 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IPrePruningConfig& useEarlyStoppingCriterion() {
                     std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = this->getGlobalPruningConfigPtr();
-                    std::unique_ptr<EarlyStoppingCriterionConfig> ptr =
-                        std::make_unique<EarlyStoppingCriterionConfig>();
+                    std::unique_ptr<PrePruningConfig> ptr = std::make_unique<PrePruningConfig>();
                     IPrePruningConfig& ref = *ptr;
                     globalPruningConfigPtr = std::move(ptr);
                     return ref;
