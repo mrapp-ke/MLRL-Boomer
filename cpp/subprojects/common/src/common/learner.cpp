@@ -148,8 +148,8 @@ std::unique_ptr<TimeStoppingCriterionConfig>& AbstractRuleLearner::Config::getTi
     return timeStoppingCriterionConfigPtr_;
 }
 
-std::unique_ptr<EarlyStoppingCriterionConfig>& AbstractRuleLearner::Config::getEarlyStoppingCriterionConfigPtr() {
-    return earlyStoppingCriterionConfigPtr_;
+std::unique_ptr<IGlobalPruningConfig>& AbstractRuleLearner::Config::getGlobalPruningConfigPtr() {
+    return globalPruningConfigPtr_;
 }
 
 std::unique_ptr<SequentialPostOptimizationConfig>& AbstractRuleLearner::Config::getSequentialPostOptimizationConfigPtr() {
@@ -221,7 +221,7 @@ void AbstractRuleLearner::Config::useNoTimeStoppingCriterion() {
 }
 
 void AbstractRuleLearner::Config::useNoEarlyStoppingCriterion() {
-    earlyStoppingCriterionConfigPtr_ = nullptr;
+    globalPruningConfigPtr_ = nullptr;
 }
 
 void AbstractRuleLearner::Config::useNoSequentialPostOptimization() {
@@ -285,7 +285,7 @@ std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createTimeStoppi
 }
 
 std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createEarlyStoppingCriterionFactory() const {
-    std::unique_ptr<EarlyStoppingCriterionConfig>& configPtr = config_.getEarlyStoppingCriterionConfigPtr();
+    std::unique_ptr<IGlobalPruningConfig>& configPtr = config_.getGlobalPruningConfigPtr();
     return configPtr.get() != nullptr ? configPtr->createStoppingCriterionFactory() : nullptr;
 }
 
