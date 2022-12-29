@@ -9,7 +9,7 @@ from mlrl.common.config import AUTOMATIC
 from mlrl.common.config import configure_rule_induction, configure_feature_binning, configure_label_sampling, \
     configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, configure_rule_pruning, \
     configure_parallel_rule_refinement, configure_parallel_statistic_update, configure_parallel_prediction, \
-    configure_size_stopping_criterion, configure_time_stopping_criterion, configure_early_stopping_criterion, \
+    configure_size_stopping_criterion, configure_time_stopping_criterion, configure_global_pruning, \
     configure_sequential_post_optimization
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import parse_param
@@ -219,7 +219,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
-        configure_early_stopping_criterion(config, get_string(self.early_stopping))
+        configure_global_pruning(config, get_string(self.early_stopping))
         configure_sequential_post_optimization(config, get_string(self.sequential_post_optimization))
         configure_post_processor(config, shrinkage=get_float(self.shrinkage))
         configure_l1_regularization(config, l1_regularization_weight=get_float(self.l1_regularization_weight))
