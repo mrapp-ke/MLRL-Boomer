@@ -239,103 +239,103 @@ class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
 };
 
-EarlyStoppingCriterionConfig::EarlyStoppingCriterionConfig()
+PrePruningConfig::PrePruningConfig()
     : aggregationFunction_(AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true),
       minRules_(100), updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005),
       forceStop_(true) {
 
 }
 
-AggregationFunction EarlyStoppingCriterionConfig::getAggregationFunction() const {
+AggregationFunction PrePruningConfig::getAggregationFunction() const {
     return aggregationFunction_;
 }
 
-IPrePruningConfig& EarlyStoppingCriterionConfig::setAggregationFunction(
+IPrePruningConfig& PrePruningConfig::setAggregationFunction(
         AggregationFunction aggregationFunction) {
     aggregationFunction_ = aggregationFunction;
     return *this;
 }
 
-bool EarlyStoppingCriterionConfig::isHoldoutSetUsed() const {
+bool PrePruningConfig::isHoldoutSetUsed() const {
     return useHoldoutSet_;
 }
 
-IPrePruningConfig& EarlyStoppingCriterionConfig::setUseHoldoutSet(bool useHoldoutSet) {
+IPrePruningConfig& PrePruningConfig::setUseHoldoutSet(bool useHoldoutSet) {
     useHoldoutSet_ = useHoldoutSet;
     return *this;
 }
 
-uint32 EarlyStoppingCriterionConfig::getMinRules() const {
+uint32 PrePruningConfig::getMinRules() const {
     return minRules_;
 }
 
-IPrePruningConfig& EarlyStoppingCriterionConfig::setMinRules(uint32 minRules) {
+IPrePruningConfig& PrePruningConfig::setMinRules(uint32 minRules) {
     assertGreaterOrEqual<uint32>("minRules", minRules, 1);
     minRules_ = minRules;
     return *this;
 }
 
-uint32 EarlyStoppingCriterionConfig::getUpdateInterval() const {
+uint32 PrePruningConfig::getUpdateInterval() const {
     return updateInterval_;
 }
 
-IPrePruningConfig& EarlyStoppingCriterionConfig::setUpdateInterval(uint32 updateInterval) {
+IPrePruningConfig& PrePruningConfig::setUpdateInterval(uint32 updateInterval) {
     assertGreaterOrEqual<uint32>("updateInterval", updateInterval, 1);
     updateInterval_ = updateInterval;
     return *this;
 }
 
-uint32 EarlyStoppingCriterionConfig::getStopInterval() const {
+uint32 PrePruningConfig::getStopInterval() const {
     return stopInterval_;
 }
 
-IPrePruningConfig& EarlyStoppingCriterionConfig::setStopInterval(uint32 stopInterval) {
+IPrePruningConfig& PrePruningConfig::setStopInterval(uint32 stopInterval) {
     assertMultiple<uint32>("stopInterval", stopInterval, updateInterval_);
     stopInterval_ = stopInterval;
     return *this;
 }
 
-uint32 EarlyStoppingCriterionConfig::getNumPast() const {
+uint32 PrePruningConfig::getNumPast() const {
     return numPast_;
 }
 
-IPrePruningConfig& EarlyStoppingCriterionConfig::setNumPast(uint32 numPast) {
+IPrePruningConfig& PrePruningConfig::setNumPast(uint32 numPast) {
     assertGreaterOrEqual<uint32>("numPast", numPast, 1);
     numPast_ = numPast;
     return *this;
 }
 
-uint32 EarlyStoppingCriterionConfig::getNumCurrent() const {
+uint32 PrePruningConfig::getNumCurrent() const {
     return numCurrent_;
 }
 
-IPrePruningConfig& EarlyStoppingCriterionConfig::setNumCurrent(uint32 numCurrent) {
+IPrePruningConfig& PrePruningConfig::setNumCurrent(uint32 numCurrent) {
     assertGreaterOrEqual<uint32>("numCurrent", numCurrent, 1);
     numCurrent_ = numCurrent;
     return *this;
 }
 
-float64 EarlyStoppingCriterionConfig::getMinImprovement() const {
+float64 PrePruningConfig::getMinImprovement() const {
     return minImprovement_;
 }
 
-IPrePruningConfig& EarlyStoppingCriterionConfig::setMinImprovement(float64 minImprovement) {
+IPrePruningConfig& PrePruningConfig::setMinImprovement(float64 minImprovement) {
     assertGreaterOrEqual<float64>("minImprovement", minImprovement, 0);
     assertLessOrEqual<float64>("minImprovement", minImprovement, 1);
     minImprovement_ = minImprovement;
     return *this;
 }
 
-bool EarlyStoppingCriterionConfig::isStopForced() const{
+bool PrePruningConfig::isStopForced() const{
     return forceStop_;
 }
 
-IPrePruningConfig& EarlyStoppingCriterionConfig::setForceStop(bool forceStop) {
+IPrePruningConfig& PrePruningConfig::setForceStop(bool forceStop) {
     forceStop_ = forceStop;
     return *this;
 }
 
-std::unique_ptr<IStoppingCriterionFactory> EarlyStoppingCriterionConfig::createStoppingCriterionFactory() const {
+std::unique_ptr<IStoppingCriterionFactory> PrePruningConfig::createStoppingCriterionFactory() const {
     std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr =
         createAggregationFunctionFactory(aggregationFunction_);
     return std::make_unique<EarlyStoppingCriterionFactory>(std::move(aggregationFunctionFactoryPtr), useHoldoutSet_,

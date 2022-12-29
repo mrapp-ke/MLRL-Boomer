@@ -197,7 +197,7 @@ class MLRLCOMMON_API IPrePruningConfig {
  * Allows to configure a stopping criterion that stops the induction of rules as soon as the quality of a model's
  * predictions for the examples in the training or holdout set do not improve according to a certain measure.
  */
-class EarlyStoppingCriterionConfig final : public IGlobalPruningConfig, public IPrePruningConfig {
+class PrePruningConfig final : public IGlobalPruningConfig, public IPrePruningConfig {
 
     private:
 
@@ -221,7 +221,7 @@ class EarlyStoppingCriterionConfig final : public IGlobalPruningConfig, public I
 
     public:
 
-        EarlyStoppingCriterionConfig();
+        PrePruningConfig();
 
         AggregationFunction getAggregationFunction() const override;
 
