@@ -25,7 +25,7 @@ cdef extern from "common/stopping/stopping_criterion_time.hpp" nogil:
         ITimeStoppingCriterionConfig& setTimeLimit(uint32 timeLimit) except +
 
 
-cdef extern from "common/stopping/stopping_criterion_early.hpp" nogil:
+cdef extern from "common/stopping/global_pre_pruning.hpp" nogil:
 
     cpdef enum AggregationFunctionImpl"IEarlyStoppingCriterionConfig::AggregationFunction":
 

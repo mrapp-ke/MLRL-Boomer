@@ -32,7 +32,7 @@
 #include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
-#include "common/stopping/stopping_criterion_early.hpp"
+#include "common/stopping/global_pre_pruning.hpp"
 #include "common/stopping/stopping_criterion_list.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/stopping/stopping_criterion_time.hpp"
