@@ -7,7 +7,7 @@
 
 
 /**
- * Allows to configure a method for pruning classification rules that does not actually perform any pruning.
+ * Allows to configure a method for pruning individual rules that does not actually perform any pruning.
  */
 class NoPruningConfig final : public IPruningConfig {
 

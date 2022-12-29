@@ -7,7 +7,7 @@
 
 
 /**
- * Allows to configure a strategy for pruning classification rules that prunes rules by following the ideas of
+ * Allows to configure a strategy for pruning individual rules that prunes rules by following the principles of
  * "incremental reduced error pruning" (IREP).
  */
 class IrepConfig final : public IPruningConfig {

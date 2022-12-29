@@ -6,7 +6,7 @@
 
 
 /**
- * An implementation of the type `IRuleInduction` that allows to induce classification rules by using a greedy top-down
+ * An implementation of the type `IRuleInduction` that allows to induce individual rules by using a greedy top-down
  * search.
  */
 class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
@@ -109,7 +109,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 };
 
 /**
- * Allows to create instances of the type `IRuleInduction` that induce classification rules by using a greedy top-down
+ * Allows to create instances of the type `IRuleInduction` that induce individual rules by using a greedy top-down
  * search, where new conditions are added iteratively to the (initially empty) body of a rule. At each iteration, the
  * refinement that improves the rule the most is chosen. The search stops if no refinement results in an improvement.
  */

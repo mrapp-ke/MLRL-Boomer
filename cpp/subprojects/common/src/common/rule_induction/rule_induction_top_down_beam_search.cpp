@@ -266,7 +266,7 @@ class Beam final {
 };
 
 /**
- * An implementation of the type `IRuleInduction` that allows to induce classification rules by using a top-down beam
+ * An implementation of the type `IRuleInduction` that allows to induce individual rules by using a top-down beam
  * search.
  */
 class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
@@ -368,9 +368,9 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 };
 
 /**
- * Allows to create instances of the type `IRuleInduction` that induce classification rules by using a top-down beam
- * search, where new conditions are added iteratively to the (initially empty) body of a rule. At each iteration, the
- * refinement that improves the rule the most is chosen. The search stops if no refinement results in an improvement.
+ * Allows to create instances of the type `IRuleInduction` that induce individual rules by using a top-down beam search,
+ * where new conditions are added iteratively to the (initially empty) body of a rule. At each iteration, the refinement
+ * that improves the rule the most is chosen. The search stops if no refinement results in an improvement.
  */
 class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory {
 
