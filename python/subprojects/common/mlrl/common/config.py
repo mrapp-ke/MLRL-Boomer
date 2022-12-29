@@ -141,7 +141,7 @@ EARLY_STOPPING_VALUES: Dict[str, Set[str]] = {
                                ARGUMENT_MIN_IMPROVEMENT, ARGUMENT_FORCE_STOP}
 }
 
-PRUNING_VALUES: Set[str] = {
+RULE_PRUNING_VALUES: Set[str] = {
     NONE,
     RULE_PRUNING_IREP
 }
@@ -255,7 +255,7 @@ def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: 
 
 def configure_pruning(config: RuleLearnerConfig, pruning: Optional[str]):
     if pruning is not None:
-        value = parse_param('pruning', pruning, PRUNING_VALUES)
+        value = parse_param('pruning', pruning, RULE_PRUNING_VALUES)
 
         if value == NONE:
             config.use_no_pruning()
