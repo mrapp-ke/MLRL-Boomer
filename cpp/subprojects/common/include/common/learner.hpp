@@ -251,15 +251,15 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual std::unique_ptr<TimeStoppingCriterionConfig>& getTimeStoppingCriterionConfigPtr() = 0;
 
                 /**
-                 * Returns an unique pointer to the configuration of the stopping criterion that stops the induction of
-                 * rules as soon as a model's quality does not improve.
+                 * Returns an unique pointer to the configuration of the stopping criterion that allows to decide how
+                 * many rules should be included in a model, such that its performance is optimized globally.
                  *
-                 * @return A reference to an unique pointer of type `EarlyStoppingCriterionConfig` that stores the
-                 *         configuration of the stopping criterion that stops the induction of rules as soon as a
-                 *         model's quality does not improve or a null pointer, if no such stopping criterion should be
-                 *         used
+                 * @return A reference to an unique pointer of type `IGlobalPruningConfig` that stores the configuration
+                 *         of the stopping criterion that allows to decide how many rules should be included in a model,
+                 *         such that its performance is optimized globally, or a null pointer, if no such stopping
+                 *         criterion should be used
                  */
-                virtual std::unique_ptr<EarlyStoppingCriterionConfig>& getEarlyStoppingCriterionConfigPtr() = 0;
+                virtual std::unique_ptr<IGlobalPruningConfig>& getGlobalPruningConfigPtr() = 0;
 
                 /**
                  * Returns an unique pointer to the configuration of the post-optimization method that optimizes each
@@ -807,12 +807,11 @@ class MLRLCOMMON_API IRuleLearner {
                  *         the stopping criterion
                  */
                 virtual IPrePruningConfig& useEarlyStoppingCriterion() {
-                    std::unique_ptr<EarlyStoppingCriterionConfig>& earlyStoppingCriterionConfigPtr =
-                        this->getEarlyStoppingCriterionConfigPtr();
+                    std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = this->getGlobalPruningConfigPtr();
                     std::unique_ptr<EarlyStoppingCriterionConfig> ptr =
                         std::make_unique<EarlyStoppingCriterionConfig>();
                     IPrePruningConfig& ref = *ptr;
-                    earlyStoppingCriterionConfigPtr = std::move(ptr);
+                    globalPruningConfigPtr = std::move(ptr);
                     return ref;
                 }
 
@@ -1160,10 +1159,10 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<TimeStoppingCriterionConfig> timeStoppingCriterionConfigPtr_;
 
                 /**
-                 * An unique pointer that stores the configuration of the stopping criterion that stops the induction of
-                 * rules as soon as a model's quality does not improve.
+                 * An unique pointer that stores the configuration of the stopping criterion that allows to decide how
+                 * many rules should be included in a model, such that its performance is optimized globally.
                  */
-                std::unique_ptr<EarlyStoppingCriterionConfig> earlyStoppingCriterionConfigPtr_;
+                std::unique_ptr<IGlobalPruningConfig> globalPruningConfigPtr_;
 
                 /**
                  * An unique pointer that stores the configuration of the post-optimization method that optimizes each
@@ -1207,7 +1206,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<TimeStoppingCriterionConfig>& getTimeStoppingCriterionConfigPtr() override final;
 
-                std::unique_ptr<EarlyStoppingCriterionConfig>& getEarlyStoppingCriterionConfigPtr() override final;
+                std::unique_ptr<IGlobalPruningConfig>& getGlobalPruningConfigPtr() override final;
 
                 std::unique_ptr<SequentialPostOptimizationConfig>& getSequentialPostOptimizationConfigPtr() override final;
 
