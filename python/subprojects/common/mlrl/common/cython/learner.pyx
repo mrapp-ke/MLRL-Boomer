@@ -111,7 +111,7 @@ cdef class RuleLearnerConfig:
 
     def use_no_pruning(self):
         """
-        Configures the rule learner to not prune classification rules.
+        Configures the rule learner to not prune individual classification rules.
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoPruning()
