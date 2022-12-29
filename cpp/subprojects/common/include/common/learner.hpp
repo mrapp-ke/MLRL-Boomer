@@ -328,7 +328,7 @@ class MLRLCOMMON_API IRuleLearner {
                 /**
                  * Configures the rule learner to not prune individual classification rules.
                  */
-                virtual void useNoPruning() = 0;
+                virtual void useNoRulePruning() = 0;
 
                 /**
                  * Configures the rule learner to not use any post processor.
@@ -1235,7 +1235,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoPartitionSampling() override;
 
-                void useNoPruning() override;
+                void useNoRulePruning() override;
 
                 void useNoPostProcessor() override;
 
