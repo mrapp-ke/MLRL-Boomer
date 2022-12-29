@@ -617,7 +617,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
 
     def test_global_pre_pruning_no_holdout(self):
         """
-        Tests the BOOMER algorithm when using no holdout for early stopping.
+        Tests the BOOMER algorithm when using no holdout set for global pre-pruning.
         """
         builder = BoostingCmdBuilder() \
             .global_pruning(GLOBAL_PRE_PRUNING) \
@@ -627,7 +627,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
 
     def test_global_pre_pruning_random_holdout(self):
         """
-        Tests the BOOMER algorithm when using a holdout set that is created via random sampling for early stopping.
+        Tests the BOOMER algorithm when using a holdout set that is created via random sampling for global pre-pruning.
         """
         builder = BoostingCmdBuilder() \
             .global_pruning(GLOBAL_PRE_PRUNING) \
@@ -637,8 +637,8 @@ class BoostingIntegrationTests(CommonIntegrationTests):
 
     def test_global_pre_pruning_stratified_label_wise_holdout(self):
         """
-        Tests the BOOMER algorithm when using a holdout set that is created via label-wise stratified sampling for early
-        stopping.
+        Tests the BOOMER algorithm when using a holdout set that is created via label-wise stratified sampling for
+        global pre-pruning.
         """
         builder = BoostingCmdBuilder() \
             .global_pruning(GLOBAL_PRE_PRUNING) \
@@ -649,7 +649,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
     def test_global_pruning_stratified_example_wise_holdout(self):
         """
         Tests the BOOMER algorithm when using a holdout set that is created via example-wise stratified sampling for
-        early stopping.
+        global pre-pruning.
         """
         builder = BoostingCmdBuilder() \
             .global_pruning(GLOBAL_PRE_PRUNING) \
