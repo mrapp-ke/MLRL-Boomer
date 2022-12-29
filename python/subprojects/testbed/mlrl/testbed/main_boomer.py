@@ -99,7 +99,7 @@ class BoomerRunnable(RuleLearnerRunnable):
                       rule_induction=args.rule_induction,
                       max_rules=args.max_rules,
                       time_limit=args.time_limit,
-                      early_stopping=args.early_stopping,
+                      early_stopping=args.global_pruning,
                       sequential_post_optimization=args.sequential_post_optimization,
                       loss=args.loss,
                       classification_predictor=args.classification_predictor,
