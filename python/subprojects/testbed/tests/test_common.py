@@ -452,7 +452,7 @@ class CmdBuilder:
 
     def pruning(self, pruning: str = PRUNING_IREP):
         """
-        Configures the rule learner to use a specific pruning method.
+        Configures the rule learner to use a specific method for pruning individual rules.
 
         :param pruning: The name of the pruning method that should be used
         :return:        The builder itself
