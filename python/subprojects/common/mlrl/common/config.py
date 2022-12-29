@@ -258,7 +258,7 @@ def configure_early_stopping_criterion(config: RuleLearnerConfig, early_stopping
         value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
 
         if value == NONE:
-            config.use_no_early_stopping_criterion()
+            config.use_no_global_pruning()
         elif value == EARLY_STOPPING_OBJECTIVE:
             c = config.use_early_stopping_criterion()
             aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)

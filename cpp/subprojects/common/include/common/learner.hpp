@@ -364,11 +364,10 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoTimeStoppingCriterion() = 0;
 
                 /**
-                 * Configures the rule learner to not use a stopping criterion that stops the induction of rules as soon
-                 * as the quality of a model's predictions for the examples in a holdout set do not improve according to
-                 * a certain measure.
+                 * Configures the rule learner to not use a stopping criterion that allows to decide how many rules
+                 * should be included in a model, such that its performance is optimized globally.
                  */
-                virtual void useNoEarlyStoppingCriterion() = 0;
+                virtual void useNoGlobalPruning() = 0;
 
                 /**
                  * Configures the rule learner to not use a post-optimization method that optimizes each rule in a model
@@ -1247,7 +1246,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoTimeStoppingCriterion() override;
 
-                void useNoEarlyStoppingCriterion() override;
+                void useNoGlobalPruning() override;
 
                 void useNoSequentialPostOptimization() override;
 
