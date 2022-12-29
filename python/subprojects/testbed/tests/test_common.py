@@ -457,7 +457,7 @@ class CmdBuilder:
         :param pruning: The name of the pruning method that should be used
         :return:        The builder itself
         """
-        self.args.append('--pruning')
+        self.args.append('--rule-pruning')
         self.args.append(pruning)
         return self
 

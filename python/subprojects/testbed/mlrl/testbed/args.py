@@ -104,7 +104,7 @@ PARAM_PARTITION_SAMPLING = '--holdout'
 
 PARAM_FEATURE_BINNING = '--feature-binning'
 
-PARAM_PRUNING = '--pruning'
+PARAM_PRUNING = '--rule-pruning'
 
 PARAM_RULE_MODEL_ASSEMBLAGE = '--rule-model-assemblage'
 
