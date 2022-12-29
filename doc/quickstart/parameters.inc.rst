@@ -145,6 +145,11 @@ The following parameters allow to control the behavior of the algorithm:
     * ``min_improvement`` (Default value = ``0.005``) The minimum improvement in percent that must be reached when comparing the aggregated scores in both buffers for the rule induction to be continued. Must be in [0, 1].
     * ``force_stop`` (Default value = ``'true'``) ``'true'``, if the induction of rules should be forced to be stopped as soon as the stopping criterion is met, ``'false'``, if the time of stopping should only be stored.
 
+* ``rule_pruning`` (Default value = ``'none'``)
+
+  * ``'none'`` No method for pruning individual rules is used.
+  * ``'irep'`` Trailing conditions of rules may be pruned on a holdout set, similar to the IREP algorithm. Does only have an effect if the parameter ``instance_sampling`` is not set to ``'none'``.
+
 * ``sequential_post_optimization`` (Default value = ``'false'``)
 
     * ``'false'`` Sequential post-optimization is not used.
@@ -178,11 +183,6 @@ The following parameters allow to control the behavior of the algorithm:
     * ``bin_ratio`` (Default value = ``0.04``) A percentage that specifies how many bins should be used. For example, a value of 0.04 means that number of bins should be set to 4% of the number of labels.
     * ``min_bins`` (Default value = ``1``) The minimum number of bins. Must be at least 1.
     * ``max_bins`` (Default value = ``0``) The maximum number of bins or 0, if the number of bins should not be restricted.
-
-* ``pruning`` (Default value = ``'none'``)
-
-  * ``'none'`` No pruning is used.
-  * ``'irep'`` Subsequent conditions of rules may be pruned on a holdout set, similar to the IREP algorithm. Does only have an effect if the parameter ``instance_sampling`` is not set to ``'none'``.
 
 * ``head_type`` (Default value = ``'auto'``)
 

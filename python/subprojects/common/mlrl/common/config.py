@@ -86,7 +86,7 @@ ARGUMENT_MIN_BINS = 'min_bins'
 
 ARGUMENT_MAX_BINS = 'max_bins'
 
-PRUNING_IREP = 'irep'
+RULE_PRUNING_IREP = 'irep'
 
 ARGUMENT_NUM_THREADS = 'num_threads'
 
@@ -123,13 +123,6 @@ PARTITION_SAMPLING_VALUES: Dict[str, Set[str]] = {
     SAMPLING_STRATIFIED_EXAMPLE_WISE: {ARGUMENT_HOLDOUT_SET_SIZE}
 }
 
-EARLY_STOPPING_VALUES: Dict[str, Set[str]] = {
-    NONE: {},
-    EARLY_STOPPING_OBJECTIVE: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_MIN_RULES,
-                               ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT,
-                               ARGUMENT_MIN_IMPROVEMENT, ARGUMENT_FORCE_STOP}
-}
-
 SEQUENTIAL_POST_OPTIMIZATION_VALUES: Dict[str, Set[str]] = {
     str(BooleanOption.TRUE.value): {ARGUMENT_NUM_ITERATIONS, ARGUMENT_REFINE_HEADS, ARGUMENT_RESAMPLE_FEATURES},
     str(BooleanOption.FALSE.value): {}
@@ -141,9 +134,16 @@ FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
     BINNING_EQUAL_WIDTH: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS}
 }
 
-PRUNING_VALUES: Set[str] = {
+EARLY_STOPPING_VALUES: Dict[str, Set[str]] = {
+    NONE: {},
+    EARLY_STOPPING_OBJECTIVE: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_MIN_RULES,
+                               ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT,
+                               ARGUMENT_MIN_IMPROVEMENT, ARGUMENT_FORCE_STOP}
+}
+
+RULE_PRUNING_VALUES: Set[str] = {
     NONE,
-    PRUNING_IREP
+    RULE_PRUNING_IREP
 }
 
 PARALLEL_VALUES: Dict[str, Set[str]] = {
@@ -253,13 +253,34 @@ def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: 
             c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
 
 
-def configure_pruning(config: RuleLearnerConfig, pruning: Optional[str]):
-    if pruning is not None:
-        value = parse_param('pruning', pruning, PRUNING_VALUES)
+def configure_early_stopping_criterion(config: RuleLearnerConfig, early_stopping: Optional[str]):
+    if early_stopping is not None:
+        value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
 
         if value == NONE:
-            config.use_no_pruning()
-        elif value == PRUNING_IREP:
+            config.use_no_early_stopping_criterion()
+        elif value == EARLY_STOPPING_OBJECTIVE:
+            c = config.use_early_stopping_criterion()
+            aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
+            c.set_aggregation_function(__create_aggregation_function(
+                aggregation_function) if aggregation_function is not None else c.get_aggregation_function())
+            c.set_use_holdout_set(options.get_bool(ARGUMENT_USE_HOLDOUT_SET, c.is_holdout_set_used()))
+            c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
+            c.set_update_interval(options.get_int(ARGUMENT_UPDATE_INTERVAL, c.get_update_interval()))
+            c.set_stop_interval(options.get_int(ARGUMENT_STOP_INTERVAL, c.get_stop_interval()))
+            c.set_num_past(options.get_int(ARGUMENT_NUM_PAST, c.get_num_past()))
+            c.set_num_current(options.get_int(ARGUMENT_NUM_RECENT, c.get_num_current()))
+            c.set_min_improvement(options.get_float(ARGUMENT_MIN_IMPROVEMENT, c.get_min_improvement()))
+            c.set_force_stop(options.get_bool(ARGUMENT_FORCE_STOP, c.is_stop_forced()))
+
+
+def configure_rule_pruning(config: RuleLearnerConfig, rule_pruning: Optional[str]):
+    if rule_pruning is not None:
+        value = parse_param('rule_pruning', rule_pruning, RULE_PRUNING_VALUES)
+
+        if value == NONE:
+            config.use_no_rule_pruning()
+        elif value == RULE_PRUNING_IREP:
             config.use_irep_pruning()
 
 
@@ -311,27 +332,6 @@ def configure_time_stopping_criterion(config: RuleLearnerConfig, time_limit: Opt
             config.use_no_time_stopping_criterion()
         else:
             config.use_time_stopping_criterion().set_time_limit(time_limit)
-
-
-def configure_early_stopping_criterion(config: RuleLearnerConfig, early_stopping: Optional[str]):
-    if early_stopping is not None:
-        value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
-
-        if value == NONE:
-            config.use_no_early_stopping_criterion()
-        elif value == EARLY_STOPPING_OBJECTIVE:
-            c = config.use_early_stopping_criterion()
-            aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
-            c.set_aggregation_function(__create_aggregation_function(
-                aggregation_function) if aggregation_function is not None else c.get_aggregation_function())
-            c.set_use_holdout_set(options.get_bool(ARGUMENT_USE_HOLDOUT_SET, c.is_holdout_set_used()))
-            c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
-            c.set_update_interval(options.get_int(ARGUMENT_UPDATE_INTERVAL, c.get_update_interval()))
-            c.set_stop_interval(options.get_int(ARGUMENT_STOP_INTERVAL, c.get_stop_interval()))
-            c.set_num_past(options.get_int(ARGUMENT_NUM_PAST, c.get_num_past()))
-            c.set_num_current(options.get_int(ARGUMENT_NUM_RECENT, c.get_num_current()))
-            c.set_min_improvement(options.get_float(ARGUMENT_MIN_IMPROVEMENT, c.get_min_improvement()))
-            c.set_force_stop(options.get_bool(ARGUMENT_FORCE_STOP, c.is_stop_forced()))
 
 
 def __create_aggregation_function(aggregation_function: str) -> AggregationFunction:

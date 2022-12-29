@@ -3,13 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides scikit-learn implementations of boosting algorithms.
 """
-from typing import Dict, Set, Optional
-
 import mlrl.common.config as common_config
 from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
 from mlrl.common.config import AUTOMATIC
 from mlrl.common.config import configure_rule_induction, configure_feature_binning, configure_label_sampling, \
-    configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, configure_pruning, \
+    configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, configure_rule_pruning, \
     configure_parallel_rule_refinement, configure_parallel_statistic_update, configure_parallel_prediction, \
     configure_size_stopping_criterion, configure_time_stopping_criterion, configure_early_stopping_criterion, \
     configure_sequential_post_optimization
@@ -17,6 +15,7 @@ from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import parse_param
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int, get_float
 from sklearn.base import ClassifierMixin, RegressorMixin, MultiOutputMixin
+from typing import Dict, Set, Optional
 
 import mlrl.boosting.config as boosting_config
 from mlrl.boosting.config import LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL_WISE, \
@@ -94,7 +93,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                  holdout: Optional[str] = None,
                  feature_binning: Optional[str] = None,
                  label_binning: Optional[str] = None,
-                 pruning: Optional[str] = None,
+                 rule_pruning: Optional[str] = None,
                  shrinkage: Optional[float] = 0.3,
                  l1_regularization_weight: Optional[float] = None,
                  l2_regularization_weight: Optional[float] = None,
@@ -165,7 +164,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                                                 set to 'auto', the most suitable strategy is chosen automatically,
                                                 depending on the loss function and the type of rule heads. For
                                                 additional options refer to the documentation
-        :param pruning:                         The strategy that should be used to prune individual rules. Must be
+        :param rule_pruning:                    The strategy that should be used to prune individual rules. Must be
                                                 'irep' or 'none', if no pruning should be used
         :param shrinkage:                       The shrinkage parameter, a.k.a. the "learning rate", that should be used
                                                 to shrink the weight of individual rules. Must be in (0, 1]
@@ -201,7 +200,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         self.holdout = holdout
         self.feature_binning = feature_binning
         self.label_binning = label_binning
-        self.pruning = pruning
+        self.rule_pruning = rule_pruning
         self.shrinkage = shrinkage
         self.l1_regularization_weight = l1_regularization_weight
         self.l2_regularization_weight = l2_regularization_weight
@@ -216,7 +215,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         configure_instance_sampling(config, get_string(self.instance_sampling))
         configure_feature_sampling(config, get_string(self.feature_sampling))
         configure_partition_sampling(config, get_string(self.holdout))
-        configure_pruning(config, get_string(self.pruning))
+        configure_rule_pruning(config, get_string(self.rule_pruning))
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
         configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
