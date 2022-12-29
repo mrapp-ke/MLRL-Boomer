@@ -406,7 +406,7 @@ def add_feature_binning_argument(parser: ArgumentParser):
                              + 'documentation.')
 
 
-def add_early_stopping_argument(parser: ArgumentParser):
+def add_global_pruning_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_EARLY_STOPPING, type=str,
                         help='The name of the strategy to be used for pruning entire rules. Must be one of '
                              + format_dict_keys(GLOBAL_PRUNING_VALUES) + '. For additional options refer to the '
