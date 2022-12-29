@@ -148,7 +148,7 @@ class BoostingCmdBuilder(CmdBuilder):
         self.args.append('sparse' if sparse else 'dense')
         return self
 
-    def early_stopping(self, global_pruning: str = GLOBAL_PRE_PRUNING):
+    def global_pruning(self, global_pruning: str = GLOBAL_PRE_PRUNING):
         """
         Configures the algorithm to use a specific method for pruning entire rules.
 
@@ -620,7 +620,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using no holdout for early stopping.
         """
         builder = BoostingCmdBuilder() \
-            .early_stopping() \
+            .global_pruning(GLOBAL_PRE_PRUNING) \
             .holdout(HOLDOUT_NO) \
             .print_model_characteristics(True)
         self.run_cmd(builder, 'early-stopping_no-holdout')
@@ -630,7 +630,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a holdout set that is created via random sampling for early stopping.
         """
         builder = BoostingCmdBuilder() \
-            .early_stopping() \
+            .global_pruning(GLOBAL_PRE_PRUNING) \
             .holdout(HOLDOUT_RANDOM) \
             .print_model_characteristics(True)
         self.run_cmd(builder, 'early-stopping_random-holdout')
@@ -641,7 +641,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         stopping.
         """
         builder = BoostingCmdBuilder() \
-            .early_stopping() \
+            .global_pruning(GLOBAL_PRE_PRUNING) \
             .holdout(HOLDOUT_STRATIFIED_LABEL_WISE) \
             .print_model_characteristics(True)
         self.run_cmd(builder, 'early-stopping_stratified-label-wise-holdout')
@@ -652,7 +652,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         early stopping.
         """
         builder = BoostingCmdBuilder() \
-            .early_stopping() \
+            .global_pruning(GLOBAL_PRE_PRUNING) \
             .holdout(HOLDOUT_STRATIFIED_EXAMPLE_WISE) \
             .print_model_characteristics(True)
         self.run_cmd(builder, 'early-stopping_stratified-example-wise-holdout')
