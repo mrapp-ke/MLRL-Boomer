@@ -326,7 +326,7 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoPartitionSampling() = 0;
 
                 /**
-                 * Configures the rule learner to not prune individual classification rules.
+                 * Configures the rule learner to not prune individual rules.
                  */
                 virtual void useNoRulePruning() = 0;
 
@@ -663,7 +663,7 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual ~IPruningMixin() { };
 
                 /**
-                 * Configures the rule learner to prune classification rules by following the ideas of "incremental
+                 * Configures the rule learner to prune individual rules by following the principles of "incremental
                  * reduced error pruning" (IREP).
                  */
                 virtual void useIrepPruning() {

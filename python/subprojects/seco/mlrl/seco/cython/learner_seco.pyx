@@ -335,7 +335,7 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
 
     def use_irep_pruning(self):
         """
-        Configures the rule learner to prune classification rules by following the ideas of "incremental reduced error
+        Configures the rule learner to prune individual rules by following the principles of "incremental reduced error
         pruning" (IREP).
         """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()

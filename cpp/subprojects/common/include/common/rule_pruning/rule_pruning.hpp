@@ -9,9 +9,9 @@
 
 
 /**
- * Defines an interface for all classes that implement a strategy for pruning individual classification rules based on a
- * "prune set", i.e., based on the examples that are not contained in the sub-sample of the training data that has been
- * used to learn the rule, referred to as the "grow set".
+ * Defines an interface for all classes that implement a strategy for pruning individual rules based on a "prune set",
+ * i.e., based on the examples that are not contained in the sub-sample of the training data that has been used to learn
+ * the rule, referred to as the "grow set".
  */
 class IPruning {
 
@@ -63,7 +63,7 @@ class IPruningFactory {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a strategy for pruning classification rules.
+ * Defines an interface for all classes that allow to configure a strategy for pruning individual rules.
  */
 class IPruningConfig {
 
