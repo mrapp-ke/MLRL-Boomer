@@ -104,7 +104,7 @@ PARAM_PARTITION_SAMPLING = '--holdout'
 
 PARAM_FEATURE_BINNING = '--feature-binning'
 
-PARAM_PRUNING = '--rule-pruning'
+PARAM_RULE_PRUNING = '--rule-pruning'
 
 PARAM_RULE_MODEL_ASSEMBLAGE = '--rule-model-assemblage'
 
@@ -414,7 +414,7 @@ def add_early_stopping_argument(parser: ArgumentParser):
 
 
 def add_pruning_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_PRUNING, type=str,
+    parser.add_argument(PARAM_RULE_PRUNING, type=str,
                         help='The name of the strategy to be used for pruning individual rules. Must be one of '
                              + format_string_set(PRUNING_VALUES) + '. Does only have an effect if the parameter '
                              + PARAM_INSTANCE_SAMPLING + ' is not set to "none".')
