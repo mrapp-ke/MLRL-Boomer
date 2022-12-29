@@ -25,16 +25,18 @@ cdef extern from "common/stopping/stopping_criterion_time.hpp" nogil:
         ITimeStoppingCriterionConfig& setTimeLimit(uint32 timeLimit) except +
 
 
+cdef extern from "common/stopping/aggregation_function.hpp" nogil:
+
+    cpdef enum AggregationFunctionImpl"AggregationFunction":
+
+        MIN"AggregationFunction::MIN" = 0
+
+        MAX"AggregationFunction::MAX" = 1
+
+        ARITHMETIC_MEAN"AggregationFunction::ARITHMETIC_MEAN" = 2
+
+
 cdef extern from "common/stopping/global_pre_pruning.hpp" nogil:
-
-    cpdef enum AggregationFunctionImpl"IEarlyStoppingCriterionConfig::AggregationFunction":
-
-        MIN"IEarlyStoppingCriterionConfig::AggregationFunction::MIN" = 0
-
-        MAX"IEarlyStoppingCriterionConfig::AggregationFunction::MAX" = 1
-
-        ARITHMETIC_MEAN"IEarlyStoppingCriterionConfig::AggregationFunction::ARITHMETIC_MEAN" = 2
-
 
     cdef cppclass IEarlyStoppingCriterionConfig:
 
