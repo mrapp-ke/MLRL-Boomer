@@ -192,10 +192,10 @@ static inline float64 evaluate(const BiPartition& partition, const IStatistics& 
 
 /**
  * An implementation of the type `IStoppingCriterion` that stops the induction of rules as soon as the quality of a
- * model's predictions for the examples in a holdout set do not improve according a certain measure.
+ * model's predictions for the examples in the training or holdout set do not improve according a certain measure.
  *
  * @tparam Partition The type of the object that provides access to the indices of the examples that are included in the
- *                   holdout set
+ *                   training and holdout set, respectively
  */
 template<typename Partition>
 class EarlyStoppingCriterion final : public IStoppingCriterion {
@@ -230,7 +230,8 @@ class EarlyStoppingCriterion final : public IStoppingCriterion {
 
         /**
          * @param partition                 A reference to an object of template type `Partition` that provides access
-         *                                  to the indices of the examples that are included in the holdout set
+         *                                  to the indices of the examples that are included in the training and holdout
+         *                                  set, respectively
          * @param aggregationFunctionPtr    An unique pointer to an object of type `IAggregationFunctionFactory` that
          *                                  allows to create implementations of the aggregation function that should be
          *                                  used to aggregate the scores in the buffer
@@ -306,7 +307,8 @@ class EarlyStoppingCriterion final : public IStoppingCriterion {
 
 /**
  * Allows to create implementations of the type `IStoppingCriterion` that stop the induction of rules as soon as the
- * quality of a model's predictions for the examples in a holdout set do not improve according a certain measure.
+ * quality of a model's predictions for the examples in the training or holdout set do not improve according a certain
+ * measure.
  */
 class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
 

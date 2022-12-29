@@ -9,8 +9,8 @@
 
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that stops the induction of rules
- * as soon as the quality of a model's predictions for the examples in a holdout set do not improve according to a
- * certain measure.
+ * as soon as the quality of a model's predictions for the examples in the training or holdout set do not improve
+ * according to a certain measure.
  *
  * This stopping criterion assesses the performance of the current model after every `updateInterval` rules and stores
  * its quality in a buffer that keeps track of the last `numCurrent` iterations. If the capacity of this buffer is
@@ -197,7 +197,7 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
 
 /**
  * Allows to configure a stopping criterion that stops the induction of rules as soon as the quality of a model's
- * predictions for the examples in a holdout set do not improve according to a certain measure.
+ * predictions for the examples in the training or holdout set do not improve according to a certain measure.
  */
 class EarlyStoppingCriterionConfig final : public IStoppingCriterionConfig, public IEarlyStoppingCriterionConfig {
 
