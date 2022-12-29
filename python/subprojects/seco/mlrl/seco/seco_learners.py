@@ -4,12 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides a scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label
 classification rules.
 """
-from typing import Dict, Set, Optional
-
 from mlrl.common.config import configure_rule_induction, configure_label_sampling, configure_instance_sampling, \
-    configure_feature_sampling, configure_partition_sampling, configure_pruning, configure_parallel_rule_refinement, \
-    configure_parallel_statistic_update, configure_parallel_prediction, configure_size_stopping_criterion, \
-    configure_time_stopping_criterion, configure_sequential_post_optimization
+    configure_feature_sampling, configure_partition_sampling, configure_rule_pruning, \
+    configure_parallel_rule_refinement, configure_parallel_statistic_update, configure_parallel_prediction, \
+    configure_size_stopping_criterion, configure_time_stopping_criterion, configure_sequential_post_optimization
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import parse_param_and_options
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int
@@ -23,6 +21,7 @@ from mlrl.seco.config import configure_head_type, configure_lift_function, confi
 from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
     MultiLabelSeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin, MultiOutputMixin
+from typing import Dict, Set, Optional
 
 HEURISTIC_VALUES: Dict[str, Set[str]] = {
     HEURISTIC_ACCURACY: {},
@@ -140,7 +139,7 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
         configure_instance_sampling(config, get_string(self.instance_sampling))
         configure_feature_sampling(config, get_string(self.feature_sampling))
         configure_partition_sampling(config, get_string(self.holdout))
-        configure_pruning(config, get_string(self.pruning))
+        configure_rule_pruning(config, get_string(self.pruning))
         configure_parallel_rule_refinement(config, get_string(self.parallel_rule_refinement))
         configure_parallel_statistic_update(config, get_string(self.parallel_statistic_update))
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
