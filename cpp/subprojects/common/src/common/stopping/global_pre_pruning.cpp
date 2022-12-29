@@ -1,4 +1,4 @@
-#include "common/stopping/stopping_criterion_early.hpp"
+#include "common/stopping/global_pre_pruning.hpp"
 #include "common/data/ring_buffer.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/math/math.hpp"
