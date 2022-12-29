@@ -150,7 +150,7 @@ class BoostingCmdBuilder(CmdBuilder):
 
     def early_stopping(self, global_pruning: str = GLOBAL_PRE_PRUNING):
         """
-        Configures the algorithm to use a specific method for early stopping.
+        Configures the algorithm to use a specific method for pruning entire rules.
 
         :param global_pruning:  The name of the method that should be used for pruning entire rules
         :return:                The builder itself
