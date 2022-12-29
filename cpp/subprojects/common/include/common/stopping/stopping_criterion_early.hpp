@@ -9,8 +9,8 @@
 
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that stops the induction of rules
- * as soon as the quality of a model's predictions for the examples in a holdout set do not improve according to a
- * certain measure.
+ * as soon as the quality of a model's predictions for the examples in the training or holdout set do not improve
+ * according to a certain measure.
  *
  * This stopping criterion assesses the performance of the current model after every `updateInterval` rules and stores
  * its quality in a buffer that keeps track of the last `numCurrent` iterations. If the capacity of this buffer is
@@ -70,6 +70,26 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
          *                              further configuration of the stopping criterion
          */
         virtual IEarlyStoppingCriterionConfig& setAggregationFunction(AggregationFunction aggregationFunction) = 0;
+
+        /**
+         * Returns whether the quality of the current model's predictions is measured on the holdout set, if available,
+         * or if the training set is used instead.
+         *
+         * @return True, if the quality of the current model's predictions is measured on the holdout set, if available,
+         *         false, if the training set is used instead
+         */
+        virtual bool isHoldoutSetUsed() const = 0;
+
+        /**
+         * Sets whether the quality of he current model's predictions should be measured on the holdout set, if
+         * available, or if the training set should be used instead.
+         *
+         * @param useHoldoutSet True, if the quality of the current model's predictions should be measured on the
+         *                      holdout set, if available, false, if the training set should be used instead
+         * @return              A reference to an object of type `IEarlyStoppingCriterionConfig` that allows further
+         *                      configuration of the stopping criterion
+         */
+        virtual IEarlyStoppingCriterionConfig& setUseHoldoutSet(bool useHoldoutSet) = 0;
 
         /**
          * Returns the minimum number of rules that must have been learned until the induction of rules might be
@@ -197,13 +217,15 @@ class MLRLCOMMON_API IEarlyStoppingCriterionConfig {
 
 /**
  * Allows to configure a stopping criterion that stops the induction of rules as soon as the quality of a model's
- * predictions for the examples in a holdout set do not improve according to a certain measure.
+ * predictions for the examples in the training or holdout set do not improve according to a certain measure.
  */
 class EarlyStoppingCriterionConfig final : public IStoppingCriterionConfig, public IEarlyStoppingCriterionConfig {
 
     private:
 
         AggregationFunction aggregationFunction_;
+
+        bool useHoldoutSet_;
 
         uint32 minRules_;
 
@@ -226,6 +248,10 @@ class EarlyStoppingCriterionConfig final : public IStoppingCriterionConfig, publ
         AggregationFunction getAggregationFunction() const override;
 
         IEarlyStoppingCriterionConfig& setAggregationFunction(AggregationFunction aggregationFunction) override;
+
+        bool isHoldoutSetUsed() const override;
+
+        IEarlyStoppingCriterionConfig& setUseHoldoutSet(bool useHoldoutSet) override;
 
         uint32 getMinRules() const override;
 
