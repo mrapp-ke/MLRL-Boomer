@@ -12,11 +12,8 @@
  * rules in a model that perform best with respect to the examples in the training or holdout set according to a certain
  * measure.
  *
- * This stopping criterion assesses the performance of the current model after every `updateInterval` rules and stores
- * its quality in a buffer that keeps track of the last `numCurrent` iterations. If the capacity of this buffer is
- * already reached, the oldest quality is discarded. Every `stopInterval` rules, it is checked whether the current model
- * is the best one evaluated so far. For this reason, the `numCurrent` qualities in the buffer are aggregated according
- * to a certain `aggregationFunction`.
+ * This stopping criterion assesses the performance of the current model after every `interval` rules and stores and
+ * checks whether the current model is the best one evaluated so far.
  */
 class MLRLCOMMON_API IPostPruningConfig {
 
