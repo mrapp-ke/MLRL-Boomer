@@ -213,8 +213,7 @@ AggregationFunction PrePruningConfig::getAggregationFunction() const {
     return aggregationFunction_;
 }
 
-IPrePruningConfig& PrePruningConfig::setAggregationFunction(
-        AggregationFunction aggregationFunction) {
+IPrePruningConfig& PrePruningConfig::setAggregationFunction(AggregationFunction aggregationFunction) {
     aggregationFunction_ = aggregationFunction;
     return *this;
 }
