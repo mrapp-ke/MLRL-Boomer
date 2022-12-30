@@ -204,9 +204,8 @@ class PrePruningFactory final : public IStoppingCriterionFactory {
 };
 
 PrePruningConfig::PrePruningConfig()
-    : aggregationFunction_(AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true),
-      minRules_(100), updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005),
-      forceStop_(true) {
+    : aggregationFunction_(AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true), minRules_(100),
+      updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005), forceStop_(true) {
 
 }
 
