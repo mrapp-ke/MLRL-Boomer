@@ -646,7 +646,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics(True)
         self.run_cmd(builder, 'pre-pruning_stratified-label-wise-holdout')
 
-    def test_global_pruning_stratified_example_wise_holdout(self):
+    def test_global_pre_pruning_stratified_example_wise_holdout(self):
         """
         Tests the BOOMER algorithm when using a holdout set that is created via example-wise stratified sampling for
         global pre-pruning.
