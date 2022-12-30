@@ -46,7 +46,7 @@ PARTITION_SAMPLING_RANDOM = 'random'
 
 ARGUMENT_HOLDOUT_SET_SIZE = 'holdout_set_size'
 
-EARLY_STOPPING_OBJECTIVE = 'objective'
+GLOBAL_PRE_PRUNING = 'pre-pruning'
 
 AGGREGATION_FUNCTION_MIN = 'min'
 
@@ -134,11 +134,11 @@ FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
     BINNING_EQUAL_WIDTH: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS}
 }
 
-EARLY_STOPPING_VALUES: Dict[str, Set[str]] = {
+GLOBAL_PRUNING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
-    EARLY_STOPPING_OBJECTIVE: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_MIN_RULES,
-                               ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT,
-                               ARGUMENT_MIN_IMPROVEMENT, ARGUMENT_FORCE_STOP}
+    GLOBAL_PRE_PRUNING: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_MIN_RULES,
+                         ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT,
+                         ARGUMENT_MIN_IMPROVEMENT, ARGUMENT_FORCE_STOP}
 }
 
 RULE_PRUNING_VALUES: Set[str] = {
@@ -253,14 +253,14 @@ def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: 
             c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
 
 
-def configure_early_stopping_criterion(config: RuleLearnerConfig, early_stopping: Optional[str]):
-    if early_stopping is not None:
-        value, options = parse_param_and_options('early_stopping', early_stopping, EARLY_STOPPING_VALUES)
+def configure_global_pruning(config: RuleLearnerConfig, global_pruning: Optional[str]):
+    if global_pruning is not None:
+        value, options = parse_param_and_options('global_pruning', global_pruning, GLOBAL_PRUNING_VALUES)
 
         if value == NONE:
-            config.use_no_early_stopping_criterion()
-        elif value == EARLY_STOPPING_OBJECTIVE:
-            c = config.use_early_stopping_criterion()
+            config.use_no_global_pruning()
+        elif value == GLOBAL_PRE_PRUNING:
+            c = config.use_global_pre_pruning()
             aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
             c.set_aggregation_function(__create_aggregation_function(
                 aggregation_function) if aggregation_function is not None else c.get_aggregation_function())

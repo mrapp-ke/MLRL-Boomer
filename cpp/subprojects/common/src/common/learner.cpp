@@ -80,7 +80,7 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
     this->useNoParallelPrediction();
     this->useNoSizeStoppingCriterion();
     this->useNoTimeStoppingCriterion();
-    this->useNoEarlyStoppingCriterion();
+    this->useNoGlobalPruning();
     this->useNoSequentialPostOptimization();
 }
 
@@ -148,8 +148,8 @@ std::unique_ptr<TimeStoppingCriterionConfig>& AbstractRuleLearner::Config::getTi
     return timeStoppingCriterionConfigPtr_;
 }
 
-std::unique_ptr<EarlyStoppingCriterionConfig>& AbstractRuleLearner::Config::getEarlyStoppingCriterionConfigPtr() {
-    return earlyStoppingCriterionConfigPtr_;
+std::unique_ptr<IGlobalPruningConfig>& AbstractRuleLearner::Config::getGlobalPruningConfigPtr() {
+    return globalPruningConfigPtr_;
 }
 
 std::unique_ptr<SequentialPostOptimizationConfig>& AbstractRuleLearner::Config::getSequentialPostOptimizationConfigPtr() {
@@ -220,8 +220,8 @@ void AbstractRuleLearner::Config::useNoTimeStoppingCriterion() {
     timeStoppingCriterionConfigPtr_ = nullptr;
 }
 
-void AbstractRuleLearner::Config::useNoEarlyStoppingCriterion() {
-    earlyStoppingCriterionConfigPtr_ = nullptr;
+void AbstractRuleLearner::Config::useNoGlobalPruning() {
+    globalPruningConfigPtr_ = nullptr;
 }
 
 void AbstractRuleLearner::Config::useNoSequentialPostOptimization() {
@@ -284,8 +284,8 @@ std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createTimeStoppi
     return configPtr.get() != nullptr ? configPtr->createStoppingCriterionFactory() : nullptr;
 }
 
-std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createEarlyStoppingCriterionFactory() const {
-    std::unique_ptr<EarlyStoppingCriterionConfig>& configPtr = config_.getEarlyStoppingCriterionConfigPtr();
+std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createGlobalPruningFactory() const {
+    std::unique_ptr<IGlobalPruningConfig>& configPtr = config_.getGlobalPruningConfigPtr();
     return configPtr.get() != nullptr ? configPtr->createStoppingCriterionFactory() : nullptr;
 }
 
@@ -307,7 +307,7 @@ void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionList
         factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
     }
 
-    stoppingCriterionFactory = this->createEarlyStoppingCriterionFactory();
+    stoppingCriterionFactory = this->createGlobalPruningFactory();
 
     if (stoppingCriterionFactory) {
         factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));

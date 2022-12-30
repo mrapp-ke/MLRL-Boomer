@@ -8,7 +8,7 @@ from argparse import ArgumentParser
 from enum import Enum
 
 from mlrl.common.config import NONE, RULE_INDUCTION_VALUES, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, \
-    INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, EARLY_STOPPING_VALUES, \
+    INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, GLOBAL_PRUNING_VALUES, \
     RULE_PRUNING_VALUES, PARALLEL_VALUES
 from mlrl.common.format import format_enum_values, format_string_set, format_dict_keys
 from mlrl.common.options import BooleanOption
@@ -94,8 +94,6 @@ PARAM_MAX_RULES = '--max-rules'
 
 PARAM_TIME_LIMIT = '--time-limit'
 
-PARAM_EARLY_STOPPING = '--early-stopping'
-
 PARAM_LABEL_SAMPLING = '--label-sampling'
 
 PARAM_FEATURE_SAMPLING = '--feature-sampling'
@@ -105,6 +103,8 @@ PARAM_PARTITION_SAMPLING = '--holdout'
 PARAM_FEATURE_BINNING = '--feature-binning'
 
 PARAM_RULE_PRUNING = '--rule-pruning'
+
+PARAM_GLOBAL_PRUNING = '--global-pruning'
 
 PARAM_RULE_MODEL_ASSEMBLAGE = '--rule-model-assemblage'
 
@@ -406,10 +406,10 @@ def add_feature_binning_argument(parser: ArgumentParser):
                              + 'documentation.')
 
 
-def add_early_stopping_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_EARLY_STOPPING, type=str,
-                        help='The name of the strategy to be used for early stopping. Must be one of '
-                             + format_dict_keys(EARLY_STOPPING_VALUES) + '. For additional options refer to the '
+def add_global_pruning_argument(parser: ArgumentParser):
+    parser.add_argument(PARAM_GLOBAL_PRUNING, type=str,
+                        help='The name of the strategy to be used for pruning entire rules. Must be one of '
+                             + format_dict_keys(GLOBAL_PRUNING_VALUES) + '. For additional options refer to the '
                              + 'documentation.')
 
 
