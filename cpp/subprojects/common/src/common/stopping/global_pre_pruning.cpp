@@ -2,45 +2,9 @@
 #include "common/sampling/partition_bi.hpp"
 #include "common/util/validation.hpp"
 #include "aggregation_function_common.hpp"
+#include "global_pruning_common.hpp"
 #include <limits>
 
-
-static inline float64 evaluate(const SinglePartition& partition, bool useHoldoutSet, const IStatistics& statistics) {
-    uint32 numExamples = partition.getNumElements();
-    SinglePartition::const_iterator iterator = partition.cbegin();
-    float64 mean = 0;
-
-    for (uint32 i = 0; i < numExamples; i++) {
-        uint32 exampleIndex = iterator[i];
-        float64 score = statistics.evaluatePrediction(exampleIndex);
-        mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
-    }
-
-    return mean;
-}
-
-static inline float64 evaluate(const BiPartition& partition, bool useHoldoutSet, const IStatistics& statistics) {
-    uint32 numExamples;
-    BiPartition::const_iterator iterator;
-
-    if (useHoldoutSet) {
-        numExamples = partition.getNumSecond();
-        iterator = partition.second_cbegin();
-    } else {
-        numExamples = partition.getNumFirst();
-        iterator = partition.first_cbegin();
-    }
-
-    float64 mean = 0;
-
-    for (uint32 i = 0; i < numExamples; i++) {
-        uint32 exampleIndex = iterator[i];
-        float64 score = statistics.evaluatePrediction(exampleIndex);
-        mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
-    }
-
-    return mean;
-}
 
 /**
  * An implementation of the type `IStoppingCriterion` that stops the induction of rules as soon as the quality of a
