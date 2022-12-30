@@ -804,7 +804,7 @@ class MLRLCOMMON_API IRuleLearner {
                  * @return A reference to an object of the type `IPrePruningConfig` that allows further configuration of
                  *         the stopping criterion
                  */
-                virtual IPrePruningConfig& usePrePruning() {
+                virtual IPrePruningConfig& useGlobalPrePruning() {
                     std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = this->getGlobalPruningConfigPtr();
                     std::unique_ptr<PrePruningConfig> ptr = std::make_unique<PrePruningConfig>();
                     IPrePruningConfig& ref = *ptr;
