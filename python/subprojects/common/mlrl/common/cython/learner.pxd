@@ -16,7 +16,7 @@ from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationCon
 from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, IBeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig, \
-    IEarlyStoppingCriterionConfig
+    IPrePruningConfig
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
@@ -91,7 +91,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoTimeStoppingCriterion()
 
-        void useNoEarlyStoppingCriterion()
+        void useNoGlobalPruning()
 
         void useNoSequentialPostOptimization()
 
@@ -182,11 +182,11 @@ cdef extern from "common/learner.hpp" nogil:
         ITimeStoppingCriterionConfig& useTimeStoppingCriterion()
 
 
-    cdef cppclass IEarlyStoppingCriterionMixin"IRuleLearner::IEarlyStoppingCriterionMixin":
+    cdef cppclass IPrePruningMixin"IRuleLearner::IPrePruningMixin":
 
         # Functions:
 
-        IEarlyStoppingCriterionConfig& useEarlyStoppingCriterion()
+        IPrePruningConfig& useGlobalPrePruning()
 
 
     cdef cppclass ISequentialPostOptimizationMixin"IRuleLearner::ISequentialPostOptimizationMixin":

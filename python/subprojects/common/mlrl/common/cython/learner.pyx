@@ -160,14 +160,13 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoTimeStoppingCriterion()
 
-    def use_no_early_stopping_criterion(self):
+    def use_no_global_pruning(self):
         """
-        Configures the rule learner to not use a stopping criterion that stops the induction of rules as soon as the
-        quality of a model's predictions for the examples in a holdout set do not improve according to a certain
-        measure.
+        Configures the rule learner to not use a stopping criterion that allows to decide how many rules should be
+        included in a model, such that its performance is optimized globally.
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoEarlyStoppingCriterion()
+        rule_learner_config_ptr.useNoGlobalPruning()
 
     def use_no_sequential_post_optimization(self):
         """

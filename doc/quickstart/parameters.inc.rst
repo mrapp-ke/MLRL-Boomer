@@ -130,10 +130,10 @@ The following parameters allow to control the behavior of the algorithm:
   
     * ``holdout_set_size`` (Default value = ``0.33``) The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. Must be in (0, 1).
 
-* ``early_stopping`` (Default value = ``'none'``)
+* ``global_pruning`` (Default value = ``'none'``)
 
-  * ``'none'`` No strategy for early-stopping is used.
-  * ``'objective'`` Stops the induction of new rules as soon as the performance of the model does not improve on a holdout set, according to the loss function. This parameter does only have an effect if the parameter ``holdout`` is set to a value greater than 0. The following options may be provided using the bracket notation:
+  * ``'none'`` No strategy for pruning entire rules is used.
+  * ``'pre-pruning'`` Stops the induction of new rules as soon as the performance of the model does not improve on a holdout set. The following options may be provided using the bracket notation:
 
     * ``use_holdout_set`` (Default value = ``'true'``) ``'true'``, if the quality of the current model should be measured on a holdout set, if available, ``'false'``, if the training set should be used instead.
     * ``min_rules`` (Default value = ``100``) The minimum number of rules. Must be at least 1.

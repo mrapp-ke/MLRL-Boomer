@@ -32,7 +32,7 @@
 #include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
-#include "common/stopping/stopping_criterion_early.hpp"
+#include "common/stopping/global_pre_pruning.hpp"
 #include "common/stopping/stopping_criterion_list.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/stopping/stopping_criterion_time.hpp"
@@ -251,15 +251,15 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual std::unique_ptr<TimeStoppingCriterionConfig>& getTimeStoppingCriterionConfigPtr() = 0;
 
                 /**
-                 * Returns an unique pointer to the configuration of the stopping criterion that stops the induction of
-                 * rules as soon as a model's quality does not improve.
+                 * Returns an unique pointer to the configuration of the stopping criterion that allows to decide how
+                 * many rules should be included in a model, such that its performance is optimized globally.
                  *
-                 * @return A reference to an unique pointer of type `EarlyStoppingCriterionConfig` that stores the
-                 *         configuration of the stopping criterion that stops the induction of rules as soon as a
-                 *         model's quality does not improve or a null pointer, if no such stopping criterion should be
-                 *         used
+                 * @return A reference to an unique pointer of type `IGlobalPruningConfig` that stores the configuration
+                 *         of the stopping criterion that allows to decide how many rules should be included in a model,
+                 *         such that its performance is optimized globally, or a null pointer, if no such stopping
+                 *         criterion should be used
                  */
-                virtual std::unique_ptr<EarlyStoppingCriterionConfig>& getEarlyStoppingCriterionConfigPtr() = 0;
+                virtual std::unique_ptr<IGlobalPruningConfig>& getGlobalPruningConfigPtr() = 0;
 
                 /**
                  * Returns an unique pointer to the configuration of the post-optimization method that optimizes each
@@ -364,11 +364,10 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoTimeStoppingCriterion() = 0;
 
                 /**
-                 * Configures the rule learner to not use a stopping criterion that stops the induction of rules as soon
-                 * as the quality of a model's predictions for the examples in a holdout set do not improve according to
-                 * a certain measure.
+                 * Configures the rule learner to not use a stopping criterion that allows to decide how many rules
+                 * should be included in a model, such that its performance is optimized globally.
                  */
-                virtual void useNoEarlyStoppingCriterion() = 0;
+                virtual void useNoGlobalPruning() = 0;
 
                 /**
                  * Configures the rule learner to not use a post-optimization method that optimizes each rule in a model
@@ -791,28 +790,25 @@ class MLRLCOMMON_API IRuleLearner {
          * stops the induction of rules as soon as the quality of a model's predictions for the examples in a holdout
          * set do not improve according to a certain measure.
          */
-        class IEarlyStoppingCriterionMixin : virtual public IRuleLearner::IConfig {
+        class IPrePruningMixin : virtual public IRuleLearner::IConfig {
 
             public:
 
-                virtual ~IEarlyStoppingCriterionMixin() { };
+                virtual ~IPrePruningMixin() { };
 
 
                 /**
-                 * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as
-                 * the quality of a model's predictions for the examples in a holdout set do not improve according to a
-                 * certain measure.
+                 * Configures the rule learner to use a stopping criterion that allows to decide for how many rules
+                 * should be included in a model, such that its performance is optimized globally.
                  *
-                 * @return A reference to an object of the type `IEarlyStoppingCriterionConfig` that allows further
-                 *         configuration of the stopping criterion
+                 * @return A reference to an object of the type `IPrePruningConfig` that allows further configuration of
+                 *         the stopping criterion
                  */
-                virtual IEarlyStoppingCriterionConfig& useEarlyStoppingCriterion() {
-                    std::unique_ptr<EarlyStoppingCriterionConfig>& earlyStoppingCriterionConfigPtr =
-                        this->getEarlyStoppingCriterionConfigPtr();
-                    std::unique_ptr<EarlyStoppingCriterionConfig> ptr =
-                        std::make_unique<EarlyStoppingCriterionConfig>();
-                    IEarlyStoppingCriterionConfig& ref = *ptr;
-                    earlyStoppingCriterionConfigPtr = std::move(ptr);
+                virtual IPrePruningConfig& useGlobalPrePruning() {
+                    std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = this->getGlobalPruningConfigPtr();
+                    std::unique_ptr<PrePruningConfig> ptr = std::make_unique<PrePruningConfig>();
+                    IPrePruningConfig& ref = *ptr;
+                    globalPruningConfigPtr = std::move(ptr);
                     return ref;
                 }
 
@@ -1160,10 +1156,10 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<TimeStoppingCriterionConfig> timeStoppingCriterionConfigPtr_;
 
                 /**
-                 * An unique pointer that stores the configuration of the stopping criterion that stops the induction of
-                 * rules as soon as a model's quality does not improve.
+                 * An unique pointer that stores the configuration of the stopping criterion that allows to decide how
+                 * many rules should be included in a model, such that its performance is optimized globally.
                  */
-                std::unique_ptr<EarlyStoppingCriterionConfig> earlyStoppingCriterionConfigPtr_;
+                std::unique_ptr<IGlobalPruningConfig> globalPruningConfigPtr_;
 
                 /**
                  * An unique pointer that stores the configuration of the post-optimization method that optimizes each
@@ -1207,7 +1203,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<TimeStoppingCriterionConfig>& getTimeStoppingCriterionConfigPtr() override final;
 
-                std::unique_ptr<EarlyStoppingCriterionConfig>& getEarlyStoppingCriterionConfigPtr() override final;
+                std::unique_ptr<IGlobalPruningConfig>& getGlobalPruningConfigPtr() override final;
 
                 std::unique_ptr<SequentialPostOptimizationConfig>& getSequentialPostOptimizationConfigPtr() override final;
 
@@ -1249,7 +1245,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoTimeStoppingCriterion() override;
 
-                void useNoEarlyStoppingCriterion() override;
+                void useNoGlobalPruning() override;
 
                 void useNoSequentialPostOptimization() override;
 
@@ -1285,7 +1281,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IStoppingCriterionFactory> createTimeStoppingCriterionFactory() const;
 
-        std::unique_ptr<IStoppingCriterionFactory> createEarlyStoppingCriterionFactory() const;
+        std::unique_ptr<IStoppingCriterionFactory> createGlobalPruningFactory() const;
 
         std::unique_ptr<IPostOptimizationPhaseFactory> createSequentialPostOptimizationFactory() const;
 

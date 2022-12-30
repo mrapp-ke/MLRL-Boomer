@@ -1,166 +1,9 @@
-#include "common/stopping/stopping_criterion_early.hpp"
-#include "common/data/ring_buffer.hpp"
+#include "common/stopping/global_pre_pruning.hpp"
 #include "common/sampling/partition_bi.hpp"
-#include "common/math/math.hpp"
 #include "common/util/validation.hpp"
+#include "aggregation_function_common.hpp"
 #include <limits>
 
-
-/**
- * Defines an interface for all classes that allow to aggregate the values that are stored in a buffer.
- */
-class IAggregationFunction {
-
-    public:
-
-        virtual ~IAggregationFunction() { };
-
-        /**
-         * Aggregates the values that are stored in a buffer.
-         *
-         * @param begin An iterator to the beginning of the buffer
-         * @param end   An iterator to the end of the buffer
-         * @return      The aggregated value
-         */
-        virtual float64 aggregate(RingBuffer<float64>::const_iterator begin,
-                                  RingBuffer<float64>::const_iterator end) const = 0;
-
-};
-
-/**
- * An implementation of the type `IAggregationFunction` that aggregates the values that are stored in a buffer by
- * finding the minimum value.
- */
-class MinAggregationFunction final : public IAggregationFunction {
-
-    public:
-
-        float64 aggregate(RingBuffer<float64>::const_iterator begin,
-                          RingBuffer<float64>::const_iterator end) const override {
-            uint32 numElements = end - begin;
-            float64 min = begin[0];
-
-            for (uint32 i = 1; i < numElements; i++) {
-                float64 value = begin[i];
-
-                if (value < min) {
-                    min = value;
-                }
-            }
-
-            return min;
-        }
-
-};
-
-/**
- * An implementation of the type `IAggregationFunction` that aggregates the values that are stored in a buffer by
- * finding the maximum value.
- */
-class MaxAggregationFunction final : public IAggregationFunction {
-
-    public:
-
-        float64 aggregate(RingBuffer<float64>::const_iterator begin,
-                          RingBuffer<float64>::const_iterator end) const override {
-            uint32 numElements = end - begin;
-            float64 max = begin[0];
-
-            for (uint32 i = 1; i < numElements; i++) {
-                float64 value = begin[i];
-
-                if (value > max) {
-                    max = value;
-                }
-            }
-
-            return max;
-        }
-
-};
-
-/**
- * An implementation of the type `IAggregationFunction` that aggregates the values that are stored in a buffer by
- * calculating the arithmetic mean.
- */
-class ArithmeticMeanAggregationFunction final : public IAggregationFunction {
-
-    public:
-
-        float64 aggregate(RingBuffer<float64>::const_iterator begin,
-                          RingBuffer<float64>::const_iterator end) const override {
-            uint32 numElements = end - begin;
-            float64 mean = 0;
-
-            for (uint32 i = 0; i < numElements; i++) {
-                float64 value = begin[i];
-                mean = iterativeArithmeticMean<float64>(i + 1, value, mean);
-            }
-
-            return mean;
-        }
-
-};
-
-/**
- * Defines an interface for all factories that allow to create instances of the type `IAggregationFunction`.
- */
-class IAggregationFunctionFactory {
-
-    public:
-
-        virtual ~IAggregationFunctionFactory() { };
-
-        /**
-         * Creates and returns a new object of type `IAggregationFunction`.
-         *
-         * @return An unique pointer to an object of type `IAggregationFunction` that has been created
-         */
-        virtual std::unique_ptr<IAggregationFunction> create() const = 0;
-
-};
-
-/**
- * Allows to create instances of the type `IAggregationFunction` that aggregate the values that are stored in a buffer
- * by finding the minimum value.
- */
-class MinAggregationFunctionFactory final : public IAggregationFunctionFactory {
-
-    public:
-
-        std::unique_ptr<IAggregationFunction> create() const override {
-            return std::make_unique<MinAggregationFunction>();
-        }
-
-};
-
-/**
- * Allows to create instances of the type `IAggregationFunction` that aggregate the values that are stored in a buffer
- * by finding the maximum value.
- */
-class MaxAggregationFunctionFactory final : public IAggregationFunctionFactory {
-
-    public:
-
-        std::unique_ptr<IAggregationFunction> create() const override {
-            return std::make_unique<MaxAggregationFunction>();
-        }
-
-};
-
-/**
- * Allows to create instances of the type `IAggregationFunction` that aggregate the values that are stored in a buffer
- * by calculating the arithmetic mean.
- */
-class ArithmeticMeanAggregationFunctionFactory final : public IAggregationFunctionFactory {
-
-    public:
-
-        std::unique_ptr<IAggregationFunction> create() const override {
-            return std::make_unique<ArithmeticMeanAggregationFunction>();
-        }
-
-};
 
 static inline float64 evaluate(const SinglePartition& partition, bool useHoldoutSet, const IStatistics& statistics) {
     uint32 numExamples = partition.getNumElements();
@@ -207,7 +50,7 @@ static inline float64 evaluate(const BiPartition& partition, bool useHoldoutSet,
  *                   training and holdout set, respectively
  */
 template<typename Partition>
-class EarlyStoppingCriterion final : public IStoppingCriterion {
+class PrePruning final : public IStoppingCriterion {
 
     private:
 
@@ -265,9 +108,9 @@ class EarlyStoppingCriterion final : public IStoppingCriterion {
          *                                  stopping criterion is met, false, if the time of stopping should only be
          *                                  stored
          */
-        EarlyStoppingCriterion(Partition& partition, std::unique_ptr<IAggregationFunction> aggregationFunctionPtr,
-                               bool useHoldoutSet, uint32 minRules, uint32 updateInterval, uint32 stopInterval,
-                               uint32 numPast, uint32 numCurrent, float64 minImprovement, bool forceStop)
+        PrePruning(Partition& partition, std::unique_ptr<IAggregationFunction> aggregationFunctionPtr,
+                   bool useHoldoutSet, uint32 minRules, uint32 updateInterval, uint32 stopInterval, uint32 numPast,
+                   uint32 numCurrent, float64 minImprovement, bool forceStop)
             : partition_(partition), aggregationFunctionPtr_(std::move(aggregationFunctionPtr)),
               useHoldoutSet_(useHoldoutSet), updateInterval_(updateInterval), stopInterval_(stopInterval),
               minImprovement_(minImprovement), pastBuffer_(RingBuffer<float64>(numPast)),
@@ -323,7 +166,7 @@ class EarlyStoppingCriterion final : public IStoppingCriterion {
  * quality of a model's predictions for the examples in the training or holdout set do not improve according a certain
  * measure.
  */
-class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
+class PrePruningFactory final : public IStoppingCriterionFactory {
 
     private:
 
@@ -371,9 +214,9 @@ class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
          *                                      stopping criterion is met, false, if only the time of stopping should be
          *                                      stored
          */
-        EarlyStoppingCriterionFactory(std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr,
-                                      bool useHoldoutSet, uint32 minRules, uint32 updateInterval, uint32 stopInterval,
-                                      uint32 numPast, uint32 numCurrent, float64 minImprovement, bool forceStop)
+        PrePruningFactory(std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr,
+                          bool useHoldoutSet, uint32 minRules, uint32 updateInterval, uint32 stopInterval,
+                          uint32 numPast, uint32 numCurrent, float64 minImprovement, bool forceStop)
             : aggregationFunctionFactoryPtr_(std::move(aggregationFunctionFactoryPtr)), useHoldoutSet_(useHoldoutSet),
               minRules_(minRules), updateInterval_(updateInterval), stopInterval_(stopInterval), numPast_(numPast),
               numCurrent_(numCurrent), minImprovement_(minImprovement), forceStop_(forceStop) {
@@ -382,129 +225,121 @@ class EarlyStoppingCriterionFactory final : public IStoppingCriterionFactory {
 
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
-            return std::make_unique<EarlyStoppingCriterion<const SinglePartition>>(
-                partition, std::move(aggregationFunctionPtr), useHoldoutSet_, minRules_, updateInterval_, stopInterval_,
-                numPast_, numCurrent_, minImprovement_, forceStop_);
+            return std::make_unique<PrePruning<const SinglePartition>>(partition, std::move(aggregationFunctionPtr),
+                                                                       useHoldoutSet_, minRules_, updateInterval_,
+                                                                       stopInterval_, numPast_, numCurrent_,
+                                                                       minImprovement_, forceStop_);
         }
 
         std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
-            return std::make_unique<EarlyStoppingCriterion<BiPartition>>(
-                partition, std::move(aggregationFunctionPtr), useHoldoutSet_, minRules_, updateInterval_, stopInterval_,
-                numPast_, numCurrent_, minImprovement_, forceStop_);
+            return std::make_unique<PrePruning<BiPartition>>(partition, std::move(aggregationFunctionPtr),
+                                                             useHoldoutSet_, minRules_, updateInterval_, stopInterval_,
+                                                             numPast_, numCurrent_, minImprovement_, forceStop_);
         }
 
 };
 
-EarlyStoppingCriterionConfig::EarlyStoppingCriterionConfig()
-    : aggregationFunction_(EarlyStoppingCriterionConfig::AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true),
+PrePruningConfig::PrePruningConfig()
+    : aggregationFunction_(AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true),
       minRules_(100), updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005),
       forceStop_(true) {
 
 }
 
-EarlyStoppingCriterionConfig::AggregationFunction EarlyStoppingCriterionConfig::getAggregationFunction() const {
+AggregationFunction PrePruningConfig::getAggregationFunction() const {
     return aggregationFunction_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setAggregationFunction(
-        EarlyStoppingCriterionConfig::AggregationFunction aggregationFunction) {
+IPrePruningConfig& PrePruningConfig::setAggregationFunction(
+        AggregationFunction aggregationFunction) {
     aggregationFunction_ = aggregationFunction;
     return *this;
 }
 
-bool EarlyStoppingCriterionConfig::isHoldoutSetUsed() const {
+bool PrePruningConfig::isHoldoutSetUsed() const {
     return useHoldoutSet_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setUseHoldoutSet(bool useHoldoutSet) {
+IPrePruningConfig& PrePruningConfig::setUseHoldoutSet(bool useHoldoutSet) {
     useHoldoutSet_ = useHoldoutSet;
     return *this;
 }
 
-uint32 EarlyStoppingCriterionConfig::getMinRules() const {
+uint32 PrePruningConfig::getMinRules() const {
     return minRules_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setMinRules(uint32 minRules) {
+IPrePruningConfig& PrePruningConfig::setMinRules(uint32 minRules) {
     assertGreaterOrEqual<uint32>("minRules", minRules, 1);
     minRules_ = minRules;
     return *this;
 }
 
-uint32 EarlyStoppingCriterionConfig::getUpdateInterval() const {
+uint32 PrePruningConfig::getUpdateInterval() const {
     return updateInterval_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setUpdateInterval(uint32 updateInterval) {
+IPrePruningConfig& PrePruningConfig::setUpdateInterval(uint32 updateInterval) {
     assertGreaterOrEqual<uint32>("updateInterval", updateInterval, 1);
     updateInterval_ = updateInterval;
     return *this;
 }
 
-uint32 EarlyStoppingCriterionConfig::getStopInterval() const {
+uint32 PrePruningConfig::getStopInterval() const {
     return stopInterval_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setStopInterval(uint32 stopInterval) {
+IPrePruningConfig& PrePruningConfig::setStopInterval(uint32 stopInterval) {
     assertMultiple<uint32>("stopInterval", stopInterval, updateInterval_);
     stopInterval_ = stopInterval;
     return *this;
 }
 
-uint32 EarlyStoppingCriterionConfig::getNumPast() const {
+uint32 PrePruningConfig::getNumPast() const {
     return numPast_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setNumPast(uint32 numPast) {
+IPrePruningConfig& PrePruningConfig::setNumPast(uint32 numPast) {
     assertGreaterOrEqual<uint32>("numPast", numPast, 1);
     numPast_ = numPast;
     return *this;
 }
 
-uint32 EarlyStoppingCriterionConfig::getNumCurrent() const {
+uint32 PrePruningConfig::getNumCurrent() const {
     return numCurrent_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setNumCurrent(uint32 numCurrent) {
+IPrePruningConfig& PrePruningConfig::setNumCurrent(uint32 numCurrent) {
     assertGreaterOrEqual<uint32>("numCurrent", numCurrent, 1);
     numCurrent_ = numCurrent;
     return *this;
 }
 
-float64 EarlyStoppingCriterionConfig::getMinImprovement() const {
+float64 PrePruningConfig::getMinImprovement() const {
     return minImprovement_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setMinImprovement(float64 minImprovement) {
+IPrePruningConfig& PrePruningConfig::setMinImprovement(float64 minImprovement) {
     assertGreaterOrEqual<float64>("minImprovement", minImprovement, 0);
     assertLessOrEqual<float64>("minImprovement", minImprovement, 1);
     minImprovement_ = minImprovement;
     return *this;
 }
 
-bool EarlyStoppingCriterionConfig::isStopForced() const{
+bool PrePruningConfig::isStopForced() const{
     return forceStop_;
 }
 
-IEarlyStoppingCriterionConfig& EarlyStoppingCriterionConfig::setForceStop(bool forceStop) {
+IPrePruningConfig& PrePruningConfig::setForceStop(bool forceStop) {
     forceStop_ = forceStop;
     return *this;
 }
 
-std::unique_ptr<IStoppingCriterionFactory> EarlyStoppingCriterionConfig::createStoppingCriterionFactory() const {
-    std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr;
-
-    switch (aggregationFunction_) {
-        case EarlyStoppingCriterionConfig::AggregationFunction::MIN:
-            aggregationFunctionFactoryPtr = std::make_unique<MinAggregationFunctionFactory>();
-        case EarlyStoppingCriterionConfig::AggregationFunction::MAX:
-            aggregationFunctionFactoryPtr = std::make_unique<MaxAggregationFunctionFactory>();
-        default:
-            aggregationFunctionFactoryPtr = std::make_unique<ArithmeticMeanAggregationFunctionFactory>();
-    }
-
-    return std::make_unique<EarlyStoppingCriterionFactory>(std::move(aggregationFunctionFactoryPtr), useHoldoutSet_,
-                                                           minRules_, updateInterval_, stopInterval_, numPast_,
-                                                           numCurrent_, minImprovement_, forceStop_);
+std::unique_ptr<IStoppingCriterionFactory> PrePruningConfig::createStoppingCriterionFactory() const {
+    std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr =
+        createAggregationFunctionFactory(aggregationFunction_);
+    return std::make_unique<PrePruningFactory>(std::move(aggregationFunctionFactoryPtr), useHoldoutSet_, minRules_,
+                                               updateInterval_, stopInterval_, numPast_, numCurrent_, minImprovement_,
+                                               forceStop_);
 }
