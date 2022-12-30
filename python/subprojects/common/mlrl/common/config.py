@@ -260,7 +260,7 @@ def configure_global_pruning(config: RuleLearnerConfig, global_pruning: Optional
         if value == NONE:
             config.use_no_global_pruning()
         elif value == GLOBAL_PRE_PRUNING:
-            c = config.use_pre_pruning()
+            c = config.use_global_pre_pruning()
             aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
             c.set_aggregation_function(__create_aggregation_function(
                 aggregation_function) if aggregation_function is not None else c.get_aggregation_function())
