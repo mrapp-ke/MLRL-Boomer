@@ -79,6 +79,25 @@ cdef extern from "common/stopping/global_pre_pruning.hpp" nogil:
         IPrePruningConfig& setForceStop(bool forceStop) except +
 
 
+cdef extern from "common/stopping/global_post_pruning.hpp" nogil:
+
+    cdef cppclass IPostPruningConfig:
+
+        # Functions:
+
+        bool isHoldoutSetUsed() const
+
+        IPostPruningConfig& setUseHoldoutSet(bool useHoldoutSet) except +
+
+        uint32 getMinRules() const
+
+        IPostPruningConfig& setMinRules(uint32 minRules) except +
+
+        uint32 getInterval() const
+
+        IPostPruningConfig& setInterval(uint32 interval) except +
+
+
 cdef class SizeStoppingCriterionConfig:
 
     # Attributes:
@@ -98,3 +117,10 @@ cdef class PrePruningConfig:
     # Attributes:
 
     cdef IPrePruningConfig* config_ptr
+
+
+cdef class PostPruningConfig:
+
+    # Attributes:
+
+    cdef IPostPruningConfig* config_ptr
