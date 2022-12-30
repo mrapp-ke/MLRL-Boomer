@@ -59,7 +59,7 @@ class MLRLCOMMON_API IPrePruningConfig {
         virtual bool isHoldoutSetUsed() const = 0;
 
         /**
-         * Sets whether the quality of he current model's predictions should be measured on the holdout set, if
+         * Sets whether the quality of the current model's predictions should be measured on the holdout set, if
          * available, or if the training set should be used instead.
          *
          * @param useHoldoutSet True, if the quality of the current model's predictions should be measured on the

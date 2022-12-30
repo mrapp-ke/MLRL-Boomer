@@ -9,8 +9,8 @@
 
 /**
  * An one dimensional vector that stores the scores that may be predicted by a rule, corresponding to bins for which the
- * same prediction is made, as well as a numeric score that assesses the overall quality of the rule, in a C-contiguous
- * array.
+ * same prediction is made, as well as a numerical score that assesses the overall quality of the rule, in a
+ * C-contiguous array.
  *
  * @tparam IndexVector The type of the vector that provides access to the indices of the labels for which the rule may
  *                     predict

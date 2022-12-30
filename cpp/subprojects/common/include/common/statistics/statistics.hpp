@@ -83,11 +83,11 @@ class IStatistics {
         virtual void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) = 0;
 
         /**
-         * Calculates and returns a numeric score that assesses the quality of the current predictions for a specific
+         * Calculates and returns a numerical score that assesses the quality of the current predictions for a specific
          * statistic.
          *
          * @param statisticIndex    The index of the statistic for which the predictions should be evaluated
-         * @return                  The numeric score that has been calculated
+         * @return                  The numerical score that has been calculated
          */
         virtual float64 evaluatePrediction(uint32 statisticIndex) const = 0;
 
