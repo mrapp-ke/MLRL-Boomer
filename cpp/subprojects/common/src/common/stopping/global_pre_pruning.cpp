@@ -1,5 +1,4 @@
 #include "common/stopping/global_pre_pruning.hpp"
-#include "common/sampling/partition_bi.hpp"
 #include "common/util/validation.hpp"
 #include "aggregation_function_common.hpp"
 #include "global_pruning_common.hpp"
