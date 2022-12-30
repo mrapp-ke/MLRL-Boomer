@@ -269,3 +269,76 @@ cdef class PrePruningConfig:
         """
         self.config_ptr.setForceStop(force_stop)
         return self
+
+
+cdef class PostPruningConfig:
+    """
+    Defines an interface for all classes that allow to configure a stopping criterion that keeps track of the number of
+    rules in a model that perform best with respect to the examples in the training or holdout set according to a
+    certain measure.
+
+    This stopping criterion assesses the performance of the current model after every `interval` rules and stores and
+    checks whether the current model is the best one evaluated so far.
+    """
+
+    def is_holdout_set_used(self) -> bool:
+        """
+        Returns whether the quality of the current model's predictions is measured on the holdout set, if available, or
+        if the training set is used instead.
+
+        :return: True, if the quality of the current model's predictions is measured on the holdout set, if available,
+                 False, if the training set is used instead
+        """
+        return self.config_ptr.isHoldoutSetUsed()
+
+    def set_use_holdout_set(self, use_holdout_set: bool) -> PostPruningConfig:
+        """
+        Sets whether the quality of he current model's predictions should be measured on the holdout set, if available,
+        or if the training set should be used instead.
+
+        :param use_holdout_set: True, if the quality of the current model's predictions should be measured on the
+                                holdout set, if available, False, if the training set should be used instead
+        :return:                A `PostPruningConfig` that allows further configuration of the stopping criterion
+        """
+        self.config_ptr.setUseHoldoutSet(use_holdout_set)
+        return self
+
+    def get_min_rules(self) -> int:
+        """
+        Returns the minimum number of rules that must be included in a model.
+
+        :return: The minimum number of rules that must be included in a model
+        """
+        return self.config_ptr.getMinRules()
+
+    def set_min_rules(self, min_rules: int) -> PostPruningConfig:
+        """
+        Sets the minimum number of rules that must be included in a model.
+
+        :param min_rules:   The minimum number of rules that must be included in a model. Must be at least 1
+        :return:            A `PostPruningConfig` that allows further configuration of the stopping criterion
+        """
+        assert_greater_or_equal('min_rules', min_rules, 1)
+        self.config_ptr.setMinRules(min_rules)
+        return self
+
+    def get_interval(self) -> int:
+        """
+        Returns the interval that is used to check whether the current model is the best one evaluated so far.
+
+        :return: The interval that is used to check whether the current model is the best one evaluated so far
+        """
+        return self.config_ptr.getInterval()
+
+    def set_interval(self, interval: int) -> PostPruningConfig:
+        """
+        Sets the interval that should be used to check whether the current model is the best one evaluated so far.
+
+        :param interval:    The interval that should be used to check whether the current model is the best one
+                            evaluated so far, e.g., a value of 10 means that the best model may include 10, 20, ...
+                            rules
+        :return:            A `PostPruningConfig` that allows further configuration of the stopping criterion
+        """
+        assert_greater_or_equal('interval', interval, 1)
+        self.config_ptr.setInterval(interval)
+        return self
