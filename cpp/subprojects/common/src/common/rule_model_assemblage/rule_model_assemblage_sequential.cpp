@@ -146,7 +146,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
             while (stoppingCriterionResult = stoppingCriterionPtr->test(statisticsProviderPtr->get(), numRules),
                    stoppingCriterionResult.action != IStoppingCriterion::Action::FORCE_STOP) {
-                if (stoppingCriterionResult.action == IStoppingCriterion::Action::STORE_STOP && numUsedRules == 0) {
+                if (stoppingCriterionResult.action == IStoppingCriterion::Action::STORE_STOP) {
                     numUsedRules = stoppingCriterionResult.numRules;
                 }
 
