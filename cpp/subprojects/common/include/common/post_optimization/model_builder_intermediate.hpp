@@ -29,6 +29,8 @@ class IntermediateModelBuilder final : public IModelBuilder {
 
         std::vector<IntermediateRule> intermediateRuleList_;
 
+        uint32 numUsedRules_;
+
     public:
 
         /**
@@ -56,11 +58,32 @@ class IntermediateModelBuilder final : public IModelBuilder {
          */
         iterator end();
 
+        /**
+         * Removes the intermediate representation of the last rule.
+         */
+        void removeLastRule();
+
+        /**
+         * Returns the total number of rules.
+         *
+         * @return The total number of rules
+         */
+        uint32 getNumRules() const;
+
+        /**
+         * Returns the number of used rules.
+         *
+         * @return The number of used rules
+         */
+        uint32 getNumUsedRules() const;
+
+        void setNumUsedRules(uint32 numUsedRules) override;
+
         void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override;
 
         void addRule(std::unique_ptr<ConditionList>& conditionListPtr,
                      std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override;
 
-        std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) override;
+        std::unique_ptr<IRuleModel> buildModel() override;
 
 };

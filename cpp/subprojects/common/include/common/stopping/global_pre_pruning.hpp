@@ -70,6 +70,23 @@ class MLRLCOMMON_API IPrePruningConfig {
         virtual IPrePruningConfig& setUseHoldoutSet(bool useHoldoutSet) = 0;
 
         /**
+         * Returns whether rules that have been induced, but are not used, should be removed from the final model or
+         * not.
+         *
+         * @return True, if unused rules should be removed from the model, false otherwise
+         */
+        virtual bool isRemoveUnusedRules() const = 0;
+
+        /**
+         * Sets whether rules that have been induced, but are not used, should be removed from the final model or not.
+         *
+         * @param removeUnusedRules True, if unused rules should be removed from the model, false otherwise
+         * @return                  A reference to an object of type `IPrePruningConfig` that allows further
+         *                          configuration of the stopping criterion
+         */
+        virtual IPrePruningConfig& setRemoveUnusedRules(bool removeUnusedRules) = 0;
+
+        /**
          * Returns the minimum number of rules that must have been learned until the induction of rules might be
          * stopped.
          *
@@ -173,24 +190,6 @@ class MLRLCOMMON_API IPrePruningConfig {
          */
         virtual IPrePruningConfig& setMinImprovement(float64 minImprovement) = 0;
 
-        /**
-         * Returns whether the induction of rules is forced to be stopped, if the stopping criterion is met.
-         *
-         * @return True, if the induction of rules is forced to be stopped, if the stopping criterion is met, false, if
-         *         only the time of stopping is stored
-         */
-        virtual bool isStopForced() const = 0;
-
-        /**
-         * Sets whether the induction of rules should be forced to be stopped, if the stopping criterion is met.
-         *
-         * @param forceStop True, if the induction of rules should be forced to be stopped, if the stopping criterion is
-         *                  met, false, if only the time of stopping should be stored
-         * @return          A reference to an object of type `IPrePruningConfig` that allows further configuration of
-         *                  the stopping criterion
-         */
-        virtual IPrePruningConfig& setForceStop(bool forceStop) = 0;
-
 };
 
 /**
@@ -205,6 +204,8 @@ class PrePruningConfig final : public IGlobalPruningConfig, public IPrePruningCo
 
         bool useHoldoutSet_;
 
+        bool removeUnusedRules_;
+
         uint32 minRules_;
 
         uint32 updateInterval_;
@@ -217,8 +218,6 @@ class PrePruningConfig final : public IGlobalPruningConfig, public IPrePruningCo
 
         float64 minImprovement_;
 
-        bool forceStop_;
-
     public:
 
         PrePruningConfig();
@@ -230,6 +229,10 @@ class PrePruningConfig final : public IGlobalPruningConfig, public IPrePruningCo
         bool isHoldoutSetUsed() const override;
 
         IPrePruningConfig& setUseHoldoutSet(bool useHoldoutSet) override;
+
+        bool isRemoveUnusedRules() const override;
+
+        IPrePruningConfig& setRemoveUnusedRules(bool removeUnusedRules) override;
 
         uint32 getMinRules() const override;
 
@@ -255,10 +258,11 @@ class PrePruningConfig final : public IGlobalPruningConfig, public IPrePruningCo
 
         IPrePruningConfig& setMinImprovement(float64 minImprovement) override;
 
-        bool isStopForced() const override;
-
-        IPrePruningConfig& setForceStop(bool forceStop) override;
-
         std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
+
+        /**
+         * @see `IGlobalPruningConfig::shouldRemoveUnusedRules`
+         */
+        bool shouldRemoveUnusedRules() const override;
 
 };

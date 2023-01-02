@@ -16,4 +16,11 @@ class IGlobalPruningConfig : public IStoppingCriterionConfig {
 
         virtual ~IGlobalPruningConfig() override { };
 
+        /**
+         * Returns whether unused rules should be removed from the final model or not.
+         *
+         * @return True, if unused rules should be removed, false otherwise
+         */
+        virtual bool shouldRemoveUnusedRules() const = 0;
+
 };

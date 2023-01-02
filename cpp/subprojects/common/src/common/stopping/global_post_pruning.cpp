@@ -104,7 +104,7 @@ class PostPruningFactory final : public IStoppingCriterionFactory {
 };
 
 PostPruningConfig::PostPruningConfig()
-    : useHoldoutSet_(true), minRules_(100), interval_(1) {
+    : useHoldoutSet_(true), removeUnusedRules_(true), minRules_(100), interval_(1) {
 
 }
 
@@ -114,6 +114,15 @@ bool PostPruningConfig::isHoldoutSetUsed() const {
 
 IPostPruningConfig& PostPruningConfig::setUseHoldoutSet(bool useHoldoutSet) {
     useHoldoutSet_ = useHoldoutSet;
+    return *this;
+}
+
+bool PostPruningConfig::isRemoveUnusedRules() const {
+    return removeUnusedRules_;
+}
+
+IPostPruningConfig& PostPruningConfig::setRemoveUnusedRules(bool removeUnusedRules) {
+    removeUnusedRules_ = removeUnusedRules;
     return *this;
 }
 
@@ -139,4 +148,8 @@ IPostPruningConfig& PostPruningConfig::setInterval(uint32 interval) {
 
 std::unique_ptr<IStoppingCriterionFactory> PostPruningConfig::createStoppingCriterionFactory() const {
     return std::make_unique<PostPruningFactory>(useHoldoutSet_, minRules_, interval_);
+}
+
+bool PostPruningConfig::shouldRemoveUnusedRules() const {
+    return removeUnusedRules_;
 }
