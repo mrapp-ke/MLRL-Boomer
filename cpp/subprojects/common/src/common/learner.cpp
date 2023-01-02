@@ -156,6 +156,10 @@ std::unique_ptr<SequentialPostOptimizationConfig>& AbstractRuleLearner::Config::
     return sequentialPostOptimizationConfigPtr_;
 }
 
+std::unique_ptr<UnusedRuleRemovalConfig>& AbstractRuleLearner::Config::getUnusedRuleRemovalConfigPtr() {
+    return unusedRuleRemovalConfigPtr_;
+}
+
 void AbstractRuleLearner::Config::useDefaultRule() {
     defaultRuleConfigPtr_ = std::make_unique<DefaultRuleConfig>(true);
 }
