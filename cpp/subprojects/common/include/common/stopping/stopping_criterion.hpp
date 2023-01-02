@@ -17,30 +17,22 @@ class IStoppingCriterion {
     public:
 
         /**
-         * An enum that specifies all possible actions that may be executed, based on the result that is returned by a
-         * stopping criterion.
-         */
-        enum Action : uint8 {
-            CONTINUE = 0,
-            STORE_STOP = 1,
-            FORCE_STOP = 2
-        };
-
-        /**
          * The result that is returned by a stopping criterion. It consists of the action to be executed, as well as the
          * number of rules to be used, if the action is not `CONTINUE`.
          */
         struct Result final {
 
+            Result() : stop(false), numUsedRules(0) { };
+
             /**
-             * The action to be executed.
+             True, if the induction of rules should be stopped, false otherwise.
              */
-            Action action;
+            bool stop;
 
             /**
              * The number of rules to be used.
              */
-            uint32 numRules;
+            uint32 numUsedRules;
 
         };
 

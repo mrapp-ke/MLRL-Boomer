@@ -25,11 +25,8 @@ class SizeStoppingCriterion final : public IStoppingCriterion {
         Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
 
-            if (numRules < maxRules_) {
-                result.action = CONTINUE;
-            } else {
-                result.action = FORCE_STOP;
-                result.numRules = numRules;
+            if (numRules >= maxRules_) {
+                result.stop = true;
             }
 
             return result;
