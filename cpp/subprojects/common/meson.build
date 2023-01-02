@@ -100,6 +100,7 @@ source_files = [
     'src/common/sampling/weight_vector_dense.cpp',
     'src/common/sampling/weight_vector_equal.cpp',
     'src/common/sampling/weight_vector_out_of_sample.cpp',
+    'src/common/stopping/global_post_pruning.cpp',
     'src/common/stopping/global_pre_pruning.cpp',
     'src/common/stopping/stopping_criterion_list.cpp',
     'src/common/stopping/stopping_criterion_size.cpp',

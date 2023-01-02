@@ -1,46 +1,9 @@
 #include "common/stopping/global_pre_pruning.hpp"
-#include "common/sampling/partition_bi.hpp"
 #include "common/util/validation.hpp"
 #include "aggregation_function_common.hpp"
+#include "global_pruning_common.hpp"
 #include <limits>
 
-
-static inline float64 evaluate(const SinglePartition& partition, bool useHoldoutSet, const IStatistics& statistics) {
-    uint32 numExamples = partition.getNumElements();
-    SinglePartition::const_iterator iterator = partition.cbegin();
-    float64 mean = 0;
-
-    for (uint32 i = 0; i < numExamples; i++) {
-        uint32 exampleIndex = iterator[i];
-        float64 score = statistics.evaluatePrediction(exampleIndex);
-        mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
-    }
-
-    return mean;
-}
-
-static inline float64 evaluate(const BiPartition& partition, bool useHoldoutSet, const IStatistics& statistics) {
-    uint32 numExamples;
-    BiPartition::const_iterator iterator;
-
-    if (useHoldoutSet) {
-        numExamples = partition.getNumSecond();
-        iterator = partition.second_cbegin();
-    } else {
-        numExamples = partition.getNumFirst();
-        iterator = partition.first_cbegin();
-    }
-
-    float64 mean = 0;
-
-    for (uint32 i = 0; i < numExamples; i++) {
-        uint32 exampleIndex = iterator[i];
-        float64 score = statistics.evaluatePrediction(exampleIndex);
-        mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
-    }
-
-    return mean;
-}
 
 /**
  * An implementation of the type `IStoppingCriterion` that stops the induction of rules as soon as the quality of a
@@ -240,9 +203,8 @@ class PrePruningFactory final : public IStoppingCriterionFactory {
 };
 
 PrePruningConfig::PrePruningConfig()
-    : aggregationFunction_(AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true),
-      minRules_(100), updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005),
-      forceStop_(true) {
+    : aggregationFunction_(AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true), minRules_(100),
+      updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005), forceStop_(true) {
 
 }
 
@@ -250,8 +212,7 @@ AggregationFunction PrePruningConfig::getAggregationFunction() const {
     return aggregationFunction_;
 }
 
-IPrePruningConfig& PrePruningConfig::setAggregationFunction(
-        AggregationFunction aggregationFunction) {
+IPrePruningConfig& PrePruningConfig::setAggregationFunction(AggregationFunction aggregationFunction) {
     aggregationFunction_ = aggregationFunction;
     return *this;
 }

@@ -142,12 +142,17 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr_->create();
             std::unique_ptr<IStoppingCriterion> stoppingCriterionPtr =
                 partition.createStoppingCriterion(*stoppingCriterionFactoryPtr_);
-            IStoppingCriterion::Result stoppingCriterionResult;
 
-            while (stoppingCriterionResult = stoppingCriterionPtr->test(statisticsProviderPtr->get(), numRules),
-                   !stoppingCriterionResult.stop) {
+            while (true) {
+                IStoppingCriterion::Result stoppingCriterionResult =
+                    stoppingCriterionPtr->test(statisticsProviderPtr->get(), numRules);
+
                 if (stoppingCriterionResult.numUsedRules != 0) {
                     numUsedRules = stoppingCriterionResult.numUsedRules;
+                }
+
+                if (stoppingCriterionResult.stop) {
+                    break;
                 }
 
                 const IWeightVector& weights = instanceSamplingPtr->sample(rng);

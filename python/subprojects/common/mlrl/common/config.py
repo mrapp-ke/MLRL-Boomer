@@ -46,6 +46,8 @@ PARTITION_SAMPLING_RANDOM = 'random'
 
 ARGUMENT_HOLDOUT_SET_SIZE = 'holdout_set_size'
 
+GLOBAL_POST_PRUNING = 'post-pruning'
+
 GLOBAL_PRE_PRUNING = 'pre-pruning'
 
 AGGREGATION_FUNCTION_MIN = 'min'
@@ -61,6 +63,8 @@ ARGUMENT_REFINE_HEADS = 'refine_heads'
 ARGUMENT_USE_HOLDOUT_SET = 'use_holdout_set'
 
 ARGUMENT_MIN_RULES = 'min_rules'
+
+ARGUMENT_INTERVAL = 'interval'
 
 ARGUMENT_UPDATE_INTERVAL = 'update_interval'
 
@@ -136,6 +140,7 @@ FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
 
 GLOBAL_PRUNING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
+    GLOBAL_POST_PRUNING: {ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_MIN_RULES, ARGUMENT_INTERVAL},
     GLOBAL_PRE_PRUNING: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_MIN_RULES,
                          ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT,
                          ARGUMENT_MIN_IMPROVEMENT, ARGUMENT_FORCE_STOP}
@@ -259,6 +264,11 @@ def configure_global_pruning(config: RuleLearnerConfig, global_pruning: Optional
 
         if value == NONE:
             config.use_no_global_pruning()
+        elif value == GLOBAL_POST_PRUNING:
+            c = config.use_global_post_pruning()
+            c.set_use_holdout_set(options.get_bool(ARGUMENT_USE_HOLDOUT_SET, c.is_holdout_set_used()))
+            c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
+            c.set_interval(options.get_int(ARGUMENT_INTERVAL, c.get_interval()))
         elif value == GLOBAL_PRE_PRUNING:
             c = config.use_global_pre_pruning()
             aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)

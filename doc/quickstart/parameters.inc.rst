@@ -133,10 +133,16 @@ The following parameters allow to control the behavior of the algorithm:
 * ``global_pruning`` (Default value = ``'none'``)
 
   * ``'none'`` No strategy for pruning entire rules is used.
-  * ``'pre-pruning'`` Stops the induction of new rules as soon as the performance of the model does not improve on a holdout set. The following options may be provided using the bracket notation:
+  * ``'post-pruning'`` Keeps track of the number of rules in a model that perform best on the training or holdout set according to the loss function. The following options may be provided using the bracket notation:
 
-    * ``use_holdout_set`` (Default value = ``'true'``) ``'true'``, if the quality of the current model should be measured on a holdout set, if available, ``'false'``, if the training set should be used instead.
-    * ``min_rules`` (Default value = ``100``) The minimum number of rules. Must be at least 1.
+    * ``use_holdout_set`` (Default value = ``'true'``) ``'true'``, if the quality of the current model should be measured on the holdout set, if available, ``'false'``, if the training set should be used instead.
+    * ``min_rules`` (Default value = ``100``) The minimum number of rules that must be included in a model. Must be at least 1
+    * ``interval`` (Default value = ``1``) The interval to be used to check whether the current model is the best one evaluated so far. For example, a value of 10 means that the best model may contain 10, 20, ... rules. Must be at least 1
+
+  * ``'pre-pruning'`` Stops the induction of new rules as soon as the performance of the model does not improve on the training or holdout set according to the loss function. The following options may be provided using the bracket notation:
+
+    * ``use_holdout_set`` (Default value = ``'true'``) ``'true'``, if the quality of the current model should be measured on the holdout set, if available, ``'false'``, if the training set should be used instead.
+    * ``min_rules`` (Default value = ``100``) The minimum number of rules that must be included in a model. Must be at least 1.
     * ``update_interval`` (Default value = ``1``) The interval to be used to update the quality of the current model. For example, a value of 5 means that the model quality is assessed every 5 rules. Must be at least 1.
     * ``stop_interval`` (Default value = ``1``) The interval to be used to decide whether the induction of rules should be stopped. For example, a value of 10 means that the rule induction might be stopped after 10, 20, ... rules. Must be a multiple of update_interval.
     * ``num_past`` (Default value = ``50``) The number of quality scores of past iterations to be stored in a buffer. Must be at least 1.

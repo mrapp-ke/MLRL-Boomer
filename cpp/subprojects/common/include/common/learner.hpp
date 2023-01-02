@@ -32,6 +32,7 @@
 #include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
+#include "common/stopping/global_post_pruning.hpp"
 #include "common/stopping/global_pre_pruning.hpp"
 #include "common/stopping/stopping_criterion_list.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
@@ -808,6 +809,32 @@ class MLRLCOMMON_API IRuleLearner {
                     std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = this->getGlobalPruningConfigPtr();
                     std::unique_ptr<PrePruningConfig> ptr = std::make_unique<PrePruningConfig>();
                     IPrePruningConfig& ref = *ptr;
+                    globalPruningConfigPtr = std::move(ptr);
+                    return ref;
+                }
+
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
+         * keeps track of the number of rules in a model that perform best with respect to the examples in the training
+         * or holdout set according to a certain measure.
+         */
+        class IPostPruningMixin : virtual public IRuleLearner::IConfig {
+
+            public:
+
+                virtual ~IPostPruningMixin() { };
+
+                /**
+                 * Configures the rule learner to use a stopping criterion that keeps track of the number of rules in a
+                 * model that perform best with respect to the examples in the training or holdout set according to a
+                 * certain measure.
+                 */
+                virtual IPostPruningConfig& useGlobalPostPruning() {
+                    std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = this->getGlobalPruningConfigPtr();
+                    std::unique_ptr<PostPruningConfig> ptr = std::make_unique<PostPruningConfig>();
+                    IPostPruningConfig& ref = *ptr;
                     globalPruningConfigPtr = std::move(ptr);
                     return ref;
                 }
