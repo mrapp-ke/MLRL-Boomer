@@ -72,7 +72,7 @@ class PrePruning final : public IStoppingCriterion {
 
         uint32 offset_;
 
-        Action stoppingAction_;
+        bool forceStop_;
 
         float64 bestScore_;
 
@@ -114,7 +114,7 @@ class PrePruning final : public IStoppingCriterion {
             : partition_(partition), aggregationFunctionPtr_(std::move(aggregationFunctionPtr)),
               useHoldoutSet_(useHoldoutSet), updateInterval_(updateInterval), stopInterval_(stopInterval),
               minImprovement_(minImprovement), pastBuffer_(RingBuffer<float64>(numPast)),
-              recentBuffer_(RingBuffer<float64>(numCurrent)), stoppingAction_(forceStop ? FORCE_STOP : STORE_STOP),
+              recentBuffer_(RingBuffer<float64>(numCurrent)), forceStop_(forceStop),
               bestScore_(std::numeric_limits<float64>::infinity()), stopped_(false) {
             uint32 bufferInterval = (numPast * updateInterval) + (numCurrent * updateInterval);
             offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
@@ -122,7 +122,6 @@ class PrePruning final : public IStoppingCriterion {
 
         Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
-            result.action = CONTINUE;
 
             if (!stopped_ && numRules > offset_ && numRules % updateInterval_ == 0) {
                 float64 currentScore = evaluate(partition_, useHoldoutSet_, statistics);
@@ -142,8 +141,8 @@ class PrePruning final : public IStoppingCriterion {
                             (aggregatedScorePast - aggregatedScoreRecent) / aggregatedScoreRecent;
 
                         if (percentageImprovement <= minImprovement_) {
-                            result.action = stoppingAction_;
-                            result.numRules = bestNumRules_;
+                            result.stop = forceStop_;
+                            result.numUsedRules = bestNumRules_;
                             stopped_ = true;
                         }
                     }

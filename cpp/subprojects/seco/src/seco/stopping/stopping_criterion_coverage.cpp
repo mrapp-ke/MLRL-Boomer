@@ -30,11 +30,8 @@ namespace seco {
                 Result result;
                 const ICoverageStatistics& coverageStatistics = static_cast<const ICoverageStatistics&>(statistics);
 
-                if (coverageStatistics.getSumOfUncoveredWeights() > threshold_) {
-                    result.action = CONTINUE;
-                } else {
-                    result.action = FORCE_STOP;
-                    result.numRules = numRules;
+                if (coverageStatistics.getSumOfUncoveredWeights() <= threshold_) {
+                    result.stop = true;
                 }
 
                 return result;
