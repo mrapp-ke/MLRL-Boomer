@@ -64,7 +64,8 @@ class TrainingResult final : public ITrainingResult {
 };
 
 AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
-    : ruleCompareFunction_(ruleCompareFunction) {
+    : unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()),
+      ruleCompareFunction_(ruleCompareFunction) {
     this->useDefaultRule();
     this->useSequentialRuleModelAssemblage();
     this->useGreedyTopDownRuleInduction();
@@ -299,8 +300,14 @@ std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createSequen
 }
 
 std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createUnusedRuleRemovalFactory() const {
-    std::unique_ptr<UnusedRuleRemovalConfig>& configPtr = config_.getUnusedRuleRemovalConfigPtr();
-    return configPtr.get() != nullptr ? configPtr->createPostOptimizationPhaseFactory() : nullptr;
+    std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = config_.getGlobalPruningConfigPtr();
+
+    if (globalPruningConfigPtr && globalPruningConfigPtr->shouldRemoveUnusedRules()) {
+        std::unique_ptr<UnusedRuleRemovalConfig>& configPtr = config_.getUnusedRuleRemovalConfigPtr();
+        return configPtr->createPostOptimizationPhaseFactory();
+    }
+
+    return nullptr;
 }
 
 void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
