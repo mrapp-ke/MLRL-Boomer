@@ -23,6 +23,10 @@ void IntermediateModelBuilder::addRule(std::unique_ptr<ConditionList>& condition
     intermediateRuleList_.emplace_back(std::move(conditionListPtr), std::move(predictionPtr));
 }
 
+uint32 IntermediateModelBuilder::getNumUsedRules() const {
+    return numUsedRules_;
+}
+
 void IntermediateModelBuilder::setNumUsedRules(uint32 numUsedRules) {
     numUsedRules_ = numUsedRules;
 }
