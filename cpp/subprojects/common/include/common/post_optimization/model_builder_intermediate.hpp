@@ -59,6 +59,13 @@ class IntermediateModelBuilder final : public IModelBuilder {
         iterator end();
 
         /**
+         * Returns the total number of rules.
+         *
+         * @return The total number of rules
+         */
+        uint32 getNumRules() const;
+
+        /**
          * Returns the number of used rules.
          *
          * @return The number of used rules
