@@ -18,6 +18,7 @@
 #include "common/output/predictor_probability.hpp"
 #include "common/post_optimization/post_optimization_phase_list.hpp"
 #include "common/post_optimization/post_optimization_sequential.hpp"
+#include "common/post_optimization/post_optimization_unused_rule_removal.hpp"
 #include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
@@ -272,6 +273,16 @@ class MLRLCOMMON_API IRuleLearner {
                  *         post-optimization method should be used
                  */
                 virtual std::unique_ptr<SequentialPostOptimizationConfig>& getSequentialPostOptimizationConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the configuration of the post-optimization method that removes unused
+                 * rules from a model.
+                 *
+                 * @return A reference to an unique pointer of type `UnusedRuleRemovalConfig` that stores the
+                 *         configuration of the post-optimization method that removes unused rules from a model or a
+                 *         null pointer, if no such post-optimization method should be used
+                 */
+                virtual std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() = 0;
 
             public:
 
@@ -1194,6 +1205,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  */
                 std::unique_ptr<SequentialPostOptimizationConfig> sequentialPostOptimizationConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the post-optimization method that removes unused
+                 * rules from a model.
+                 */
+                std::unique_ptr<UnusedRuleRemovalConfig> unusedRuleRemovalConfigPtr_;
+
             private:
 
                 RuleCompareFunction ruleCompareFunction_;
@@ -1233,6 +1250,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<IGlobalPruningConfig>& getGlobalPruningConfigPtr() override final;
 
                 std::unique_ptr<SequentialPostOptimizationConfig>& getSequentialPostOptimizationConfigPtr() override final;
+
+                std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() override final;
 
             public:
 
