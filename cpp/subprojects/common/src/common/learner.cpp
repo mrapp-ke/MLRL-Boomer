@@ -64,7 +64,8 @@ class TrainingResult final : public ITrainingResult {
 };
 
 AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
-    : ruleCompareFunction_(ruleCompareFunction) {
+    : unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()),
+      ruleCompareFunction_(ruleCompareFunction) {
     this->useDefaultRule();
     this->useSequentialRuleModelAssemblage();
     this->useGreedyTopDownRuleInduction();
@@ -154,6 +155,10 @@ std::unique_ptr<IGlobalPruningConfig>& AbstractRuleLearner::Config::getGlobalPru
 
 std::unique_ptr<SequentialPostOptimizationConfig>& AbstractRuleLearner::Config::getSequentialPostOptimizationConfigPtr() {
     return sequentialPostOptimizationConfigPtr_;
+}
+
+std::unique_ptr<UnusedRuleRemovalConfig>& AbstractRuleLearner::Config::getUnusedRuleRemovalConfigPtr() {
+    return unusedRuleRemovalConfigPtr_;
 }
 
 void AbstractRuleLearner::Config::useDefaultRule() {
@@ -294,6 +299,17 @@ std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createSequen
     return configPtr.get() != nullptr ? configPtr->createPostOptimizationPhaseFactory() : nullptr;
 }
 
+std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createUnusedRuleRemovalFactory() const {
+    std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = config_.getGlobalPruningConfigPtr();
+
+    if (globalPruningConfigPtr && globalPruningConfigPtr->shouldRemoveUnusedRules()) {
+        std::unique_ptr<UnusedRuleRemovalConfig>& configPtr = config_.getUnusedRuleRemovalConfigPtr();
+        return configPtr->createPostOptimizationPhaseFactory();
+    }
+
+    return nullptr;
+}
+
 void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
     std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory = this->createSizeStoppingCriterionFactory();
 
@@ -316,7 +332,13 @@ void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionList
 
 void AbstractRuleLearner::createPostOptimizationPhaseFactories(PostOptimizationPhaseListFactory& factory) const {
     std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactory =
-        this->createSequentialPostOptimizationFactory();
+        this->createUnusedRuleRemovalFactory();
+
+    if (postOptimizationPhaseFactory) {
+        factory.addPostOptimizationPhaseFactory(std::move(postOptimizationPhaseFactory));
+    }
+
+    postOptimizationPhaseFactory = this->createSequentialPostOptimizationFactory();
 
     if (postOptimizationPhaseFactory) {
         factory.addPostOptimizationPhaseFactory(std::move(postOptimizationPhaseFactory));

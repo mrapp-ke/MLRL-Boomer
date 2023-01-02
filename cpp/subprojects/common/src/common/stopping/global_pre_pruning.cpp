@@ -23,6 +23,8 @@ class PrePruning final : public IStoppingCriterion {
 
         bool useHoldoutSet_;
 
+        bool removeUnusedRules_;
+
         uint32 updateInterval_;
 
         uint32 stopInterval_;
@@ -34,8 +36,6 @@ class PrePruning final : public IStoppingCriterion {
         RingBuffer<float64> recentBuffer_;
 
         uint32 offset_;
-
-        bool forceStop_;
 
         float64 bestScore_;
 
@@ -54,6 +54,8 @@ class PrePruning final : public IStoppingCriterion {
          *                                  used to aggregate the scores in the buffer
          * @param useHoldoutSet             True, if the quality of the current model's predictions should be measured
          *                                  on the holdout set, if available, false otherwise
+         * @param removeUnusedRules         True, if rules that have been induced, but are not used, should be removed
+         *                                  from a model, false otherwise
          * @param minRules                  The minimum number of rules that must have been learned until the induction
          *                                  of rules might be stopped. Must be at least 1
          * @param updateInterval            The interval to be used to update the quality of the current model, e.g., a
@@ -67,18 +69,15 @@ class PrePruning final : public IStoppingCriterion {
          *                                  at least 1
          * @param minImprovement            The minimum improvement in percent that must be reached for the rule
          *                                  induction to be continued. Must be in [0, 1]
-         * @param forceStop                 True, if the induction of rules should be forced to be stopped, if the
-         *                                  stopping criterion is met, false, if the time of stopping should only be
-         *                                  stored
          */
         PrePruning(Partition& partition, std::unique_ptr<IAggregationFunction> aggregationFunctionPtr,
-                   bool useHoldoutSet, uint32 minRules, uint32 updateInterval, uint32 stopInterval, uint32 numPast,
-                   uint32 numCurrent, float64 minImprovement, bool forceStop)
+                   bool useHoldoutSet, bool removeUnusedRules, uint32 minRules, uint32 updateInterval,
+                   uint32 stopInterval, uint32 numPast, uint32 numCurrent, float64 minImprovement)
             : partition_(partition), aggregationFunctionPtr_(std::move(aggregationFunctionPtr)),
-              useHoldoutSet_(useHoldoutSet), updateInterval_(updateInterval), stopInterval_(stopInterval),
-              minImprovement_(minImprovement), pastBuffer_(RingBuffer<float64>(numPast)),
-              recentBuffer_(RingBuffer<float64>(numCurrent)), forceStop_(forceStop),
-              bestScore_(std::numeric_limits<float64>::infinity()), stopped_(false) {
+              useHoldoutSet_(useHoldoutSet), removeUnusedRules_(removeUnusedRules), updateInterval_(updateInterval),
+              stopInterval_(stopInterval), minImprovement_(minImprovement), pastBuffer_(RingBuffer<float64>(numPast)),
+              recentBuffer_(RingBuffer<float64>(numCurrent)), bestScore_(std::numeric_limits<float64>::infinity()),
+              stopped_(false) {
             uint32 bufferInterval = (numPast * updateInterval) + (numCurrent * updateInterval);
             offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
         }
@@ -104,7 +103,7 @@ class PrePruning final : public IStoppingCriterion {
                             (aggregatedScorePast - aggregatedScoreRecent) / aggregatedScoreRecent;
 
                         if (percentageImprovement <= minImprovement_) {
-                            result.stop = forceStop_;
+                            result.stop = removeUnusedRules_;
                             result.numUsedRules = bestNumRules_;
                             stopped_ = true;
                         }
@@ -136,6 +135,8 @@ class PrePruningFactory final : public IStoppingCriterionFactory {
 
         bool useHoldoutSet_;
 
+        bool removeUnusedRules_;
+
         uint32 minRules_;
 
         uint32 updateInterval_;
@@ -148,8 +149,6 @@ class PrePruningFactory final : public IStoppingCriterionFactory {
 
         float64 minImprovement_;
 
-        bool forceStop_;
-
     public:
 
         /**
@@ -158,6 +157,8 @@ class PrePruningFactory final : public IStoppingCriterionFactory {
          *                                      should be used to aggregate the scores in the buffer
          * @param useHoldoutSet                 True, if the quality of the current model's predictions should be
          *                                      measured on the holdout set, if available, false otherwise
+         * @param removeUnusedRules             True, if rules that have been induced, but are not used, should be
+         *                                      removed from a model, false otherwise
          * @param minRules                      The minimum number of rules that must have been learned until the
          *                                      induction of rules might be stopped. Must be at least 1
          * @param updateInterval                The interval to be used to update the quality of the current model,
@@ -172,39 +173,37 @@ class PrePruningFactory final : public IStoppingCriterionFactory {
          *                                      be at least 1
          * @param minImprovement                The minimum improvement in percent that must be reached for the rule
          *                                      induction to be continued. Must be in [0, 1]
-         * @param forceStop                     True, if the induction of rules should be forced to be stopped, if the
-         *                                      stopping criterion is met, false, if only the time of stopping should be
-         *                                      stored
          */
         PrePruningFactory(std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr,
-                          bool useHoldoutSet, uint32 minRules, uint32 updateInterval, uint32 stopInterval,
-                          uint32 numPast, uint32 numCurrent, float64 minImprovement, bool forceStop)
+                          bool useHoldoutSet, bool removeUnusedRules, uint32 minRules, uint32 updateInterval,
+                          uint32 stopInterval, uint32 numPast, uint32 numCurrent, float64 minImprovement)
             : aggregationFunctionFactoryPtr_(std::move(aggregationFunctionFactoryPtr)), useHoldoutSet_(useHoldoutSet),
               minRules_(minRules), updateInterval_(updateInterval), stopInterval_(stopInterval), numPast_(numPast),
-              numCurrent_(numCurrent), minImprovement_(minImprovement), forceStop_(forceStop) {
+              numCurrent_(numCurrent), minImprovement_(minImprovement) {
 
         }
 
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
             return std::make_unique<PrePruning<const SinglePartition>>(partition, std::move(aggregationFunctionPtr),
-                                                                       useHoldoutSet_, minRules_, updateInterval_,
-                                                                       stopInterval_, numPast_, numCurrent_,
-                                                                       minImprovement_, forceStop_);
+                                                                       useHoldoutSet_, removeUnusedRules_, minRules_,
+                                                                       updateInterval_, stopInterval_, numPast_,
+                                                                       numCurrent_, minImprovement_);
         }
 
         std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
             return std::make_unique<PrePruning<BiPartition>>(partition, std::move(aggregationFunctionPtr),
-                                                             useHoldoutSet_, minRules_, updateInterval_, stopInterval_,
-                                                             numPast_, numCurrent_, minImprovement_, forceStop_);
+                                                             useHoldoutSet_, removeUnusedRules_, minRules_,
+                                                             updateInterval_, stopInterval_, numPast_, numCurrent_,
+                                                             minImprovement_);
         }
 
 };
 
 PrePruningConfig::PrePruningConfig()
-    : aggregationFunction_(AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true), minRules_(100),
-      updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005), forceStop_(true) {
+    : aggregationFunction_(AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true), removeUnusedRules_(true),
+      minRules_(100), updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005) {
 
 }
 
@@ -223,6 +222,15 @@ bool PrePruningConfig::isHoldoutSetUsed() const {
 
 IPrePruningConfig& PrePruningConfig::setUseHoldoutSet(bool useHoldoutSet) {
     useHoldoutSet_ = useHoldoutSet;
+    return *this;
+}
+
+bool PrePruningConfig::isRemoveUnusedRules() const {
+    return removeUnusedRules_;
+}
+
+IPrePruningConfig& PrePruningConfig::setRemoveUnusedRules(bool removeUnusedRules) {
+    removeUnusedRules_ = removeUnusedRules;
     return *this;
 }
 
@@ -287,19 +295,14 @@ IPrePruningConfig& PrePruningConfig::setMinImprovement(float64 minImprovement) {
     return *this;
 }
 
-bool PrePruningConfig::isStopForced() const{
-    return forceStop_;
-}
-
-IPrePruningConfig& PrePruningConfig::setForceStop(bool forceStop) {
-    forceStop_ = forceStop;
-    return *this;
-}
-
 std::unique_ptr<IStoppingCriterionFactory> PrePruningConfig::createStoppingCriterionFactory() const {
     std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr =
         createAggregationFunctionFactory(aggregationFunction_);
-    return std::make_unique<PrePruningFactory>(std::move(aggregationFunctionFactoryPtr), useHoldoutSet_, minRules_,
-                                               updateInterval_, stopInterval_, numPast_, numCurrent_, minImprovement_,
-                                               forceStop_);
+    return std::make_unique<PrePruningFactory>(std::move(aggregationFunctionFactoryPtr), useHoldoutSet_,
+                                               removeUnusedRules_, minRules_, updateInterval_, stopInterval_, numPast_,
+                                               numCurrent_, minImprovement_);
+}
+
+bool PrePruningConfig::shouldRemoveUnusedRules() const {
+    return removeUnusedRules_;
 }

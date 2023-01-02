@@ -129,6 +129,24 @@ cdef class PrePruningConfig:
         self.config_ptr.setUseHoldoutSet(use_holdout_set)
         return self
 
+    def is_remove_unused_rules(self) -> bool:
+        """
+        Returns whether rules that have been induced, but are not used, should be removed from the final model or not.
+
+        :return: True, if unused rules should be removed from the model, False otherwise
+        """
+        return self.config_ptr.isRemoveUnusedRules()
+
+    def set_remove_unused_rules(self, remove_unused_rules: bool) -> PrePruningConfig:
+        """
+        Sets whether rules that have been induced, but are not used, should be removed from the final model or not.
+
+        :param remove_unused_rules: True, if unused rules should be removed from the model, false otherwise
+        :return:                    A `PrePruningConfig` that allows further configuration of the stopping criterion
+        """
+        self.config_ptr.setRemoveUnusedRules(remove_unused_rules)
+        return self
+
     def get_min_rules(self) -> int:
         """
         Returns the minimum number of rules that must have been learned until the induction of rules might be stopped.
@@ -250,26 +268,6 @@ cdef class PrePruningConfig:
         self.config_ptr.setMinImprovement(min_improvement)
         return self
 
-    def is_stop_forced(self) -> bool:
-        """
-        Returns whether the induction of rules is forced to be stopped, if the stopping criterion is met.
-
-        :return: True, if the induction of rules is forced to be stopped, if the stopping criterion is met, False, if
-                 only the time of stopping is stored
-        """
-        return self.config_ptr.isStopForced()
-
-    def set_force_stop(self, force_stop: bool) -> PrePruningConfig:
-        """
-        Sets whether the induction of rules should be forced to be stopped, if the stopping criterion is met.
-
-        :param force_stop:  True, if the induction of rules should be forced to be stopped, if the stopping criterion is
-                            met, False, if only the time of stopping should be stored
-        :return:            A `PrePruningConfig` that allows further configuration of the stopping criterion
-        """
-        self.config_ptr.setForceStop(force_stop)
-        return self
-
 
 cdef class PostPruningConfig:
     """
@@ -301,6 +299,24 @@ cdef class PostPruningConfig:
         :return:                A `PostPruningConfig` that allows further configuration of the stopping criterion
         """
         self.config_ptr.setUseHoldoutSet(use_holdout_set)
+        return self
+
+    def is_remove_unused_rules(self) -> bool:
+        """
+        Returns whether rules that have been induced, but are not used, should be removed from the final model or not.
+
+        :return: True, if unused rules should be removed from the model, False otherwise
+        """
+        return self.config_ptr.isRemoveUnusedRules()
+
+    def set_remove_unused_rules(self, remove_unused_rules: bool) -> PostPruningConfig:
+        """
+        Sets whether rules that have been induced, but are not used, should be removed from the final model or not.
+
+        :param remove_unused_rules: True, if unused rules should be removed from the model, false otherwise
+        :return:                    A `PostPruningConfig` that allows further configuration of the stopping criterion
+        """
+        self.config_ptr.setRemoveUnusedRules(remove_unused_rules)
         return self
 
     def get_min_rules(self) -> int:

@@ -42,6 +42,23 @@ class MLRLCOMMON_API IPostPruningConfig {
         virtual IPostPruningConfig& setUseHoldoutSet(bool useHoldoutSet) = 0;
 
         /**
+         * Returns whether rules that have been induced, but are not used, should be removed from the final model or
+         * not.
+         *
+         * @return True, if unused rules should be removed from the model, false otherwise
+         */
+        virtual bool isRemoveUnusedRules() const = 0;
+
+        /**
+         * Sets whether rules that have been induced, but are not used, should be removed from the final model or not.
+         *
+         * @param removeUnusedRules True, if unused rules should be removed from the model, false otherwise
+         * @return                  A reference to an object of type `IPostPruningConfig` that allows further
+         *                          configuration of the stopping criterion
+         */
+        virtual IPostPruningConfig& setRemoveUnusedRules(bool removeUnusedRules) = 0;
+
+        /**
          * Returns the minimum number of rules that must be included in a model.
          *
          * @return The minimum number of rules that must be included in a model
@@ -67,11 +84,11 @@ class MLRLCOMMON_API IPostPruningConfig {
         /**
          * Sets the interval that should be used to check whether the current model is the best one evaluated so far.
          *
-         * @param stopInterval  The interval that should be used to check whether the current model is the best one
-         *                      evaluated so far, e.g., a value of 10 means that the best model may include 10, 20, ...
-         *                      rules
-         * @return              A reference to an object of type `IPostPruningConfig` that allows further configuration
-         *                      of the stopping criterion
+         * @param interval  The interval that should be used to check whether the current model is the best one
+         *                  evaluated so far, e.g., a value of 10 means that the best model may include 10, 20, ...
+         *                  rules
+         * @return          A reference to an object of type `IPostPruningConfig` that allows further configuration of
+         *                  the stopping criterion
          */
         virtual IPostPruningConfig& setInterval(uint32 interval) = 0;
 
@@ -87,6 +104,8 @@ class PostPruningConfig final : public IGlobalPruningConfig, public IPostPruning
 
         bool useHoldoutSet_;
 
+        bool removeUnusedRules_;
+
         uint32 minRules_;
 
         uint32 interval_;
@@ -99,6 +118,10 @@ class PostPruningConfig final : public IGlobalPruningConfig, public IPostPruning
 
         IPostPruningConfig& setUseHoldoutSet(bool useHoldoutSet) override;
 
+        bool isRemoveUnusedRules() const override;
+
+        IPostPruningConfig& setRemoveUnusedRules(bool removeUnusedRules) override;
+
         uint32 getMinRules() const override;
 
         IPostPruningConfig& setMinRules(uint32 minRules) override;
@@ -108,5 +131,10 @@ class PostPruningConfig final : public IGlobalPruningConfig, public IPostPruning
         IPostPruningConfig& setInterval(uint32 interval) override;
 
         std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
+
+        /**
+         * @see `IGlobalPruningConfig::shouldRemoveUnusedRules`
+         */
+        bool shouldRemoveUnusedRules() const override;
 
 };
