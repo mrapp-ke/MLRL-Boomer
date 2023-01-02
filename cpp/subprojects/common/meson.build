@@ -59,6 +59,7 @@ source_files = [
     'src/common/post_optimization/model_builder_intermediate.cpp',
     'src/common/post_optimization/post_optimization_phase_list.cpp',
     'src/common/post_optimization/post_optimization_sequential.cpp',
+    'src/common/post_optimization/post_optimization_unused_rule_removal.cpp',
     'src/common/post_processing/post_processor_no.cpp',
     'src/common/rule_evaluation/score_vector_binned_dense.cpp',
     'src/common/rule_evaluation/score_vector_dense.cpp',
