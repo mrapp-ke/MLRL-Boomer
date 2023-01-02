@@ -34,7 +34,11 @@ class RuleReplacementBuilder final : public IModelBuilder {
             intermediateRule_.second = std::move(predictionPtr);
         }
 
-        std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) override {
+        void setNumUsedRules(uint32 numUsedRules) override {
+
+        }
+
+        std::unique_ptr<IRuleModel> buildModel() override {
             return nullptr;
         }
 

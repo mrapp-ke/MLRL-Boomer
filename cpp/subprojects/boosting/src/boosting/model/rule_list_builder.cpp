@@ -36,10 +36,16 @@ namespace boosting {
             }
 
             /**
+             * @see `IModelBuilder::setNumUsedRules`
+             */
+            void setNumUsedRules(uint32 numUsedRules) override {
+                modelPtr_->setNumUsedRules(numUsedRules);
+            }
+
+            /**
              * @see `IModelBuilder::buildModel`
              */
-            std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) override {
-                modelPtr_->setNumUsedRules(numUsedRules);
+            std::unique_ptr<IRuleModel> buildModel() override {
                 return std::move(modelPtr_);
             }
 

@@ -168,13 +168,16 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 }
             }
 
+            // Set the number of used rules...
+            modelBuilder.setNumUsedRules(numUsedRules);
+
             // Post-optimize the model...
             postOptimizationPtr->optimizeModel(*thresholdsPtr, *ruleInductionPtr, partition, *labelSamplingPtr,
                                                *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr,
                                                *postProcessorPtr, rng);
 
             // Build and return the final model...
-            return modelBuilder.buildModel(numUsedRules);
+            return modelBuilder.buildModel();
         }
 
 };

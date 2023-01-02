@@ -37,12 +37,18 @@ class IModelBuilder {
                              std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) = 0;
 
         /**
+         * Sets the number of used rules.
+         *
+         * @param numUsedRules The number of used rules
+         */
+        virtual void setNumUsedRules(uint32 numUsedRules) = 0;
+
+        /**
          * Builds and returns the model.
          *
-         * @param numUsedRules  The number of used rules
-         * @return              An unique pointer to an object of type `IRuleModel` that has been built
+         * @return An unique pointer to an object of type `IRuleModel` that has been built
          */
-        virtual std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) = 0;
+        virtual std::unique_ptr<IRuleModel> buildModel() = 0;
 
 };
 
