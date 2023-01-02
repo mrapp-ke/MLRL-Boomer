@@ -62,6 +62,8 @@ ARGUMENT_REFINE_HEADS = 'refine_heads'
 
 ARGUMENT_USE_HOLDOUT_SET = 'use_holdout_set'
 
+ARGUMENT_REMOVE_UNUSED_RULES = 'remove_unused_rules'
+
 ARGUMENT_MIN_RULES = 'min_rules'
 
 ARGUMENT_INTERVAL = 'interval'
@@ -140,10 +142,11 @@ FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
 
 GLOBAL_PRUNING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
-    GLOBAL_POST_PRUNING: {ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_MIN_RULES, ARGUMENT_INTERVAL},
-    GLOBAL_PRE_PRUNING: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_MIN_RULES,
-                         ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT,
-                         ARGUMENT_MIN_IMPROVEMENT, ARGUMENT_FORCE_STOP}
+    GLOBAL_POST_PRUNING: {ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES,
+                          ARGUMENT_MIN_RULES, ARGUMENT_INTERVAL},
+    GLOBAL_PRE_PRUNING: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES,
+                         ARGUMENT_MIN_RULES, ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST,
+                         ARGUMENT_NUM_RECENT, ARGUMENT_MIN_IMPROVEMENT, ARGUMENT_FORCE_STOP}
 }
 
 RULE_PRUNING_VALUES: Set[str] = {
@@ -267,6 +270,7 @@ def configure_global_pruning(config: RuleLearnerConfig, global_pruning: Optional
         elif value == GLOBAL_POST_PRUNING:
             c = config.use_global_post_pruning()
             c.set_use_holdout_set(options.get_bool(ARGUMENT_USE_HOLDOUT_SET, c.is_holdout_set_used()))
+            c.set_remove_unused_rules(options.get_bool(ARGUMENT_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
             c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
             c.set_interval(options.get_int(ARGUMENT_INTERVAL, c.get_interval()))
         elif value == GLOBAL_PRE_PRUNING:
@@ -275,6 +279,7 @@ def configure_global_pruning(config: RuleLearnerConfig, global_pruning: Optional
             c.set_aggregation_function(__create_aggregation_function(
                 aggregation_function) if aggregation_function is not None else c.get_aggregation_function())
             c.set_use_holdout_set(options.get_bool(ARGUMENT_USE_HOLDOUT_SET, c.is_holdout_set_used()))
+            c.set_remove_unused_rules(options.get_bool(ARGUMENT_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
             c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
             c.set_update_interval(options.get_int(ARGUMENT_UPDATE_INTERVAL, c.get_update_interval()))
             c.set_stop_interval(options.get_int(ARGUMENT_STOP_INTERVAL, c.get_stop_interval()))
