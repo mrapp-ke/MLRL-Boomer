@@ -38,16 +38,12 @@ class TimeStoppingCriterion final : public IStoppingCriterion {
                 auto currentTime = timer::now();
                 auto duration = std::chrono::duration_cast<timer_unit>(currentTime - startTime_);
 
-                if (duration < timeLimit_) {
-                    result.action = CONTINUE;
-                } else {
-                    result.action = FORCE_STOP;
-                    result.numRules = numRules;
+                if (duration >= timeLimit_) {
+                    result.stop = true;
                 }
             } else {
                 startTime_ = timer::now();
                 timerStarted_ = true;
-                result.action = CONTINUE;
             }
 
             return result;
