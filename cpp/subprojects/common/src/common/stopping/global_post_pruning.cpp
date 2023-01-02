@@ -149,3 +149,7 @@ IPostPruningConfig& PostPruningConfig::setInterval(uint32 interval) {
 std::unique_ptr<IStoppingCriterionFactory> PostPruningConfig::createStoppingCriterionFactory() const {
     return std::make_unique<PostPruningFactory>(useHoldoutSet_, minRules_, interval_);
 }
+
+bool PostPruningConfig::shouldRemoveUnusedRules() const {
+    return removeUnusedRules_;
+}

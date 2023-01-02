@@ -16,4 +16,6 @@ class IGlobalPruningConfig : public IStoppingCriterionConfig {
 
         virtual ~IGlobalPruningConfig() override { };
 
+        virtual bool shouldRemoveUnusedRules() const = 0;
+
 };
