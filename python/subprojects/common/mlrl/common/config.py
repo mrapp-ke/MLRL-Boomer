@@ -78,8 +78,6 @@ ARGUMENT_NUM_RECENT = 'num_recent'
 
 ARGUMENT_MIN_IMPROVEMENT = 'min_improvement'
 
-ARGUMENT_FORCE_STOP = 'force_stop'
-
 ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
 
 BINNING_EQUAL_FREQUENCY = 'equal-frequency'
@@ -146,7 +144,7 @@ GLOBAL_PRUNING_VALUES: Dict[str, Set[str]] = {
                           ARGUMENT_MIN_RULES, ARGUMENT_INTERVAL},
     GLOBAL_PRE_PRUNING: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES,
                          ARGUMENT_MIN_RULES, ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST,
-                         ARGUMENT_NUM_RECENT, ARGUMENT_MIN_IMPROVEMENT, ARGUMENT_FORCE_STOP}
+                         ARGUMENT_NUM_RECENT, ARGUMENT_MIN_IMPROVEMENT}
 }
 
 RULE_PRUNING_VALUES: Set[str] = {
@@ -286,7 +284,6 @@ def configure_global_pruning(config: RuleLearnerConfig, global_pruning: Optional
             c.set_num_past(options.get_int(ARGUMENT_NUM_PAST, c.get_num_past()))
             c.set_num_current(options.get_int(ARGUMENT_NUM_RECENT, c.get_num_current()))
             c.set_min_improvement(options.get_float(ARGUMENT_MIN_IMPROVEMENT, c.get_min_improvement()))
-            c.set_force_stop(options.get_bool(ARGUMENT_FORCE_STOP, c.is_stop_forced()))
 
 
 def configure_rule_pruning(config: RuleLearnerConfig, rule_pruning: Optional[str]):
