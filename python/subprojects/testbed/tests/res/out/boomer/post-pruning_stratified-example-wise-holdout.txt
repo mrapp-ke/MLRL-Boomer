@@ -5,29 +5,29 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emot
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.1345250679878518 seconds
+INFO Successfully fit model in 282 milliseconds
 INFO Predicting for 196 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0008700449834577739 seconds
+INFO Successfully predicted in 0 milliseconds
 INFO Overall evaluation result on test data:
 
-Example-wise F1         56.53
-Example-wise Jaccard    49.15
-Example-wise Precision  77.89
-Example-wise Recall     55.7
-Hamming Accuracy        80.1
-Hamming Loss            19.9
-Macro F1                61.75
-Macro Jaccard           45.73
-Macro Precision         75.53
-Macro Recall            54.7
-Micro F1                64.44
-Micro Jaccard           47.53
-Micro Precision         74.91
-Micro Recall            56.53
-Subset 0/1 Loss         73.47
-Subset Accuracy         26.53
+Example-wise F1         55.68
+Example-wise Jaccard    47.75
+Example-wise Precision  79.04
+Example-wise Recall     55.27
+Hamming Accuracy        79
+Hamming Loss            21
+Macro F1                59.54
+Macro Jaccard           43.79
+Macro Precision         72.14
+Macro Recall            52.45
+Micro F1                61.94
+Micro Jaccard           44.87
+Micro Precision         73.36
+Micro Recall            53.6
+Subset 0/1 Loss         76.53
+Subset Accuracy         23.47
 
 INFO Model characteristics:
 
@@ -35,22 +35,22 @@ INFO Model characteristics:
 │ Statistics about conditions   │   Total │   <= operator │   > operator │   == operator │   != operator │
 ├───────────────────────────────┼─────────┼───────────────┼──────────────┼───────────────┼───────────────┤
 │ Default rule                  │       0 │         0.00% │        0.00% │         0.00% │         0.00% │
-│ 173 local rules               │     786 │        54.83% │       45.17% │         0.00% │         0.00% │
+│ 244 local rules               │    1055 │        51.56% │       48.44% │         0.00% │         0.00% │
 └───────────────────────────────┴─────────┴───────────────┴──────────────┴───────────────┴───────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
 │ Statistics about predictions   │   Total │   Positive │   Negative │
 ├────────────────────────────────┼─────────┼────────────┼────────────┤
 │ Default rule                   │       6 │      0.00% │    100.00% │
-│ 173 local rules                │     173 │     45.09% │     54.91% │
+│ 244 local rules                │     244 │     46.31% │     53.69% │
 └────────────────────────────────┴─────────┴────────────┴────────────┘
 
 ┌─────────────────────────────┬───────────┬───────────┬───────────┐
 │ Statistics per local rule   │   Minimum │   Average │   Maximum │
 ├─────────────────────────────┼───────────┼───────────┼───────────┤
-│ Conditions                  │         1 │      4.54 │        14 │
+│ Conditions                  │         1 │      4.32 │        18 │
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 
-INFO Successfully finished after 0.19326081301551312 seconds
+INFO Successfully finished after 339 milliseconds

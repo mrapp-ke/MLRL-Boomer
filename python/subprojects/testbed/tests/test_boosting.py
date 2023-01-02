@@ -51,6 +51,8 @@ PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
 
 GLOBAL_PRE_PRUNING = 'pre-pruning'
 
+GLOBAL_POST_PRUNING = 'post-pruning'
+
 
 class BoostingCmdBuilder(CmdBuilder):
     """
@@ -148,7 +150,7 @@ class BoostingCmdBuilder(CmdBuilder):
         self.args.append('sparse' if sparse else 'dense')
         return self
 
-    def global_pruning(self, global_pruning: str = GLOBAL_PRE_PRUNING):
+    def global_pruning(self, global_pruning: str = GLOBAL_POST_PRUNING):
         """
         Configures the algorithm to use a specific method for pruning entire rules.
 
@@ -614,6 +616,48 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics(True)
         self.run_cmd(builder, 'example-wise-partial-dynamic-heads_equal-width-label-binning')
+
+    def test_global_post_pruning_no_holdout(self):
+        """
+        Tests the BOOMER algorithm when using no holdout set for global post-pruning.
+        """
+        builder = BoostingCmdBuilder() \
+            .global_pruning(GLOBAL_POST_PRUNING) \
+            .holdout(HOLDOUT_NO) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, 'post-pruning_no-holdout')
+
+    def test_global_post_pruning_random_holdout(self):
+        """
+        Tests the BOOMER algorithm when using a holdout set that is created via random sampling for global post-pruning.
+        """
+        builder = BoostingCmdBuilder() \
+            .global_pruning(GLOBAL_POST_PRUNING) \
+            .holdout(HOLDOUT_RANDOM) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, 'post-pruning_random-holdout')
+
+    def test_global_post_pruning_stratified_label_wise_holdout(self):
+        """
+        Tests the BOOMER algorithm when using a holdout set that is created via label-wise stratified sampling for
+        global post-pruning.
+        """
+        builder = BoostingCmdBuilder() \
+            .global_pruning(GLOBAL_POST_PRUNING) \
+            .holdout(HOLDOUT_STRATIFIED_LABEL_WISE) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, 'post-pruning_stratified-label-wise-holdout')
+
+    def test_global_post_pruning_stratified_example_wise_holdout(self):
+        """
+        Tests the BOOMER algorithm when using a holdout set that is created via example-wise stratified sampling for
+        global post-pruning.
+        """
+        builder = BoostingCmdBuilder() \
+            .global_pruning(GLOBAL_POST_PRUNING) \
+            .holdout(HOLDOUT_STRATIFIED_EXAMPLE_WISE) \
+            .print_model_characteristics(True)
+        self.run_cmd(builder, 'post-pruning_stratified-example-wise-holdout')
 
     def test_global_pre_pruning_no_holdout(self):
         """

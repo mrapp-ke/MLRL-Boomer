@@ -26,7 +26,8 @@ from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationCon
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
     BeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, SizeStoppingCriterionConfig, \
-    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig, IPrePruningConfig, PrePruningConfig
+    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig, IPrePruningConfig, PrePruningConfig, \
+    IPostPruningConfig, PostPruningConfig
 
 from libcpp.utility cimport move
 
@@ -296,6 +297,17 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IPrePruningConfig* config_ptr = &rule_learner_config_ptr.useGlobalPrePruning()
         cdef PrePruningConfig config = PrePruningConfig.__new__(PrePruningConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_global_post_pruning(self) -> PostPruningConfig:
+        """
+        Configures the rule learner to use a stopping criterion that keeps track of the number of rules in a model that
+        perform best with respect to the examples in the training or holdout set according to a certain measure.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IPostPruningConfig* config_ptr = &rule_learner_config_ptr.useGlobalPostPruning()
+        cdef PostPruningConfig config = PostPruningConfig.__new__(PostPruningConfig)
         config.config_ptr = config_ptr
         return config
 
