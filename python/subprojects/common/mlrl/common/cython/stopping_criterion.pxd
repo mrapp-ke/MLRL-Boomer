@@ -78,10 +78,6 @@ cdef extern from "common/stopping/global_pre_pruning.hpp" nogil:
 
         IPrePruningConfig& setMinImprovement(float64 minImprovement) except +
 
-        bool isStopForced() const
-
-        IPrePruningConfig& setForceStop(bool forceStop) except +
-
 
 cdef extern from "common/stopping/global_post_pruning.hpp" nogil:
 
