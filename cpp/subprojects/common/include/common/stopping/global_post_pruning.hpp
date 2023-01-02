@@ -42,6 +42,23 @@ class MLRLCOMMON_API IPostPruningConfig {
         virtual IPostPruningConfig& setUseHoldoutSet(bool useHoldoutSet) = 0;
 
         /**
+         * Returns whether rules that have been induced, but are not used, should be removed from the final model or
+         * not.
+         *
+         * @return True, if unused rules should be removed from the model, false otherwise
+         */
+        virtual bool isRemoveUnusedRules() const = 0;
+
+        /**
+         * Sets whether rules that have been induced, but are not used, should be removed from the final model or not.
+         *
+         * @param removeUnusedRules True, if unused rules should be removed from the model, false otherwise
+         * @return                  A reference to an object of type `IPostPruningConfig` that allows further
+         *                          configuration of the stopping criterion
+         */
+        virtual IPostPruningConfig& setRemoveUnusedRules(bool removeUnusedRules) = 0;
+
+        /**
          * Returns the minimum number of rules that must be included in a model.
          *
          * @return The minimum number of rules that must be included in a model
@@ -87,6 +104,8 @@ class PostPruningConfig final : public IGlobalPruningConfig, public IPostPruning
 
         bool useHoldoutSet_;
 
+        bool removeUnusedRules_;
+
         uint32 minRules_;
 
         uint32 interval_;
@@ -98,6 +117,10 @@ class PostPruningConfig final : public IGlobalPruningConfig, public IPostPruning
         bool isHoldoutSetUsed() const override;
 
         IPostPruningConfig& setUseHoldoutSet(bool useHoldoutSet) override;
+
+        bool isRemoveUnusedRules() const override;
+
+        IPostPruningConfig& setRemoveUnusedRules(bool removeUnusedRules) override;
 
         uint32 getMinRules() const override;
 
