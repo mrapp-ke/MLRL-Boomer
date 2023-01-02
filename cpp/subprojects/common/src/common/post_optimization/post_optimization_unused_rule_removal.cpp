@@ -27,11 +27,13 @@ class UnusedRuleRemoval final : public IPostOptimizationPhase {
                            const IPostProcessor& postProcessor, RNG& rng) const override {
             uint32 numUsedRules = modelBuilder_.getNumUsedRules();
 
-            while (modelBuilder_.getNumRules() > numUsedRules) {
-                modelBuilder_.removeLastRule();
-            }
+            if (numUsedRules > 0) {
+                while (modelBuilder_.getNumRules() > numUsedRules) {
+                    modelBuilder_.removeLastRule();
+                }
 
-            modelBuilder_.setNumUsedRules(0);
+                modelBuilder_.setNumUsedRules(0);
+            }
         }
 
 };
