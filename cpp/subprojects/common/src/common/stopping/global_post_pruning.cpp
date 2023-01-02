@@ -47,7 +47,6 @@ class PostPruning final : public IStoppingCriterion {
 
         Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
-            result.action = CONTINUE;
 
             if (numRules >= minRules_ && numRules % interval_ == 0) {
                 float64 currentScore = evaluate(partition_, useHoldoutSet_, statistics);
@@ -55,8 +54,7 @@ class PostPruning final : public IStoppingCriterion {
                 if (currentScore < bestScore_) {
                     bestScore_ = currentScore;
                     bestNumRules_ = numRules;
-                    result.numRules = numRules;
-                    result.action = IStoppingCriterion::Action::STORE_STOP;
+                    result.numUsedRules = numRules;
                 }
             }
 
