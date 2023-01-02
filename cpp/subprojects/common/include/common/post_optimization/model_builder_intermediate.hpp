@@ -59,6 +59,11 @@ class IntermediateModelBuilder final : public IModelBuilder {
         iterator end();
 
         /**
+         * Removes the intermediate representation of the last rule.
+         */
+        void removeLastRule();
+
+        /**
          * Returns the total number of rules.
          *
          * @return The total number of rules
