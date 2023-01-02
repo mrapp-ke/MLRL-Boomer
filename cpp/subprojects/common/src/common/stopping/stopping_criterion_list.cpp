@@ -37,27 +37,15 @@ class StoppingCriterionList final : public IStoppingCriterion {
 
         Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
-            result.action = Action::CONTINUE;
 
             for (auto it = stoppingCriteria_.begin(); it != stoppingCriteria_.end(); it++) {
                 std::unique_ptr<IStoppingCriterion>& stoppingCriterionPtr = *it;
                 Result stoppingCriterionResult = stoppingCriterionPtr->test(statistics, numRules);
-                Action action = stoppingCriterionResult.action;
+                result.stop |= stoppingCriterionResult.stop;
+                uint32 numUsedRules = stoppingCriterionResult.numUsedRules;
 
-                switch (action) {
-                    case Action::FORCE_STOP: {
-                        result.action = action;
-                        result.numRules = stoppingCriterionResult.numRules;
-                        return result;
-                    }
-                    case Action::STORE_STOP: {
-                        result.action = action;
-                        result.numRules = stoppingCriterionResult.numRules;
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
+                if (numUsedRules != 0) {
+                    result.numUsedRules = numUsedRules;
                 }
             }
 
@@ -75,7 +63,6 @@ class NoStoppingCriterion final : public IStoppingCriterion {
 
         Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
-            result.action = Action::CONTINUE;
             return result;
         }
 
