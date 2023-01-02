@@ -39,14 +39,20 @@ namespace seco {
             }
 
             /**
+             * @see `IModelBuilder::setNumUsedRules`
+             */
+            void setNumUsedRules(uint32 numUsedRules) override {
+                modelPtr_->setNumUsedRules(numUsedRules);
+            }
+
+            /**
              * @see `IModelBuilder::buildModel`
              */
-            std::unique_ptr<IRuleModel> buildModel(uint32 numUsedRules) override {
+            std::unique_ptr<IRuleModel> buildModel() override {
                 if (defaultHeadPtr_) {
                     modelPtr_->addDefaultRule(std::move(defaultHeadPtr_));
                 }
 
-                modelPtr_->setNumUsedRules(numUsedRules);
                 return std::move(modelPtr_);
             }
 

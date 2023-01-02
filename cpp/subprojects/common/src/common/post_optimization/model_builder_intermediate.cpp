@@ -2,7 +2,7 @@
 
 
 IntermediateModelBuilder::IntermediateModelBuilder(std::unique_ptr<IModelBuilder> modelBuilderPtr)
-    : modelBuilderPtr_(std::move(modelBuilderPtr)) {
+    : modelBuilderPtr_(std::move(modelBuilderPtr)), numUsedRules_(0) {
 
 }
 
@@ -23,7 +23,11 @@ void IntermediateModelBuilder::addRule(std::unique_ptr<ConditionList>& condition
     intermediateRuleList_.emplace_back(std::move(conditionListPtr), std::move(predictionPtr));
 }
 
-std::unique_ptr<IRuleModel> IntermediateModelBuilder::buildModel(uint32 numUsedRules) {
+void IntermediateModelBuilder::setNumUsedRules(uint32 numUsedRules) {
+    numUsedRules_ = numUsedRules;
+}
+
+std::unique_ptr<IRuleModel> IntermediateModelBuilder::buildModel() {
     if (defaultPredictionPtr_) {
         modelBuilderPtr_->setDefaultRule(defaultPredictionPtr_);
         defaultPredictionPtr_.release();
@@ -35,5 +39,6 @@ std::unique_ptr<IRuleModel> IntermediateModelBuilder::buildModel(uint32 numUsedR
     }
 
     intermediateRuleList_.clear();
-    return modelBuilderPtr_->buildModel(numUsedRules);
+    modelBuilderPtr_->setNumUsedRules(numUsedRules_);
+    return modelBuilderPtr_->buildModel();
 }
