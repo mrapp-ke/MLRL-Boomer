@@ -144,10 +144,15 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 partition.createStoppingCriterion(*stoppingCriterionFactoryPtr_);
             IStoppingCriterion::Result stoppingCriterionResult;
 
-            while (stoppingCriterionResult = stoppingCriterionPtr->test(statisticsProviderPtr->get(), numRules),
-                   !stoppingCriterionResult.stop) {
+            while (true) {
+                stoppingCriterionResult = stoppingCriterionPtr->test(statisticsProviderPtr->get(), numRules);
+
                 if (stoppingCriterionResult.numUsedRules != 0) {
                     numUsedRules = stoppingCriterionResult.numUsedRules;
+                }
+
+                if (stoppingCriterionResult.stop) {
+                    break;
                 }
 
                 const IWeightVector& weights = instanceSamplingPtr->sample(rng);
