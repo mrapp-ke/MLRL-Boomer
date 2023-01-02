@@ -23,6 +23,10 @@ void IntermediateModelBuilder::addRule(std::unique_ptr<ConditionList>& condition
     intermediateRuleList_.emplace_back(std::move(conditionListPtr), std::move(predictionPtr));
 }
 
+void IntermediateModelBuilder::removeLastRule() {
+    intermediateRuleList_.pop_back();
+}
+
 uint32 IntermediateModelBuilder::getNumRules() const {
     uint32 numRules = (uint32) intermediateRuleList_.size();
 
