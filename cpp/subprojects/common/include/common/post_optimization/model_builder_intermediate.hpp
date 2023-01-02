@@ -58,6 +58,13 @@ class IntermediateModelBuilder final : public IModelBuilder {
          */
         iterator end();
 
+        /**
+         * Returns the number of used rules.
+         *
+         * @return The number of used rules
+         */
+        uint32 getNumUsedRules() const;
+
         void setNumUsedRules(uint32 numUsedRules) override;
 
         void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override;
