@@ -129,6 +129,24 @@ cdef class PrePruningConfig:
         self.config_ptr.setUseHoldoutSet(use_holdout_set)
         return self
 
+    def is_remove_unused_rules(self) -> bool:
+        """
+        Returns whether rules that have been induced, but are not used, should be removed from the final model or not.
+
+        :return: True, if unused rules should be removed from the model, False otherwise
+        """
+        return self.config_ptr.isRemoveUnusedRules()
+
+    def set_remove_unused_rules(self, remove_unused_rules: bool) -> PrePruningConfig:
+        """
+        Sets whether rules that have been induced, but are not used, should be removed from the final model or not.
+
+        :param remove_unused_rules: True, if unused rules should be removed from the model, false otherwise
+        :return:                    A `PrePruningConfig` that allows further configuration of the stopping criterion
+        """
+        self.config_ptr.setRemoveUnusedRules(remove_unused_rules)
+        return self
+
     def get_min_rules(self) -> int:
         """
         Returns the minimum number of rules that must have been learned until the induction of rules might be stopped.

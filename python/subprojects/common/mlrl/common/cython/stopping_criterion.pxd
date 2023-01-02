@@ -50,6 +50,10 @@ cdef extern from "common/stopping/global_pre_pruning.hpp" nogil:
 
         IPrePruningConfig& setUseHoldoutSet(bool useHoldoutSet) except +
 
+        bool isRemoveUnusedRules() const
+
+        IPrePruningConfig& setRemoveUnusedRules(bool removeUnusedRules) except +
+
         uint32 getMinRules() const
 
         IPrePruningConfig& setMinRules(uint32 minRules) except +

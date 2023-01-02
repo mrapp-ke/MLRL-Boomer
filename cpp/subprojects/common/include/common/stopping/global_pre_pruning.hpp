@@ -70,6 +70,23 @@ class MLRLCOMMON_API IPrePruningConfig {
         virtual IPrePruningConfig& setUseHoldoutSet(bool useHoldoutSet) = 0;
 
         /**
+         * Returns whether rules that have been induced, but are not used, should be removed from the final model or
+         * not.
+         *
+         * @return True, if unused rules should be removed from the model, false otherwise
+         */
+        virtual bool isRemoveUnusedRules() const = 0;
+
+        /**
+         * Sets whether rules that have been induced, but are not used, should be removed from the final model or not.
+         *
+         * @param removeUnusedRules True, if unused rules should be removed from the model, false otherwise
+         * @return                  A reference to an object of type `IPrePruningConfig` that allows further
+         *                          configuration of the stopping criterion
+         */
+        virtual IPrePruningConfig& setRemoveUnusedRules(bool removeUnusedRules) = 0;
+
+        /**
          * Returns the minimum number of rules that must have been learned until the induction of rules might be
          * stopped.
          *
@@ -205,6 +222,8 @@ class PrePruningConfig final : public IGlobalPruningConfig, public IPrePruningCo
 
         bool useHoldoutSet_;
 
+        bool removeUnusedRules_;
+
         uint32 minRules_;
 
         uint32 updateInterval_;
@@ -230,6 +249,10 @@ class PrePruningConfig final : public IGlobalPruningConfig, public IPrePruningCo
         bool isHoldoutSetUsed() const override;
 
         IPrePruningConfig& setUseHoldoutSet(bool useHoldoutSet) override;
+
+        bool isRemoveUnusedRules() const override;
+
+        IPrePruningConfig& setRemoveUnusedRules(bool removeUnusedRules) override;
 
         uint32 getMinRules() const override;
 
