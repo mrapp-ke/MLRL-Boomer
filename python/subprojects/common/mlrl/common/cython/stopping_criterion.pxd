@@ -89,6 +89,10 @@ cdef extern from "common/stopping/global_post_pruning.hpp" nogil:
 
         IPostPruningConfig& setUseHoldoutSet(bool useHoldoutSet) except +
 
+        bool isRemoveUnusedRules() const
+
+        IPrePruningConfig& setRemoveUnusedRules(bool removeUnusedRules) except +
+
         uint32 getMinRules() const
 
         IPostPruningConfig& setMinRules(uint32 minRules) except +
