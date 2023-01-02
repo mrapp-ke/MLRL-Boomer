@@ -1331,6 +1331,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IPostOptimizationPhaseFactory> createSequentialPostOptimizationFactory() const;
 
+        std::unique_ptr<IPostOptimizationPhaseFactory> createUnusedRuleRemovalFactory() const;
+
     protected:
 
         /**
