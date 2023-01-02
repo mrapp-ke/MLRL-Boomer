@@ -145,9 +145,9 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             IStoppingCriterion::Result stoppingCriterionResult;
 
             while (stoppingCriterionResult = stoppingCriterionPtr->test(statisticsProviderPtr->get(), numRules),
-                   stoppingCriterionResult.action != IStoppingCriterion::Action::FORCE_STOP) {
-                if (stoppingCriterionResult.action == IStoppingCriterion::Action::STORE_STOP && numUsedRules == 0) {
-                    numUsedRules = stoppingCriterionResult.numRules;
+                   !stoppingCriterionResult.stop) {
+                if (stoppingCriterionResult.numUsedRules != 0) {
+                    numUsedRules = stoppingCriterionResult.numUsedRules;
                 }
 
                 const IWeightVector& weights = instanceSamplingPtr->sample(rng);
