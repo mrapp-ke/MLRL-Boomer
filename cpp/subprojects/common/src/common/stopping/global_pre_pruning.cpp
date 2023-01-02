@@ -203,8 +203,7 @@ class PrePruningFactory final : public IStoppingCriterionFactory {
 
 PrePruningConfig::PrePruningConfig()
     : aggregationFunction_(AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true), removeUnusedRules_(true),
-      minRules_(100), updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005),
-      forceStop_(true) {
+      minRules_(100), updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005) {
 
 }
 
@@ -293,15 +292,6 @@ IPrePruningConfig& PrePruningConfig::setMinImprovement(float64 minImprovement) {
     assertGreaterOrEqual<float64>("minImprovement", minImprovement, 0);
     assertLessOrEqual<float64>("minImprovement", minImprovement, 1);
     minImprovement_ = minImprovement;
-    return *this;
-}
-
-bool PrePruningConfig::isStopForced() const{
-    return forceStop_;
-}
-
-IPrePruningConfig& PrePruningConfig::setForceStop(bool forceStop) {
-    forceStop_ = forceStop;
     return *this;
 }
 

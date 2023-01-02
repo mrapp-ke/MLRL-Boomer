@@ -190,24 +190,6 @@ class MLRLCOMMON_API IPrePruningConfig {
          */
         virtual IPrePruningConfig& setMinImprovement(float64 minImprovement) = 0;
 
-        /**
-         * Returns whether the induction of rules is forced to be stopped, if the stopping criterion is met.
-         *
-         * @return True, if the induction of rules is forced to be stopped, if the stopping criterion is met, false, if
-         *         only the time of stopping is stored
-         */
-        virtual bool isStopForced() const = 0;
-
-        /**
-         * Sets whether the induction of rules should be forced to be stopped, if the stopping criterion is met.
-         *
-         * @param forceStop True, if the induction of rules should be forced to be stopped, if the stopping criterion is
-         *                  met, false, if only the time of stopping should be stored
-         * @return          A reference to an object of type `IPrePruningConfig` that allows further configuration of
-         *                  the stopping criterion
-         */
-        virtual IPrePruningConfig& setForceStop(bool forceStop) = 0;
-
 };
 
 /**
@@ -235,8 +217,6 @@ class PrePruningConfig final : public IGlobalPruningConfig, public IPrePruningCo
         uint32 numCurrent_;
 
         float64 minImprovement_;
-
-        bool forceStop_;
 
     public:
 
@@ -277,10 +257,6 @@ class PrePruningConfig final : public IGlobalPruningConfig, public IPrePruningCo
         float64 getMinImprovement() const override;
 
         IPrePruningConfig& setMinImprovement(float64 minImprovement) override;
-
-        bool isStopForced() const override;
-
-        IPrePruningConfig& setForceStop(bool forceStop) override;
 
         std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
 
