@@ -298,6 +298,11 @@ std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createSequen
     return configPtr.get() != nullptr ? configPtr->createPostOptimizationPhaseFactory() : nullptr;
 }
 
+std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createUnusedRuleRemovalFactory() const {
+    std::unique_ptr<UnusedRuleRemovalConfig>& configPtr = config_.getUnusedRuleRemovalConfigPtr();
+    return configPtr.get() != nullptr ? configPtr->createPostOptimizationPhaseFactory() : nullptr;
+}
+
 void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
     std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory = this->createSizeStoppingCriterionFactory();
 
@@ -320,7 +325,13 @@ void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionList
 
 void AbstractRuleLearner::createPostOptimizationPhaseFactories(PostOptimizationPhaseListFactory& factory) const {
     std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactory =
-        this->createSequentialPostOptimizationFactory();
+        this->createUnusedRuleRemovalFactory();
+
+    if (postOptimizationPhaseFactory) {
+        factory.addPostOptimizationPhaseFactory(std::move(postOptimizationPhaseFactory));
+    }
+
+    postOptimizationPhaseFactory = this->createSequentialPostOptimizationFactory();
 
     if (postOptimizationPhaseFactory) {
         factory.addPostOptimizationPhaseFactory(std::move(postOptimizationPhaseFactory));
