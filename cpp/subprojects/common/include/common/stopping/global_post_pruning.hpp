@@ -84,11 +84,11 @@ class MLRLCOMMON_API IPostPruningConfig {
         /**
          * Sets the interval that should be used to check whether the current model is the best one evaluated so far.
          *
-         * @param stopInterval  The interval that should be used to check whether the current model is the best one
-         *                      evaluated so far, e.g., a value of 10 means that the best model may include 10, 20, ...
-         *                      rules
-         * @return              A reference to an object of type `IPostPruningConfig` that allows further configuration
-         *                      of the stopping criterion
+         * @param interval  The interval that should be used to check whether the current model is the best one
+         *                  evaluated so far, e.g., a value of 10 means that the best model may include 10, 20, ...
+         *                  rules
+         * @return          A reference to an object of type `IPostPruningConfig` that allows further configuration of
+         *                  the stopping criterion
          */
         virtual IPostPruningConfig& setInterval(uint32 interval) = 0;
 
