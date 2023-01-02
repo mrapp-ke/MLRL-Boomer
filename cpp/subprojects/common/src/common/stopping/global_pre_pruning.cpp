@@ -302,3 +302,7 @@ std::unique_ptr<IStoppingCriterionFactory> PrePruningConfig::createStoppingCrite
                                                removeUnusedRules_, minRules_, updateInterval_, stopInterval_, numPast_,
                                                numCurrent_, minImprovement_);
 }
+
+bool PrePruningConfig::shouldRemoveUnusedRules() const {
+    return removeUnusedRules_;
+}

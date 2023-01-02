@@ -260,4 +260,6 @@ class PrePruningConfig final : public IGlobalPruningConfig, public IPrePruningCo
 
         std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
 
+        bool shouldRemoveUnusedRules() const override;
+
 };

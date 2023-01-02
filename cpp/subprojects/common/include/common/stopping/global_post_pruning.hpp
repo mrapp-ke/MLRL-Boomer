@@ -132,4 +132,6 @@ class PostPruningConfig final : public IGlobalPruningConfig, public IPostPruning
 
         std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
 
+        bool shouldRemoveUnusedRules() const override;
+
 };
