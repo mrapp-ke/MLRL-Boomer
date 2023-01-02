@@ -142,10 +142,10 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr_->create();
             std::unique_ptr<IStoppingCriterion> stoppingCriterionPtr =
                 partition.createStoppingCriterion(*stoppingCriterionFactoryPtr_);
-            IStoppingCriterion::Result stoppingCriterionResult;
 
             while (true) {
-                stoppingCriterionResult = stoppingCriterionPtr->test(statisticsProviderPtr->get(), numRules);
+                IStoppingCriterion::Result stoppingCriterionResult =
+                    stoppingCriterionPtr->test(statisticsProviderPtr->get(), numRules);
 
                 if (stoppingCriterionResult.numUsedRules != 0) {
                     numUsedRules = stoppingCriterionResult.numUsedRules;
