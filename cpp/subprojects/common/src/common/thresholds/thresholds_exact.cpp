@@ -320,7 +320,7 @@ class ExactThresholds final : public AbstractThresholds {
                     }
 
                     std::unique_ptr<IFeatureType> featureTypePtr =
-                        thresholds_.featureInfo_.getFeatureType(featureIndex);
+                        thresholds_.featureInfo_.createFeatureType(featureIndex);
                     bool nominal = !featureTypePtr->isNumerical();
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
                     return std::make_unique<ExactRuleRefinement<IndexVector>>(labelIndices, numCoveredExamples_,

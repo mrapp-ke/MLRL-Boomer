@@ -27,7 +27,7 @@ class BitFeatureInfo final : public IMixedFeatureInfo {
 
         }
 
-        std::unique_ptr<IFeatureType> getFeatureType(uint32 featureIndex) const override {
+        std::unique_ptr<IFeatureType> createFeatureType(uint32 featureIndex) const override {
             if (binaryBitVector_[featureIndex]) {
                 return std::make_unique<BinaryFeatureType>();
             } else if (nominalBitVector_[featureIndex]) {

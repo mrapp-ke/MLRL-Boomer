@@ -19,10 +19,11 @@ class MLRLCOMMON_API IFeatureInfo {
         virtual ~IFeatureInfo() { };
 
         /**
-         * Returns the type of the feature at a specific index.
+         * Creates and returns a new object of type `IFeatureType` that corresponds to the type of the feature at a
+         * specific index.
          *
-         * @return  An unique pointer to an object of the type `IFeatureType` that represents the type of the feature
+         * @return  An unique pointer to an object of the type `IFeatureType` that has been created
          */
-        virtual std::unique_ptr<IFeatureType> getFeatureType(uint32 featureIndex) const = 0;
+        virtual std::unique_ptr<IFeatureType> createFeatureType(uint32 featureIndex) const = 0;
 
 };

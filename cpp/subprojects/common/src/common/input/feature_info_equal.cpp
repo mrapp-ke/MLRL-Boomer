@@ -14,7 +14,7 @@ class EqualFeatureInfo final : public IEqualFeatureInfo {
 
     public:
 
-        std::unique_ptr<IFeatureType> getFeatureType(uint32 featureIndex) const override {
+        std::unique_ptr<IFeatureType> createFeatureType(uint32 featureIndex) const override {
             return std::make_unique<FeatureType>();
         }
 
