@@ -3,10 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility function for configuring rule learning algorithms.
 """
+from typing import Dict, Set, Optional
+
 from mlrl.common.cython.learner import RuleLearnerConfig
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption, parse_param, parse_param_and_options
-from typing import Dict, Set, Optional
 
 AUTOMATIC = 'auto'
 
@@ -46,9 +47,9 @@ PARTITION_SAMPLING_RANDOM = 'random'
 
 ARGUMENT_HOLDOUT_SET_SIZE = 'holdout_set_size'
 
-GLOBAL_POST_PRUNING = 'post-pruning'
+GLOBAL_PRUNING_POST = 'post-pruning'
 
-GLOBAL_PRE_PRUNING = 'pre-pruning'
+GLOBAL_PRUNING_PRE = 'pre-pruning'
 
 AGGREGATION_FUNCTION_MIN = 'min'
 
@@ -140,9 +141,9 @@ FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
 
 GLOBAL_PRUNING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
-    GLOBAL_POST_PRUNING: {ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES,
+    GLOBAL_PRUNING_POST: {ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES,
                           ARGUMENT_MIN_RULES, ARGUMENT_INTERVAL},
-    GLOBAL_PRE_PRUNING: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES,
+    GLOBAL_PRUNING_PRE: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES,
                          ARGUMENT_MIN_RULES, ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST,
                          ARGUMENT_NUM_RECENT, ARGUMENT_MIN_IMPROVEMENT}
 }
@@ -265,13 +266,13 @@ def configure_global_pruning(config: RuleLearnerConfig, global_pruning: Optional
 
         if value == NONE:
             config.use_no_global_pruning()
-        elif value == GLOBAL_POST_PRUNING:
+        elif value == GLOBAL_PRUNING_POST:
             c = config.use_global_post_pruning()
             c.set_use_holdout_set(options.get_bool(ARGUMENT_USE_HOLDOUT_SET, c.is_holdout_set_used()))
             c.set_remove_unused_rules(options.get_bool(ARGUMENT_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
             c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
             c.set_interval(options.get_int(ARGUMENT_INTERVAL, c.get_interval()))
-        elif value == GLOBAL_PRE_PRUNING:
+        elif value == GLOBAL_PRUNING_PRE:
             c = config.use_global_pre_pruning()
             aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
             c.set_aggregation_function(__create_aggregation_function(
