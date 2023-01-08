@@ -36,7 +36,7 @@ cdef extern from "common/stopping/aggregation_function.hpp" nogil:
         ARITHMETIC_MEAN"AggregationFunction::ARITHMETIC_MEAN" = 2
 
 
-cdef extern from "common/stopping/global_pre_pruning.hpp" nogil:
+cdef extern from "common/stopping/global_pruning_pre.hpp" nogil:
 
     cdef cppclass IPrePruningConfig:
 
@@ -79,7 +79,7 @@ cdef extern from "common/stopping/global_pre_pruning.hpp" nogil:
         IPrePruningConfig& setMinImprovement(float64 minImprovement) except +
 
 
-cdef extern from "common/stopping/global_post_pruning.hpp" nogil:
+cdef extern from "common/stopping/global_pruning_post.hpp" nogil:
 
     cdef cppclass IPostPruningConfig:
 
