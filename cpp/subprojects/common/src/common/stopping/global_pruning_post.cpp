@@ -1,4 +1,4 @@
-#include "common/stopping/global_post_pruning.hpp"
+#include "common/stopping/global_pruning_post.hpp"
 #include "common/util/validation.hpp"
 #include "global_pruning_common.hpp"
 #include <limits>
