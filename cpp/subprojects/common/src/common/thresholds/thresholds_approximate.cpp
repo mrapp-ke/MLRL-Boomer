@@ -205,7 +205,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     }
 
                     std::unique_ptr<IFeatureType> featureTypePtr =
-                        thresholds_.featureInfo_.getFeatureType(featureIndex);
+                        thresholds_.featureInfo_.createFeatureType(featureIndex);
                     bool nominal = !featureTypePtr->isNumerical();
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
                     return std::make_unique<ApproximateRuleRefinement<IndexVector>>(labelIndices,
