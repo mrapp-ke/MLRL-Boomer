@@ -115,10 +115,8 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         :param time_limit:                      The duration in seconds after which the induction of rules should be
                                                 canceled. Must be at least 1 or 0, if no time limit should be set
         :param global_pruning:                  The strategy that should be used for pruning entire rules. Must be
-                                                'pre-pruning', if the induction of new rules should be stopped as soon
-                                                as the performance of the model does not improve on a holdout set or
-                                                'none', if no pruning should be used. For additional options refer to
-                                                the documentation
+                                                'pre-pruning', 'post-pruning' or 'none', if no pruning should be used.
+                                                For additional options refer to the documentation
         :param sequential_post_optimization:    Whether each rule in a previously learned model should be optimized by
                                                 being relearned in the context of the other rules or not. Must be 'true'
                                                 or 'false'. For additional options refer to the documentation
