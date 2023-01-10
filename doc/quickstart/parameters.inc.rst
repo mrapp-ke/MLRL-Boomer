@@ -115,9 +115,10 @@ The following parameters allow to control the behavior of the algorithm:
   
     * ``sample_size`` (Default value = ``0.66``) The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. Must be in (0, 1).
 
-* ``holdout`` (Default value = ``'none'``)
+* ``holdout`` (Default value = ``'auto'``)
 
   * ``'none'`` No holdout set is created.
+  * ``'auto'`` The most suitable strategy for creating a holdout set is chosen automatically, depending on whether a holdout set is needed and depending on the loss function.
   * ``'random'`` The available examples are randomly split into a training set and a holdout set. The following options may be provided using the bracket notation:
   
     * ``holdout_set_size`` (Default value = ``0.33``) The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. Must be in (0, 1).
