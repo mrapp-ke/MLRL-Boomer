@@ -47,6 +47,8 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
 
         void useAutomaticDefaultRule()
 
+        void useAutomaticPartitionSampling()
+
         void useAutomaticFeatureBinning()
 
         void useAutomaticParallelRuleRefinement()

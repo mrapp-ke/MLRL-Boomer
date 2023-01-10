@@ -303,6 +303,10 @@ std::unique_ptr<IStoppingCriterionFactory> PrePruningConfig::createStoppingCrite
                                                numCurrent_, minImprovement_);
 }
 
+bool PrePruningConfig::shouldUseHoldoutSet() const {
+    return useHoldoutSet_;
+}
+
 bool PrePruningConfig::shouldRemoveUnusedRules() const {
     return removeUnusedRules_;
 }

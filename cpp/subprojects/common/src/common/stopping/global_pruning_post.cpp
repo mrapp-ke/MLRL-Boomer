@@ -150,6 +150,10 @@ std::unique_ptr<IStoppingCriterionFactory> PostPruningConfig::createStoppingCrit
     return std::make_unique<PostPruningFactory>(useHoldoutSet_, minRules_, interval_);
 }
 
+bool PostPruningConfig::shouldUseHoldoutSet() const {
+    return useHoldoutSet_;
+}
+
 bool PostPruningConfig::shouldRemoveUnusedRules() const {
     return removeUnusedRules_;
 }

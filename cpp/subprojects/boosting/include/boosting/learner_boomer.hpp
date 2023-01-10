@@ -63,6 +63,11 @@ namespace boosting {
                     virtual void useAutomaticDefaultRule() = 0;
 
                     /**
+                     * Configures the rule learner to automatically decide whether a holdout set should be used or not.
+                     */
+                    virtual void useAutomaticPartitionSampling() = 0;
+
+                    /**
                      * Configures the rule learner to automatically decide whether a method for the assignment of
                      * numerical feature values to bins should be used or not.
                      */
@@ -138,6 +143,8 @@ namespace boosting {
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
 
                     void useAutomaticDefaultRule() override;
+
+                    void useAutomaticPartitionSampling() override;
 
                     void useAutomaticFeatureBinning() override;
 

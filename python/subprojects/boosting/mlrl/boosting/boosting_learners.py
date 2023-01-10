@@ -38,6 +38,8 @@ STATISTIC_FORMAT_VALUES: Set[str] = boosting_config.STATISTIC_FORMAT_VALUES.unio
 
 DEFAULT_RULE_VALUES: Set[str] = boosting_config.DEFAULT_RULE_VALUES.union(AUTOMATIC)
 
+PARTITION_SAMPLING_VALUES: Dict[str, Set[str]] = {**common_config.PARTITION_SAMPLING_VALUES, **{AUTOMATIC: {}}}
+
 HEAD_TYPE_VALUES: Dict[str, Set[str]] = {**boosting_config.HEAD_TYPE_VALUES, **{AUTOMATIC: {}}}
 
 LABEL_BINNING_VALUES: Dict[str, Set[str]] = {**boosting_config.LABEL_BINNING_VALUES, **{AUTOMATIC: {}}}
@@ -115,10 +117,8 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         :param time_limit:                      The duration in seconds after which the induction of rules should be
                                                 canceled. Must be at least 1 or 0, if no time limit should be set
         :param global_pruning:                  The strategy that should be used for pruning entire rules. Must be
-                                                'pre-pruning', if the induction of new rules should be stopped as soon
-                                                as the performance of the model does not improve on a holdout set or
-                                                'none', if no pruning should be used. For additional options refer to
-                                                the documentation
+                                                'pre-pruning', 'post-pruning' or 'none', if no pruning should be used.
+                                                For additional options refer to the documentation
         :param sequential_post_optimization:    Whether each rule in a previously learned model should be optimized by
                                                 being relearned in the context of the other rules or not. Must be 'true'
                                                 or 'false'. For additional options refer to the documentation
@@ -149,10 +149,12 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                                                 a rule is refined. Must be 'without-replacement' or 'none', if no
                                                 sampling should be used. For additional options refer to the
                                                 documentation
-        :param holdout:                         The name of the strategy that should be used to creating a holdout set.
+        :param holdout:                         The name of the strategy that should be used to create a holdout set.
                                                 Must be 'random', 'stratified-label-wise', 'stratified-example-wise' or
-                                                'none', if no holdout set should be used. For additional options refer
-                                                to the documentation
+                                                'none', if no holdout set should be used. If set to 'auto', the most
+                                                suitable strategy is chosen automatically depending on whether a holdout
+                                                set is needed and depending on the loss function. For additional options
+                                                refer to the documentation
         :param feature_binning:                 The strategy that should be used to assign examples to bins based on
                                                 their feature values. Must be 'auto', 'equal-width', 'equal-frequency'
                                                 or 'none', if no feature binning should be used. If set to 'auto', the
@@ -214,7 +216,6 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         configure_label_sampling(config, get_string(self.label_sampling))
         configure_instance_sampling(config, get_string(self.instance_sampling))
         configure_feature_sampling(config, get_string(self.feature_sampling))
-        configure_partition_sampling(config, get_string(self.holdout))
         configure_rule_pruning(config, get_string(self.rule_pruning))
         configure_parallel_prediction(config, get_string(self.parallel_prediction))
         configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
@@ -225,6 +226,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         configure_l1_regularization(config, l1_regularization_weight=get_float(self.l1_regularization_weight))
         configure_l2_regularization(config, l2_regularization_weight=get_float(self.l2_regularization_weight))
         self.__configure_default_rule(config)
+        self.__configure_partition_sampling(config)
         self.__configure_feature_binning(config)
         self.__configure_head_type(config)
         self.__configure_statistics(config)
@@ -243,6 +245,14 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
             config.use_automatic_default_rule()
         else:
             configure_default_rule(config, default_rule)
+
+    def __configure_partition_sampling(self, config: BoomerConfig):
+        holdout = get_string(self.holdout)
+
+        if holdout == AUTOMATIC:
+            config.use_automatic_partition_sampling()
+        else:
+            configure_partition_sampling(config, holdout)
 
     def __configure_feature_binning(self, config: BoomerConfig):
         feature_binning = get_string(self.feature_binning)
