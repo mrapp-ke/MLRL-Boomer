@@ -48,7 +48,7 @@ The following parameters allow to control the behavior of the algorithm:
 
   * The seed to be used by random number generators. Must be at least 1.
 
-* ``default_rule`` (Default value = ``'true'``)
+* ``default_rule`` (Default value = ``'auto'``)
 
   * ``'auto'`` A default rule that provides a default prediction for all examples is included as the first rule of a model unless it prevents a sparse format for the representation of gradients and Hessians from being used (see parameter ``statistic_format``).
   * ``'true'`` A default rule that provides a default prediction for all examples is included as the first rule of a model.
