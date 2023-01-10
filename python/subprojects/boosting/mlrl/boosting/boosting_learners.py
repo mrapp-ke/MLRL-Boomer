@@ -147,7 +147,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                                                 a rule is refined. Must be 'without-replacement' or 'none', if no
                                                 sampling should be used. For additional options refer to the
                                                 documentation
-        :param holdout:                         The name of the strategy that should be used to creating a holdout set.
+        :param holdout:                         The name of the strategy that should be used to create a holdout set.
                                                 Must be 'random', 'stratified-label-wise', 'stratified-example-wise' or
                                                 'none', if no holdout set should be used. For additional options refer
                                                 to the documentation
