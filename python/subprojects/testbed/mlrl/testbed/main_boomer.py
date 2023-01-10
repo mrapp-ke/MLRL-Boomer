@@ -6,16 +6,16 @@ from argparse import ArgumentParser
 from mlrl.common.config import AUTOMATIC
 from mlrl.common.format import format_dict_keys, format_string_set
 from mlrl.testbed.args import add_max_rules_argument, add_time_limit_argument, add_label_sampling_argument, \
-    add_instance_sampling_argument, add_feature_sampling_argument, add_partition_sampling_argument, \
-    add_global_pruning_argument, add_sequential_post_optimization_argument, add_rule_pruning_argument, \
-    add_rule_induction_argument, add_parallel_prediction_argument, PARAM_FEATURE_BINNING, PARAM_HEAD_TYPE, \
+    add_instance_sampling_argument, add_feature_sampling_argument, add_global_pruning_argument, \
+    add_sequential_post_optimization_argument, add_rule_pruning_argument, add_rule_induction_argument, \
+    add_parallel_prediction_argument, PARAM_PARTITION_SAMPLING, PARAM_FEATURE_BINNING, PARAM_HEAD_TYPE, \
     PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE
 from mlrl.testbed.args_boosting import add_shrinkage_argument, add_regularization_arguments, PARAM_STATISTIC_FORMAT, \
     PARAM_DEFAULT_RULE, PARAM_LABEL_BINNING, PARAM_LOSS, PARAM_CLASSIFICATION_PREDICTOR, PARAM_PROBABILITY_PREDICTOR
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
-from mlrl.boosting.boosting_learners import Boomer, STATISTIC_FORMAT_VALUES, DEFAULT_RULE_VALUES, HEAD_TYPE_VALUES, \
-    LABEL_BINNING_VALUES, LOSS_VALUES, CLASSIFICATION_PREDICTOR_VALUES, \
+from mlrl.boosting.boosting_learners import Boomer, STATISTIC_FORMAT_VALUES, DEFAULT_RULE_VALUES, \
+    PARTITION_SAMPLING_VALUES, HEAD_TYPE_VALUES, LABEL_BINNING_VALUES, LOSS_VALUES, CLASSIFICATION_PREDICTOR_VALUES, \
     PROBABILITY_PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
 
 
@@ -31,7 +31,6 @@ class BoomerRunnable(RuleLearnerRunnable):
         add_label_sampling_argument(parser)
         add_instance_sampling_argument(parser)
         add_feature_sampling_argument(parser)
-        add_partition_sampling_argument(parser)
         add_global_pruning_argument(parser)
         add_sequential_post_optimization_argument(parser)
         add_rule_pruning_argument(parser)
@@ -48,6 +47,12 @@ class BoomerRunnable(RuleLearnerRunnable):
         parser.add_argument(PARAM_DEFAULT_RULE, type=str,
                             help='Whether a default rule should be induced or not. Must be one of '
                                  + format_string_set(DEFAULT_RULE_VALUES) + '.')
+        parser.add_argument(PARAM_PARTITION_SAMPLING, type=str,
+                            help='The name of the strategy to be used for creating a holdout set. Must be one of '
+                                 + format_dict_keys(PARTITION_SAMPLING_VALUES) + '. If set to "' + AUTOMATIC + '", the '
+                                 + 'most suitable strategy is chosen automatically depending on whether a holdout set '
+                                 + 'is needed and depending on the loss function. For additional options refer to the '
+                                 + 'documentation.')
         parser.add_argument(PARAM_FEATURE_BINNING, type=str,
                             help='The name of the strategy to be used for feature binning. Must be one of '
                                  + format_dict_keys(FEATURE_BINNING_VALUES) + '. If set to "' + AUTOMATIC + '", the '

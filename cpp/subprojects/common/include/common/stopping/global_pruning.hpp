@@ -17,6 +17,13 @@ class IGlobalPruningConfig : public IStoppingCriterionConfig {
         virtual ~IGlobalPruningConfig() override { };
 
         /**
+         * Returns whether a holdout set should be used, if available, or not.
+         *
+         * @return True, if a holdout set should be used, false otherwise
+         */
+        virtual bool shouldUseHoldoutSet() const = 0;
+
+        /**
          * Returns whether unused rules should be removed from the final model or not.
          *
          * @return True, if unused rules should be removed, false otherwise

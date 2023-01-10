@@ -175,6 +175,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_automatic_partition_sampling(self):
+        """
+        Configures the rule learner to automatically decide whether a holdout set should be used or not.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useAutomaticPartitionSampling()
+
     def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
         """
         Configures the rule learner to partition the available training examples into a training set and a holdout set
