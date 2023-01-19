@@ -16,7 +16,7 @@ namespace boosting {
      * an existing rule-based model and transforming the aggregated scores into probabilities in [0, 1] according to a
      * certain transformation function that is applied to each label individually.
      */
-    class LabelWiseProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
+    class LabelWiseProbabilityPredictorConfig final : public IOldProbabilityPredictorConfig {
 
         private:
 

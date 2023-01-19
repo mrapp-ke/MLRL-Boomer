@@ -59,7 +59,7 @@ namespace boosting {
         return regressionPredictorConfigPtr_;
     }
 
-    std::unique_ptr<IProbabilityPredictorConfig>& AbstractBoostingRuleLearner::Config::getProbabilityPredictorConfigPtr() {
+    std::unique_ptr<IOldProbabilityPredictorConfig>& AbstractBoostingRuleLearner::Config::getProbabilityPredictorConfigPtr() {
         return probabilityPredictorConfigPtr_;
     }
 

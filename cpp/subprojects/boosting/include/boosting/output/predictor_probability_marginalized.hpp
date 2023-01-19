@@ -18,7 +18,7 @@ namespace boosting {
      * have been obtained for all label vectors, where the respective label is specified to be relevant, divided by the
      * total sum of all distances.
      */
-    class MarginalizedProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
+    class MarginalizedProbabilityPredictorConfig final : public IOldProbabilityPredictorConfig {
 
         private:
 

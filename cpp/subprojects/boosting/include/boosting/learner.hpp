@@ -125,7 +125,7 @@ namespace boosting {
                      * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
                      *         configuration of the predictor that predicts probability estimates for individual labels
                      */
-                    virtual std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() = 0;
+                    virtual std::unique_ptr<IOldProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() = 0;
 
                 public:
 
@@ -567,7 +567,7 @@ namespace boosting {
                      * by the total sum of all distances.
                      */
                     virtual void useMarginalizedProbabilityPredictor() {
-                        std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
+                        std::unique_ptr<IOldProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
                             this->getProbabilityPredictorConfigPtr();
                         probabilityPredictorConfigPtr = std::make_unique<MarginalizedProbabilityPredictorConfig>(
                             this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
@@ -640,7 +640,7 @@ namespace boosting {
                      * An unique pointer that stores the configuration of the predictor that is used to predict
                      * probability estimates.
                      */
-                    std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
+                    std::unique_ptr<IOldProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
 
                 private:
 
@@ -660,7 +660,7 @@ namespace boosting {
 
                     std::unique_ptr<IRegressionPredictorConfig>& getRegressionPredictorConfigPtr() override final;
 
-                    std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() override final;
+                    std::unique_ptr<IOldProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() override final;
 
                 public:
 
