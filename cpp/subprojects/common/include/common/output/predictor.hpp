@@ -51,11 +51,11 @@ class IOldPredictor {
 /**
  * Defines an interface for all classes that allow to configure a predictor.
  */
-class IPredictorConfig {
+class IOldPredictorConfig {
 
     public:
 
-        virtual ~IPredictorConfig() { };
+        virtual ~IOldPredictorConfig() { };
 
         /**
          * Returns whether the predictor needs access to the label vectors that are encountered in the training data or

@@ -49,7 +49,7 @@ class IRegressionPredictorFactory {
  * Defines an interface for all classes that allow to configure a predictor that predicts label-wise regression scores
  * for given query examples.
  */
-class IRegressionPredictorConfig : public IPredictorConfig {
+class IRegressionPredictorConfig : public IOldPredictorConfig {
 
     public:
 
