@@ -16,3 +16,8 @@ typedef IPredictor<DensePredictionMatrix<float64>> IProbabilityPredictor;
  * Defines an interface for all classes that allow to create instances of the type `IProbabilityPredictor`.
  */
 typedef IPredictorFactory<DensePredictionMatrix<float64>> IProbabilityPredictorFactory;
+
+/**
+ * Defines an interface for all classes that allow to configure a `IProbabilityPredictor`.
+ */
+typedef IPredictorConfig<DensePredictionMatrix<float64>> IProbabilityPredictorConfig;
