@@ -19,11 +19,6 @@ typedef IPredictor<DensePredictionMatrix<uint8>> ILabelPredictor;
 typedef IPredictorFactory<DensePredictionMatrix<uint8>> ILabelPredictorFactory;
 
 /**
- * Defines an interface for all classes that allow to configure a `ILabelPredictor`.
- */
-typedef IPredictorConfig<DensePredictionMatrix<uint8>> ILabelPredictorConfig;
-
-/**
  * Defines an interface for all classes that allow to predict sparse labels for given query examples.
  */
 typedef IPredictor<BinarySparsePredictionMatrix> ISparseLabelPredictor;
@@ -34,6 +29,25 @@ typedef IPredictor<BinarySparsePredictionMatrix> ISparseLabelPredictor;
 typedef IPredictorFactory<BinarySparsePredictionMatrix> ISparseLabelPredictorFactory;
 
 /**
- * Defines an interface for all classes that allow to configure a `ISparseLabelPredictor`.
+ * Defines an interface for all classes that allow to configure an `ILabelPredictor` or `ISparseLabelPredictor`.
  */
-typedef IPredictorConfig<BinarySparsePredictionMatrix> ISparseLabelPredictorConfig;
+class ILabelPredictorConfig : public IPredictorConfig<DensePredictionMatrix<uint8>> {
+
+    public:
+
+        virtual ~ILabelPredictorConfig() override { };
+
+        /**
+         * Creates and returns a new object of type `ISparseLabelPredictorFactory` according to the specified
+         * configuration.
+         *
+         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples to predict for
+         * @param numLabels     The number of labels to predict for
+         * @return              An unique pointer to an object of type `ISparseLabelPredictorFactory` that has been
+         *                      created
+         */
+        virtual std::unique_ptr<ISparseLabelPredictorFactory> createSparsePredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
+
+};
