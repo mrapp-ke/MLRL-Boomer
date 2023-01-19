@@ -27,12 +27,12 @@ std::unique_ptr<BinarySparsePredictionMatrix> CsrFeatureMatrix::predictSparseLab
 }
 
 std::unique_ptr<DensePredictionMatrix<float64>> CsrFeatureMatrix::predictScores(
-        const IRegressionPredictor& predictor, uint32 numLabels) const {
+        const IOldRegressionPredictor& predictor, uint32 numLabels) const {
     return predictor.predict(*this, numLabels);
 }
 
 std::unique_ptr<DensePredictionMatrix<float64>> CsrFeatureMatrix::predictProbabilities(
-        const IProbabilityPredictor& predictor, uint32 numLabels) const {
+        const IOldProbabilityPredictor& predictor, uint32 numLabels) const {
     return predictor.predict(*this, numLabels);
 }
 

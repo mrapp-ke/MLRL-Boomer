@@ -17,12 +17,12 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
             return factory.create(model, nullptr);
         }
 
-        std::unique_ptr<IRegressionPredictor> createRegressionPredictor(
+        std::unique_ptr<IOldRegressionPredictor> createRegressionPredictor(
                 const IRegressionPredictorFactory& factory, const RuleList& model) const override {
             return factory.create(model, nullptr);
         }
 
-        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
+        std::unique_ptr<IOldProbabilityPredictor> createProbabilityPredictor(
                 const IProbabilityPredictorFactory& factory, const RuleList& model) const override {
             return factory.create(model, nullptr);
         }

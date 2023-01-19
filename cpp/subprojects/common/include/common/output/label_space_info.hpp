@@ -9,9 +9,9 @@
 class IClassificationPredictorFactory;
 class IClassificationPredictor;
 class IRegressionPredictorFactory;
-class IRegressionPredictor;
+class IOldRegressionPredictor;
 class IProbabilityPredictorFactory;
-class IProbabilityPredictor;
+class IOldProbabilityPredictor;
 class RuleList;
 
 
@@ -46,7 +46,7 @@ class MLRLCOMMON_API ILabelSpaceInfo {
          * @param model     A reference to an object of type `RuleList` that should be used to obtain predictions
          * @return          An unique pointer to an object of type `IRegressionPredictor` that has been created
          */
-        virtual std::unique_ptr<IRegressionPredictor> createRegressionPredictor(
+        virtual std::unique_ptr<IOldRegressionPredictor> createRegressionPredictor(
             const IRegressionPredictorFactory& factory, const RuleList& model) const = 0;
 
         /**
@@ -58,7 +58,7 @@ class MLRLCOMMON_API ILabelSpaceInfo {
          * @param model     A reference to an object of type `RuleList` that should be used to obtain predictions
          * @return          An unique pointer to an object of type `IProbabilityPredictor` that has been created
          */
-        virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
+        virtual std::unique_ptr<IOldProbabilityPredictor> createProbabilityPredictor(
             const IProbabilityPredictorFactory& factory, const RuleList& model) const = 0;
 
 };
