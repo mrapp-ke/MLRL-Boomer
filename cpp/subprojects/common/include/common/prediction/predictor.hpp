@@ -49,9 +49,9 @@ class IPredictor {
 /**
  * Defines an interface for all factories that allow to create instances of the type `IPredictor`.
  *
- * @tparam PredictionMatrix The type of the matrix that is used to store the predictions
+ * @tparam Predictor The type of the instances that are created by the factory
  */
-template<typename PredictionMatrix>
+template<typename Predictor>
 class IPredictorFactory {
 
     public:
@@ -59,7 +59,7 @@ class IPredictorFactory {
         virtual ~IPredictorFactory() { };
 
         /**
-         * Creates and returns a new object of the type `IPredictor`.
+         * Creates and returns a new object of the template type `Predictor`.
          *
          * @param featureMatrix     A reference to an object of type `CsrConstView` that stores the feature values of
          *                          the query examples to predict for
@@ -68,14 +68,14 @@ class IPredictorFactory {
          * @param labelVectorSet    A pointer to an object of type `LabelVectorSet` that stores all known label vectors
          *                          or a null pointer, if no such set is available
          * @param numLabels         The number of labels to predict for
-         * @return                  An unique pointer to an object of type `IPredictor` that has been created
+         * @return                  An unique pointer to an object of template type `Predictor` that has been created
          */
-        virtual std::unique_ptr<IPredictor<PredictionMatrix>> create(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
-            const LabelVectorSet* labelVectorSet, uint32 numLabels) const = 0;
+        virtual std::unique_ptr<Predictor> create(const CContiguousConstView<const float32>& featureMatrix,
+                                                  const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                  uint32 numLabels) const = 0;
 
         /**
-         * Creates and returns a new object of the type `IPredictor`.
+         * Creates and returns a new object of the template type `Predictor`.
          *
          * @param featureMatrix     A reference to an object of type `CsrConstView` that stores the feature values of
          *                          the query examples to predict for
@@ -84,21 +84,20 @@ class IPredictorFactory {
          * @param labelVectorSet    A pointer to an object of type `LabelVectorSet` that stores all known label vectors
          *                          or a null pointer, if no such set is available
          * @param numLabels         The number of labels to predict for
-         * @return                  An unique pointer to an object of type `IPredictor` that has been created
+         * @return                  An unique pointer to an object of template type `Predictor` that has been created
          */
-        virtual std::unique_ptr<IPredictor<PredictionMatrix>> create(const CsrConstView<const float32>& featureMatrix,
-                                                                     const RuleList& model,
-                                                                     const LabelVectorSet* labelVectorSet,
-                                                                     uint32 numLabels) const = 0;
+        virtual std::unique_ptr<Predictor> create(const CsrConstView<const float32>& featureMatrix,
+                                                  const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                  uint32 numLabels) const = 0;
 
 };
 
 /**
  * Defines an interface for all classes that allow to configure a predictor.
  *
- * @tparam PredictionMatrix The type of the matrix that is used to store the predictions
+ * @tparam PredictorFactory The type of the factory that allows to create instances of the predictor
  */
-template<typename PredictionMatrix>
+template<typename PredictorFactory>
 class IPredictorConfig {
 
     public:
@@ -111,10 +110,10 @@ class IPredictorConfig {
          * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
          *                      to the feature values of the query examples to predict for
          * @param numLabels     The number of labels to predict for
-         * @return              An unique pointer to an object of type `IPredictorFactory` that has been created
+         * @return              An unique pointer to an object of template type `PredictorFactory` that has been created
          */
-        virtual std::unique_ptr<IPredictorFactory<PredictionMatrix>> createPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
+        virtual std::unique_ptr<PredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                         uint32 numLabels) const = 0;
 
         /**
          * Returns whether the predictor needs access to the label vectors that are encountered in the training data or

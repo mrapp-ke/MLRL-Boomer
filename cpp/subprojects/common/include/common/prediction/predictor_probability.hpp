@@ -10,14 +10,32 @@
 /**
  * Defines an interface for all classes that allow to predict probability estimates for given query examples.
  */
-typedef IPredictor<DensePredictionMatrix<float64>> IProbabilityPredictor;
+class IProbabilityPredictor : public IPredictor<DensePredictionMatrix<float64>> {
+
+    public:
+
+        virtual ~IProbabilityPredictor() override { };
+
+};
 
 /**
  * Defines an interface for all classes that allow to create instances of the type `IProbabilityPredictor`.
  */
-typedef IPredictorFactory<DensePredictionMatrix<float64>> IProbabilityPredictorFactory;
+class IProbabilityPredictorFactory : public IPredictorFactory<IProbabilityPredictor> {
+
+    public:
+
+        virtual ~IProbabilityPredictorFactory() override { };
+
+};
 
 /**
  * Defines an interface for all classes that allow to configure a `IProbabilityPredictor`.
  */
-typedef IPredictorConfig<DensePredictionMatrix<float64>> IProbabilityPredictorConfig;
+class IProbabilityPredictorConfig : public IPredictorConfig<IProbabilityPredictorFactory> {
+
+    public:
+
+        virtual ~IProbabilityPredictorConfig() override { };
+
+};

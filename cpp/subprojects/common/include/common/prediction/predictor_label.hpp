@@ -11,27 +11,51 @@
 /**
  * Defines an interface for all classes that allow to predict labels for given query examples.
  */
-typedef IPredictor<DensePredictionMatrix<uint8>> ILabelPredictor;
+class ILabelPredictor : public IPredictor<DensePredictionMatrix<uint8>> {
+
+    public:
+
+        virtual ~ILabelPredictor() override { };
+
+};
 
 /**
  * Defines an interface for all classes that allow to create instances of the type `ILabelPredictor`.
  */
-typedef IPredictorFactory<DensePredictionMatrix<uint8>> ILabelPredictorFactory;
+class ILabelPredictorFactory : public IPredictorFactory<ILabelPredictor> {
+
+    public:
+
+        virtual ~ILabelPredictorFactory() override { };
+
+};
 
 /**
  * Defines an interface for all classes that allow to predict sparse labels for given query examples.
  */
-typedef IPredictor<BinarySparsePredictionMatrix> ISparseLabelPredictor;
+class ISparseLabelPredictor : public IPredictor<BinarySparsePredictionMatrix> {
+
+    public:
+
+        virtual ~ISparseLabelPredictor() override { };
+
+};
 
 /**
  * Defines an interface for all classes that allow to create instances of the type `ISparseLabelPredictor`.
  */
-typedef IPredictorFactory<BinarySparsePredictionMatrix> ISparseLabelPredictorFactory;
+class ISparseLabelPredictorFactory : public IPredictorFactory<ISparseLabelPredictor> {
+
+    public:
+
+        virtual ~ISparseLabelPredictorFactory() override { };
+
+};
 
 /**
  * Defines an interface for all classes that allow to configure an `ILabelPredictor` or `ISparseLabelPredictor`.
  */
-class ILabelPredictorConfig : public IPredictorConfig<DensePredictionMatrix<uint8>> {
+class ILabelPredictorConfig : public IPredictorConfig<ILabelPredictorFactory> {
 
     public:
 
