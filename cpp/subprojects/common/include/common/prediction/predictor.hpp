@@ -94,12 +94,26 @@ class IPredictorFactory {
 
 /**
  * Defines an interface for all classes that allow to configure a predictor.
+ *
+ * @tparam PredictionMatrix The type of the matrix that is used to store the predictions
  */
+template<typename PredictionMatrix>
 class IPredictorConfig {
 
     public:
 
         virtual ~IPredictorConfig() { };
+
+        /**
+         * Creates and returns a new object of type `IPredictorFactory` according to the specified configuration.
+         *
+         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples to predict for
+         * @param numLabels     The number of labels to predict for
+         * @return              An unique pointer to an object of type `IPredictorFactory` that has been created
+         */
+        virtual std::unique_ptr<IPredictorFactory<PredictionMatrix>> createPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
         /**
          * Returns whether the predictor needs access to the label vectors that are encountered in the training data or
