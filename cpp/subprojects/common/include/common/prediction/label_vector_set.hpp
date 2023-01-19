@@ -114,7 +114,7 @@ class LabelVectorSet final : public ILabelVectorSet {
             const IRegressionPredictorFactory& factory, const RuleList& model) const override;
 
         std::unique_ptr<IOldProbabilityPredictor> createProbabilityPredictor(
-            const IProbabilityPredictorFactory& factory, const RuleList& model) const override;
+            const IOldProbabilityPredictorFactory& factory, const RuleList& model) const override;
 
 };
 

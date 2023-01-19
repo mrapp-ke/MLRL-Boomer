@@ -42,7 +42,7 @@ namespace boosting {
             /**
              * @see `IProbabilityPredictorConfig::createProbabilityPredictorFactory`
              */
-            std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
+            std::unique_ptr<IOldProbabilityPredictorFactory> createProbabilityPredictorFactory(
                 const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**

@@ -138,7 +138,7 @@ namespace boosting {
      * probabilities in [0, 1] according to a certain transformation function that is applied to each label
      * individually.
      */
-    class LabelWiseProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
+    class LabelWiseProbabilityPredictorFactory final : public IOldProbabilityPredictorFactory {
 
         private:
 
@@ -181,7 +181,7 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<IProbabilityPredictorFactory> LabelWiseProbabilityPredictorConfig::createProbabilityPredictorFactory(
+    std::unique_ptr<IOldProbabilityPredictorFactory> LabelWiseProbabilityPredictorConfig::createProbabilityPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
             lossConfigPtr_->createProbabilityFunctionFactory();

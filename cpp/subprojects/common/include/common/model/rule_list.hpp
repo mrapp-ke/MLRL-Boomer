@@ -314,7 +314,7 @@ class RuleList final : public IRuleList {
             const IRegressionPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const override;
 
         std::unique_ptr<IOldProbabilityPredictor> createProbabilityPredictor(
-            const IProbabilityPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const override;
+            const IOldProbabilityPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const override;
 
 };
 

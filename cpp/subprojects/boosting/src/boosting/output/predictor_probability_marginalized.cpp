@@ -167,7 +167,7 @@ namespace boosting {
      * calculates as the sum of the distances that have been obtained for all label vectors, where the respective label
      * is specified to be relevant, divided by the total sum of all distances.
      */
-    class MarginalizedProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
+    class MarginalizedProbabilityPredictorFactory final : public IOldProbabilityPredictorFactory {
 
         private:
 
@@ -217,7 +217,7 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<IProbabilityPredictorFactory> MarginalizedProbabilityPredictorConfig::createProbabilityPredictorFactory(
+    std::unique_ptr<IOldProbabilityPredictorFactory> MarginalizedProbabilityPredictorConfig::createProbabilityPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
             lossConfigPtr_->createProbabilityFunctionFactory();

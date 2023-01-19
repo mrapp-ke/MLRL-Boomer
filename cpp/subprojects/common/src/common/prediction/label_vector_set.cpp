@@ -41,7 +41,7 @@ std::unique_ptr<IOldRegressionPredictor> LabelVectorSet::createRegressionPredict
 }
 
 std::unique_ptr<IOldProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(
-        const IProbabilityPredictorFactory& factory, const RuleList& model) const {
+        const IOldProbabilityPredictorFactory& factory, const RuleList& model) const {
     return factory.create(model, this);
 }
 
