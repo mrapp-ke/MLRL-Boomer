@@ -5,6 +5,7 @@
 
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_csr.hpp"
+#include "common/input/feature_matrix_row_wise.hpp"
 #include "common/model/rule_list.hpp"
 #include "common/prediction/label_vector_set.hpp"
 #include <memory>
