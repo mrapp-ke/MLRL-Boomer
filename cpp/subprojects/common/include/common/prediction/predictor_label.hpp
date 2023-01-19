@@ -32,3 +32,8 @@ typedef IPredictor<BinarySparsePredictionMatrix> ISparseLabelPredictor;
  * Defines an interface for all classes that allow to create instances of the type `ISparseLabelPredictor`.
  */
 typedef IPredictorFactory<BinarySparsePredictionMatrix> ISparseLabelPredictorFactory;
+
+/**
+ * Defines an interface for all classes that allow to configure a `ISparseLabelPredictor`.
+ */
+typedef IPredictorConfig<BinarySparsePredictionMatrix> ISparseLabelPredictorConfig;
