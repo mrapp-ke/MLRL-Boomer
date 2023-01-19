@@ -16,3 +16,8 @@ typedef IPredictor<DensePredictionMatrix<float64>> IScorePredictor;
  * Defines an interface for all classes that allow to create instances of the type `IScorePredictor`.
  */
 typedef IPredictorFactory<DensePredictionMatrix<float64>> IScorePredictorFactory;
+
+/**
+ * Defines an interface for all classes that allow to configure a `IScorePredictor`.
+ */
+typedef IPredictorConfig<DensePredictionMatrix<float64>> IScorePredictorConfig;
