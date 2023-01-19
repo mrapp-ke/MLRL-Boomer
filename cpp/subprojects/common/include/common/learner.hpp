@@ -996,6 +996,8 @@ class MLRLCOMMON_API IRuleLearner {
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 
+        // TODO Add "canPredictSparseLabels"-functions
+
         /**
          * Creates and returns a predictor that may be used to predict sparse labels for given query examples. If the
          * prediction of labels is not supported by the rule learner, a `std::runtime_error` is thrown.
