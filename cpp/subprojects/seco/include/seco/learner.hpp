@@ -95,6 +95,7 @@ namespace seco {
                      *         configuration of the predictor that predicts whether individual labels of given query
                      *         examples are relevant or irrelevant
                      */
+                    // TODO Move to IRuleLearner::IConfig if possible
                     virtual std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() = 0;
 
                 public:
