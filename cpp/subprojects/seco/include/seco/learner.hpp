@@ -540,8 +540,21 @@ namespace seco {
                 const IRowWiseLabelMatrix& labelMatrix) const override;
 
             /**
+             * @see `AbstractRuleLearner::createLabelPredictorFactory`
+             */
+            std::unique_ptr<ILabelPredictorFactory> createLabelPredictorFactory(
+                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+
+            /**
+             * @see `AbstractRuleLearner::createSparseLabelPredictorFactory`
+             */
+            std::unique_ptr<ISparseLabelPredictorFactory> createSparseLabelPredictorFactory(
+                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+
+            /**
              * @see `AbstractRuleLearner::createClassificationPredictorFactory`
              */
+            // TODO Remove
             std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
                 const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 

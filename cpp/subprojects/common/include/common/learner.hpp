@@ -1548,6 +1548,32 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         virtual std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(const IRowWiseLabelMatrix& labelMatrix) const = 0;
 
         /**
+         * May be overridden by subclasses in order to create the `ILabelPredictorFactory` to be used by the rule
+         * learner for predicting labels.
+         *
+         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples
+         * @param numLabels     The number of labels to predict for
+         * @return              An unique pointer to an object of type `ILabelPredictorFactory` that has been created or
+         *                      a null pointer, if the rule learner does not support to predict labels
+         */
+        virtual std::unique_ptr<ILabelPredictorFactory> createLabelPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
+
+        /**
+         * May be overridden by subclasses in order to create the `ISparseLabelPredictorFactory` to be used by the rule
+         * learner for predicting sparse labels.
+         *
+         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples
+         * @param numLabels     The number of labels to predict for
+         * @return              An unique pointer to an object of type `ISparseLabelPredictorFactory` that has been
+         *                      created or a null pointer, if the rule learner does not support to predict sparse labels
+         */
+        virtual std::unique_ptr<ISparseLabelPredictorFactory> createSparseLabelPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
+
+        /**
          * May be overridden by subclasses in order to create the `IClassificationPredictorFactory` to be used by the
          * rule learner for predicting labels.
          *
@@ -1557,8 +1583,22 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * @return              An unique pointer to an object of type `IClassificationPredictorFactory` that has been
          *                      created or a null pointer, if the rule learner does not support to predict binary labels
          */
+        // TODO Remove
         virtual std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const;
+
+        /**
+         * May be overridden by subclasses in order to create the `IScorePredictorFactory` to be used by the rule
+         * learner for predicting regression scores.
+         *
+         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples
+         * @param numLabels     The number of labels to predict for
+         * @return              An unique pointer to an object of type `IScorePredictorFactory` that has been created or
+         *                      a null pointer, if the rule learner does not support to predict regression scores
+         */
+        virtual std::unique_ptr<IScorePredictorFactory> createScorePredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
 
         /**
          * May be overridden by subclasses in order to create the `IRegressionPredictorFactory` to be used by the rule
@@ -1571,8 +1611,23 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          *                      created or a null pointer, if the rule learner does not support to predict regression
          *                      scores
          */
+        // TODO Remove
         virtual std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const;
+
+        /**
+         * May be overridden by subclasses in order to create the `IProbabilityPredictorFactory` to be used by the rule
+         * learner for predicting probability estimates.
+         *
+         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples
+         * @param numLabels     The number of labels to predict for
+         * @return              An unique pointer to an object of type `IProbabilityPredictorFactory` that has been
+         *                      created or a null pointer, if the rule learner does not support to predict probability
+         *                      estimates
+         */
+        virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
 
         /**
          * May be overridden by subclasses in order to create the `IProbabilityPredictorFactory` to be used by the rule
@@ -1585,6 +1640,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          *                      created or a null pointer, if the rule learner does not support to predict probability
          *                      estimates
          */
+        // TODO Remove
         virtual std::unique_ptr<IOldProbabilityPredictorFactory> createOldProbabilityPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const;
 

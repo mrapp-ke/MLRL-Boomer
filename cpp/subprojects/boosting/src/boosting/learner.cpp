@@ -124,17 +124,44 @@ namespace boosting {
         return std::make_unique<RuleListBuilderFactory>();
     }
 
+    std::unique_ptr<ILabelPredictorFactory> AbstractBoostingRuleLearner::createLabelPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        // TODO Implement
+        return nullptr;
+    }
+
+    std::unique_ptr<ISparseLabelPredictorFactory> AbstractBoostingRuleLearner::createSparseLabelPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        // TODO Implement
+        return nullptr;
+    }
+
+    // TODO Remove
     std::unique_ptr<IClassificationPredictorFactory> AbstractBoostingRuleLearner::createClassificationPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
         return config_.getClassificationPredictorConfigPtr()->createClassificationPredictorFactory(featureMatrix,
                                                                                                    numLabels);
     }
 
+    std::unique_ptr<IScorePredictorFactory> AbstractBoostingRuleLearner::createScorePredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        // TODO Implement
+        return nullptr;
+    }
+
+    // TODO Remove
     std::unique_ptr<IRegressionPredictorFactory> AbstractBoostingRuleLearner::createRegressionPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
         return config_.getRegressionPredictorConfigPtr()->createRegressionPredictorFactory(featureMatrix, numLabels);
     }
 
+    std::unique_ptr<IProbabilityPredictorFactory> AbstractBoostingRuleLearner::createProbabilityPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        // TODO Implement
+        return nullptr;
+    }
+
+    // TODO Remove
     std::unique_ptr<IOldProbabilityPredictorFactory> AbstractBoostingRuleLearner::createOldProbabilityPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
         return config_.getProbabilityPredictorConfigPtr()->createProbabilityPredictorFactory(featureMatrix, numLabels);
