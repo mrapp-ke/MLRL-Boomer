@@ -42,3 +42,23 @@ class IPredictor {
         virtual std::unique_ptr<PredictionMatrix> predict(const CsrConstView<const float32>& featureMatrix) const = 0;
 
 };
+
+/**
+ * Defines an interface for all classes that allow to configure a predictor.
+ */
+class IPredictorConfig {
+
+    public:
+
+        virtual ~IPredictorConfig() { };
+
+        /**
+         * Returns whether the predictor needs access to the label vectors that are encountered in the training data or
+         * not.
+         *
+         * @return True, if the predictor needs access to the label vectors that are encountered in the training data,
+         *         false otherwise
+         */
+        virtual bool isLabelVectorSetNeeded() const = 0;
+
+};
