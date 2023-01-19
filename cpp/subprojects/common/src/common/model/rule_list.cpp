@@ -3,7 +3,7 @@
 #include "common/output/predictor_classification.hpp"
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
-#include "common/output/label_space_info.hpp"
+#include "common/prediction/label_space_info.hpp"
 
 
 RuleList::Rule::Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr)

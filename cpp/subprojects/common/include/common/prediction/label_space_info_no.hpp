@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/output/label_space_info.hpp"
+#include "common/prediction/label_space_info.hpp"
 
 
 /**

@@ -5,7 +5,7 @@
 
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_csr.hpp"
-#include "common/output/prediction_matrix_dense.hpp"
+#include "common/prediction/prediction_matrix_dense.hpp"
 #include <memory>
 
 

@@ -1,8 +1,8 @@
-#include "common/output/label_space_info_no.hpp"
 #include "common/output/predictor_classification.hpp"
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
 #include "common/model/rule_list.hpp"
+#include "common/prediction/label_space_info_no.hpp"
 
 
 /**

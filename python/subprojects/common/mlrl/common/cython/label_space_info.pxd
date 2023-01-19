@@ -4,13 +4,13 @@ from libcpp.cast cimport dynamic_cast
 from libcpp.memory cimport unique_ptr
 
 
-cdef extern from "common/output/label_space_info.hpp" nogil:
+cdef extern from "common/prediction/label_space_info.hpp" nogil:
 
     cdef cppclass ILabelSpaceInfo:
         pass
 
 
-cdef extern from "common/output/label_space_info_no.hpp" nogil:
+cdef extern from "common/prediction/label_space_info_no.hpp" nogil:
 
     cdef cppclass INoLabelSpaceInfo(ILabelSpaceInfo):
         pass
@@ -43,7 +43,7 @@ cdef extern from "common/input/label_vector.hpp" nogil:
 ctypedef void (*LabelVectorVisitor)(const LabelVector&)
 
 
-cdef extern from "common/output/label_vector_set.hpp" nogil:
+cdef extern from "common/prediction/label_vector_set.hpp" nogil:
 
     cdef cppclass ILabelVectorSet(ILabelSpaceInfo):
 
@@ -64,7 +64,7 @@ ctypedef ILabelVectorSet* LabelVectorSetPtr
 
 cdef extern from *:
     """
-    #include "common/output/label_vector_set.hpp"
+    #include "common/prediction/label_vector_set.hpp"
 
 
     typedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&);

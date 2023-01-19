@@ -9,7 +9,7 @@
 #include "boosting/rule_evaluation/regularization_no.hpp"
 #include "boosting/rule_evaluation/rule_compare_function.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
-#include "common/output/label_space_info_no.hpp"
+#include "common/prediction/label_space_info_no.hpp"
 
 
 namespace boosting {

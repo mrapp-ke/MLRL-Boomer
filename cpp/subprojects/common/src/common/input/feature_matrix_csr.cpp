@@ -1,9 +1,9 @@
 #include "common/input/feature_matrix_csr.hpp"
-#include "common/output/prediction_matrix_dense.hpp"
-#include "common/output/prediction_matrix_sparse_binary.hpp"
 #include "common/output/predictor_classification.hpp"
 #include "common/output/predictor_regression.hpp"
 #include "common/output/predictor_probability.hpp"
+#include "common/prediction/prediction_matrix_dense.hpp"
+#include "common/prediction/prediction_matrix_sparse_binary.hpp"
 
 
 CsrFeatureMatrix::CsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices,

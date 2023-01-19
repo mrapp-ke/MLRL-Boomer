@@ -5,7 +5,7 @@
 #include "seco/output/predictor_classification_label_wise.hpp"
 #include "seco/rule_evaluation/head_type_single.hpp"
 #include "seco/rule_evaluation/rule_compare_function.hpp"
-#include "common/output/label_space_info_no.hpp"
+#include "common/prediction/label_space_info_no.hpp"
 
 
 namespace seco {
