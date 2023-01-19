@@ -728,7 +728,7 @@ namespace boosting {
             /**
              * @see `AbstractRuleLearner::createProbabilityPredictorFactory`
              */
-            std::unique_ptr<IOldProbabilityPredictorFactory> createProbabilityPredictorFactory(
+            std::unique_ptr<IOldProbabilityPredictorFactory> createOldProbabilityPredictorFactory(
                 const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         public:
