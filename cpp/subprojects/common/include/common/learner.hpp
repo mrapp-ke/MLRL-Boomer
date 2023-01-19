@@ -998,10 +998,10 @@ class MLRLCOMMON_API IRuleLearner {
 
         /**
          * Creates and returns a predictor that may be used to predict sparse labels for given query examples. If the
-         * prediction of sparse labels is not supported by the rule learner, a `std::runtime_error` is thrown.
+         * prediction of labels is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception   The exception that is thrown if the prediction of sparse labels is not
-         *                                  supported by the rule learner
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of labels is not supported by
+         *                                  the rule learner
          * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
          *                                  row-wise access to the feature values of the query examples
          * @param trainingResult            A reference to an object of type `ITrainingResult` that provides access to
@@ -1015,10 +1015,10 @@ class MLRLCOMMON_API IRuleLearner {
 
         /**
          * Creates and returns a predictor that may be used to predict sparse labels for given query examples. If the
-         * prediction of sparse labels is not supported by the rule learner, a `std::runtime_error` is thrown.
+         * prediction of labels is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception   The exception that is thrown if the prediction of sparse labels is not
-         *                                  supported by the rule learner
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of labels is not supported by
+         *                                  the rule learner
          * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
          *                                  row-wise access to the feature values of the query examples
          * @param ruleModel                 A reference to an object of type `IRuleModel` that should be used to obtain
