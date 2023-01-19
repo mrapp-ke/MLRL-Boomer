@@ -88,6 +88,25 @@ namespace seco {
                     virtual std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() = 0;
 
                     /**
+                     * Returns an unique pointer to the configuration of the predictor that allows to predict labels.
+                     *
+                     * @return A reference to an unique pointer of type `ILabelPredictorConfig` that stores the
+                     *         configuration of the predictor that allows to predict labels
+                     */
+                    // TODO Move to IRuleLearner::IConfig if possible
+                    virtual std::unique_ptr<ILabelPredictorConfig>& getLabelPredictorConfigPtr() = 0;
+
+                    /**
+                     * Returns an unique pointer to the configuration of the predictor that allows to predict sparse
+                     * labels.
+                     *
+                     * @return A reference to an unique pointer of type `ISparseLabelPredictorConfig` that stores the
+                     *         configuration of the predictor that allows to predict sparse labels
+                     */
+                    // TODO Move to IRuleLearner::IConfig if possible
+                    virtual std::unique_ptr<ISparseLabelPredictorConfig>& getSparseLabelPredictorConfigPtr() = 0;
+
+                    /**
                      * Returns an unique pointer to the configuration of the predictor that predicts whether individual
                      * labels of given query examples are relevant or irrelevant.
                      *
@@ -95,7 +114,7 @@ namespace seco {
                      *         configuration of the predictor that predicts whether individual labels of given query
                      *         examples are relevant or irrelevant
                      */
-                    // TODO Move to IRuleLearner::IConfig if possible
+                    // TODO Remove
                     virtual std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() = 0;
 
                 public:
@@ -468,9 +487,21 @@ namespace seco {
                     std::unique_ptr<ILiftFunctionConfig> liftFunctionConfigPtr_;
 
                     /**
+                     * An unique pointer that stores the configuration of the predictor that allows to predict labels.
+                     */
+                    std::unique_ptr<ILabelPredictorConfig> labelPredictorConfigPtr_;
+
+                    /**
+                     * An unique pointer that stores the configuration of the predictor that allows to predict sparse
+                     * labels.
+                     */
+                    std::unique_ptr<ISparseLabelPredictorConfig> sparseLabelPredictorConfigPtr_;
+
+                    /**
                      * An unique pointer that stores the configuration of the predictor that is used to predict binary
                      * labels.
                      */
+                    // TODO Remove
                     std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
 
                 private:
@@ -485,6 +516,11 @@ namespace seco {
 
                     std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() override final;
 
+                    std::unique_ptr<ILabelPredictorConfig>& getLabelPredictorConfigPtr() override final;
+
+                    std::unique_ptr<ISparseLabelPredictorConfig>& getSparseLabelPredictorConfigPtr() override final;
+
+                    // TODO Remove
                     std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() override final;
 
                 public:
