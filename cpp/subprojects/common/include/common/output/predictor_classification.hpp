@@ -49,7 +49,7 @@ class IClassificationPredictorFactory {
  * Defines an interface for all classes that allow to configure a predictor that predicts whether individual labels of
  * given query examples are relevant or irrelevant.
  */
-class IClassificationPredictorConfig : public IPredictorConfig {
+class IClassificationPredictorConfig : public IOldPredictorConfig {
 
     public:
 
