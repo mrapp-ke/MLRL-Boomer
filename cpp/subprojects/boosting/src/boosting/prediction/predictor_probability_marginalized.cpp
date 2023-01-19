@@ -1,4 +1,4 @@
-#include "boosting/output/predictor_probability_marginalized.hpp"
+#include "boosting/prediction/predictor_probability_marginalized.hpp"
 #include "common/math/math.hpp"
 #include "predictor_common.hpp"
 #include "predictor_probability_common.hpp"

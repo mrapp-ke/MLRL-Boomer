@@ -1,4 +1,4 @@
-#include "boosting/output/predictor_classification_example_wise.hpp"
+#include "boosting/prediction/predictor_classification_example_wise.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 #include <algorithm>
