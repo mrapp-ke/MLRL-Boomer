@@ -100,6 +100,25 @@ namespace boosting {
                     virtual std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() = 0;
 
                     /**
+                     * Returns an unique pointer to the configuration of the predictor that allows to predict labels.
+                     *
+                     * @return A reference to an unique pointer of type `ILabelPredictorConfig` that stores the
+                     *         configuration of the predictor that allows to predict labels
+                     */
+                    // TODO Move to IRuleLearner::IConfig if possible
+                    virtual std::unique_ptr<ILabelPredictorConfig>& getLabelPredictorConfigPtr() = 0;
+
+                    /**
+                     *  Returns an unique pointer to the configuration of the predictor that allows to predict sparse
+                     * labels.
+                     *
+                     * @return A reference to an unique pointer of type `ISparseLabelPredictorConfig` that stores the
+                     *         configuration of the predictor that allows to predict sparse labels
+                     */
+                    // TODO Move to IRuleLearner::IConfig if possible
+                    virtual std::unique_ptr<ISparseLabelPredictorConfig>& getSparseLabelPredictorConfigPtr() = 0;
+
+                    /**
                      * Returns an unique pointer to the configuration of the predictor that predicts whether individual
                      * labels of given query examples are relevant or irrelevant.
                      *
@@ -107,8 +126,18 @@ namespace boosting {
                      *         configuration of the predictor that predicts whether individual labels of given query
                      *         examples are relevant or irrelevant
                      */
-                    // TODO Move to IRuleLearner::IConfig if possible
+                    // TODO Remove
                     virtual std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() = 0;
+
+                    /**
+                     * Returns an unique pointer to the configuration of the predictor that allows to predict
+                     * regression scores.
+                     *
+                     * @return A reference to an unique pointer of type `IScorePredictorConfig` that stores the
+                     *         configuration of the predictor that allows to predict labels
+                     */
+                    // TODO Move to IRuleLearner::IConfig if possible
+                    virtual std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() = 0;
 
                     /**
                      * Returns an unique pointer to the configuration of the predictor that predicts regression scores
@@ -117,8 +146,18 @@ namespace boosting {
                      * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
                      *         configuration of the predictor that predicts regression scores for individual labels
                      */
-                    // TODO Move to IRuleLearner::IConfig if possible
+                    // TODO Remove
                     virtual std::unique_ptr<IRegressionPredictorConfig>& getRegressionPredictorConfigPtr() = 0;
+
+                    /**
+                     * Returns an unique pointer to the configuration of the predictor that allows to predict
+                     * probability estimates.
+                     *
+                     * @return A reference to an unique pointer of type `IProbabilityPredictorConfig` that stores the
+                     *         configuration of the predictor that allows to predict probability estimates
+                     */
+                    // TODO Move to IRuleLearner::IConfig if possible
+                    virtual std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() = 0;
 
                     /**
                      * Returns an unique pointer to the configuration of the predictor that predicts probability
@@ -127,8 +166,8 @@ namespace boosting {
                      * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
                      *         configuration of the predictor that predicts probability estimates for individual labels
                      */
-                    // TODO Move to IRuleLearner::IConfig if possible
-                    virtual std::unique_ptr<IOldProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() = 0;
+                    // TODO Remove
+                    virtual std::unique_ptr<IOldProbabilityPredictorConfig>& getOldProbabilityPredictorConfigPtr() = 0;
 
                 public:
 
@@ -514,6 +553,7 @@ namespace boosting {
                      * predicted.
                      */
                     virtual void useExampleWiseClassificationPredictor() {
+                        // TODO Re-implement
                         std::unique_ptr<IClassificationPredictorConfig>& classificationPredictorConfigPtr =
                             this->getClassificationPredictorConfigPtr();
                         classificationPredictorConfigPtr = std::make_unique<ExampleWiseClassificationPredictorConfig>(
@@ -541,6 +581,7 @@ namespace boosting {
                      * F-measure maximizer (GFM).
                      */
                     virtual void useGfmClassificationPredictor() {
+                        // TODO Re-implement
                         std::unique_ptr<IClassificationPredictorConfig>& classificationPredictorConfigPtr =
                             this->getClassificationPredictorConfigPtr();
                         classificationPredictorConfigPtr = std::make_unique<GfmClassificationPredictorConfig>(
@@ -570,8 +611,9 @@ namespace boosting {
                      * by the total sum of all distances.
                      */
                     virtual void useMarginalizedProbabilityPredictor() {
+                        // TODO Re-implement
                         std::unique_ptr<IOldProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
-                            this->getProbabilityPredictorConfigPtr();
+                            this->getOldProbabilityPredictorConfigPtr();
                         probabilityPredictorConfigPtr = std::make_unique<MarginalizedProbabilityPredictorConfig>(
                             this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
@@ -628,22 +670,48 @@ namespace boosting {
                     std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
 
                     /**
+                     * An unique pointer that stores the configuration of the predictor that allows to predict labels.
+                     */
+                    std::unique_ptr<ILabelPredictorConfig> labelPredictorConfigPtr_;
+
+                    /**
+                     * An unique pointer that stores the configuration of the predictor that allows to predict sparse
+                     * labels.
+                     */
+                    std::unique_ptr<ISparseLabelPredictorConfig> sparseLabelPredictorConfigPtr_;
+
+                    /**
                      * An unique pointer that stores the configuration of the predictor that is used to predict binary
                      * labels.
                      */
+                    // TODO Remove
                     std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
+
+                    /**
+                     * An unique pointer that stores the configuration of the predictor that allows to predict
+                     * regression scores.
+                     */
+                    std::unique_ptr<IScorePredictorConfig> scorePredictorConfigPtr_;
 
                     /**
                      * An unique pointer that stores the configuration of the predictor that is used to predict
                      * regression scores.
                      */
+                    // TODO Remove
                     std::unique_ptr<IRegressionPredictorConfig> regressionPredictorConfigPtr_;
+
+                    /**
+                     * An unique pointer that stores the configuration of the predictor that allows to predict
+                     * probability estimates.
+                     */
+                    std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
 
                     /**
                      * An unique pointer that stores the configuration of the predictor that is used to predict
                      * probability estimates.
                      */
-                    std::unique_ptr<IOldProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
+                    // TODO Remove
+                    std::unique_ptr<IOldProbabilityPredictorConfig> oldProbabilityPredictorConfigPtr_;
 
                 private:
 
@@ -659,11 +727,22 @@ namespace boosting {
 
                     std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() override final;
 
+                    std::unique_ptr<ILabelPredictorConfig>& getLabelPredictorConfigPtr() override final;
+
+                    std::unique_ptr<ISparseLabelPredictorConfig>& getSparseLabelPredictorConfigPtr() override final;
+
+                    // TODO Remove
                     std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() override final;
 
+                    std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() override final;
+
+                    // TODO Remove
                     std::unique_ptr<IRegressionPredictorConfig>& getRegressionPredictorConfigPtr() override final;
 
-                    std::unique_ptr<IOldProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() override final;
+                    std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() override final;
+
+                    // TODO Remove
+                    std::unique_ptr<IOldProbabilityPredictorConfig>& getOldProbabilityPredictorConfigPtr() override final;
 
                 public:
 

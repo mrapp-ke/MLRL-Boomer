@@ -82,7 +82,7 @@ namespace boosting {
     }
 
     void Boomer::Config::useAutomaticProbabilityPredictor() {
-        probabilityPredictorConfigPtr_ =
+        oldProbabilityPredictorConfigPtr_ =
             std::make_unique<AutomaticProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
