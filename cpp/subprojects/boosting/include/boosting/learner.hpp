@@ -107,6 +107,7 @@ namespace boosting {
                      *         configuration of the predictor that predicts whether individual labels of given query
                      *         examples are relevant or irrelevant
                      */
+                    // TODO Move to IRuleLearner::IConfig if possible
                     virtual std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() = 0;
 
                     /**
@@ -116,6 +117,7 @@ namespace boosting {
                      * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
                      *         configuration of the predictor that predicts regression scores for individual labels
                      */
+                    // TODO Move to IRuleLearner::IConfig if possible
                     virtual std::unique_ptr<IRegressionPredictorConfig>& getRegressionPredictorConfigPtr() = 0;
 
                     /**
@@ -125,6 +127,7 @@ namespace boosting {
                      * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
                      *         configuration of the predictor that predicts probability estimates for individual labels
                      */
+                    // TODO Move to IRuleLearner::IConfig if possible
                     virtual std::unique_ptr<IOldProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() = 0;
 
                 public:
