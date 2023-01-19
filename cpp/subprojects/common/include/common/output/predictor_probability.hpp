@@ -48,11 +48,11 @@ class IOldProbabilityPredictorFactory {
  * Defines an interface for all classes that allow to configure a predictor that predicts label-wise probabilities for
  * given query examples.
  */
-class IProbabilityPredictorConfig : public IOldPredictorConfig {
+class IOldProbabilityPredictorConfig : public IOldPredictorConfig {
 
     public:
 
-        virtual ~IProbabilityPredictorConfig() { };
+        virtual ~IOldProbabilityPredictorConfig() { };
 
         /**
          * Creates and returns a new object of type `IProbabilityPredictorFactory` according to the specified

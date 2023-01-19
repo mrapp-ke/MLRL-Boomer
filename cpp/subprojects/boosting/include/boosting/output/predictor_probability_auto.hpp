@@ -14,7 +14,7 @@ namespace boosting {
      * Allows to configure a predictor that automatically decides for a method that is used to predict probabilities for
      * given query examples, which estimate the chance of individual labels to be relevant.
      */
-    class AutomaticProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
+    class AutomaticProbabilityPredictorConfig final : public IOldProbabilityPredictorConfig {
 
         private:
 
