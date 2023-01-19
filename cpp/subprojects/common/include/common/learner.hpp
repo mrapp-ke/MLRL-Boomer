@@ -19,6 +19,9 @@
 #include "common/post_optimization/post_optimization_phase_list.hpp"
 #include "common/post_optimization/post_optimization_sequential.hpp"
 #include "common/post_optimization/post_optimization_unused_rule_removal.hpp"
+#include "common/prediction/predictor_label.hpp"
+#include "common/prediction/predictor_probability.hpp"
+#include "common/prediction/predictor_score.hpp"
 #include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
@@ -924,6 +927,44 @@ class MLRLCOMMON_API IRuleLearner {
         virtual bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
         /**
+         * Creates and returns a predictor that may be used to predict labels for given query examples. If the
+         * prediction of labels is not supported by the rule learner, a `std::runtime_error` is thrown.
+         *
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of labels is not supported by
+         *                                  the rule learner
+         * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
+         *                                  row-wise access to the feature values of the query examples
+         * @param trainingResult            A reference to an object of type `ITrainingResult` that provides access to
+         *                                  the model and additional information that should be used to obtain
+         *                                  predictions
+         * @return                          An unique pointer to an object of type `ILabelPredictor` that may be used to
+         *                                  predict labels for the given query examples
+         */
+        virtual std::unique_ptr<ILabelPredictor> createLabelPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                      const ITrainingResult& trainingResult) const = 0;
+
+        /**
+         * Creates and returns a predictor that may be used to predict labels for given query examples. If the
+         * prediction of labels is not supported by the rule learner, a `std::runtime_error` is thrown.
+         *
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of labels is not supported by
+         *                                  the rule learner
+         * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
+         *                                  row-wise access to the feature values of the query examples
+         * @param ruleModel                 A reference to an object of type `IRuleModel` that should be used to obtain
+         *                                  predictions
+         * @param labelSpaceInfo            A reference to an object of type `ILabelSpaceInfo` that provides information
+         *                                  about the label space that may be used as a basis for obtaining predictions
+         * @param numLabels                 The number of labels to predict for
+         * @return                          An unique pointer to an object of type `ILabelPredictor` that may be used to
+         *                                  predict labels for the given query examples
+         */
+        virtual std::unique_ptr<ILabelPredictor> createLabelPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                      const IRuleModel& ruleModel,
+                                                                      const ILabelSpaceInfo& labelSpaceInfo,
+                                                                      uint32 numLabels) const = 0;
+
+        /**
          * Obtains and returns dense predictions for given query examples.
          *
          * @param featureMatrix     A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise
@@ -933,6 +974,7 @@ class MLRLCOMMON_API IRuleLearner {
          * @return                  An unique pointer to an object of type `DensePredictionMatrix` that stores the
          *                          predictions
          */
+        // TODO Remove
         virtual std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(
             const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
 
@@ -949,7 +991,45 @@ class MLRLCOMMON_API IRuleLearner {
          * @return                  An unique pointer to an object of type `DensePredictionMatrix` that stores the
          *                          predictions
          */
+        // TODO Remove
         virtual std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(
+            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
+
+        /**
+         * Creates and returns a predictor that may be used to predict sparse labels for given query examples. If the
+         * prediction of sparse labels is not supported by the rule learner, a `std::runtime_error` is thrown.
+         *
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of sparse labels is not
+         *                                  supported by the rule learner
+         * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
+         *                                  row-wise access to the feature values of the query examples
+         * @param trainingResult            A reference to an object of type `ITrainingResult` that provides access to
+         *                                  the model and additional information that should be used to obtain
+         *                                  predictions
+         * @return                          An unique pointer to an object of type `ISparseLabelPredictor` that may be
+         *                                  used to predict sparse labels for the given query examples
+         */
+        virtual std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(
+            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
+
+        /**
+         * Creates and returns a predictor that may be used to predict sparse labels for given query examples. If the
+         * prediction of sparse labels is not supported by the rule learner, a `std::runtime_error` is thrown.
+         *
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of sparse labels is not
+         *                                  supported by the rule learner
+         * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
+         *                                  row-wise access to the feature values of the query examples
+         * @param ruleModel                 A reference to an object of type `IRuleModel` that should be used to obtain
+         *                                  predictions
+         * @param labelSpaceInfo            A reference to an object of type `ILabelSpaceInfo` that provides information
+         *                                  about the label space that may be used as a basis for obtaining predictions
+         * @param numLabels                 The number of labels to predict for
+         * @return                          An unique pointer to an object of type `ISparseLabelPredictor` that may be
+         *                                  used to predict sparse labels for the given query examples
+         */
+        virtual std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 
@@ -963,6 +1043,7 @@ class MLRLCOMMON_API IRuleLearner {
          * @return                  An unique pointer to an object of type `BinarySparsePredictionMatrix` that stores
          *                          the predictions
          */
+        // TODO Remove
         virtual std::unique_ptr<BinarySparsePredictionMatrix> predictSparseLabels(
             const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
 
@@ -979,6 +1060,7 @@ class MLRLCOMMON_API IRuleLearner {
          * @return                  An unique pointer to an object of type `BinarySparsePredictionMatrix` that stores
          *                          the predictions
          */
+        // TODO Remove
         virtual std::unique_ptr<BinarySparsePredictionMatrix> predictSparseLabels(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
@@ -1006,6 +1088,44 @@ class MLRLCOMMON_API IRuleLearner {
         virtual bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
         /**
+         * Creates and returns a predictor that may be used to predict regression scores for given query examples. If
+         * the prediction of regression scores is not supported by the rule learner, a `std::runtime_error` is thrown.
+         *
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of regression scores is not
+         *                                  supported by the rule learner
+         * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
+         *                                  row-wise access to the feature values of the query examples
+         * @param trainingResult            A reference to an object of type `ITrainingResult` that provides access to
+         *                                  the model and additional information that should be used to obtain
+         *                                  predictions
+         * @return                          An unique pointer to an object of type `IScorePredictor` that may be used to
+         *                                  predict regression scores for the given query examples
+         */
+        virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                      const ITrainingResult& trainingResult) const = 0;
+
+        /**
+         * Creates and returns a predictor that may be used to predict regression scores for given query examples. If
+         * the prediction of regression scores is not supported by the rule learner, a `std::runtime_error` is thrown.
+         *
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of regression scores is not
+         *                                  supported by the rule learner
+         * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
+         *                                  row-wise access to the feature values of the query examples
+         * @param ruleModel                 A reference to an object of type `IRuleModel` that should be used to obtain
+         *                                  predictions
+         * @param labelSpaceInfo            A reference to an object of type `ILabelSpaceInfo` that provides information
+         *                                  about the label space that may be used as a basis for obtaining predictions
+         * @param numLabels                 The number of labels to predict for
+         * @return                          An unique pointer to an object of type `IScorePredictor` that may be used to
+         *                                  predict regression scores for the given query examples
+         */
+        virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                      const IRuleModel& ruleModel,
+                                                                      const ILabelSpaceInfo& labelSpaceInfo,
+                                                                      uint32 numLabels) const = 0;
+
+        /**
          * Obtains and returns regression scores for given query examples. If the prediction of regression scores is not
          * supported by the rule learner, a `std::runtime_error` is thrown.
          *
@@ -1016,6 +1136,7 @@ class MLRLCOMMON_API IRuleLearner {
          * @return                  An unique pointer to an object of type `DensePredictionMatrix` that stores the
          *                          predictions
          */
+        // TODO Remove
         virtual std::unique_ptr<DensePredictionMatrix<float64>> predictScores(
             const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
 
@@ -1033,6 +1154,7 @@ class MLRLCOMMON_API IRuleLearner {
          * @return                  An unique pointer to an object of type `DensePredictionMatrix` that stores the
          *                          predictions
          */
+        // TODO Remove
         virtual std::unique_ptr<DensePredictionMatrix<float64>> predictScores(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
@@ -1060,6 +1182,45 @@ class MLRLCOMMON_API IRuleLearner {
         virtual bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
         /**
+         * Creates and returns a predictor that may be used to predict probability estimates for given query examples.
+         * If the prediction of probability estimates is not supported by the rule learner, a `std::runtime_error` is
+         * thrown.
+         *
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of probability estimates is
+         *                                  not supported by the rule learner
+         * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
+         *                                  row-wise access to the feature values of the query examples
+         * @param trainingResult            A reference to an object of type `ITrainingResult` that provides access to
+         *                                  the model and additional information that should be used to obtain
+         *                                  predictions
+         * @return                          An unique pointer to an object of type `IProbabilityPredictor` that may be
+         *                                  used to predict probability estimates for the given query examples
+         */
+        virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
+            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
+
+        /**
+         * Creates and returns a predictor that may be used to predict probability estimates for given query examples.
+         * If the prediction of probability estimates is not supported by the rule learner, a `std::runtime_error` is
+         * thrown.
+         *
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of probability estimates is
+         *                                  not supported by the rule learner
+         * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
+         *                                  row-wise access to the feature values of the query examples
+         * @param ruleModel                 A reference to an object of type `IRuleModel` that should be used to obtain
+         *                                  predictions
+         * @param labelSpaceInfo            A reference to an object of type `ILabelSpaceInfo` that provides information
+         *                                  about the label space that may be used as a basis for obtaining predictions
+         * @param numLabels                 The number of labels to predict for
+         * @return                          An unique pointer to an object of type `IProbabilityPredictor` that may be
+         *                                  used to predict probability estimates for the given query examples
+         */
+        virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
+            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
+
+        /**
          * Obtains and returns probability estimates for given query examples. If the prediction of probabilities is not
          * supported by the rule learner, a `std::runtime_error` is thrown.
          *
@@ -1070,6 +1231,7 @@ class MLRLCOMMON_API IRuleLearner {
          * @return                  An unique pointer to an object of type `DensePredictionMatrix` that stores the
          *                          predictions
          */
+        // TODO Remove
         virtual std::unique_ptr<DensePredictionMatrix<float64>> predictProbabilities(
             const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
 
@@ -1087,6 +1249,7 @@ class MLRLCOMMON_API IRuleLearner {
          * @return                  An unique pointer to an object of type `DensePredictionMatrix` that stores the
          *                          predictions
          */
+        // TODO Remove
         virtual std::unique_ptr<DensePredictionMatrix<float64>> predictProbabilities(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
@@ -1442,16 +1605,36 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
+        std::unique_ptr<ILabelPredictor> createLabelPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                              const ITrainingResult& trainingResult) const override;
+
+        std::unique_ptr<ILabelPredictor> createLabelPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                              const IRuleModel& ruleModel,
+                                                              const ILabelSpaceInfo& labelSpaceInfo,
+                                                              uint32 numLabels) const override;
+
+        // TODO Remove
         std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(
             const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
 
+        // TODO Remove
         std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
 
+        std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(
+            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
+
+        std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                          const IRuleModel& ruleModel,
+                                                                          const ILabelSpaceInfo& labelSpaceInfo,
+                                                                          uint32 numLabels) const override;
+
+        // TODO Remove
         std::unique_ptr<BinarySparsePredictionMatrix> predictSparseLabels(
             const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
 
+        // TODO Remove
         std::unique_ptr<BinarySparsePredictionMatrix> predictSparseLabels(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
@@ -1461,9 +1644,19 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
+        std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                              const ITrainingResult& trainingResult) const override;
+
+        std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                              const IRuleModel& ruleModel,
+                                                              const ILabelSpaceInfo& labelSpaceInfo,
+                                                              uint32 numLabels) const override;
+
+        // TODO Remove
         std::unique_ptr<DensePredictionMatrix<float64>> predictScores(
             const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
 
+        // TODO Remove
         std::unique_ptr<DensePredictionMatrix<float64>> predictScores(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
@@ -1473,9 +1666,19 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
+        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
+            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
+
+        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                          const IRuleModel& ruleModel,
+                                                                          const ILabelSpaceInfo& labelSpaceInfo,
+                                                                          uint32 numLabels) const override;
+
+        // TODO Remove
         std::unique_ptr<DensePredictionMatrix<float64>> predictProbabilities(
             const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
 
+        // TODO Remove
         std::unique_ptr<DensePredictionMatrix<float64>> predictProbabilities(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
