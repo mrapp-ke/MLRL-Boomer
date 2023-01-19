@@ -110,16 +110,19 @@ namespace boosting {
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseClassificationPredictor() {
+        // TODO Re-implement
         classificationPredictorConfigPtr_ =
             std::make_unique<LabelWiseClassificationPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseRegressionPredictor() {
+        // TODO Re-implement
         regressionPredictorConfigPtr_ =
             std::make_unique<LabelWiseRegressionPredictorConfig>(parallelPredictionConfigPtr_);
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseProbabilityPredictor() {
+        // TODO Re-implement
         oldProbabilityPredictorConfigPtr_ =
             std::make_unique<LabelWiseProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
