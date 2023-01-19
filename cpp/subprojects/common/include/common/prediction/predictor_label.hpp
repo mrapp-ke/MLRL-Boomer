@@ -19,6 +19,11 @@ typedef IPredictor<DensePredictionMatrix<uint8>> ILabelPredictor;
 typedef IPredictorFactory<DensePredictionMatrix<uint8>> ILabelPredictorFactory;
 
 /**
+ * Defines an interface for all classes that allow to configure a `ILabelPredictor`.
+ */
+typedef IPredictorConfig<DensePredictionMatrix<uint8>> ILabelPredictorConfig;
+
+/**
  * Defines an interface for all classes that allow to predict sparse labels for given query examples.
  */
 typedef IPredictor<BinarySparsePredictionMatrix> ISparseLabelPredictor;
