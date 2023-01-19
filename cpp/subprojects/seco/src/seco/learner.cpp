@@ -40,6 +40,15 @@ namespace seco {
         return liftFunctionConfigPtr_;
     }
 
+    std::unique_ptr<ILabelPredictorConfig>& AbstractSeCoRuleLearner::Config::getLabelPredictorConfigPtr() {
+        return labelPredictorConfigPtr_;
+    }
+
+    std::unique_ptr<ISparseLabelPredictorConfig>& AbstractSeCoRuleLearner::Config::getSparseLabelPredictorConfigPtr() {
+        return sparseLabelPredictorConfigPtr_;
+    }
+
+    // TODO Remove
     std::unique_ptr<IClassificationPredictorConfig>& AbstractSeCoRuleLearner::Config::getClassificationPredictorConfigPtr() {
         return classificationPredictorConfigPtr_;
     }
@@ -71,6 +80,7 @@ namespace seco {
     }
 
     void AbstractSeCoRuleLearner::Config::useLabelWiseClassificationPredictor() {
+        // TODO Re-implement
         classificationPredictorConfigPtr_ =
             std::make_unique<LabelWiseClassificationPredictorConfig>(parallelPredictionConfigPtr_);
     }
@@ -106,6 +116,7 @@ namespace seco {
 
     std::unique_ptr<ILabelSpaceInfo> AbstractSeCoRuleLearner::createLabelSpaceInfo(
             const IRowWiseLabelMatrix& labelMatrix) const {
+        // TODO Use correct configs
         if (config_.getClassificationPredictorConfigPtr()->isLabelVectorSetNeeded()) {
             return createLabelVectorSet(labelMatrix);
         } else {
@@ -115,14 +126,12 @@ namespace seco {
 
     std::unique_ptr<ILabelPredictorFactory> AbstractSeCoRuleLearner::createLabelPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        // TODO Implement
-        return nullptr;
+        return config_.getLabelPredictorConfigPtr()->createPredictorFactory(featureMatrix, numLabels);
     }
 
     std::unique_ptr<ISparseLabelPredictorFactory> AbstractSeCoRuleLearner::createSparseLabelPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        // TODO Implement
-        return nullptr;
+        return config_.getSparseLabelPredictorConfigPtr()->createPredictorFactory(featureMatrix, numLabels);
     }
 
     // TODO Remove
