@@ -1,4 +1,4 @@
-#include "common/output/prediction_matrix_sparse_binary.hpp"
+#include "common/prediction/prediction_matrix_sparse_binary.hpp"
 #include <cstdlib>
 
 

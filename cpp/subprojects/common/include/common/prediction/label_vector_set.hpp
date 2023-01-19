@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "common/output/label_space_info.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/data/functions.hpp"
+#include "common/prediction/label_space_info.hpp"
 #include <unordered_map>
 #include <functional>
 #include <memory>

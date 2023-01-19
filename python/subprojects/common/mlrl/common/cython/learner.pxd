@@ -22,7 +22,7 @@ from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 
 
-cdef extern from "common/output/prediction_matrix_dense.hpp" nogil:
+cdef extern from "common/prediction/prediction_matrix_dense.hpp" nogil:
 
     cdef cppclass DensePredictionMatrix[T]:
 
@@ -31,7 +31,7 @@ cdef extern from "common/output/prediction_matrix_dense.hpp" nogil:
         T* release()
 
 
-cdef extern from "common/output/prediction_matrix_sparse_binary.hpp" nogil:
+cdef extern from "common/prediction/prediction_matrix_sparse_binary.hpp" nogil:
 
     cdef cppclass BinarySparsePredictionMatrix:
 

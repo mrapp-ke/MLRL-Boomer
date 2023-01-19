@@ -4,9 +4,9 @@
 #pragma once
 
 #include "common/input/feature_matrix.hpp"
-#include "common/output/label_vector_set.hpp"
 #include "common/output/predictor.hpp"
 #include "common/model/rule_list.hpp"
+#include "common/prediction/label_vector_set.hpp"
 
 
 /**

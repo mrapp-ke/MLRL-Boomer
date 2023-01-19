@@ -1,4 +1,4 @@
-#include "common/output/prediction_matrix_dense.hpp"
+#include "common/prediction/prediction_matrix_dense.hpp"
 #include <cstdlib>
 
 
