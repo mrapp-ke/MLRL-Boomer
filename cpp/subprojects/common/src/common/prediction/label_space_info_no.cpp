@@ -23,7 +23,7 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
         }
 
         std::unique_ptr<IOldProbabilityPredictor> createProbabilityPredictor(
-                const IProbabilityPredictorFactory& factory, const RuleList& model) const override {
+                const IOldProbabilityPredictorFactory& factory, const RuleList& model) const override {
             return factory.create(model, nullptr);
         }
 

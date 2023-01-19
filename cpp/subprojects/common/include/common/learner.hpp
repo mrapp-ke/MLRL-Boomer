@@ -1585,7 +1585,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          *                      created or a null pointer, if the rule learner does not support to predict probability
          *                      estimates
          */
-        virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
+        virtual std::unique_ptr<IOldProbabilityPredictorFactory> createProbabilityPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const;
 
     public:

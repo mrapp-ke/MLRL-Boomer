@@ -10,7 +10,7 @@ class IClassificationPredictorFactory;
 class IClassificationPredictor;
 class IRegressionPredictorFactory;
 class IOldRegressionPredictor;
-class IProbabilityPredictorFactory;
+class IOldProbabilityPredictorFactory;
 class IOldProbabilityPredictor;
 class RuleList;
 
@@ -59,6 +59,6 @@ class MLRLCOMMON_API ILabelSpaceInfo {
          * @return          An unique pointer to an object of type `IProbabilityPredictor` that has been created
          */
         virtual std::unique_ptr<IOldProbabilityPredictor> createProbabilityPredictor(
-            const IProbabilityPredictorFactory& factory, const RuleList& model) const = 0;
+            const IOldProbabilityPredictorFactory& factory, const RuleList& model) const = 0;
 
 };

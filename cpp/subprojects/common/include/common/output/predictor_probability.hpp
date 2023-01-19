@@ -24,11 +24,11 @@ class IOldProbabilityPredictor : public IOldPredictor<float64> {
 /**
  * Defines an interface for all factories that allow to create instances of the type `IProbabilityPredictor`.
  */
-class IProbabilityPredictorFactory {
+class IOldProbabilityPredictorFactory {
 
     public:
 
-        virtual ~IProbabilityPredictorFactory() { };
+        virtual ~IOldProbabilityPredictorFactory() { };
 
         /**
          * Creates and returns a new object of the type `IProbabilityPredictor`.
@@ -64,7 +64,7 @@ class IProbabilityPredictorConfig : public IOldPredictorConfig {
          * @return              An unique pointer to an object of type `IProbabilityPredictorFactory` that has been
          *                      created or a null pointer if the prediction of probabilities is not supported
          */
-        virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
+        virtual std::unique_ptr<IOldProbabilityPredictorFactory> createProbabilityPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
 };

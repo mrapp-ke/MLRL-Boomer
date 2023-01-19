@@ -153,7 +153,7 @@ std::unique_ptr<IOldRegressionPredictor> RuleList::createRegressionPredictor(
 }
 
 std::unique_ptr<IOldProbabilityPredictor> RuleList::createProbabilityPredictor(
-        const IProbabilityPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const {
+        const IOldProbabilityPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const {
     return labelSpaceInfo.createProbabilityPredictor(factory, *this);
 }
 
