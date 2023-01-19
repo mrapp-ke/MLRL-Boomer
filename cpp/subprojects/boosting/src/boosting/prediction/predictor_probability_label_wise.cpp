@@ -1,5 +1,5 @@
-#include "boosting/output/predictor_probability_label_wise.hpp"
-#include "boosting/output/probability_function.hpp"
+#include "boosting/prediction/predictor_probability_label_wise.hpp"
+#include "boosting/prediction/probability_function.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 

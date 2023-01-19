@@ -15,7 +15,7 @@ source_files = [
     'src/seco/lift_functions/lift_function_no.cpp',
     'src/seco/lift_functions/lift_function_peak.cpp',
     'src/seco/model/decision_list_builder.cpp',
-    'src/seco/output/predictor_classification_label_wise.cpp',
+    'src/seco/prediction/predictor_classification_label_wise.cpp',
     'src/seco/rule_evaluation/head_type_partial.cpp',
     'src/seco/rule_evaluation/head_type_single.cpp',
     'src/seco/rule_evaluation/rule_evaluation_label_wise_partial.cpp',

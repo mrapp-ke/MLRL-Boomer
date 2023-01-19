@@ -10,7 +10,7 @@
 #include "common/statistics/statistics_provider.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
-#include "boosting/output/probability_function.hpp"
+#include "boosting/prediction/probability_function.hpp"
 
 
 namespace boosting {
