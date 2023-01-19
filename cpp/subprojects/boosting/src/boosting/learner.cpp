@@ -135,7 +135,7 @@ namespace boosting {
         return config_.getRegressionPredictorConfigPtr()->createRegressionPredictorFactory(featureMatrix, numLabels);
     }
 
-    std::unique_ptr<IOldProbabilityPredictorFactory> AbstractBoostingRuleLearner::createProbabilityPredictorFactory(
+    std::unique_ptr<IOldProbabilityPredictorFactory> AbstractBoostingRuleLearner::createOldProbabilityPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
         return config_.getProbabilityPredictorConfigPtr()->createProbabilityPredictorFactory(featureMatrix, numLabels);
     }

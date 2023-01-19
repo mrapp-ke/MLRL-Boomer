@@ -355,7 +355,7 @@ std::unique_ptr<IRegressionPredictorFactory> AbstractRuleLearner::createRegressi
     return nullptr;
 }
 
-std::unique_ptr<IOldProbabilityPredictorFactory> AbstractRuleLearner::createProbabilityPredictorFactory(
+std::unique_ptr<IOldProbabilityPredictorFactory> AbstractRuleLearner::createOldProbabilityPredictorFactory(
         const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
     return nullptr;
 }
@@ -525,7 +525,7 @@ bool AbstractRuleLearner::canPredictProbabilities(const IRowWiseFeatureMatrix& f
 }
 
 bool AbstractRuleLearner::canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    return this->createProbabilityPredictorFactory(featureMatrix, numLabels) != nullptr;
+    return this->createOldProbabilityPredictorFactory(featureMatrix, numLabels) != nullptr;
 }
 
 std::unique_ptr<IProbabilityPredictor> AbstractRuleLearner::createProbabilityPredictor(
@@ -553,7 +553,7 @@ std::unique_ptr<DensePredictionMatrix<float64>> AbstractRuleLearner::predictProb
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
     std::unique_ptr<IOldProbabilityPredictorFactory> predictorFactoryPtr =
-        this->createProbabilityPredictorFactory(featureMatrix, numLabels);
+        this->createOldProbabilityPredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
         std::unique_ptr<IOldProbabilityPredictor> predictorPtr =
