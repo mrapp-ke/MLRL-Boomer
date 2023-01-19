@@ -127,8 +127,7 @@ namespace seco {
 
     std::unique_ptr<ISparseLabelPredictorFactory> AbstractSeCoRuleLearner::createSparseLabelPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        // TODO return config_.getLabelPredictorConfigPtr()->createSparsePredictorFactory(featureMatrix, numLabels);
-        return nullptr;
+        return config_.getLabelPredictorConfigPtr()->createSparsePredictorFactory(featureMatrix, numLabels);
     }
 
     // TODO Remove
