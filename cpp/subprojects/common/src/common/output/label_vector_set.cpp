@@ -35,12 +35,12 @@ std::unique_ptr<IClassificationPredictor> LabelVectorSet::createClassificationPr
     return factory.create(model, this);
 }
 
-std::unique_ptr<IRegressionPredictor> LabelVectorSet::createRegressionPredictor(
+std::unique_ptr<IOldRegressionPredictor> LabelVectorSet::createRegressionPredictor(
         const IRegressionPredictorFactory& factory, const RuleList& model) const {
     return factory.create(model, this);
 }
 
-std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(
+std::unique_ptr<IOldProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(
         const IProbabilityPredictorFactory& factory, const RuleList& model) const {
     return factory.create(model, this);
 }

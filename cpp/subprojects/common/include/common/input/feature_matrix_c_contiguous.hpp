@@ -49,10 +49,10 @@ class CContiguousFeatureMatrix final : public CContiguousConstView<const float32
         std::unique_ptr<BinarySparsePredictionMatrix> predictSparseLabels(const IClassificationPredictor& predictor,
                                                                           uint32 numLabels) const override;
 
-        std::unique_ptr<DensePredictionMatrix<float64>> predictScores(const IRegressionPredictor& predictor,
+        std::unique_ptr<DensePredictionMatrix<float64>> predictScores(const IOldRegressionPredictor& predictor,
                                                                       uint32 numLabels) const override;
 
-        std::unique_ptr<DensePredictionMatrix<float64>> predictProbabilities(const IProbabilityPredictor& predictor,
+        std::unique_ptr<DensePredictionMatrix<float64>> predictProbabilities(const IOldProbabilityPredictor& predictor,
                                                                              uint32 numLabels) const override;
 
 };

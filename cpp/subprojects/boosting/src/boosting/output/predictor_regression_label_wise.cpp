@@ -13,7 +13,7 @@ namespace boosting {
      * @tparam Model The type of the rule-based model that is used to obtain predictions
      */
     template<typename Model>
-    class LabelWiseRegressionPredictor final : public IRegressionPredictor {
+    class LabelWiseRegressionPredictor final : public IOldRegressionPredictor {
 
         private:
 
@@ -124,8 +124,8 @@ namespace boosting {
             /**
              * @see `IRegressionPredictorFactory::create`
              */
-            std::unique_ptr<IRegressionPredictor> create(const RuleList& model,
-                                                         const LabelVectorSet* labelVectorSet) const override {
+            std::unique_ptr<IOldRegressionPredictor> create(const RuleList& model,
+                                                            const LabelVectorSet* labelVectorSet) const override {
                 return std::make_unique<LabelWiseRegressionPredictor<RuleList>>(model, numThreads_);
             }
 

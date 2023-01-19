@@ -110,10 +110,10 @@ class LabelVectorSet final : public ILabelVectorSet {
         std::unique_ptr<IClassificationPredictor> createClassificationPredictor(
             const IClassificationPredictorFactory& factory, const RuleList& model) const override;
 
-        std::unique_ptr<IRegressionPredictor> createRegressionPredictor(
+        std::unique_ptr<IOldRegressionPredictor> createRegressionPredictor(
             const IRegressionPredictorFactory& factory, const RuleList& model) const override;
 
-        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
+        std::unique_ptr<IOldProbabilityPredictor> createProbabilityPredictor(
             const IProbabilityPredictorFactory& factory, const RuleList& model) const override;
 
 };

@@ -10,8 +10,8 @@
 template<typename T> class DensePredictionMatrix;
 class BinarySparsePredictionMatrix;
 class IClassificationPredictor;
-class IRegressionPredictor;
-class IProbabilityPredictor;
+class IOldRegressionPredictor;
+class IOldProbabilityPredictor;
 
 
 /**
@@ -58,7 +58,7 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
          * @return          An unique pointer to an object of type `DensePredictionMatrix` that stores the predictions
          */
         virtual std::unique_ptr<DensePredictionMatrix<float64>> predictScores(
-            const IRegressionPredictor& predictor, uint32 numLabels) const = 0;
+            const IOldRegressionPredictor& predictor, uint32 numLabels) const = 0;
 
         /**
          * Obtains and returns probability estimates for all examples in this feature matrix, using a specific
@@ -70,6 +70,6 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
          * @return          An unique pointer to an object of type `DensePredictionMatrix` that stores the predictions
          */
         virtual std::unique_ptr<DensePredictionMatrix<float64>> predictProbabilities(
-            const IProbabilityPredictor& predictor, uint32 numLabels) const = 0;
+            const IOldProbabilityPredictor& predictor, uint32 numLabels) const = 0;
 
 };

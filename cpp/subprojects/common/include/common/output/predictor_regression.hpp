@@ -13,11 +13,11 @@
  * Defines an interface for all predictors that predict label-wise regression scores for given query examples using an
  * existing rule-based model.
  */
-class IRegressionPredictor : public IPredictor<float64> {
+class IOldRegressionPredictor : public IOldPredictor<float64> {
 
     public:
 
-        virtual ~IRegressionPredictor() override { };
+        virtual ~IOldRegressionPredictor() override { };
 
 };
 
@@ -39,8 +39,8 @@ class IRegressionPredictorFactory {
          *                          or a null pointer, if no such set is available
          * @return                  An unique pointer to an object of type `IRegressionPredictor` that has been created
          */
-        virtual std::unique_ptr<IRegressionPredictor> create(const RuleList& model,
-                                                             const LabelVectorSet* labelVectorSet) const = 0;
+        virtual std::unique_ptr<IOldRegressionPredictor> create(const RuleList& model,
+                                                                const LabelVectorSet* labelVectorSet) const = 0;
 
 };
 

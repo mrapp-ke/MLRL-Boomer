@@ -147,12 +147,12 @@ std::unique_ptr<IClassificationPredictor> RuleList::createClassificationPredicto
     return labelSpaceInfo.createClassificationPredictor(factory, *this);
 }
 
-std::unique_ptr<IRegressionPredictor> RuleList::createRegressionPredictor(
+std::unique_ptr<IOldRegressionPredictor> RuleList::createRegressionPredictor(
         const IRegressionPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const {
     return labelSpaceInfo.createRegressionPredictor(factory, *this);
 }
 
-std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
+std::unique_ptr<IOldProbabilityPredictor> RuleList::createProbabilityPredictor(
         const IProbabilityPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const {
     return labelSpaceInfo.createProbabilityPredictor(factory, *this);
 }

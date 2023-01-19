@@ -16,11 +16,11 @@
  * @tparam T The type of the values that are stored by the prediction matrix
  */
 template<typename T>
-class IPredictor {
+class IOldPredictor {
 
     public:
 
-        virtual ~IPredictor() { };
+        virtual ~IOldPredictor() { };
 
         /**
          * Obtains dense predictions for all examples in a C-contiguous matrix, using a specific rule-based model.

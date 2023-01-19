@@ -13,11 +13,11 @@
  * Defines an interface for all predictors that predict label-wise probabilities for given query examples, estimating
  * the chance of individual labels to be relevant, using an existing rule-based model.
  */
-class IProbabilityPredictor : public IPredictor<float64> {
+class IOldProbabilityPredictor : public IOldPredictor<float64> {
 
     public:
 
-        virtual ~IProbabilityPredictor() override { };
+        virtual ~IOldProbabilityPredictor() override { };
 
 };
 
@@ -39,8 +39,8 @@ class IProbabilityPredictorFactory {
          *                          or a null pointer, if no such set is available
          * @return                  An unique pointer to an object of type `IProbabilityPredictor` that has been created
          */
-        virtual std::unique_ptr<IProbabilityPredictor> create(const RuleList& model,
-                                                              const LabelVectorSet* labelVectorSet) const = 0;
+        virtual std::unique_ptr<IOldProbabilityPredictor> create(const RuleList& model,
+                                                                 const LabelVectorSet* labelVectorSet) const = 0;
 
 };
 

@@ -27,7 +27,7 @@ namespace boosting {
      * @tparam Model The type of the rule-based model that is used to obtain predictions
      */
     template<typename Model>
-    class LabelWiseProbabilityPredictor final : public IProbabilityPredictor {
+    class LabelWiseProbabilityPredictor final : public IOldProbabilityPredictor {
 
         private:
 
@@ -164,8 +164,8 @@ namespace boosting {
             /**
              * @see `IProbabilityPredictorFactory::create`
              */
-            std::unique_ptr<IProbabilityPredictor> create(const RuleList& model,
-                                                          const LabelVectorSet* labelVectorSet) const override {
+            std::unique_ptr<IOldProbabilityPredictor> create(const RuleList& model,
+                                                             const LabelVectorSet* labelVectorSet) const override {
                 std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
                 return std::make_unique<LabelWiseProbabilityPredictor<RuleList>>(model,
                                                                                  std::move(probabilityFunctionPtr),

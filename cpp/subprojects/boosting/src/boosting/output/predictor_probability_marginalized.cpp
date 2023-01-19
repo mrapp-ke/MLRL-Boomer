@@ -52,7 +52,7 @@ namespace boosting {
      * @tparam Model The type of the rule-based model that is used to obtain predictions
      */
     template<typename Model>
-    class MarginalizedProbabilityPredictor final : public IProbabilityPredictor {
+    class MarginalizedProbabilityPredictor final : public IOldProbabilityPredictor {
 
         private:
 
@@ -193,8 +193,8 @@ namespace boosting {
             /**
              * @see `IProbabilityPredictorFactory::create`
              */
-            std::unique_ptr<IProbabilityPredictor> create(const RuleList& model,
-                                                          const LabelVectorSet* labelVectorSet) const override {
+            std::unique_ptr<IOldProbabilityPredictor> create(const RuleList& model,
+                                                             const LabelVectorSet* labelVectorSet) const override {
                 if (!labelVectorSet) {
                     throw std::runtime_error("Information about the label vectors that have been encountered in the "
                         "training data is required for predicting binary labels, but no such information is provided "

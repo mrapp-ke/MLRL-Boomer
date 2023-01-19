@@ -465,7 +465,7 @@ std::unique_ptr<DensePredictionMatrix<float64>> AbstractRuleLearner::predictScor
         this->createRegressionPredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
-        std::unique_ptr<IRegressionPredictor> predictorPtr =
+        std::unique_ptr<IOldRegressionPredictor> predictorPtr =
             ruleModel.createRegressionPredictor(*predictorFactoryPtr, labelSpaceInfo);
         return featureMatrix.predictScores(*predictorPtr, numLabels);
     }
@@ -495,7 +495,7 @@ std::unique_ptr<DensePredictionMatrix<float64>> AbstractRuleLearner::predictProb
         this->createProbabilityPredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
-        std::unique_ptr<IProbabilityPredictor> predictorPtr =
+        std::unique_ptr<IOldProbabilityPredictor> predictorPtr =
             ruleModel.createProbabilityPredictor(*predictorFactoryPtr, labelSpaceInfo);
         return featureMatrix.predictProbabilities(*predictorPtr, numLabels);
     }
