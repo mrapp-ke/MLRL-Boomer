@@ -113,6 +113,19 @@ namespace seco {
         }
     }
 
+    std::unique_ptr<ILabelPredictorFactory> AbstractSeCoRuleLearner::createLabelPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        // TODO Implement
+        return nullptr;
+    }
+
+    std::unique_ptr<ISparseLabelPredictorFactory> AbstractSeCoRuleLearner::createSparseLabelPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        // TODO Implement
+        return nullptr;
+    }
+
+    // TODO Remove
     std::unique_ptr<IClassificationPredictorFactory> AbstractSeCoRuleLearner::createClassificationPredictorFactory(
             const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
         return config_.getClassificationPredictorConfigPtr()->createClassificationPredictorFactory(featureMatrix,

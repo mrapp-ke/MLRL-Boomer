@@ -345,16 +345,39 @@ void AbstractRuleLearner::createPostOptimizationPhaseFactories(PostOptimizationP
     }
 }
 
+std::unique_ptr<ILabelPredictorFactory> AbstractRuleLearner::createLabelPredictorFactory(
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    return nullptr;
+}
+
+std::unique_ptr<ISparseLabelPredictorFactory> AbstractRuleLearner::createSparseLabelPredictorFactory(
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    return nullptr;
+}
+
+// TODO Remove
 std::unique_ptr<IClassificationPredictorFactory> AbstractRuleLearner::createClassificationPredictorFactory(
         const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
     return nullptr;
 }
 
+std::unique_ptr<IScorePredictorFactory> AbstractRuleLearner::createScorePredictorFactory(
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    return nullptr;
+}
+
+// TODO Remove
 std::unique_ptr<IRegressionPredictorFactory> AbstractRuleLearner::createRegressionPredictorFactory(
         const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
     return nullptr;
 }
 
+std::unique_ptr<IProbabilityPredictorFactory> AbstractRuleLearner::createProbabilityPredictorFactory(
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    return nullptr;
+}
+
+// TODO Remove
 std::unique_ptr<IOldProbabilityPredictorFactory> AbstractRuleLearner::createOldProbabilityPredictorFactory(
         const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
     return nullptr;
@@ -398,6 +421,7 @@ bool AbstractRuleLearner::canPredictLabels(const IRowWiseFeatureMatrix& featureM
 }
 
 bool AbstractRuleLearner::canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    // TODO return this->createLabelPredictorFactory(featureMatrix, numLabels) != nullptr;
     return this->createClassificationPredictorFactory(featureMatrix, numLabels) != nullptr;
 }
 
@@ -479,6 +503,7 @@ bool AbstractRuleLearner::canPredictScores(const IRowWiseFeatureMatrix& featureM
 }
 
 bool AbstractRuleLearner::canPredictScores(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    // TODO return this->createScorePredictorFactory(featureMatrix, numLabels) != nullptr;
     return this->createRegressionPredictorFactory(featureMatrix, numLabels) != nullptr;
 }
 
@@ -525,6 +550,7 @@ bool AbstractRuleLearner::canPredictProbabilities(const IRowWiseFeatureMatrix& f
 }
 
 bool AbstractRuleLearner::canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    // TODO return this->createProbabilityPredictorFactory(featureMatrix, numLabels) != nullptr;
     return this->createOldProbabilityPredictorFactory(featureMatrix, numLabels) != nullptr;
 }
 

@@ -714,20 +714,47 @@ namespace boosting {
                 const IRowWiseLabelMatrix& labelMatrix) const override;
 
             /**
+             * @see `AbstractRuleLearner::createLabelPredictorFactory`
+             */
+            std::unique_ptr<ILabelPredictorFactory> createLabelPredictorFactory(
+                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+
+            /**
+             * @see `AbstractRuleLearner::createSparseLabelPredictorFactory`
+             */
+            std::unique_ptr<ISparseLabelPredictorFactory> createSparseLabelPredictorFactory(
+                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+
+            /**
              * @see `AbstractRuleLearner::createClassificationPredictorFactory`
              */
+            // TODO Remove
             std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
                 const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
+             * @see `AbstractRuleLearner::createScorePredictorFactory`
+             */
+            std::unique_ptr<IScorePredictorFactory> createScorePredictorFactory(
+                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+
+            /**
              * @see `AbstractRuleLearner::createRegressionPredictorFactory`
              */
+            // TODO Remove
             std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory(
                 const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `AbstractRuleLearner::createProbabilityPredictorFactory`
              */
+            std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
+                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+
+            /**
+             * @see `AbstractRuleLearner::createProbabilityPredictorFactory`
+             */
+            // TODO Remove
             std::unique_ptr<IOldProbabilityPredictorFactory> createOldProbabilityPredictorFactory(
                 const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
