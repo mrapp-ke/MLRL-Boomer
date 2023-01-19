@@ -44,10 +44,6 @@ namespace seco {
         return labelPredictorConfigPtr_;
     }
 
-    std::unique_ptr<ISparseLabelPredictorConfig>& AbstractSeCoRuleLearner::Config::getSparseLabelPredictorConfigPtr() {
-        return sparseLabelPredictorConfigPtr_;
-    }
-
     // TODO Remove
     std::unique_ptr<IClassificationPredictorConfig>& AbstractSeCoRuleLearner::Config::getClassificationPredictorConfigPtr() {
         return classificationPredictorConfigPtr_;
@@ -131,7 +127,8 @@ namespace seco {
 
     std::unique_ptr<ISparseLabelPredictorFactory> AbstractSeCoRuleLearner::createSparseLabelPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        return config_.getSparseLabelPredictorConfigPtr()->createPredictorFactory(featureMatrix, numLabels);
+        // TODO return config_.getLabelPredictorConfigPtr()->createSparsePredictorFactory(featureMatrix, numLabels);
+        return nullptr;
     }
 
     // TODO Remove

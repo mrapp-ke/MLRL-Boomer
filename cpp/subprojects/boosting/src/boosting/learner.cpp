@@ -55,10 +55,6 @@ namespace boosting {
         return labelPredictorConfigPtr_;
     }
 
-    std::unique_ptr<ISparseLabelPredictorConfig>& AbstractBoostingRuleLearner::Config::getSparseLabelPredictorConfigPtr() {
-        return sparseLabelPredictorConfigPtr_;
-    }
-
     // TODO Remove
     std::unique_ptr<IClassificationPredictorConfig>& AbstractBoostingRuleLearner::Config::getClassificationPredictorConfigPtr() {
         return classificationPredictorConfigPtr_;
@@ -153,7 +149,8 @@ namespace boosting {
 
     std::unique_ptr<ISparseLabelPredictorFactory> AbstractBoostingRuleLearner::createSparseLabelPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        return config_.getSparseLabelPredictorConfigPtr()->createPredictorFactory(featureMatrix, numLabels);
+        // TODO return config_.getLabelPredictorConfigPtr()->createSparsePredictorFactory(featureMatrix, numLabels);
+        return nullptr;
     }
 
     // TODO Remove
