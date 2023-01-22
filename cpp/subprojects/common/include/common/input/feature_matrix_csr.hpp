@@ -56,7 +56,7 @@ class CsrFeatureMatrix final : public CsrConstView<const float32>, virtual publi
         std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(const IClassificationPredictor& predictor,
                                                                     uint32 numLabels) const override;
 
-        std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(const ILabelPredictorFactory& factory,
+        std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
                                                                           const IRuleModel& ruleModel,
                                                                           const ILabelSpaceInfo& labelSpaceInfo,
                                                                           uint32 numLabels) const override;

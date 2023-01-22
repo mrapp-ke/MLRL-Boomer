@@ -34,7 +34,7 @@ std::unique_ptr<DensePredictionMatrix<uint8>> CsrFeatureMatrix::predictLabels(
 }
 
 std::unique_ptr<ISparseLabelPredictor> CsrFeatureMatrix::createSparseLabelPredictor(
-        const ILabelPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+        const ISparseLabelPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
         uint32 numLabels) const {
     // TODO
     return nullptr;

@@ -10,8 +10,9 @@
 class IRuleModel;
 class ILabelSpaceInfo;
 class ILabelPredictor;
-class ISparseLabelPredictor;
 class ILabelPredictorFactory;
+class ISparseLabelPredictor;
+class ISparseLabelPredictorFactory;
 class IScorePredictor;
 class IScorePredictorFactory;
 class IProbabilityPredictor;
@@ -66,8 +67,8 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
          * Creates and returns a new instance of the class `ISparseLabelPredictor`, based on the type of this feature
          * matrix.
          *
-         * @param factory           A reference to an object of type `ILabelPredictorFactory` that should be used to
-         *                          create the instance
+         * @param factory           A reference to an object of type `ISparseLabelPredictorFactory` that should be used
+         *                          to create the instance
          * @param ruleModel         A reference to an object of type `IRuleModel` that should be used to obtain
          *                          predictions
          * @param labelSpaceInfo    A reference to an object of type `ILabelSpaceInfo` that provides information about
@@ -75,10 +76,9 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
          * @param numLabels         The number of labels to predict for
          * @return                  An unique pointer to an object of type `ISparseLabelPredictor` that has been created
          */
-        virtual std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(const ILabelPredictorFactory& factory,
-                                                                                  const IRuleModel& ruleModel,
-                                                                                  const ILabelSpaceInfo& labelSpaceInfo,
-                                                                                  uint32 numLabels) const = 0;
+        virtual std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(
+            const ISparseLabelPredictorFactory& factory, const IRuleModel& ruleModel,
+            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 
         /**
          * Obtains and returns sparse predictions for all examples in this feature matrix, using a specific
