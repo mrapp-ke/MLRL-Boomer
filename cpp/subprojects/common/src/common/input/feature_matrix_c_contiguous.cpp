@@ -22,8 +22,7 @@ std::unique_ptr<ILabelPredictor> CContiguousFeatureMatrix::createLabelPredictor(
                                                                                 const IRuleModel& ruleModel,
                                                                                 const ILabelSpaceInfo& labelSpaceInfo,
                                                                                 uint32 numLabels) const {
-    // TODO
-    return nullptr;
+    return ruleModel.createLabelPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
 // TODO Remove
@@ -33,10 +32,9 @@ std::unique_ptr<DensePredictionMatrix<uint8>> CContiguousFeatureMatrix::predictL
 }
 
 std::unique_ptr<ISparseLabelPredictor> CContiguousFeatureMatrix::createSparseLabelPredictor(
-        const ILabelPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+        const ISparseLabelPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
         uint32 numLabels) const {
-    // TODO
-    return nullptr;
+    return ruleModel.createSparseLabelPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
 // TODO Remove
@@ -49,8 +47,7 @@ std::unique_ptr<IScorePredictor> CContiguousFeatureMatrix::createScorePredictor(
                                                                                 const IRuleModel& ruleModel,
                                                                                 const ILabelSpaceInfo& labelSpaceInfo,
                                                                                 uint32 numLabels) const {
-    // TODO
-    return nullptr;
+    return ruleModel.createScorePredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
 // TODO Remove
@@ -62,8 +59,7 @@ std::unique_ptr<DensePredictionMatrix<float64>> CContiguousFeatureMatrix::predic
 std::unique_ptr<IProbabilityPredictor> CContiguousFeatureMatrix::createProbabilityPredictor(
         const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
         uint32 numLabels) const {
-    // TODO
-    return nullptr;
+    return ruleModel.createProbabilityPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
 // TODO Remove
