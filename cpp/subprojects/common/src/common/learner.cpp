@@ -434,7 +434,13 @@ std::unique_ptr<ILabelPredictor> AbstractRuleLearner::createLabelPredictor(
 std::unique_ptr<ILabelPredictor> AbstractRuleLearner::createLabelPredictor(
         const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
         uint32 numLabels) const {
-    // TODO Implement
+    std::unique_ptr<ILabelPredictorFactory> predictorFactoryPtr =
+        this->createLabelPredictorFactory(featureMatrix, numLabels);
+
+    if (predictorFactoryPtr) {
+        return featureMatrix.createLabelPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
+    }
+
     throw std::runtime_error("The rule learner does not support to predict labels");
 }
 
@@ -470,7 +476,13 @@ std::unique_ptr<ISparseLabelPredictor> AbstractRuleLearner::createSparseLabelPre
 std::unique_ptr<ISparseLabelPredictor> AbstractRuleLearner::createSparseLabelPredictor(
         const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
         uint32 numLabels) const {
-    // TODO Implement
+    std::unique_ptr<ISparseLabelPredictorFactory> predictorFactoryPtr =
+        this->createSparseLabelPredictorFactory(featureMatrix, numLabels);
+
+    if (predictorFactoryPtr) {
+        return featureMatrix.createSparseLabelPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
+    }
+
     throw std::runtime_error("The rule learner does not support to predict sparse labels");
 }
 
@@ -517,7 +529,13 @@ std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(const
                                                                            const IRuleModel& ruleModel,
                                                                            const ILabelSpaceInfo& labelSpaceInfo,
                                                                            uint32 numLabels) const {
-    // TODO Implement
+    std::unique_ptr<IScorePredictorFactory> predictorFactoryPtr =
+        this->createScorePredictorFactory(featureMatrix, numLabels);
+
+    if (predictorFactoryPtr) {
+        return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
+    }
+
     throw std::runtime_error("The rule learner does not support to predict regression scores");
 }
 
@@ -563,7 +581,13 @@ std::unique_ptr<IProbabilityPredictor> AbstractRuleLearner::createProbabilityPre
 std::unique_ptr<IProbabilityPredictor> AbstractRuleLearner::createProbabilityPredictor(
         const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
         uint32 numLabels) const {
-    // TODO Implement
+    std::unique_ptr<IProbabilityPredictorFactory> predictorFactoryPtr =
+        this->createProbabilityPredictorFactory(featureMatrix, numLabels);
+
+    if (predictorFactoryPtr) {
+        return featureMatrix.createProbabilityPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
+    }
+
     throw std::runtime_error("The rule learner does not support to predict probability estimates");
 }
 

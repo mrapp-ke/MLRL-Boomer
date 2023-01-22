@@ -149,32 +149,28 @@ std::unique_ptr<ILabelPredictor> RuleList::createLabelPredictor(const ILabelPred
                                                                 const CContiguousFeatureMatrix& featureMatrix,
                                                                 const ILabelSpaceInfo& labelSpaceInfo,
                                                                 uint32 numLabels) const {
-    // TODO Implement
-    return nullptr;
+    return labelSpaceInfo.createLabelPredictor(factory, featureMatrix, *this, numLabels);
 }
 
 std::unique_ptr<ILabelPredictor> RuleList::createLabelPredictor(const ILabelPredictorFactory& factory,
                                                                 const CsrFeatureMatrix& featureMatrix,
                                                                 const ILabelSpaceInfo& labelSpaceInfo,
                                                                 uint32 numLabels) const {
-    // TODO Implement
-    return nullptr;
+    return labelSpaceInfo.createLabelPredictor(factory, featureMatrix, *this, numLabels);
 }
 
 std::unique_ptr<ISparseLabelPredictor> RuleList::createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
                                                                           const CContiguousFeatureMatrix& featureMatrix,
                                                                           const ILabelSpaceInfo& labelSpaceInfo,
                                                                           uint32 numLabels) const {
-    // TODO Implement
-    return nullptr;
+    return labelSpaceInfo.createSparseLabelPredictor(factory, featureMatrix, *this, numLabels);
 }
 
 std::unique_ptr<ISparseLabelPredictor> RuleList::createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
                                                                           const CsrFeatureMatrix& featureMatrix,
                                                                           const ILabelSpaceInfo& labelSpaceInfo,
                                                                           uint32 numLabels) const {
-    // TODO Implement
-    return nullptr;
+    return labelSpaceInfo.createSparseLabelPredictor(factory, featureMatrix, *this, numLabels);
 }
 
 // TODO Remove
@@ -187,16 +183,14 @@ std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePred
                                                                 const CContiguousFeatureMatrix& featureMatrix,
                                                                 const ILabelSpaceInfo& labelSpaceInfo,
                                                                 uint32 numLabels) const {
-    // TODO Implement
-    return nullptr;
+    return labelSpaceInfo.createScorePredictor(factory, featureMatrix, *this, numLabels);
 }
 
 std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePredictorFactory& factory,
                                                                 const CsrFeatureMatrix& featureMatrix,
                                                                 const ILabelSpaceInfo& labelSpaceInfo,
                                                                 uint32 numLabels) const {
-    // TODO Implement
-    return nullptr;
+    return labelSpaceInfo.createScorePredictor(factory, featureMatrix, *this, numLabels);
 }
 
 // TODO Remove
@@ -208,16 +202,14 @@ std::unique_ptr<IOldRegressionPredictor> RuleList::createRegressionPredictor(
 std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
         const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
         const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
-    // TODO Implement
-    return nullptr;
+    return labelSpaceInfo.createProbabilityPredictor(factory, featureMatrix, *this, numLabels);
 }
 
 std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(const IProbabilityPredictorFactory& factory,
                                                                             const CsrFeatureMatrix& featureMatrix,
                                                                             const ILabelSpaceInfo& labelSpaceInfo,
                                                                             uint32 numLabels) const {
-    // TODO Implement
-    return nullptr;
+    return labelSpaceInfo.createProbabilityPredictor(factory, featureMatrix, *this, numLabels);
 }
 
 // TODO Remove

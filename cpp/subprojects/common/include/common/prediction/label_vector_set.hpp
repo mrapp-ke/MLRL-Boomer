@@ -107,12 +107,54 @@ class LabelVectorSet final : public ILabelVectorSet {
 
         void visit(LabelVectorVisitor visitor) const override;
 
+        std::unique_ptr<ILabelPredictor> createLabelPredictor(const ILabelPredictorFactory& factory,
+                                                              const CContiguousFeatureMatrix& featureMatrix,
+                                                              const RuleList& ruleList,
+                                                              uint32 numLabels) const override;
+
+        std::unique_ptr<ILabelPredictor> createLabelPredictor(const ILabelPredictorFactory& factory,
+                                                              const CsrFeatureMatrix& featureMatrix,
+                                                              const RuleList& ruleList,
+                                                              uint32 numLabels) const override;
+
+        std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
+                                                                          const CContiguousFeatureMatrix& featureMatrix,
+                                                                          const RuleList& ruleList,
+                                                                          uint32 numLabels) const override;
+
+        std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
+                                                                          const CsrFeatureMatrix& featureMatrix,
+                                                                          const RuleList& ruleList,
+                                                                          uint32 numLabels) const override;
+
+        // TODO Remove
         std::unique_ptr<IClassificationPredictor> createClassificationPredictor(
             const IClassificationPredictorFactory& factory, const RuleList& model) const override;
 
+        std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
+                                                              const CContiguousFeatureMatrix& featureMatrix,
+                                                              const RuleList& ruleList,
+                                                              uint32 numLabels) const override;
+
+        std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
+                                                              const CsrFeatureMatrix& featureMatrix,
+                                                              const RuleList& ruleList,
+                                                              uint32 numLabels) const override;
+
+        // TODO Remove
         std::unique_ptr<IOldRegressionPredictor> createRegressionPredictor(
             const IRegressionPredictorFactory& factory, const RuleList& model) const override;
 
+        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(const IProbabilityPredictorFactory& factory,
+                                                                          const CContiguousFeatureMatrix& featureMatrix,
+                                                                          const RuleList& ruleList,
+                                                                          uint32 numLabels) const override;
+
+        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(const IProbabilityPredictorFactory& factory,
+                                                                          const CsrFeatureMatrix& featureMatrix,
+                                                                          const RuleList& ruleList,
+                                                                          uint32 numLabels) const override;
+        // TODO Remove
         std::unique_ptr<IOldProbabilityPredictor> createProbabilityPredictor(
             const IOldProbabilityPredictorFactory& factory, const RuleList& model) const override;
 
