@@ -5,16 +5,15 @@
 
 namespace boosting {
 
-    template<typename Model>
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const Model& model, uint32 numLabels,
+            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
             uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
             std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
         CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
-        const Model* modelPtr = &model;
+        const RuleList* modelPtr = &model;
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
         firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
@@ -29,16 +28,16 @@ namespace boosting {
         return predictionMatrixPtr;
     }
 
-    template<typename Model>
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
-            const CsrConstView<const float32>& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads) {
+            const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+            uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
             std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
         const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
         CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
-        const Model* modelPtr = &model;
+        const RuleList* modelPtr = &model;
 
         #pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
         firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
