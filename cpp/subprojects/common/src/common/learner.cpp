@@ -2,6 +2,7 @@
 #include "common/binning/feature_binning_no.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
+#include "common/prediction/label_space_info_no.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 #include "common/rule_pruning/rule_pruning_no.hpp"
 #include "common/sampling/feature_sampling_no.hpp"
@@ -159,6 +160,18 @@ std::unique_ptr<SequentialPostOptimizationConfig>& AbstractRuleLearner::Config::
 
 std::unique_ptr<UnusedRuleRemovalConfig>& AbstractRuleLearner::Config::getUnusedRuleRemovalConfigPtr() {
     return unusedRuleRemovalConfigPtr_;
+}
+
+std::unique_ptr<ILabelPredictorConfig>& AbstractRuleLearner::Config::getLabelPredictorConfigPtr() {
+    return labelPredictorConfigPtr_;
+}
+
+std::unique_ptr<IScorePredictorConfig>& AbstractRuleLearner::Config::getScorePredictorConfigPtr() {
+    return scorePredictorConfigPtr_;
+}
+
+std::unique_ptr<IProbabilityPredictorConfig>& AbstractRuleLearner::Config::getProbabilityPredictorConfigPtr() {
+    return probabilityPredictorConfigPtr_;
 }
 
 void AbstractRuleLearner::Config::useDefaultRule() {
@@ -345,24 +358,43 @@ void AbstractRuleLearner::createPostOptimizationPhaseFactories(PostOptimizationP
     }
 }
 
+std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo(
+        const IRowWiseLabelMatrix& labelMatrix) const {
+    const ILabelPredictorConfig* labelPredictorConfig = config_.getLabelPredictorConfigPtr().get();
+    const IScorePredictorConfig* scorePredictorConfig = config_.getScorePredictorConfigPtr().get();
+    const IProbabilityPredictorConfig* probabilityPredictorConfig = config_.getProbabilityPredictorConfigPtr().get();
+
+    if ((labelPredictorConfig && labelPredictorConfig->isLabelVectorSetNeeded())
+        || (scorePredictorConfig && scorePredictorConfig->isLabelVectorSetNeeded())
+        || (probabilityPredictorConfig && probabilityPredictorConfig->isLabelVectorSetNeeded())) {
+            return createLabelVectorSet(labelMatrix);
+    } else {
+        return createNoLabelSpaceInfo();
+    }
+}
+
 std::unique_ptr<ILabelPredictorFactory> AbstractRuleLearner::createLabelPredictorFactory(
         const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    return nullptr;
+    const ILabelPredictorConfig* config = config_.getLabelPredictorConfigPtr().get();
+    return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
 }
 
 std::unique_ptr<ISparseLabelPredictorFactory> AbstractRuleLearner::createSparseLabelPredictorFactory(
         const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    return nullptr;
+    const ILabelPredictorConfig* config = config_.getLabelPredictorConfigPtr().get();
+    return config ? config->createSparsePredictorFactory(featureMatrix, numLabels) : nullptr;
 }
 
 std::unique_ptr<IScorePredictorFactory> AbstractRuleLearner::createScorePredictorFactory(
         const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    return nullptr;
+    const IScorePredictorConfig* config = config_.getScorePredictorConfigPtr().get();
+    return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
 }
 
 std::unique_ptr<IProbabilityPredictorFactory> AbstractRuleLearner::createProbabilityPredictorFactory(
         const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    return nullptr;
+    const IProbabilityPredictorConfig* config = config_.getProbabilityPredictorConfigPtr().get();
+    return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
 }
 
 std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& featureInfo,

@@ -287,6 +287,35 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() = 0;
 
+                /**
+                 * Returns an unique pointer to the configuration of the predictor that allows to predict labels.
+                 *
+                 * @return A reference to an unique pointer of type `ILabelPredictorConfig` that stores the
+                 *         configuration of the predictor that allows to predict labels or a null pointer if the
+                 *         prediction of labels is not supported
+                 */
+                virtual std::unique_ptr<ILabelPredictorConfig>& getLabelPredictorConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the configuration of the predictor that allows to predict regression
+                 * scores.
+                 *
+                 * @return A reference to an unique pointer of type `IScorePredictorConfig` that stores the
+                 *         configuration of the predictor that allows to predict labels or a null pointer, if the
+                 *         prediction of regression scores is not supported
+                 */
+                virtual std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the configuration of the predictor that allows to predict probability
+                 * estimates.
+                 *
+                 * @return A reference to an unique pointer of type `IProbabilityPredictorConfig` that stores the
+                 *         configuration of the predictor that allows to predict probability estimates or a null
+                 *         pointer, if the prediction of probability estimates is not supported
+                 */
+                virtual std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() = 0;
+
             public:
 
                 virtual ~IConfig() { };
@@ -1242,6 +1271,23 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  */
                 std::unique_ptr<UnusedRuleRemovalConfig> unusedRuleRemovalConfigPtr_;
 
+                /**
+                 * An unique pointer that stores the configuration of the predictor that allows to predict labels.
+                 */
+                std::unique_ptr<ILabelPredictorConfig> labelPredictorConfigPtr_;
+
+                /**
+                 * An unique pointer that stores the configuration of the predictor that allows to predict regression
+                 * scores.
+                 */
+                std::unique_ptr<IScorePredictorConfig> scorePredictorConfigPtr_;
+
+                /**
+                 * An unique pointer that stores the configuration of the predictor that allows to predict probability
+                 * estimates.
+                 */
+                std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
+
             private:
 
                 RuleCompareFunction ruleCompareFunction_;
@@ -1283,6 +1329,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<SequentialPostOptimizationConfig>& getSequentialPostOptimizationConfigPtr() override final;
 
                 std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() override final;
+
+                std::unique_ptr<ILabelPredictorConfig>& getLabelPredictorConfigPtr() override final;
+
+                std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() override final;
+
+                std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() override final;
 
             public:
 
@@ -1406,14 +1458,14 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         virtual std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const = 0;
 
         /**
-         * Must be overridden by subclasses in order to create the `ILabelSpaceInfo` to be used by the rule learner as a
+         * May be overridden by subclasses in order to create the `ILabelSpaceInfo` to be used by the rule learner as a
          * basis for for making predictions.
          *
          * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
          *                      the labels of the training examples
          * @return              An unique pointer to an object of type `ILabelSpaceInfo` that has been created
          */
-        virtual std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(const IRowWiseLabelMatrix& labelMatrix) const = 0;
+        virtual std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(const IRowWiseLabelMatrix& labelMatrix) const;
 
         /**
          * May be overridden by subclasses in order to create the `ILabelPredictorFactory` to be used by the rule
