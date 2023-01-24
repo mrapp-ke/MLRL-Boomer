@@ -24,25 +24,11 @@ class IPredictor {
         virtual ~IPredictor() { };
 
         /**
-         * Obtains and returns predictions for all query examples in a C-contiguous matrix.
+         * Obtains and returns predictions for all query examples.
          *
-         * @param featureMatrix A reference to an object of type `CContiguousConstView` that stores the feature values
-         *                      of the query examples
-         * @return              An unique pointer to an object of template type `PredictionMatrix` that stores the
-         *                      predictions
+         * @return An unique pointer to an object of template type `PredictionMatrix` that stores the predictions
          */
-        virtual std::unique_ptr<PredictionMatrix> predict(
-            const CContiguousConstView<const float32>& featureMatrix) const = 0;
-
-        /**
-         * Obtains and returns predictions for all query examples in a sparse CSR matrix.
-         *
-         * @param featureMatrix A reference to an object of type `CsrConstView` that stores the feature values of the
-         *                      query examples
-         * @return              An unique pointer to an object of template type `PredictionMatrix` that stores the
-         *                      predictions
-         */
-        virtual std::unique_ptr<PredictionMatrix> predict(const CsrConstView<const float32>& featureMatrix) const = 0;
+        virtual std::unique_ptr<PredictionMatrix> predict() const = 0;
 
 };
 
