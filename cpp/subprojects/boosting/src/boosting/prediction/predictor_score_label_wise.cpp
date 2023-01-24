@@ -133,7 +133,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IScorePredictorFactory::create`
+             * @see `IPredictorFactory::create`
              */
             std::unique_ptr<IScorePredictor> create(const CContiguousConstView<const float32>& featureMatrix,
                                                     const RuleList& model,
@@ -144,7 +144,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IScorePredictorFactory::create`
+             * @see `IPredictorFactory::create`
              */
             std::unique_ptr<IScorePredictor> create(const CsrConstView<const float32>& featureMatrix,
                                                     const RuleList& model,
