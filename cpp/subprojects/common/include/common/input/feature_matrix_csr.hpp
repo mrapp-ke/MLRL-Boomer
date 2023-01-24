@@ -52,17 +52,9 @@ class CsrFeatureMatrix final : public CsrConstView<const float32>, virtual publi
                                                               const ILabelSpaceInfo& labelSpaceInfo,
                                                               uint32 numLabels) const override;
 
-        // TODO Remove
-        std::unique_ptr<DensePredictionMatrix<uint8>> predictLabels(const IClassificationPredictor& predictor,
-                                                                    uint32 numLabels) const override;
-
         std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
                                                                           const IRuleModel& ruleModel,
                                                                           const ILabelSpaceInfo& labelSpaceInfo,
-                                                                          uint32 numLabels) const override;
-
-        // TODO Remove
-        std::unique_ptr<BinarySparsePredictionMatrix> predictSparseLabels(const IClassificationPredictor& predictor,
                                                                           uint32 numLabels) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
@@ -70,18 +62,10 @@ class CsrFeatureMatrix final : public CsrConstView<const float32>, virtual publi
                                                               const ILabelSpaceInfo& labelSpaceInfo,
                                                               uint32 numLabels) const override;
 
-        // TODO Remove
-        std::unique_ptr<DensePredictionMatrix<float64>> predictScores(const IOldRegressionPredictor& predictor,
-                                                                      uint32 numLabels) const override;
-
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(const IProbabilityPredictorFactory& factory,
                                                                           const IRuleModel& ruleModel,
                                                                           const ILabelSpaceInfo& labelSpaceInfo,
                                                                           uint32 numLabels) const override;
-
-        // TODO Remove
-        std::unique_ptr<DensePredictionMatrix<float64>> predictProbabilities(const IOldProbabilityPredictor& predictor,
-                                                                             uint32 numLabels) const override;
 
 };
 

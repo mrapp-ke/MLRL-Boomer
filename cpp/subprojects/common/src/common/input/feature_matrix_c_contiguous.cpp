@@ -1,9 +1,4 @@
 #include "common/input/feature_matrix_c_contiguous.hpp"
-#include "common/output/predictor_classification.hpp"
-#include "common/output/predictor_regression.hpp"
-#include "common/output/predictor_probability.hpp"
-#include "common/prediction/prediction_matrix_dense.hpp"
-#include "common/prediction/prediction_matrix_sparse_binary.hpp"
 #include "common/prediction/predictor_label.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
@@ -25,22 +20,10 @@ std::unique_ptr<ILabelPredictor> CContiguousFeatureMatrix::createLabelPredictor(
     return ruleModel.createLabelPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
-// TODO Remove
-std::unique_ptr<DensePredictionMatrix<uint8>> CContiguousFeatureMatrix::predictLabels(
-        const IClassificationPredictor& predictor, uint32 numLabels) const {
-    return predictor.predict(*this, numLabels);
-}
-
 std::unique_ptr<ISparseLabelPredictor> CContiguousFeatureMatrix::createSparseLabelPredictor(
         const ISparseLabelPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
         uint32 numLabels) const {
     return ruleModel.createSparseLabelPredictor(factory, *this, labelSpaceInfo, numLabels);
-}
-
-// TODO Remove
-std::unique_ptr<BinarySparsePredictionMatrix> CContiguousFeatureMatrix::predictSparseLabels(
-        const IClassificationPredictor& predictor, uint32 numLabels) const {
-    return predictor.predictSparse(*this, numLabels);
 }
 
 std::unique_ptr<IScorePredictor> CContiguousFeatureMatrix::createScorePredictor(const IScorePredictorFactory& factory,
@@ -50,22 +33,10 @@ std::unique_ptr<IScorePredictor> CContiguousFeatureMatrix::createScorePredictor(
     return ruleModel.createScorePredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
-// TODO Remove
-std::unique_ptr<DensePredictionMatrix<float64>> CContiguousFeatureMatrix::predictScores(
-        const IOldRegressionPredictor& predictor, uint32 numLabels) const {
-    return predictor.predict(*this, numLabels);
-}
-
 std::unique_ptr<IProbabilityPredictor> CContiguousFeatureMatrix::createProbabilityPredictor(
         const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
         uint32 numLabels) const {
     return ruleModel.createProbabilityPredictor(factory, *this, labelSpaceInfo, numLabels);
-}
-
-// TODO Remove
-std::unique_ptr<DensePredictionMatrix<float64>> CContiguousFeatureMatrix::predictProbabilities(
-        const IOldProbabilityPredictor& predictor, uint32 numLabels) const {
-    return predictor.predict(*this, numLabels);
 }
 
 std::unique_ptr<ICContiguousFeatureMatrix> createCContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
