@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/output/predictor_probability.hpp"
+#include "common/prediction/predictor_probability.hpp"
 #include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
 
@@ -16,7 +16,7 @@ namespace boosting {
      * an existing rule-based model and transforming the aggregated scores into probabilities in [0, 1] according to a
      * certain transformation function that is applied to each label individually.
      */
-    class LabelWiseProbabilityPredictorConfig final : public IOldProbabilityPredictorConfig {
+    class LabelWiseProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
 
         private:
 
@@ -37,10 +37,10 @@ namespace boosting {
                                                 const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
             /**
-             * @see `IProbabilityPredictorConfig::createProbabilityPredictorFactory`
+             * @see `IProbabilityPredictorConfig::createPredictorFactory`
              */
-            std::unique_ptr<IOldProbabilityPredictorFactory> createProbabilityPredictorFactory(
-                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+            std::unique_ptr<IProbabilityPredictorFactory> createPredictorFactory(
+                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`

@@ -574,13 +574,10 @@ namespace boosting {
                      * by the total sum of all distances.
                      */
                     virtual void useMarginalizedProbabilityPredictor() {
-                        // TODO Re-implement
-                        /*
-                        std::unique_ptr<IOldProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
-                            this->getOldProbabilityPredictorConfigPtr();
+                        std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
+                            this->getProbabilityPredictorConfigPtr();
                         probabilityPredictorConfigPtr = std::make_unique<MarginalizedProbabilityPredictorConfig>(
                             this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
-                        */
                     }
 
             };

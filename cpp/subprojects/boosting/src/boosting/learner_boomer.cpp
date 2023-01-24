@@ -82,8 +82,8 @@ namespace boosting {
     }
 
     void Boomer::Config::useAutomaticProbabilityPredictor() {
-        // TODO Re-implement
-        // oldProbabilityPredictorConfigPtr_ = std::make_unique<AutomaticProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+        probabilityPredictorConfigPtr_ =
+            std::make_unique<AutomaticProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     Boomer::Boomer(std::unique_ptr<IBoomer::IConfig> configPtr, Blas::DdotFunction ddotFunction,
