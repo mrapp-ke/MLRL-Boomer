@@ -191,11 +191,23 @@ cdef extern from "common/learner.hpp" nogil:
 
         bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
+        unique_ptr[ILabelPredictor] createLabelPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                         const IRuleModel& ruleModel,
+                                                         const ILabelSpaceInfo& labelSpaceInfo,
+                                                         uint32 numLabels) const
+
+        # TODO Remove
         unique_ptr[DensePredictionMatrix[uint8]] predictLabels(const IRowWiseFeatureMatrix& featureMatrix,
                                                                const IRuleModel& ruleModel,
                                                                const ILabelSpaceInfo& labelSpaceInfo,
                                                                uint32 numLabels) const
 
+        unique_ptr[ISparseLabelPredictor] createSparseLabelPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                     const IRuleModel& ruleModel,
+                                                                     const ILabelSpaceInfo& labelSpaceInfo,
+                                                                     uint32 numLabels) const
+
+        # TODO Remove
         unique_ptr[BinarySparsePredictionMatrix] predictSparseLabels(const IRowWiseFeatureMatrix& featureMatrix,
                                                                      const IRuleModel& ruleModel,
                                                                      const ILabelSpaceInfo& labelSpaceInfo,
@@ -203,6 +215,12 @@ cdef extern from "common/learner.hpp" nogil:
 
         bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
 
+        unique_ptr[IScorePredictor] createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                         const IRuleModel& ruleModel,
+                                                         const ILabelSpaceInfo& labelSpaceInfo,
+                                                         uint32 numLabels) const
+
+        # TODO Remove
         unique_ptr[DensePredictionMatrix[float64]] predictScores(const IRowWiseFeatureMatrix& featureMatrix,
                                                                  const IRuleModel& ruleModel,
                                                                  const ILabelSpaceInfo& labelSpaceInfo,
@@ -210,6 +228,12 @@ cdef extern from "common/learner.hpp" nogil:
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
+        unique_ptr[IProbabilityPredictor] createProbabilityPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                     const IRuleModel& ruleModel,
+                                                                     const ILabelSpaceInfo& labelSpaceInfo,
+                                                                     uint32 numLabels) const
+
+        # TODO Remove
         unique_ptr[DensePredictionMatrix[float64]] predictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
                                                                         const IRuleModel& ruleModel,
                                                                         const ILabelSpaceInfo& labelSpaceInfo,
