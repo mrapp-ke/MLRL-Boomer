@@ -162,8 +162,8 @@ std::unique_ptr<UnusedRuleRemovalConfig>& AbstractRuleLearner::Config::getUnused
     return unusedRuleRemovalConfigPtr_;
 }
 
-std::unique_ptr<ILabelPredictorConfig>& AbstractRuleLearner::Config::getLabelPredictorConfigPtr() {
-    return labelPredictorConfigPtr_;
+std::unique_ptr<IBinaryPredictorConfig>& AbstractRuleLearner::Config::getBinaryPredictorConfigPtr() {
+    return binaryPredictorConfigPtr_;
 }
 
 std::unique_ptr<IScorePredictorConfig>& AbstractRuleLearner::Config::getScorePredictorConfigPtr() {
@@ -360,11 +360,11 @@ void AbstractRuleLearner::createPostOptimizationPhaseFactories(PostOptimizationP
 
 std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo(
         const IRowWiseLabelMatrix& labelMatrix) const {
-    const ILabelPredictorConfig* labelPredictorConfig = config_.getLabelPredictorConfigPtr().get();
+    const IBinaryPredictorConfig* binaryPredictorConfig = config_.getBinaryPredictorConfigPtr().get();
     const IScorePredictorConfig* scorePredictorConfig = config_.getScorePredictorConfigPtr().get();
     const IProbabilityPredictorConfig* probabilityPredictorConfig = config_.getProbabilityPredictorConfigPtr().get();
 
-    if ((labelPredictorConfig && labelPredictorConfig->isLabelVectorSetNeeded())
+    if ((binaryPredictorConfig && binaryPredictorConfig->isLabelVectorSetNeeded())
         || (scorePredictorConfig && scorePredictorConfig->isLabelVectorSetNeeded())
         || (probabilityPredictorConfig && probabilityPredictorConfig->isLabelVectorSetNeeded())) {
             return createLabelVectorSet(labelMatrix);
@@ -373,15 +373,15 @@ std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo(
     }
 }
 
-std::unique_ptr<ILabelPredictorFactory> AbstractRuleLearner::createLabelPredictorFactory(
+std::unique_ptr<IBinaryPredictorFactory> AbstractRuleLearner::createBinaryPredictorFactory(
         const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    const ILabelPredictorConfig* config = config_.getLabelPredictorConfigPtr().get();
+    const IBinaryPredictorConfig* config = config_.getBinaryPredictorConfigPtr().get();
     return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
 }
 
-std::unique_ptr<ISparseLabelPredictorFactory> AbstractRuleLearner::createSparseLabelPredictorFactory(
+std::unique_ptr<ISparseBinaryPredictorFactory> AbstractRuleLearner::createSparseBinaryPredictorFactory(
         const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    const ILabelPredictorConfig* config = config_.getLabelPredictorConfigPtr().get();
+    const IBinaryPredictorConfig* config = config_.getBinaryPredictorConfigPtr().get();
     return config ? config->createSparsePredictorFactory(featureMatrix, numLabels) : nullptr;
 }
 
@@ -429,48 +429,48 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
                                             std::move(labelSpaceInfoPtr));
 }
 
-bool AbstractRuleLearner::canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix,
+bool AbstractRuleLearner::canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix,
                                            const ITrainingResult& trainingResult) const {
-    return this->canPredictLabels(featureMatrix, trainingResult.getNumLabels());
+    return this->canPredictBinary(featureMatrix, trainingResult.getNumLabels());
 }
 
-bool AbstractRuleLearner::canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    return this->createLabelPredictorFactory(featureMatrix, numLabels) != nullptr;
+bool AbstractRuleLearner::canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    return this->createBinaryPredictorFactory(featureMatrix, numLabels) != nullptr;
 }
 
-std::unique_ptr<ILabelPredictor> AbstractRuleLearner::createLabelPredictor(
+std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
         const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
-    return this->createLabelPredictor(featureMatrix, *trainingResult.getRuleModel(),
+    return this->createBinaryPredictor(featureMatrix, *trainingResult.getRuleModel(),
                                       *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
 
-std::unique_ptr<ILabelPredictor> AbstractRuleLearner::createLabelPredictor(
+std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
         const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
         uint32 numLabels) const {
-    std::unique_ptr<ILabelPredictorFactory> predictorFactoryPtr =
-        this->createLabelPredictorFactory(featureMatrix, numLabels);
+    std::unique_ptr<IBinaryPredictorFactory> predictorFactoryPtr =
+        this->createBinaryPredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
-        return featureMatrix.createLabelPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
+        return featureMatrix.createBinaryPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
     }
 
     throw std::runtime_error("The rule learner does not support to predict labels");
 }
 
-std::unique_ptr<ISparseLabelPredictor> AbstractRuleLearner::createSparseLabelPredictor(
+std::unique_ptr<ISparseBinaryPredictor> AbstractRuleLearner::createSparseBinaryPredictor(
         const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
-    return this->createSparseLabelPredictor(featureMatrix, *trainingResult.getRuleModel(),
-                                            *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
+    return this->createSparseBinaryPredictor(featureMatrix, *trainingResult.getRuleModel(),
+                                             *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
 
-std::unique_ptr<ISparseLabelPredictor> AbstractRuleLearner::createSparseLabelPredictor(
+std::unique_ptr<ISparseBinaryPredictor> AbstractRuleLearner::createSparseBinaryPredictor(
         const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
         uint32 numLabels) const {
-    std::unique_ptr<ISparseLabelPredictorFactory> predictorFactoryPtr =
-        this->createSparseLabelPredictorFactory(featureMatrix, numLabels);
+    std::unique_ptr<ISparseBinaryPredictorFactory> predictorFactoryPtr =
+        this->createSparseBinaryPredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
-        return featureMatrix.createSparseLabelPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
+        return featureMatrix.createSparseBinaryPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
     }
 
     throw std::runtime_error("The rule learner does not support to predict sparse labels");

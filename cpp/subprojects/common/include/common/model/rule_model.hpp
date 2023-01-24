@@ -11,10 +11,10 @@
 class ILabelSpaceInfo;
 class CContiguousFeatureMatrix;
 class CsrFeatureMatrix;
-class ILabelPredictor;
-class ILabelPredictorFactory;
-class ISparseLabelPredictor;
-class ISparseLabelPredictorFactory;
+class IBinaryPredictor;
+class IBinaryPredictorFactory;
+class ISparseBinaryPredictor;
+class ISparseBinaryPredictorFactory;
 class IScorePredictor;
 class IScorePredictorFactory;
 class IProbabilityPredictor;
@@ -52,73 +52,75 @@ class MLRLCOMMON_API IRuleModel {
         virtual void setNumUsedRules(uint32 numUsedRules) = 0;
 
         /**
-         * Creates and returns a new instance of the class `ILabelPredictor`, based on the type of this rule-based
+         * Creates and returns a new instance of the class `IBinaryPredictor`, based on the type of this rule-based
          * model.
          *
-         * @param factory           A reference to an object of type `ILabelPredictorFactory` that should be used to
+         * @param factory           A reference to an object of type `IBinaryPredictorFactory` that should be used to
          *                          create the instance
          * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that provides row-wise
          *                          access to the features of the query examples
          * @param labelSpaceInfo    A reference to an object of type `ILabelSpaceInfo` that provides information about
          *                          the label space that may be used as a basis for making predictions
          * @param numLabels         The number of labels to predict for
-         * @return                  An unique pointer to an object of type `ILabelPredictor` that has been created
+         * @return                  An unique pointer to an object of type `IBinaryPredictor` that has been created
          */
-        virtual std::unique_ptr<ILabelPredictor> createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                                      const CContiguousFeatureMatrix& featureMatrix,
-                                                                      const ILabelSpaceInfo& labelSpaceInfo,
-                                                                      uint32 numLabels) const = 0;
+        virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                        const CContiguousFeatureMatrix& featureMatrix,
+                                                                        const ILabelSpaceInfo& labelSpaceInfo,
+                                                                        uint32 numLabels) const = 0;
 
         /**
-         * Creates and returns a new instance of the class `ILabelPredictor`, based on the type of this rule-based
+         * Creates and returns a new instance of the class `IBinaryPredictor`, based on the type of this rule-based
          * model.
          *
-         * @param factory           A reference to an object of type `ILabelPredictorFactory` that should be used to
+         * @param factory           A reference to an object of type `IBinaryPredictorFactory` that should be used to
          *                          create the instance
          * @param featureMatrix     A reference to an object of type `CsrFeatureMatrix` that provides row-wise access to
          *                          the features of the query examples
          * @param labelSpaceInfo    A reference to an object of type `ILabelSpaceInfo` that provides information about
          *                          the label space that may be used as a basis for making predictions
          * @param numLabels         The number of labels to predict for
-         * @return                  An unique pointer to an object of type `ILabelPredictor` that has been created
+         * @return                  An unique pointer to an object of type `IBinaryPredictor` that has been created
          */
-        virtual std::unique_ptr<ILabelPredictor> createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                                      const CsrFeatureMatrix& featureMatrix,
-                                                                      const ILabelSpaceInfo& labelSpaceInfo,
-                                                                      uint32 numLabels) const = 0;
+        virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                        const CsrFeatureMatrix& featureMatrix,
+                                                                        const ILabelSpaceInfo& labelSpaceInfo,
+                                                                        uint32 numLabels) const = 0;
 
         /**
-         * Creates and returns a new instance of the class `ISparseLabelPredictor`, based on the type of this rule-based
-         * model.
+         * Creates and returns a new instance of the class `ISparseBinaryPredictor`, based on the type of this
+         * rule-based model.
          *
-         * @param factory           A reference to an object of type `ILabelPredictorFactory` that should be used to
+         * @param factory           A reference to an object of type `IBinaryPredictorFactory` that should be used to
          *                          create the instance
          * @param featureMatrix     A reference to an object of type `CContiguousFeatureMatrix` that provides row-wise
          *                          access to the features of the query examples
          * @param labelSpaceInfo    A reference to an object of type `ILabelSpaceInfo` that provides information about
          *                          the label space that may be used as a basis for making predictions
          * @param numLabels         The number of labels to predict for
-         * @return                  An unique pointer to an object of type `ISparseLabelPredictor` that has been created
+         * @return                  An unique pointer to an object of type `ISparseBinaryPredictor` that has been
+         *                          created
          */
-        virtual std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(
-            const ISparseLabelPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+        virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
+            const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 
         /**
-         * Creates and returns a new instance of the class `ISparseLabelPredictor`, based on the type of this rule-based
-         * model.
+         * Creates and returns a new instance of the class `ISparseBinaryPredictor`, based on the type of this
+         * rule-based model.
          *
-         * @param factory           A reference to an object of type `ILabelPredictorFactory` that should be used to
+         * @param factory           A reference to an object of type `IBinaryPredictorFactory` that should be used to
          *                          create the instance
          * @param featureMatrix     A reference to an object of type `CsrFeatureMatrix` that provides row-wise access to
          *                          the features of the query examples
          * @param labelSpaceInfo    A reference to an object of type `ILabelSpaceInfo` that provides information about
          *                          the label space that may be used as a basis for making predictions
          * @param numLabels         The number of labels to predict for
-         * @return                  An unique pointer to an object of type `ISparseLabelPredictor` that has been created
+         * @return                  An unique pointer to an object of type `ISparseBinaryPredictor` that has been
+         *                          created
          */
-        virtual std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(
-            const ISparseLabelPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+        virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
+            const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 
         /**

@@ -2,7 +2,7 @@
 #include "common/input/feature_matrix_c_contiguous.hpp"
 #include "common/input/feature_matrix_csr.hpp"
 #include "common/model/rule_list.hpp"
-#include "common/prediction/predictor_label.hpp"
+#include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 
@@ -14,29 +14,29 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
 
     public:
 
-        std::unique_ptr<ILabelPredictor> createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                              const CContiguousFeatureMatrix& featureMatrix,
-                                                              const RuleList& model, uint32 numLabels) const override {
+        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                const CContiguousFeatureMatrix& featureMatrix,
+                                                                const RuleList& model,
+                                                                uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, numLabels);
         }
 
-        std::unique_ptr<ILabelPredictor> createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                              const CsrFeatureMatrix& featureMatrix,
-                                                              const RuleList& model, uint32 numLabels) const override {
+        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                const CsrFeatureMatrix& featureMatrix,
+                                                                const RuleList& model,
+                                                                uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, numLabels);
         }
 
-        std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
-                                                                          const CContiguousFeatureMatrix& featureMatrix,
-                                                                          const RuleList& model,
-                                                                          uint32 numLabels) const override {
+        std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
+                const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+                const RuleList& model, uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, numLabels);
         }
 
-        std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
-                                                                          const CsrFeatureMatrix& featureMatrix,
-                                                                          const RuleList& model,
-                                                                          uint32 numLabels) const override {
+        std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
+                const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+                const RuleList& model, uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, numLabels);
         }
 

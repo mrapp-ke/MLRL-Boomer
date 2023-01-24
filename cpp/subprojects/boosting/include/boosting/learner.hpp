@@ -18,8 +18,8 @@
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
-#include "boosting/prediction/predictor_label_example_wise.hpp"
-#include "boosting/prediction/predictor_label_gfm.hpp"
+#include "boosting/prediction/predictor_binary_example_wise.hpp"
+#include "boosting/prediction/predictor_binary_gfm.hpp"
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
@@ -483,9 +483,9 @@ namespace boosting {
                      * predicted.
                      */
                     virtual void useExampleWiseClassificationPredictor() {
-                        std::unique_ptr<ILabelPredictorConfig>& labelPredictorConfigPtr =
-                            this->getLabelPredictorConfigPtr();
-                        labelPredictorConfigPtr = std::make_unique<ExampleWiseLabelPredictorConfig>(
+                        std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
+                            this->getBinaryPredictorConfigPtr();
+                        binaryPredictorConfigPtr = std::make_unique<ExampleWiseBinaryPredictorConfig>(
                             this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
 
@@ -510,9 +510,9 @@ namespace boosting {
                      * F-measure maximizer (GFM).
                      */
                     virtual void useGfmClassificationPredictor() {
-                        std::unique_ptr<ILabelPredictorConfig>& labelPredictorConfigPtr =
-                            this->getLabelPredictorConfigPtr();
-                        labelPredictorConfigPtr = std::make_unique<GfmLabelPredictorConfig>(
+                        std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
+                            this->getBinaryPredictorConfigPtr();
+                        binaryPredictorConfigPtr = std::make_unique<GfmBinaryPredictorConfig>(
                             this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
 

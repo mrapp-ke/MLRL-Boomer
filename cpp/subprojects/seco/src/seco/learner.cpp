@@ -2,7 +2,7 @@
 #include "seco/heuristics/heuristic_precision.hpp"
 #include "seco/lift_functions/lift_function_no.hpp"
 #include "seco/model/decision_list_builder.hpp"
-#include "seco/prediction/predictor_label_label_wise.hpp"
+#include "seco/prediction/predictor_binary_label_wise.hpp"
 #include "seco/rule_evaluation/head_type_single.hpp"
 #include "seco/rule_evaluation/rule_compare_function.hpp"
 
@@ -66,7 +66,7 @@ namespace seco {
     }
 
     void AbstractSeCoRuleLearner::Config::useLabelWiseClassificationPredictor() {
-        labelPredictorConfigPtr_ = std::make_unique<LabelWiseLabelPredictorConfig>(parallelPredictionConfigPtr_);
+        binaryPredictorConfigPtr_ = std::make_unique<LabelWiseBinaryPredictorConfig>(parallelPredictionConfigPtr_);
     }
 
     AbstractSeCoRuleLearner::AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config)
@@ -98,9 +98,9 @@ namespace seco {
         return std::make_unique<DecisionListBuilderFactory>();
     }
 
-    std::unique_ptr<ISparseLabelPredictorFactory> AbstractSeCoRuleLearner::createSparseLabelPredictorFactory(
+    std::unique_ptr<ISparseBinaryPredictorFactory> AbstractSeCoRuleLearner::createSparseBinaryPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        return config_.getLabelPredictorConfigPtr()->createSparsePredictorFactory(featureMatrix, numLabels);
+        return config_.getBinaryPredictorConfigPtr()->createSparsePredictorFactory(featureMatrix, numLabels);
     }
 
 }

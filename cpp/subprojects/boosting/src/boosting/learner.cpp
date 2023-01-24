@@ -2,7 +2,7 @@
 #include "boosting/binning/label_binning_no.hpp"
 #include "boosting/losses/loss_label_wise_logistic.hpp"
 #include "boosting/model/rule_list_builder.hpp"
-#include "boosting/prediction/predictor_label_label_wise.hpp"
+#include "boosting/prediction/predictor_binary_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
 #include "boosting/prediction/predictor_score_label_wise.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
@@ -78,8 +78,8 @@ namespace boosting {
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseClassificationPredictor() {
-        labelPredictorConfigPtr_ =
-            std::make_unique<LabelWiseLabelPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+        binaryPredictorConfigPtr_ =
+            std::make_unique<LabelWiseBinaryPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseRegressionPredictor() {

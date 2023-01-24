@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/prediction/predictor_label.hpp"
+#include "common/prediction/predictor_binary.hpp"
 #include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
 
@@ -14,7 +14,7 @@ namespace boosting {
      * Allows to configure a predictor that automatically decides for a method that is used to predict whether
      * individual labels of given query examples are relevant or not
      */
-    class AutomaticLabelPredictorConfig : public ILabelPredictorConfig {
+    class AutomaticBinaryPredictorConfig : public IBinaryPredictorConfig {
 
         private:
 
@@ -31,19 +31,19 @@ namespace boosting {
              *                                  multi-threading behavior that should be used to predict for several
              *                                  query examples in parallel
              */
-            AutomaticLabelPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
-                                          const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+            AutomaticBinaryPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
+                                           const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
             /**
              * @see `IPredictorConfig::createPredictorFactory`
              */
-            std::unique_ptr<ILabelPredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                           uint32 numLabels) const override;
+            std::unique_ptr<IBinaryPredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                            uint32 numLabels) const override;
 
             /**
-             * @see `ILabelPredictorConfig::createSparsePredictorFactory`
+             * @see `IBinaryPredictorConfig::createSparsePredictorFactory`
              */
-            std::unique_ptr<ISparseLabelPredictorFactory> createSparsePredictorFactory(
+            std::unique_ptr<ISparseBinaryPredictorFactory> createSparsePredictorFactory(
                 const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**

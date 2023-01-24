@@ -6,7 +6,7 @@ from mlrl.common.cython.feature_info cimport FeatureInfo
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
-from mlrl.common.cython.prediction cimport LabelPredictor, SparseLabelPredictor, ScorePredictor, ProbabilityPredictor
+from mlrl.common.cython.prediction cimport BinaryPredictor, SparseBinaryPredictor, ScorePredictor, ProbabilityPredictor
 from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
 
@@ -207,7 +207,7 @@ cdef class RuleLearner:
         cdef LabelSpaceInfo label_space_info = create_label_space_info(move(label_space_info_ptr))
         return TrainingResult.__new__(TrainingResult, num_labels, rule_model, label_space_info)
 
-    def can_predict_labels(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
+    def can_predict_binary(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
         """
         Returns whether the rule learner is able to predict binary labels or not.
 
@@ -216,11 +216,11 @@ cdef class RuleLearner:
         :param num_labels:      The number of labels to predict for
         :return:                True, if the rule learner is able to predict binary labels, False otherwise
         """
-        return self.get_rule_learner_ptr().canPredictLabels(
+        return self.get_rule_learner_ptr().canPredictBinary(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
 
-    def create_label_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                               LabelSpaceInfo label_space_info not None, uint32 num_labels) -> LabelPredictor:
+    def create_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
+                                LabelSpaceInfo label_space_info not None, uint32 num_labels) -> BinaryPredictor:
         """
         Creates and returns a predictor that may be used to predict labels for given query examples. If the prediction
         of labels is not supported by the rule learner, a `RuntimeError` is thrown.
@@ -231,20 +231,20 @@ cdef class RuleLearner:
         :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
                                     used as a basis for obtaining predictions
         :param num_labels:          The number of labels to predict for
-        :return:                    A `LabelPredictor` that may be used to predict labels for the given query examples
+        :return:                    A `BinaryPredictor` that may be used to predict labels for the given query examples
         """
-        cdef unique_ptr[ILabelPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createLabelPredictor(
+        cdef unique_ptr[IBinaryPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createBinaryPredictor(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
             dereference(rule_model.get_rule_model_ptr()),
             dereference(label_space_info.get_label_space_info_ptr()),
             num_labels))
-        cdef LabelPredictor label_predictor = LabelPredictor.__new__(LabelPredictor)
-        label_predictor.predictor_ptr = move(predictor_ptr)
-        return label_predictor
+        cdef BinaryPredictor binary_predictor = BinaryPredictor.__new__(BinaryPredictor)
+        binary_predictor.predictor_ptr = move(predictor_ptr)
+        return binary_predictor
 
-    def create_sparse_label_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                                      LabelSpaceInfo label_space_info not None,
-                                      uint32 num_labels) -> SparseLabelPredictor:
+    def create_sparse_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None,
+                                       RuleModel rule_model not None, LabelSpaceInfo label_space_info not None,
+                                       uint32 num_labels) -> SparseBinaryPredictor:
         """
         Creates and returns a predictor that may be used to predict sparse labels for given query examples. If the
         prediction of labels is not supported by the rule learner, a `RuntimeError` is thrown.
@@ -255,17 +255,17 @@ cdef class RuleLearner:
         :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
                                     used as a basis for obtaining predictions
         :param num_labels:          The number of labels to predict for
-        :return:                    A `SparseLabelPredictor` that may be used to predict labels for the given query
+        :return:                    A `SparseBinaryPredictor` that may be used to predict labels for the given query
                                     examples
         """
-        cdef unique_ptr[ISparseLabelPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createSparseLabelPredictor(
+        cdef unique_ptr[ISparseBinaryPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createSparseBinaryPredictor(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
             dereference(rule_model.get_rule_model_ptr()),
             dereference(label_space_info.get_label_space_info_ptr()),
             num_labels))
-        cdef SparseLabelPredictor sparse_label_predictor = SparseLabelPredictor.__new__(SparseLabelPredictor)
-        sparse_label_predictor.predictor_ptr = move(predictor_ptr)
-        return sparse_label_predictor
+        cdef SparseBinaryPredictor sparse_binary_predictor = SparseBinaryPredictor.__new__(SparseBinaryPredictor)
+        sparse_binary_predictor.predictor_ptr = move(predictor_ptr)
+        return sparse_binary_predictor
 
     def can_predict_scores(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
         """

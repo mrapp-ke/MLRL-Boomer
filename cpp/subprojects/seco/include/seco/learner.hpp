@@ -516,9 +516,9 @@ namespace seco {
             std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override;
 
             /**
-             * @see `AbstractRuleLearner::createSparseLabelPredictorFactory`
+             * @see `AbstractRuleLearner::createSparseBinaryPredictorFactory`
              */
-            std::unique_ptr<ISparseLabelPredictorFactory> createSparseLabelPredictorFactory(
+            std::unique_ptr<ISparseBinaryPredictorFactory> createSparseBinaryPredictorFactory(
                 const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         public:

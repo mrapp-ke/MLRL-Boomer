@@ -47,15 +47,14 @@ class CsrFeatureMatrix final : public CsrConstView<const float32>, virtual publi
 
         bool isSparse() const override;
 
-        std::unique_ptr<ILabelPredictor> createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                              const IRuleModel& ruleModel,
-                                                              const ILabelSpaceInfo& labelSpaceInfo,
-                                                              uint32 numLabels) const override;
+        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                const IRuleModel& ruleModel,
+                                                                const ILabelSpaceInfo& labelSpaceInfo,
+                                                                uint32 numLabels) const override;
 
-        std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
-                                                                          const IRuleModel& ruleModel,
-                                                                          const ILabelSpaceInfo& labelSpaceInfo,
-                                                                          uint32 numLabels) const override;
+        std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
+            const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
+            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const IRuleModel& ruleModel,
