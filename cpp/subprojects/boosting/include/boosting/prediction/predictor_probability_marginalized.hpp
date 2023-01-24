@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/output/predictor_probability.hpp"
+#include "common/prediction/predictor_probability.hpp"
 #include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
 
@@ -18,7 +18,7 @@ namespace boosting {
      * have been obtained for all label vectors, where the respective label is specified to be relevant, divided by the
      * total sum of all distances.
      */
-    class MarginalizedProbabilityPredictorConfig final : public IOldProbabilityPredictorConfig {
+    class MarginalizedProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
 
         private:
 
@@ -40,10 +40,10 @@ namespace boosting {
                 const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
             /**
-             * @see `IProbabilityPredictorConfig::createProbabilityPredictorFactory`
+             * @see `IProbabilityPredictorConfig::createPredictorFactory`
              */
-            std::unique_ptr<IOldProbabilityPredictorFactory> createProbabilityPredictorFactory(
-                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+            std::unique_ptr<IProbabilityPredictorFactory> createPredictorFactory(
+                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`

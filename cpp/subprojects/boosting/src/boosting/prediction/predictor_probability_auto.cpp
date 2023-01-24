@@ -12,14 +12,14 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<IOldProbabilityPredictorFactory> AutomaticProbabilityPredictorConfig::createProbabilityPredictorFactory(
-            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    std::unique_ptr<IProbabilityPredictorFactory> AutomaticProbabilityPredictorConfig::createPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         if (lossConfigPtr_->isDecomposable()) {
             return LabelWiseProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-                .createProbabilityPredictorFactory(featureMatrix, numLabels);
+                .createPredictorFactory(featureMatrix, numLabels);
         } else {
             return MarginalizedProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-                .createProbabilityPredictorFactory(featureMatrix, numLabels);
+                .createPredictorFactory(featureMatrix, numLabels);
         }
     }
 
