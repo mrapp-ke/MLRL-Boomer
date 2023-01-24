@@ -152,22 +152,98 @@ namespace boosting {
         return storePrediction(*bestVectorPtr, prediction);
     }
 
+    static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
+            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
+            uint32 numThreads) {
+        uint32 numExamples = featureMatrix.getNumRows();
+        std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+            std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
+        uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
+
+        if (numLabelVectors > 0) {
+            uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet);
+            const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
+            CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
+            const RuleList* modelPtr = &model;
+            const IProbabilityFunction* probabilityFunctionPtr = &probabilityFunction;
+            const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
+
+            #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
+            firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
+            firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) \
+            schedule(dynamic) num_threads(numThreads)
+            for (int64 i = 0; i < numExamples; i++) {
+                float64* scoreVector = new float64[numLabels] {};
+                applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
+                           &scoreVector[0]);
+                predictGfm(scoreVector, &scoreVector[numLabels], predictionMatrixRawPtr->row_values_begin(i), numLabels,
+                           *probabilityFunctionPtr, *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
+                delete[] scoreVector;
+            }
+        }
+
+        return predictionMatrixPtr;
+    }
+
+    static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
+            const CsrConstView<const float32>& featureMatrix, const RuleList& model,
+            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
+            uint32 numThreads) {
+        uint32 numExamples = featureMatrix.getNumRows();
+        uint32 numFeatures = featureMatrix.getNumCols();
+        std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+            std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
+        uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
+
+        if (numLabelVectors > 0) {
+            uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet);
+            const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
+            CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
+            const RuleList* modelPtr = &model;
+            const IProbabilityFunction* probabilityFunctionPtr = &probabilityFunction;
+            const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
+
+            #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
+            firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
+            firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
+            firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
+            for (int64 i = 0; i < numExamples; i++) {
+                float64* scoreVector = new float64[numLabels] {};
+                applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                              featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                              featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                predictGfm(scoreVector, &scoreVector[numLabels], predictionMatrixRawPtr->row_values_begin(i), numLabels,
+                           *probabilityFunctionPtr, *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
+                delete[] scoreVector;
+            }
+        }
+
+        return predictionMatrixPtr;
+    }
+
     /**
-     * An implementation of the type `IClassificationPredictor` that allows to predict whether individual labels of
-     * given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
-     * rules of an existing rule-based model and transforming them into binary values according to the general F-measure
-     * maximizer (GFM).
+     * An implementation of the type `ILabelPredictor` that allows to predict whether individual labels of given query
+     * examples are relevant or irrelevant by summing up the scores that are provided by the individual rules of an
+     * existing rule-based model and transforming them into binary values according to the general F-measure maximizer
+     * (GFM).
      *
-     * @tparam Model The type of the rule-based model that is used to obtain predictions
+     * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of
+     *                          the query examples
+     * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
-    template<typename Model>
-    class GfmClassificationPredictor final : public IClassificationPredictor {
+    template<typename FeatureMatrix, typename Model>
+    class GfmLabelPredictor final : public ILabelPredictor {
 
         private:
+
+            const FeatureMatrix& featureMatrix_;
 
             const Model& model_;
 
             const LabelVectorSet& labelVectorSet_;
+
+            uint32 numLabels_;
 
             std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
 
@@ -176,18 +252,22 @@ namespace boosting {
         public:
 
             /**
+             * @param featureMatrix             A reference to an object of template type `FeatureMatrix` that provide
+             *                                  row-wise access to the feature values of the query examples
              * @param model                     A reference to an object of template type `Model` that should be used to
              *                                  obtain predictions
              * @param labelVectorSet            A reference to an object of type `LabelVectorSet` that stores all known
              *                                  label vectors
+             * @param numLabels                 The number of labels to predict for
              * @param probabilityFunctionPtr    An unique pointer to an object of type `IProbabilityFunction` that
              *                                  should be used to transform predicted scores into probabilities
              * @param numThreads                The number of CPU threads to be used to make predictions for different
              *                                  query examples in parallel. Must be at least 1
              */
-            GfmClassificationPredictor(const Model& model, const LabelVectorSet& labelVectorSet,
-                                       std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr, uint32 numThreads)
-                : model_(model), labelVectorSet_(labelVectorSet),
+            GfmLabelPredictor(const FeatureMatrix& featureMatrix, const Model& model,
+                              const LabelVectorSet& labelVectorSet, uint32 numLabels,
+                              std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr, uint32 numThreads)
+                : featureMatrix_(featureMatrix), model_(model), labelVectorSet_(labelVectorSet), numLabels_(numLabels),
                   probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {
 
             }
@@ -195,168 +275,37 @@ namespace boosting {
             /**
              * @see `IPredictor::predict`
              */
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict(
-                    const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
-                uint32 numExamples = featureMatrix.getNumRows();
-                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
-                uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
-
-                if (numLabelVectors > 0) {
-                    uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet_);
-                    const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
-                    CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
-                    const Model* modelPtr = &model_;
-                    const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
-                    const LabelVectorSet* labelVectorSetPtr = &labelVectorSet_;
-
-                    #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-                    firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-                    firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
-                    firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads_)
-                    for (int64 i = 0; i < numExamples; i++) {
-                        float64* scoreVector = new float64[numLabels] {};
-                        applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
-                                   featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                        predictGfm(scoreVector, &scoreVector[numLabels], predictionMatrixRawPtr->row_values_begin(i),
-                                   numLabels, *probabilityFunctionPtr, *labelVectorSetPtr, numLabelVectors,
-                                   maxLabelCardinality);
-                        delete[] scoreVector;
-                    }
-                }
-
-                return predictionMatrixPtr;
-            }
-
-            /**
-             * @see `IPredictor::predict`
-             */
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict(const CsrConstView<const float32>& featureMatrix,
-                                                                  uint32 numLabels) const override {
-                uint32 numExamples = featureMatrix.getNumRows();
-                uint32 numFeatures = featureMatrix.getNumCols();
-                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                    std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
-                uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
-
-                if (numLabelVectors > 0) {
-                    uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet_);
-                    const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
-                    CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
-                    const Model* modelPtr = &model_;
-                    const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
-                    const LabelVectorSet* labelVectorSetPtr = &labelVectorSet_;
-
-                    #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) \
-                    firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-                    firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
-                    firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) \
-                    schedule(dynamic) num_threads(numThreads_)
-                    for (int64 i = 0; i < numExamples; i++) {
-                        float64* scoreVector = new float64[numLabels] {};
-                        applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
-                                      featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                                      featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                        predictGfm(scoreVector, &scoreVector[numLabels], predictionMatrixRawPtr->row_values_begin(i),
-                                   numLabels, *probabilityFunctionPtr, *labelVectorSetPtr, numLabelVectors,
-                                   maxLabelCardinality);
-                        delete[] scoreVector;
-                    }
-                }
-
-                return predictionMatrixPtr;
-            }
-
-            /**
-             * @see `ISparsePredictor::predictSparse`
-             */
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-                    const CContiguousConstView<const float32>& featureMatrix, uint32 numLabels) const override {
-                uint32 numExamples = featureMatrix.getNumRows();
-                BinaryLilMatrix lilMatrix(numExamples);
-                uint32 numNonZeroElements = 0;
-                uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
-
-                if (numLabelVectors > 0) {
-                    uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet_);
-                    const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
-                    BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
-                    const Model* modelPtr = &model_;
-                    const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
-                    const LabelVectorSet* labelVectorSetPtr = &labelVectorSet_;
-
-                    #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
-                    firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-                    firstprivate(predictionMatrixPtr) firstprivate(probabilityFunctionPtr) \
-                    firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) \
-                    schedule(dynamic) num_threads(numThreads_)
-                    for (int64 i = 0; i < numExamples; i++) {
-                        float64* scoreVector = new float64[numLabels] {};
-                        applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i),
-                                   featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                        numNonZeroElements += predictGfm<BinaryLilMatrix::row>(scoreVector, &scoreVector[numLabels],
-                                                                               (*predictionMatrixPtr)[i], numLabels,
-                                                                               *probabilityFunctionPtr,
-                                                                               *labelVectorSetPtr, numLabelVectors,
-                                                                               maxLabelCardinality);
-                        delete[] scoreVector;
-                    }
-                }
-
-                return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
-            }
-
-            /**
-             * @see `ISparsePredictor::predictSparse`
-             */
-            std::unique_ptr<BinarySparsePredictionMatrix> predictSparse(
-                    const CsrConstView<const float32>& featureMatrix, uint32 numLabels) const override {
-                uint32 numExamples = featureMatrix.getNumRows();
-                uint32 numFeatures = featureMatrix.getNumCols();
-                BinaryLilMatrix lilMatrix(numExamples);
-                uint32 numNonZeroElements = 0;
-                uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
-
-                if (numLabelVectors > 0) {
-                    uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet_);
-                    const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
-                    BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
-                    const Model* modelPtr = &model_;
-                    const IProbabilityFunction* probabilityFunctionPtr = probabilityFunctionPtr_.get();
-                    const LabelVectorSet* labelVectorSetPtr = &labelVectorSet_;
-
-                    #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
-                    firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) \
-                    firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-                    firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) \
-                    firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) schedule(dynamic) \
-                    num_threads(numThreads_)
-                    for (int64 i = 0; i < numExamples; i++) {
-                        float64* scoreVector = new float64[numLabels] {};
-                        applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
-                                      featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                                      featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                        numNonZeroElements += predictGfm<BinaryLilMatrix::row>(scoreVector, &scoreVector[numLabels],
-                                                                               (*predictionMatrixPtr)[i], numLabels,
-                                                                               *probabilityFunctionPtr,
-                                                                               *labelVectorSetPtr, numLabelVectors,
-                                                                               maxLabelCardinality);
-                        delete[] scoreVector;
-                    }
-                }
-
-                return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict() const override {
+                return predictInternally(featureMatrix_, model_, labelVectorSet_, numLabels_, *probabilityFunctionPtr_,
+                                         numThreads_);
             }
 
     };
 
+    template<typename FeatureMatrix>
+    static inline std::unique_ptr<ILabelPredictor> createGfmLabelPredictor(
+            const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
+            uint32 numLabels, const IProbabilityFunctionFactory& probabilityFunctionFactory, uint32 numThreads) {
+        if (!labelVectorSet) {
+            throw std::runtime_error("Information about the label vectors that have been encountered in the training "
+                "data is required for predicting binary labels, but no such information is provided by the model. Most "
+                "probably, the model was intended to use a different prediction method when it has been trained.");
+        }
+
+        std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactory.create();
+        return std::make_unique<GfmLabelPredictor<FeatureMatrix, RuleList>>(featureMatrix, model, *labelVectorSet,
+                                                                            numLabels,
+                                                                            std::move(probabilityFunctionPtr),
+                                                                            numThreads);
+    }
+
     /**
-     * Allows to create instances of the type `IClassificationPredictor` that allow to predict whether individual labels
-     * of given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
-     * rules of an existing rule-based model and transforming them into binary values according to the general F-measure
+     * Allows to create instances of the type `ILabelPredictor` that allow to predict whether individual labels of given
+     * query examples are relevant or irrelevant by summing up the scores that are provided by the individual rules of
+     * an existing rule-based model and transforming them into binary values according to the general F-measure
      * maximizer (GFM).
      */
-    class GfmClassificationPredictorFactory final : public IClassificationPredictorFactory {
+    class GfmLabelPredictorFactory final : public ILabelPredictorFactory {
 
         private:
 
@@ -373,54 +322,270 @@ namespace boosting {
              * @param numThreads                    The number of CPU threads to be used to make predictions for
              *                                      different query examples in parallel. Must be at least 1
              */
-            GfmClassificationPredictorFactory(
-                    std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
+            GfmLabelPredictorFactory(std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr,
+                                     uint32 numThreads)
                 : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {
 
             }
 
             /**
-             * @see `IClassificationPredictorFactory::create`
+             * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<IClassificationPredictor> create(const RuleList& model,
-                                                             const LabelVectorSet* labelVectorSet) const override {
-                if (!labelVectorSet) {
-                    throw std::runtime_error("Information about the label vectors that have been encountered in the "
-                        "training data is required for predicting binary labels, but no such information is provided "
-                        "by the model. Most probably, the model was intended to use a different prediction method when "
-                        "it has been trained.");
-                }
+            std::unique_ptr<ILabelPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
+                                                    const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                    uint32 numLabels) const override {
+                return createGfmLabelPredictor(featureMatrix, model, labelVectorSet, numLabels,
+                                               *probabilityFunctionFactoryPtr_, numThreads_);
+            }
 
-                std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
-                return std::make_unique<GfmClassificationPredictor<RuleList>>(model, *labelVectorSet,
-                                                                              std::move(probabilityFunctionPtr),
-                                                                              numThreads_);
+            /**
+             * @see `IPredictorFactory::create`
+             */
+            std::unique_ptr<ILabelPredictor> create(const CsrConstView<const float32>& featureMatrix,
+                                                    const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                    uint32 numLabels) const override {
+                return createGfmLabelPredictor(featureMatrix, model, labelVectorSet, numLabels,
+                                               *probabilityFunctionFactoryPtr_, numThreads_);
             }
 
     };
 
-    GfmClassificationPredictorConfig::GfmClassificationPredictorConfig(
+    static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
+            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
+        uint32 numExamples = featureMatrix.getNumRows();
+        BinaryLilMatrix lilMatrix(numExamples);
+        uint32 numNonZeroElements = 0;
+        uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
+
+        if (numLabelVectors > 0) {
+            uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet);
+            const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
+            BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
+            const RuleList* modelPtr = &model;
+            const IProbabilityFunction* probabilityFunctionPtr = &probabilityFunction;
+            const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
+
+            #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
+            firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+            firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
+            firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
+            for (int64 i = 0; i < numExamples; i++) {
+                float64* scoreVector = new float64[numLabels] {};
+                applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
+                           &scoreVector[0]);
+                numNonZeroElements += predictGfm<BinaryLilMatrix::row>(scoreVector, &scoreVector[numLabels],
+                                                                       (*predictionMatrixPtr)[i], numLabels,
+                                                                       *probabilityFunctionPtr, *labelVectorSetPtr,
+                                                                       numLabelVectors, maxLabelCardinality);
+                delete[] scoreVector;
+            }
+        }
+
+        return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
+    }
+
+    static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
+            const CsrConstView<const float32>& featureMatrix, const RuleList& model,
+            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
+            uint32 numThreads) {
+        uint32 numExamples = featureMatrix.getNumRows();
+        uint32 numFeatures = featureMatrix.getNumCols();
+        BinaryLilMatrix lilMatrix(numExamples);
+        uint32 numNonZeroElements = 0;
+        uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
+
+        if (numLabelVectors > 0) {
+            uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet);
+            const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
+            BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
+            const RuleList* modelPtr = &model;
+            const IProbabilityFunction* probabilityFunctionPtr = &probabilityFunction;
+            const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
+
+            #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
+            firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+            firstprivate(predictionMatrixPtr) firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) \
+            firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
+            for (int64 i = 0; i < numExamples; i++) {
+                float64* scoreVector = new float64[numLabels] {};
+                applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                              featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                              featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                numNonZeroElements += predictGfm<BinaryLilMatrix::row>(scoreVector, &scoreVector[numLabels],
+                                                                       (*predictionMatrixPtr)[i], numLabels,
+                                                                       *probabilityFunctionPtr, *labelVectorSetPtr,
+                                                                       numLabelVectors, maxLabelCardinality);
+                delete[] scoreVector;
+            }
+        }
+
+        return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
+    }
+
+    /**
+     * An implementation of the type `ISparseLabelPredictor` that allows to predict whether individual labels of given
+     * query examples are relevant or irrelevant by summing up the scores that are provided by the individual rules of
+     * an existing rule-based model and transforming them into binary values according to the general F-measure
+     * maximizer (GFM).
+     *
+     * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of
+     *                          the query examples
+     * @tparam Model            The type of the rule-based model that is used to obtain predictions
+     */
+    template<typename FeatureMatrix, typename Model>
+    class GfmSparseLabelPredictor final : public ISparseLabelPredictor {
+
+        private:
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            const LabelVectorSet& labelVectorSet_;
+
+            uint32 numLabels_;
+
+            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
+
+            uint32 numThreads_;
+
+        public:
+
+            /**
+             * @param featureMatrix             A reference to an object of template type `FeatureMatrix` that provide
+             *                                  row-wise access to the feature values of the query examples
+             * @param model                     A reference to an object of template type `Model` that should be used to
+             *                                  obtain predictions
+             * @param labelVectorSet            A reference to an object of type `LabelVectorSet` that stores all known
+             *                                  label vectors
+             * @param numLabels                 The number of labels to predict for
+             * @param probabilityFunctionPtr    An unique pointer to an object of type `IProbabilityFunction` that
+             *                                  should be used to transform predicted scores into probabilities
+             * @param numThreads                The number of CPU threads to be used to make predictions for different
+             *                                  query examples in parallel. Must be at least 1
+             */
+            GfmSparseLabelPredictor(const FeatureMatrix& featureMatrix, const Model& model,
+                                    const LabelVectorSet& labelVectorSet, uint32 numLabels,
+                                    std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr, uint32 numThreads)
+                : featureMatrix_(featureMatrix), model_(model), labelVectorSet_(labelVectorSet), numLabels_(numLabels),
+                  probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {
+
+            }
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<BinarySparsePredictionMatrix> predict() const override {
+                return predictSparseInternally(featureMatrix_, model_, labelVectorSet_, numLabels_,
+                                               *probabilityFunctionPtr_, numThreads_);
+            }
+
+    };
+
+    template<typename FeatureMatrix>
+    static inline std::unique_ptr<ISparseLabelPredictor> createGfmSparseLabelPredictor(
+            const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
+            uint32 numLabels, const IProbabilityFunctionFactory& probabilityFunctionFactory, uint32 numThreads) {
+        if (!labelVectorSet) {
+            throw std::runtime_error("Information about the label vectors that have been encountered in the training "
+                "data is required for predicting binary labels, but no such information is provided by the model. Most "
+                "probably, the model was intended to use a different prediction method when it has been trained.");
+        }
+
+        std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactory.create();
+        return std::make_unique<GfmSparseLabelPredictor<FeatureMatrix, RuleList>>(featureMatrix, model, *labelVectorSet,
+                                                                                  numLabels,
+                                                                                  std::move(probabilityFunctionPtr),
+                                                                                  numThreads);
+    }
+
+    /**
+     * Allows to create instances of the type `ISparseLabelPredictor` that allow to predict whether individual labels of
+     * given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
+     * rules of an existing rule-based model and transforming them into binary values according to the general F-measure
+     * maximizer (GFM).
+     */
+    class GfmSparseLabelPredictorFactory final : public ISparseLabelPredictorFactory {
+
+        private:
+
+            std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
+
+            uint32 numThreads_;
+
+        public:
+
+            /**
+             * @param probabilityFunctionFactoryPtr An unique pointer to an object of type `IProbabilityFunctionFactory`
+             *                                      that allows to create implementations of the transformation function
+             *                                      to be used to transform predicted scores into probabilities
+             * @param numThreads                    The number of CPU threads to be used to make predictions for
+             *                                      different query examples in parallel. Must be at least 1
+             */
+            GfmSparseLabelPredictorFactory(std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr,
+                                           uint32 numThreads)
+                : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {
+
+            }
+
+            /**
+             * @see `IPredictorFactory::create`
+             */
+            std::unique_ptr<ISparseLabelPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
+                                                          const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                          uint32 numLabels) const override {
+                return createGfmSparseLabelPredictor(featureMatrix, model, labelVectorSet, numLabels,
+                                                     *probabilityFunctionFactoryPtr_, numThreads_);
+            }
+
+            /**
+             * @see `IPredictorFactory::create`
+             */
+            std::unique_ptr<ISparseLabelPredictor> create(const CsrConstView<const float32>& featureMatrix,
+                                                    const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                    uint32 numLabels) const override {
+                return createGfmSparseLabelPredictor(featureMatrix, model, labelVectorSet, numLabels,
+                                                     *probabilityFunctionFactoryPtr_, numThreads_);
+            }
+
+    };
+
+    GfmLabelPredictorConfig::GfmLabelPredictorConfig(
             const std::unique_ptr<ILossConfig>& lossConfigPtr,
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : lossConfigPtr_(std::move(lossConfigPtr)), multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {
 
     }
 
-    std::unique_ptr<IClassificationPredictorFactory> GfmClassificationPredictorConfig::createClassificationPredictorFactory(
-            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    std::unique_ptr<ILabelPredictorFactory> GfmLabelPredictorConfig::createPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
             lossConfigPtr_->createProbabilityFunctionFactory();
 
         if (probabilityFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-            return std::make_unique<GfmClassificationPredictorFactory>(std::move(probabilityFunctionFactoryPtr),
-                                                                       numThreads);
+            return std::make_unique<GfmLabelPredictorFactory>(std::move(probabilityFunctionFactoryPtr), numThreads);
         } else {
             return nullptr;
         }
     }
 
-    bool GfmClassificationPredictorConfig::isLabelVectorSetNeeded() const {
+    std::unique_ptr<ISparseLabelPredictorFactory> GfmLabelPredictorConfig::createSparsePredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
+            lossConfigPtr_->createProbabilityFunctionFactory();
+
+        if (probabilityFunctionFactoryPtr) {
+            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+            return std::make_unique<GfmSparseLabelPredictorFactory>(std::move(probabilityFunctionFactoryPtr),
+                                                                    numThreads);
+        } else {
+            return nullptr;
+        }
+    }
+
+    bool GfmLabelPredictorConfig::isLabelVectorSetNeeded() const {
         return true;
     }
 

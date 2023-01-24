@@ -77,8 +77,8 @@ namespace boosting {
     }
 
     void Boomer::Config::useAutomaticClassificationPredictor() {
-        // TODO Re-implement
-        // classificationPredictorConfigPtr_ = std::make_unique<AutomaticClassificationPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+        labelPredictorConfigPtr_ =
+            std::make_unique<AutomaticLabelPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticProbabilityPredictor() {

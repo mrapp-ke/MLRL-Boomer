@@ -5,30 +5,41 @@
 
 namespace boosting {
 
-    AutomaticClassificationPredictorConfig::AutomaticClassificationPredictorConfig(
+    AutomaticLabelPredictorConfig::AutomaticLabelPredictorConfig(
             const std::unique_ptr<ILossConfig>& lossConfigPtr,
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
     }
 
-    std::unique_ptr<IClassificationPredictorFactory> AutomaticClassificationPredictorConfig::createClassificationPredictorFactory(
-            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    std::unique_ptr<ILabelPredictorFactory> AutomaticLabelPredictorConfig::createPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         if (lossConfigPtr_->isDecomposable()) {
-            return LabelWiseClassificationPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-                .createClassificationPredictorFactory(featureMatrix, numLabels);
+            return LabelWiseLabelPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+                .createPredictorFactory(featureMatrix, numLabels);
         } else {
-            return ExampleWiseClassificationPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-                .createClassificationPredictorFactory(featureMatrix, numLabels);
+            return ExampleWiseLabelPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+                .createPredictorFactory(featureMatrix, numLabels);
         }
     }
 
-    bool AutomaticClassificationPredictorConfig::isLabelVectorSetNeeded() const {
+    std::unique_ptr<ISparseLabelPredictorFactory> AutomaticLabelPredictorConfig::createSparsePredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         if (lossConfigPtr_->isDecomposable()) {
-            return LabelWiseClassificationPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+            return LabelWiseLabelPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+                .createSparsePredictorFactory(featureMatrix, numLabels);
+        } else {
+            return ExampleWiseLabelPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+                .createSparsePredictorFactory(featureMatrix, numLabels);
+        }
+    }
+
+    bool AutomaticLabelPredictorConfig::isLabelVectorSetNeeded() const {
+        if (lossConfigPtr_->isDecomposable()) {
+            return LabelWiseLabelPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
                 .isLabelVectorSetNeeded();
         } else {
-            return ExampleWiseClassificationPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+            return ExampleWiseLabelPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
                 .isLabelVectorSetNeeded();
         }
     }

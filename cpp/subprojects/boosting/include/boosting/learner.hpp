@@ -512,13 +512,10 @@ namespace boosting {
                      * predicted.
                      */
                     virtual void useExampleWiseClassificationPredictor() {
-                        // TODO Re-implement
-                        /*
-                        std::unique_ptr<IClassificationPredictorConfig>& classificationPredictorConfigPtr =
-                            this->getClassificationPredictorConfigPtr();
-                        classificationPredictorConfigPtr = std::make_unique<ExampleWiseClassificationPredictorConfig>(
+                        std::unique_ptr<ILabelPredictorConfig>& labelPredictorConfigPtr =
+                            this->getLabelPredictorConfigPtr();
+                        labelPredictorConfigPtr = std::make_unique<ExampleWiseLabelPredictorConfig>(
                             this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
-                        */
                     }
 
             };
@@ -542,13 +539,10 @@ namespace boosting {
                      * F-measure maximizer (GFM).
                      */
                     virtual void useGfmClassificationPredictor() {
-                        // TODO Re-implement
-                        /*
-                        std::unique_ptr<IClassificationPredictorConfig>& classificationPredictorConfigPtr =
-                            this->getClassificationPredictorConfigPtr();
-                        classificationPredictorConfigPtr = std::make_unique<GfmClassificationPredictorConfig>(
+                        std::unique_ptr<ILabelPredictorConfig>& labelPredictorConfigPtr =
+                            this->getLabelPredictorConfigPtr();
+                        labelPredictorConfigPtr = std::make_unique<GfmLabelPredictorConfig>(
                             this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
-                        */
                     }
 
             };
