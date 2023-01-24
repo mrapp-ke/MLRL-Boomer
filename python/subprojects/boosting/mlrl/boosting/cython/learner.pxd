@@ -32,7 +32,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useLabelWiseClassificationPredictor()
 
-        void useLabelWiseRegressionPredictor()
+        void useLabelWiseScorePredictor()
 
         void useLabelWiseProbabilityPredictor()
 

@@ -22,7 +22,7 @@ namespace boosting {
         this->useLabelWiseLogisticLoss();
         this->useNoLabelBinning();
         this->useLabelWiseClassificationPredictor();
-        this->useLabelWiseRegressionPredictor();
+        this->useLabelWiseScorePredictor();
         this->useLabelWiseProbabilityPredictor();
     }
 
@@ -82,7 +82,7 @@ namespace boosting {
             std::make_unique<LabelWiseBinaryPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
-    void AbstractBoostingRuleLearner::Config::useLabelWiseRegressionPredictor() {
+    void AbstractBoostingRuleLearner::Config::useLabelWiseScorePredictor() {
         scorePredictorConfigPtr_ = std::make_unique<LabelWiseScorePredictorConfig>(parallelPredictionConfigPtr_);
     }
 
