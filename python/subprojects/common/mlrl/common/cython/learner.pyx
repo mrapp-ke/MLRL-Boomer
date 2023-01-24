@@ -8,6 +8,7 @@ from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseF
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
 from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
+from mlrl.common.cython.prediction cimport LabelPredictor, SparseLabelPredictor, ScorePredictor, ProbabilityPredictor
 from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
 
@@ -223,6 +224,30 @@ cdef class RuleLearner:
         return self.get_rule_learner_ptr().canPredictLabels(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
 
+    def create_label_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
+                               LabelSpaceInfo label_space_info not None, uint32 num_labels) -> LabelPredictor:
+        """
+        Creates and returns a predictor that may be used to predict labels for given query examples. If the prediction
+        of labels is not supported by the rule learner, a `RuntimeError` is thrown.
+
+        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
+                                    query examples
+        :param rule_model:          The `RuleModel` that should be used to obtain predictions
+        :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
+                                    used as a basis for obtaining predictions
+        :param num_labels:          The number of labels to predict for
+        :return:                    A `LabelPredictor` that may be used to predict labels for the given query examples
+        """
+        cdef unique_ptr[ILabelPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createLabelPredictor(
+            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
+            dereference(rule_model.get_rule_model_ptr()),
+            dereference(label_space_info.get_label_space_info_ptr()),
+            num_labels))
+        cdef LabelPredictor label_predictor = LabelPredictor.__new__(LabelPredictor)
+        label_predictor.predictor_ptr = move(predictor_ptr)
+        return label_predictor
+
+    # TODO Remove
     def predict_labels(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
                        LabelSpaceInfo label_space_info not None, uint32 num_labels) -> np.ndarray:
         """
@@ -246,6 +271,32 @@ cdef class RuleLearner:
         cdef uint8[:, ::1] prediction_matrix = c_matrix_uint8(array, num_examples, num_labels)
         return np.asarray(prediction_matrix)
 
+    def create_sparse_label_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
+                                      LabelSpaceInfo label_space_info not None,
+                                      uint32 num_labels) -> SparseLabelPredictor:
+        """
+        Creates and returns a predictor that may be used to predict sparse labels for given query examples. If the
+        prediction of labels is not supported by the rule learner, a `RuntimeError` is thrown.
+
+        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
+                                    query examples
+        :param rule_model:          The `RuleModel` that should be used to obtain predictions
+        :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
+                                    used as a basis for obtaining predictions
+        :param num_labels:          The number of labels to predict for
+        :return:                    A `SparseLabelPredictor` that may be used to predict labels for the given query
+                                    examples
+        """
+        cdef unique_ptr[ISparseLabelPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createSparseLabelPredictor(
+            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
+            dereference(rule_model.get_rule_model_ptr()),
+            dereference(label_space_info.get_label_space_info_ptr()),
+            num_labels))
+        cdef SparseLabelPredictor sparse_label_predictor = SparseLabelPredictor.__new__(SparseLabelPredictor)
+        sparse_label_predictor.predictor_ptr = move(predictor_ptr)
+        return sparse_label_predictor
+
+    # TODO Remove
     def predict_sparse_labels(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
                               LabelSpaceInfo label_space_info not None, uint32 num_labels) -> csr_matrix:
         """
@@ -284,6 +335,31 @@ cdef class RuleLearner:
         return self.get_rule_learner_ptr().canPredictScores(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
 
+    def create_score_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
+                               LabelSpaceInfo label_space_info not None, uint32 num_labels) -> ScorePredictor:
+        """
+        Creates and returns a predictor that may be used to predict regression scores for given query examples. If the
+        prediction of regression scores is not supported by the rule learner, a `RuntimeError` is thrown.
+
+        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
+                                    query examples
+        :param rule_model:          The `RuleModel` that should be used to obtain predictions
+        :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
+                                    used as a basis for obtaining predictions
+        :param num_labels:          The number of labels to predict for
+        :return:                    A `ScorePredictor` that may be used to predict regression scores for the given query
+                                    examples
+        """
+        cdef unique_ptr[IScorePredictor] predictor_ptr = move(self.get_rule_learner_ptr().createScorePredictor(
+            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
+            dereference(rule_model.get_rule_model_ptr()),
+            dereference(label_space_info.get_label_space_info_ptr()),
+            num_labels))
+        cdef ScorePredictor score_predictor = ScorePredictor.__new__(ScorePredictor)
+        score_predictor.predictor_ptr = move(predictor_ptr)
+        return score_predictor
+
+    # TODO Remove
     def predict_scores(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
                        LabelSpaceInfo label_space_info not None, uint32 num_labels) -> np.ndarray:
         """
@@ -319,6 +395,31 @@ cdef class RuleLearner:
         return self.get_rule_learner_ptr().canPredictProbabilities(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
 
+    def create_probability_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
+                                     LabelSpaceInfo label_space_info not None, uint32 num_labels) -> LabelPredictor:
+        """
+        Creates and returns a predictor that may be used to predict probability estimates for given query examples. If
+        the prediction of probability estimates is not supported by the rule learner, a `RuntimeError` is thrown.
+
+        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
+                                    query examples
+        :param rule_model:          The `RuleModel` that should be used to obtain predictions
+        :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
+                                    used as a basis for obtaining predictions
+        :param num_labels:          The number of labels to predict for
+        :return:                    A `ProbabilityPredictor` that may be used to predict probability estimates for the
+                                    given query examples
+        """
+        cdef unique_ptr[IProbabilityPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createProbabilityPredictor(
+            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
+            dereference(rule_model.get_rule_model_ptr()),
+            dereference(label_space_info.get_label_space_info_ptr()),
+            num_labels))
+        cdef ProbabilityPredictor probability_predictor = ProbabilityPredictor.__new__(ProbabilityPredictor)
+        probability_predictor.predictor_ptr = move(predictor_ptr)
+        return probability_predictor
+
+    # TODO Remove
     def predict_probabilities(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
                               LabelSpaceInfo label_space_info not None, uint32 num_labels) -> np.ndarray:
         """
