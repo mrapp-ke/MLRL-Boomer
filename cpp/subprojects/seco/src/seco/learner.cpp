@@ -71,8 +71,7 @@ namespace seco {
     }
 
     void AbstractSeCoRuleLearner::Config::useLabelWiseClassificationPredictor() {
-        // TODO Re-implement
-        // classificationPredictorConfigPtr_ = std::make_unique<LabelWiseClassificationPredictorConfig>(parallelPredictionConfigPtr_);
+        labelPredictorConfigPtr_ = std::make_unique<LabelWiseLabelPredictorConfig>(parallelPredictionConfigPtr_);
     }
 
     AbstractSeCoRuleLearner::AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config)
