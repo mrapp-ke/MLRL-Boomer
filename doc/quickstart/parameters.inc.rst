@@ -228,7 +228,7 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'squared-hinge-label-wise'`` A variant of the squared hinge loss that is applied to each label individually.
   * ``'squared-hinge-example-wise'`` A variant fot he squared hinge loss that takes all labels into account at the same time.
 
-* ``classification_predictor`` (Default value = ``'auto'``)
+* ``binary_predictor`` (Default value = ``'auto'``)
 
   * ``'auto'`` The most suitable strategy for predicting binary labels is chosen automatically, depending on the loss function.
   * ``'label-wise'`` The prediction for an example is determined for each label independently.
