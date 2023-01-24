@@ -5,7 +5,6 @@
 #include "seco/prediction/predictor_label_label_wise.hpp"
 #include "seco/rule_evaluation/head_type_single.hpp"
 #include "seco/rule_evaluation/rule_compare_function.hpp"
-#include "common/prediction/label_space_info_no.hpp"
 
 
 namespace seco {
@@ -38,10 +37,6 @@ namespace seco {
 
     std::unique_ptr<ILiftFunctionConfig>& AbstractSeCoRuleLearner::Config::getLiftFunctionConfigPtr() {
         return liftFunctionConfigPtr_;
-    }
-
-    std::unique_ptr<ILabelPredictorConfig>& AbstractSeCoRuleLearner::Config::getLabelPredictorConfigPtr() {
-        return labelPredictorConfigPtr_;
     }
 
     IGreedyTopDownRuleInductionConfig& AbstractSeCoRuleLearner::Config::useGreedyTopDownRuleInduction() {
@@ -101,20 +96,6 @@ namespace seco {
 
     std::unique_ptr<IModelBuilderFactory> AbstractSeCoRuleLearner::createModelBuilderFactory() const {
         return std::make_unique<DecisionListBuilderFactory>();
-    }
-
-    std::unique_ptr<ILabelSpaceInfo> AbstractSeCoRuleLearner::createLabelSpaceInfo(
-            const IRowWiseLabelMatrix& labelMatrix) const {
-        if (config_.getLabelPredictorConfigPtr()->isLabelVectorSetNeeded()) {
-            return createLabelVectorSet(labelMatrix);
-        } else {
-            return createNoLabelSpaceInfo();
-        }
-    }
-
-    std::unique_ptr<ILabelPredictorFactory> AbstractSeCoRuleLearner::createLabelPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        return config_.getLabelPredictorConfigPtr()->createPredictorFactory(featureMatrix, numLabels);
     }
 
     std::unique_ptr<ISparseLabelPredictorFactory> AbstractSeCoRuleLearner::createSparseLabelPredictorFactory(

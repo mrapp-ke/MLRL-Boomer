@@ -99,35 +99,6 @@ namespace boosting {
                      */
                     virtual std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() = 0;
 
-                    /**
-                     * Returns an unique pointer to the configuration of the predictor that allows to predict labels.
-                     *
-                     * @return A reference to an unique pointer of type `ILabelPredictorConfig` that stores the
-                     *         configuration of the predictor that allows to predict labels
-                     */
-                    // TODO Move to IRuleLearner::IConfig if possible
-                    virtual std::unique_ptr<ILabelPredictorConfig>& getLabelPredictorConfigPtr() = 0;
-
-                    /**
-                     * Returns an unique pointer to the configuration of the predictor that allows to predict
-                     * regression scores.
-                     *
-                     * @return A reference to an unique pointer of type `IScorePredictorConfig` that stores the
-                     *         configuration of the predictor that allows to predict labels
-                     */
-                    // TODO Move to IRuleLearner::IConfig if possible
-                    virtual std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() = 0;
-
-                    /**
-                     * Returns an unique pointer to the configuration of the predictor that allows to predict
-                     * probability estimates.
-                     *
-                     * @return A reference to an unique pointer of type `IProbabilityPredictorConfig` that stores the
-                     *         configuration of the predictor that allows to predict probability estimates
-                     */
-                    // TODO Move to IRuleLearner::IConfig if possible
-                    virtual std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() = 0;
-
                 public:
 
                     virtual ~IConfig() override { };
@@ -625,23 +596,6 @@ namespace boosting {
                      */
                     std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
 
-                    /**
-                     * An unique pointer that stores the configuration of the predictor that allows to predict labels.
-                     */
-                    std::unique_ptr<ILabelPredictorConfig> labelPredictorConfigPtr_;
-
-                    /**
-                     * An unique pointer that stores the configuration of the predictor that allows to predict
-                     * regression scores.
-                     */
-                    std::unique_ptr<IScorePredictorConfig> scorePredictorConfigPtr_;
-
-                    /**
-                     * An unique pointer that stores the configuration of the predictor that allows to predict
-                     * probability estimates.
-                     */
-                    std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
-
                 private:
 
                     std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final;
@@ -655,12 +609,6 @@ namespace boosting {
                     std::unique_ptr<ILossConfig>& getLossConfigPtr() override final;
 
                     std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() override final;
-
-                    std::unique_ptr<ILabelPredictorConfig>& getLabelPredictorConfigPtr() override final;
-
-                    std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() override final;
-
-                    std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() override final;
 
                 public:
 
@@ -706,36 +654,6 @@ namespace boosting {
              * @see `AbstractRuleLearner::createModelBuilderFactory`
              */
             std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override;
-
-            /**
-             * @see `AbstractRuleLearner::createLabelSpaceInfo`
-             */
-            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
-
-            /**
-             * @see `AbstractRuleLearner::createLabelPredictorFactory`
-             */
-            std::unique_ptr<ILabelPredictorFactory> createLabelPredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
-
-            /**
-             * @see `AbstractRuleLearner::createSparseLabelPredictorFactory`
-             */
-            std::unique_ptr<ISparseLabelPredictorFactory> createSparseLabelPredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
-
-            /**
-             * @see `AbstractRuleLearner::createScorePredictorFactory`
-             */
-            std::unique_ptr<IScorePredictorFactory> createScorePredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
-
-            /**
-             * @see `AbstractRuleLearner::createProbabilityPredictorFactory`
-             */
-            std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         public:
 

@@ -87,15 +87,6 @@ namespace seco {
                      */
                     virtual std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() = 0;
 
-                    /**
-                     * Returns an unique pointer to the configuration of the predictor that allows to predict labels.
-                     *
-                     * @return A reference to an unique pointer of type `ILabelPredictorConfig` that stores the
-                     *         configuration of the predictor that allows to predict labels
-                     */
-                    // TODO Move to IRuleLearner::IConfig if possible
-                    virtual std::unique_ptr<ILabelPredictorConfig>& getLabelPredictorConfigPtr() = 0;
-
                 public:
 
                     virtual ~IConfig() override { };
@@ -465,11 +456,6 @@ namespace seco {
                      */
                     std::unique_ptr<ILiftFunctionConfig> liftFunctionConfigPtr_;
 
-                    /**
-                     * An unique pointer that stores the configuration of the predictor that allows to predict labels.
-                     */
-                    std::unique_ptr<ILabelPredictorConfig> labelPredictorConfigPtr_;
-
                 private:
 
                     std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() override final;
@@ -481,8 +467,6 @@ namespace seco {
                     std::unique_ptr<IHeuristicConfig>& getPruningHeuristicConfigPtr() override final;
 
                     std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() override final;
-
-                    std::unique_ptr<ILabelPredictorConfig>& getLabelPredictorConfigPtr() override final;
 
                 public:
 
@@ -530,18 +514,6 @@ namespace seco {
              * @see `AbstractRuleLearner::createModelBuilderFactory`
              */
             std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override;
-
-            /**
-             * @see `AbstractRuleLearner::createLabelSpaceInfo`
-             */
-            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
-
-            /**
-             * @see `AbstractRuleLearner::createLabelPredictorFactory`
-             */
-            std::unique_ptr<ILabelPredictorFactory> createLabelPredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `AbstractRuleLearner::createSparseLabelPredictorFactory`
