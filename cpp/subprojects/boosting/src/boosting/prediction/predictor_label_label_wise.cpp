@@ -1,4 +1,4 @@
-#include "boosting/prediction/predictor_classification_label_wise.hpp"
+#include "boosting/prediction/predictor_label_label_wise.hpp"
 #include "common/iterator/index_iterator.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"

@@ -1,4 +1,4 @@
-#include "boosting/prediction/predictor_regression_label_wise.hpp"
+#include "boosting/prediction/predictor_score_label_wise.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 

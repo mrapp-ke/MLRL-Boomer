@@ -1,4 +1,4 @@
-#include "boosting/prediction/predictor_classification_gfm.hpp"
+#include "boosting/prediction/predictor_label_gfm.hpp"
 #include "common/data/matrix_sparse_set.hpp"
 #include "common/data/vector_sparse_array.hpp"
 #include "common/math/math.hpp"
