@@ -1,8 +1,5 @@
 #include "common/model/rule_list.hpp"
 #include "common/model/body_empty.hpp"
-#include "common/output/predictor_classification.hpp"
-#include "common/output/predictor_regression.hpp"
-#include "common/output/predictor_probability.hpp"
 #include "common/prediction/label_space_info.hpp"
 #include "common/prediction/predictor_label.hpp"
 #include "common/prediction/predictor_probability.hpp"
@@ -173,12 +170,6 @@ std::unique_ptr<ISparseLabelPredictor> RuleList::createSparseLabelPredictor(cons
     return labelSpaceInfo.createSparseLabelPredictor(factory, featureMatrix, *this, numLabels);
 }
 
-// TODO Remove
-std::unique_ptr<IClassificationPredictor> RuleList::createClassificationPredictor(
-        const IClassificationPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const {
-    return nullptr;
-}
-
 std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePredictorFactory& factory,
                                                                 const CContiguousFeatureMatrix& featureMatrix,
                                                                 const ILabelSpaceInfo& labelSpaceInfo,
@@ -193,12 +184,6 @@ std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePred
     return labelSpaceInfo.createScorePredictor(factory, featureMatrix, *this, numLabels);
 }
 
-// TODO Remove
-std::unique_ptr<IOldRegressionPredictor> RuleList::createRegressionPredictor(
-        const IRegressionPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const {
-    return nullptr;
-}
-
 std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
         const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
         const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
@@ -210,12 +195,6 @@ std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(cons
                                                                             const ILabelSpaceInfo& labelSpaceInfo,
                                                                             uint32 numLabels) const {
     return labelSpaceInfo.createProbabilityPredictor(factory, featureMatrix, *this, numLabels);
-}
-
-// TODO Remove
-std::unique_ptr<IOldProbabilityPredictor> RuleList::createProbabilityPredictor(
-        const IOldProbabilityPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const {
-    return nullptr;
 }
 
 std::unique_ptr<IRuleList> createRuleList(bool defaultRuleTakesPrecedence) {

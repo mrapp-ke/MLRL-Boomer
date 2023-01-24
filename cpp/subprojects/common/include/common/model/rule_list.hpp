@@ -327,10 +327,6 @@ class RuleList final : public IRuleList {
                                                                           const ILabelSpaceInfo& labelSpaceInfo,
                                                                           uint32 numLabels) const override;
 
-        // TODO Remove
-        std::unique_ptr<IClassificationPredictor> createClassificationPredictor(
-            const IClassificationPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const override;
-
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CContiguousFeatureMatrix& featureMatrix,
                                                               const ILabelSpaceInfo& labelSpaceInfo,
@@ -341,10 +337,6 @@ class RuleList final : public IRuleList {
                                                               const ILabelSpaceInfo& labelSpaceInfo,
                                                               uint32 numLabels) const override;
 
-        // TODO Remove
-        std::unique_ptr<IOldRegressionPredictor> createRegressionPredictor(
-            const IRegressionPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const override;
-
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(const IProbabilityPredictorFactory& factory,
                                                                           const CContiguousFeatureMatrix& featureMatrix,
                                                                           const ILabelSpaceInfo& labelSpaceInfo,
@@ -354,10 +346,6 @@ class RuleList final : public IRuleList {
                                                                           const CsrFeatureMatrix& featureMatrix,
                                                                           const ILabelSpaceInfo& labelSpaceInfo,
                                                                           uint32 numLabels) const override;
-
-        // TODO Remove
-        std::unique_ptr<IOldProbabilityPredictor> createProbabilityPredictor(
-            const IOldProbabilityPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const override;
 
 };
 
