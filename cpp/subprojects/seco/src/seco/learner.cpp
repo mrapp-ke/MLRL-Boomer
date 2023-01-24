@@ -44,11 +44,6 @@ namespace seco {
         return labelPredictorConfigPtr_;
     }
 
-    // TODO Remove
-    std::unique_ptr<IClassificationPredictorConfig>& AbstractSeCoRuleLearner::Config::getClassificationPredictorConfigPtr() {
-        return classificationPredictorConfigPtr_;
-    }
-
     IGreedyTopDownRuleInductionConfig& AbstractSeCoRuleLearner::Config::useGreedyTopDownRuleInduction() {
         IGreedyTopDownRuleInductionConfig& config = AbstractRuleLearner::Config::useGreedyTopDownRuleInduction();
         config.setRecalculatePredictions(false);
@@ -77,8 +72,7 @@ namespace seco {
 
     void AbstractSeCoRuleLearner::Config::useLabelWiseClassificationPredictor() {
         // TODO Re-implement
-        classificationPredictorConfigPtr_ =
-            std::make_unique<LabelWiseClassificationPredictorConfig>(parallelPredictionConfigPtr_);
+        // classificationPredictorConfigPtr_ = std::make_unique<LabelWiseClassificationPredictorConfig>(parallelPredictionConfigPtr_);
     }
 
     AbstractSeCoRuleLearner::AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config)
@@ -112,8 +106,7 @@ namespace seco {
 
     std::unique_ptr<ILabelSpaceInfo> AbstractSeCoRuleLearner::createLabelSpaceInfo(
             const IRowWiseLabelMatrix& labelMatrix) const {
-        // TODO Use correct configs
-        if (config_.getClassificationPredictorConfigPtr()->isLabelVectorSetNeeded()) {
+        if (config_.getLabelPredictorConfigPtr()->isLabelVectorSetNeeded()) {
             return createLabelVectorSet(labelMatrix);
         } else {
             return createNoLabelSpaceInfo();
@@ -128,13 +121,6 @@ namespace seco {
     std::unique_ptr<ISparseLabelPredictorFactory> AbstractSeCoRuleLearner::createSparseLabelPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         return config_.getLabelPredictorConfigPtr()->createSparsePredictorFactory(featureMatrix, numLabels);
-    }
-
-    // TODO Remove
-    std::unique_ptr<IClassificationPredictorFactory> AbstractSeCoRuleLearner::createClassificationPredictorFactory(
-            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        return config_.getClassificationPredictorConfigPtr()->createClassificationPredictorFactory(featureMatrix,
-                                                                                                   numLabels);
     }
 
 }
