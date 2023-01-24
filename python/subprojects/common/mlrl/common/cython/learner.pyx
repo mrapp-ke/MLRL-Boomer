@@ -1,13 +1,11 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython._arrays cimport array_uint32, c_matrix_uint8, c_matrix_float64
 from mlrl.common.cython.validation import assert_greater_or_equal
 from mlrl.common.cython.feature_info cimport FeatureInfo
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
-from mlrl.common.cython.multi_threading cimport ManualMultiThreadingConfig
 from mlrl.common.cython.prediction cimport LabelPredictor, SparseLabelPredictor, ScorePredictor, ProbabilityPredictor
 from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
@@ -15,9 +13,6 @@ from mlrl.common.cython.rule_model cimport create_rule_model
 from libcpp.utility cimport move
 
 from cython.operator cimport dereference
-
-from scipy.sparse import csr_matrix
-import numpy as np
 
 
 cdef class TrainingResult:
@@ -247,30 +242,6 @@ cdef class RuleLearner:
         label_predictor.predictor_ptr = move(predictor_ptr)
         return label_predictor
 
-    # TODO Remove
-    def predict_labels(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                       LabelSpaceInfo label_space_info not None, uint32 num_labels) -> np.ndarray:
-        """
-        Obtains and returns dense predictions for given query examples.
-
-        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
-                                    query examples
-        :param rule_model:          The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:    The `LabelSpaceInfo` that may be used as a basis for obtaining predictions
-        :param num_labels:          The number of labels to predict for
-        :return:                    A `numpy.ndarray` of type `uint8`, shape `(num_examples, num_labels)`, that stores
-                                    the predictions
-        """
-        cdef unique_ptr[DensePredictionMatrix[uint8]] prediction_matrix_ptr = self.get_rule_learner_ptr().predictLabels(
-            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
-            dereference(rule_model.get_rule_model_ptr()),
-            dereference(label_space_info.get_label_space_info_ptr()),
-            num_labels)
-        cdef uint8* array = prediction_matrix_ptr.get().release()
-        cdef uint32 num_examples = feature_matrix.get_feature_matrix_ptr().getNumRows()
-        cdef uint8[:, ::1] prediction_matrix = c_matrix_uint8(array, num_examples, num_labels)
-        return np.asarray(prediction_matrix)
-
     def create_sparse_label_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
                                       LabelSpaceInfo label_space_info not None,
                                       uint32 num_labels) -> SparseLabelPredictor:
@@ -295,34 +266,6 @@ cdef class RuleLearner:
         cdef SparseLabelPredictor sparse_label_predictor = SparseLabelPredictor.__new__(SparseLabelPredictor)
         sparse_label_predictor.predictor_ptr = move(predictor_ptr)
         return sparse_label_predictor
-
-    # TODO Remove
-    def predict_sparse_labels(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                              LabelSpaceInfo label_space_info not None, uint32 num_labels) -> csr_matrix:
-        """
-        Obtains and returns sparse predictions for given query examples.
-
-        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
-                                    query examples
-        :param rule_model:          The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:    The `LabelSpaceInfo` that may be used as a basis for obtaining predictions
-        :param num_labels:          The number of labels to predict for
-        :return:                    A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that
-                                    stores the predictions
-        """
-        cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = self.get_rule_learner_ptr().predictSparseLabels(
-            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
-            dereference(rule_model.get_rule_model_ptr()),
-            dereference(label_space_info.get_label_space_info_ptr()),
-            num_labels)
-        cdef uint32* row_indices = prediction_matrix_ptr.get().releaseRowIndices()
-        cdef uint32* col_indices = prediction_matrix_ptr.get().releaseColIndices()
-        cdef uint32 num_non_zero_elements = prediction_matrix_ptr.get().getNumNonZeroElements()
-        cdef uint32 num_examples = feature_matrix.get_feature_matrix_ptr().getNumRows()
-        data = np.ones(shape=(num_non_zero_elements), dtype=np.uint8) if num_non_zero_elements > 0 else np.asarray([])
-        indices = np.asarray(array_uint32(col_indices, num_non_zero_elements) if num_non_zero_elements > 0 else [])
-        indptr = np.asarray(array_uint32(row_indices, num_examples + 1))
-        return csr_matrix((data, indices, indptr), shape=(num_examples, num_labels))
 
     def can_predict_scores(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
         """
@@ -359,30 +302,6 @@ cdef class RuleLearner:
         score_predictor.predictor_ptr = move(predictor_ptr)
         return score_predictor
 
-    # TODO Remove
-    def predict_scores(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                       LabelSpaceInfo label_space_info not None, uint32 num_labels) -> np.ndarray:
-        """
-        Obtains and returns regression scores for given query examples.
-
-        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
-                                    query examples
-        :param rule_model:          The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:    The `LabelSpaceInfo` that may be used as a basis for obtaining predictions
-        :param num_labels:          The number of labels to predict for
-        :return:                    A `scipy.sparse.csr_matrix` of type `float64`, shape `(num_examples, num_labels)`
-                                    that stores the predictions
-        """
-        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.get_rule_learner_ptr().predictScores(
-            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
-            dereference(rule_model.get_rule_model_ptr()),
-            dereference(label_space_info.get_label_space_info_ptr()),
-            num_labels)
-        cdef float64* array = prediction_matrix_ptr.get().release()
-        cdef uint32 num_examples = feature_matrix.get_feature_matrix_ptr().getNumRows()
-        cdef float64[:, ::1] prediction_matrix = c_matrix_float64(array, num_examples, num_labels)
-        return np.asarray(prediction_matrix)
-
     def can_predict_probabilities(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
         """
         Returns whether the rule learner is able to predict probability estimates or not.
@@ -418,27 +337,3 @@ cdef class RuleLearner:
         cdef ProbabilityPredictor probability_predictor = ProbabilityPredictor.__new__(ProbabilityPredictor)
         probability_predictor.predictor_ptr = move(predictor_ptr)
         return probability_predictor
-
-    # TODO Remove
-    def predict_probabilities(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                              LabelSpaceInfo label_space_info not None, uint32 num_labels) -> np.ndarray:
-        """
-        Obtains and returns probability estimates for given query examples.
-
-        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
-                                    query examples
-        :param rule_model:          The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:    The `LabelSpaceInfo` that may be used as a basis for obtaining predictions
-        :param num_labels:          The number of labels to predict for
-        :return:                    A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that
-                                    stores the predictions
-        """
-        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.get_rule_learner_ptr().predictProbabilities(
-            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
-            dereference(rule_model.get_rule_model_ptr()),
-            dereference(label_space_info.get_label_space_info_ptr()),
-            num_labels)
-        cdef float64* array = prediction_matrix_ptr.get().release()
-        cdef uint32 num_examples = feature_matrix.get_feature_matrix_ptr().getNumRows()
-        cdef float64[:, ::1] prediction_matrix = c_matrix_float64(array, num_examples, num_labels)
-        return np.asarray(prediction_matrix)

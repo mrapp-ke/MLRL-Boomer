@@ -1,4 +1,4 @@
-from mlrl.common.cython._types cimport uint8, uint32, float64
+from mlrl.common.cython._types cimport uint32
 from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, IEqualFrequencyFeatureBinningConfig
 from mlrl.common.cython.feature_info cimport IFeatureInfo
 from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWiseFeatureMatrix
@@ -13,7 +13,6 @@ from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
-from mlrl.common.cython.prediction cimport DensePredictionMatrix, BinarySparsePredictionMatrix  # TODO Remove
 from mlrl.common.cython.prediction cimport ILabelPredictor, ISparseLabelPredictor, IScorePredictor, \
     IProbabilityPredictor
 from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, IBeamSearchTopDownRuleInductionConfig
@@ -198,22 +197,10 @@ cdef extern from "common/learner.hpp" nogil:
                                                          const ILabelSpaceInfo& labelSpaceInfo,
                                                          uint32 numLabels) except +
 
-        # TODO Remove
-        unique_ptr[DensePredictionMatrix[uint8]] predictLabels(const IRowWiseFeatureMatrix& featureMatrix,
-                                                               const IRuleModel& ruleModel,
-                                                               const ILabelSpaceInfo& labelSpaceInfo,
-                                                               uint32 numLabels) const
-
         unique_ptr[ISparseLabelPredictor] createSparseLabelPredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                      const IRuleModel& ruleModel,
                                                                      const ILabelSpaceInfo& labelSpaceInfo,
                                                                      uint32 numLabels) except +
-
-        # TODO Remove
-        unique_ptr[BinarySparsePredictionMatrix] predictSparseLabels(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                     const IRuleModel& ruleModel,
-                                                                     const ILabelSpaceInfo& labelSpaceInfo,
-                                                                     uint32 numLabels) const
 
         bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
 
@@ -222,24 +209,12 @@ cdef extern from "common/learner.hpp" nogil:
                                                          const ILabelSpaceInfo& labelSpaceInfo,
                                                          uint32 numLabels) except +
 
-        # TODO Remove
-        unique_ptr[DensePredictionMatrix[float64]] predictScores(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                 const IRuleModel& ruleModel,
-                                                                 const ILabelSpaceInfo& labelSpaceInfo,
-                                                                 uint32 numLabels) const
-
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
         unique_ptr[IProbabilityPredictor] createProbabilityPredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                      const IRuleModel& ruleModel,
                                                                      const ILabelSpaceInfo& labelSpaceInfo,
                                                                      uint32 numLabels) except +
-
-        # TODO Remove
-        unique_ptr[DensePredictionMatrix[float64]] predictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                        const IRuleModel& ruleModel,
-                                                                        const ILabelSpaceInfo& labelSpaceInfo,
-                                                                        uint32 numLabels) const
 
 
 cdef class TrainingResult:
