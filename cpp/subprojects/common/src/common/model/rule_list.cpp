@@ -176,7 +176,7 @@ std::unique_ptr<ISparseLabelPredictor> RuleList::createSparseLabelPredictor(cons
 // TODO Remove
 std::unique_ptr<IClassificationPredictor> RuleList::createClassificationPredictor(
         const IClassificationPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const {
-    return labelSpaceInfo.createClassificationPredictor(factory, *this);
+    return nullptr;
 }
 
 std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePredictorFactory& factory,
@@ -196,7 +196,7 @@ std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePred
 // TODO Remove
 std::unique_ptr<IOldRegressionPredictor> RuleList::createRegressionPredictor(
         const IRegressionPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const {
-    return labelSpaceInfo.createRegressionPredictor(factory, *this);
+    return nullptr;
 }
 
 std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
@@ -215,7 +215,7 @@ std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(cons
 // TODO Remove
 std::unique_ptr<IOldProbabilityPredictor> RuleList::createProbabilityPredictor(
         const IOldProbabilityPredictorFactory& factory, const ILabelSpaceInfo& labelSpaceInfo) const {
-    return labelSpaceInfo.createProbabilityPredictor(factory, *this);
+    return nullptr;
 }
 
 std::unique_ptr<IRuleList> createRuleList(bool defaultRuleTakesPrecedence) {

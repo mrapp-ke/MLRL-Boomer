@@ -1,9 +1,6 @@
 #include "common/prediction/label_vector_set.hpp"
 #include "common/input/feature_matrix_c_contiguous.hpp"
 #include "common/input/feature_matrix_csr.hpp"
-#include "common/output/predictor_classification.hpp"
-#include "common/output/predictor_regression.hpp"
-#include "common/output/predictor_probability.hpp"
 #include "common/model/rule_list.hpp"
 #include "common/prediction/predictor_label.hpp"
 #include "common/prediction/predictor_probability.hpp"
@@ -60,12 +57,6 @@ std::unique_ptr<ISparseLabelPredictor> LabelVectorSet::createSparseLabelPredicto
     return factory.create(featureMatrix, model, this, numLabels);
 }
 
-// TODO Remove
-std::unique_ptr<IClassificationPredictor> LabelVectorSet::createClassificationPredictor(
-        const IClassificationPredictorFactory& factory, const RuleList& model) const {
-    return factory.create(model, this);
-}
-
 std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(const IScorePredictorFactory& factory,
                                                                       const CContiguousFeatureMatrix& featureMatrix,
                                                                       const RuleList& model, uint32 numLabels) const {
@@ -78,12 +69,6 @@ std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(const ISco
     return factory.create(featureMatrix, model, this, numLabels);
 }
 
-// TODO Remove
-std::unique_ptr<IOldRegressionPredictor> LabelVectorSet::createRegressionPredictor(
-        const IRegressionPredictorFactory& factory, const RuleList& model) const {
-    return factory.create(model, this);
-}
-
 std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(
         const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
         const RuleList& model, uint32 numLabels) const {
@@ -94,12 +79,6 @@ std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredicto
         const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
         uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, numLabels);
-}
-
-// TODO Remove
-std::unique_ptr<IOldProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(
-        const IOldProbabilityPredictorFactory& factory, const RuleList& model) const {
-    return factory.create(model, this);
 }
 
 std::unique_ptr<ILabelVectorSet> createLabelVectorSet() {
