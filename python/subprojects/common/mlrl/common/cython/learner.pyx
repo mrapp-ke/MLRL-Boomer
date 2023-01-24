@@ -315,7 +315,8 @@ cdef class RuleLearner:
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
 
     def create_probability_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                                     LabelSpaceInfo label_space_info not None, uint32 num_labels) -> LabelPredictor:
+                                     LabelSpaceInfo label_space_info not None,
+                                     uint32 num_labels) -> ProbabilityPredictor:
         """
         Creates and returns a predictor that may be used to predict probability estimates for given query examples. If
         the prediction of probability estimates is not supported by the rule learner, a `RuntimeError` is thrown.
