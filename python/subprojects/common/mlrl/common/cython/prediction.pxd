@@ -9,6 +9,10 @@ cdef extern from "common/prediction/prediction_matrix_dense.hpp" nogil:
 
         # Functions:
 
+        uint32 getNumRows() const
+
+        uint32 getNumCols() const
+
         T* release()
 
 
@@ -17,6 +21,10 @@ cdef extern from "common/prediction/prediction_matrix_sparse_binary.hpp" nogil:
     cdef cppclass BinarySparsePredictionMatrix:
 
         # Functions:
+
+        uint32 getNumRows() const
+
+        uint32 getNumCols() const
 
         uint32 getNumNonZeroElements() const
 
@@ -53,5 +61,33 @@ cdef extern from "common/prediction/predictor_score.hpp" nogil:
 
 cdef extern from "common/prediction/predictor_probability.hpp" nogil:
 
-    cdef cppclass IProbabilityPredictor(IPredictor[DensePredictionMatrix[uint8]]):
+    cdef cppclass IProbabilityPredictor(IPredictor[DensePredictionMatrix[float64]]):
         pass
+
+
+cdef class LabelPredictor:
+
+    # Attributes:
+
+    cdef unique_ptr[ILabelPredictor] predictor_ptr
+
+
+cdef class SparseLabelPredictor:
+
+    # Attributes:
+
+    cdef unique_ptr[ISparseLabelPredictor] predictor_ptr
+
+
+cdef class ScorePredictor:
+
+    # Attributes:
+
+    cdef unique_ptr[IScorePredictor] predictor_ptr
+
+
+cdef class ProbabilityPredictor:
+
+    # Attributes:
+
+    cdef unique_ptr[IProbabilityPredictor] predictor_ptr
