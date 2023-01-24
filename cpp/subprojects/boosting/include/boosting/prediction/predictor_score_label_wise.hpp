@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/output/predictor_regression.hpp"
+#include "common/prediction/predictor_score.hpp"
 #include "common/multi_threading/multi_threading.hpp"
 
 
@@ -13,7 +13,7 @@ namespace boosting {
      * Allows to configure predictors that predict label-wise regression scores for given query examples by summing up
      * the scores that are provided by the individual rules of an existing rule-based model for each label individually.
      */
-    class LabelWiseRegressionPredictorConfig final : public IRegressionPredictorConfig {
+    class LabelWiseScorePredictorConfig final : public IScorePredictorConfig {
 
         private:
 
@@ -26,13 +26,13 @@ namespace boosting {
              *                                multi-threading behavior that should be used to predict for several query
              *                                examples in parallel
              */
-            LabelWiseRegressionPredictorConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+            LabelWiseScorePredictorConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
             /**
-             * @see `IRegressionPredictorConfig::createRegressionPredictorFactory`
+             * @see `IPredictorConfig::createPredictorFactory`
              */
-            std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory(
-                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+            std::unique_ptr<IScorePredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                           uint32 numLabels) const override;
 
             /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`

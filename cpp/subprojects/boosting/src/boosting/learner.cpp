@@ -96,8 +96,7 @@ namespace boosting {
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseRegressionPredictor() {
-        // TODO Re-implement
-        // regressionPredictorConfigPtr_ = std::make_unique<LabelWiseRegressionPredictorConfig>(parallelPredictionConfigPtr_);
+        scorePredictorConfigPtr_ = std::make_unique<LabelWiseScorePredictorConfig>(parallelPredictionConfigPtr_);
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseProbabilityPredictor() {
