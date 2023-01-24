@@ -7,7 +7,7 @@ from scipy.sparse import csr_matrix
 import numpy as np
 
 
-cdef class LabelPredictor:
+cdef class BinaryPredictor:
     """
     Allows to predict labels for given query examples.
     """
@@ -26,7 +26,7 @@ cdef class LabelPredictor:
         return np.asarray(prediction_matrix)
 
 
-cdef class SparseLabelPredictor:
+cdef class SparseBinaryPredictor:
     """
     Allows to predict sparse labels for given query examples.
     """

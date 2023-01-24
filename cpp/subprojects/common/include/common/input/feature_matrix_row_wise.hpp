@@ -9,10 +9,10 @@
 // Forward declarations
 class IRuleModel;
 class ILabelSpaceInfo;
-class ILabelPredictor;
-class ILabelPredictorFactory;
-class ISparseLabelPredictor;
-class ISparseLabelPredictorFactory;
+class IBinaryPredictor;
+class IBinaryPredictorFactory;
+class ISparseBinaryPredictor;
+class ISparseBinaryPredictorFactory;
 class IScorePredictor;
 class IScorePredictorFactory;
 class IProbabilityPredictor;
@@ -29,37 +29,38 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
         virtual ~IRowWiseFeatureMatrix() override { };
 
         /**
-         * Creates and returns a new instance of the class `ILabelPredictor`, based on the type of this feature matrix.
+         * Creates and returns a new instance of the class `IBinaryPredictor`, based on the type of this feature matrix.
          *
-         * @param factory           A reference to an object of type `ILabelPredictorFactory` that should be used to
+         * @param factory           A reference to an object of type `IBinaryPredictorFactory` that should be used to
          *                          create the instance
          * @param ruleModel         A reference to an object of type `IRuleModel` that should be used to obtain
          *                          predictions
          * @param labelSpaceInfo    A reference to an object of type `ILabelSpaceInfo` that provides information about
          *                          the label space that may be used as a basis for making predictions
          * @param numLabels         The number of labels to predict for
-         * @return                  An unique pointer to an object of type `ILabelPredictor` that has been created
+         * @return                  An unique pointer to an object of type `IBinaryPredictor` that has been created
          */
-        virtual std::unique_ptr<ILabelPredictor> createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                                      const IRuleModel& ruleModel,
-                                                                      const ILabelSpaceInfo& labelSpaceInfo,
-                                                                      uint32 numLabels) const = 0;
+        virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                        const IRuleModel& ruleModel,
+                                                                        const ILabelSpaceInfo& labelSpaceInfo,
+                                                                        uint32 numLabels) const = 0;
 
         /**
-         * Creates and returns a new instance of the class `ISparseLabelPredictor`, based on the type of this feature
+         * Creates and returns a new instance of the class `ISparseBinaryPredictor`, based on the type of this feature
          * matrix.
          *
-         * @param factory           A reference to an object of type `ISparseLabelPredictorFactory` that should be used
+         * @param factory           A reference to an object of type `ISparseBinaryPredictorFactory` that should be used
          *                          to create the instance
          * @param ruleModel         A reference to an object of type `IRuleModel` that should be used to obtain
          *                          predictions
          * @param labelSpaceInfo    A reference to an object of type `ILabelSpaceInfo` that provides information about
          *                          the label space that may be used as a basis for making predictions
          * @param numLabels         The number of labels to predict for
-         * @return                  An unique pointer to an object of type `ISparseLabelPredictor` that has been created
+         * @return                  An unique pointer to an object of type `ISparseBinaryPredictor` that has been
+         *                          created
          */
-        virtual std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(
-            const ISparseLabelPredictorFactory& factory, const IRuleModel& ruleModel,
+        virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
+            const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 
         /**

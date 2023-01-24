@@ -118,13 +118,13 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
 
 def predict_sparse_labels(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
                           num_labels: int, feature_matrix: RowWiseFeatureMatrix):
-    predictor = learner.create_sparse_label_predictor(feature_matrix, model, label_space_info, num_labels)
+    predictor = learner.create_sparse_binary_predictor(feature_matrix, model, label_space_info, num_labels)
     return predictor.predict()
 
 
 def predict_labels(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
                    feature_matrix: RowWiseFeatureMatrix):
-    predictor = learner.create_label_predictor(feature_matrix, model, label_space_info, num_labels)
+    predictor = learner.create_binary_predictor(feature_matrix, model, label_space_info, num_labels)
     return predictor.predict()
 
 
@@ -362,7 +362,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
 
-        if learner.can_predict_labels(feature_matrix, num_labels):
+        if learner.can_predict_binary(feature_matrix, num_labels):
             if self.sparse_predictions_:
                 log.debug('A sparse matrix is used to store the predicted labels')
                 return predict_sparse_labels(learner, self.model_, self.label_space_info_, self.num_labels_,
@@ -378,7 +378,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
 
-        if learner.can_predict_labels(feature_matrix, num_labels):
+        if learner.can_predict_binary(feature_matrix, num_labels):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
             return RuleLearner.IncrementalLabelPredictor(learner, self.model_, self.label_space_info_, num_labels,

@@ -43,13 +43,13 @@ cdef extern from "common/prediction/predictor.hpp" nogil:
         unique_ptr[PredictionMatrix] predict() const
 
 
-cdef extern from "common/prediction/predictor_label.hpp" nogil:
+cdef extern from "common/prediction/predictor_binary.hpp" nogil:
 
-    cdef cppclass ILabelPredictor(IPredictor[DensePredictionMatrix[uint8]]):
+    cdef cppclass IBinaryPredictor(IPredictor[DensePredictionMatrix[uint8]]):
         pass
 
 
-    cdef cppclass ISparseLabelPredictor(IPredictor[BinarySparsePredictionMatrix]):
+    cdef cppclass ISparseBinaryPredictor(IPredictor[BinarySparsePredictionMatrix]):
         pass
 
 
@@ -65,18 +65,18 @@ cdef extern from "common/prediction/predictor_probability.hpp" nogil:
         pass
 
 
-cdef class LabelPredictor:
+cdef class BinaryPredictor:
 
     # Attributes:
 
-    cdef unique_ptr[ILabelPredictor] predictor_ptr
+    cdef unique_ptr[IBinaryPredictor] predictor_ptr
 
 
-cdef class SparseLabelPredictor:
+cdef class SparseBinaryPredictor:
 
     # Attributes:
 
-    cdef unique_ptr[ISparseLabelPredictor] predictor_ptr
+    cdef unique_ptr[ISparseBinaryPredictor] predictor_ptr
 
 
 cdef class ScorePredictor:

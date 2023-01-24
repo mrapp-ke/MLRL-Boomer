@@ -1,5 +1,5 @@
 #include "common/input/feature_matrix_c_contiguous.hpp"
-#include "common/prediction/predictor_label.hpp"
+#include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 
@@ -13,17 +13,16 @@ bool CContiguousFeatureMatrix::isSparse() const {
     return false;
 }
 
-std::unique_ptr<ILabelPredictor> CContiguousFeatureMatrix::createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                                                const IRuleModel& ruleModel,
-                                                                                const ILabelSpaceInfo& labelSpaceInfo,
-                                                                                uint32 numLabels) const {
-    return ruleModel.createLabelPredictor(factory, *this, labelSpaceInfo, numLabels);
+std::unique_ptr<IBinaryPredictor> CContiguousFeatureMatrix::createBinaryPredictor(
+        const IBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+        uint32 numLabels) const {
+    return ruleModel.createBinaryPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
-std::unique_ptr<ISparseLabelPredictor> CContiguousFeatureMatrix::createSparseLabelPredictor(
-        const ISparseLabelPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-        uint32 numLabels) const {
-    return ruleModel.createSparseLabelPredictor(factory, *this, labelSpaceInfo, numLabels);
+std::unique_ptr<ISparseBinaryPredictor> CContiguousFeatureMatrix::createSparseBinaryPredictor(
+        const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
+        const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
+    return ruleModel.createSparseBinaryPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
 std::unique_ptr<IScorePredictor> CContiguousFeatureMatrix::createScorePredictor(const IScorePredictorFactory& factory,

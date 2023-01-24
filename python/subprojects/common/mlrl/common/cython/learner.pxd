@@ -13,7 +13,7 @@ from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
-from mlrl.common.cython.prediction cimport ILabelPredictor, ISparseLabelPredictor, IScorePredictor, \
+from mlrl.common.cython.prediction cimport IBinaryPredictor, ISparseBinaryPredictor, IScorePredictor, \
     IProbabilityPredictor
 from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, IBeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
@@ -190,17 +190,17 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[ITrainingResult] fit(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
                                         const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const
 
-        bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
+        bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
-        unique_ptr[ILabelPredictor] createLabelPredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                         const IRuleModel& ruleModel,
-                                                         const ILabelSpaceInfo& labelSpaceInfo,
-                                                         uint32 numLabels) except +
+        unique_ptr[IBinaryPredictor] createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                           const IRuleModel& ruleModel,
+                                                           const ILabelSpaceInfo& labelSpaceInfo,
+                                                           uint32 numLabels) except +
 
-        unique_ptr[ISparseLabelPredictor] createSparseLabelPredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                     const IRuleModel& ruleModel,
-                                                                     const ILabelSpaceInfo& labelSpaceInfo,
-                                                                     uint32 numLabels) except +
+        unique_ptr[ISparseBinaryPredictor] createSparseBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                       const IRuleModel& ruleModel,
+                                                                       const ILabelSpaceInfo& labelSpaceInfo,
+                                                                       uint32 numLabels) except +
 
         bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
 

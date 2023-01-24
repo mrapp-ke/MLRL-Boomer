@@ -1,7 +1,7 @@
 #include "common/model/rule_list.hpp"
 #include "common/model/body_empty.hpp"
 #include "common/prediction/label_space_info.hpp"
-#include "common/prediction/predictor_label.hpp"
+#include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 
@@ -142,32 +142,30 @@ void RuleList::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
     }
 }
 
-std::unique_ptr<ILabelPredictor> RuleList::createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                                const CContiguousFeatureMatrix& featureMatrix,
-                                                                const ILabelSpaceInfo& labelSpaceInfo,
-                                                                uint32 numLabels) const {
-    return labelSpaceInfo.createLabelPredictor(factory, featureMatrix, *this, numLabels);
+std::unique_ptr<IBinaryPredictor> RuleList::createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                  const CContiguousFeatureMatrix& featureMatrix,
+                                                                  const ILabelSpaceInfo& labelSpaceInfo,
+                                                                  uint32 numLabels) const {
+    return labelSpaceInfo.createBinaryPredictor(factory, featureMatrix, *this, numLabels);
 }
 
-std::unique_ptr<ILabelPredictor> RuleList::createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                                const CsrFeatureMatrix& featureMatrix,
-                                                                const ILabelSpaceInfo& labelSpaceInfo,
-                                                                uint32 numLabels) const {
-    return labelSpaceInfo.createLabelPredictor(factory, featureMatrix, *this, numLabels);
+std::unique_ptr<IBinaryPredictor> RuleList::createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                  const CsrFeatureMatrix& featureMatrix,
+                                                                  const ILabelSpaceInfo& labelSpaceInfo,
+                                                                  uint32 numLabels) const {
+    return labelSpaceInfo.createBinaryPredictor(factory, featureMatrix, *this, numLabels);
 }
 
-std::unique_ptr<ISparseLabelPredictor> RuleList::createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
-                                                                          const CContiguousFeatureMatrix& featureMatrix,
-                                                                          const ILabelSpaceInfo& labelSpaceInfo,
-                                                                          uint32 numLabels) const {
-    return labelSpaceInfo.createSparseLabelPredictor(factory, featureMatrix, *this, numLabels);
+std::unique_ptr<ISparseBinaryPredictor> RuleList::createSparseBinaryPredictor(
+        const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+        const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
+    return labelSpaceInfo.createSparseBinaryPredictor(factory, featureMatrix, *this, numLabels);
 }
 
-std::unique_ptr<ISparseLabelPredictor> RuleList::createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
-                                                                          const CsrFeatureMatrix& featureMatrix,
-                                                                          const ILabelSpaceInfo& labelSpaceInfo,
-                                                                          uint32 numLabels) const {
-    return labelSpaceInfo.createSparseLabelPredictor(factory, featureMatrix, *this, numLabels);
+std::unique_ptr<ISparseBinaryPredictor> RuleList::createSparseBinaryPredictor(
+        const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+        const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
+    return labelSpaceInfo.createSparseBinaryPredictor(factory, featureMatrix, *this, numLabels);
 }
 
 std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePredictorFactory& factory,

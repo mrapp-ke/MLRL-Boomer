@@ -1,4 +1,4 @@
-#include "boosting/prediction/predictor_label_example_wise.hpp"
+#include "boosting/prediction/predictor_binary_example_wise.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
 #include <algorithm>
@@ -133,7 +133,7 @@ namespace boosting {
     }
 
     /**
-     * An implementation of the type `ILabelPredictor` that allows to predict known label vectors for given query
+     * An implementation of the type `IBinaryPredictor` that allows to predict known label vectors for given query
      * examples by summing up the scores that are provided by an existing rule-based model and comparing the aggregated
      * score vector to the known label vectors according to a certain distance measure. The label vector that is closest
      * to the aggregated score vector is finally predicted.
@@ -143,7 +143,7 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class ExampleWiseLabelPredictor final : public ILabelPredictor {
+    class ExampleWiseBinaryPredictor final : public IBinaryPredictor {
 
         private:
 
@@ -175,9 +175,9 @@ namespace boosting {
              * @param numThreads            The number of CPU threads to be used to make predictions for different query
              *                              examples in parallel. Must be at least 1
              */
-            ExampleWiseLabelPredictor(const FeatureMatrix& featureMatrix, const Model& model,
-                                      const LabelVectorSet& labelVectorSet, uint32 numLabels,
-                                      std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
+            ExampleWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model,
+                                       const LabelVectorSet& labelVectorSet, uint32 numLabels,
+                                       std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), labelVectorSet_(labelVectorSet), numLabels_(numLabels),
                   distanceMeasurePtr_(std::move(distanceMeasurePtr)), numThreads_(numThreads) {
 
@@ -194,7 +194,7 @@ namespace boosting {
     };
 
     template<typename FeatureMatrix>
-    static inline std::unique_ptr<ILabelPredictor> createExampleWiseLabelPredictor(
+    static inline std::unique_ptr<IBinaryPredictor> createExampleWiseBinaryPredictor(
             const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
             uint32 numLabels, const IDistanceMeasureFactory& distanceMeasureFactory, uint32 numThreads) {
         if (!labelVectorSet) {
@@ -204,19 +204,19 @@ namespace boosting {
         }
 
         std::unique_ptr<IDistanceMeasure> distanceMeasurePtr = distanceMeasureFactory.createDistanceMeasure();
-        return std::make_unique<ExampleWiseLabelPredictor<FeatureMatrix, RuleList>>(featureMatrix, model,
-                                                                                    *labelVectorSet, numLabels,
-                                                                                    std::move(distanceMeasurePtr),
-                                                                                    numThreads);
+        return std::make_unique<ExampleWiseBinaryPredictor<FeatureMatrix, RuleList>>(featureMatrix, model,
+                                                                                     *labelVectorSet, numLabels,
+                                                                                     std::move(distanceMeasurePtr),
+                                                                                     numThreads);
     }
 
     /**
-     * Allows to create instances of the type `ILabelPredictor` that allow to predict known label vectors for given
+     * Allows to create instances of the type `IBinaryPredictor` that allow to predict known label vectors for given
      * query examples by summing up the scores that are provided by an existing rule-based model and comparing the
      * aggregated score vector to the known label vectors according to a certain distance measure. The label vector that
      * is closest to the aggregated score vector is finally predicted.
      */
-    class ExampleWiseLabelPredictorFactory final : public ILabelPredictorFactory {
+    class ExampleWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
 
         private:
 
@@ -234,8 +234,8 @@ namespace boosting {
              * @param numThreads                The number of CPU threads to be used to make predictions for different
              *                                  query examples in parallel. Must be at least 1
              */
-            ExampleWiseLabelPredictorFactory(std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr,
-                                             uint32 numThreads)
+            ExampleWiseBinaryPredictorFactory(std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr,
+                                              uint32 numThreads)
                 : distanceMeasureFactoryPtr_(std::move(distanceMeasureFactoryPtr)), numThreads_(numThreads) {
 
             }
@@ -243,21 +243,21 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<ILabelPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                    const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                    uint32 numLabels) const override {
-                return createExampleWiseLabelPredictor(featureMatrix, model, labelVectorSet, numLabels,
-                                                       *distanceMeasureFactoryPtr_, numThreads_);
+            std::unique_ptr<IBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
+                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                     uint32 numLabels) const override {
+                return createExampleWiseBinaryPredictor(featureMatrix, model, labelVectorSet, numLabels,
+                                                        *distanceMeasureFactoryPtr_, numThreads_);
             }
 
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<ILabelPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                    const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                    uint32 numLabels) const override {
-                return createExampleWiseLabelPredictor(featureMatrix, model, labelVectorSet, numLabels,
-                                                       *distanceMeasureFactoryPtr_, numThreads_);
+            std::unique_ptr<IBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
+                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                     uint32 numLabels) const override {
+                return createExampleWiseBinaryPredictor(featureMatrix, model, labelVectorSet, numLabels,
+                                                        *distanceMeasureFactoryPtr_, numThreads_);
             }
 
     };
@@ -330,7 +330,7 @@ namespace boosting {
     }
 
     /**
-     * An implementation of the type `ISparseLabelPredictor` that allows to predict known label vectors for given query
+     * An implementation of the type `ISparseBinaryPredictor` that allows to predict known label vectors for given query
      * examples by summing up the scores that are provided by an existing rule-based model and comparing the aggregated
      * score vector to the known label vectors according to a certain distance measure. The label vector that is closest
      * to the aggregated score vector is finally predicted.
@@ -340,7 +340,7 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class ExampleWiseSparseLabelPredictor final : public ISparseLabelPredictor {
+    class ExampleWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
 
         private:
 
@@ -372,9 +372,9 @@ namespace boosting {
              * @param numThreads            The number of CPU threads to be used to make predictions for different query
              *                              examples in parallel. Must be at least 1
              */
-            ExampleWiseSparseLabelPredictor(const FeatureMatrix& featureMatrix, const Model& model,
-                                            const LabelVectorSet& labelVectorSet, uint32 numLabels,
-                                            std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
+            ExampleWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model,
+                                             const LabelVectorSet& labelVectorSet, uint32 numLabels,
+                                             std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), labelVectorSet_(labelVectorSet), numLabels_(numLabels),
                   distanceMeasurePtr_(std::move(distanceMeasurePtr)), numThreads_(numThreads) {
 
@@ -391,7 +391,7 @@ namespace boosting {
     };
 
     template<typename FeatureMatrix>
-    static inline std::unique_ptr<ISparseLabelPredictor> createExampleWiseSparseLabelPredictor(
+    static inline std::unique_ptr<ISparseBinaryPredictor> createExampleWiseSparseBinaryPredictor(
             const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
             uint32 numLabels, const IDistanceMeasureFactory& distanceMeasureFactory, uint32 numThreads) {
         if (!labelVectorSet) {
@@ -401,19 +401,17 @@ namespace boosting {
         }
 
         std::unique_ptr<IDistanceMeasure> distanceMeasurePtr = distanceMeasureFactory.createDistanceMeasure();
-        return std::make_unique<ExampleWiseSparseLabelPredictor<FeatureMatrix, RuleList>>(featureMatrix, model,
-                                                                                          *labelVectorSet, numLabels,
-                                                                                          std::move(distanceMeasurePtr),
-                                                                                          numThreads);
+        return std::make_unique<ExampleWiseSparseBinaryPredictor<FeatureMatrix, RuleList>>(
+            featureMatrix, model, *labelVectorSet, numLabels, std::move(distanceMeasurePtr), numThreads);
     }
 
     /**
-     * Allows to create instances of the type `ISparseLabelPredictor` that allow to predict known label vectors for
+     * Allows to create instances of the type `ISparseBinaryPredictor` that allow to predict known label vectors for
      * given query examples by summing up the scores that are provided by an existing rule-based model and comparing the
      * aggregated score vector to the known label vectors according to a certain distance measure. The label vector that
      * is closest to the aggregated score vector is finally predicted.
      */
-    class ExampleWiseSparseLabelPredictorFactory final : public ISparseLabelPredictorFactory {
+    class ExampleWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
 
         private:
 
@@ -431,8 +429,8 @@ namespace boosting {
              * @param numThreads                The number of CPU threads to be used to make predictions for different
              *                                  query examples in parallel. Must be at least 1
              */
-            ExampleWiseSparseLabelPredictorFactory(std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr,
-                                                   uint32 numThreads)
+            ExampleWiseSparseBinaryPredictorFactory(std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr,
+                                                    uint32 numThreads)
                 : distanceMeasureFactoryPtr_(std::move(distanceMeasureFactoryPtr)), numThreads_(numThreads) {
 
             }
@@ -440,52 +438,50 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<ISparseLabelPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                             const RuleList& model,
-                                                             const LabelVectorSet* labelVectorSet,
-                                                             uint32 numLabels) const override {
-                return createExampleWiseSparseLabelPredictor(featureMatrix, model, labelVectorSet, numLabels,
-                                                             *distanceMeasureFactoryPtr_, numThreads_);
+            std::unique_ptr<ISparseBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
+                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                           uint32 numLabels) const override {
+                return createExampleWiseSparseBinaryPredictor(featureMatrix, model, labelVectorSet, numLabels,
+                                                              *distanceMeasureFactoryPtr_, numThreads_);
             }
 
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<ISparseLabelPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                             const RuleList& model,
-                                                             const LabelVectorSet* labelVectorSet,
-                                                             uint32 numLabels) const override {
-                return createExampleWiseSparseLabelPredictor(featureMatrix, model, labelVectorSet, numLabels,
-                                                             *distanceMeasureFactoryPtr_, numThreads_);
+            std::unique_ptr<ISparseBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
+                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                           uint32 numLabels) const override {
+                return createExampleWiseSparseBinaryPredictor(featureMatrix, model, labelVectorSet, numLabels,
+                                                              *distanceMeasureFactoryPtr_, numThreads_);
             }
 
     };
 
-    ExampleWiseLabelPredictorConfig::ExampleWiseLabelPredictorConfig(
+    ExampleWiseBinaryPredictorConfig::ExampleWiseBinaryPredictorConfig(
             const std::unique_ptr<ILossConfig>& lossConfigPtr,
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
     }
 
-    std::unique_ptr<ILabelPredictorFactory> ExampleWiseLabelPredictorConfig::createPredictorFactory(
+    std::unique_ptr<IBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
             lossConfigPtr_->createDistanceMeasureFactory();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<ExampleWiseLabelPredictorFactory>(std::move(distanceMeasureFactoryPtr), numThreads);
+        return std::make_unique<ExampleWiseBinaryPredictorFactory>(std::move(distanceMeasureFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<ISparseLabelPredictorFactory> ExampleWiseLabelPredictorConfig::createSparsePredictorFactory(
+    std::unique_ptr<ISparseBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createSparsePredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
             lossConfigPtr_->createDistanceMeasureFactory();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<ExampleWiseSparseLabelPredictorFactory>(std::move(distanceMeasureFactoryPtr),
-                                                                        numThreads);
+        return std::make_unique<ExampleWiseSparseBinaryPredictorFactory>(std::move(distanceMeasureFactoryPtr),
+                                                                         numThreads);
     }
 
-    bool ExampleWiseLabelPredictorConfig::isLabelVectorSetNeeded() const {
+    bool ExampleWiseBinaryPredictorConfig::isLabelVectorSetNeeded() const {
         return true;
     }
 

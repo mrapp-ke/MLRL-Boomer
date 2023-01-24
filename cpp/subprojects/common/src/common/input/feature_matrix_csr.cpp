@@ -1,5 +1,5 @@
 #include "common/input/feature_matrix_csr.hpp"
-#include "common/prediction/predictor_label.hpp"
+#include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 
@@ -14,17 +14,17 @@ bool CsrFeatureMatrix::isSparse() const {
     return true;
 }
 
-std::unique_ptr<ILabelPredictor> CsrFeatureMatrix::createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                                        const IRuleModel& ruleModel,
-                                                                        const ILabelSpaceInfo& labelSpaceInfo,
-                                                                        uint32 numLabels) const {
-    return ruleModel.createLabelPredictor(factory, *this, labelSpaceInfo, numLabels);
+std::unique_ptr<IBinaryPredictor> CsrFeatureMatrix::createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                          const IRuleModel& ruleModel,
+                                                                          const ILabelSpaceInfo& labelSpaceInfo,
+                                                                          uint32 numLabels) const {
+    return ruleModel.createBinaryPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
-std::unique_ptr<ISparseLabelPredictor> CsrFeatureMatrix::createSparseLabelPredictor(
-        const ISparseLabelPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-        uint32 numLabels) const {
-    return ruleModel.createSparseLabelPredictor(factory, *this, labelSpaceInfo, numLabels);
+std::unique_ptr<ISparseBinaryPredictor> CsrFeatureMatrix::createSparseBinaryPredictor(
+        const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
+        const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
+    return ruleModel.createSparseBinaryPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
 std::unique_ptr<IScorePredictor> CsrFeatureMatrix::createScorePredictor(const IScorePredictorFactory& factory,

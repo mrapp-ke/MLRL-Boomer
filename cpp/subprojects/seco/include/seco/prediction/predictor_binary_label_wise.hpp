@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/prediction/predictor_label.hpp"
+#include "common/prediction/predictor_binary.hpp"
 #include "common/multi_threading/multi_threading.hpp"
 
 
@@ -15,7 +15,7 @@ namespace seco {
      * covers an example, its prediction (1 if the label is relevant, 0 otherwise) is applied to each label
      * individually, if none of the previous rules has already predicted for a particular example and label.
      */
-    class LabelWiseLabelPredictorConfig final : public ILabelPredictorConfig {
+    class LabelWiseBinaryPredictorConfig final : public IBinaryPredictorConfig {
 
         private:
 
@@ -28,12 +28,12 @@ namespace seco {
              *                                multi-threading behavior that should be used to predict for several query
              *                                examples in parallel
              */
-            LabelWiseLabelPredictorConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+            LabelWiseBinaryPredictorConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
-            std::unique_ptr<ILabelPredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                           uint32 numLabels) const override;
+            std::unique_ptr<IBinaryPredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                            uint32 numLabels) const override;
 
-            std::unique_ptr<ISparseLabelPredictorFactory> createSparsePredictorFactory(
+            std::unique_ptr<ISparseBinaryPredictorFactory> createSparsePredictorFactory(
                 const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             bool isLabelVectorSetNeeded() const override;

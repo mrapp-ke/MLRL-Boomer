@@ -1,4 +1,4 @@
-#include "boosting/prediction/predictor_label_label_wise.hpp"
+#include "boosting/prediction/predictor_binary_label_wise.hpp"
 #include "common/iterator/index_iterator.hpp"
 #include "predictor_common.hpp"
 #include "omp.h"
@@ -83,7 +83,7 @@ namespace boosting {
     }
 
     /**
-     * An implementation of the type `ILabelPredictor` that allows to predict whether individual labels of given query
+     * An implementation of the type `IBinaryPredictor` that allows to predict whether individual labels of given query
      * examples are relevant or irrelevant by summing up the scores that are provided by the individual rules of an
      * existing rule-based model and transforming them into binary values according to a certain threshold that is
      * applied to each label individually (1 if a score exceeds the threshold, i.e., the label is relevant, 0
@@ -94,7 +94,7 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseLabelPredictor final : public ILabelPredictor {
+    class LabelWiseBinaryPredictor final : public IBinaryPredictor {
 
         private:
 
@@ -120,8 +120,8 @@ namespace boosting {
              * @param numThreads    The number of CPU threads to be used to make predictions for different query
              *                      examples in parallel. Must be at least 1
              */
-            LabelWiseLabelPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
-                                    float64 threshold, uint32 numThreads)
+            LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
+                                     float64 threshold, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), threshold_(threshold),
                   numThreads_(numThreads) {
 
@@ -137,13 +137,13 @@ namespace boosting {
     };
 
     /**
-     * Allows to create instances of the type `ILabelPredictor` that allow to predict whether individual labels of given
-     * query examples are relevant or irrelevant by summing up the scores that are provided by the individual rules of
-     * an existing rule-based model and transforming them into binary values according to a certain threshold that is
-     * applied to each label individually (1 if a score exceeds the threshold, i.e., the label is relevant, 0
+     * Allows to create instances of the type `IBinaryPredictor` that allow to predict whether individual labels of
+     * given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
+     * rules of an existing rule-based model and transforming them into binary values according to a certain threshold
+     * that is applied to each label individually (1 if a score exceeds the threshold, i.e., the label is relevant, 0
      * otherwise).
      */
-    class LabelWiseLabelPredictorFactory final : public ILabelPredictorFactory {
+    class LabelWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
 
         private:
 
@@ -159,7 +159,7 @@ namespace boosting {
              * @param numThreads    The number of CPU threads to be used to make predictions for different query
              *                      examples in parallel. Must be at least 1
              */
-            LabelWiseLabelPredictorFactory(float64 threshold, uint32 numThreads)
+            LabelWiseBinaryPredictorFactory(float64 threshold, uint32 numThreads)
                 : threshold_(threshold), numThreads_(numThreads) {
 
             }
@@ -167,20 +167,20 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<ILabelPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                    const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                    uint32 numLabels) const override {
-                return std::make_unique<LabelWiseLabelPredictor<CContiguousConstView<const float32>, RuleList>>(
+            std::unique_ptr<IBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
+                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                     uint32 numLabels) const override {
+                return std::make_unique<LabelWiseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
                     featureMatrix, model, numLabels, threshold_, numThreads_);
             }
 
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<ILabelPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                    const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                    uint32 numLabels) const override {
-                return std::make_unique<LabelWiseLabelPredictor<CsrConstView<const float32>, RuleList>>(
+            std::unique_ptr<IBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
+                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                     uint32 numLabels) const override {
+                return std::make_unique<LabelWiseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                     featureMatrix, model, numLabels, threshold_, numThreads_);
             }
 
@@ -237,7 +237,7 @@ namespace boosting {
     }
 
     /**
-     * An implementation of the type `ISparseLabelPredictor` that allows to predict whether individual labels of given
+     * An implementation of the type `ISparseBinaryPredictor` that allows to predict whether individual labels of given
      * query examples are relevant or irrelevant by summing up the scores that are provided by the individual rules of
      * an existing rule-based model and transforming them into binary values according to a certain threshold that is
      * applied to each label individually (1 if a score exceeds the threshold, i.e., the label is relevant, 0
@@ -248,7 +248,7 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseSparseLabelPredictor final : public ISparseLabelPredictor {
+    class LabelWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
 
         private:
 
@@ -274,8 +274,8 @@ namespace boosting {
              * @param numThreads    The number of CPU threads to be used to make predictions for different query
              *                      examples in parallel. Must be at least 1
              */
-            LabelWiseSparseLabelPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
-                                          float64 threshold, uint32 numThreads)
+            LabelWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
+                                           float64 threshold, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), threshold_(threshold),
                   numThreads_(numThreads) {
 
@@ -291,13 +291,13 @@ namespace boosting {
     };
 
     /**
-     * Allows to create instances of the type `ISparseLabelPredictor` that allow to predict whether individual labels of
+     * Allows to create instances of the type `ISparseBinaryPredictor` that allow to predict whether individual labels of
      * given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
      * rules of an existing rule-based model and transforming them into binary values according to a certain threshold
      * that is applied to each label individually (1 if a score exceeds the threshold, i.e., the label is relevant, 0
      * otherwise).
      */
-    class LabelWiseSparseLabelPredictorFactory final : public ISparseLabelPredictorFactory {
+    class LabelWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
 
         private:
 
@@ -313,7 +313,7 @@ namespace boosting {
              * @param numThreads    The number of CPU threads to be used to make predictions for different query
              *                      examples in parallel. Must be at least 1
              */
-            LabelWiseSparseLabelPredictorFactory(float64 threshold, uint32 numThreads)
+            LabelWiseSparseBinaryPredictorFactory(float64 threshold, uint32 numThreads)
                 : threshold_(threshold), numThreads_(numThreads) {
 
             }
@@ -321,47 +321,47 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<ISparseLabelPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                          const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                          uint32 numLabels) const override {
-                return std::make_unique<LabelWiseSparseLabelPredictor<CContiguousConstView<const float32>, RuleList>>(
+            std::unique_ptr<ISparseBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
+                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                           uint32 numLabels) const override {
+                return std::make_unique<LabelWiseSparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
                     featureMatrix, model, numLabels, threshold_, numThreads_);
             }
 
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<ISparseLabelPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                          const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                          uint32 numLabels) const override {
-                return std::make_unique<LabelWiseSparseLabelPredictor<CsrConstView<const float32>, RuleList>>(
+            std::unique_ptr<ISparseBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
+                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                           uint32 numLabels) const override {
+                return std::make_unique<LabelWiseSparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                     featureMatrix, model, numLabels, threshold_, numThreads_);
             }
 
     };
 
-    LabelWiseLabelPredictorConfig::LabelWiseLabelPredictorConfig(
+    LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
             const std::unique_ptr<ILossConfig>& lossConfigPtr,
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
 
     }
 
-    std::unique_ptr<ILabelPredictorFactory> LabelWiseLabelPredictorConfig::createPredictorFactory(
+    std::unique_ptr<IBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         float64 threshold = lossConfigPtr_->getDefaultPrediction();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<LabelWiseLabelPredictorFactory>(threshold, numThreads);
+        return std::make_unique<LabelWiseBinaryPredictorFactory>(threshold, numThreads);
     }
 
-    std::unique_ptr<ISparseLabelPredictorFactory> LabelWiseLabelPredictorConfig::createSparsePredictorFactory(
+    std::unique_ptr<ISparseBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createSparsePredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         float64 threshold = lossConfigPtr_->getDefaultPrediction();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<LabelWiseSparseLabelPredictorFactory>(threshold, numThreads);
+        return std::make_unique<LabelWiseSparseBinaryPredictorFactory>(threshold, numThreads);
     }
 
-    bool LabelWiseLabelPredictorConfig::isLabelVectorSetNeeded() const {
+    bool LabelWiseBinaryPredictorConfig::isLabelVectorSetNeeded() const {
         return false;
     }
 

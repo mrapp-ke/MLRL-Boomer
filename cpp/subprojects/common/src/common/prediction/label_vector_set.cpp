@@ -2,7 +2,7 @@
 #include "common/input/feature_matrix_c_contiguous.hpp"
 #include "common/input/feature_matrix_csr.hpp"
 #include "common/model/rule_list.hpp"
-#include "common/prediction/predictor_label.hpp"
+#include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 
@@ -33,26 +33,26 @@ void LabelVectorSet::visit(LabelVectorVisitor visitor) const {
     }
 }
 
-std::unique_ptr<ILabelPredictor> LabelVectorSet::createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                                      const CContiguousFeatureMatrix& featureMatrix,
-                                                                      const RuleList& model, uint32 numLabels) const {
+std::unique_ptr<IBinaryPredictor> LabelVectorSet::createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                        const CContiguousFeatureMatrix& featureMatrix,
+                                                                        const RuleList& model, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, numLabels);
 }
 
-std::unique_ptr<ILabelPredictor> LabelVectorSet::createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                                      const CsrFeatureMatrix& featureMatrix,
-                                                                      const RuleList& model, uint32 numLabels) const {
+std::unique_ptr<IBinaryPredictor> LabelVectorSet::createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                        const CsrFeatureMatrix& featureMatrix,
+                                                                        const RuleList& model, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, numLabels);
 }
 
-std::unique_ptr<ISparseLabelPredictor> LabelVectorSet::createSparseLabelPredictor(
-        const ISparseLabelPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+std::unique_ptr<ISparseBinaryPredictor> LabelVectorSet::createSparseBinaryPredictor(
+        const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
         const RuleList& model, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, numLabels);
 }
 
-std::unique_ptr<ISparseLabelPredictor> LabelVectorSet::createSparseLabelPredictor(
-        const ISparseLabelPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
+std::unique_ptr<ISparseBinaryPredictor> LabelVectorSet::createSparseBinaryPredictor(
+        const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
         uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, numLabels);
 }

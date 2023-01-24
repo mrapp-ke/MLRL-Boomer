@@ -107,25 +107,24 @@ class LabelVectorSet final : public ILabelVectorSet {
 
         void visit(LabelVectorVisitor visitor) const override;
 
-        std::unique_ptr<ILabelPredictor> createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                              const CContiguousFeatureMatrix& featureMatrix,
-                                                              const RuleList& ruleList,
-                                                              uint32 numLabels) const override;
+        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                const CContiguousFeatureMatrix& featureMatrix,
+                                                                const RuleList& ruleList,
+                                                                uint32 numLabels) const override;
 
-        std::unique_ptr<ILabelPredictor> createLabelPredictor(const ILabelPredictorFactory& factory,
-                                                              const CsrFeatureMatrix& featureMatrix,
-                                                              const RuleList& ruleList,
-                                                              uint32 numLabels) const override;
+        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
+                                                                const CsrFeatureMatrix& featureMatrix,
+                                                                const RuleList& ruleList,
+                                                                uint32 numLabels) const override;
 
-        std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
-                                                                          const CContiguousFeatureMatrix& featureMatrix,
-                                                                          const RuleList& ruleList,
-                                                                          uint32 numLabels) const override;
+        std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(const ISparseBinaryPredictorFactory& factory,
+                                                                            const CContiguousFeatureMatrix& featureMatrix,
+                                                                            const RuleList& ruleList,
+                                                                            uint32 numLabels) const override;
 
-        std::unique_ptr<ISparseLabelPredictor> createSparseLabelPredictor(const ISparseLabelPredictorFactory& factory,
-                                                                          const CsrFeatureMatrix& featureMatrix,
-                                                                          const RuleList& ruleList,
-                                                                          uint32 numLabels) const override;
+        std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
+            const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+            const RuleList& ruleList, uint32 numLabels) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CContiguousFeatureMatrix& featureMatrix,
