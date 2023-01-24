@@ -1,5 +1,7 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
 
+from libcpp.memory cimport unique_ptr
+
 
 cdef extern from "common/prediction/prediction_matrix_dense.hpp" nogil:
 
@@ -27,8 +29,10 @@ cdef extern from "common/prediction/prediction_matrix_sparse_binary.hpp" nogil:
 cdef extern from "common/prediction/predictor.hpp" nogil:
 
     cdef cppclass IPredictor[PredictionMatrix]:
-        # TODO
-        pass
+
+        # Functions:
+
+        unique_ptr[PredictionMatrix] predict() const
 
 
 cdef extern from "common/prediction/predictor_label.hpp" nogil:
