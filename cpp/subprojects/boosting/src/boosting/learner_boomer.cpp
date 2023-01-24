@@ -27,7 +27,7 @@ namespace boosting {
         this->useAutomaticStatistics();
         this->useL2Regularization();
         this->useAutomaticLabelBinning();
-        this->useAutomaticClassificationPredictor();
+        this->useAutomaticBinaryPredictor();
         this->useAutomaticProbabilityPredictor();
     }
 
@@ -76,7 +76,7 @@ namespace boosting {
             std::make_unique<AutomaticLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
-    void Boomer::Config::useAutomaticClassificationPredictor() {
+    void Boomer::Config::useAutomaticBinaryPredictor() {
         binaryPredictorConfigPtr_ =
             std::make_unique<AutomaticBinaryPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }

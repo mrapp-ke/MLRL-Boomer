@@ -23,7 +23,7 @@ from mlrl.testbed.args import add_log_level_argument, add_learner_arguments, add
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
 from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, NoSplitter, DataSet
-from mlrl.testbed.evaluation import EvaluationPrinter, ClassificationEvaluationPrinter, ScoreEvaluationPrinter, \
+from mlrl.testbed.evaluation import EvaluationPrinter, BinaryEvaluationPrinter, ScoreEvaluationPrinter, \
     ProbabilityEvaluationPrinter, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment, PredictionType, Evaluation, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.io import clear_directory
@@ -183,7 +183,7 @@ class LearnerRunnable(Runnable, ABC):
             elif prediction_type == PredictionType.PROBABILITIES:
                 evaluation = ProbabilityEvaluationPrinter(outputs)
             else:
-                evaluation = ClassificationEvaluationPrinter(outputs)
+                evaluation = BinaryEvaluationPrinter(outputs)
         else:
             evaluation = None
 

@@ -20,7 +20,7 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         void usePrecisionPruningHeuristic()
 
-        void useLabelWiseClassificationPredictor()
+        void useLabelWiseBinaryPredictor()
 
 
     cdef cppclass ICoverageStoppingCriterionMixin"seco::ISeCoRuleLearner::ICoverageStoppingCriterionMixin":

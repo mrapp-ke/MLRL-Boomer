@@ -35,8 +35,8 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::ILabelWiseSquaredErrorLossMixin,
                             virtual public IBoostingRuleLearner::ILabelWiseSquaredHingeLossMixin,
                             virtual public IBoostingRuleLearner::ILabelBinningMixin,
-                            virtual public IBoostingRuleLearner::IExampleWiseClassificationPredictorMixin,
-                            virtual public IBoostingRuleLearner::IGfmClassificationPredictorMixin,
+                            virtual public IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin,
+                            virtual public IBoostingRuleLearner::IGfmBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
                             virtual public IRuleLearner::IFeatureBinningMixin,
@@ -107,7 +107,7 @@ namespace boosting {
                      * Configures the rule learner to automatically decide for a predictor for predicting whether
                      * individual labels are relevant or irrelevant.
                      */
-                    virtual void useAutomaticClassificationPredictor() = 0;
+                    virtual void useAutomaticBinaryPredictor() = 0;
 
                     /**
                      * Configures the rule learner to automatically decide for a predictor for predicting probability
@@ -158,7 +158,7 @@ namespace boosting {
 
                     void useAutomaticLabelBinning() override;
 
-                    void useAutomaticClassificationPredictor() override;
+                    void useAutomaticBinaryPredictor() override;
 
                     void useAutomaticProbabilityPredictor() override;
 

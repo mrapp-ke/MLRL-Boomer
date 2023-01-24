@@ -141,7 +141,7 @@ namespace boosting {
                      * existing rule-based model and transforming them into binary values according to a certain
                      * threshold that is applied to each label individually.
                      */
-                    virtual void useLabelWiseClassificationPredictor() = 0;
+                    virtual void useLabelWiseBinaryPredictor() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting regression scores by summing up the
@@ -469,11 +469,11 @@ namespace boosting {
              * provided by an existing rule-based model and comparing the aggregated score vector to the known label
              * vectors according to a certain distance measure.
              */
-            class IExampleWiseClassificationPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IExampleWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
-                    virtual ~IExampleWiseClassificationPredictorMixin() { };
+                    virtual ~IExampleWiseBinaryPredictorMixin() { };
 
                     /**
                      * Configures the rule learner to use a predictor for predicting whether individual labels are
@@ -482,7 +482,7 @@ namespace boosting {
                      * distance measure. The label vector that is closest to the aggregated score vector is finally
                      * predicted.
                      */
-                    virtual void useExampleWiseClassificationPredictor() {
+                    virtual void useExampleWiseBinaryPredictor() {
                         std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
                             this->getBinaryPredictorConfigPtr();
                         binaryPredictorConfigPtr = std::make_unique<ExampleWiseBinaryPredictorConfig>(
@@ -497,11 +497,11 @@ namespace boosting {
              * provided by the individual rules of an existing rule-based model and transforming them into binary values
              * according to the general F-measure maximizer (GFM).
              */
-            class IGfmClassificationPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IGfmBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
-                    virtual ~IGfmClassificationPredictorMixin() { };
+                    virtual ~IGfmBinaryPredictorMixin() { };
 
                     /**
                      * Configures the rule learner to use a predictor for predicting whether individual labels are
@@ -509,7 +509,7 @@ namespace boosting {
                      * existing rule-based model and transforming them into binary values according to the general
                      * F-measure maximizer (GFM).
                      */
-                    virtual void useGfmClassificationPredictor() {
+                    virtual void useGfmBinaryPredictor() {
                         std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
                             this->getBinaryPredictorConfigPtr();
                         binaryPredictorConfigPtr = std::make_unique<GfmBinaryPredictorConfig>(
@@ -626,7 +626,7 @@ namespace boosting {
 
                     void useNoLabelBinning() override;
 
-                    void useLabelWiseClassificationPredictor() override;
+                    void useLabelWiseBinaryPredictor() override;
 
                     void useLabelWiseScorePredictor() override;
 

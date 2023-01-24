@@ -523,7 +523,7 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
-    def use_example_wise_classification_predictor(self):
+    def use_example_wise_binary_predictor(self):
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
         irrelevant by summing up the scores that are provided by an existing rule-based model and comparing the
@@ -531,24 +531,24 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         that is closest to the aggregated score vector is finally predicted.
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useExampleWiseClassificationPredictor()
+        rule_learner_config_ptr.useExampleWiseBinaryPredictor()
 
-    def use_gfm_classification_predictor(self):
+    def use_gfm_binary_predictor(self):
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
         irrelevant by summing up the scores that are provided by the individual rules of a existing rule-based model and
         transforming them into binary values according to the general F-measure maximizer (GFM).
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useGfmClassificationPredictor()
+        rule_learner_config_ptr.useGfmBinaryPredictor()
 
-    def use_automatic_classification_predictor(self):
+    def use_automatic_binary_predictor(self):
         """
         Configures the rule learner to automatically decide for a predictor for predicting whether individual labels are
         relevant or irrelevant.
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useLabelWiseClassificationPredictor()
+        rule_learner_config_ptr.useLabelWiseBinaryPredictor()
 
     def use_marginalized_probability_predictor(self):
         """
