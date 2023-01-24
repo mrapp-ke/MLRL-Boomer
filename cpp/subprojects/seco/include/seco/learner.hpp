@@ -125,7 +125,7 @@ namespace seco {
                      * the order they have been learned. If a rule covers an example, its prediction is applied to each
                      * label individually.
                      */
-                    virtual void useLabelWiseClassificationPredictor() = 0;
+                    virtual void useLabelWiseBinaryPredictor() = 0;
 
             };
 
@@ -487,7 +487,7 @@ namespace seco {
 
                     void usePrecisionPruningHeuristic() override;
 
-                    void useLabelWiseClassificationPredictor() override;
+                    void useLabelWiseBinaryPredictor() override;
 
             };
 

@@ -11,11 +11,11 @@ from mlrl.testbed.args import add_max_rules_argument, add_time_limit_argument, a
     add_parallel_prediction_argument, PARAM_PARTITION_SAMPLING, PARAM_FEATURE_BINNING, PARAM_HEAD_TYPE, \
     PARAM_PARALLEL_RULE_REFINEMENT, PARAM_PARALLEL_STATISTIC_UPDATE
 from mlrl.testbed.args_boosting import add_shrinkage_argument, add_regularization_arguments, PARAM_STATISTIC_FORMAT, \
-    PARAM_DEFAULT_RULE, PARAM_LABEL_BINNING, PARAM_LOSS, PARAM_CLASSIFICATION_PREDICTOR, PARAM_PROBABILITY_PREDICTOR
+    PARAM_DEFAULT_RULE, PARAM_LABEL_BINNING, PARAM_LOSS, PARAM_BINARY_PREDICTOR, PARAM_PROBABILITY_PREDICTOR
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
 from mlrl.boosting.boosting_learners import Boomer, STATISTIC_FORMAT_VALUES, DEFAULT_RULE_VALUES, \
-    PARTITION_SAMPLING_VALUES, HEAD_TYPE_VALUES, LABEL_BINNING_VALUES, LOSS_VALUES, CLASSIFICATION_PREDICTOR_VALUES, \
+    PARTITION_SAMPLING_VALUES, HEAD_TYPE_VALUES, LABEL_BINNING_VALUES, LOSS_VALUES, BINARY_PREDICTOR_VALUES, \
     PROBABILITY_PREDICTOR_VALUES, PARALLEL_VALUES, FEATURE_BINNING_VALUES
 
 
@@ -67,10 +67,10 @@ class BoomerRunnable(RuleLearnerRunnable):
         parser.add_argument(PARAM_LOSS, type=str,
                             help='The name of the loss function to be minimized during training. Must be one of '
                                  + format_string_set(LOSS_VALUES) + '.')
-        parser.add_argument(PARAM_CLASSIFICATION_PREDICTOR, type=str,
+        parser.add_argument(PARAM_BINARY_PREDICTOR, type=str,
                             help='The name of the strategy to be used for predicting binary labels. Must be one of '
-                                 + format_string_set(CLASSIFICATION_PREDICTOR_VALUES) + '. If set to "' + AUTOMATIC
-                                 + '", the most suitable strategy is chosen automatically based on the parameter '
+                                 + format_string_set(BINARY_PREDICTOR_VALUES) + '. If set to "' + AUTOMATIC + '", the '
+                                 + 'most suitable strategy is chosen automatically based on the parameter '
                                  + PARAM_LOSS + '.')
         parser.add_argument(PARAM_PROBABILITY_PREDICTOR, type=str,
                             help='The name of the strategy to be used for predicting probabilities. Must be one of '
@@ -107,7 +107,7 @@ class BoomerRunnable(RuleLearnerRunnable):
                       global_pruning=args.global_pruning,
                       sequential_post_optimization=args.sequential_post_optimization,
                       loss=args.loss,
-                      classification_predictor=args.classification_predictor,
+                      binary_predictor=args.binary_predictor,
                       probability_predictor=args.probability_predictor,
                       rule_pruning=args.rule_pruning,
                       label_sampling=args.label_sampling,

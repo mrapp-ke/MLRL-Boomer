@@ -35,13 +35,13 @@ HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
 
 LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
 
-CLASSIFICATION_PREDICTOR_AUTO = 'auto'
+BINARY_PREDICTOR_AUTO = 'auto'
 
-CLASSIFICATION_PREDICTOR_LABEL_WISE = 'label-wise'
+BINARY_PREDICTOR_LABEL_WISE = 'label-wise'
 
-CLASSIFICATION_PREDICTOR_EXAMPLE_WISE = 'example-wise'
+BINARY_PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
-CLASSIFICATION_PREDICTOR_GFM = 'gfm'
+BINARY_PREDICTOR_GFM = 'gfm'
 
 PROBABILITY_PREDICTOR_AUTO = 'auto'
 
@@ -84,15 +84,15 @@ class BoostingCmdBuilder(CmdBuilder):
         self.args.append(loss)
         return self
 
-    def classification_predictor(self, classification_predictor: str = CLASSIFICATION_PREDICTOR_AUTO):
+    def binary_predictor(self, binary_predictor: str = BINARY_PREDICTOR_AUTO):
         """
         Configures the algorithm to use a specific method for predicting binary labels.
 
-        :param classification_predictor:    The name of the method that should be used for predicting binary labels
-        :return:                            The builder itself
+        :param binary_predictor:    The name of the method that should be used for predicting binary labels
+        :return:                    The builder itself
         """
-        self.args.append('--classification-predictor')
-        self.args.append(classification_predictor)
+        self.args.append('--binary-predictor')
+        self.args.append(binary_predictor)
         return self
 
     def probability_predictor(self, probability_predictor: str = PROBABILITY_PREDICTOR_AUTO):
@@ -362,34 +362,34 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_SQUARED_ERROR_EXAMPLE_WISE)
         self.run_cmd(builder, 'loss-squared-error-example-wise')
 
-    def test_predictor_classification_label_wise(self):
+    def test_predictor_binary_label_wise(self):
         """
         Tests the BOOMER algorithm when predicting binary labels that are obtained for each label individually.
         """
         builder = BoostingCmdBuilder() \
-            .classification_predictor(CLASSIFICATION_PREDICTOR_LABEL_WISE) \
+            .binary_predictor(BINARY_PREDICTOR_LABEL_WISE) \
             .print_predictions(True)
-        self.run_cmd(builder, 'predictor-classification-label-wise')
+        self.run_cmd(builder, 'predictor-binary-label-wise')
 
-    def test_predictor_classification_example_wise(self):
+    def test_predictor_binary_example_wise(self):
         """
         Tests the BOOMER algorithm when predicting binary labels that are obtained by predicting one of the known label
         vectors.
         """
         builder = BoostingCmdBuilder() \
-            .classification_predictor(CLASSIFICATION_PREDICTOR_EXAMPLE_WISE) \
+            .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE) \
             .print_predictions(True)
-        self.run_cmd(builder, 'predictor-classification-example-wise')
+        self.run_cmd(builder, 'predictor-binary-example-wise')
 
-    def test_predictor_classification_gfm(self):
+    def test_predictor_binary_gfm(self):
         """
         Tests the BOOMER algorithm when predicting binary labels that are obtained via the general F-measure maximizer
         (GFM).
         """
         builder = BoostingCmdBuilder() \
-            .classification_predictor(CLASSIFICATION_PREDICTOR_GFM) \
+            .binary_predictor(BINARY_PREDICTOR_GFM) \
             .print_predictions(True)
-        self.run_cmd(builder, 'predictor-classification-gfm')
+        self.run_cmd(builder, 'predictor-binary-gfm')
 
     def test_predictor_score_label_wise(self):
         """

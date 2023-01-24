@@ -16,7 +16,7 @@ namespace seco {
         this->useNoLiftFunction();
         this->usePrecisionHeuristic();
         this->usePrecisionPruningHeuristic();
-        this->useLabelWiseClassificationPredictor();
+        this->useLabelWiseBinaryPredictor();
     }
 
     std::unique_ptr<CoverageStoppingCriterionConfig>& AbstractSeCoRuleLearner::Config::getCoverageStoppingCriterionConfigPtr() {
@@ -65,7 +65,7 @@ namespace seco {
         pruningHeuristicConfigPtr_ = std::make_unique<PrecisionConfig>();
     }
 
-    void AbstractSeCoRuleLearner::Config::useLabelWiseClassificationPredictor() {
+    void AbstractSeCoRuleLearner::Config::useLabelWiseBinaryPredictor() {
         binaryPredictorConfigPtr_ = std::make_unique<LabelWiseBinaryPredictorConfig>(parallelPredictionConfigPtr_);
     }
 

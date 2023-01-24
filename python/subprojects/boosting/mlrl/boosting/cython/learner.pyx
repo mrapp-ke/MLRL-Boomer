@@ -54,7 +54,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.get_boosting_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoLabelBinning()
 
-    def use_label_wise_classification_predictor(self):
+    def use_label_wise_binary_predictor(self):
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
         irrelevant by summing up the scores that are provided by the individual rules of an existing rule-based model
@@ -62,7 +62,7 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         individually.
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.get_boosting_rule_learner_config_ptr()
-        rule_learner_config_ptr.useLabelWiseClassificationPredictor()
+        rule_learner_config_ptr.useLabelWiseBinaryPredictor()
 
     def use_label_wise_score_predictor(self):
         """
