@@ -96,17 +96,6 @@ namespace seco {
                     // TODO Move to IRuleLearner::IConfig if possible
                     virtual std::unique_ptr<ILabelPredictorConfig>& getLabelPredictorConfigPtr() = 0;
 
-                    /**
-                     * Returns an unique pointer to the configuration of the predictor that predicts whether individual
-                     * labels of given query examples are relevant or irrelevant.
-                     *
-                     * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
-                     *         configuration of the predictor that predicts whether individual labels of given query
-                     *         examples are relevant or irrelevant
-                     */
-                    // TODO Remove
-                    virtual std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() = 0;
-
                 public:
 
                     virtual ~IConfig() override { };
@@ -481,13 +470,6 @@ namespace seco {
                      */
                     std::unique_ptr<ILabelPredictorConfig> labelPredictorConfigPtr_;
 
-                    /**
-                     * An unique pointer that stores the configuration of the predictor that is used to predict binary
-                     * labels.
-                     */
-                    // TODO Remove
-                    std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
-
                 private:
 
                     std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() override final;
@@ -501,9 +483,6 @@ namespace seco {
                     std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() override final;
 
                     std::unique_ptr<ILabelPredictorConfig>& getLabelPredictorConfigPtr() override final;
-
-                    // TODO Remove
-                    std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() override final;
 
                 public:
 
@@ -569,13 +548,6 @@ namespace seco {
              */
             std::unique_ptr<ISparseLabelPredictorFactory> createSparseLabelPredictorFactory(
                 const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
-
-            /**
-             * @see `AbstractRuleLearner::createClassificationPredictorFactory`
-             */
-            // TODO Remove
-            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
-                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         public:
 
