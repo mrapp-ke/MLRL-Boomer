@@ -14,6 +14,8 @@ from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiParti
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
 from mlrl.common.cython.prediction cimport DensePredictionMatrix, BinarySparsePredictionMatrix  # TODO Remove
+from mlrl.common.cython.prediction cimport ILabelPredictor, ISparseLabelPredictor, IScorePredictor, \
+    IProbabilityPredictor
 from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, IBeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig, \
@@ -194,7 +196,7 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[ILabelPredictor] createLabelPredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                          const IRuleModel& ruleModel,
                                                          const ILabelSpaceInfo& labelSpaceInfo,
-                                                         uint32 numLabels) const
+                                                         uint32 numLabels) except +
 
         # TODO Remove
         unique_ptr[DensePredictionMatrix[uint8]] predictLabels(const IRowWiseFeatureMatrix& featureMatrix,
@@ -205,7 +207,7 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[ISparseLabelPredictor] createSparseLabelPredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                      const IRuleModel& ruleModel,
                                                                      const ILabelSpaceInfo& labelSpaceInfo,
-                                                                     uint32 numLabels) const
+                                                                     uint32 numLabels) except +
 
         # TODO Remove
         unique_ptr[BinarySparsePredictionMatrix] predictSparseLabels(const IRowWiseFeatureMatrix& featureMatrix,
@@ -218,7 +220,7 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[IScorePredictor] createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                          const IRuleModel& ruleModel,
                                                          const ILabelSpaceInfo& labelSpaceInfo,
-                                                         uint32 numLabels) const
+                                                         uint32 numLabels) except +
 
         # TODO Remove
         unique_ptr[DensePredictionMatrix[float64]] predictScores(const IRowWiseFeatureMatrix& featureMatrix,
@@ -231,7 +233,7 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[IProbabilityPredictor] createProbabilityPredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                      const IRuleModel& ruleModel,
                                                                      const ILabelSpaceInfo& labelSpaceInfo,
-                                                                     uint32 numLabels) const
+                                                                     uint32 numLabels) except +
 
         # TODO Remove
         unique_ptr[DensePredictionMatrix[float64]] predictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
