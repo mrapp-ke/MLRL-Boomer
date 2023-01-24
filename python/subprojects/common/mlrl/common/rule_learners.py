@@ -118,22 +118,26 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
 
 def predict_sparse_labels(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
                           num_labels: int, feature_matrix: RowWiseFeatureMatrix):
-    return learner.predict_sparse_labels(feature_matrix, model, label_space_info, num_labels)
+    predictor = learner.create_sparse_label_predictor(feature_matrix, model, label_space_info, num_labels)
+    return predictor.predict()
 
 
 def predict_labels(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
                    feature_matrix: RowWiseFeatureMatrix):
-    return learner.predict_labels(feature_matrix, model, label_space_info, num_labels)
+    predictor = learner.create_label_predictor(feature_matrix, model, label_space_info, num_labels)
+    return predictor.predict()
 
 
 def predict_scores(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
                    feature_matrix: RowWiseFeatureMatrix):
-    return learner.predict_scores(feature_matrix, model, label_space_info, num_labels)
+    predictor = learner.create_score_predictor(feature_matrix, model, label_space_info, num_labels)
+    return predictor.predict()
 
 
 def predict_proba(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
                   feature_matrix: RowWiseFeatureMatrix):
-    prediction = learner.predict_probabilities(feature_matrix, model, label_space_info, num_labels)
+    predictor = learner.create_probability_predictor(feature_matrix, model, label_space_info, num_labels)
+    prediction = predictor.predict()
 
     # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the negative and
     # positive class...
