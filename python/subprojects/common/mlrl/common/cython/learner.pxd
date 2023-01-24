@@ -13,6 +13,7 @@ from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
+from mlrl.common.cython.prediction cimport DensePredictionMatrix, BinarySparsePredictionMatrix  # TODO Remove
 from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, IBeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig, \
@@ -20,28 +21,6 @@ from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig,
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
-
-
-cdef extern from "common/prediction/prediction_matrix_dense.hpp" nogil:
-
-    cdef cppclass DensePredictionMatrix[T]:
-
-        # Functions:
-
-        T* release()
-
-
-cdef extern from "common/prediction/prediction_matrix_sparse_binary.hpp" nogil:
-
-    cdef cppclass BinarySparsePredictionMatrix:
-
-        # Functions:
-
-        uint32 getNumNonZeroElements() const
-
-        uint32* releaseRowIndices()
-
-        uint32* releaseColIndices()
 
 
 cdef extern from "common/learner.hpp" nogil:
