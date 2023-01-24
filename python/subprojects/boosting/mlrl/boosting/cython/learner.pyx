@@ -64,13 +64,13 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.get_boosting_rule_learner_config_ptr()
         rule_learner_config_ptr.useLabelWiseClassificationPredictor()
 
-    def use_label_wise_regression_predictor(self):
+    def use_label_wise_score_predictor(self):
         """
         Configures the rule learner to use a predictor for predicting regression scores by summing up the scores that
         are provided by the individual rules of an existing rule-based model for each label individually.
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.get_boosting_rule_learner_config_ptr()
-        rule_learner_config_ptr.useLabelWiseRegressionPredictor()
+        rule_learner_config_ptr.useLabelWiseScorePredictor()
 
     def use_label_wise_probability_predictor(self):
         """

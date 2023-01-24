@@ -391,14 +391,14 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_predictions(True)
         self.run_cmd(builder, 'predictor-classification-gfm')
 
-    def test_predictor_regression_label_wise(self):
+    def test_predictor_score_label_wise(self):
         """
         Tests the BOOMER algorithm when predicting regression scores that are obtained in label-wise manner.
         """
         builder = BoostingCmdBuilder() \
             .prediction_type(PREDICTION_TYPE_SCORES) \
             .print_predictions(True)
-        self.run_cmd(builder, 'predictor-regression-label-wise')
+        self.run_cmd(builder, 'predictor-score-label-wise')
 
     def test_predictor_probability_label_wise(self):
         """
