@@ -285,11 +285,11 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() = 0;
 
                 /**
-                 * Returns an unique pointer to the configuration of the predictor that allows to predict labels.
+                 * Returns an unique pointer to the configuration of the predictor that allows to predict binary labels.
                  *
                  * @return A reference to an unique pointer of type `IBinaryPredictorConfig` that stores the
-                 *         configuration of the predictor that allows to predict labels or a null pointer if the
-                 *         prediction of labels is not supported
+                 *         configuration of the predictor that allows to predict binary labels or a null pointer if the
+                 *         prediction of binary labels is not supported
                  */
                 virtual std::unique_ptr<IBinaryPredictorConfig>& getBinaryPredictorConfigPtr() = 0;
 
@@ -298,8 +298,8 @@ class MLRLCOMMON_API IRuleLearner {
                  * scores.
                  *
                  * @return A reference to an unique pointer of type `IScorePredictorConfig` that stores the
-                 *         configuration of the predictor that allows to predict labels or a null pointer, if the
-                 *         prediction of regression scores is not supported
+                 *         configuration of the predictor that allows to predict regression scores or a null pointer, if
+                 *         the prediction of regression scores is not supported
                  */
                 virtual std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() = 0;
 
@@ -953,28 +953,28 @@ class MLRLCOMMON_API IRuleLearner {
         virtual bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
         /**
-         * Creates and returns a predictor that may be used to predict labels for given query examples. If the
-         * prediction of labels is not supported by the rule learner, a `std::runtime_error` is thrown.
+         * Creates and returns a predictor that may be used to predict binary labels for given query examples. If the
+         * prediction of binary labels is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception   The exception that is thrown if the prediction of labels is not supported by
-         *                                  the rule learner
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of binary labels is not
+         *                                  supported by the rule learner
          * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
          *                                  row-wise access to the feature values of the query examples
          * @param trainingResult            A reference to an object of type `ITrainingResult` that provides access to
          *                                  the model and additional information that should be used to obtain
          *                                  predictions
          * @return                          An unique pointer to an object of type `IBinaryPredictor` that may be used
-         *                                  to predict labels for the given query examples
+         *                                  to predict binary labels for the given query examples
          */
         virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
 
         /**
-         * Creates and returns a predictor that may be used to predict labels for given query examples. If the
-         * prediction of labels is not supported by the rule learner, a `std::runtime_error` is thrown.
+         * Creates and returns a predictor that may be used to predict binary labels for given query examples. If the
+         * prediction of binary labels is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception   The exception that is thrown if the prediction of labels is not supported by
-         *                                  the rule learner
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of binary labels is not
+         *                                  supported by the rule learner
          * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
          *                                  row-wise access to the feature values of the query examples
          * @param ruleModel                 A reference to an object of type `IRuleModel` that should be used to obtain
@@ -983,7 +983,7 @@ class MLRLCOMMON_API IRuleLearner {
          *                                  about the label space that may be used as a basis for obtaining predictions
          * @param numLabels                 The number of labels to predict for
          * @return                          An unique pointer to an object of type `IBinaryPredictor` that may be used
-         *                                  to predict labels for the given query examples
+         *                                  to predict binary labels for the given query examples
          */
         virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                         const IRuleModel& ruleModel,
@@ -991,28 +991,30 @@ class MLRLCOMMON_API IRuleLearner {
                                                                         uint32 numLabels) const = 0;
 
         /**
-         * Creates and returns a predictor that may be used to predict sparse labels for given query examples. If the
-         * prediction of labels is not supported by the rule learner, a `std::runtime_error` is thrown.
+         * Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
+         * the prediction of sparse binary labels is not supported by the rule learner, a `std::runtime_error` is
+         * thrown.
          *
-         * @throws std::runtime_exception   The exception that is thrown if the prediction of labels is not supported by
-         *                                  the rule learner
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of sparse binary labels is
+         *                                  not supported by the rule learner
          * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
          *                                  row-wise access to the feature values of the query examples
          * @param trainingResult            A reference to an object of type `ITrainingResult` that provides access to
          *                                  the model and additional information that should be used to obtain
          *                                  predictions
          * @return                          An unique pointer to an object of type `ISparseBinaryPredictor` that may be
-         *                                  used to predict sparse labels for the given query examples
+         *                                  used to predict sparse binary labels for the given query examples
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
 
         /**
-         * Creates and returns a predictor that may be used to predict sparse labels for given query examples. If the
-         * prediction of labels is not supported by the rule learner, a `std::runtime_error` is thrown.
+         * Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
+         * the prediction of sparse binary labels is not supported by the rule learner, a `std::runtime_error` is
+         * thrown.
          *
-         * @throws std::runtime_exception   The exception that is thrown if the prediction of labels is not supported by
-         *                                  the rule learner
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of sparse binary labels is
+         *                                  not supported by the rule learner
          * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
          *                                  row-wise access to the feature values of the query examples
          * @param ruleModel                 A reference to an object of type `IRuleModel` that should be used to obtain
@@ -1021,7 +1023,7 @@ class MLRLCOMMON_API IRuleLearner {
          *                                  about the label space that may be used as a basis for obtaining predictions
          * @param numLabels                 The number of labels to predict for
          * @return                          An unique pointer to an object of type `ISparseBinaryPredictor` that may be
-         *                                  used to predict sparse labels for the given query examples
+         *                                  used to predict sparse binary labels for the given query examples
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
@@ -1269,7 +1271,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<UnusedRuleRemovalConfig> unusedRuleRemovalConfigPtr_;
 
                 /**
-                 * An unique pointer that stores the configuration of the predictor that allows to predict labels.
+                 * An unique pointer that stores the configuration of the predictor that allows to predict binary
+                 * labels.
                  */
                 std::unique_ptr<IBinaryPredictorConfig> binaryPredictorConfigPtr_;
 
@@ -1466,26 +1469,27 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         /**
          * May be overridden by subclasses in order to create the `IBinaryPredictorFactory` to be used by the rule
-         * learner for predicting labels.
+         * learner for predicting binary labels.
          *
          * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
          *                      to the feature values of the query examples
          * @param numLabels     The number of labels to predict for
          * @return              An unique pointer to an object of type `IBinaryPredictorFactory` that has been created
-         *                      or a null pointer, if the rule learner does not support to predict labels
+         *                      or a null pointer, if the rule learner does not support to predict binary labels
          */
         virtual std::unique_ptr<IBinaryPredictorFactory> createBinaryPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
 
         /**
          * May be overridden by subclasses in order to create the `ISparseBinaryPredictorFactory` to be used by the rule
-         * learner for predicting sparse labels.
+         * learner for predicting sparse binary labels.
          *
          * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
          *                      to the feature values of the query examples
          * @param numLabels     The number of labels to predict for
          * @return              An unique pointer to an object of type `ISparseBinaryPredictorFactory` that has been
-         *                      created or a null pointer, if the rule learner does not support to predict sparse labels
+         *                      created or a null pointer, if the rule learner does not support to predict sparse binary
+         *                      labels
          */
         virtual std::unique_ptr<ISparseBinaryPredictorFactory> createSparseBinaryPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;

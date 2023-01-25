@@ -222,8 +222,8 @@ cdef class RuleLearner:
     def create_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
                                 LabelSpaceInfo label_space_info not None, uint32 num_labels) -> BinaryPredictor:
         """
-        Creates and returns a predictor that may be used to predict labels for given query examples. If the prediction
-        of labels is not supported by the rule learner, a `RuntimeError` is thrown.
+        Creates and returns a predictor that may be used to predict binary labels for given query examples. If the
+        prediction of binary labels is not supported by the rule learner, a `RuntimeError` is thrown.
 
         :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
                                     query examples
@@ -231,7 +231,8 @@ cdef class RuleLearner:
         :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
                                     used as a basis for obtaining predictions
         :param num_labels:          The number of labels to predict for
-        :return:                    A `BinaryPredictor` that may be used to predict labels for the given query examples
+        :return:                    A `BinaryPredictor` that may be used to predict binary labels for the given query
+                                    examples
         """
         cdef unique_ptr[IBinaryPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createBinaryPredictor(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
@@ -246,8 +247,8 @@ cdef class RuleLearner:
                                        RuleModel rule_model not None, LabelSpaceInfo label_space_info not None,
                                        uint32 num_labels) -> SparseBinaryPredictor:
         """
-        Creates and returns a predictor that may be used to predict sparse labels for given query examples. If the
-        prediction of labels is not supported by the rule learner, a `RuntimeError` is thrown.
+        Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
+        the prediction of sparse binary labels is not supported by the rule learner, a `RuntimeError` is thrown.
 
         :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
                                     query examples
@@ -255,8 +256,8 @@ cdef class RuleLearner:
         :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
                                     used as a basis for obtaining predictions
         :param num_labels:          The number of labels to predict for
-        :return:                    A `SparseBinaryPredictor` that may be used to predict labels for the given query
-                                    examples
+        :return:                    A `SparseBinaryPredictor` that may be used to predict sparse binary labels for the
+                                    given query examples
         """
         cdef unique_ptr[ISparseBinaryPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createSparseBinaryPredictor(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
@@ -269,6 +270,7 @@ cdef class RuleLearner:
 
     def can_predict_scores(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
         """
+        Returns whether the rule learner is able to predict regression scores or not.
 
         :param feature_matrix:  A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
                                 query examples
