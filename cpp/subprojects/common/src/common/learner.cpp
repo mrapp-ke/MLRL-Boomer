@@ -454,7 +454,7 @@ std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
         return featureMatrix.createBinaryPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
     }
 
-    throw std::runtime_error("The rule learner does not support to predict labels");
+    throw std::runtime_error("The rule learner does not support to predict binary labels");
 }
 
 std::unique_ptr<ISparseBinaryPredictor> AbstractRuleLearner::createSparseBinaryPredictor(
@@ -473,7 +473,7 @@ std::unique_ptr<ISparseBinaryPredictor> AbstractRuleLearner::createSparseBinaryP
         return featureMatrix.createSparseBinaryPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
     }
 
-    throw std::runtime_error("The rule learner does not support to predict sparse labels");
+    throw std::runtime_error("The rule learner does not support to predict sparse binary labels");
 }
 
 bool AbstractRuleLearner::canPredictScores(const IRowWiseFeatureMatrix& featureMatrix,
