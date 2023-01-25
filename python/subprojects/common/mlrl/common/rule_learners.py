@@ -116,7 +116,7 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
         'Matrix of type ' + type(m).__name__ + ' cannot be converted to format "' + str(sparse_format) + '"')
 
 
-def predict_sparse_labels(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
+def predict_binary_sparse(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
                           num_labels: int, feature_matrix: RowWiseFeatureMatrix):
     predictor = learner.create_sparse_binary_predictor(feature_matrix, model, label_space_info, num_labels)
     return predictor.predict()
@@ -216,7 +216,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         def _predict(self, model: RuleModel):
             if self.sparse_prediction:
-                return predict_sparse_labels(self.learner, model, self.label_space_info, self.num_labels,
+                return predict_binary_sparse(self.learner, model, self.label_space_info, self.num_labels,
                                              self.feature_matrix)
             else:
                 return predict_binary(self.learner, model, self.label_space_info, self.num_labels, self.feature_matrix)
@@ -365,7 +365,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         if learner.can_predict_binary(feature_matrix, num_labels):
             if self.sparse_predictions_:
                 log.debug('A sparse matrix is used to store the predicted labels')
-                return predict_sparse_labels(learner, self.model_, self.label_space_info_, self.num_labels_,
+                return predict_binary_sparse(learner, self.model_, self.label_space_info_, self.num_labels_,
                                              feature_matrix)
             else:
                 log.debug('A dense matrix is used to store the predicted labels')
