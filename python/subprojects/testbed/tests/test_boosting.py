@@ -431,7 +431,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics(True)
         self.run_cmd(builder, 'no-default-rule')
 
-    def test_statistics_sparse_labels_dense(self):
+    def test_statistics_sparse_label_format_dense(self):
         """
         Tests the BOOMER algorithm when using sparse data structures for storing the statistics and a dense label
         representation.
@@ -442,9 +442,9 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .default_rule(False) \
             .loss(LOSS_SQUARED_HINGE_LABEL_WISE) \
             .head_type(HEAD_TYPE_SINGLE_LABEL)
-        self.run_cmd(builder, 'statistics-sparse_labels-dense')
+        self.run_cmd(builder, 'statistics-sparse_label-format-dense')
 
-    def test_statistics_sparse_labels_sparse(self):
+    def test_statistics_sparse_label_format_sparse(self):
         """
         Tests the BOOMER algorithm when using sparse data structures for storing the statistics and a sparse label
         representation.
@@ -455,7 +455,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .default_rule(False) \
             .loss(LOSS_SQUARED_HINGE_LABEL_WISE) \
             .head_type(HEAD_TYPE_SINGLE_LABEL)
-        self.run_cmd(builder, 'statistics-sparse_labels-sparse')
+        self.run_cmd(builder, 'statistics-sparse_label-format-sparse')
 
     def test_label_wise_single_label_heads(self):
         """

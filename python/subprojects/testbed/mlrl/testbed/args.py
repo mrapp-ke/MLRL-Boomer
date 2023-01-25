@@ -88,7 +88,7 @@ PARAM_FEATURE_FORMAT = '--feature-format'
 
 PARAM_LABEL_FORMAT = '--label-format'
 
-PARAM_PREDICTED_LABEL_FORMAT = '--predicted-label-format'
+PARAM_PREDICTION_FORMAT = '--prediction-format'
 
 PARAM_MAX_RULES = '--max-rules'
 
@@ -347,8 +347,8 @@ def add_rule_learner_arguments(parser: ArgumentParser):
     parser.add_argument(PARAM_LABEL_FORMAT, type=str, default=SparsePolicy.AUTO.value,
                         help='The format to be used for the representation of the label matrix. Must be one of '
                              + format_enum_values(SparsePolicy) + '.')
-    parser.add_argument(PARAM_PREDICTED_LABEL_FORMAT, type=str, default=SparsePolicy.AUTO.value,
-                        help='The format to be used for the representation of predicted labels. Must be one of '
+    parser.add_argument(PARAM_PREDICTION_FORMAT, type=str, default=SparsePolicy.AUTO.value,
+                        help='The format to be used for the representation of predictions. Must be one of '
                              + format_enum_values(SparsePolicy) + '.')
 
 

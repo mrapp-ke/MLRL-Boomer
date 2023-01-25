@@ -22,6 +22,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * The parameters `--print-evaluation` and `--store-evaluation` do now allow to specify whether individual evaluation measures should be used or not.
 * The parameter `--early-stopping` has been replaced with a new parameter `--global-pruning`. It allows to use early stopping (`pre-pruning`) oder post-pruning (`post-pruning`). 
 * The parameter `--pruning` has been renamed to `--rule-pruning`.
+* The parameter `--predicted-label-format` has been renamed to `--prediction-format`.
 * Data sets in the MEKA format can now be used for experiments.
 
 ### Version 0.8.2 (Apr. 11th, 2022)
