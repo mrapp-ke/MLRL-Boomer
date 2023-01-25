@@ -1,4 +1,4 @@
-from mlrl.common.cython._types cimport uint8, uint32, float64
+from mlrl.common.cython._types cimport uint32
 from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, IEqualFrequencyFeatureBinningConfig
 from mlrl.common.cython.feature_info cimport IFeatureInfo
 from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWiseFeatureMatrix
@@ -13,6 +13,8 @@ from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
+from mlrl.common.cython.prediction cimport IBinaryPredictor, ISparseBinaryPredictor, IScorePredictor, \
+    IProbabilityPredictor
 from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, IBeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig, \
@@ -20,28 +22,6 @@ from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig,
 
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
-
-
-cdef extern from "common/output/prediction_matrix_dense.hpp" nogil:
-
-    cdef cppclass DensePredictionMatrix[T]:
-
-        # Functions:
-
-        T* release()
-
-
-cdef extern from "common/output/prediction_matrix_sparse_binary.hpp" nogil:
-
-    cdef cppclass BinarySparsePredictionMatrix:
-
-        # Functions:
-
-        uint32 getNumNonZeroElements() const
-
-        uint32* releaseRowIndices()
-
-        uint32* releaseColIndices()
 
 
 cdef extern from "common/learner.hpp" nogil:
@@ -210,31 +190,31 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[ITrainingResult] fit(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
                                         const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const
 
-        bool canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
+        bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
-        unique_ptr[DensePredictionMatrix[uint8]] predictLabels(const IRowWiseFeatureMatrix& featureMatrix,
-                                                               const IRuleModel& ruleModel,
-                                                               const ILabelSpaceInfo& labelSpaceInfo,
-                                                               uint32 numLabels) const
+        unique_ptr[IBinaryPredictor] createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                           const IRuleModel& ruleModel,
+                                                           const ILabelSpaceInfo& labelSpaceInfo,
+                                                           uint32 numLabels) except +
 
-        unique_ptr[BinarySparsePredictionMatrix] predictSparseLabels(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                     const IRuleModel& ruleModel,
-                                                                     const ILabelSpaceInfo& labelSpaceInfo,
-                                                                     uint32 numLabels) const
+        unique_ptr[ISparseBinaryPredictor] createSparseBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                       const IRuleModel& ruleModel,
+                                                                       const ILabelSpaceInfo& labelSpaceInfo,
+                                                                       uint32 numLabels) except +
 
         bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
 
-        unique_ptr[DensePredictionMatrix[float64]] predictScores(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                 const IRuleModel& ruleModel,
-                                                                 const ILabelSpaceInfo& labelSpaceInfo,
-                                                                 uint32 numLabels) const
+        unique_ptr[IScorePredictor] createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                         const IRuleModel& ruleModel,
+                                                         const ILabelSpaceInfo& labelSpaceInfo,
+                                                         uint32 numLabels) except +
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
-        unique_ptr[DensePredictionMatrix[float64]] predictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                        const IRuleModel& ruleModel,
-                                                                        const ILabelSpaceInfo& labelSpaceInfo,
-                                                                        uint32 numLabels) const
+        unique_ptr[IProbabilityPredictor] createProbabilityPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                     const IRuleModel& ruleModel,
+                                                                     const ILabelSpaceInfo& labelSpaceInfo,
+                                                                     uint32 numLabels) except +
 
 
 cdef class TrainingResult:

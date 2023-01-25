@@ -19,7 +19,7 @@ PARAM_LABEL_BINNING = '--label-binning'
 
 PARAM_LOSS = '--loss'
 
-PARAM_CLASSIFICATION_PREDICTOR = '--classification-predictor'
+PARAM_BINARY_PREDICTOR = '--binary-predictor'
 
 PARAM_PROBABILITY_PREDICTOR = '--probability-predictor'
 

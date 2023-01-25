@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "boosting/output/probability_function.hpp"
+#include "boosting/prediction/probability_function.hpp"
 #include <cmath>
 
 

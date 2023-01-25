@@ -116,24 +116,28 @@ def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, 
         'Matrix of type ' + type(m).__name__ + ' cannot be converted to format "' + str(sparse_format) + '"')
 
 
-def predict_sparse_labels(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
+def predict_binary_sparse(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
                           num_labels: int, feature_matrix: RowWiseFeatureMatrix):
-    return learner.predict_sparse_labels(feature_matrix, model, label_space_info, num_labels)
+    predictor = learner.create_sparse_binary_predictor(feature_matrix, model, label_space_info, num_labels)
+    return predictor.predict()
 
 
-def predict_labels(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
+def predict_binary(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
                    feature_matrix: RowWiseFeatureMatrix):
-    return learner.predict_labels(feature_matrix, model, label_space_info, num_labels)
+    predictor = learner.create_binary_predictor(feature_matrix, model, label_space_info, num_labels)
+    return predictor.predict()
 
 
 def predict_scores(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
                    feature_matrix: RowWiseFeatureMatrix):
-    return learner.predict_scores(feature_matrix, model, label_space_info, num_labels)
+    predictor = learner.create_score_predictor(feature_matrix, model, label_space_info, num_labels)
+    return predictor.predict()
 
 
 def predict_proba(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo, num_labels: int,
                   feature_matrix: RowWiseFeatureMatrix):
-    prediction = learner.predict_probabilities(feature_matrix, model, label_space_info, num_labels)
+    predictor = learner.create_probability_predictor(feature_matrix, model, label_space_info, num_labels)
+    prediction = predictor.predict()
 
     # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the negative and
     # positive class...
@@ -212,10 +216,10 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         def _predict(self, model: RuleModel):
             if self.sparse_prediction:
-                return predict_sparse_labels(self.learner, model, self.label_space_info, self.num_labels,
+                return predict_binary_sparse(self.learner, model, self.label_space_info, self.num_labels,
                                              self.feature_matrix)
             else:
-                return predict_labels(self.learner, model, self.label_space_info, self.num_labels, self.feature_matrix)
+                return predict_binary(self.learner, model, self.label_space_info, self.num_labels, self.feature_matrix)
 
     class IncrementalScorePredictor(IncrementalPredictor):
         """
@@ -353,34 +357,34 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         else:
             return MixedFeatureInfo(num_features, binary_attribute_indices, nominal_attribute_indices)
 
-    def _predict_labels(self, x, **kwargs):
+    def _predict_binary(self, x, **kwargs):
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
 
-        if learner.can_predict_labels(feature_matrix, num_labels):
+        if learner.can_predict_binary(feature_matrix, num_labels):
             if self.sparse_predictions_:
                 log.debug('A sparse matrix is used to store the predicted labels')
-                return predict_sparse_labels(learner, self.model_, self.label_space_info_, self.num_labels_,
+                return predict_binary_sparse(learner, self.model_, self.label_space_info_, self.num_labels_,
                                              feature_matrix)
             else:
                 log.debug('A dense matrix is used to store the predicted labels')
-                return predict_labels(learner, self.model_, self.label_space_info_, self.num_labels_, feature_matrix)
+                return predict_binary(learner, self.model_, self.label_space_info_, self.num_labels_, feature_matrix)
         else:
-            return super()._predict_labels(x, **kwargs)
+            return super()._predict_binary(x, **kwargs)
 
-    def _predict_labels_incrementally(self, x, **kwargs):
+    def _predict_binary_incrementally(self, x, **kwargs):
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
 
-        if learner.can_predict_labels(feature_matrix, num_labels):
+        if learner.can_predict_binary(feature_matrix, num_labels):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
             return RuleLearner.IncrementalLabelPredictor(learner, self.model_, self.label_space_info_, num_labels,
                                                          feature_matrix, sparse_predictions)
         else:
-            return super()._predict_labels_incrementally(x, **kwargs)
+            return super()._predict_binary_incrementally(x, **kwargs)
 
     def _predict_scores(self, x, **kwargs):
         learner = self._create_learner()

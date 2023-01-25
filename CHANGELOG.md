@@ -9,7 +9,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * Sparse data structures can now be used to store gradients and Hessians if supported by the loss function. The desired behavior can be specified via a new parameter `--statistic-format`.
 * The parameter `--head-type` does now allow to learn partial rules that predict for a predefined number of labels (`partial-fixed`) or a subset of the available labels that is determined dynamically (`partial-dynamic`).
 * The parameter `--rule-induction` does now allow to use a top-down beam search for the induction of individual rules (`top-down-beam-search`).
-* The parameter `--classification-predictor` does now allow to obtain predictions that maximize the example-wise F1-measure (`gfm`).
+* The parameter `--classification-predictor` has been renamed to `--binary-predictor`. It does now allow to obtain predictions that maximize the example-wise F1-measure (`gfm`).
 * The parameter `--loss` does now allow to use variants of the squared error loss and squared hinge loss that take all labels of an example into account at the same time (`squared-error-example-wise` and `squared-hinge-example-wise`).  
 * A new parameter `--sequential-post-optimization` has been added. It allows to optimize each rule in a previously learned model by being relearned in the context of the other rules.
 * A new parameter `--probability-predictor` has been added. It allows to specify whether probability estimates should be obtained for each label independently (`label-wise`) or via marginalization over the label vectors that are encountered in the training data (`marginalized`).
@@ -18,7 +18,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * Fixed behavior of the argument `--label-format` when set to the value `auto`.
 * Rules are now guaranteed to not cover more examples than specified via the parameter `min_coverage`. The parameter is now also taken into account when using feature binning. Alternatively, the minimum coverage of rules can now also be specified as a fraction via the parameter `min_support`. 
 * The parameters `--folds` and `--current-fold` have been replaced with a new parameter `--data-split` that provides more control of how data is split into training and test sets.
-* The parameter `--predict-probabilities` has been replaced with a new parameter `--prediction-type` that allows to specify whether binary labels (`labels`), regression scores (`scores`) or probability estimates (`probabilities`) should be predicted.
+* The parameter `--predict-probabilities` has been replaced with a new parameter `--prediction-type` that allows to specify whether binary labels (`binary`), regression scores (`scores`) or probability estimates (`probabilities`) should be predicted.
 * The parameters `--print-evaluation` and `--store-evaluation` do now allow to specify whether individual evaluation measures should be used or not.
 * The parameter `--early-stopping` has been replaced with a new parameter `--global-pruning`. It allows to use early stopping (`pre-pruning`) oder post-pruning (`post-pruning`). 
 * The parameter `--pruning` has been renamed to `--rule-pruning`.

@@ -80,7 +80,7 @@ class IncrementalLearner(ABC):
         if bool(kwargs.get(KWARG_PREDICT_SCORES, False)):
             return self._predict_scores_incrementally(x, **kwargs)
         else:
-            return self._predict_labels_incrementally(x, **kwargs)
+            return self._predict_binary_incrementally(x, **kwargs)
 
     def predict_proba_incrementally(self, x, **kwargs) -> IncrementalPredictor:
         """
@@ -94,7 +94,7 @@ class IncrementalLearner(ABC):
         check_is_fitted(self)
         return self._predict_proba_incrementally(x, **kwargs)
 
-    def _predict_labels_incrementally(self, x, **kwargs) -> IncrementalPredictor:
+    def _predict_binary_incrementally(self, x, **kwargs) -> IncrementalPredictor:
         """
         May be overridden by subclasses in order to create an `IncrementalPredictor` that allows to obtain binary
         predictions for given query examples incrementally.
@@ -161,7 +161,7 @@ class Learner(BaseEstimator, ABC):
         if bool(kwargs.get(KWARG_PREDICT_SCORES, False)):
             return self._predict_scores(x, **kwargs)
         else:
-            return self._predict_labels(x, **kwargs)
+            return self._predict_binary(x, **kwargs)
 
     def predict_proba(self, x, **kwargs):
         """
@@ -189,7 +189,7 @@ class Learner(BaseEstimator, ABC):
         """
         pass
 
-    def _predict_labels(self, x, **kwargs):
+    def _predict_binary(self, x, **kwargs):
         """
         May be overridden by subclasses in order to obtain binary predictions for given query examples.
 

@@ -20,15 +20,14 @@ from typing import Dict, Set, Optional
 import mlrl.boosting.config as boosting_config
 from mlrl.boosting.config import LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL_WISE, \
     LOSS_LOGISTIC_LABEL_WISE, LOSS_SQUARED_ERROR_EXAMPLE_WISE, LOSS_SQUARED_HINGE_EXAMPLE_WISE, \
-    LOSS_LOGISTIC_EXAMPLE_WISE, CLASSIFICATION_PREDICTOR_LABEL_WISE, CLASSIFICATION_PREDICTOR_EXAMPLE_WISE, \
-    CLASSIFICATION_PREDICTOR_GFM, PROBABILITY_PREDICTOR_LABEL_WISE, PROBABILITY_PREDICTOR_MARGINALIZED
+    LOSS_LOGISTIC_EXAMPLE_WISE, BINARY_PREDICTOR_LABEL_WISE, BINARY_PREDICTOR_EXAMPLE_WISE, BINARY_PREDICTOR_GFM, \
+    PROBABILITY_PREDICTOR_LABEL_WISE, PROBABILITY_PREDICTOR_MARGINALIZED
 from mlrl.boosting.config import configure_post_processor, configure_l1_regularization, configure_l2_regularization, \
     configure_default_rule, configure_head_type, configure_statistics, configure_label_wise_squared_error_loss, \
     configure_label_wise_squared_hinge_loss, configure_label_wise_logistic_loss, configure_example_wise_logistic_loss, \
     configure_example_wise_squared_error_loss, configure_example_wise_squared_hinge_loss, configure_label_binning, \
-    configure_label_wise_classification_predictor, configure_example_wise_classification_predictor, \
-    configure_gfm_classification_predictor, configure_label_wise_probability_predictor, \
-    configure_marginalized_probability_predictor
+    configure_label_wise_binary_predictor, configure_example_wise_binary_predictor, configure_gfm_binary_predictor, \
+    configure_label_wise_probability_predictor, configure_marginalized_probability_predictor
 
 FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {**common_config.FEATURE_BINNING_VALUES, **{AUTOMATIC: {}}}
 
@@ -53,10 +52,10 @@ LOSS_VALUES: Set[str] = {
     LOSS_LOGISTIC_EXAMPLE_WISE
 }
 
-CLASSIFICATION_PREDICTOR_VALUES: Set[str] = {
-    CLASSIFICATION_PREDICTOR_LABEL_WISE,
-    CLASSIFICATION_PREDICTOR_EXAMPLE_WISE,
-    CLASSIFICATION_PREDICTOR_GFM,
+BINARY_PREDICTOR_VALUES: Set[str] = {
+    BINARY_PREDICTOR_LABEL_WISE,
+    BINARY_PREDICTOR_EXAMPLE_WISE,
+    BINARY_PREDICTOR_GFM,
     AUTOMATIC
 }
 
@@ -87,7 +86,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                  sequential_post_optimization: Optional[str] = None,
                  head_type: Optional[str] = None,
                  loss: Optional[str] = None,
-                 classification_predictor: Optional[str] = None,
+                 binary_predictor: Optional[str] = None,
                  probability_predictor: Optional[str] = None,
                  label_sampling: Optional[str] = None,
                  instance_sampling: Optional[str] = None,
@@ -130,7 +129,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                                                 'squared-error-example-wise', 'squared-hinge-label-wise',
                                                 'squared-hinge-example-wise', 'logistic-label-wise' or
                                                 'logistic-example-wise'
-        :param classification_predictor:        The strategy that should be used for predicting binary labels. Must be
+        :param binary_predictor:                The strategy that should be used for predicting binary labels. Must be
                                                 'label-wise', 'example-wise', 'gfm' or 'auto', if the most suitable
                                                 strategy should be chosen automatically, depending on the loss function
         :param probability_predictor:           The strategy that should be used for predicting probabilities. Must be
@@ -194,7 +193,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         self.sequential_post_optimization = sequential_post_optimization
         self.head_type = head_type
         self.loss = loss
-        self.classification_predictor = classification_predictor
+        self.binary_predictor = binary_predictor
         self.probability_predictor = probability_predictor
         self.label_sampling = label_sampling
         self.instance_sampling = instance_sampling
@@ -232,7 +231,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         self.__configure_statistics(config)
         self.__configure_loss(config)
         self.__configure_label_binning(config)
-        self.__configure_classification_predictor(config)
+        self.__configure_binary_predictor(config)
         self.__configure_probability_predictor(config)
         self.__configure_parallel_rule_refinement(config)
         self.__configure_parallel_statistic_update(config)
@@ -314,16 +313,16 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         else:
             configure_label_binning(config, label_binning)
 
-    def __configure_classification_predictor(self, config: BoomerConfig):
-        classification_predictor = get_string(self.classification_predictor)
+    def __configure_binary_predictor(self, config: BoomerConfig):
+        binary_predictor = get_string(self.binary_predictor)
 
-        if classification_predictor == AUTOMATIC:
-            config.use_automatic_classification_predictor()
-        elif classification_predictor is not None:
-            value = parse_param('classification_predictor', classification_predictor, CLASSIFICATION_PREDICTOR_VALUES)
-            configure_label_wise_classification_predictor(config, value)
-            configure_example_wise_classification_predictor(config, value)
-            configure_gfm_classification_predictor(config, value)
+        if binary_predictor == AUTOMATIC:
+            config.use_automatic_binary_predictor()
+        elif binary_predictor is not None:
+            value = parse_param('binary_predictor', binary_predictor, BINARY_PREDICTOR_VALUES)
+            configure_label_wise_binary_predictor(config, value)
+            configure_example_wise_binary_predictor(config, value)
+            configure_gfm_binary_predictor(config, value)
 
     def __configure_probability_predictor(self, config: BoomerConfig):
         probability_predictor = get_string(self.probability_predictor)

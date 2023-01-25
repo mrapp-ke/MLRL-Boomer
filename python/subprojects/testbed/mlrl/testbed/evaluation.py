@@ -489,14 +489,14 @@ class EvaluationPrinter(ABC):
         pass
 
 
-class ClassificationEvaluationPrinter(EvaluationPrinter):
+class BinaryEvaluationPrinter(EvaluationPrinter):
     """
     Evaluates the quality of binary predictions provided by a single- or multi-label classifier according to commonly
     used bipartition measures.
     """
 
     def __init__(self, outputs: List[EvaluationOutput]):
-        super(ClassificationEvaluationPrinter, self).__init__(outputs)
+        super(BinaryEvaluationPrinter, self).__init__(outputs)
         options = [output.options for output in outputs]
         self.multi_Label_evaluation_functions = filter_formattables(MULTI_LABEL_EVALUATION_MEASURES, options)
         self.single_Label_evaluation_functions = filter_formattables(SINGLE_LABEL_EVALUATION_MEASURES, options)

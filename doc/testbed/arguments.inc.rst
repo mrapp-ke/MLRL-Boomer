@@ -18,9 +18,9 @@ In addition to the mandatory arguments that must be provided to the command line
 
   * ``none`` The available data is not split into separate training and test sets, but the entire data is used for training and evaluation. This strategy should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic. Given that ``dataset-name`` is provided as the value of the argument ``--dataset``, the data must be stored in a file named ``dataset-name.arff``.
 
-* ``--prediction-type`` (Default value = ``labels``)
+* ``--prediction-type`` (Default value = ``binary``)
 
-  * ``labels`` The learner is instructed to predict binary labels. In this case, bipartition evaluation measures are used for evaluation.
+  * ``binary`` The learner is instructed to predict binary labels. In this case, bipartition evaluation measures are used for evaluation.
   * ``scores`` The learner is instructed to predict regression scores. In this case, ranking measures are used for evaluation.
   * ``probabilities`` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
 

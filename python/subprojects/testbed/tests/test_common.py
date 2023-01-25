@@ -38,7 +38,7 @@ RULE_PRUNING_NO = 'none'
 
 RULE_PRUNING_IREP = 'irep'
 
-PREDICTION_TYPE_LABELS = 'labels'
+PREDICTION_TYPE_BINARY = 'binary'
 
 PREDICTION_TYPE_SCORES = 'scores'
 
@@ -472,7 +472,7 @@ class CmdBuilder:
         self.args.append(rule_induction)
         return self
 
-    def prediction_type(self, prediction_type: str = PREDICTION_TYPE_LABELS):
+    def prediction_type(self, prediction_type: str = PREDICTION_TYPE_BINARY):
         """
         Configures the type of predictions that should be obtained from the algorithm.
 
@@ -814,7 +814,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the evaluation of the rule learning algorithm when predicting binary labels for a single-label problem.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_single_label) \
-            .prediction_type(PREDICTION_TYPE_LABELS) \
+            .prediction_type(PREDICTION_TYPE_BINARY) \
             .print_evaluation()
         self.run_cmd(builder, 'single-label-classification')
 
