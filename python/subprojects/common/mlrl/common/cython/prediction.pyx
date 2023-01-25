@@ -9,7 +9,7 @@ import numpy as np
 
 cdef class BinaryPredictor:
     """
-    Allows to predict labels for given query examples.
+    Allows to predict binary labels for given query examples.
     """
 
     def predict(self) -> np.ndarray:
@@ -28,7 +28,7 @@ cdef class BinaryPredictor:
 
 cdef class SparseBinaryPredictor:
     """
-    Allows to predict sparse labels for given query examples.
+    Allows to predict sparse binary labels for given query examples.
     """
 
     def predict(self) -> csr_matrix:
