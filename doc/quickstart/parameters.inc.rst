@@ -34,11 +34,11 @@ The following parameters allow to specify the preferred format for the represent
   * ``'dense'`` Enforces that the label matrix is stored using a dense format.
   * ``'sparse'`` Enforces that the label matrix is stored using a sparse format. Using a sparse format may reduce the memory footprint on some data sets.
 
-* ``predicted_label_format`` (Default value = ``'auto'``)
+* ``prediction_format`` (Default value = ``'auto'``)
 
-  * ``'auto'`` The most suitable format for representation of predicted labels is chosen automatically based on the sparsity of the ground truth labels supplied for training.
-  * ``'dense'`` Enforces that predicted labels are stored using a dense format.
-  * ``'sparse'`` Enforces that predicted labels are stored using a sparse format. Using a sparse format may reduce the memory footprint on some data sets.
+  * ``'auto'`` The most suitable format for the representation of predictions is chosen automatically based on the sparsity of the ground truth labels supplied for training.
+  * ``'dense'`` Enforces that predictions are stored using a dense format.
+  * ``'sparse'`` Enforces that predictions are stored using a sparse format, if supported. Using a sparse format may reduce the memory footprint on some data sets.
 
 **Algorithmic Parameters**
 
