@@ -1217,21 +1217,21 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .sparse_feature_format(True)
         self.run_cmd(builder, 'nominal-features-sparse')
 
-    def test_labels_dense(self):
+    def test_label_format_dense(self):
         """
         Tests the rule learning algorithm when using a dense label representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .sparse_label_format(False)
-        self.run_cmd(builder, 'labels-dense')
+        self.run_cmd(builder, 'label-format-dense')
 
-    def test_labels_sparse(self):
+    def test_label_format_sparse(self):
         """
         Tests the rule learning algorithm when using a sparse label representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .sparse_label_format(True)
-        self.run_cmd(builder, 'labels-sparse')
+        self.run_cmd(builder, 'label-format-sparse')
 
     def test_predicted_labels_dense(self):
         """
