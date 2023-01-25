@@ -29,7 +29,7 @@ class PredictionType(Enum):
     """
     Contains all possible types of predictions that may be obtained from a learner.
     """
-    LABELS = 'labels'
+    BINARY = 'binary'
     SCORES = 'scores'
     PROBABILITIES = 'probabilities'
 
@@ -129,7 +129,7 @@ class Evaluation(ABC):
                 prediction_printer.print(meta_data, data_split, data_type, prediction_scope, predictions, y)
 
             # Model characteristics can only be determined in the case of binary predictions
-            if self.prediction_type == PredictionType.LABELS:
+            if self.prediction_type == PredictionType.BINARY:
                 prediction_characteristics_printer = self.prediction_characteristics_printer
 
                 if prediction_characteristics_printer is not None:
