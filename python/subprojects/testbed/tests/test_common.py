@@ -406,14 +406,14 @@ class CmdBuilder:
         self.args.append('sparse' if sparse else 'dense')
         return self
 
-    def sparse_predicted_label_format(self, sparse: bool = True):
+    def sparse_prediction_format(self, sparse: bool = True):
         """
-        Configures whether sparse data structures should be used to represent predicted labels or not.
+        Configures whether sparse data structures should be used to represent predictions or not.
 
-        :param sparse:  True, if sparse data structures should be used to represent predicted labels, False otherwise
+        :param sparse:  True, if sparse data structures should be used to represent predictions, False otherwise
         :return:        The builder itself
         """
-        self.args.append('--predicted-label-format')
+        self.args.append('--prediction-format')
         self.args.append('sparse' if sparse else 'dense')
         return self
 
@@ -1233,23 +1233,23 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .sparse_label_format(True)
         self.run_cmd(builder, 'label-format-sparse')
 
-    def test_predicted_labels_dense(self):
+    def test_prediction_format_dense(self):
         """
-        Tests the rule learning algorithm when using a dense representation of predicted labels
+        Tests the rule learning algorithm when using a dense representation of predictions.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .sparse_predicted_label_format(False) \
+            .sparse_prediction_format(False) \
             .print_predictions(True)
-        self.run_cmd(builder, 'predicted-labels-dense')
+        self.run_cmd(builder, 'prediction-format-dense')
 
-    def test_predicted_labels_sparse(self):
+    def test_prediction_format_sparse(self):
         """
-        Tests the rule learning algorithm when using a sparse representation of predicted labels
+        Tests the rule learning algorithm when using a sparse representation of predictions.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .sparse_predicted_label_format(True) \
+            .sparse_prediction_format(True) \
             .print_predictions(True)
-        self.run_cmd(builder, 'predicted-labels-sparse')
+        self.run_cmd(builder, 'prediction-format-sparse')
 
     def test_one_hot_encoding_train_test(self):
         """
