@@ -87,16 +87,6 @@ namespace seco {
                      */
                     virtual std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() = 0;
 
-                    /**
-                     * Returns an unique pointer to the configuration of the predictor that predicts whether individual
-                     * labels of given query examples are relevant or irrelevant.
-                     *
-                     * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
-                     *         configuration of the predictor that predicts whether individual labels of given query
-                     *         examples are relevant or irrelevant
-                     */
-                    virtual std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() = 0;
-
                 public:
 
                     virtual ~IConfig() override { };
@@ -135,7 +125,7 @@ namespace seco {
                      * the order they have been learned. If a rule covers an example, its prediction is applied to each
                      * label individually.
                      */
-                    virtual void useLabelWiseClassificationPredictor() = 0;
+                    virtual void useLabelWiseBinaryPredictor() = 0;
 
             };
 
@@ -466,12 +456,6 @@ namespace seco {
                      */
                     std::unique_ptr<ILiftFunctionConfig> liftFunctionConfigPtr_;
 
-                    /**
-                     * An unique pointer that stores the configuration of the predictor that is used to predict binary
-                     * labels.
-                     */
-                    std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
-
                 private:
 
                     std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() override final;
@@ -483,8 +467,6 @@ namespace seco {
                     std::unique_ptr<IHeuristicConfig>& getPruningHeuristicConfigPtr() override final;
 
                     std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() override final;
-
-                    std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() override final;
 
                 public:
 
@@ -505,7 +487,7 @@ namespace seco {
 
                     void usePrecisionPruningHeuristic() override;
 
-                    void useLabelWiseClassificationPredictor() override;
+                    void useLabelWiseBinaryPredictor() override;
 
             };
 
@@ -534,16 +516,10 @@ namespace seco {
             std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override;
 
             /**
-             * @see `AbstractRuleLearner::createLabelSpaceInfo`
+             * @see `AbstractRuleLearner::createSparseBinaryPredictorFactory`
              */
-            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
-
-            /**
-             * @see `AbstractRuleLearner::createClassificationPredictorFactory`
-             */
-            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
-                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+            std::unique_ptr<ISparseBinaryPredictorFactory> createSparseBinaryPredictorFactory(
+                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         public:
 

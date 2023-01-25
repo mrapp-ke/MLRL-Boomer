@@ -2,10 +2,9 @@
 #include "seco/heuristics/heuristic_precision.hpp"
 #include "seco/lift_functions/lift_function_no.hpp"
 #include "seco/model/decision_list_builder.hpp"
-#include "seco/output/predictor_classification_label_wise.hpp"
+#include "seco/prediction/predictor_binary_label_wise.hpp"
 #include "seco/rule_evaluation/head_type_single.hpp"
 #include "seco/rule_evaluation/rule_compare_function.hpp"
-#include "common/output/label_space_info_no.hpp"
 
 
 namespace seco {
@@ -17,7 +16,7 @@ namespace seco {
         this->useNoLiftFunction();
         this->usePrecisionHeuristic();
         this->usePrecisionPruningHeuristic();
-        this->useLabelWiseClassificationPredictor();
+        this->useLabelWiseBinaryPredictor();
     }
 
     std::unique_ptr<CoverageStoppingCriterionConfig>& AbstractSeCoRuleLearner::Config::getCoverageStoppingCriterionConfigPtr() {
@@ -38,10 +37,6 @@ namespace seco {
 
     std::unique_ptr<ILiftFunctionConfig>& AbstractSeCoRuleLearner::Config::getLiftFunctionConfigPtr() {
         return liftFunctionConfigPtr_;
-    }
-
-    std::unique_ptr<IClassificationPredictorConfig>& AbstractSeCoRuleLearner::Config::getClassificationPredictorConfigPtr() {
-        return classificationPredictorConfigPtr_;
     }
 
     IGreedyTopDownRuleInductionConfig& AbstractSeCoRuleLearner::Config::useGreedyTopDownRuleInduction() {
@@ -70,9 +65,8 @@ namespace seco {
         pruningHeuristicConfigPtr_ = std::make_unique<PrecisionConfig>();
     }
 
-    void AbstractSeCoRuleLearner::Config::useLabelWiseClassificationPredictor() {
-        classificationPredictorConfigPtr_ =
-            std::make_unique<LabelWiseClassificationPredictorConfig>(parallelPredictionConfigPtr_);
+    void AbstractSeCoRuleLearner::Config::useLabelWiseBinaryPredictor() {
+        binaryPredictorConfigPtr_ = std::make_unique<LabelWiseBinaryPredictorConfig>(parallelPredictionConfigPtr_);
     }
 
     AbstractSeCoRuleLearner::AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config)
@@ -104,19 +98,9 @@ namespace seco {
         return std::make_unique<DecisionListBuilderFactory>();
     }
 
-    std::unique_ptr<ILabelSpaceInfo> AbstractSeCoRuleLearner::createLabelSpaceInfo(
-            const IRowWiseLabelMatrix& labelMatrix) const {
-        if (config_.getClassificationPredictorConfigPtr()->isLabelVectorSetNeeded()) {
-            return createLabelVectorSet(labelMatrix);
-        } else {
-            return createNoLabelSpaceInfo();
-        }
-    }
-
-    std::unique_ptr<IClassificationPredictorFactory> AbstractSeCoRuleLearner::createClassificationPredictorFactory(
-            const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        return config_.getClassificationPredictorConfigPtr()->createClassificationPredictorFactory(featureMatrix,
-                                                                                                   numLabels);
+    std::unique_ptr<ISparseBinaryPredictorFactory> AbstractSeCoRuleLearner::createSparseBinaryPredictorFactory(
+            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        return config_.getBinaryPredictorConfigPtr()->createSparsePredictorFactory(featureMatrix, numLabels);
     }
 
 }

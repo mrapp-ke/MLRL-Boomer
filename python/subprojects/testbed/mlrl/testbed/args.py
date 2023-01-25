@@ -277,12 +277,12 @@ def add_learner_arguments(parser: ArgumentParser):
                         help='Whether the characteristics of binary predictions should be printed on the console or '
                              + 'not. Must be one of ' + format_dict_keys(PRINT_PREDICTION_CHARACTERISTICS_VALUES) + '. '
                              + 'Does only have an effect if the parameter ' + PARAM_PREDICTION_TYPE + ' is set to '
-                             + PredictionType.LABELS.value + '. For additional options refer to the documentation.')
+                             + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
     parser.add_argument(PARAM_STORE_PREDICTION_CHARACTERISTICS, type=str, default=BooleanOption.FALSE.value,
                         help='Whether the characteristics of binary predictions should be written into output files or '
                              + 'not. Must be one of ' + format_dict_keys(STORE_PREDICTION_CHARACTERISTICS_VALUES) + '. '
                              + 'Does only have an effect if the parameter ' + PARAM_PREDICTION_TYPE + ' is set to '
-                             + PredictionType.LABELS.value + '. For additional options refer to the documentation.')
+                             + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
     parser.add_argument(PARAM_PRINT_DATA_CHARACTERISTICS, type=str, default=BooleanOption.FALSE.value,
                         help='Whether the characteristics of the training data should be printed on the console or '
                              + 'not. Must be one of ' + format_dict_keys(PRINT_DATA_CHARACTERISTICS_VALUES) + '. For '
@@ -316,7 +316,7 @@ def add_learner_arguments(parser: ArgumentParser):
                         help='Whether the predictions for individual examples and labels should be written into output '
                              + 'files or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have '
                              + 'an effect, if the parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
-    parser.add_argument(PARAM_PREDICTION_TYPE, type=str, default=PredictionType.LABELS.value,
+    parser.add_argument(PARAM_PREDICTION_TYPE, type=str, default=PredictionType.BINARY.value,
                         help='The type of predictions that should be obtained from the learner. Must be one of '
                              + format_enum_values(PredictionType) + '.')
 

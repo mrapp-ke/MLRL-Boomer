@@ -2,6 +2,7 @@
 #include "common/binning/feature_binning_no.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
+#include "common/prediction/label_space_info_no.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 #include "common/rule_pruning/rule_pruning_no.hpp"
 #include "common/sampling/feature_sampling_no.hpp"
@@ -159,6 +160,18 @@ std::unique_ptr<SequentialPostOptimizationConfig>& AbstractRuleLearner::Config::
 
 std::unique_ptr<UnusedRuleRemovalConfig>& AbstractRuleLearner::Config::getUnusedRuleRemovalConfigPtr() {
     return unusedRuleRemovalConfigPtr_;
+}
+
+std::unique_ptr<IBinaryPredictorConfig>& AbstractRuleLearner::Config::getBinaryPredictorConfigPtr() {
+    return binaryPredictorConfigPtr_;
+}
+
+std::unique_ptr<IScorePredictorConfig>& AbstractRuleLearner::Config::getScorePredictorConfigPtr() {
+    return scorePredictorConfigPtr_;
+}
+
+std::unique_ptr<IProbabilityPredictorConfig>& AbstractRuleLearner::Config::getProbabilityPredictorConfigPtr() {
+    return probabilityPredictorConfigPtr_;
 }
 
 void AbstractRuleLearner::Config::useDefaultRule() {
@@ -345,19 +358,43 @@ void AbstractRuleLearner::createPostOptimizationPhaseFactories(PostOptimizationP
     }
 }
 
-std::unique_ptr<IClassificationPredictorFactory> AbstractRuleLearner::createClassificationPredictorFactory(
-        const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    return nullptr;
+std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo(
+        const IRowWiseLabelMatrix& labelMatrix) const {
+    const IBinaryPredictorConfig* binaryPredictorConfig = config_.getBinaryPredictorConfigPtr().get();
+    const IScorePredictorConfig* scorePredictorConfig = config_.getScorePredictorConfigPtr().get();
+    const IProbabilityPredictorConfig* probabilityPredictorConfig = config_.getProbabilityPredictorConfigPtr().get();
+
+    if ((binaryPredictorConfig && binaryPredictorConfig->isLabelVectorSetNeeded())
+        || (scorePredictorConfig && scorePredictorConfig->isLabelVectorSetNeeded())
+        || (probabilityPredictorConfig && probabilityPredictorConfig->isLabelVectorSetNeeded())) {
+            return createLabelVectorSet(labelMatrix);
+    } else {
+        return createNoLabelSpaceInfo();
+    }
 }
 
-std::unique_ptr<IRegressionPredictorFactory> AbstractRuleLearner::createRegressionPredictorFactory(
-        const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    return nullptr;
+std::unique_ptr<IBinaryPredictorFactory> AbstractRuleLearner::createBinaryPredictorFactory(
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    const IBinaryPredictorConfig* config = config_.getBinaryPredictorConfigPtr().get();
+    return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
+}
+
+std::unique_ptr<ISparseBinaryPredictorFactory> AbstractRuleLearner::createSparseBinaryPredictorFactory(
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    const IBinaryPredictorConfig* config = config_.getBinaryPredictorConfigPtr().get();
+    return config ? config->createSparsePredictorFactory(featureMatrix, numLabels) : nullptr;
+}
+
+std::unique_ptr<IScorePredictorFactory> AbstractRuleLearner::createScorePredictorFactory(
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    const IScorePredictorConfig* config = config_.getScorePredictorConfigPtr().get();
+    return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
 }
 
 std::unique_ptr<IProbabilityPredictorFactory> AbstractRuleLearner::createProbabilityPredictorFactory(
-        const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    return nullptr;
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    const IProbabilityPredictorConfig* config = config_.getProbabilityPredictorConfigPtr().get();
+    return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
 }
 
 std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& featureInfo,
@@ -392,55 +429,51 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
                                             std::move(labelSpaceInfoPtr));
 }
 
-bool AbstractRuleLearner::canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix,
+bool AbstractRuleLearner::canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix,
                                            const ITrainingResult& trainingResult) const {
-    return this->canPredictLabels(featureMatrix, trainingResult.getNumLabels());
+    return this->canPredictBinary(featureMatrix, trainingResult.getNumLabels());
 }
 
-bool AbstractRuleLearner::canPredictLabels(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    return this->createClassificationPredictorFactory(featureMatrix, numLabels) != nullptr;
+bool AbstractRuleLearner::canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    return this->createBinaryPredictorFactory(featureMatrix, numLabels) != nullptr;
 }
 
-std::unique_ptr<DensePredictionMatrix<uint8>> AbstractRuleLearner::predictLabels(
+std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
         const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
-    return this->predictLabels(featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getLabelSpaceInfo(),
-                               trainingResult.getNumLabels());
+    return this->createBinaryPredictor(featureMatrix, *trainingResult.getRuleModel(),
+                                      *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
 
-std::unique_ptr<DensePredictionMatrix<uint8>> AbstractRuleLearner::predictLabels(
+std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
         const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
         uint32 numLabels) const {
-    std::unique_ptr<IClassificationPredictorFactory> predictorFactoryPtr =
-        this->createClassificationPredictorFactory(featureMatrix, numLabels);
+    std::unique_ptr<IBinaryPredictorFactory> predictorFactoryPtr =
+        this->createBinaryPredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
-        std::unique_ptr<IClassificationPredictor> predictorPtr =
-            ruleModel.createClassificationPredictor(*predictorFactoryPtr, labelSpaceInfo);
-        return featureMatrix.predictLabels(*predictorPtr, numLabels);
+        return featureMatrix.createBinaryPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
     }
 
     throw std::runtime_error("The rule learner does not support to predict binary labels");
 }
 
-std::unique_ptr<BinarySparsePredictionMatrix> AbstractRuleLearner::predictSparseLabels(
-            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
-    return this->predictSparseLabels(featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getLabelSpaceInfo(),
-                                     trainingResult.getNumLabels());
+std::unique_ptr<ISparseBinaryPredictor> AbstractRuleLearner::createSparseBinaryPredictor(
+        const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
+    return this->createSparseBinaryPredictor(featureMatrix, *trainingResult.getRuleModel(),
+                                             *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
 
-std::unique_ptr<BinarySparsePredictionMatrix> AbstractRuleLearner::predictSparseLabels(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
-    std::unique_ptr<IClassificationPredictorFactory> predictorFactoryPtr =
-        this->createClassificationPredictorFactory(featureMatrix, numLabels);
+std::unique_ptr<ISparseBinaryPredictor> AbstractRuleLearner::createSparseBinaryPredictor(
+        const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+        uint32 numLabels) const {
+    std::unique_ptr<ISparseBinaryPredictorFactory> predictorFactoryPtr =
+        this->createSparseBinaryPredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
-        std::unique_ptr<IClassificationPredictor> predictorPtr =
-            ruleModel.createClassificationPredictor(*predictorFactoryPtr, labelSpaceInfo);
-        return featureMatrix.predictSparseLabels(*predictorPtr, numLabels);
+        return featureMatrix.createSparseBinaryPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
     }
 
-    throw std::runtime_error("The rule learner does not support to predict binary labels");
+    throw std::runtime_error("The rule learner does not support to predict sparse binary labels");
 }
 
 bool AbstractRuleLearner::canPredictScores(const IRowWiseFeatureMatrix& featureMatrix,
@@ -449,25 +482,24 @@ bool AbstractRuleLearner::canPredictScores(const IRowWiseFeatureMatrix& featureM
 }
 
 bool AbstractRuleLearner::canPredictScores(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    return this->createRegressionPredictorFactory(featureMatrix, numLabels) != nullptr;
+    return this->createScorePredictorFactory(featureMatrix, numLabels) != nullptr;
 }
 
-std::unique_ptr<DensePredictionMatrix<float64>> AbstractRuleLearner::predictScores(
-            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
-    return this->predictScores(featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getLabelSpaceInfo(),
-                               trainingResult.getNumLabels());
+std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(
+        const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
+    return this->createScorePredictor(featureMatrix, *trainingResult.getRuleModel(),
+                                      *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
 
-std::unique_ptr<DensePredictionMatrix<float64>> AbstractRuleLearner::predictScores(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
-    std::unique_ptr<IRegressionPredictorFactory> predictorFactoryPtr =
-        this->createRegressionPredictorFactory(featureMatrix, numLabels);
+std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                           const IRuleModel& ruleModel,
+                                                                           const ILabelSpaceInfo& labelSpaceInfo,
+                                                                           uint32 numLabels) const {
+    std::unique_ptr<IScorePredictorFactory> predictorFactoryPtr =
+        this->createScorePredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
-        std::unique_ptr<IRegressionPredictor> predictorPtr =
-            ruleModel.createRegressionPredictor(*predictorFactoryPtr, labelSpaceInfo);
-        return featureMatrix.predictScores(*predictorPtr, numLabels);
+        return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
     }
 
     throw std::runtime_error("The rule learner does not support to predict regression scores");
@@ -482,22 +514,20 @@ bool AbstractRuleLearner::canPredictProbabilities(const IRowWiseFeatureMatrix& f
     return this->createProbabilityPredictorFactory(featureMatrix, numLabels) != nullptr;
 }
 
-std::unique_ptr<DensePredictionMatrix<float64>> AbstractRuleLearner::predictProbabilities(
-            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
-    return this->predictProbabilities(featureMatrix, *trainingResult.getRuleModel(),
-                                      *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
+std::unique_ptr<IProbabilityPredictor> AbstractRuleLearner::createProbabilityPredictor(
+        const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
+    return this->createProbabilityPredictor(featureMatrix, *trainingResult.getRuleModel(),
+                                            *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
 
-std::unique_ptr<DensePredictionMatrix<float64>> AbstractRuleLearner::predictProbabilities(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
+std::unique_ptr<IProbabilityPredictor> AbstractRuleLearner::createProbabilityPredictor(
+        const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+        uint32 numLabels) const {
     std::unique_ptr<IProbabilityPredictorFactory> predictorFactoryPtr =
         this->createProbabilityPredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
-        std::unique_ptr<IProbabilityPredictor> predictorPtr =
-            ruleModel.createProbabilityPredictor(*predictorFactoryPtr, labelSpaceInfo);
-        return featureMatrix.predictProbabilities(*predictorPtr, numLabels);
+        return featureMatrix.createProbabilityPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
     }
 
     throw std::runtime_error("The rule learner does not support to predict probability estimates");

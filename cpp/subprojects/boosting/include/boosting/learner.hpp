@@ -17,10 +17,10 @@
 #include "boosting/losses/loss_label_wise_squared_hinge.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
-#include "boosting/output/predictor_classification_example_wise.hpp"
-#include "boosting/output/predictor_classification_gfm.hpp"
-#include "boosting/output/predictor_probability_marginalized.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
+#include "boosting/prediction/predictor_binary_example_wise.hpp"
+#include "boosting/prediction/predictor_binary_gfm.hpp"
+#include "boosting/prediction/predictor_probability_marginalized.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
@@ -99,34 +99,6 @@ namespace boosting {
                      */
                     virtual std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() = 0;
 
-                    /**
-                     * Returns an unique pointer to the configuration of the predictor that predicts whether individual
-                     * labels of given query examples are relevant or irrelevant.
-                     *
-                     * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
-                     *         configuration of the predictor that predicts whether individual labels of given query
-                     *         examples are relevant or irrelevant
-                     */
-                    virtual std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() = 0;
-
-                    /**
-                     * Returns an unique pointer to the configuration of the predictor that predicts regression scores
-                     * for individual labels.
-                     *
-                     * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
-                     *         configuration of the predictor that predicts regression scores for individual labels
-                     */
-                    virtual std::unique_ptr<IRegressionPredictorConfig>& getRegressionPredictorConfigPtr() = 0;
-
-                    /**
-                     * Returns an unique pointer to the configuration of the predictor that predicts probability
-                     * estimates for individual labels.
-                     *
-                     * @return A reference to an unique pointer of type `IClassificationPredictorConfig` that stores the
-                     *         configuration of the predictor that predicts probability estimates for individual labels
-                     */
-                    virtual std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() = 0;
-
                 public:
 
                     virtual ~IConfig() override { };
@@ -169,14 +141,14 @@ namespace boosting {
                      * existing rule-based model and transforming them into binary values according to a certain
                      * threshold that is applied to each label individually.
                      */
-                    virtual void useLabelWiseClassificationPredictor() = 0;
+                    virtual void useLabelWiseBinaryPredictor() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting regression scores by summing up the
                      * scores that are provided by the individual rules of an existing rule-based model for each label
                      * individually.
                      */
-                    virtual void useLabelWiseRegressionPredictor() = 0;
+                    virtual void useLabelWiseScorePredictor() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting probability estimates by summing up
@@ -497,11 +469,11 @@ namespace boosting {
              * provided by an existing rule-based model and comparing the aggregated score vector to the known label
              * vectors according to a certain distance measure.
              */
-            class IExampleWiseClassificationPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IExampleWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
-                    virtual ~IExampleWiseClassificationPredictorMixin() { };
+                    virtual ~IExampleWiseBinaryPredictorMixin() { };
 
                     /**
                      * Configures the rule learner to use a predictor for predicting whether individual labels are
@@ -510,10 +482,10 @@ namespace boosting {
                      * distance measure. The label vector that is closest to the aggregated score vector is finally
                      * predicted.
                      */
-                    virtual void useExampleWiseClassificationPredictor() {
-                        std::unique_ptr<IClassificationPredictorConfig>& classificationPredictorConfigPtr =
-                            this->getClassificationPredictorConfigPtr();
-                        classificationPredictorConfigPtr = std::make_unique<ExampleWiseClassificationPredictorConfig>(
+                    virtual void useExampleWiseBinaryPredictor() {
+                        std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
+                            this->getBinaryPredictorConfigPtr();
+                        binaryPredictorConfigPtr = std::make_unique<ExampleWiseBinaryPredictorConfig>(
                             this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
 
@@ -525,11 +497,11 @@ namespace boosting {
              * provided by the individual rules of an existing rule-based model and transforming them into binary values
              * according to the general F-measure maximizer (GFM).
              */
-            class IGfmClassificationPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IGfmBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
 
                 public:
 
-                    virtual ~IGfmClassificationPredictorMixin() { };
+                    virtual ~IGfmBinaryPredictorMixin() { };
 
                     /**
                      * Configures the rule learner to use a predictor for predicting whether individual labels are
@@ -537,10 +509,10 @@ namespace boosting {
                      * existing rule-based model and transforming them into binary values according to the general
                      * F-measure maximizer (GFM).
                      */
-                    virtual void useGfmClassificationPredictor() {
-                        std::unique_ptr<IClassificationPredictorConfig>& classificationPredictorConfigPtr =
-                            this->getClassificationPredictorConfigPtr();
-                        classificationPredictorConfigPtr = std::make_unique<GfmClassificationPredictorConfig>(
+                    virtual void useGfmBinaryPredictor() {
+                        std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
+                            this->getBinaryPredictorConfigPtr();
+                        binaryPredictorConfigPtr = std::make_unique<GfmBinaryPredictorConfig>(
                             this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
 
@@ -624,24 +596,6 @@ namespace boosting {
                      */
                     std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
 
-                    /**
-                     * An unique pointer that stores the configuration of the predictor that is used to predict binary
-                     * labels.
-                     */
-                    std::unique_ptr<IClassificationPredictorConfig> classificationPredictorConfigPtr_;
-
-                    /**
-                     * An unique pointer that stores the configuration of the predictor that is used to predict
-                     * regression scores.
-                     */
-                    std::unique_ptr<IRegressionPredictorConfig> regressionPredictorConfigPtr_;
-
-                    /**
-                     * An unique pointer that stores the configuration of the predictor that is used to predict
-                     * probability estimates.
-                     */
-                    std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
-
                 private:
 
                     std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final;
@@ -655,12 +609,6 @@ namespace boosting {
                     std::unique_ptr<ILossConfig>& getLossConfigPtr() override final;
 
                     std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() override final;
-
-                    std::unique_ptr<IClassificationPredictorConfig>& getClassificationPredictorConfigPtr() override final;
-
-                    std::unique_ptr<IRegressionPredictorConfig>& getRegressionPredictorConfigPtr() override final;
-
-                    std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() override final;
 
                 public:
 
@@ -678,9 +626,9 @@ namespace boosting {
 
                     void useNoLabelBinning() override;
 
-                    void useLabelWiseClassificationPredictor() override;
+                    void useLabelWiseBinaryPredictor() override;
 
-                    void useLabelWiseRegressionPredictor() override;
+                    void useLabelWiseScorePredictor() override;
 
                     void useLabelWiseProbabilityPredictor() override;
 
@@ -706,30 +654,6 @@ namespace boosting {
              * @see `AbstractRuleLearner::createModelBuilderFactory`
              */
             std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override;
-
-            /**
-             * @see `AbstractRuleLearner::createLabelSpaceInfo`
-             */
-            std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
-
-            /**
-             * @see `AbstractRuleLearner::createClassificationPredictorFactory`
-             */
-            std::unique_ptr<IClassificationPredictorFactory> createClassificationPredictorFactory(
-                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
-
-            /**
-             * @see `AbstractRuleLearner::createRegressionPredictorFactory`
-             */
-            std::unique_ptr<IRegressionPredictorFactory> createRegressionPredictorFactory(
-                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
-
-            /**
-             * @see `AbstractRuleLearner::createProbabilityPredictorFactory`
-             */
-            std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
-                const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         public:
 

@@ -3,8 +3,8 @@
 #include "boosting/binning/label_binning_auto.hpp"
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
 #include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
-#include "boosting/output/predictor_classification_auto.hpp"
-#include "boosting/output/predictor_probability_auto.hpp"
+#include "boosting/prediction/predictor_binary_auto.hpp"
+#include "boosting/prediction/predictor_probability_auto.hpp"
 #include "boosting/rule_evaluation/head_type_auto.hpp"
 #include "boosting/rule_model_assemblage/default_rule_auto.hpp"
 #include "boosting/sampling/partition_sampling_auto.hpp"
@@ -27,7 +27,7 @@ namespace boosting {
         this->useAutomaticStatistics();
         this->useL2Regularization();
         this->useAutomaticLabelBinning();
-        this->useAutomaticClassificationPredictor();
+        this->useAutomaticBinaryPredictor();
         this->useAutomaticProbabilityPredictor();
     }
 
@@ -76,9 +76,9 @@ namespace boosting {
             std::make_unique<AutomaticLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
-    void Boomer::Config::useAutomaticClassificationPredictor() {
-        classificationPredictorConfigPtr_ =
-            std::make_unique<AutomaticClassificationPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+    void Boomer::Config::useAutomaticBinaryPredictor() {
+        binaryPredictorConfigPtr_ =
+            std::make_unique<AutomaticBinaryPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticProbabilityPredictor() {
