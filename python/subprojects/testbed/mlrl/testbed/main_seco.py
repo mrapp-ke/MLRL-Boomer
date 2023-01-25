@@ -49,7 +49,7 @@ class SeCoRunnable(RuleLearnerRunnable):
         return MultiLabelSeCoRuleLearner(random_state=args.random_state,
                                          feature_format=args.feature_format,
                                          label_format=args.label_format,
-                                         predicted_label_format=args.predicted_label_format,
+                                         prediction_format=args.prediction_format,
                                          rule_induction=args.rule_induction,
                                          max_rules=args.max_rules,
                                          time_limit=args.time_limit,
