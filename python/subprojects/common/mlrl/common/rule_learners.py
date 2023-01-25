@@ -267,21 +267,21 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         def _predict(self, model: RuleModel):
             return predict_proba(self.learner, model, self.label_space_info, self.num_labels, self.feature_matrix)
 
-    def __init__(self, random_state: int, feature_format: str, label_format: str, predicted_label_format: str):
+    def __init__(self, random_state: int, feature_format: str, label_format: str, prediction_format: str):
         """
-        :param random_state:            The seed to be used by RNGs. Must be at least 1
-        :param feature_format:          The format to be used for the representation of the feature matrix. Must be
-                                        `sparse`, `dense` or `auto`
-        :param label_format:            The format to be used for the representation of the label matrix. Must be
-                                        `sparse`, `dense` or 'auto'
-        :param predicted_label_format:  The format to be used for representation of predicted labels. Must be `sparse`,
-                                        `dense` or `auto`
+        :param random_state:        The seed to be used by RNGs. Must be at least 1
+        :param feature_format:      The format to be used for the representation of the feature matrix. Must be
+                                    `sparse`, `dense` or `auto`
+        :param label_format:        The format to be used for the representation of the label matrix. Must be `sparse`,
+                                    `dense` or 'auto'
+        :param prediction_format:   The format to be used for representation of predicted labels. Must be `sparse`,
+                                    `dense` or `auto`
         """
         super().__init__()
         self.random_state = random_state
         self.feature_format = feature_format
         self.label_format = label_format
-        self.predicted_label_format = predicted_label_format
+        self.prediction_format = prediction_format
 
     def _fit(self, x, y, **kwargs):
         # Validate feature matrix and convert it to the preferred format...
@@ -306,7 +306,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         # Validate label matrix and convert it to the preferred format...
         y_sparse_format = SparseFormat.CSR
-        prediction_sparse_policy = create_sparse_policy('predicted_label_format', self.predicted_label_format)
+        prediction_sparse_policy = create_sparse_policy('prediction_format', self.prediction_format)
         self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
                 prediction_sparse_policy == SparsePolicy.FORCE_SPARSE or
                 is_sparse(y, sparse_format=y_sparse_format, dtype=DTYPE_UINT8, sparse_values=False))

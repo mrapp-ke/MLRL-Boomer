@@ -43,7 +43,7 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
     def __init__(self, random_state: int = 1,
                  feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value,
-                 predicted_label_format: str = SparsePolicy.AUTO.value,
+                 prediction_format: str = SparsePolicy.AUTO.value,
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
                  time_limit: Optional[int] = None,
@@ -114,7 +114,7 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
                                                 parallel or not. Must be 'true' or 'false'. For additional options refer
                                                 to the documentation
         """
-        super().__init__(random_state, feature_format, label_format, predicted_label_format)
+        super().__init__(random_state, feature_format, label_format, prediction_format)
         self.rule_induction = rule_induction
         self.max_rules = max_rules
         self.time_limit = time_limit
