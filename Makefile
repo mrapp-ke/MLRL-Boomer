@@ -65,9 +65,11 @@ define create_dir
 	mkdir -p ${1})
 endef
 
-define clang_format
+define clang_format_recursively
 	$(if ${IS_WIN},\
-	${PS} ${CLANG_FORMAT} $(Get-ChildItem -Path ${1} -Recurse | Where Name -Match '\.(?:h|cpp)$' | Select-Object -ExpandProperty FullName),\
+	(${PS} "Get-ChildItem -Path ${1} -Recurse | Where Name -Match '\.hpp|\.cpp' | Select-Object -ExpandProperty FullName | Out-File files.tmp -Encoding utf8";\
+	    ${CLANG_FORMAT} --files=files.tmp;\
+	    ${PS} "rm files.tmp -Force"),\
 	find ${1} -type f \( -iname "*.hpp" -o -iname "*.cpp" \) -exec ${CLANG_FORMAT} {} +)
 endef
 
@@ -117,7 +119,7 @@ venv:
 format_cpp: venv
 	@echo Formatting C++ code...
 	${VENV_ACTIVATE} \
-	    && $(call clang_format,${CPP_PACKAGE_DIR}) \
+	    && $(call clang_format_recursively,${CPP_PACKAGE_DIR}) \
 	    && ${VENV_DEACTIVATE}
 
 format: format_cpp
