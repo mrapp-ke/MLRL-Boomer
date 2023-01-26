@@ -9,6 +9,7 @@ IS_WIN = $(filter Windows,${UNAME})
 VENV_DIR = venv
 CPP_SRC_DIR = cpp
 CPP_BUILD_DIR = ${CPP_SRC_DIR}/build
+CPP_PACKAGE_DIR = ${CPP_SRC_DIR}/subprojects
 PYTHON_SRC_DIR = python
 PYTHON_BUILD_DIR = ${PYTHON_SRC_DIR}/build
 PYTHON_PACKAGE_DIR = ${PYTHON_SRC_DIR}/subprojects
@@ -116,7 +117,7 @@ venv:
 format_cpp: venv
 	@echo Formatting C++ code...
 	${VENV_ACTIVATE} \
-	    && $(call clang_format,${CPP_SRC_DIR}) \
+	    && $(call clang_format,${CPP_PACKAGE_DIR}) \
 	    && ${VENV_DEACTIVATE}
 
 format: format_cpp
