@@ -6,6 +6,7 @@
 #include "predictor_probability_common.hpp"
 #include "omp.h"
 #include <algorithm>
+#include <stdexcept>
 
 
 namespace boosting {

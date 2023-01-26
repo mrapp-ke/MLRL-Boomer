@@ -2,6 +2,7 @@
 #include "predictor_common.hpp"
 #include "omp.h"
 #include <algorithm>
+#include <stdexcept>
 
 
 namespace boosting {
