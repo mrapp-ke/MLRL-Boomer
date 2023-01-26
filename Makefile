@@ -1,6 +1,7 @@
 default_target: install
 .PHONY: clean_venv clean_cpp clean_cython clean_compile clean_cpp_install clean_cython_install clean_wheel \
-        clean_install clean_doc clean compile_cpp compile_cython compile install_cpp install_cython wheel install doc
+        clean_install clean_doc clean format_cpp format compile_cpp compile_cython compile install_cpp install_cython \
+        wheel install doc
 
 UNAME = $(if $(filter Windows_NT,${OS}),Windows,$(shell uname))
 IS_WIN = $(filter Windows,${UNAME})
@@ -23,6 +24,7 @@ VENV_CREATE = ${PYTHON} -m venv ${VENV_DIR}
 VENV_ACTIVATE = $(if ${IS_WIN},${PS} ${VENV_DIR}/Scripts/activate.bat,. ${VENV_DIR}/bin/activate)
 VENV_DEACTIVATE = $(if ${IS_WIN},${PS} ${VENV_DIR}/Scripts/deactivate.bat,deactivate)
 PIP_INSTALL = python -m pip install --prefer-binary
+CLANG_FORMAT = clang-format -i --style=file --verbose
 MESON_SETUP = meson setup
 MESON_COMPILE = meson compile
 MESON_INSTALL = meson install
@@ -60,6 +62,12 @@ define create_dir
 	$(if ${IS_WIN},\
 	${PS} "New-Item -Path ${1} -ItemType "directory" -Force",\
 	mkdir -p ${1})
+endef
+
+define clang_format
+	$(if ${IS_WIN},\
+	${PS} ${CLANG_FORMAT} $(Get-ChildItem -Path ${1} -Recurse | Where Name -Match '\.(?:h|cpp)$' | Select-Object -ExpandProperty FullName),\
+	find ${1} -type f -iname "*.hpp" -o -iname "*.cpp" -exec ${CLANG_FORMAT} {} +)
 endef
 
 clean_venv:
@@ -104,6 +112,14 @@ venv:
 	${VENV_ACTIVATE} \
 	    && ${PIP_INSTALL} -r ${PYTHON_SRC_DIR}/requirements.txt \
 	    && ${VENV_DEACTIVATE}
+
+format_cpp: venv
+	@echo Formatting C++ code...
+	${VENV_ACTIVATE} \
+	    && $(call clang_format,${CPP_SRC_DIR}) \
+	    && ${VENV_DEACTIVATE}
+
+format: format_cpp
 
 compile_cpp: venv
 	@echo Compiling C++ code...
