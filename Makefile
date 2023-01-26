@@ -67,7 +67,7 @@ endef
 define clang_format
 	$(if ${IS_WIN},\
 	${PS} ${CLANG_FORMAT} $(Get-ChildItem -Path ${1} -Recurse | Where Name -Match '\.(?:h|cpp)$' | Select-Object -ExpandProperty FullName),\
-	find ${1} -type f -iname "*.hpp" -o -iname "*.cpp" -exec ${CLANG_FORMAT} {} +)
+	find ${1} -type f \( -iname "*.hpp" -o -iname "*.cpp" \) -exec ${CLANG_FORMAT} {} +)
 endef
 
 clean_venv:
