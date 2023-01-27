@@ -82,10 +82,8 @@ namespace boosting {
                                                         float32 threshold, float32 exponent,
                                                         float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                                                         std::unique_ptr<ILabelBinning> binningPtr)
-                : AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(*indexVectorPtr, true,
-                                                                                             l1RegularizationWeight,
-                                                                                             l2RegularizationWeight,
-                                                                                             std::move(binningPtr)),
+                : AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
+                    *indexVectorPtr, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)), threshold_(1.0 - threshold),
                   exponent_(exponent) {}
     };

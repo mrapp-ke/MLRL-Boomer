@@ -542,8 +542,7 @@ namespace boosting {
                      *                          access to the indices of the labels that are included in the subset
                      */
                     WeightedStatisticsSubset(const LabelWiseWeightedStatistics& statistics,
-                                             const StatisticVector& totalSumVector,
-                                             const IndexVector& labelIndices)
+                                             const StatisticVector& totalSumVector, const IndexVector& labelIndices)
                         : AbstractLabelWiseImmutableWeightedStatistics<
                             StatisticVector, StatisticView, RuleEvaluationFactory,
                             WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(statistics,
