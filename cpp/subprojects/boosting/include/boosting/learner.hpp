@@ -41,7 +41,7 @@ namespace boosting {
              * boosting.
              */
             class IConfig : virtual public IRuleLearner::IConfig {
-                friend class AbstractBoostingRuleLearner;
+                    friend class AbstractBoostingRuleLearner;
 
                 protected:
 
