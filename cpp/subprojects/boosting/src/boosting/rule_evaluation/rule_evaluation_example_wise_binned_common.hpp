@@ -71,8 +71,8 @@ namespace boosting {
                 // corresponding element of the aggregated gradient vector...
                 gradients[binIndex] += gradientIterator[i];
 
-                // Add the Hessian that corresponds to the `i`-th element on the diagonal of the original Hessian matrix to
-                // the corresponding element of the aggregated Hessian matrix...
+                // Add the Hessian that corresponds to the `i`-th element on the diagonal of the original Hessian matrix
+                // to the corresponding element of the aggregated Hessian matrix...
                 hessians[triangularNumber(binIndex + 1) - 1] += hessianIterator[triangularNumber(i + 1) - 1];
             }
         }
@@ -85,8 +85,8 @@ namespace boosting {
                     uint32 binIndex2 = binIndexIterator[j];
 
                     // Add the hessian at the `i`-th row and `j`-th column of the original Hessian matrix to the
-                    // corresponding element of the aggregated Hessian matrix, if the labels at indices `i` and `j` do not
-                    // belong to the same bin...
+                    // corresponding element of the aggregated Hessian matrix, if the labels at indices `i` and `j` do
+                    // not belong to the same bin...
                     if (binIndex2 != maxBins && binIndex != binIndex2) {
                         uint32 r, c;
 

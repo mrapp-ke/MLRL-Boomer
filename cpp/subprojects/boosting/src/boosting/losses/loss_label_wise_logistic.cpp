@@ -57,7 +57,7 @@ namespace boosting {
     }
 
     static inline float64 evaluatePrediction(bool trueLabel, float64 predictedScore) {
-       // The logistic loss calculates as `log(1 + exp(-expectedScore * predictedScore))`...
+        // The logistic loss calculates as `log(1 + exp(-expectedScore * predictedScore))`...
         float64 x = trueLabel ? -predictedScore : predictedScore;
         return logSumExp(x);
     }

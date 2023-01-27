@@ -533,7 +533,7 @@ namespace seco {
              */
             std::unique_ptr<IHistogram> createHistogram(const DenseBinIndexVector& binIndexVector,
                                                         uint32 numBins) const override {
-                //TODO Support creation of histograms
+                // TODO Support creation of histograms
                 return nullptr;
             }
 
@@ -542,7 +542,7 @@ namespace seco {
              */
             std::unique_ptr<IHistogram> createHistogram(const DokBinIndexVector& binIndexVector,
                                                         uint32 numBins) const override {
-                //TODO Support creation of histograms
+                // TODO Support creation of histograms
                 return nullptr;
             }
     };

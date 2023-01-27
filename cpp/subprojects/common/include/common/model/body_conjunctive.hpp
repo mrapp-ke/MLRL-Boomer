@@ -111,8 +111,8 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         threshold_const_iterator leq_thresholds_cend() const;
 
         /**
-         * Returns an `index_iterator` to the beginning of the feature indices that correspond to conditions that use the
-         * <= operator.
+         * Returns an `index_iterator` to the beginning of the feature indices that correspond to conditions that use
+         * the <= operator.
          *
          * @return An `index_iterator` to the beginning
          */

@@ -75,7 +75,7 @@ namespace boosting {
      *                  vector
      * @param n         The number of elements in the vector
      * @return          The square of the L2 norm
-    */
+     */
     template<typename Iterator>
     static inline constexpr float64 l2NormPow(Iterator iterator, uint32 n) {
         float64 result = 0;
@@ -101,7 +101,7 @@ namespace boosting {
      *                          of the elements
      * @param n                 The number of elements in the vector
      * @return                  The square of the L2 norm
-    */
+     */
     template<typename Iterator, typename WeightIterator>
     static inline constexpr float64 l2NormPow(Iterator iterator, WeightIterator weightIterator, uint32 n) {
         float64 result = 0;

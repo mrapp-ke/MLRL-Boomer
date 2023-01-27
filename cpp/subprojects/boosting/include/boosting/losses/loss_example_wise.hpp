@@ -31,7 +31,7 @@ namespace boosting {
                                                      const CContiguousConstView<float64>& scoreMatrix,
                                                      DenseExampleWiseStatisticView& statisticView) const = 0;
 
-             /**
+            /**
              * Updates the statistics of the example at a specific index.
              *
              * @param exampleIndex  The index of the example for which the gradients and Hessians should be updated
