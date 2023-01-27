@@ -21,7 +21,8 @@ namespace boosting {
             /**
              * A function pointer to BLAS' DSPMV routine.
              */
-            typedef void (*DspmvFunction)(char* uplo, int* n, double* alpha, double* ap, double* x, int* incx, double* beta, double* y, int* incy);
+            typedef void (*DspmvFunction)(char* uplo, int* n, double* alpha, double* ap, double* x, int* incx,
+                                          double* beta, double* y, int* incy);
 
         private:
 

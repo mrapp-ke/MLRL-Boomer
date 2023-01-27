@@ -18,7 +18,8 @@ class IntermediateModelBuilder final : public IModelBuilder {
         /**
          * The type of a rule, which can still be modified.
          */
-        typedef std::pair<std::unique_ptr<ConditionList>, std::unique_ptr<AbstractEvaluatedPrediction>> IntermediateRule;
+        typedef std::pair<std::unique_ptr<ConditionList>, std::unique_ptr<AbstractEvaluatedPrediction>>
+            IntermediateRule;
 
     private:
 
