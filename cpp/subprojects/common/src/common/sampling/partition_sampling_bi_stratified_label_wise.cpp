@@ -62,9 +62,8 @@ class LabelWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSam
             uint32 numExamples = labelMatrix.getNumRows();
             uint32 numHoldout = (uint32) (holdoutSetSize_ * numExamples);
             uint32 numTraining = numExamples - numHoldout;
-            return std::make_unique<LabelWiseStratifiedBiPartitionSampling<CContiguousLabelMatrix>>(labelMatrix,
-                                                                                                    numTraining,
-                                                                                                    numHoldout);
+            return std::make_unique<LabelWiseStratifiedBiPartitionSampling<CContiguousLabelMatrix>>(
+                labelMatrix, numTraining, numHoldout);
         }
 
         std::unique_ptr<IPartitionSampling> create(const CsrLabelMatrix& labelMatrix) const override {

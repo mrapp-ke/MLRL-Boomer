@@ -56,9 +56,8 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                const std::pair<float64, float64> pair = getMinAndMaxScore(statisticIterator, numElements,
-                                                                           l1RegularizationWeight_,
-                                                                           l2RegularizationWeight_);
+                const std::pair<float64, float64> pair =
+                    getMinAndMaxScore(statisticIterator, numElements, l1RegularizationWeight_, l2RegularizationWeight_);
                 float64 minAbsScore = pair.first;
                 float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();

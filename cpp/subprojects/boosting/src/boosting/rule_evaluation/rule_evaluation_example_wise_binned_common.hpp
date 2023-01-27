@@ -277,9 +277,9 @@ namespace boosting {
              */
             const IScoreVector& calculateScores(DenseExampleWiseStatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
-                uint32 numCriteria = this->calculateLabelWiseCriteria(statisticVector, criteria_,
-                                                                      scoreVector_.getNumElements(),
-                                                                      l1RegularizationWeight_, l2RegularizationWeight_);
+                uint32 numCriteria =
+                    this->calculateLabelWiseCriteria(statisticVector, criteria_, scoreVector_.getNumElements(),
+                                                     l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
                 LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numCriteria);

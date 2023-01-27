@@ -65,11 +65,11 @@ namespace boosting {
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
             labelBinningConfigPtr_->createLabelWiseCompleteRuleEvaluationFactory();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(
-                labelRatio, minLabels_, maxLabels_);
+            labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels_,
+                                                                                     maxLabels_);
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(
-                labelRatio, minLabels_, maxLabels_);
+            labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels_,
+                                                                                     maxLabels_);
         return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
@@ -85,11 +85,11 @@ namespace boosting {
         std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
             lossConfig.createSparseEvaluationMeasureFactory();
         std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(
-                labelRatio, minLabels_, maxLabels_);
+            labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels_,
+                                                                                     maxLabels_);
         std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(
-                labelRatio, minLabels_, maxLabels_);
+            labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels_,
+                                                                                     maxLabels_);
         return std::make_unique<SparseLabelWiseStatisticsProviderFactory>(
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
@@ -106,11 +106,11 @@ namespace boosting {
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
             labelBinningConfigPtr_->createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseFixedPartialRuleEvaluationFactory(
-                labelRatio, minLabels_, maxLabels_, blas, lapack);
+            labelBinningConfigPtr_->createExampleWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels_,
+                                                                                       maxLabels_, blas, lapack);
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-            labelBinningConfigPtr_->createExampleWiseFixedPartialRuleEvaluationFactory(
-                labelRatio, minLabels_, maxLabels_, blas, lapack);
+            labelBinningConfigPtr_->createExampleWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels_,
+                                                                                       maxLabels_, blas, lapack);
         return std::make_unique<DenseExampleWiseStatisticsProviderFactory>(
             std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
             std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),

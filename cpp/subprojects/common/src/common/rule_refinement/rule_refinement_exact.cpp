@@ -394,8 +394,8 @@ static inline void findRefinementInternally(
 
         if (coverage >= minCoverage) {
             // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = nominal ? statisticsSubsetPtr->calculateScoresAccumulated()
-                                                      : statisticsSubsetPtr->calculateScores();
+            const IScoreVector& scoreVector =
+                nominal ? statisticsSubsetPtr->calculateScoresAccumulated() : statisticsSubsetPtr->calculateScores();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {

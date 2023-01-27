@@ -90,7 +90,8 @@ namespace boosting {
 
     std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseSingleLabelRuleEvaluationFactory::create(
             const SparseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseSingleLabelRuleEvaluation<SparseLabelWiseStatisticVector, CompleteIndexVector>>(
+        return std::make_unique<
+            LabelWiseSingleLabelRuleEvaluation<SparseLabelWiseStatisticVector, CompleteIndexVector>>(
             indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 

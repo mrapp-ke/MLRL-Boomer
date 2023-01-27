@@ -126,9 +126,9 @@ namespace boosting {
              */
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
-                uint32 numCriteria = this->calculateLabelWiseCriteria(statisticVector, criteria_,
-                                                                      scoreVector_.getNumElements(),
-                                                                      l1RegularizationWeight_, l2RegularizationWeight_);
+                uint32 numCriteria =
+                    this->calculateLabelWiseCriteria(statisticVector, criteria_, scoreVector_.getNumElements(),
+                                                     l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
                 LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numCriteria);
@@ -158,9 +158,9 @@ namespace boosting {
                 // Compute predictions, as well as their overall quality...
                 typename DenseBinnedScoreVector<IndexVector>::score_binned_iterator scoreIterator =
                     scoreVector_.scores_binned_begin();
-                scoreVector_.quality = calculateBinnedScores(aggregatedStatisticIterator, scoreIterator,
-                                                             numElementsPerBin_, numBins, l1RegularizationWeight_,
-                                                             l2RegularizationWeight_);
+                scoreVector_.quality =
+                    calculateBinnedScores(aggregatedStatisticIterator, scoreIterator, numElementsPerBin_, numBins,
+                                          l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }
     };

@@ -181,18 +181,16 @@ class PrePruningFactory final : public IStoppingCriterionFactory {
 
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
-            return std::make_unique<PrePruning<const SinglePartition>>(partition, std::move(aggregationFunctionPtr),
-                                                                       useHoldoutSet_, removeUnusedRules_, minRules_,
-                                                                       updateInterval_, stopInterval_, numPast_,
-                                                                       numCurrent_, minImprovement_);
+            return std::make_unique<PrePruning<const SinglePartition>>(
+                partition, std::move(aggregationFunctionPtr), useHoldoutSet_, removeUnusedRules_, minRules_,
+                updateInterval_, stopInterval_, numPast_, numCurrent_, minImprovement_);
         }
 
         std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
-            return std::make_unique<PrePruning<BiPartition>>(partition, std::move(aggregationFunctionPtr),
-                                                             useHoldoutSet_, removeUnusedRules_, minRules_,
-                                                             updateInterval_, stopInterval_, numPast_, numCurrent_,
-                                                             minImprovement_);
+            return std::make_unique<PrePruning<BiPartition>>(
+                partition, std::move(aggregationFunctionPtr), useHoldoutSet_, removeUnusedRules_, minRules_,
+                updateInterval_, stopInterval_, numPast_, numCurrent_, minImprovement_);
         }
 };
 

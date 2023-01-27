@@ -41,8 +41,8 @@ namespace boosting {
             const Blas& blas, const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        return std::make_unique<ExampleWiseCompleteRuleEvaluationFactory>(
-            l1RegularizationWeight, l2RegularizationWeight, blas, lapack);
+        return std::make_unique<ExampleWiseCompleteRuleEvaluationFactory>(l1RegularizationWeight,
+                                                                          l2RegularizationWeight, blas, lapack);
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluationFactory> NoLabelBinningConfig::createExampleWiseFixedPartialRuleEvaluationFactory(

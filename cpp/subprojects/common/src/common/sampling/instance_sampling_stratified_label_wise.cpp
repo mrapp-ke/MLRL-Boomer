@@ -71,7 +71,8 @@ class LabelWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplin
         std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
                                                   const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
-            return std::make_unique<LabelWiseStratifiedSampling<CContiguousLabelMatrix, SinglePartition::const_iterator>>(
+            return std::make_unique<
+                LabelWiseStratifiedSampling<CContiguousLabelMatrix, SinglePartition::const_iterator>>(
                 labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
         }
 

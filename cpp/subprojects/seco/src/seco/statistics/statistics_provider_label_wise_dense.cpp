@@ -115,9 +115,8 @@ namespace seco {
         majorityLabelVectorPtr->setNumElements(n, true);
         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr =
             std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
-        return std::make_unique<DenseLabelWiseStatistics<BinaryCsrConstView>>(labelMatrix, std::move(coverageMatrixPtr),
-                                                                              std::move(majorityLabelVectorPtr),
-                                                                              ruleEvaluationFactory);
+        return std::make_unique<DenseLabelWiseStatistics<BinaryCsrConstView>>(
+            labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr), ruleEvaluationFactory);
     }
 
     DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(

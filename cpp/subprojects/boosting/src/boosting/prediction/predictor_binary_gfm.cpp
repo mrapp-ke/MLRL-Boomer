@@ -291,10 +291,8 @@ namespace boosting {
         }
 
         std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactory.create();
-        return std::make_unique<GfmBinaryPredictor<FeatureMatrix, RuleList>>(featureMatrix, model, *labelVectorSet,
-                                                                             numLabels,
-                                                                             std::move(probabilityFunctionPtr),
-                                                                             numThreads);
+        return std::make_unique<GfmBinaryPredictor<FeatureMatrix, RuleList>>(
+            featureMatrix, model, *labelVectorSet, numLabels, std::move(probabilityFunctionPtr), numThreads);
     }
 
     /**
@@ -368,10 +366,9 @@ namespace boosting {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                            &scoreVector[0]);
-                numNonZeroElements += predictGfm<BinaryLilMatrix::row>(scoreVector, &scoreVector[numLabels],
-                                                                       (*predictionMatrixPtr)[i], numLabels,
-                                                                       *probabilityFunctionPtr, *labelVectorSetPtr,
-                                                                       numLabelVectors, maxLabelCardinality);
+                numNonZeroElements += predictGfm<BinaryLilMatrix::row>(
+                    scoreVector, &scoreVector[numLabels], (*predictionMatrixPtr)[i], numLabels, *probabilityFunctionPtr,
+                    *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
                 delete[] scoreVector;
             }
         }
@@ -406,10 +403,9 @@ namespace boosting {
                 applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                               featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                               featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                numNonZeroElements += predictGfm<BinaryLilMatrix::row>(scoreVector, &scoreVector[numLabels],
-                                                                       (*predictionMatrixPtr)[i], numLabels,
-                                                                       *probabilityFunctionPtr, *labelVectorSetPtr,
-                                                                       numLabelVectors, maxLabelCardinality);
+                numNonZeroElements += predictGfm<BinaryLilMatrix::row>(
+                    scoreVector, &scoreVector[numLabels], (*predictionMatrixPtr)[i], numLabels, *probabilityFunctionPtr,
+                    *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
                 delete[] scoreVector;
             }
         }
@@ -484,10 +480,8 @@ namespace boosting {
         }
 
         std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactory.create();
-        return std::make_unique<GfmSparseBinaryPredictor<FeatureMatrix, RuleList>>(featureMatrix, model,
-                                                                                   *labelVectorSet, numLabels,
-                                                                                   std::move(probabilityFunctionPtr),
-                                                                                   numThreads);
+        return std::make_unique<GfmSparseBinaryPredictor<FeatureMatrix, RuleList>>(
+            featureMatrix, model, *labelVectorSet, numLabels, std::move(probabilityFunctionPtr), numThreads);
     }
 
     /**

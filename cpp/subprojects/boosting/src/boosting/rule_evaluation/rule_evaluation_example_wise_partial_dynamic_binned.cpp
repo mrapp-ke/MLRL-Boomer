@@ -38,9 +38,9 @@ namespace boosting {
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                     statisticVector.hessians_diagonal_cbegin();
 
-                const std::pair<float64, float64> pair = getMinAndMaxScore(criteria, gradientIterator, hessianIterator,
-                                                                           numLabels, l1RegularizationWeight,
-                                                                           l2RegularizationWeight);
+                const std::pair<float64, float64> pair =
+                    getMinAndMaxScore(criteria, gradientIterator, hessianIterator, numLabels, l1RegularizationWeight,
+                                      l2RegularizationWeight);
                 float64 minAbsScore = pair.first;
                 float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();

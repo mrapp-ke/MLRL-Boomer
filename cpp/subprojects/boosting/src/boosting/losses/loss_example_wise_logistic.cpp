@@ -248,11 +248,10 @@ namespace boosting {
             void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                                              const CContiguousConstView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticView& statisticView) const override {
-                updateExampleWiseStatisticsInternally(scoreMatrix.row_values_cbegin(exampleIndex),
-                                                      labelMatrix.row_values_cbegin(exampleIndex),
-                                                      statisticView.gradients_row_begin(exampleIndex),
-                                                      statisticView.hessians_row_begin(exampleIndex),
-                                                      labelMatrix.getNumCols());
+                updateExampleWiseStatisticsInternally(
+                    scoreMatrix.row_values_cbegin(exampleIndex), labelMatrix.row_values_cbegin(exampleIndex),
+                    statisticView.gradients_row_begin(exampleIndex), statisticView.hessians_row_begin(exampleIndex),
+                    labelMatrix.getNumCols());
             }
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
@@ -299,8 +298,8 @@ namespace boosting {
                 // numerical stability (see, e.g., section "Log-sum-exp for computing the log-distribution" in
                 // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
                 uint32 numLabels = scoresEnd - scoresBegin;
-                auto labelIterator = make_binary_forward_iterator(relevantLabelIndices.cbegin(),
-                                                                  relevantLabelIndices.cend());
+                auto labelIterator =
+                    make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
                 float64 max = 0;
 
                 // For each label `i`, calculate `x = -expectedScore_i * predictedScore_i` and find the largest value
@@ -319,8 +318,8 @@ namespace boosting {
 
                 // Calculate the example-wise loss as `max + log(exp(0 - max) + exp(x_1 - max) + ...)`...
                 float64 sumExp = std::exp(0 - max);
-                labelIterator = make_binary_forward_iterator(relevantLabelIndices.cbegin(),
-                                                             relevantLabelIndices.cend());
+                labelIterator =
+                    make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
 
                 for (uint32 i = 0; i < numLabels; i++) {
                     float64 predictedScore = scoresBegin[i];

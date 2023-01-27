@@ -137,8 +137,8 @@ namespace boosting {
                     exampleWiseStatisticsPtr_.get();
 
                 if (exampleWiseStatistics) {
-                    labelWiseStatisticsPtr_ = exampleWiseStatistics->toLabelWiseStatistics(
-                        regularRuleEvaluationFactory_, numThreads_);
+                    labelWiseStatisticsPtr_ =
+                        exampleWiseStatistics->toLabelWiseStatistics(regularRuleEvaluationFactory_, numThreads_);
                     exampleWiseStatisticsPtr_.reset();
                 } else {
                     labelWiseStatisticsPtr_->setRuleEvaluationFactory(regularRuleEvaluationFactory_);
@@ -153,8 +153,8 @@ namespace boosting {
                     exampleWiseStatisticsPtr_.get();
 
                 if (exampleWiseStatistics) {
-                    labelWiseStatisticsPtr_ = exampleWiseStatistics->toLabelWiseStatistics(
-                        pruningRuleEvaluationFactory_, numThreads_);
+                    labelWiseStatisticsPtr_ =
+                        exampleWiseStatistics->toLabelWiseStatistics(pruningRuleEvaluationFactory_, numThreads_);
                     exampleWiseStatisticsPtr_.reset();
                 } else {
                     labelWiseStatisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);

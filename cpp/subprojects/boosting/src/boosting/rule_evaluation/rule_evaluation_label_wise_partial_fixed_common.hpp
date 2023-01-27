@@ -54,8 +54,8 @@ namespace boosting {
             const Tuple<float64>& tuple = statisticIterator[i];
             IndexedValue<float64>& entry = tmpIterator[i];
             entry.index = i;
-            entry.value = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
-                                                  l2RegularizationWeight);
+            entry.value =
+                calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight, l2RegularizationWeight);
         }
 
         std::partial_sort(tmpIterator, &tmpIterator[numPredictions], &tmpIterator[numLabels],

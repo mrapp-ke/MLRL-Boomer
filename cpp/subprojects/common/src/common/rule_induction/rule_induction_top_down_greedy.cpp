@@ -223,7 +223,6 @@ std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createR
     }
 
     uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
-    return std::make_unique<GreedyTopDownRuleInductionFactory>(ruleCompareFunction_, minCoverage, maxConditions_,
-                                                               maxHeadRefinements_, recalculatePredictions_,
-                                                               numThreads);
+    return std::make_unique<GreedyTopDownRuleInductionFactory>(
+        ruleCompareFunction_, minCoverage, maxConditions_, maxHeadRefinements_, recalculatePredictions_, numThreads);
 }

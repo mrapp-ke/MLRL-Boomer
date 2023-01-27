@@ -95,8 +95,8 @@ namespace boosting {
                 float64 predictedScore2 = scoreIterator[j];
                 bool trueLabel2 = *labelIterator4;
                 float64 expectedScore2 = trueLabel2 ? 1 : -1;
-                *hessianIterator = divideOrZero<float64>(-(predictedScore - expectedScore)
-                                                         * (predictedScore2 - expectedScore2), denominatorHessian);
+                *hessianIterator = divideOrZero<float64>(
+                    -(predictedScore - expectedScore) * (predictedScore2 - expectedScore2), denominatorHessian);
                 hessianIterator++;
                 labelIterator4++;
             }
@@ -184,11 +184,10 @@ namespace boosting {
             void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                                              const CContiguousConstView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticView& statisticView) const override {
-                updateExampleWiseStatisticsInternally(scoreMatrix.row_values_cbegin(exampleIndex),
-                                                      labelMatrix.row_values_cbegin(exampleIndex),
-                                                      statisticView.gradients_row_begin(exampleIndex),
-                                                      statisticView.hessians_row_begin(exampleIndex),
-                                                      labelMatrix.getNumCols());
+                updateExampleWiseStatisticsInternally(
+                    scoreMatrix.row_values_cbegin(exampleIndex), labelMatrix.row_values_cbegin(exampleIndex),
+                    statisticView.gradients_row_begin(exampleIndex), statisticView.hessians_row_begin(exampleIndex),
+                    labelMatrix.getNumCols());
             }
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
@@ -229,8 +228,8 @@ namespace boosting {
                                     CContiguousView<float64>::value_const_iterator scoresBegin,
                                     CContiguousView<float64>::value_const_iterator scoresEnd) const override {
                 uint32 numLabels = scoresEnd - scoresBegin;
-                auto labelIterator = make_binary_forward_iterator(relevantLabelIndices.cbegin(),
-                                                                  relevantLabelIndices.cend());
+                auto labelIterator =
+                    make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
                 return evaluateInternally(scoresBegin, labelIterator, numLabels);
             }
     };

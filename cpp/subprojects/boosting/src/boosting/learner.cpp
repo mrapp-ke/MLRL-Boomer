@@ -51,9 +51,8 @@ namespace boosting {
     }
 
     void AbstractBoostingRuleLearner::Config::useCompleteHeads() {
-        headConfigPtr_ = std::make_unique<CompleteHeadConfig>(
-            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
-            l2RegularizationConfigPtr_);
+        headConfigPtr_ = std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_,
+                                                              l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
     void AbstractBoostingRuleLearner::Config::useDenseStatistics() {

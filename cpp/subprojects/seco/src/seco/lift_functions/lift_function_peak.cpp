@@ -102,8 +102,8 @@ namespace seco {
                 : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), curvature_(curvature),
                   maxLiftsAfterPeak_(new float64[numLabels - peakLabel]) {
                 for (uint32 i = 0; i < numLabels - peakLabel; i++) {
-                    maxLiftsAfterPeak_[i] = calculateLiftInternally(i + peakLabel, numLabels, peakLabel, maxLift,
-                                                                    curvature);
+                    maxLiftsAfterPeak_[i] =
+                        calculateLiftInternally(i + peakLabel, numLabels, peakLabel, maxLift, curvature);
                 }
             }
 

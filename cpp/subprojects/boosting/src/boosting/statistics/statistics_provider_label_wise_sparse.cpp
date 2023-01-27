@@ -125,11 +125,9 @@ namespace boosting {
                                                   IndexIterator(labelMatrixPtr->getNumCols()), *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<SparseLabelWiseStatistics<LabelMatrix>>(std::move(lossPtr),
-                                                                        std::move(evaluationMeasurePtr),
-                                                                        ruleEvaluationFactory, labelMatrix,
-                                                                        std::move(statisticMatrixPtr),
-                                                                        std::move(scoreMatrixPtr));
+        return std::make_unique<SparseLabelWiseStatistics<LabelMatrix>>(
+            std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+            std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
 
     SparseLabelWiseStatisticsProviderFactory::SparseLabelWiseStatisticsProviderFactory(

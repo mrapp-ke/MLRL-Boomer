@@ -332,9 +332,8 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
             if (foundRefinement) {
                 bool keepHeads = maxHeadRefinements_ == 1;
-                std::unique_ptr<Beam> beamPtr = std::make_unique<Beam>(refinementComparator,
-                                                                       std::move(thresholdsSubsetPtr), labelIndices,
-                                                                       keepHeads);
+                std::unique_ptr<Beam> beamPtr = std::make_unique<Beam>(
+                    refinementComparator, std::move(thresholdsSubsetPtr), labelIndices, keepHeads);
                 uint32 searchDepth = 1;
 
                 while (foundRefinement && (maxConditions_ == 0 || searchDepth < maxConditions_)) {
@@ -346,9 +345,9 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
                         featureSampling.createBeamSearchFeatureSampling(rng, resampleFeatures_);
 
                     // Search for the best refinements within the current beam...
-                    foundRefinement = beamPtr->refine(ruleCompareFunction_, beamPtr, beamWidth_,
-                                                      *beamSearchFeatureSamplingPtr, keepHeads, minCoverage_,
-                                                      numThreads_, rng);
+                    foundRefinement =
+                        beamPtr->refine(ruleCompareFunction_, beamPtr, beamWidth_, *beamSearchFeatureSamplingPtr,
+                                        keepHeads, minCoverage_, numThreads_, rng);
                 }
 
                 BeamEntry& entry = beamPtr->getBestEntry();
