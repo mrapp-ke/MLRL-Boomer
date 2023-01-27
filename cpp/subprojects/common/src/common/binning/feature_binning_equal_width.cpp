@@ -205,7 +205,7 @@ class EqualWidthFeatureBinningFactory final : public IFeatureBinningFactory {
 };
 
 EqualWidthFeatureBinningConfig::EqualWidthFeatureBinningConfig(
-        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+    const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
     : binRatio_(0.33f), minBins_(2), maxBins_(0), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
 float32 EqualWidthFeatureBinningConfig::getBinRatio() const {
@@ -240,7 +240,7 @@ IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint
 }
 
 std::unique_ptr<IThresholdsFactory> EqualWidthFeatureBinningConfig::createThresholdsFactory(
-        const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+    const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
     std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr =
         std::make_unique<EqualWidthFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
     std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr =

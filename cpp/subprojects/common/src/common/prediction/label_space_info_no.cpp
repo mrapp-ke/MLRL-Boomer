@@ -28,14 +28,14 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
         }
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-                const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-                const RuleList& model, uint32 numLabels) const override {
+            const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+            const RuleList& model, uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, numLabels);
         }
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-                const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
-                const RuleList& model, uint32 numLabels) const override {
+            const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
+            uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, numLabels);
         }
 

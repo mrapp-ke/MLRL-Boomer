@@ -94,16 +94,15 @@ namespace boosting {
                                               SparseLabelWiseHistogram, NumericSparseSetMatrix<float64>,
                                               ISparseLabelWiseLoss, ISparseEvaluationMeasure,
                                               ISparseLabelWiseRuleEvaluationFactory>(
-                      std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
-                      std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
+                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+                    std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
     };
 
     template<typename LabelMatrix>
     static inline std::unique_ptr<ILabelWiseStatistics<ISparseLabelWiseRuleEvaluationFactory>> createStatistics(
-            const ISparseLabelWiseLossFactory& lossFactory,
-            const ISparseEvaluationMeasureFactory& evaluationMeasureFactory,
-            const ISparseLabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
-            const LabelMatrix& labelMatrix) {
+        const ISparseLabelWiseLossFactory& lossFactory, const ISparseEvaluationMeasureFactory& evaluationMeasureFactory,
+        const ISparseLabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
+        const LabelMatrix& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<ISparseLabelWiseLoss> lossPtr = lossFactory.createSparseLabelWiseLoss();
@@ -131,17 +130,17 @@ namespace boosting {
     }
 
     SparseLabelWiseStatisticsProviderFactory::SparseLabelWiseStatisticsProviderFactory(
-            std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr,
-            std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
-            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
+        std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr,
+        std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+        std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+        std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
         : lossFactoryPtr_(std::move(lossFactoryPtr)),
           evaluationMeasureFactoryPtr_(std::move(evaluationMeasureFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
     std::unique_ptr<IStatisticsProvider> SparseLabelWiseStatisticsProviderFactory::create(
-            const CContiguousConstView<const uint8>& labelMatrix) const {
+        const CContiguousConstView<const uint8>& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ISparseLabelWiseRuleEvaluationFactory>> statisticsPtr =
             createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *regularRuleEvaluationFactoryPtr_,
                              numThreads_, labelMatrix);
@@ -150,7 +149,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProvider> SparseLabelWiseStatisticsProviderFactory::create(
-            const BinaryCsrConstView& labelMatrix) const {
+        const BinaryCsrConstView& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ISparseLabelWiseRuleEvaluationFactory>> statisticsPtr =
             createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *regularRuleEvaluationFactoryPtr_,
                              numThreads_, labelMatrix);

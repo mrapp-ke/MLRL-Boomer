@@ -8,18 +8,18 @@
 namespace boosting {
 
     SingleLabelHeadConfig::SingleLabelHeadConfig(
-            const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
-            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
+        const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
+        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
+        const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
+        const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
         : labelBinningConfigPtr_(labelBinningConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr),
           l1RegularizationConfigPtr_(l1RegularizationConfigPtr), l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
 
     }
 
     std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-            const ILabelWiseLossConfig& lossConfig) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const ILabelWiseLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
@@ -39,8 +39,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-            const ISparseLabelWiseLossConfig& lossConfig) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const ISparseLabelWiseLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
@@ -57,8 +57,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-            const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());

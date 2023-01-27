@@ -400,8 +400,8 @@ class ApproximateThresholds final : public AbstractThresholds {
 };
 
 ApproximateThresholdsFactory::ApproximateThresholdsFactory(
-        std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr,
-        std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr, uint32 numThreads)
+    std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr,
+    std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr, uint32 numThreads)
     : numericalFeatureBinningFactoryPtr_(std::move(numericalFeatureBinningFactoryPtr)),
       nominalFeatureBinningFactoryPtr_(std::move(nominalFeatureBinningFactoryPtr)), numThreads_(numThreads) {}
 

@@ -77,13 +77,13 @@ namespace boosting {
     };
 
     LabelWiseFixedPartialRuleEvaluationFactory::LabelWiseFixedPartialRuleEvaluationFactory(
-            float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
-            float64 l2RegularizationWeight)
+        float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
+        float64 l2RegularizationWeight)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseFixedPartialRuleEvaluationFactory::create(
-            const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+        const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
             calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_);
         return std::make_unique<
@@ -92,13 +92,13 @@ namespace boosting {
     }
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseFixedPartialRuleEvaluationFactory::create(
-            const DenseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+        const DenseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
         return std::make_unique<LabelWiseCompleteRuleEvaluation<DenseLabelWiseStatisticVector, PartialIndexVector>>(
             indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseFixedPartialRuleEvaluationFactory::create(
-            const SparseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+        const SparseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
             calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_);
         return std::make_unique<
@@ -107,7 +107,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseFixedPartialRuleEvaluationFactory::create(
-            const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+        const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
         return std::make_unique<LabelWiseCompleteRuleEvaluation<SparseLabelWiseStatisticVector, PartialIndexVector>>(
             indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }

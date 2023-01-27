@@ -87,7 +87,7 @@ namespace boosting {
     };
 
     LabelWiseDynamicPartialRuleEvaluationFactory::LabelWiseDynamicPartialRuleEvaluationFactory(
-            float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight)
+        float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight)
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight) {}
 

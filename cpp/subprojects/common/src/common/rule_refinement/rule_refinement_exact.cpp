@@ -32,9 +32,9 @@ static inline void adjustRefinement(Refinement& refinement, FeatureVector::const
 
 template<typename IndexIterator, typename RefinementComparator>
 static inline void findRefinementInternally(
-        const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal, uint32 minCoverage,
-        bool hasZeroWeights, IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>& callback,
-        RefinementComparator& comparator) {
+    const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal, uint32 minCoverage,
+    bool hasZeroWeights, IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>& callback,
+    RefinementComparator& comparator) {
     Refinement refinement;
     refinement.featureIndex = featureIndex;
 

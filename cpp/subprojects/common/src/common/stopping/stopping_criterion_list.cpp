@@ -23,8 +23,8 @@ class StoppingCriterionList final : public IStoppingCriterion {
          *                                      instances of the stopping criteria to be tested
          */
         StoppingCriterionList(
-                Partition& partition,
-                const std::vector<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) {
+            Partition& partition,
+            const std::vector<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) {
             stoppingCriteria_.reserve(stoppingCriterionFactories.size());
 
             for (auto it = stoppingCriterionFactories.cbegin(); it != stoppingCriterionFactories.cend(); it++) {
@@ -64,7 +64,7 @@ class NoStoppingCriterion final : public IStoppingCriterion {
 };
 
 void StoppingCriterionListFactory::addStoppingCriterionFactory(
-        std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) {
+    std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) {
     stoppingCriterionFactories_.push_back(std::move(stoppingCriterionFactoryPtr));
 }
 

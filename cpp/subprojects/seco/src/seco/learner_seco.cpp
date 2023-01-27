@@ -41,7 +41,7 @@ namespace seco {
     }
 
     std::unique_ptr<IMultiLabelSeCoRuleLearner> createMultiLabelSeCoRuleLearner(
-            std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr) {
+        std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr) {
         return std::make_unique<MultiLabelSeCoRuleLearner>(std::move(configPtr));
     }
 

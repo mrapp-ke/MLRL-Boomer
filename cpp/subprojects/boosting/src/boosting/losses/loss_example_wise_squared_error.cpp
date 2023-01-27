@@ -7,8 +7,8 @@ namespace boosting {
 
     template<typename LabelIterator>
     static inline void updateLabelWiseStatisticsInternally(
-            CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
-            DenseLabelWiseStatisticView::iterator statisticIterator, uint32 numLabels) {
+        CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
+        DenseLabelWiseStatisticView::iterator statisticIterator, uint32 numLabels) {
         LabelIterator labelIterator2 = labelIterator;
 
         // For each label `i`, calculate `x_i = predictedScore_i^2 + (-2 * expectedScore_i * predictedScore_i) + 1` and
@@ -52,9 +52,9 @@ namespace boosting {
 
     template<typename LabelIterator>
     static inline void updateExampleWiseStatisticsInternally(
-            CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
-            DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
-            DenseExampleWiseStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
+        CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
+        DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
+        DenseExampleWiseStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
         LabelIterator labelIterator2 = labelIterator;
         LabelIterator labelIterator3 = labelIterator;
 
@@ -247,12 +247,12 @@ namespace boosting {
     };
 
     ExampleWiseSquaredErrorLossConfig::ExampleWiseSquaredErrorLossConfig(
-            const std::unique_ptr<IHeadConfig>& headConfigPtr)
+        const std::unique_ptr<IHeadConfig>& headConfigPtr)
         : headConfigPtr_(headConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> ExampleWiseSquaredErrorLossConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-            const Lapack& lapack, bool preferSparseStatistics) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+        const Lapack& lapack, bool preferSparseStatistics) const {
         return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
     }
 

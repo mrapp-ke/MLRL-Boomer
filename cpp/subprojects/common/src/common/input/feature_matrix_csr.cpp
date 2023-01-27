@@ -20,8 +20,8 @@ std::unique_ptr<IBinaryPredictor> CsrFeatureMatrix::createBinaryPredictor(const 
 }
 
 std::unique_ptr<ISparseBinaryPredictor> CsrFeatureMatrix::createSparseBinaryPredictor(
-        const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
-        const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
+    const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+    uint32 numLabels) const {
     return ruleModel.createSparseBinaryPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
@@ -33,8 +33,8 @@ std::unique_ptr<IScorePredictor> CsrFeatureMatrix::createScorePredictor(const IS
 }
 
 std::unique_ptr<IProbabilityPredictor> CsrFeatureMatrix::createProbabilityPredictor(
-        const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-        uint32 numLabels) const {
+    const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+    uint32 numLabels) const {
     return ruleModel.createProbabilityPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 

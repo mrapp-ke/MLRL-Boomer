@@ -60,7 +60,7 @@ namespace boosting {
                                                          float64 l2RegularizationWeight, const Blas& blas,
                                                          const Lapack& lapack)
                 : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(
-                      labelIndices.getNumElements(), lapack),
+                    labelIndices.getNumElements(), lapack),
                   labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, true)), threshold_(1.0 - threshold),
                   exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
@@ -123,8 +123,8 @@ namespace boosting {
     };
 
     ExampleWiseDynamicPartialRuleEvaluationFactory::ExampleWiseDynamicPartialRuleEvaluationFactory(
-            float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
-            const Blas& blas, const Lapack& lapack)
+        float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+        const Blas& blas, const Lapack& lapack)
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), blas_(blas), lapack_(lapack) {}
 

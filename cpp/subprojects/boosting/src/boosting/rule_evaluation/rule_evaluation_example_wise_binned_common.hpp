@@ -56,10 +56,10 @@ namespace boosting {
      */
     template<typename BinIndexIterator>
     static inline void aggregateGradientsAndHessians(
-            DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
-            DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator, uint32 numElements,
-            BinIndexIterator binIndexIterator, const uint32* binIndices, float64* gradients, float64* hessians,
-            uint32 maxBins) {
+        DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
+        DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator, uint32 numElements,
+        BinIndexIterator binIndexIterator, const uint32* binIndices, float64* gradients, float64* hessians,
+        uint32 maxBins) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 originalBinIndex = binIndexIterator[i];
 

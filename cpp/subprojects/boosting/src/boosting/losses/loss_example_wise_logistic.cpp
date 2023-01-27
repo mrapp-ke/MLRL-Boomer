@@ -23,8 +23,8 @@ namespace boosting {
 
     template<typename LabelIterator>
     static inline void updateLabelWiseStatisticsInternally(
-            CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
-            DenseLabelWiseStatisticView::iterator statisticIterator, uint32 numLabels) {
+        CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
+        DenseLabelWiseStatisticView::iterator statisticIterator, uint32 numLabels) {
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
         // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
         // of the form `exp(x_1) / (exp(x_1) + exp(x_2) + ...)` as
@@ -72,9 +72,9 @@ namespace boosting {
 
     template<typename LabelIterator>
     static inline void updateExampleWiseStatisticsInternally(
-            CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
-            DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
-            DenseExampleWiseStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
+        CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
+        DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
+        DenseExampleWiseStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
         // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
         // of the form `exp(x_1) / (exp(x_1) + exp(x_2) + ...)` as
@@ -349,8 +349,8 @@ namespace boosting {
         : headConfigPtr_(headConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> ExampleWiseLogisticLossConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-            const Lapack& lapack, bool preferSparseStatistics) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+        const Lapack& lapack, bool preferSparseStatistics) const {
         return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
     }
 

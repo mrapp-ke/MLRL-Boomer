@@ -314,10 +314,10 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
     protected:
 
         std::unique_ptr<IThresholdsSubset> growRule(
-                IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
-                IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
-                std::unique_ptr<ConditionList>& conditionListPtr,
-                std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const override {
+            IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
+            IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
+            std::unique_ptr<ConditionList>& conditionListPtr,
+            std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const override {
             // Create a new subset of the given thresholds...
             std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(thresholds);
 
@@ -418,7 +418,7 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 };
 
 BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
-        RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+    RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
     : ruleCompareFunction_(ruleCompareFunction), beamWidth_(4), resampleFeatures_(false), minCoverage_(1),
       minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
       multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
@@ -438,7 +438,7 @@ bool BeamSearchTopDownRuleInductionConfig::areFeaturesResampled() const {
 }
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setResampleFeatures(
-        bool resampleFeatures) {
+    bool resampleFeatures) {
     resampleFeatures_ = resampleFeatures;
     return *this;
 }
@@ -479,7 +479,7 @@ uint32 BeamSearchTopDownRuleInductionConfig::getMaxHeadRefinements() const {
 }
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setMaxHeadRefinements(
-        uint32 maxHeadRefinements) {
+    uint32 maxHeadRefinements) {
     if (maxHeadRefinements != 0) { assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1); }
     maxHeadRefinements_ = maxHeadRefinements;
     return *this;
@@ -490,13 +490,13 @@ bool BeamSearchTopDownRuleInductionConfig::arePredictionsRecalculated() const {
 }
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setRecalculatePredictions(
-        bool recalculatePredictions) {
+    bool recalculatePredictions) {
     recalculatePredictions_ = recalculatePredictions;
     return *this;
 }
 
 std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::createRuleInductionFactory(
-        const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+    const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
     uint32 numExamples = featureMatrix.getNumRows();
     uint32 minCoverage;
 

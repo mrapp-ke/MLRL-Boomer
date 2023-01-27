@@ -453,7 +453,7 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices) const override {
+                const CompleteIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, totalSumVector_,
                                                                                        labelIndices);
             }
@@ -462,7 +462,7 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices) const override {
+                const PartialIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, totalSumVector_,
                                                                                       labelIndices);
             }
@@ -505,9 +505,9 @@ namespace boosting {
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
              typename BinIndexVector, typename WeightVector>
     static inline std::unique_ptr<IHistogram> createExampleWiseHistogramInternally(
-            const BinIndexVector& binIndexVector, const StatisticView& originalStatisticView,
-            const WeightVector& originalWeights, const StatisticVector& totalSumVector,
-            const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins) {
+        const BinIndexVector& binIndexVector, const StatisticView& originalStatisticView,
+        const WeightVector& originalWeights, const StatisticVector& totalSumVector,
+        const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins) {
         std::unique_ptr<Histogram> histogramPtr =
             std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
         std::unique_ptr<BinWeightVector> binWeightVectorPtr = std::make_unique<BinWeightVector>(numBins);
@@ -681,7 +681,7 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices) const override {
+                const CompleteIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, *totalSumVectorPtr_,
                                                                                        labelIndices);
             }
@@ -690,7 +690,7 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices) const override {
+                const PartialIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, *totalSumVectorPtr_,
                                                                                       labelIndices);
             }
@@ -795,7 +795,7 @@ namespace boosting {
              * @see `IExampleWiseStatistics::setRuleEvaluationFactory`
              */
             void setRuleEvaluationFactory(
-                    const ExampleWiseRuleEvaluationFactory& ruleEvaluationFactory) override final {
+                const ExampleWiseRuleEvaluationFactory& ruleEvaluationFactory) override final {
                 this->ruleEvaluationFactory_ = &ruleEvaluationFactory;
             }
 
@@ -904,8 +904,8 @@ namespace boosting {
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices,
-                    const DenseWeightVector<uint32>& weights) const override final {
+                const CompleteIndexVector& labelIndices,
+                const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<
                     ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
                                                 DenseWeightVector<uint32>, CompleteIndexVector>>(
@@ -916,8 +916,7 @@ namespace boosting {
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices,
-                    const DenseWeightVector<uint32>& weights) const override final {
+                const PartialIndexVector& labelIndices, const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<
                     ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
                                                 DenseWeightVector<uint32>, PartialIndexVector>>(
@@ -928,8 +927,8 @@ namespace boosting {
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices,
-                    const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
+                const CompleteIndexVector& labelIndices,
+                const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
                 return std::make_unique<
                     ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
                                                 OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>>(
@@ -940,8 +939,8 @@ namespace boosting {
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices,
-                    const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
+                const PartialIndexVector& labelIndices,
+                const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
                 return std::make_unique<
                     ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
                                                 OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>>(
@@ -952,8 +951,8 @@ namespace boosting {
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices,
-                    const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
+                const CompleteIndexVector& labelIndices,
+                const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
                 return std::make_unique<
                     ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
                                                 OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>>(
@@ -964,8 +963,8 @@ namespace boosting {
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices,
-                    const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
+                const PartialIndexVector& labelIndices,
+                const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
                 return std::make_unique<
                     ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
                                                 OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>>(
@@ -976,8 +975,8 @@ namespace boosting {
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices,
-                    const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
+                const CompleteIndexVector& labelIndices,
+                const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
                 return std::make_unique<ExampleWiseStatisticsSubset<
                     StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
                     OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector>>(
@@ -988,8 +987,8 @@ namespace boosting {
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices,
-                    const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
+                const PartialIndexVector& labelIndices,
+                const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
                 return std::make_unique<ExampleWiseStatisticsSubset<
                     StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
                     OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector>>(
@@ -1000,7 +999,7 @@ namespace boosting {
              * @see `IStatistics::createWeightedStatistics`
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-                    const EqualWeightVector& weights) const override final {
+                const EqualWeightVector& weights) const override final {
                 return std::make_unique<ExampleWiseWeightedStatistics<
                     StatisticVector, StatisticView, Histogram, ExampleWiseRuleEvaluationFactory, EqualWeightVector>>(
                     *statisticViewPtr_, *ruleEvaluationFactory_, weights);
@@ -1010,7 +1009,7 @@ namespace boosting {
              * @see `IStatistics::createWeightedStatistics`
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-                    const BitWeightVector& weights) const override final {
+                const BitWeightVector& weights) const override final {
                 return std::make_unique<ExampleWiseWeightedStatistics<
                     StatisticVector, StatisticView, Histogram, ExampleWiseRuleEvaluationFactory, BitWeightVector>>(
                     *statisticViewPtr_, *ruleEvaluationFactory_, weights);
@@ -1020,7 +1019,7 @@ namespace boosting {
              * @see `IStatistics::createWeightedStatistics`
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-                    const DenseWeightVector<uint32>& weights) const override final {
+                const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<
                     ExampleWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
                                                   ExampleWiseRuleEvaluationFactory, DenseWeightVector<uint32>>>(

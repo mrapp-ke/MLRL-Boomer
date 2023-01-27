@@ -76,16 +76,16 @@ namespace boosting {
                                                              std::unique_ptr<ILabelBinning> binningPtr,
                                                              const Blas& blas, const Lapack& lapack)
                 : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector>(
-                      *indexVectorPtr, false, maxBins, l1RegularizationWeight, l2RegularizationWeight,
-                      std::move(binningPtr), blas, lapack),
+                    *indexVectorPtr, false, maxBins, l1RegularizationWeight, l2RegularizationWeight,
+                    std::move(binningPtr), blas, lapack),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)),
                   tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {}
     };
 
     ExampleWiseFixedPartialBinnedRuleEvaluationFactory::ExampleWiseFixedPartialBinnedRuleEvaluationFactory(
-            float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
-            float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
-            const Blas& blas, const Lapack& lapack)
+        float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
+        float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas,
+        const Lapack& lapack)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)), blas_(blas), lapack_(lapack) {}

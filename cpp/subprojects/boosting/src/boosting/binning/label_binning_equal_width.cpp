@@ -164,8 +164,8 @@ namespace boosting {
     };
 
     EqualWidthLabelBinningConfig::EqualWidthLabelBinningConfig(
-            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
+        const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
+        const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
         : binRatio_(0.04f), minBins_(1), maxBins_(0), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
           l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {}
 

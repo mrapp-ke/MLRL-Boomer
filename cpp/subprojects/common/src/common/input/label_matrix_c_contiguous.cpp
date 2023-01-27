@@ -59,22 +59,22 @@ std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 ro
 }
 
 std::unique_ptr<IStatisticsProvider> CContiguousLabelMatrix::createStatisticsProvider(
-        const IStatisticsProviderFactory& factory) const {
+    const IStatisticsProviderFactory& factory) const {
     return factory.create(*this);
 }
 
 std::unique_ptr<IPartitionSampling> CContiguousLabelMatrix::createPartitionSampling(
-        const IPartitionSamplingFactory& factory) const {
+    const IPartitionSamplingFactory& factory) const {
     return factory.create(*this);
 }
 
 std::unique_ptr<IInstanceSampling> CContiguousLabelMatrix::createInstanceSampling(
-        const IInstanceSamplingFactory& factory, const SinglePartition& partition, IStatistics& statistics) const {
+    const IInstanceSamplingFactory& factory, const SinglePartition& partition, IStatistics& statistics) const {
     return factory.create(*this, partition, statistics);
 }
 
 std::unique_ptr<IInstanceSampling> CContiguousLabelMatrix::createInstanceSampling(
-        const IInstanceSamplingFactory& factory, BiPartition& partition, IStatistics& statistics) const {
+    const IInstanceSamplingFactory& factory, BiPartition& partition, IStatistics& statistics) const {
     return factory.create(*this, partition, statistics);
 }
 

@@ -101,7 +101,7 @@ float32 LabelWiseStratifiedInstanceSamplingConfig::getSampleSize() const {
 }
 
 ILabelWiseStratifiedInstanceSamplingConfig& LabelWiseStratifiedInstanceSamplingConfig::setSampleSize(
-        float32 sampleSize) {
+    float32 sampleSize) {
     assertGreater<float32>("sampleSize", sampleSize, 0);
     assertLess<float32>("sampleSize", sampleSize, 1);
     sampleSize_ = sampleSize;

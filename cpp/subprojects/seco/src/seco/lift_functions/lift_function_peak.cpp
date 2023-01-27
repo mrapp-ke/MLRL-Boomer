@@ -150,7 +150,7 @@ namespace seco {
     }
 
     std::unique_ptr<ILiftFunctionFactory> PeakLiftFunctionConfig::createLiftFunctionFactory(
-            const IRowWiseLabelMatrix& labelMatrix) const {
+        const IRowWiseLabelMatrix& labelMatrix) const {
         uint32 numLabels = labelMatrix.getNumRows();
         uint32 peakLabel = peakLabel_;
 
