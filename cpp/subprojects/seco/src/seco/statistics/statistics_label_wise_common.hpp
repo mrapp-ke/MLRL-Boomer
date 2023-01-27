@@ -204,10 +204,9 @@ namespace seco {
      */
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory, typename WeightVector, typename IndexVector>
-    class LabelWiseStatisticsSubset final : public AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix,
-                                                                                     ConfusionMatrixVector,
-                                                                                     RuleEvaluationFactory,
-                                                                                     WeightVector, IndexVector> {
+    class LabelWiseStatisticsSubset final
+        : public AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                   RuleEvaluationFactory, WeightVector, IndexVector> {
         private:
 
             std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr_;
@@ -309,11 +308,10 @@ namespace seco {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class WeightedStatisticsSubset final : virtual public IWeightedStatisticsSubset,
-                                                   public AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix,
-                                                                                            ConfusionMatrixVector,
-                                                                                            RuleEvaluationFactory,
-                                                                                            WeightVector, IndexVector> {
+            class WeightedStatisticsSubset final
+                : virtual public IWeightedStatisticsSubset,
+                  public AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                           RuleEvaluationFactory, WeightVector, IndexVector> {
                 private:
 
                     const ConfusionMatrixVector* subsetSumVector_;

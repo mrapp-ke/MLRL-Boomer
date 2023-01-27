@@ -45,14 +45,11 @@ namespace boosting {
      * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
      */
     template<typename LabelMatrix>
-    class DenseExampleWiseStatistics final : public AbstractExampleWiseStatistics<LabelMatrix,
-                                                                                  DenseExampleWiseStatisticVector,
-                                                                                  DenseExampleWiseStatisticView,
-                                                                                  DenseExampleWiseStatisticMatrix,
-                                                                                  NumericDenseMatrix<float64>,
-                                                                                  IExampleWiseLoss, IEvaluationMeasure,
-                                                                                  IExampleWiseRuleEvaluationFactory,
-                                                                                  ILabelWiseRuleEvaluationFactory> {
+    class DenseExampleWiseStatistics final
+        : public AbstractExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
+                                               DenseExampleWiseStatisticView, DenseExampleWiseStatisticMatrix,
+                                               NumericDenseMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
+                                               IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory> {
         public:
 
             /**

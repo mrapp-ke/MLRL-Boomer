@@ -16,10 +16,9 @@ namespace seco {
      * stored using dense data structures.
      */
     template<typename LabelMatrix>
-    class DenseLabelWiseStatistics final : public AbstractLabelWiseStatistics<LabelMatrix, DenseCoverageMatrix,
-                                                                              DenseConfusionMatrixVector,
-                                                                              ILabelWiseRuleEvaluationFactory>  {
-
+    class DenseLabelWiseStatistics final
+        : public AbstractLabelWiseStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector,
+                                             ILabelWiseRuleEvaluationFactory> {
         public:
 
             /**

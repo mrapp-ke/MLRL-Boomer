@@ -15,8 +15,8 @@ namespace boosting {
      *                          be calculated
      */
     template<typename StatisticVector, typename IndexVector>
-    class LabelWiseFixedPartialBinnedRuleEvaluation final :
-            public AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
+    class LabelWiseFixedPartialBinnedRuleEvaluation final
+        : public AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
         private:
 
             const IndexVector& labelIndices_;

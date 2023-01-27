@@ -64,14 +64,11 @@ namespace boosting {
      * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
      */
     template<typename LabelMatrix>
-    class SparseLabelWiseStatistics final : public AbstractLabelWiseStatistics<LabelMatrix,
-                                                                               SparseLabelWiseStatisticVector,
-                                                                               SparseLabelWiseStatisticView,
-                                                                               SparseLabelWiseHistogram,
-                                                                               NumericSparseSetMatrix<float64>,
-                                                                               ISparseLabelWiseLoss,
-                                                                               ISparseEvaluationMeasure,
-                                                                               ISparseLabelWiseRuleEvaluationFactory> {
+    class SparseLabelWiseStatistics final
+        : public AbstractLabelWiseStatistics<LabelMatrix, SparseLabelWiseStatisticVector, SparseLabelWiseStatisticView,
+                                             SparseLabelWiseHistogram, NumericSparseSetMatrix<float64>,
+                                             ISparseLabelWiseLoss, ISparseEvaluationMeasure,
+                                             ISparseLabelWiseRuleEvaluationFactory> {
         public:
 
             /**

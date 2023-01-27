@@ -182,9 +182,8 @@ namespace boosting {
      *                          be calculated
      */
     template<typename StatisticVector, typename IndexVector>
-    class AbstractExampleWiseBinnedRuleEvaluation :
-            public AbstractExampleWiseRuleEvaluation<StatisticVector, IndexVector> {
-
+    class AbstractExampleWiseBinnedRuleEvaluation
+        : public AbstractExampleWiseRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
             uint32 maxBins_;
@@ -357,9 +356,8 @@ namespace boosting {
      *                     calculated
      */
     template<typename IndexVector>
-    class DenseExampleWiseCompleteBinnedRuleEvaluation final :
-            public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
-
+    class DenseExampleWiseCompleteBinnedRuleEvaluation final
+        : public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
         protected:
 
             uint32 calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
