@@ -190,8 +190,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                 std::unique_ptr<IRuleRefinement> createApproximateRuleRefinement(const IndexVector& labelIndices,
                                                                                  uint32 featureIndex) {
                     // Retrieve `unique_ptr` from the cache, or insert an empty one if it does not already exist...
-                    auto cacheHistogramIterator = cacheHistogram_.emplace(featureIndex,
-                                                                          std::unique_ptr<IHistogram>()).first;
+                    auto cacheHistogramIterator =
+                        cacheHistogram_.emplace(featureIndex, std::unique_ptr<IHistogram>()).first;
 
                     // If the `unique_ptr` in the cache does not refer to an `IHistogram`, add an empty
                     // `IFeatureBinning::Result` to the cache...
@@ -203,10 +203,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                         thresholds_.featureInfo_.createFeatureType(featureIndex);
                     bool nominal = !featureTypePtr->isNumerical();
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
-                    return std::make_unique<ApproximateRuleRefinement<IndexVector>>(labelIndices,
-                                                                                    coverageSet_.getNumCovered(),
-                                                                                    featureIndex, nominal,
-                                                                                    std::move(callbackPtr));
+                    return std::make_unique<ApproximateRuleRefinement<IndexVector>>(
+                        labelIndices, coverageSet_.getNumCovered(), featureIndex, nominal, std::move(callbackPtr));
                 }
 
             public:

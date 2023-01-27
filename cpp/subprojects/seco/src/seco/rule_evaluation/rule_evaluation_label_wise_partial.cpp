@@ -54,8 +54,8 @@ namespace seco {
                     scoreVector_.indices_cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                                  majorityLabelIndices.cend());
+                auto labelIterator =
+                    make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 float64 sumOfQualities = 0;
                 uint32 previousIndex = 0;
@@ -64,8 +64,8 @@ namespace seco {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
                     scoreIterator[i] = (float64) !(*labelIterator);
-                    sumOfQualities += calculateLabelWiseQuality(totalIterator[index], coveredIterator[i],
-                                                                *heuristicPtr_);
+                    sumOfQualities +=
+                        calculateLabelWiseQuality(totalIterator[index], coveredIterator[i], *heuristicPtr_);
                     previousIndex = index;
                 }
 
@@ -121,8 +121,8 @@ namespace seco {
                 typename T::const_iterator indexIterator = labelIndices_.cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                                  majorityLabelIndices.cend());
+                auto labelIterator =
+                    make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
                 SparseArrayVector<Tuple<float64>>::iterator sortedIterator = sortedVector_.begin();
                 uint32 previousIndex = 0;
 
@@ -137,8 +137,8 @@ namespace seco {
                     previousIndex = index;
                 }
 
-                std::sort(sortedIterator, sortedVector_.end(), [=](const IndexedValue<Tuple<float64>>& a,
-                                                                   const IndexedValue<Tuple<float64>>& b) {
+                std::sort(sortedIterator, sortedVector_.end(),
+                          [=](const IndexedValue<Tuple<float64>>& a, const IndexedValue<Tuple<float64>>& b) {
                     return a.value.first > b.value.first;
                 });
 
@@ -192,9 +192,8 @@ namespace seco {
             const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
-        return std::make_unique<LabelWisePartialRuleEvaluation<CompleteIndexVector>>(indexVector,
-                                                                                     std::move(heuristicPtr),
-                                                                                     std::move(liftFunctionPtr));
+        return std::make_unique<LabelWisePartialRuleEvaluation<CompleteIndexVector>>(
+            indexVector, std::move(heuristicPtr), std::move(liftFunctionPtr));
     }
 
     std::unique_ptr<IRuleEvaluation> LabelWisePartialRuleEvaluationFactory::create(

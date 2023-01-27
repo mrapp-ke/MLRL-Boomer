@@ -86,18 +86,16 @@ class AbstractRuleInduction : public IRuleInduction {
                         IModelBuilder& modelBuilder) const override final {
             std::unique_ptr<ConditionList> conditionListPtr;
             std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
-            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = this->growRule(thresholds, labelIndices, weights,
-                                                                                    partition, featureSampling, rng,
-                                                                                    conditionListPtr, headPtr);
+            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = this->growRule(
+                thresholds, labelIndices, weights, partition, featureSampling, rng, conditionListPtr, headPtr);
 
             if (headPtr) {
                 if (weights.hasZeroWeights()) {
                     // Prune rule...
                     IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
                     statisticsProvider.switchToPruningRuleEvaluation();
-                    std::unique_ptr<ICoverageState> coverageStatePtr = rulePruning.prune(*thresholdsSubsetPtr,
-                                                                                         partition, *conditionListPtr,
-                                                                                         *headPtr);
+                    std::unique_ptr<ICoverageState> coverageStatePtr =
+                        rulePruning.prune(*thresholdsSubsetPtr, partition, *conditionListPtr, *headPtr);
                     statisticsProvider.switchToRegularRuleEvaluation();
 
                     // Re-calculate the scores in the head based on the entire training data...

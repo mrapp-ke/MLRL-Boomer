@@ -12,8 +12,8 @@ namespace seco {
     static inline void addInternally(LabelIterator labelIterator, const VectorConstView<uint32>& majorityLabelIndices,
                                      DenseCoverageMatrix::value_const_iterator coverageIterator, float64 weight,
                                      ConfusionMatrix* confusionMatrices, uint32 numLabels) {
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                             majorityLabelIndices.cend());
+        auto majorityIterator =
+            make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
 
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 coverage = coverageIterator[i];
@@ -134,8 +134,8 @@ namespace seco {
                                                  const VectorConstView<uint32>& majorityLabelIndices,
                                                  const DenseCoverageMatrix& coverageMatrix,
                                                  const PartialIndexVector& indices, float64 weight) {
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                             majorityLabelIndices.cend());
+        auto majorityIterator =
+            make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
         typename DenseCoverageMatrix::value_const_iterator coverageIterator =
             coverageMatrix.row_values_cbegin(exampleIndex);
         CContiguousConstView<const uint8>::value_const_iterator labelIterator =
@@ -164,8 +164,8 @@ namespace seco {
                                                  const VectorConstView<uint32>& majorityLabelIndices,
                                                  const DenseCoverageMatrix& coverageMatrix,
                                                  const PartialIndexVector& indices, float64 weight) {
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                             majorityLabelIndices.cend());
+        auto majorityIterator =
+            make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
         typename DenseCoverageMatrix::value_const_iterator coverageIterator =
             coverageMatrix.row_values_cbegin(exampleIndex);
         BinaryCsrConstView::index_const_iterator labelIndexIterator = labelMatrix.row_indices_cbegin(exampleIndex);

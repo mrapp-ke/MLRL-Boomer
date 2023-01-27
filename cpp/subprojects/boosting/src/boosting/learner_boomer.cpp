@@ -38,13 +38,13 @@ namespace boosting {
     }
 
     void Boomer::Config::useAutomaticDefaultRule() {
-        defaultRuleConfigPtr_ = std::make_unique<AutomaticDefaultRuleConfig>(statisticsConfigPtr_, lossConfigPtr_,
-                                                                             headConfigPtr_);
+        defaultRuleConfigPtr_ =
+            std::make_unique<AutomaticDefaultRuleConfig>(statisticsConfigPtr_, lossConfigPtr_, headConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticPartitionSampling() {
-        partitionSamplingConfigPtr_ = std::make_unique<AutomaticPartitionSamplingConfig>(globalPruningConfigPtr_,
-                                                                                         lossConfigPtr_);
+        partitionSamplingConfigPtr_ =
+            std::make_unique<AutomaticPartitionSamplingConfig>(globalPruningConfigPtr_, lossConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticFeatureBinning() {
@@ -61,9 +61,9 @@ namespace boosting {
     }
 
     void Boomer::Config::useAutomaticHeads() {
-        headConfigPtr_ = std::make_unique<AutomaticHeadConfig>(
-            lossConfigPtr_, labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
-            l2RegularizationConfigPtr_);
+        headConfigPtr_ = std::make_unique<AutomaticHeadConfig>(lossConfigPtr_, labelBinningConfigPtr_,
+                                                               parallelStatisticUpdateConfigPtr_,
+                                                               l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticStatistics() {

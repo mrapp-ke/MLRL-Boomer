@@ -25,8 +25,8 @@ namespace boosting {
         float64 minDistance;
         uint32 maxCount;
         LabelVectorSet::const_iterator it = labelVectorSet.cbegin();
-        const LabelVector* closestLabelVector = measureDistance(it, scoresBegin, scoresEnd, measure, minDistance,
-                                                                maxCount);
+        const LabelVector* closestLabelVector =
+            measureDistance(it, scoresBegin, scoresEnd, measure, minDistance, maxCount);
         it++;
 
         for (; it != labelVectorSet.cend(); it++) {
@@ -202,10 +202,8 @@ namespace boosting {
         }
 
         std::unique_ptr<IDistanceMeasure> distanceMeasurePtr = distanceMeasureFactory.createDistanceMeasure();
-        return std::make_unique<ExampleWiseBinaryPredictor<FeatureMatrix, RuleList>>(featureMatrix, model,
-                                                                                     *labelVectorSet, numLabels,
-                                                                                     std::move(distanceMeasurePtr),
-                                                                                     numThreads);
+        return std::make_unique<ExampleWiseBinaryPredictor<FeatureMatrix, RuleList>>(
+            featureMatrix, model, *labelVectorSet, numLabels, std::move(distanceMeasurePtr), numThreads);
     }
 
     /**

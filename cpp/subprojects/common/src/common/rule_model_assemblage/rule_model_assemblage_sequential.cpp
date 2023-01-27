@@ -108,16 +108,16 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             uint32 numUsedRules = 0;
 
             // Partition training data...
-            std::unique_ptr<IPartitionSampling> partitionSamplingPtr = labelMatrix.createPartitionSampling(
-                *partitionSamplingFactoryPtr_);
+            std::unique_ptr<IPartitionSampling> partitionSamplingPtr =
+                labelMatrix.createPartitionSampling(*partitionSamplingFactoryPtr_);
             RNG rng(randomState);
             IPartition& partition = partitionSamplingPtr->partition(rng);
 
             // Induce default rule...
-            std::unique_ptr<IPostOptimization> postOptimizationPtr = postOptimizationFactoryPtr_->create(
-                *modelBuilderFactoryPtr_);
-            std::unique_ptr<IStatisticsProvider> statisticsProviderPtr = labelMatrix.createStatisticsProvider(
-                *statisticsProviderFactoryPtr_);
+            std::unique_ptr<IPostOptimization> postOptimizationPtr =
+                postOptimizationFactoryPtr_->create(*modelBuilderFactoryPtr_);
+            std::unique_ptr<IStatisticsProvider> statisticsProviderPtr =
+                labelMatrix.createStatisticsProvider(*statisticsProviderFactoryPtr_);
             std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr_->create();
             IModelBuilder& modelBuilder = postOptimizationPtr->getModelBuilder();
 
@@ -128,8 +128,8 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             statisticsProviderPtr->switchToRegularRuleEvaluation();
 
             // Induce the remaining rules...
-            std::unique_ptr<IThresholds> thresholdsPtr = thresholdsFactoryPtr_->create(featureMatrix, featureInfo,
-                                                                                       *statisticsProviderPtr);
+            std::unique_ptr<IThresholds> thresholdsPtr =
+                thresholdsFactoryPtr_->create(featureMatrix, featureInfo, *statisticsProviderPtr);
             std::unique_ptr<IInstanceSampling> instanceSamplingPtr = partition.createInstanceSampling(
                 *instanceSamplingFactoryPtr_, labelMatrix, statisticsProviderPtr->get());
             std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr_->create();
@@ -153,9 +153,9 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
                 const IWeightVector& weights = instanceSamplingPtr->sample(rng);
                 const IIndexVector& labelIndices = labelSamplingPtr->sample(rng);
-                bool success = ruleInductionPtr->induceRule(*thresholdsPtr, labelIndices, weights, partition,
-                                                            *featureSamplingPtr, *rulePruningPtr, *postProcessorPtr,
-                                                            rng, modelBuilder);
+                bool success =
+                    ruleInductionPtr->induceRule(*thresholdsPtr, labelIndices, weights, partition, *featureSamplingPtr,
+                                                 *rulePruningPtr, *postProcessorPtr, rng, modelBuilder);
 
                 if (success) {
                     numRules++;

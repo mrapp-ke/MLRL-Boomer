@@ -76,10 +76,9 @@ namespace boosting {
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                     statisticVector.hessians_diagonal_cbegin();
                 typename DenseScoreVector<IndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                const std::pair<float64, float64> pair = getMinAndMaxScore(scoreIterator, gradientIterator,
-                                                                           hessianIterator, numLabels,
-                                                                           l1RegularizationWeight_,
-                                                                           l2RegularizationWeight_);
+                const std::pair<float64, float64> pair =
+                    getMinAndMaxScore(scoreIterator, gradientIterator, hessianIterator, numLabels,
+                                      l1RegularizationWeight_, l2RegularizationWeight_);
                 float64 minAbsScore = pair.first;
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
@@ -110,13 +109,13 @@ namespace boosting {
                               this->dsysvLwork_);
 
                 // Calculate the overall quality...
-                float64 quality = calculateOverallQuality(scoreIterator, statisticVector.gradients_begin(),
-                                                          statisticVector.hessians_begin(), this->dspmvTmpArray_, n,
-                                                          blas_);
+                float64 quality =
+                    calculateOverallQuality(scoreIterator, statisticVector.gradients_begin(),
+                                            statisticVector.hessians_begin(), this->dspmvTmpArray_, n, blas_);
 
                 // Evaluate regularization term...
-                quality += calculateRegularizationTerm(scoreIterator, n, l1RegularizationWeight_,
-                                                       l2RegularizationWeight_);
+                quality +=
+                    calculateRegularizationTerm(scoreIterator, n, l1RegularizationWeight_, l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;
                 return scoreVector_;

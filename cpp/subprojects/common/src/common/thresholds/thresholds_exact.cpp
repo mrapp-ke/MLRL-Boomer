@@ -318,10 +318,9 @@ class ExactThresholds final : public AbstractThresholds {
                         thresholds_.featureInfo_.createFeatureType(featureIndex);
                     bool nominal = !featureTypePtr->isNumerical();
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
-                    return std::make_unique<ExactRuleRefinement<IndexVector>>(labelIndices, numCoveredExamples_,
-                                                                              featureIndex, nominal,
-                                                                              weights_.hasZeroWeights(),
-                                                                              std::move(callbackPtr));
+                    return std::make_unique<ExactRuleRefinement<IndexVector>>(
+                        labelIndices, numCoveredExamples_, featureIndex, nominal, weights_.hasZeroWeights(),
+                        std::move(callbackPtr));
                 }
 
             public:
@@ -375,8 +374,8 @@ class ExactThresholds final : public AbstractThresholds {
                     FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
                     if (!featureVector) {
-                        auto cacheIterator = thresholds_.cache_.emplace(featureIndex,
-                                                                        std::unique_ptr<FeatureVector>()).first;
+                        auto cacheIterator =
+                            thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>()).first;
                         featureVector = cacheIterator->second.get();
                     }
 

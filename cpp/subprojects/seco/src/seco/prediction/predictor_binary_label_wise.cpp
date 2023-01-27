@@ -119,16 +119,16 @@ namespace seco {
     static inline uint32 applyHead(const IHead& head, BinaryLilMatrix::row row, uint32 numLabels) {
         uint32 numNonZeroElements;
         auto completeHeadVisitor = [&](const CompleteHead& head) mutable {
-            numNonZeroElements = applyHead(
-                make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
-                make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0), row,
-                numLabels);
+            numNonZeroElements =
+                applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
+                          make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()),
+                          IndexIterator(0), row, numLabels);
         };
         auto partialHeadVisitor = [&](const PartialHead& head) mutable {
-            numNonZeroElements = applyHead(
-                make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
-                make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), head.indices_cbegin(),
-                row, numLabels);
+            numNonZeroElements =
+                applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
+                          make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()),
+                          head.indices_cbegin(), row, numLabels);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
         return numNonZeroElements;

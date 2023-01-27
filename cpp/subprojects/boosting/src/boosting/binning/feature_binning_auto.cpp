@@ -15,8 +15,7 @@ namespace boosting {
             return EqualWidthFeatureBinningConfig(multiThreadingConfigPtr_)
                 .createThresholdsFactory(featureMatrix, labelMatrix);
         } else {
-            return NoFeatureBinningConfig(multiThreadingConfigPtr_)
-                .createThresholdsFactory(featureMatrix, labelMatrix);
+            return NoFeatureBinningConfig(multiThreadingConfigPtr_).createThresholdsFactory(featureMatrix, labelMatrix);
         }
     }
 

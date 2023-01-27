@@ -34,11 +34,9 @@ namespace boosting {
 
     bool AutomaticBinaryPredictorConfig::isLabelVectorSetNeeded() const {
         if (lossConfigPtr_->isDecomposable()) {
-            return LabelWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-                .isLabelVectorSetNeeded();
+            return LabelWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_).isLabelVectorSetNeeded();
         } else {
-            return ExampleWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-                .isLabelVectorSetNeeded();
+            return ExampleWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_).isLabelVectorSetNeeded();
         }
     }
 

@@ -170,9 +170,9 @@ namespace seco {
                      */
                     virtual void usePartialHeads() {
                         std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                        headConfigPtr = std::make_unique<PartialHeadConfig>(
-                            this->getHeuristicConfigPtr(), this->getPruningHeuristicConfigPtr(),
-                            this->getLiftFunctionConfigPtr());
+                        headConfigPtr = std::make_unique<PartialHeadConfig>(this->getHeuristicConfigPtr(),
+                                                                            this->getPruningHeuristicConfigPtr(),
+                                                                            this->getLiftFunctionConfigPtr());
                     }
 
                     /**

@@ -46,13 +46,13 @@ namespace seco {
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
                 uint32 bestIndex = indexIterator[0];
-                float64 bestQuality = calculateLabelWiseQuality(totalIterator[bestIndex], coveredIterator[0],
-                                                                *heuristicPtr_);
+                float64 bestQuality =
+                    calculateLabelWiseQuality(totalIterator[bestIndex], coveredIterator[0], *heuristicPtr_);
 
                 for (uint32 i = 1; i < numElements; i++) {
                     uint32 index = indexIterator[i];
-                    float64 quality = calculateLabelWiseQuality(totalIterator[index], coveredIterator[i],
-                                                                *heuristicPtr_);
+                    float64 quality =
+                        calculateLabelWiseQuality(totalIterator[index], coveredIterator[i], *heuristicPtr_);
 
                     if (quality > bestQuality) {
                         bestIndex = index;
@@ -60,8 +60,8 @@ namespace seco {
                     }
                 }
 
-                auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                                  majorityLabelIndices.cend());
+                auto labelIterator =
+                    make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
                 std::advance(labelIterator, bestIndex);
                 scoreVector_.scores_begin()[0] = (float64) !(*labelIterator);
                 indexVector_.begin()[0] = bestIndex;

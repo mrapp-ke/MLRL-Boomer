@@ -92,8 +92,8 @@ namespace boosting {
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseFixedPartialBinnedRuleEvaluationFactory::create(
             const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
-        uint32 numPredictions = calculateBoundedFraction(statisticVector.getNumElements(), labelRatio_, minLabels_,
-                                                         maxLabels_);
+        uint32 numPredictions =
+            calculateBoundedFraction(statisticVector.getNumElements(), labelRatio_, minLabels_, maxLabels_);
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(numPredictions);

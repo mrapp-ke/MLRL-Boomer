@@ -81,13 +81,13 @@ namespace boosting {
                     }
 
                     if (labelInfo.numNegativeBins > 0) {
-                        labelInfo.numNegativeBins = calculateBoundedFraction(labelInfo.numNegativeBins, binRatio_,
-                                                                             minBins_, maxBins_);
+                        labelInfo.numNegativeBins =
+                            calculateBoundedFraction(labelInfo.numNegativeBins, binRatio_, minBins_, maxBins_);
                     }
 
                     if (labelInfo.numPositiveBins > 0) {
-                        labelInfo.numPositiveBins = calculateBoundedFraction(labelInfo.numPositiveBins, binRatio_,
-                                                                             minBins_, maxBins_);
+                        labelInfo.numPositiveBins =
+                            calculateBoundedFraction(labelInfo.numPositiveBins, binRatio_, minBins_, maxBins_);
                     }
                 }
 

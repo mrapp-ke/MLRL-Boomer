@@ -201,8 +201,8 @@ namespace boosting {
 
         if (probabilityFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-            return std::make_unique<LabelWiseProbabilityPredictorFactory>(
-                std::move(probabilityFunctionFactoryPtr), numThreads);
+            return std::make_unique<LabelWiseProbabilityPredictorFactory>(std::move(probabilityFunctionFactoryPtr),
+                                                                          numThreads);
         } else {
             return nullptr;
         }
