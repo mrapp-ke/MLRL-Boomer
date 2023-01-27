@@ -1,4 +1,5 @@
 #include "boosting/losses/loss_label_wise_squared_hinge.hpp"
+
 #include "loss_label_wise_sparse_common.hpp"
 
 namespace boosting {

@@ -1,4 +1,5 @@
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
+
 #include "common/util/threads.hpp"
 
 namespace boosting {

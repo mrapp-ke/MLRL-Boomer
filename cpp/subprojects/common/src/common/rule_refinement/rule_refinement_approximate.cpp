@@ -1,4 +1,5 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
+
 #include <iostream>
 
 template<typename IndexVector, typename RefinementComparator>

@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/indices/index_vector.hpp"
 #include "common/data/vector_dense.hpp"
+#include "common/indices/index_vector.hpp"
 
 /**
  * Provides random access to a fixed number of indices stored in a C-contiguous array.

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/input/feature_matrix.hpp"
+
 #include <memory>
 
 // Forward declarations

@@ -4,11 +4,12 @@
 #endif
 
 #include "boosting/statistics/statistics_provider_label_wise_sparse.hpp"
+
 #include "boosting/data/histogram_view_label_wise_sparse.hpp"
 #include "boosting/data/matrix_sparse_set_numeric.hpp"
+#include "omp.h"
 #include "statistics_label_wise_common.hpp"
 #include "statistics_provider_label_wise.hpp"
-#include "omp.h"
 
 namespace boosting {
 

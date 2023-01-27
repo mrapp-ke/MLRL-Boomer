@@ -1,4 +1,5 @@
 #include "common/input/feature_matrix_c_contiguous.hpp"
+
 #include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"

@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_provider.hpp"
 #include "boosting/statistics/statistics_label_wise.hpp"
+#include "common/statistics/statistics_provider.hpp"
 
 namespace boosting {
 

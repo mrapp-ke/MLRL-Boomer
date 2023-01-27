@@ -1,6 +1,7 @@
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
-#include "common/util/validation.hpp"
+
 #include "common/math/math.hpp"
+#include "common/util/validation.hpp"
 #include "rule_induction_common.hpp"
 #include "rule_induction_top_down_common.hpp"
 

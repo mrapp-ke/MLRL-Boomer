@@ -3,10 +3,11 @@
  */
 #pragma once
 
-#include "common/indices/index_vector_complete.hpp"
-#include "common/indices/index_vector_partial.hpp"
 #include "boosting/data/statistic_vector_example_wise_dense.hpp"
 #include "boosting/rule_evaluation/rule_evaluation.hpp"
+#include "common/indices/index_vector_complete.hpp"
+#include "common/indices/index_vector_partial.hpp"
+
 #include <memory>
 
 namespace boosting {

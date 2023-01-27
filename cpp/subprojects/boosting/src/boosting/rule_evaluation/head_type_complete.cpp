@@ -1,4 +1,5 @@
 #include "boosting/rule_evaluation/head_type_complete.hpp"
+
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_complete.hpp"
 #include "boosting/statistics/statistics_provider_example_wise_dense.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"

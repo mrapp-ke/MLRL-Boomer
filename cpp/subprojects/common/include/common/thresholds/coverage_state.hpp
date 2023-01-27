@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/util/quality.hpp"
+
 #include <memory>
 
 // Forward declarations

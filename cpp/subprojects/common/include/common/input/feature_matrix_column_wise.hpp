@@ -5,6 +5,7 @@
 
 #include "common/input/feature_matrix.hpp"
 #include "common/input/feature_vector.hpp"
+
 #include <memory>
 
 /**

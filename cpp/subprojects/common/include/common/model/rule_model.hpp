@@ -5,6 +5,7 @@
 
 #include "common/data/types.hpp"
 #include "common/macros.hpp"
+
 #include <memory>
 
 // Forward declarations

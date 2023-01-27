@@ -1,4 +1,5 @@
 #include "common/sampling/weight_vector_dense.hpp"
+
 #include "common/thresholds/thresholds.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 

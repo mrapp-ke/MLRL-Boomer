@@ -1,9 +1,11 @@
 #include "common/sampling/feature_sampling_without_replacement.hpp"
-#include "common/sampling/feature_sampling_predefined.hpp"
+
 #include "common/indices/index_vector_partial.hpp"
 #include "common/iterator/index_iterator.hpp"
+#include "common/sampling/feature_sampling_predefined.hpp"
 #include "common/util/validation.hpp"
 #include "index_sampling.hpp"
+
 #include <cmath>
 
 /**

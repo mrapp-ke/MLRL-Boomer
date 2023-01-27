@@ -1,4 +1,5 @@
 #include "common/data/matrix_dense.hpp"
+
 #include <cstdlib>
 
 template<typename T>

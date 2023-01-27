@@ -3,8 +3,9 @@
  */
 #pragma once
 
-#include "common/data/vector_dense.hpp"
 #include "common/data/indexed_value.hpp"
+#include "common/data/vector_dense.hpp"
+
 #include <iterator>
 
 /**

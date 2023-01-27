@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 #include "boosting/binning/label_binning.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 
 namespace boosting {
 

@@ -1,4 +1,5 @@
 #include "common/indices/index_vector_complete.hpp"
+
 #include "common/thresholds/thresholds_subset.hpp"
 
 CompleteIndexVector::CompleteIndexVector(uint32 numElements) {

@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "common/rule_induction/rule_induction.hpp"
-#include "common/multi_threading/multi_threading.hpp"
 #include "common/macros.hpp"
+#include "common/multi_threading/multi_threading.hpp"
+#include "common/rule_induction/rule_induction.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules that

@@ -3,10 +3,10 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_weighted_immutable.hpp"
-#include "common/statistics/histogram.hpp"
 #include "common/binning/bin_index_vector_dense.hpp"
 #include "common/binning/bin_index_vector_dok.hpp"
+#include "common/statistics/histogram.hpp"
+#include "common/statistics/statistics_weighted_immutable.hpp"
 
 /**
  * Defines an interface for all classes that inherit from `IImmutableWeightedStatistics`, but do also provide functions

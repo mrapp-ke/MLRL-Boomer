@@ -6,6 +6,7 @@
 #include "common/indices/index_vector.hpp"
 #include "common/input/label_matrix.hpp"
 #include "common/sampling/random.hpp"
+
 #include <memory>
 
 /**

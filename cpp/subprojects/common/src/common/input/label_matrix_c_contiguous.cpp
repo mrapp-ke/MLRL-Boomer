@@ -1,9 +1,9 @@
 #include "common/input/label_matrix_c_contiguous.hpp"
-#include "common/statistics/statistics_provider.hpp"
-#include "common/sampling/partition_sampling.hpp"
-#include "common/sampling/instance_sampling.hpp"
-#include "common/math/math.hpp"
 
+#include "common/math/math.hpp"
+#include "common/sampling/instance_sampling.hpp"
+#include "common/sampling/partition_sampling.hpp"
+#include "common/statistics/statistics_provider.hpp"
 
 CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)
     : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.row_values_cbegin(row)) {

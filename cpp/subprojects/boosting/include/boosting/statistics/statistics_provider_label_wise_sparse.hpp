@@ -3,10 +3,10 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_provider.hpp"
-#include "boosting/statistics/statistics_label_wise.hpp"
 #include "boosting/losses/loss_label_wise_sparse.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
+#include "boosting/statistics/statistics_label_wise.hpp"
+#include "common/statistics/statistics_provider.hpp"
 
 namespace boosting {
 

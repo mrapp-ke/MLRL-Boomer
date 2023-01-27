@@ -3,12 +3,13 @@
  */
 #pragma once
 
-#include "common/input/label_matrix_row_wise.hpp"
 #include "common/data/functions.hpp"
+#include "common/input/label_matrix_row_wise.hpp"
 #include "common/prediction/label_space_info.hpp"
-#include <unordered_map>
+
 #include <functional>
 #include <memory>
+#include <unordered_map>
 
 /**
  * Defines an interface for all classes that provide access to a set of unique label vectors.

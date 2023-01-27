@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/indices/index_vector_partial.hpp"
+
 #include <unordered_set>
 
 /**

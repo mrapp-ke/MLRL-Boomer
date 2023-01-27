@@ -7,6 +7,7 @@
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "seco/rule_evaluation/rule_evaluation.hpp"
+
 #include <memory>
 
 namespace seco {

@@ -1,6 +1,8 @@
 #include "boosting/data/statistic_vector_label_wise_dense.hpp"
+
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
+
 #include <cstdlib>
 
 namespace boosting {

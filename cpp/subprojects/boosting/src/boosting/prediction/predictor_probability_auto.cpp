@@ -1,4 +1,5 @@
 #include "boosting/prediction/predictor_probability_auto.hpp"
+
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
 

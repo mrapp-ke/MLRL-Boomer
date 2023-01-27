@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/post_processing/post_processor.hpp"
 #include "boosting/macros.hpp"
+#include "common/post_processing/post_processor.hpp"
 
 namespace boosting {
 

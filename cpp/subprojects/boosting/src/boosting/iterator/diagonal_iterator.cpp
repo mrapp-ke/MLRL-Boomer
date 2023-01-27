@@ -1,4 +1,5 @@
 #include "boosting/iterator/diagonal_iterator.hpp"
+
 #include "boosting/math/math.hpp"
 
 namespace boosting {

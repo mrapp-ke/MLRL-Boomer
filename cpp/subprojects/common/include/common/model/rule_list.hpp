@@ -3,9 +3,10 @@
  */
 #pragma once
 
-#include "common/model/rule_model.hpp"
 #include "common/model/body.hpp"
 #include "common/model/head.hpp"
+#include "common/model/rule_model.hpp"
+
 #include <vector>
 
 /**

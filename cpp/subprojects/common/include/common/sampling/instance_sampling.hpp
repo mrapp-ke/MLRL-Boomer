@@ -3,11 +3,12 @@
  */
 #pragma once
 
-#include "common/sampling/weight_vector.hpp"
-#include "common/sampling/random.hpp"
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
+#include "common/sampling/random.hpp"
+#include "common/sampling/weight_vector.hpp"
 #include "common/statistics/statistics.hpp"
+
 #include <memory>
 
 // Forward declarations

@@ -9,8 +9,8 @@
 #include "common/post_processing/post_processor.hpp"
 #include "common/rule_pruning/rule_pruning.hpp"
 #include "common/sampling/feature_sampling.hpp"
-#include "common/sampling/weight_vector.hpp"
 #include "common/sampling/partition.hpp"
+#include "common/sampling/weight_vector.hpp"
 #include "common/statistics/statistics.hpp"
 #include "common/thresholds/thresholds.hpp"
 

@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/post_optimization/post_optimization.hpp"
 #include "common/macros.hpp"
+#include "common/post_optimization/post_optimization.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a method that optimizes each rule in a model by

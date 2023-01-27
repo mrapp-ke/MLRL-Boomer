@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/partition_bi.hpp"
+#include "common/sampling/weight_vector_bit.hpp"
 
 /**
  * Implements iterative stratified sampling for selecting a subset of the available training examples as proposed in the

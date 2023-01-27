@@ -4,8 +4,8 @@
  */
 #pragma once
 
-#include "common/thresholds/thresholds.hpp"
 #include "common/binning/feature_binning.hpp"
+#include "common/thresholds/thresholds.hpp"
 
 /**
  * A factory that allows to create instances of the type `ApproximateThresholds`.

@@ -1,4 +1,5 @@
 #include "boosting/data/histogram_view_label_wise_sparse.hpp"
+
 #include "common/data/arrays.hpp"
 #include "statistic_vector_label_wise_sparse_common.hpp"
 

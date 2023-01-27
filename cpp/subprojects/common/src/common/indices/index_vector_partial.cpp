@@ -1,4 +1,5 @@
 #include "common/indices/index_vector_partial.hpp"
+
 #include "common/thresholds/thresholds_subset.hpp"
 
 PartialIndexVector::PartialIndexVector(uint32 numElements)

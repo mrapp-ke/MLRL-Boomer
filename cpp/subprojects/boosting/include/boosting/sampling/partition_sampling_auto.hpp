@@ -3,9 +3,9 @@
  */
 #pragma once
 
+#include "boosting/losses/loss.hpp"
 #include "common/sampling/partition_sampling.hpp"
 #include "common/stopping/global_pruning.hpp"
-#include "boosting/losses/loss.hpp"
 
 namespace boosting {
 

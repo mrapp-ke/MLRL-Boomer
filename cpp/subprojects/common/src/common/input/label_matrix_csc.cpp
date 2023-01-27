@@ -1,5 +1,7 @@
 #include "common/input/label_matrix_csc.hpp"
+
 #include "common/data/arrays.hpp"
+
 #include <cstdlib>
 
 template<typename IndexIterator>

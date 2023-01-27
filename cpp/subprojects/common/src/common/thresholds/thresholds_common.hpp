@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "common/thresholds/thresholds.hpp"
 #include "common/input/feature_info.hpp"
 #include "common/input/feature_matrix.hpp"
+#include "common/thresholds/thresholds.hpp"
 #include "omp.h"
 
 template<typename IndexIterator, typename WeightVector>

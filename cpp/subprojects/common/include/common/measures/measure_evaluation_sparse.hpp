@@ -3,9 +3,10 @@
  */
 #pragma once
 
+#include "common/data/matrix_sparse_set.hpp"
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_csr_binary.hpp"
-#include "common/data/matrix_sparse_set.hpp"
+
 #include <memory>
 
 /**

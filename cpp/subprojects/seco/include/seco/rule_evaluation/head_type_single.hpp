@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "seco/rule_evaluation/head_type.hpp"
 #include "seco/heuristics/heuristic.hpp"
+#include "seco/rule_evaluation/head_type.hpp"
 
 namespace seco {
 

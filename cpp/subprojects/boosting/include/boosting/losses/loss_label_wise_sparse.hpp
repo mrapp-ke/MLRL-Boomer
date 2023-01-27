@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "boosting/losses/loss_label_wise.hpp"
 #include "boosting/data/statistic_view_label_wise_sparse.hpp"
+#include "boosting/losses/loss_label_wise.hpp"
 #include "common/measures/measure_evaluation_sparse.hpp"
 
 namespace boosting {

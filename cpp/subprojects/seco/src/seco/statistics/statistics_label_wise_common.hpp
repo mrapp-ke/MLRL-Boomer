@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "seco/statistics/statistics_label_wise.hpp"
 #include "common/data/vector_sparse_array_binary.hpp"
+#include "seco/statistics/statistics_label_wise.hpp"
 
 namespace seco {
 

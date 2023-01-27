@@ -1,4 +1,5 @@
 #include "boosting/model/rule_list_builder.hpp"
+
 #include "common/model/rule_list.hpp"
 
 namespace boosting {

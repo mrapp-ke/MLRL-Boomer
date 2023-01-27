@@ -1,4 +1,5 @@
 #include "common/data/vector_sparse_array.hpp"
+
 #include "common/data/tuple.hpp"
 
 template<typename T>

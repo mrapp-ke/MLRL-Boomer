@@ -1,6 +1,8 @@
 #include "common/post_optimization/post_optimization_sequential.hpp"
+
 #include "common/sampling/feature_sampling_predefined.hpp"
 #include "common/util/validation.hpp"
+
 #include <unordered_set>
 
 /**

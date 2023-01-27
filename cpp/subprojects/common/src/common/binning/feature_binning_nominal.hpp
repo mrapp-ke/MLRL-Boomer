@@ -3,9 +3,10 @@
  */
 #pragma once
 
-#include "common/binning/feature_binning.hpp"
 #include "common/binning/bin_index_vector_dense.hpp"
 #include "common/binning/bin_index_vector_dok.hpp"
+#include "common/binning/feature_binning.hpp"
+
 #include <unordered_map>
 
 /**

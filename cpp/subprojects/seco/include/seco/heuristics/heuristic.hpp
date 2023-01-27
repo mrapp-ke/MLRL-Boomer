@@ -5,6 +5,7 @@
 #pragma once
 
 #include "common/data/types.hpp"
+
 #include <memory>
 
 namespace seco {

@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
+#include "common/multi_threading/multi_threading.hpp"
 
 namespace boosting {
 

@@ -1,4 +1,6 @@
 #include "common/input/feature_info_mixed.hpp"
+
+#include "common/data/vector_bit.hpp"
 #include "common/input/feature_type_binary.hpp"
 #include "common/input/feature_type_nominal.hpp"
 #include "common/input/feature_type_numerical.hpp"

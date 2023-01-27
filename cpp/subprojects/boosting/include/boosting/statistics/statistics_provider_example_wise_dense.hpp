@@ -4,9 +4,9 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_provider.hpp"
-#include "boosting/statistics/statistics_example_wise.hpp"
 #include "boosting/losses/loss_example_wise.hpp"
+#include "boosting/statistics/statistics_example_wise.hpp"
+#include "common/statistics/statistics_provider.hpp"
 
 namespace boosting {
 

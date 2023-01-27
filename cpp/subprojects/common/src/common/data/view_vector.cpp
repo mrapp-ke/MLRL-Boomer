@@ -1,4 +1,5 @@
 #include "common/data/view_vector.hpp"
+
 #include "common/data/indexed_value.hpp"
 #include "common/data/tuple.hpp"
 

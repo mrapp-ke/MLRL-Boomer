@@ -5,6 +5,7 @@
 
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_vector.hpp"
+
 #include <memory>
 
 /**

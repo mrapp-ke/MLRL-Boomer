@@ -3,10 +3,11 @@
  */
 #pragma once
 
-#include "common/sampling/partition.hpp"
-#include "common/sampling/random.hpp"
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
+#include "common/sampling/partition.hpp"
+#include "common/sampling/random.hpp"
+
 #include <memory>
 
 /**

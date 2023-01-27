@@ -8,7 +8,6 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "common/learner.hpp"
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/losses/loss_example_wise_logistic.hpp"
 #include "boosting/losses/loss_example_wise_squared_error.hpp"
@@ -27,6 +26,7 @@
 #include "boosting/rule_evaluation/regularization_manual.hpp"
 #include "boosting/statistics/statistic_format.hpp"
 #include "boosting/statistics/statistic_format_sparse.hpp"
+#include "common/learner.hpp"
 
 namespace boosting {
 

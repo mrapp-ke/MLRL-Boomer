@@ -8,9 +8,9 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "seco/learner.hpp"
 #include "seco/heuristics/heuristic_f_measure.hpp"
 #include "seco/heuristics/heuristic_m_estimate.hpp"
+#include "seco/learner.hpp"
 #include "seco/lift_functions/lift_function_kln.hpp"
 #include "seco/lift_functions/lift_function_peak.hpp"
 #include "seco/rule_evaluation/head_type.hpp"

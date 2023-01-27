@@ -1,4 +1,5 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_complete_binned.hpp"
+
 #include "rule_evaluation_example_wise_binned_common.hpp"
 
 namespace boosting {

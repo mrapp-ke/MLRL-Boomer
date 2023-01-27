@@ -3,9 +3,10 @@
  */
 #pragma once
 
-#include "common/rule_refinement/refinement.hpp"
 #include "common/rule_evaluation/rule_compare_function.hpp"
 #include "common/rule_evaluation/score_vector.hpp"
+#include "common/rule_refinement/refinement.hpp"
+
 #include <functional>
 #include <vector>
 

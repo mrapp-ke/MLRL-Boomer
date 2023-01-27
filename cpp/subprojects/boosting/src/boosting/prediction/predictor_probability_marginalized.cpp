@@ -1,8 +1,10 @@
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
+
 #include "common/math/math.hpp"
+#include "omp.h"
 #include "predictor_common.hpp"
 #include "predictor_probability_common.hpp"
-#include "omp.h"
+
 #include <stdexcept>
 
 namespace boosting {

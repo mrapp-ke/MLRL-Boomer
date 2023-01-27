@@ -1,4 +1,5 @@
 #include "common/prediction/label_space_info_no.hpp"
+
 #include "common/input/feature_matrix_c_contiguous.hpp"
 #include "common/input/feature_matrix_csr.hpp"
 #include "common/model/rule_list.hpp"

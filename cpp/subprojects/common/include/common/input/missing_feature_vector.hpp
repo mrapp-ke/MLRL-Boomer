@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/data/vector_dok_binary.hpp"
+
 #include <memory>
 
 /**

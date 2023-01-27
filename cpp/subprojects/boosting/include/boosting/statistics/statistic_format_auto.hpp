@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "boosting/statistics/statistic_format.hpp"
 #include "boosting/losses/loss.hpp"
 #include "boosting/rule_evaluation/head_type.hpp"
+#include "boosting/statistics/statistic_format.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
 
 namespace boosting {

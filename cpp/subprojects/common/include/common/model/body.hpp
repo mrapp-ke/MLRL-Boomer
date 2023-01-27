@@ -6,6 +6,7 @@
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_csr.hpp"
 #include "common/macros.hpp"
+
 #include <functional>
 
 // Forward declarations

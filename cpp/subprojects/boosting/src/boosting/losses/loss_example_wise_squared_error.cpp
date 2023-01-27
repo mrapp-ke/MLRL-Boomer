@@ -1,4 +1,5 @@
 #include "boosting/losses/loss_example_wise_squared_error.hpp"
+
 #include "common/iterator/binary_forward_iterator.hpp"
 #include "common/math/math.hpp"
 

@@ -1,7 +1,9 @@
 #include "common/stopping/global_pruning_pre.hpp"
-#include "common/util/validation.hpp"
+
 #include "aggregation_function_common.hpp"
+#include "common/util/validation.hpp"
 #include "global_pruning_common.hpp"
+
 #include <limits>
 
 /**

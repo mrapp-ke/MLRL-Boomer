@@ -1,7 +1,7 @@
 #include "common/data/matrix_lil.hpp"
-#include "common/data/tuple.hpp"
-#include "common/data/triple.hpp"
 
+#include "common/data/triple.hpp"
+#include "common/data/tuple.hpp"
 
 template<typename T>
 LilMatrix<T>::LilMatrix(uint32 numRows)

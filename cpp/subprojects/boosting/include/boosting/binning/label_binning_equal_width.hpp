@@ -4,8 +4,8 @@
 #pragma once
 
 #include "boosting/binning/label_binning.hpp"
-#include "boosting/rule_evaluation/regularization.hpp"
 #include "boosting/macros.hpp"
+#include "boosting/rule_evaluation/regularization.hpp"
 
 namespace boosting {
 

@@ -1,9 +1,10 @@
 #include "common/sampling/stratified_sampling_example_wise.hpp"
+
 #include "common/sampling/partition_single.hpp"
 #include "stratified_sampling_common.hpp"
-#include <cmath>
-#include <algorithm>
 
+#include <algorithm>
+#include <cmath>
 
 template<typename LabelMatrix, typename IndexIterator>
 ExampleWiseStratification<LabelMatrix, IndexIterator>::ExampleWiseStratification(const LabelMatrix& labelMatrix,

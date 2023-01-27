@@ -1,9 +1,10 @@
 #include "common/thresholds/thresholds_exact.hpp"
+
 #include "common/rule_refinement/rule_refinement_exact.hpp"
 #include "thresholds_common.hpp"
-#include <unordered_map>
-#include <cmath>
 
+#include <cmath>
+#include <unordered_map>
 
 /**
  * An entry that is stored in a cache and contains an unique pointer to a feature vector. The field `numConditions`
