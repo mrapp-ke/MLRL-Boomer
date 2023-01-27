@@ -5,7 +5,6 @@
 
 #include "common/rule_evaluation/rule_compare_function.hpp"
 
-
 namespace boosting {
 
     /**

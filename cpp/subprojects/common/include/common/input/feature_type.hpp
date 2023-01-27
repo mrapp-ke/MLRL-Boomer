@@ -3,12 +3,10 @@
  */
 #pragma once
 
-
 /**
  * Defines an interface for all classes that represent the type of a feature.
  */
 class IFeatureType {
-
     public:
 
         virtual ~IFeatureType() { };
@@ -19,5 +17,4 @@ class IFeatureType {
          * @return True, if the feature is numerical/ordinal, false otherwise
          */
         virtual bool isNumerical() const = 0;
-
 };

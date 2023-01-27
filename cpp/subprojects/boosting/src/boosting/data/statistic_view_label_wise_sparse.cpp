@@ -1,6 +1,5 @@
 #include "boosting/data/statistic_view_label_wise_sparse.hpp"
 
-
 namespace boosting {
 
     SparseLabelWiseStatisticConstView::SparseLabelWiseStatisticConstView(uint32 numCols,

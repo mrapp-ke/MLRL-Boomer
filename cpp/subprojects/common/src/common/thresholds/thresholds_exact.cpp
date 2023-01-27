@@ -11,7 +11,6 @@
  * check if the vector is still valid or must be updated.
  */
 struct FilteredCacheEntry final {
-
     FilteredCacheEntry() : numConditions(0) { };
 
     /**
@@ -23,7 +22,6 @@ struct FilteredCacheEntry final {
      * The number of conditions that were contained by the rule when the cache was updated for the last time.
      */
     uint32 numConditions;
-
 };
 
 /**
@@ -220,7 +218,6 @@ static inline void filterAnyVector(const FeatureVector& vector, FilteredCacheEnt
  * Provides access to all thresholds that result from the feature values of the training examples.
  */
 class ExactThresholds final : public AbstractThresholds {
-
     private:
 
         /**
@@ -231,7 +228,6 @@ class ExactThresholds final : public AbstractThresholds {
          */
         template<typename WeightVector>
         class ThresholdsSubset final : public IThresholdsSubset {
-
             private:
 
                 /**
@@ -239,7 +235,6 @@ class ExactThresholds final : public AbstractThresholds {
                  * from the cache. Otherwise, they are fetched from the feature matrix.
                  */
                 class Callback final : public IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector> {
-
                     private:
 
                         ThresholdsSubset& thresholdsSubset_;
@@ -288,7 +283,6 @@ class ExactThresholds final : public AbstractThresholds {
 
                             return Result(*thresholdsSubset_.weightedStatisticsPtr_, *featureVector);
                         }
-
                 };
 
                 ExactThresholds& thresholds_;
@@ -495,7 +489,6 @@ class ExactThresholds final : public AbstractThresholds {
                         }
                     }
                 }
-
         };
 
         uint32 numThreads_;
@@ -539,7 +532,6 @@ class ExactThresholds final : public AbstractThresholds {
             return std::make_unique<ExactThresholds::ThresholdsSubset<DenseWeightVector<uint32>>>(
                 *this, std::move(weightedStatisticsPtr), weights);
         }
-
 };
 
 ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads)

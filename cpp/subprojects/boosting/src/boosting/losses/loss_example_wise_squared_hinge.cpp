@@ -2,7 +2,6 @@
 #include "common/iterator/binary_forward_iterator.hpp"
 #include "common/math/math.hpp"
 
-
 namespace boosting {
 
     template<typename LabelIterator>
@@ -228,7 +227,6 @@ namespace boosting {
      * that is applied example-wise.
      */
     class ExampleWiseSquaredHingeLoss final : public IExampleWiseLoss {
-
         public:
 
             virtual void updateLabelWiseStatistics(uint32 exampleIndex,
@@ -327,7 +325,6 @@ namespace boosting {
                                                                   relevantLabelIndices.cend());
                 return evaluateInternally(scoresBegin, labelIterator, numLabels);
             }
-
     };
 
     /**
@@ -335,13 +332,11 @@ namespace boosting {
      * hinge loss that is applied example-wise.
      */
     class ExampleWiseSquaredHingeLossFactory final : public IExampleWiseLossFactory {
-
         public:
 
             std::unique_ptr<IExampleWiseLoss> createExampleWiseLoss() const override {
                 return std::make_unique<ExampleWiseSquaredHingeLoss>();
             }
-
     };
 
     ExampleWiseSquaredHingeLossConfig::ExampleWiseSquaredHingeLossConfig(

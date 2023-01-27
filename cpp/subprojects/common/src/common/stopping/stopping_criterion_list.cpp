@@ -1,6 +1,5 @@
 #include "common/stopping/stopping_criterion_list.hpp"
 
-
 /**
  * An implementation of the type `IStoppingCriterion` that tests multiple stopping criteria.
  *
@@ -10,7 +9,6 @@
  */
 template<typename Partition>
 class StoppingCriterionList final : public IStoppingCriterion {
-
     private:
 
         std::vector<std::unique_ptr<IStoppingCriterion>> stoppingCriteria_;
@@ -51,21 +49,18 @@ class StoppingCriterionList final : public IStoppingCriterion {
 
             return result;
         }
-
 };
 
 /**
  * An implementation of the type `IStoppingCriterion` that does not test for any stopping criteria.
  */
 class NoStoppingCriterion final : public IStoppingCriterion {
-
     public:
 
         Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
             return result;
         }
-
 };
 
 void StoppingCriterionListFactory::addStoppingCriterionFactory(

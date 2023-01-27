@@ -5,7 +5,6 @@
 
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
 
-
 namespace boosting {
 
     /**
@@ -13,7 +12,6 @@ namespace boosting {
      * predictions of single-label rules, which predict for a single label.
      */
     class LabelWiseSingleLabelRuleEvaluationFactory final : public ISparseLabelWiseRuleEvaluationFactory {
-
         private:
 
             float64 l1RegularizationWeight_;
@@ -45,7 +43,6 @@ namespace boosting {
             std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
                 const SparseLabelWiseStatisticVector& statisticVector,
                 const PartialIndexVector& indexVector) const override;
-
     };
 
 }

@@ -7,7 +7,6 @@
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 
-
 namespace boosting {
 
     /**
@@ -15,7 +14,6 @@ namespace boosting {
      * predictions of complete rules, which predict for all available labels.
      */
     class ExampleWiseCompleteRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
-
         private:
 
             float64 l1RegularizationWeight_;
@@ -48,7 +46,6 @@ namespace boosting {
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
                 const DenseExampleWiseStatisticVector& statisticVector,
                 const PartialIndexVector& indexVector) const override;
-
     };
 
 }

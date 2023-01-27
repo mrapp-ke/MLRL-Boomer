@@ -3,7 +3,6 @@
 #include "common/data/arrays.hpp"
 #include <cstdlib>
 
-
 namespace boosting {
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements)
@@ -50,7 +49,6 @@ namespace boosting {
     void DenseLabelWiseStatisticVector::clear() {
         setArrayToZeros(statistics_, numElements_);
     }
-
 
     void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticVector& vector) {
         addToArray(statistics_, vector.statistics_, numElements_);

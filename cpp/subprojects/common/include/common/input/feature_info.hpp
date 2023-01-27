@@ -8,12 +8,10 @@
 #include "common/macros.hpp"
 #include <memory>
 
-
 /**
  * Defines an interface for all classes that provide information about the types of individual features.
  */
 class MLRLCOMMON_API IFeatureInfo {
-
     public:
 
         virtual ~IFeatureInfo() { };
@@ -25,5 +23,4 @@ class MLRLCOMMON_API IFeatureInfo {
          * @return  An unique pointer to an object of the type `IFeatureType` that has been created
          */
         virtual std::unique_ptr<IFeatureType> createFeatureType(uint32 featureIndex) const = 0;
-
 };

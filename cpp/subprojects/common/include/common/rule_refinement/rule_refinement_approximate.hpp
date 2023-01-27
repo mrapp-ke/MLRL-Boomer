@@ -9,7 +9,6 @@
 #include "common/binning/threshold_vector.hpp"
 #include "common/statistics/histogram.hpp"
 
-
 /**
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
  * certain feature. The thresholds that may be used by the new condition result from the boundaries between the bins
@@ -20,7 +19,6 @@
  */
 template<typename IndexVector>
 class ApproximateRuleRefinement final : public IRuleRefinement {
-
     private:
 
         const IndexVector& labelIndices_;
@@ -53,5 +51,4 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
         void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) override;
 
         void findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) override;
-
 };

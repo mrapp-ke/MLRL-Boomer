@@ -6,12 +6,10 @@
 #include "common/rule_refinement/prediction_evaluated.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
-
 /**
  * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
  */
 class PartialPrediction final : public AbstractEvaluatedPrediction {
-
     private:
 
         PartialIndexVector indexVector_;
@@ -115,5 +113,4 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
         void sort() override;
 
         std::unique_ptr<IHead> createHead() const override;
-
 };

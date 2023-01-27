@@ -1,6 +1,5 @@
 #include "common/sampling/random.hpp"
 
-
 const uint32 MAX_RANDOM = 0x7FFFFFFF;
 
 RNG::RNG(uint32 randomState)

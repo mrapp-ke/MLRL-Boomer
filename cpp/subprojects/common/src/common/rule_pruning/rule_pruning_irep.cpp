@@ -1,12 +1,10 @@
 #include "common/rule_pruning/rule_pruning_irep.hpp"
 
-
 /**
  * An implementation of the class `IRulePruning` that prunes rules by following the ideas of "incremental reduced error
  * pruning" (IREP).
  */
 class Irep final : public IRulePruning {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -76,7 +74,6 @@ class Irep final : public IRulePruning {
 
             return bestCoverageStatePtr;
         }
-
 };
 
 /**
@@ -86,7 +83,6 @@ class Irep final : public IRulePruning {
  * measured on the prune set.
  */
 class IrepFactory final : public IRulePruningFactory {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -105,7 +101,6 @@ class IrepFactory final : public IRulePruningFactory {
         std::unique_ptr<IRulePruning> create() const override {
             return std::make_unique<Irep>(ruleCompareFunction_);
         }
-
 };
 
 IrepConfig::IrepConfig(RuleCompareFunction ruleCompareFunction)

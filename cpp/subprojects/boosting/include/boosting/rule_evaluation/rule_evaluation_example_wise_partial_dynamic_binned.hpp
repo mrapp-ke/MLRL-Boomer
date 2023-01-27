@@ -8,7 +8,6 @@
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
      * using gradient-based label binning.
      */
     class ExampleWiseDynamicPartialBinnedRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
-
         private:
 
             float32 threshold_;
@@ -70,7 +68,6 @@ namespace boosting {
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
                 const DenseExampleWiseStatisticVector& statisticVector,
                 const PartialIndexVector& indexVector) const override;
-
     };
 
 }

@@ -6,13 +6,11 @@
 #include "common/sampling/instance_sampling.hpp"
 #include "common/macros.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to configure a method for selecting a subset of the available
  * training examples without replacement.
  */
 class MLRLCOMMON_API IInstanceSamplingWithoutReplacementConfig {
-
     public:
 
         virtual ~IInstanceSamplingWithoutReplacementConfig() { };
@@ -33,7 +31,6 @@ class MLRLCOMMON_API IInstanceSamplingWithoutReplacementConfig {
          *                      further configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize) = 0;
-
 };
 
 /**
@@ -41,7 +38,6 @@ class MLRLCOMMON_API IInstanceSamplingWithoutReplacementConfig {
  */
 class InstanceSamplingWithoutReplacementConfig final : public IInstanceSamplingConfig,
                                                        public IInstanceSamplingWithoutReplacementConfig {
-
     private:
 
         float32 sampleSize_;
@@ -55,5 +51,4 @@ class InstanceSamplingWithoutReplacementConfig final : public IInstanceSamplingC
         IInstanceSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize) override;
 
         std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const override;
-
 };

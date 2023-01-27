@@ -3,7 +3,6 @@
 #include "global_pruning_common.hpp"
 #include <limits>
 
-
 /**
  * An implementation of the type `IStoppingCriterion` that that keeps track of the number of rules in a model that
  * perform best with respect to the examples in the training or holdout set according to a certain measure.
@@ -13,7 +12,6 @@
  */
 template<typename Partition>
 class PostPruning final : public IStoppingCriterion {
-
     private:
 
         Partition& partition_;
@@ -60,7 +58,6 @@ class PostPruning final : public IStoppingCriterion {
 
             return result;
         }
-
 };
 
 /**
@@ -69,7 +66,6 @@ class PostPruning final : public IStoppingCriterion {
  * measure.
  */
 class PostPruningFactory final : public IStoppingCriterionFactory {
-
     private:
 
         bool useHoldoutSet_;
@@ -100,7 +96,6 @@ class PostPruningFactory final : public IStoppingCriterionFactory {
         std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
             return std::make_unique<PostPruning<BiPartition>>(partition, useHoldoutSet_, minRules_, interval_);
         }
-
 };
 
 PostPruningConfig::PostPruningConfig()

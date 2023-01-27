@@ -3,7 +3,6 @@
 #include "rule_evaluation_example_wise_partial_common.hpp"
 #include "rule_evaluation_example_wise_partial_fixed_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
     template<typename IndexVector>
     class DenseExampleWiseFixedPartialRuleEvaluation final :
             public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
-
         private:
 
             const IndexVector& labelIndices_;
@@ -112,7 +110,6 @@ namespace boosting {
                 scoreVector_.quality = quality;
                 return scoreVector_;
             }
-
     };
 
     ExampleWiseFixedPartialRuleEvaluationFactory::ExampleWiseFixedPartialRuleEvaluationFactory(

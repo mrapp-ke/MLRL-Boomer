@@ -7,7 +7,6 @@
 #include "common/statistics/statistics_provider.hpp"
 #include "seco/statistics/statistics_label_wise.hpp"
 
-
 namespace seco {
 
     /**
@@ -15,7 +14,6 @@ namespace seco {
      * `ILabelWiseStatistics`, which uses dense data structures to store the statistics.
      */
     class DenseLabelWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
-
         private:
 
             std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
@@ -55,7 +53,6 @@ namespace seco {
              * @see `IStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrConstView& labelMatrix) const override;
-
     };
 
 }

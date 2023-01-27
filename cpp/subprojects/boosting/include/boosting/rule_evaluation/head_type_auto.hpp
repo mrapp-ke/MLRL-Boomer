@@ -8,14 +8,12 @@
 #include "boosting/binning/label_binning.hpp"
 #include "common/multi_threading/multi_threading.hpp"
 
-
 namespace boosting {
 
     /**
      * Allows to configure a method that automatically decides for the type of rule heads to be used.
      */
     class AutomaticHeadConfig final : public IHeadConfig {
-
         private:
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
@@ -64,7 +62,6 @@ namespace boosting {
             bool isPartial() const override;
 
             bool isSingleLabel() const override;
-
     };
 
 }

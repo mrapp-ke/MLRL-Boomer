@@ -8,7 +8,6 @@
 #include "statistics_provider_label_wise.hpp"
 #include "omp.h"
 
-
 namespace boosting {
 
     template<typename LabelMatrix>

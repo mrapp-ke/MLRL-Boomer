@@ -6,7 +6,6 @@
 #include "common/rule_evaluation/score_vector.hpp"
 #include <memory>
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
      */
     template<typename StatisticVector>
     class IRuleEvaluation {
-
         public:
 
             virtual ~IRuleEvaluation() { };
@@ -32,7 +30,6 @@ namespace boosting {
              *                          scores of a rule, as well as its overall quality
              */
             virtual const IScoreVector& calculateScores(StatisticVector& statisticVector) = 0;
-
     };
 
 }

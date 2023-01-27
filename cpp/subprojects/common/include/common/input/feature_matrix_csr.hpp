@@ -11,13 +11,11 @@
 #include "common/input/feature_matrix_row_wise.hpp"
 #include "common/data/view_csr.hpp"
 
-
 /**
  * Defines an interface for all feature matrices that provide row-wise access to the feature values of examples that are
  * stored in a sparse matrix in the compressed sparse row (CSR) format.
  */
 class MLRLCOMMON_API ICsrFeatureMatrix : virtual public IRowWiseFeatureMatrix {
-
     public:
 
         virtual ~ICsrFeatureMatrix() override { };
@@ -29,7 +27,6 @@ class MLRLCOMMON_API ICsrFeatureMatrix : virtual public IRowWiseFeatureMatrix {
  * examples that are stored in a sparse matrix in the compressed sparse row (CSR) format.
  */
 class CsrFeatureMatrix final : public CsrConstView<const float32>, virtual public ICsrFeatureMatrix {
-
     public:
 
         /**
@@ -65,7 +62,6 @@ class CsrFeatureMatrix final : public CsrConstView<const float32>, virtual publi
                                                                           const IRuleModel& ruleModel,
                                                                           const ILabelSpaceInfo& labelSpaceInfo,
                                                                           uint32 numLabels) const override;
-
 };
 
 /**

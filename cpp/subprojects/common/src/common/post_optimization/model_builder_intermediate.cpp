@@ -1,6 +1,5 @@
 #include "common/post_optimization/model_builder_intermediate.hpp"
 
-
 IntermediateModelBuilder::IntermediateModelBuilder(std::unique_ptr<IModelBuilder> modelBuilderPtr)
     : modelBuilderPtr_(std::move(modelBuilderPtr)), numUsedRules_(0) {
 

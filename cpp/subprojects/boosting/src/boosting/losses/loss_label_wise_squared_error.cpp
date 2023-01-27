@@ -1,7 +1,6 @@
 #include "boosting/losses/loss_label_wise_squared_error.hpp"
 #include "loss_label_wise_common.hpp"
 
-
 namespace boosting {
 
     static inline void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
@@ -22,13 +21,11 @@ namespace boosting {
      * loss that is applied label-wise.
      */
     class LabelWiseSquaredErrorLossFactory final : public ILabelWiseLossFactory {
-
         public:
 
             std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override {
                 return std::make_unique<LabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
             }
-
     };
 
     LabelWiseSquaredErrorLossConfig::LabelWiseSquaredErrorLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)

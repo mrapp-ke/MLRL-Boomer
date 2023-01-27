@@ -17,12 +17,10 @@ class IStatistics;
 class IStatisticsSubset;
 class IHead;
 
-
 /**
  * An abstract base class for all classes that store the scores that are predicted by a rule.
  */
 class AbstractPrediction : public IIndexVector {
-
     protected:
 
         /**
@@ -193,5 +191,4 @@ class AbstractPrediction : public IIndexVector {
             const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
 
         uint32 getNumElements() const override;
-
 };

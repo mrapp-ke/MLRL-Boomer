@@ -8,7 +8,6 @@
 #include "boosting/losses/loss_label_wise_sparse.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
 
-
 namespace boosting {
 
     /**
@@ -16,7 +15,6 @@ namespace boosting {
      * `ILabelWiseStatistics`, which uses sparse data structures to store the statistics.
      */
     class SparseLabelWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
-
         private:
 
             std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr_;
@@ -68,7 +66,6 @@ namespace boosting {
              * @see `IStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrConstView& labelMatrix) const override;
-
     };
 
 }

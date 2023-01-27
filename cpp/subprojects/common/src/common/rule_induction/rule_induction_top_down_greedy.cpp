@@ -4,13 +4,11 @@
 #include "rule_induction_common.hpp"
 #include "rule_induction_top_down_common.hpp"
 
-
 /**
  * An implementation of the type `IRuleInduction` that allows to induce individual rules by using a greedy top-down
  * search.
  */
 class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -105,7 +103,6 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
             headPtr = std::move(bestRefinement.headPtr);
             return thresholdsSubsetPtr;
         }
-
 };
 
 /**
@@ -114,7 +111,6 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
  * refinement that improves the rule the most is chosen. The search stops if no refinement results in an improvement.
  */
 class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -160,9 +156,7 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
                                                                 maxHeadRefinements_, recalculatePredictions_,
                                                                 numThreads_);
         }
-
 };
-
 
 GreedyTopDownRuleInductionConfig::GreedyTopDownRuleInductionConfig(
         RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)

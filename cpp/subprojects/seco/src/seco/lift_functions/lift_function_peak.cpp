@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cmath>
 
-
 namespace seco {
 
     static inline float64 calculateLiftInternally(uint32 numLabels, uint32 totalLabels, uint32 peakLabel,
@@ -29,7 +28,6 @@ namespace seco {
      * and monotonously decreases afterwards.
      */
     class PeakLiftFunction final : public ILiftFunction {
-
         private:
 
             uint32 numLabels_;
@@ -72,7 +70,6 @@ namespace seco {
                     return maxLiftsAfterPeak_[numLabels - peakLabel_];
                 }
             }
-
     };
 
     /**
@@ -80,7 +77,6 @@ namespace seco {
      * labels, where the maximum lift is reached, and monotonously decrease afterwards.
      */
     class PeakLiftFunctionFactory final : public ILiftFunctionFactory {
-
         private:
 
             uint32 numLabels_;
@@ -119,7 +115,6 @@ namespace seco {
                 return std::make_unique<PeakLiftFunction>(numLabels_, peakLabel_, maxLift_, curvature_,
                                                           maxLiftsAfterPeak_);
             }
-
     };
 
     PeakLiftFunctionConfig::PeakLiftFunctionConfig()

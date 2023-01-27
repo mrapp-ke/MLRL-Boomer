@@ -10,7 +10,6 @@
 #include "boosting/rule_evaluation/rule_compare_function.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
 
-
 namespace boosting {
 
     AbstractBoostingRuleLearner::Config::Config()

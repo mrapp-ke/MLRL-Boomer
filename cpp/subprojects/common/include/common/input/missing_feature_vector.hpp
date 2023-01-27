@@ -6,13 +6,11 @@
 #include "common/data/vector_dok_binary.hpp"
 #include <memory>
 
-
 /**
  * An one-dimensional sparse vector that stores the indices of training examples with missing feature values using the
  * dictionary of keys (DOK) format.
  */
 class MissingFeatureVector {
-
     private:
 
         std::unique_ptr<BinaryDokVector> missingIndicesPtr_;
@@ -65,5 +63,4 @@ class MissingFeatureVector {
          * Removes all indices of examples with missing feature values.
          */
         void clearMissingIndices();
-
 };

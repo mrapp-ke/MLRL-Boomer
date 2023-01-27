@@ -6,7 +6,6 @@
 #include "common/data/types.hpp"
 #include <cstddef>
 
-
 /**
  * Calculates and returns a hash value from an array of type `uint32`.
  *

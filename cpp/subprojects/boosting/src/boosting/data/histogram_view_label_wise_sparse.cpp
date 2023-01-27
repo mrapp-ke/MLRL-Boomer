@@ -2,7 +2,6 @@
 #include "common/data/arrays.hpp"
 #include "statistic_vector_label_wise_sparse_common.hpp"
 
-
 namespace boosting {
 
     SparseLabelWiseHistogramConstView::SparseLabelWiseHistogramConstView(uint32 numRows, uint32 numCols,

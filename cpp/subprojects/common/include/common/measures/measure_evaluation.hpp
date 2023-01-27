@@ -7,13 +7,11 @@
 #include "common/data/view_csr_binary.hpp"
 #include <memory>
 
-
 /**
  * Defines an interface for all measures that may be used to assess the quality of predictions for certain examples by
  * comparing them to the corresponding ground truth labels.
  */
 class IEvaluationMeasure {
-
     public:
 
         virtual ~IEvaluationMeasure() { };
@@ -47,14 +45,12 @@ class IEvaluationMeasure {
          */
         virtual float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                                  const CContiguousConstView<float64>& scoreMatrix) const = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IEvaluationMeasure`.
  */
 class IEvaluationMeasureFactory {
-
     public:
 
         virtual ~IEvaluationMeasureFactory() { };
@@ -65,5 +61,4 @@ class IEvaluationMeasureFactory {
          * @return An unique pointer to an object of type `IEvaluationMeasure` that has been created
          */
         virtual std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const = 0;
-
 };

@@ -7,7 +7,6 @@
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
-
 namespace seco {
 
     /**
@@ -15,7 +14,6 @@ namespace seco {
      * array.
      */
     class DenseCoverageMatrix final : public DenseMatrix<uint32> {
-
         private:
 
             float64 sumOfUncoveredWeights_;
@@ -108,7 +106,6 @@ namespace seco {
                                   VectorView<float64>::const_iterator predictionEnd,
                                   PartialIndexVector::const_iterator indicesBegin,
                                   PartialIndexVector::const_iterator indicesEnd);
-
     };
 
 }

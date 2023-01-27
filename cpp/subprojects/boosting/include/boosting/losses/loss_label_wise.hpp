@@ -8,14 +8,12 @@
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
-
 namespace boosting {
 
     /**
      * Defines an interface for all (decomposable) loss functions that are applied label-wise.
      */
     class ILabelWiseLoss : public ILoss {
-
         public:
 
             virtual ~ILabelWiseLoss() override { };
@@ -97,14 +95,12 @@ namespace boosting {
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const = 0;
-
     };
 
     /**
      * Defines an interface for all factories that allow to create instances of the type `ILabelWiseLoss`.
      */
     class ILabelWiseLossFactory : public IEvaluationMeasureFactory, public IDistanceMeasureFactory {
-
         public:
 
             virtual ~ILabelWiseLossFactory() override { };
@@ -129,7 +125,6 @@ namespace boosting {
             std::unique_ptr<IDistanceMeasure> createDistanceMeasure() const override final {
                 return this->createLabelWiseLoss();
             }
-
     };
 
     /**
@@ -137,7 +132,6 @@ namespace boosting {
      * label-wise.
      */
     class ILabelWiseLossConfig : public ILossConfig {
-
         public:
 
             virtual ~ILabelWiseLossConfig() override { };
@@ -165,7 +159,6 @@ namespace boosting {
             bool isSparse() const override {
                 return false;
             }
-
     };
 
 }

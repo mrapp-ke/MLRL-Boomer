@@ -9,7 +9,6 @@
 #include "common/multi_threading/multi_threading.hpp"
 #include "boosting/macros.hpp"
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
      * number of labels.
      */
     class MLRLBOOSTING_API IFixedPartialHeadConfig {
-
         public:
 
             virtual ~IFixedPartialHeadConfig() { };
@@ -75,14 +73,12 @@ namespace boosting {
              *                  configuration of the rule heads
              */
             virtual IFixedPartialHeadConfig& setMaxLabels(uint32 maxLabels) = 0;
-
     };
 
     /**
      * Allows to configure partial rule heads that predict for a predefined number of labels.
      */
     class FixedPartialHeadConfig final : public IHeadConfig, public IFixedPartialHeadConfig {
-
         private:
 
             float32 labelRatio_;
@@ -134,7 +130,6 @@ namespace boosting {
             bool isPartial() const override;
 
             bool isSingleLabel() const override;
-
     };
 
 }

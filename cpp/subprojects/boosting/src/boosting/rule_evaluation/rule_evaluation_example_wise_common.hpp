@@ -6,7 +6,6 @@
 #include "boosting/rule_evaluation/rule_evaluation.hpp"
 #include "boosting/math/lapack.hpp"
 
-
 namespace boosting {
 
     /**
@@ -20,7 +19,6 @@ namespace boosting {
      */
     template<typename StatisticVector, typename IndexVector>
     class AbstractExampleWiseRuleEvaluation : public IRuleEvaluation<StatisticVector> {
-
         protected:
 
             /**
@@ -71,7 +69,6 @@ namespace boosting {
                 delete[] dsysvTmpArray3_;
                 delete[] dspmvTmpArray_;
             }
-
     };
 
 }

@@ -6,12 +6,10 @@
 #include "common/rule_refinement/refinement_comparator_fixed.hpp"
 #include "common/rule_refinement/refinement_comparator_single.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to find the best refinement of existing rules.
  */
 class IRuleRefinement {
-
     public:
 
         virtual ~IRuleRefinement() { };
@@ -33,5 +31,4 @@ class IRuleRefinement {
          * @param minCoverage   The minimum number of examples that must be covered by the refinements
          */
         virtual void findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) = 0;
-
 };

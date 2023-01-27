@@ -3,7 +3,6 @@
 #include "heuristic_common.hpp"
 #include <cmath>
 
-
 namespace seco {
 
     /**
@@ -11,7 +10,6 @@ namespace seco {
      * "Precision" and "Recall", where the parameter "beta" allows to trade off between both heuristics.
      */
     class FMeasure final : public IHeuristic {
-
         private:
 
             float64 beta_;
@@ -45,7 +43,6 @@ namespace seco {
                     return precision(cin, cip, crn, crp);
                 }
             }
-
     };
 
     /**
@@ -55,7 +52,6 @@ namespace seco {
      * approaches infinity, this heuristic becomes equivalent to "Recall".
      */
     class FMeasureFactory final : public IHeuristicFactory {
-
         private:
 
             float64 beta_;
@@ -73,7 +69,6 @@ namespace seco {
             std::unique_ptr<IHeuristic> create() const override {
                 return std::make_unique<FMeasure>(beta_);
             }
-
     };
 
     FMeasureConfig::FMeasureConfig()

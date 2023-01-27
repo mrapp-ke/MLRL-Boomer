@@ -1,7 +1,6 @@
 #include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
 #include "common/util/threads.hpp"
 
-
 namespace boosting {
 
     AutoParallelStatisticUpdateConfig::AutoParallelStatisticUpdateConfig(

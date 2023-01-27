@@ -7,12 +7,10 @@
 #include "common/data/view_csr_binary.hpp"
 #include "common/statistics/statistics.hpp"
 
-
 /**
  * Provides access to an object of type `IStatistics`.
  */
 class IStatisticsProvider {
-
     public:
 
         virtual ~IStatisticsProvider() { };
@@ -35,14 +33,12 @@ class IStatisticsProvider {
          * quality, to the one that should be used for pruning rules.
          */
         virtual void switchToPruningRuleEvaluation() = 0;
-
 };
 
 /**
  * Defines an interface for all classes that allow to create instances of the class `IStatisticsProvider`.
  */
 class IStatisticsProviderFactory {
-
     public:
 
         virtual ~IStatisticsProviderFactory() { };
@@ -67,5 +63,4 @@ class IStatisticsProviderFactory {
          * @return              An unique pointer to an object of type `IStatisticsProvider` that has been created
          */
         virtual std::unique_ptr<IStatisticsProvider> create(const BinaryCsrConstView& labelMatrix) const = 0;
-
 };

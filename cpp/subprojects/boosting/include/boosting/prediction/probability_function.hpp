@@ -6,13 +6,11 @@
 #include "common/data/types.hpp"
 #include <memory>
 
-
 /**
  * Defines an interface for all classes that allow to transform the scores that are predicted for individual labels into
  * probabilities.
  */
 class IProbabilityFunction {
-
     public:
 
         virtual ~IProbabilityFunction() { };
@@ -24,14 +22,12 @@ class IProbabilityFunction {
          * @return                  The probability
          */
         virtual float64 transform(float64 predictedScore) const = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IProbabilityFunction`.
  */
 class IProbabilityFunctionFactory {
-
     public:
 
         virtual ~IProbabilityFunctionFactory() { };
@@ -42,5 +38,4 @@ class IProbabilityFunctionFactory {
          * @return An unique pointer to an object of type `IProbabilityFunction` that has been created
          */
         virtual std::unique_ptr<IProbabilityFunction> create() const = 0;
-
 };

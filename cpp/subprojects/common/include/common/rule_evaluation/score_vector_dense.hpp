@@ -6,7 +6,6 @@
 #include "common/rule_evaluation/score_vector.hpp"
 #include "common/data/vector_dense.hpp"
 
-
 /**
  * An one-dimensional vector that stores the scores that may be predicted by a rule, as well as an overall quality
  * score that assesses the overall quality of the rule, in a C-contiguous array.
@@ -16,7 +15,6 @@
  */
 template<typename IndexVector>
 class DenseScoreVector final : virtual public IScoreVector {
-
     private:
 
         const IndexVector& labelIndices_;
@@ -118,5 +116,4 @@ class DenseScoreVector final : virtual public IScoreVector {
         void updatePrediction(AbstractPrediction& prediction) const override;
 
         void processScores(ScoreProcessor& scoreProcessor) const override;
-
 };

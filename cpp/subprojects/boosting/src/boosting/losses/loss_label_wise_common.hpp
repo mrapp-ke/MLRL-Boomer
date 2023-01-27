@@ -3,7 +3,6 @@
 #include "common/math/math.hpp"
 #include <algorithm>
 
-
 namespace boosting {
 
     /**
@@ -11,7 +10,6 @@ namespace boosting {
      * for updating the gradients and Hessians and evaluation the predictions for an individual label, respectively.
      */
     class LabelWiseLoss : virtual public ILabelWiseLoss {
-
         public:
 
             /**
@@ -44,7 +42,6 @@ namespace boosting {
              */
             LabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
                 : updateFunction_(updateFunction), evaluateFunction_(evaluateFunction) {
-
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
@@ -197,7 +194,6 @@ namespace boosting {
 
                 return mean;
             }
-
     };
 
 }

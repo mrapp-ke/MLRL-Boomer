@@ -7,7 +7,6 @@
 #include "boosting/rule_evaluation/regularization.hpp"
 #include "boosting/macros.hpp"
 
-
 namespace boosting {
 
     /**
@@ -15,7 +14,6 @@ namespace boosting {
      * that each bin contains labels for which the predicted score is expected to belong to the same value range.
      */
     class MLRLBOOSTING_API IEqualWidthLabelBinningConfig {
-
         public:
 
             virtual ~IEqualWidthLabelBinningConfig() { };
@@ -70,7 +68,6 @@ namespace boosting {
              *                  configuration of the method that assigns labels to bins
              */
             virtual IEqualWidthLabelBinningConfig& setMaxBins(uint32 maxBins) = 0;
-
     };
 
     /**
@@ -78,7 +75,6 @@ namespace boosting {
      * the predicted score is expected to belong to the same value range.
      */
     class EqualWidthLabelBinningConfig final : public ILabelBinningConfig, public IEqualWidthLabelBinningConfig {
-
         private:
 
             float32 binRatio_;
@@ -131,7 +127,6 @@ namespace boosting {
 
             std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseDynamicPartialRuleEvaluationFactory(
                 float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const override;
-
     };
 
 }

@@ -2,7 +2,6 @@
 #include "common/data/indexed_value.hpp"
 #include "common/data/tuple.hpp"
 
-
 template<typename T>
 VectorConstView<T>::VectorConstView(uint32 numElements, T* array)
     : numElements_(numElements), array_(array) {

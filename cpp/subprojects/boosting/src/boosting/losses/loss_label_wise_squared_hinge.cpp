@@ -1,7 +1,6 @@
 #include "boosting/losses/loss_label_wise_squared_hinge.hpp"
 #include "loss_label_wise_sparse_common.hpp"
 
-
 namespace boosting {
 
     static inline void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
@@ -44,13 +43,11 @@ namespace boosting {
      * loss that is applied label-wise.
      */
     class LabelWiseSquaredHingeLossFactory final : public ISparseLabelWiseLossFactory {
-
         public:
 
             std::unique_ptr<ISparseLabelWiseLoss> createSparseLabelWiseLoss() const override {
                 return std::make_unique<SparseLabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
             }
-
     };
 
     LabelWiseSquaredHingeLossConfig::LabelWiseSquaredHingeLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)

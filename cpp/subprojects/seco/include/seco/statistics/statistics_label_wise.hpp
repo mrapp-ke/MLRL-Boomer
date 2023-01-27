@@ -7,7 +7,6 @@
 #include "seco/statistics/statistics.hpp"
 #include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
 
-
 namespace seco {
 
     /**
@@ -19,7 +18,6 @@ namespace seco {
      */
     template<typename RuleEvaluationFactory>
     class ILabelWiseStatistics : public ICoverageStatistics {
-
         public:
 
             virtual ~ILabelWiseStatistics() override { };
@@ -31,7 +29,6 @@ namespace seco {
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` to be set
              */
             virtual void setRuleEvaluationFactory(const RuleEvaluationFactory& ruleEvaluationFactory) = 0;
-
     };
 
 }

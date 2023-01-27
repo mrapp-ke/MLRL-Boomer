@@ -6,14 +6,12 @@
 #include "common/input/feature_matrix_fortran_contiguous.hpp"
 #include "common/data/view_fortran_contiguous.hpp"
 
-
 /**
  * An implementation of the type `IFortranContiguousFeatureMatrix` that provides column-wise read-only access to the
  * feature values of examples that are stored in a pre-allocated Fortran-contiguous array.
  */
 class FortranContiguousFeatureMatrix final : public FortranContiguousConstView<const float32>,
                                              virtual public IFortranContiguousFeatureMatrix {
-
     public:
 
         /**
@@ -53,7 +51,6 @@ class FortranContiguousFeatureMatrix final : public FortranContiguousConstView<c
 
             featureVectorPtr->setNumElements(i, true);
         }
-
 };
 
 std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols,

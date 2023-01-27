@@ -6,7 +6,6 @@
 #include "common/model/condition.hpp"
 #include "common/rule_refinement/prediction_evaluated.hpp"
 
-
 /**
  * Stores the properties of a potential refinement of a rule.
  */
@@ -36,5 +35,4 @@ struct Refinement final : public Condition {
      * rule.
      */
     int64 previous;
-
 };

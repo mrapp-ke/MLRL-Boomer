@@ -6,7 +6,6 @@
 #include "common/data/matrix_dense.hpp"
 #include "common/data/matrix_lil.hpp"
 
-
 /**
  * A two-dimensional matrix that provides row-wise access to data that is stored in the list of lists (LIL) format. In
  * contrast to a `LilMatrix`, this matrix does also provide random access to its elements. This additional functionality
@@ -22,14 +21,12 @@
  */
 template<typename T>
 class SparseSetMatrix {
-
     private:
 
         /**
          * Provides read-only access to a single row in the matrix.
          */
         class ConstRow final {
-
             private:
 
                 typename LilMatrix<T>::const_row row_;
@@ -81,14 +78,12 @@ class SparseSetMatrix {
                  *              such element is available
                  */
                 const IndexedValue<T>* operator[](uint32 index) const;
-
         };
 
         /**
          * Provides access to a single row in the matrix and allows to modify its elements.
          */
         class Row final {
-
             private:
 
                 typename LilMatrix<T>::row row_;
@@ -178,7 +173,6 @@ class SparseSetMatrix {
                  * Removes all elements from the row.
                  */
                 void clear();
-
         };
 
         LilMatrix<T> lilMatrix_;
@@ -279,5 +273,4 @@ class SparseSetMatrix {
          * Sets the values of all elements to zero.
          */
         void clear();
-
 };

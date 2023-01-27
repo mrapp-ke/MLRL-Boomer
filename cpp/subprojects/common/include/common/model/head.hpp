@@ -10,12 +10,10 @@
 class CompleteHead;
 class PartialHead;
 
-
 /**
  * Defines an interface for all classes that represent the head of a rule.
  */
 class MLRLCOMMON_API IHead {
-
     public:
 
         virtual ~IHead() { };
@@ -38,5 +36,4 @@ class MLRLCOMMON_API IHead {
          * @param partialHeadVisitor    The visitor function for handling objects of the type `PartialHead`
          */
         virtual void visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const = 0;
-
 };

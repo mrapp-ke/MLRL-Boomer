@@ -3,7 +3,6 @@
 #include "common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
 #include "common/sampling/partition_sampling_no.hpp"
 
-
 namespace boosting {
 
     AutomaticPartitionSamplingConfig::AutomaticPartitionSamplingConfig(

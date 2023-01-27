@@ -3,7 +3,6 @@
 #include "heuristic_common.hpp"
 #include <cmath>
 
-
 namespace seco {
 
     /**
@@ -11,7 +10,6 @@ namespace seco {
      * where the "m" parameter allows to control the trade-off between both heuristics.
      */
     class MEstimate final : public IHeuristic {
-
         private:
 
             float64 m_;
@@ -49,7 +47,6 @@ namespace seco {
                     return precision(cin, cip, crn, crp);
                 }
             }
-
     };
 
     /**
@@ -58,7 +55,6 @@ namespace seco {
      * "Precision". As m approaches infinity, the isometrics of this heuristic become equivalent to those of "WRA".
      */
     class MEstimateFactory final : public IHeuristicFactory {
-
         private:
 
             float64 m_;
@@ -76,7 +72,6 @@ namespace seco {
             std::unique_ptr<IHeuristic> create() const override {
                 return std::make_unique<MEstimate>(m_);
             }
-
     };
 
     MEstimateConfig::MEstimateConfig()

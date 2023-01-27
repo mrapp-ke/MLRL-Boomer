@@ -2,7 +2,6 @@
 #include "common/thresholds/thresholds.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
-
 template<typename T>
 DenseWeightVector<T>::DenseWeightVector(uint32 numElements)
     : DenseWeightVector<T>(numElements, false) {

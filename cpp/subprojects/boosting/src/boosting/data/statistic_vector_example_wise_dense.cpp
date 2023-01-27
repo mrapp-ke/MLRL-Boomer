@@ -4,7 +4,6 @@
 #include "common/data/arrays.hpp"
 #include <cstdlib>
 
-
 namespace boosting {
 
     DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients)

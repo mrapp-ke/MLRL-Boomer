@@ -3,7 +3,6 @@
  */
 #pragma once
 
-
 /**
  * Defines an interface for callbacks that may be invoked by subclasses of the the class `IRuleRefinement` in order to
  * retrieve the information that is required to search for potential refinements. It consists of statistics, as well as
@@ -14,14 +13,12 @@
  */
 template<typename Statistics, typename Vector>
 class IRuleRefinementCallback {
-
     public:
 
         /**
          * The data that is provided via the callback's `get` function.
          */
         struct Result final {
-
             /**
              * @param s A reference to an object of template type `Statistics` that should be used to search for
              *          potential refinements
@@ -41,7 +38,6 @@ class IRuleRefinementCallback {
              * refinements.
              */
             const Vector& vector;
-
         };
 
         virtual ~IRuleRefinementCallback() { };
@@ -53,5 +49,4 @@ class IRuleRefinementCallback {
          *         to search for potential refinements
          */
         virtual Result get() = 0;
-
 };

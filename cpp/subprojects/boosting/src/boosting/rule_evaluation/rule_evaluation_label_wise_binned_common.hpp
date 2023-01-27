@@ -8,7 +8,6 @@
 #include "boosting/data/statistic_vector_label_wise_dense.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -53,7 +52,6 @@ namespace boosting {
      */
     template<typename StatisticVector, typename IndexVector>
     class AbstractLabelWiseBinnedRuleEvaluation : public IRuleEvaluation<StatisticVector> {
-
         private:
 
             uint32 maxBins_;
@@ -165,7 +163,6 @@ namespace boosting {
                                                              l2RegularizationWeight_);
                 return scoreVector_;
             }
-
     };
 
     /**
@@ -180,7 +177,6 @@ namespace boosting {
     template<typename StatisticVector, typename IndexVector>
     class LabelWiseCompleteBinnedRuleEvaluation final :
             public AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, IndexVector> {
-
         protected:
 
             uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
@@ -218,7 +214,6 @@ namespace boosting {
                                                                                       std::move(binningPtr)) {
 
             }
-
     };
 
 }

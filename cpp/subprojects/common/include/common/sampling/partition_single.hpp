@@ -6,13 +6,11 @@
 #include "common/sampling/partition.hpp"
 #include "common/iterator/index_iterator.hpp"
 
-
 /**
  * An implementation of the class `IPartition` that provides random access to the indices of elements that are included
  * in a single set.
  */
 class SinglePartition final : public IPartition {
-
     private:
 
         uint32 numElements_;
@@ -61,5 +59,4 @@ class SinglePartition final : public IPartition {
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
                                    AbstractPrediction& head) override;
-
 };

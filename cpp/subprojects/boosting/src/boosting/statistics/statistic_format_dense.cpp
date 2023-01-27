@@ -1,6 +1,5 @@
 #include "boosting/statistics/statistic_format_dense.hpp"
 
-
 namespace boosting {
 
     DenseStatisticsConfig::DenseStatisticsConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr)

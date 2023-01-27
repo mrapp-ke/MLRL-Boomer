@@ -7,12 +7,10 @@
 #include "common/prediction/prediction_matrix_sparse_binary.hpp"
 #include "common/prediction/predictor.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to predict binary labels for given query examples.
  */
 class IBinaryPredictor : public IPredictor<DensePredictionMatrix<uint8>> {
-
     public:
 
         virtual ~IBinaryPredictor() override { };
@@ -23,7 +21,6 @@ class IBinaryPredictor : public IPredictor<DensePredictionMatrix<uint8>> {
  * Defines an interface for all classes that allow to create instances of the type `IBinaryPredictor`.
  */
 class IBinaryPredictorFactory : public IPredictorFactory<IBinaryPredictor> {
-
     public:
 
         virtual ~IBinaryPredictorFactory() override { };
@@ -34,7 +31,6 @@ class IBinaryPredictorFactory : public IPredictorFactory<IBinaryPredictor> {
  * Defines an interface for all classes that allow to predict sparse binary labels for given query examples.
  */
 class ISparseBinaryPredictor : public IPredictor<BinarySparsePredictionMatrix> {
-
     public:
 
         virtual ~ISparseBinaryPredictor() override { };
@@ -45,7 +41,6 @@ class ISparseBinaryPredictor : public IPredictor<BinarySparsePredictionMatrix> {
  * Defines an interface for all classes that allow to create instances of the type `ISparseBinaryPredictor`.
  */
 class ISparseBinaryPredictorFactory : public IPredictorFactory<ISparseBinaryPredictor> {
-
     public:
 
         virtual ~ISparseBinaryPredictorFactory() override { };
@@ -56,7 +51,6 @@ class ISparseBinaryPredictorFactory : public IPredictorFactory<ISparseBinaryPred
  * Defines an interface for all classes that allow to configure an `IBinaryPredictor` or `ISparseBinaryPredictor`.
  */
 class IBinaryPredictorConfig : public IPredictorConfig<IBinaryPredictorFactory> {
-
     public:
 
         virtual ~IBinaryPredictorConfig() override { };
@@ -73,5 +67,4 @@ class IBinaryPredictorConfig : public IPredictorConfig<IBinaryPredictorFactory> 
          */
         virtual std::unique_ptr<ISparseBinaryPredictorFactory> createSparsePredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
-
 };

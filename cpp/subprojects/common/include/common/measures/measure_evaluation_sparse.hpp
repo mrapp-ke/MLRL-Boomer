@@ -8,13 +8,11 @@
 #include "common/data/matrix_sparse_set.hpp"
 #include <memory>
 
-
 /**
  * Defines an interface for all measures that may be used to assess the quality of predictions for certain examples,
  * which are stored using sparse data structures, by comparing them to the corresponding ground truth labels.
  */
 class ISparseEvaluationMeasure {
-
     public:
 
         virtual ~ISparseEvaluationMeasure() { };
@@ -48,14 +46,12 @@ class ISparseEvaluationMeasure {
          */
         virtual float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                                  const SparseSetMatrix<float64>& scoreMatrix) const = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `ISparseEvaluationMeasure`.
  */
 class ISparseEvaluationMeasureFactory {
-
     public:
 
         virtual ~ISparseEvaluationMeasureFactory() { };
@@ -66,5 +62,4 @@ class ISparseEvaluationMeasureFactory {
          * @return An unique pointer to an object of type `ISparseEvaluationMeasure` that has been created
          */
         virtual std::unique_ptr<ISparseEvaluationMeasure> createSparseEvaluationMeasure() const = 0;
-
 };

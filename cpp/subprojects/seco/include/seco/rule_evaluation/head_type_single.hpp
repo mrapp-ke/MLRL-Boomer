@@ -6,14 +6,12 @@
 #include "seco/rule_evaluation/head_type.hpp"
 #include "seco/heuristics/heuristic.hpp"
 
-
 namespace seco {
 
     /**
      * Allows to configure single-label rule heads that predict for a single label.
      */
     class SingleLabelHeadConfig final : public IHeadConfig {
-
         private:
 
             const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr_;
@@ -33,7 +31,6 @@ namespace seco {
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IRowWiseLabelMatrix& labelMatrix) const override;
-
     };
 
 }

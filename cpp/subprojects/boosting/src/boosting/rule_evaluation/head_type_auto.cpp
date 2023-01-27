@@ -2,7 +2,6 @@
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
 
-
 namespace boosting {
 
     AutomaticHeadConfig::AutomaticHeadConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,

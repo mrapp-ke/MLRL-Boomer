@@ -1,6 +1,5 @@
 #include "common/binning/threshold_vector.hpp"
 
-
 ThresholdVector::ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements)
     : ThresholdVector(missingFeatureVector, numElements, false) {
 

@@ -2,7 +2,6 @@
 #include "rule_evaluation_label_wise_binned_common.hpp"
 #include "rule_evaluation_label_wise_partial_dynamic_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
     template<typename StatisticVector, typename IndexVector>
     class LabelWiseDynamicPartialBinnedRuleEvaluation final :
             public AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
-
         private:
 
             const IndexVector& labelIndices_;
@@ -91,7 +89,6 @@ namespace boosting {
                   exponent_(exponent) {
 
             }
-
     };
 
     LabelWiseDynamicPartialBinnedRuleEvaluationFactory::LabelWiseDynamicPartialBinnedRuleEvaluationFactory(

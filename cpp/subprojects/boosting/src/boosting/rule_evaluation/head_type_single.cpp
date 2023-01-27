@@ -4,7 +4,6 @@
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_sparse.hpp"
 
-
 namespace boosting {
 
     SingleLabelHeadConfig::SingleLabelHeadConfig(

@@ -12,13 +12,11 @@
 #include "common/sampling/weight_vector_equal.hpp"
 #include "common/sampling/weight_vector_out_of_sample.hpp"
 
-
 /**
  * Defines an interface for all classes that provide access to statistics about the labels of the training examples,
  * which serve as the basis for learning a new rule or refining an existing one.
  */
 class IStatistics {
-
     public:
 
         virtual ~IStatistics() { };
@@ -280,5 +278,4 @@ class IStatistics {
          */
         virtual std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
             const DenseWeightVector<uint32>& weights) const = 0;
-
 };

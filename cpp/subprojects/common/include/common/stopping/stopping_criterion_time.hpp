@@ -6,13 +6,11 @@
 #include "common/stopping/stopping_criterion.hpp"
 #include "common/macros.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that ensures that a certain time
  * limit is not exceeded.
  */
 class MLRLCOMMON_API ITimeStoppingCriterionConfig {
-
     public:
 
         virtual ~ITimeStoppingCriterionConfig() { };
@@ -32,14 +30,12 @@ class MLRLCOMMON_API ITimeStoppingCriterionConfig {
          *                  configuration of the stopping criterion
          */
         virtual ITimeStoppingCriterionConfig& setTimeLimit(uint32 timeLimit) = 0;
-
 };
 
 /**
  * Allows to configure a stopping criterion that ensures that a certain time limit is not exceeded.
  */
 class TimeStoppingCriterionConfig final : public IStoppingCriterionConfig, public ITimeStoppingCriterionConfig {
-
     private:
 
         uint32 timeLimit_;
@@ -53,5 +49,4 @@ class TimeStoppingCriterionConfig final : public IStoppingCriterionConfig, publi
         ITimeStoppingCriterionConfig& setTimeLimit(uint32 timeLimit) override;
 
         std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
-
 };

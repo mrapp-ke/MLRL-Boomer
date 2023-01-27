@@ -6,7 +6,6 @@
 #include "common/util/validation.hpp"
 #include "feature_binning_nominal.hpp"
 
-
 static inline uint32 getNumBins(FeatureVector& featureVector, bool sparse, float32 binRatio, uint32 minBins,
                                 uint32 maxBins) {
     uint32 numElements = featureVector.getNumElements();
@@ -46,7 +45,6 @@ static inline uint32 getNumBins(FeatureVector& featureVector, bool sparse, float
  * contains approximately the same number of values.
  */
 class EqualFrequencyFeatureBinning final : public IFeatureBinning {
-
     private:
 
         float32 binRatio_;
@@ -155,7 +153,6 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 
             return result;
         }
-
 };
 
 /**
@@ -163,7 +160,6 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
  * bin contains approximately the same number of values.
  */
 class EqualFrequencyFeatureBinningFactory final : public IFeatureBinningFactory {
-
     private:
 
         float32 binRatio_;
@@ -189,7 +185,6 @@ class EqualFrequencyFeatureBinningFactory final : public IFeatureBinningFactory 
         std::unique_ptr<IFeatureBinning> create() const override {
             return std::make_unique<EqualFrequencyFeatureBinning>(binRatio_, minBins_, maxBins_);
         }
-
 };
 
 EqualFrequencyFeatureBinningConfig::EqualFrequencyFeatureBinningConfig(

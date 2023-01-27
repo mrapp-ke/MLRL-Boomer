@@ -1,6 +1,5 @@
 #include "common/model/head_partial.hpp"
 
-
 PartialHead::PartialHead(uint32 numElements)
     : numElements_(numElements), scores_(new float64[numElements]), labelIndices_(new uint32[numElements]) {
 

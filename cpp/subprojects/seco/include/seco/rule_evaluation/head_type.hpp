@@ -6,7 +6,6 @@
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/statistics/statistics_provider.hpp"
 
-
 namespace seco {
 
     /**
@@ -14,7 +13,6 @@ namespace seco {
      * rule learner.
      */
     class IHeadConfig {
-
         public:
 
             virtual ~IHeadConfig() { };
@@ -30,7 +28,6 @@ namespace seco {
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IRowWiseLabelMatrix& labelMatrix) const = 0;
-
     };
 
 }

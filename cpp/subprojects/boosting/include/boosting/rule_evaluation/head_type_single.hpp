@@ -8,14 +8,12 @@
 #include "boosting/binning/label_binning.hpp"
 #include "common/multi_threading/multi_threading.hpp"
 
-
 namespace boosting {
 
     /**
      * Allows to configure single-label rule heads that predict for a single label.
      */
     class SingleLabelHeadConfig final : public IHeadConfig {
-
         private:
 
             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr_;
@@ -59,7 +57,6 @@ namespace boosting {
             bool isPartial() const override;
 
             bool isSingleLabel() const override;
-
     };
 
 }

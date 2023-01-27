@@ -9,7 +9,6 @@
 #include "common/multi_threading/multi_threading.hpp"
 #include "boosting/macros.hpp"
 
-
 namespace boosting {
 
     /**
@@ -18,7 +17,6 @@ namespace boosting {
      * exceeds a certain threshold are included in a rule head.
      */
     class MLRLBOOSTING_API IDynamicPartialHeadConfig {
-
         public:
 
             virtual ~IDynamicPartialHeadConfig() { };
@@ -61,7 +59,6 @@ namespace boosting {
              *                  configuration of the rule heads
              */
             virtual IDynamicPartialHeadConfig& setExponent(float32 exponent) = 0;
-
     };
 
     /**
@@ -70,7 +67,6 @@ namespace boosting {
      * included in a rule head.
      */
     class DynamicPartialHeadConfig final : public IHeadConfig, public IDynamicPartialHeadConfig {
-
         private:
 
             float32 threshold_;
@@ -116,7 +112,6 @@ namespace boosting {
             bool isPartial() const override;
 
             bool isSingleLabel() const override;
-
     };
 
 }

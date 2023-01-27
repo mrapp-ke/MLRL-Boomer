@@ -7,13 +7,11 @@
 #include "common/sampling/partition_single.hpp"
 #include "common/statistics/statistics.hpp"
 
-
 /**
  * Defines an interface for all stopping criteria that allow to decide whether additional rules should be induced or
  * not.
  */
 class IStoppingCriterion {
-
     public:
 
         /**
@@ -50,14 +48,12 @@ class IStoppingCriterion {
          *                      induction of rules should be forced to be stopped (`FORCE_STOP`)
          */
         virtual Result test(const IStatistics& statistics, uint32 numRules) = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IStoppingCriterion`.
  */
 class IStoppingCriterionFactory {
-
     public:
 
         virtual ~IStoppingCriterionFactory() { };
@@ -80,16 +76,13 @@ class IStoppingCriterionFactory {
          * @return              An unique pointer to an object of type `IStoppingCriterion` that has been created
          */
         virtual std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const = 0;
-
 };
-
 
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that allows to decide whether
  * additional rules should be induced or not.
  */
 class IStoppingCriterionConfig {
-
     public:
 
         virtual ~IStoppingCriterionConfig() { };
@@ -101,5 +94,4 @@ class IStoppingCriterionConfig {
          * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created
          */
         virtual std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const = 0;
-
 };

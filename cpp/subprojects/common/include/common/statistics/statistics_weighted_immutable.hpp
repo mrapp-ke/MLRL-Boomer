@@ -8,13 +8,11 @@
 #include "common/indices/index_vector_partial.hpp"
 #include <memory>
 
-
 /**
  * Defines an interface for all classes that provide access to weighted statistics about the labels of the training
  * examples, which serve as the basis for learning a new rule or refining an existing one.
  */
 class IImmutableWeightedStatistics {
-
     public:
 
         virtual ~IImmutableWeightedStatistics() { };
@@ -54,5 +52,4 @@ class IImmutableWeightedStatistics {
          */
         virtual std::unique_ptr<IWeightedStatisticsSubset> createSubset(
             const PartialIndexVector& labelIndices) const = 0;
-
 };

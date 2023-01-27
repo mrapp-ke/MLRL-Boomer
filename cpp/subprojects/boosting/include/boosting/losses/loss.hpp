@@ -12,14 +12,12 @@
 #include "boosting/math/lapack.hpp"
 #include "boosting/prediction/probability_function.hpp"
 
-
 namespace boosting {
 
     /**
      * Defines an interface for all loss functions.
      */
     class ILoss : public IEvaluationMeasure, public IDistanceMeasure {
-
         public:
 
             virtual ~ILoss() override { };
@@ -30,7 +28,6 @@ namespace boosting {
      * Defines an interface for all classes that allow to configure a loss function.
      */
     class ILossConfig {
-
         public:
 
             virtual ~ILossConfig() { };
@@ -102,7 +99,6 @@ namespace boosting {
              * @return The default prediction
              */
             virtual float64 getDefaultPrediction() const = 0;
-
     };
 
 };

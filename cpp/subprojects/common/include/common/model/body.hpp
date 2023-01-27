@@ -12,12 +12,10 @@
 class EmptyBody;
 class ConjunctiveBody;
 
-
 /**
  * Defines an interface for all classes that represent the body of a rule.
  */
 class MLRLCOMMON_API IBody {
-
     public:
 
         virtual ~IBody() { };
@@ -74,5 +72,4 @@ class MLRLCOMMON_API IBody {
          * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
          */
         virtual void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const = 0;
-
 };

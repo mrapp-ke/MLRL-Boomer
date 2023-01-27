@@ -69,7 +69,6 @@ static inline uint32 getBinIndex(float32 value, float32 min, float32 width, uint
  * contains values from equally sized value ranges.
  */
 class EqualWidthFeatureBinning final : public IFeatureBinning {
-
     private:
 
         float32 binRatio_;
@@ -175,7 +174,6 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
 
             return result;
         }
-
 };
 
 /**
@@ -183,7 +181,6 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
  * bin contains values from equally sized value ranges.
  */
 class EqualWidthFeatureBinningFactory final : public IFeatureBinningFactory {
-
     private:
 
         float32 binRatio_;
@@ -209,7 +206,6 @@ class EqualWidthFeatureBinningFactory final : public IFeatureBinningFactory {
         std::unique_ptr<IFeatureBinning> create() const override {
             return std::make_unique<EqualWidthFeatureBinning>(binRatio_, minBins_, maxBins_);
         }
-
 };
 
 EqualWidthFeatureBinningConfig::EqualWidthFeatureBinningConfig(
@@ -248,7 +244,6 @@ IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint
     maxBins_ = maxBins;
     return *this;
 }
-
 
 std::unique_ptr<IThresholdsFactory> EqualWidthFeatureBinningConfig::createThresholdsFactory(
         const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {

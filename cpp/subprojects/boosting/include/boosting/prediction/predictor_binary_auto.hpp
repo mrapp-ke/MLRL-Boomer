@@ -7,7 +7,6 @@
 #include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
 
-
 namespace boosting {
 
     /**
@@ -15,7 +14,6 @@ namespace boosting {
      * individual labels of given query examples are relevant or not
      */
     class AutomaticBinaryPredictorConfig : public IBinaryPredictorConfig {
-
         private:
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
@@ -50,7 +48,6 @@ namespace boosting {
              * @see `IPredictorConfig::isLabelVectorSetNeeded`
              */
             bool isLabelVectorSetNeeded() const override;
-
     };
 
 }

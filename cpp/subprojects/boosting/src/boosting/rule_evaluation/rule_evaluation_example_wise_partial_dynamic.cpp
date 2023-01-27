@@ -3,7 +3,6 @@
 #include "rule_evaluation_example_wise_partial_common.hpp"
 #include "rule_evaluation_example_wise_partial_dynamic_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
     template<typename IndexVector>
     class DenseExampleWiseDynamicPartialRuleEvaluation final :
             public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
-
         private:
 
             const IndexVector& labelIndices_;
@@ -85,7 +83,6 @@ namespace boosting {
                                                                            l2RegularizationWeight_);
                 float64 minAbsScore = pair.first;
 
-
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
@@ -125,7 +122,6 @@ namespace boosting {
                 scoreVector_.quality = quality;
                 return scoreVector_;
             }
-
     };
 
     ExampleWiseDynamicPartialRuleEvaluationFactory::ExampleWiseDynamicPartialRuleEvaluationFactory(

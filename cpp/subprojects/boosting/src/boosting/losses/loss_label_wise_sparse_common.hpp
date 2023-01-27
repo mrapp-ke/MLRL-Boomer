@@ -14,7 +14,6 @@
 #include <algorithm>
 #include <limits>
 
-
 namespace boosting {
 
     static const uint32 LIMIT = std::numeric_limits<uint32>::max();
@@ -141,7 +140,6 @@ namespace boosting {
      * label, respectively.
      */
     class SparseLabelWiseLoss final : public LabelWiseLoss, public ISparseLabelWiseLoss {
-
         public:
 
             /**
@@ -265,7 +263,6 @@ namespace boosting {
                     scoreMatrix.row_cbegin(exampleIndex), scoreMatrix.row_cend(exampleIndex),
                     LabelWiseLoss::evaluateFunction_, labelMatrix.getNumCols());
             }
-
     };
 
 }

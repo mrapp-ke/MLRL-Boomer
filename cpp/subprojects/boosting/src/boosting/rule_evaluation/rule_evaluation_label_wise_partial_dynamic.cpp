@@ -2,7 +2,6 @@
 #include "rule_evaluation_label_wise_complete_common.hpp"
 #include "rule_evaluation_label_wise_partial_dynamic_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -16,7 +15,6 @@ namespace boosting {
      */
     template<typename StatisticVector, typename IndexVector>
     class LabelWiseDynamicPartialRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
-
         private:
 
             const IndexVector& labelIndices_;
@@ -88,7 +86,6 @@ namespace boosting {
                 scoreVector_.quality = quality;
                 return scoreVector_;
             }
-
     };
 
     LabelWiseDynamicPartialRuleEvaluationFactory::LabelWiseDynamicPartialRuleEvaluationFactory(

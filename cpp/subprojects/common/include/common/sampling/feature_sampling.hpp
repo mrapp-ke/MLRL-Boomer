@@ -8,12 +8,10 @@
 #include "common/sampling/random.hpp"
 #include <memory>
 
-
 /**
  * Defines an interface for all classes that implement a method for sampling features.
  */
 class IFeatureSampling {
-
     public:
 
         virtual ~IFeatureSampling() { };
@@ -36,14 +34,12 @@ class IFeatureSampling {
          * @return An unique pointer to an object of type `IFeatureSampling` that has been created
          */
         virtual std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IFeatureSampling`.
  */
 class IFeatureSamplingFactory {
-
     public:
 
         virtual ~IFeatureSamplingFactory() { };
@@ -54,14 +50,12 @@ class IFeatureSamplingFactory {
          * @return An unique pointer to an object of type `IFeatureSampling` that has been created
          */
         virtual std::unique_ptr<IFeatureSampling> create() const = 0;
-
 };
 
 /**
  * Defines an interface for all classes that allow to configure a method for sampling features.
  */
 class IFeatureSamplingConfig {
-
     public:
 
         virtual ~IFeatureSamplingConfig() { };
@@ -82,5 +76,4 @@ class IFeatureSamplingConfig {
          * @return True, if feature sampling is used, false otherwise
          */
         virtual bool isSamplingUsed() const = 0;
-
 };

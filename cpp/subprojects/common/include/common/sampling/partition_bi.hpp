@@ -8,13 +8,11 @@
 #include "common/data/vector_dense.hpp"
 #include "common/data/vector_bit.hpp"
 
-
 /**
  * An implementation of the class `IPartition` that provides random access to the indices of elements that are included
  * two, mutually exclusive, sets.
  */
 class BiPartition final : public IPartition {
-
     private:
 
         DenseVector<uint32> vector_;
@@ -150,5 +148,4 @@ class BiPartition final : public IPartition {
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
                                    AbstractPrediction& head) override;
-
 };

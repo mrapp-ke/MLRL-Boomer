@@ -1,6 +1,5 @@
 #include "boosting/math/blas.hpp"
 
-
 namespace boosting {
 
     Blas::Blas(DdotFunction ddotFunction, DspmvFunction dspmvFunction)

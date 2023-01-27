@@ -6,7 +6,6 @@
 #include "common/thresholds/thresholds_subset.hpp"
 #include "omp.h"
 
-
 /**
  * Stores an unique pointer to an object of type `IRuleRefinement` that may be used to search for potential refinements
  * of a rule, as well as to an object of template type `RefinementComparator` that allows comparing different

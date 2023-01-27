@@ -6,12 +6,10 @@
 #include "common/rule_refinement/prediction_evaluated.hpp"
 #include "common/indices/index_vector_complete.hpp"
 
-
 /**
  * Stores the scores that are predicted by a rule that predicts for all available labels.
  */
 class CompletePrediction final : public AbstractEvaluatedPrediction {
-
     private:
 
         CompleteIndexVector indexVector_;
@@ -75,5 +73,4 @@ class CompletePrediction final : public AbstractEvaluatedPrediction {
         void sort() override;
 
         std::unique_ptr<IHead> createHead() const override;
-
 };

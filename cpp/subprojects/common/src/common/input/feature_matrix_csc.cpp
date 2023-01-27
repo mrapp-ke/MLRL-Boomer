@@ -6,7 +6,6 @@
 #include "common/input/feature_matrix_csc.hpp"
 #include "common/data/view_csc.hpp"
 
-
 /**
  * An implementation of the type `ICscFeatureMatrix` that provides column-wise read-only access to the feature values of
  * examples that are stored in a pre-allocated sparse matrix in the compressed sparse column (CSC) format.
@@ -60,7 +59,6 @@ class CscFeatureMatrix final : public CscConstView<const float32>, virtual publi
 
             featureVectorPtr->setNumElements(i, true);
         }
-
 };
 
 std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,

@@ -5,7 +5,6 @@
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 
-
 RuleList::Rule::Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr)
     : bodyPtr_(std::move(bodyPtr)), headPtr_(std::move(headPtr)) {
 

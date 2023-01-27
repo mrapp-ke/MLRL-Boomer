@@ -1,6 +1,5 @@
 #include "boosting/rule_model_assemblage/default_rule_auto.hpp"
 
-
 namespace boosting {
 
     AutomaticDefaultRuleConfig::AutomaticDefaultRuleConfig(

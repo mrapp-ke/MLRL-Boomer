@@ -1,11 +1,9 @@
 #include "common/post_optimization/post_optimization_unused_rule_removal.hpp"
 
-
 /**
  * An implementation of the class `IPostOptimizationPhase` that removes unused rules from a model.
  */
 class UnusedRuleRemoval final : public IPostOptimizationPhase {
-
     private:
 
         IntermediateModelBuilder& modelBuilder_;
@@ -35,20 +33,17 @@ class UnusedRuleRemoval final : public IPostOptimizationPhase {
                 modelBuilder_.setNumUsedRules(0);
             }
         }
-
 };
 
 /**
  * Allows to create instances of the type `IPostOptimizationPhase` that remove unused rules from a model.
  */
 class UnusedRuleRemovalFactory final : public IPostOptimizationPhaseFactory {
-
     public:
 
         std::unique_ptr<IPostOptimizationPhase> create(IntermediateModelBuilder& modelBuilder) const override {
             return std::make_unique<UnusedRuleRemoval>(modelBuilder);
         }
-
 };
 
 std::unique_ptr<IPostOptimizationPhaseFactory> UnusedRuleRemovalConfig::createPostOptimizationPhaseFactory() const {

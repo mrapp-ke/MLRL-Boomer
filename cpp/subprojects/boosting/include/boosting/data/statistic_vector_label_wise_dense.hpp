@@ -7,7 +7,6 @@
 #include "common/indices/index_vector_partial.hpp"
 #include "boosting/data/statistic_view_label_wise_dense.hpp"
 
-
 namespace boosting {
 
     /**
@@ -16,7 +15,6 @@ namespace boosting {
      * and Hessian is stored.
      */
     class DenseLabelWiseStatisticVector final {
-
         private:
 
             uint32 numElements_;
@@ -224,7 +222,6 @@ namespace boosting {
              */
             void difference(const DenseLabelWiseStatisticVector& first, const PartialIndexVector& firstIndices,
                             const DenseLabelWiseStatisticVector& second);
-
     };
 
 }

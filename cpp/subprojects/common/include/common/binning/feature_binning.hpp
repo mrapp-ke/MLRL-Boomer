@@ -12,12 +12,10 @@
 #include "common/thresholds/thresholds.hpp"
 #include <memory>
 
-
 /**
  * Defines an interface for methods that assign feature values to bins.
  */
 class IFeatureBinning {
-
     public:
 
         /**
@@ -26,7 +24,6 @@ class IFeatureBinning {
          * bins, individual values have been assigned to.
          */
         struct Result final {
-
             /**
              * An unique pointer to an object of type `ThresholdVector` that provides access to the thresholds that
              * result from the boundaries of the bins.
@@ -38,7 +35,6 @@ class IFeatureBinning {
              * individual values have been assigned to.
              */
             std::unique_ptr<IBinIndexVector> binIndicesPtr;
-
         };
 
         virtual ~IFeatureBinning() { };
@@ -53,14 +49,12 @@ class IFeatureBinning {
          *                      bins, individual values have been assigned to
          */
         virtual Result createBins(FeatureVector& featureVector, uint32 numExamples) const = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IFeatureBinning`.
  */
 class IFeatureBinningFactory {
-
     public:
 
         virtual ~IFeatureBinningFactory() { };
@@ -71,14 +65,12 @@ class IFeatureBinningFactory {
          * @return An unique pointer to an object of type `IFeatureBinning` that has been created
          */
         virtual std::unique_ptr<IFeatureBinning> create() const = 0;
-
 };
 
 /**
  * Defines an interface for all classes that allow to configure a method that assigns feature values to bins.
  */
 class IFeatureBinningConfig {
-
     public:
 
         virtual ~IFeatureBinningConfig() { };
@@ -94,5 +86,4 @@ class IFeatureBinningConfig {
          */
         virtual std::unique_ptr<IThresholdsFactory> createThresholdsFactory(const IFeatureMatrix& featureMatrix,
                                                                             const ILabelMatrix& labelMatrix) const = 0;
-
 };

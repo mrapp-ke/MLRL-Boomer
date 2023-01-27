@@ -14,13 +14,10 @@
 #include "common/statistics/statistics.hpp"
 #include "common/thresholds/thresholds.hpp"
 
-
-
 /**
  * Defines an interface for all classes that implement an algorithm for the induction of individual rules.
  */
 class IRuleInduction {
-
     public:
 
         virtual ~IRuleInduction() { };
@@ -61,14 +58,12 @@ class IRuleInduction {
                                 const IWeightVector& weights, IPartition& partition, IFeatureSampling& featureSampling,
                                 const IRulePruning& rulePruning, const IPostProcessor& postProcessor, RNG& rng,
                                 IModelBuilder& modelBuilder) const = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IRuleInduction`.
  */
 class IRuleInductionFactory {
-
     public:
 
         virtual ~IRuleInductionFactory() { };
@@ -79,14 +74,12 @@ class IRuleInductionFactory {
          * @return An unique pointer to an object of type `IRuleInduction` that has been created.
          */
         virtual std::unique_ptr<IRuleInduction> create() const = 0;
-
 };
 
 /**
  * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules.
  */
 class IRuleInductionConfig {
-
     public:
 
         virtual ~IRuleInductionConfig() { };
@@ -102,5 +95,4 @@ class IRuleInductionConfig {
          */
         virtual std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const = 0;
-
 };

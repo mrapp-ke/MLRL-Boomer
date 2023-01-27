@@ -4,7 +4,6 @@
 #include "global_pruning_common.hpp"
 #include <limits>
 
-
 /**
  * An implementation of the type `IStoppingCriterion` that stops the induction of rules as soon as the quality of a
  * model's predictions for the examples in the training or holdout set do not improve according a certain measure.
@@ -14,7 +13,6 @@
  */
 template<typename Partition>
 class PrePruning final : public IStoppingCriterion {
-
     private:
 
         Partition& partition_;
@@ -119,7 +117,6 @@ class PrePruning final : public IStoppingCriterion {
 
             return result;
         }
-
 };
 
 /**
@@ -128,7 +125,6 @@ class PrePruning final : public IStoppingCriterion {
  * measure.
  */
 class PrePruningFactory final : public IStoppingCriterionFactory {
-
     private:
 
         std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr_;
@@ -198,7 +194,6 @@ class PrePruningFactory final : public IStoppingCriterionFactory {
                                                              updateInterval_, stopInterval_, numPast_, numCurrent_,
                                                              minImprovement_);
         }
-
 };
 
 PrePruningConfig::PrePruningConfig()

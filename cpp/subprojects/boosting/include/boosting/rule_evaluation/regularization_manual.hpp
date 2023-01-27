@@ -6,7 +6,6 @@
 #include "boosting/rule_evaluation/regularization.hpp"
 #include "boosting/macros.hpp"
 
-
 namespace boosting {
 
     /**
@@ -14,7 +13,6 @@ namespace boosting {
      * rules by manually specifying the weight of the regularization term.
      */
     class MLRLBOOSTING_API IManualRegularizationConfig {
-
         public:
 
             virtual ~IManualRegularizationConfig() { };
@@ -34,7 +32,6 @@ namespace boosting {
              *                              further configuration of the regularization term
              */
             virtual IManualRegularizationConfig& setRegularizationWeight(float64 regularizationWeight) = 0;
-
     };
 
     /**
@@ -42,7 +39,6 @@ namespace boosting {
      * of the regularization term.
      */
     class ManualRegularizationConfig final : public IRegularizationConfig, public IManualRegularizationConfig {
-
         private:
 
             float64 regularizationWeight_;
@@ -56,7 +52,6 @@ namespace boosting {
             IManualRegularizationConfig& setRegularizationWeight(float64 regularizationWeight) override;
 
             float64 getWeight() const override;
-
     };
 
 }

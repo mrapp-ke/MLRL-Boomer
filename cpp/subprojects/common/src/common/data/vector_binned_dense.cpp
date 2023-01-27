@@ -1,6 +1,5 @@
 #include "common/data/vector_binned_dense.hpp"
 
-
 template<typename T>
 DenseBinnedVector<T>::ValueConstIterator::ValueConstIterator(DenseVector<uint32>::const_iterator binIndexIterator,
                                                              typename DenseVector<T>::const_iterator valueIterator)

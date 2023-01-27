@@ -4,7 +4,6 @@
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
-
 namespace seco {
 
     /**
@@ -15,7 +14,6 @@ namespace seco {
      */
     template<typename T>
     class LabelWiseSingleLabelRuleEvaluation final : public IRuleEvaluation {
-
         private:
 
             const T& labelIndices_;
@@ -71,7 +69,6 @@ namespace seco {
                 scoreVector_.quality = bestQuality;
                 return scoreVector_;
             }
-
     };
 
     LabelWiseSingleLabelRuleEvaluationFactory::LabelWiseSingleLabelRuleEvaluationFactory(

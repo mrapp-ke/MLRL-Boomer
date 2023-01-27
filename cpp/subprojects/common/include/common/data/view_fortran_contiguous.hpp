@@ -5,7 +5,6 @@
 
 #include "common/data/view_two_dimensional.hpp"
 
-
 /**
  * Implements column-wise read-only access to the values that are stored in a pre-allocated Fortran-contiguous array.
  *
@@ -13,7 +12,6 @@
  */
 template<typename T>
 class FortranContiguousConstView : virtual public ITwoDimensionalView {
-
     protected:
 
         /**
@@ -71,7 +69,6 @@ class FortranContiguousConstView : virtual public ITwoDimensionalView {
          * @see `ITwoDimensionalView::getNumCols`
          */
         uint32 getNumCols() const override final;
-
 };
 
 /**
@@ -82,7 +79,6 @@ class FortranContiguousConstView : virtual public ITwoDimensionalView {
  */
 template<typename T>
 class FortranContiguousView : public FortranContiguousConstView<T> {
-
     public:
 
         /**
@@ -113,5 +109,4 @@ class FortranContiguousView : public FortranContiguousConstView<T> {
          * @return      A `value_iterator` to the end
          */
         value_iterator column_values_end(uint32 col);
-
 };

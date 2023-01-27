@@ -1,6 +1,5 @@
 #include "boosting/data/matrix_sparse_set_numeric.hpp"
 
-
 namespace boosting {
 
     template<typename T, typename IndexIterator>

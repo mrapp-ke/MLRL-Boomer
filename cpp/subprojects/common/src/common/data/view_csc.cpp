@@ -1,6 +1,5 @@
 #include "common/data/view_csc.hpp"
 
-
 template<typename T>
 CscConstView<T>::CscConstView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices)
     : numRows_(numRows), numCols_(numCols), data_(data), rowIndices_(rowIndices), colIndices_(colIndices) {

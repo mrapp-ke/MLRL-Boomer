@@ -5,13 +5,11 @@
 
 #include "common/thresholds/coverage_state.hpp"
 
-
 /**
  * Provides access to the indices of the examples that are covered by a rule. The indices of the covered examples are
  * stored in a C-contiguous array that may be updated when the rule is refined.
  */
 class CoverageSet final : public ICoverageState {
-
     private:
 
         uint32* array_;
@@ -111,5 +109,4 @@ class CoverageSet final : public ICoverageState {
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                    AbstractPrediction& head) const override;
-
 };

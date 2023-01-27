@@ -6,14 +6,12 @@
 #include "common/model/model_builder.hpp"
 #include <vector>
 
-
 /**
  * An implementation of the class `IModelBuilder` that stores intermediate representations of rules, which can still be
  * modified when globally optimizing a rule-based model once it has been learned, that are ultimately converted into a
  * final model using another `IModelBuilder`.
  */
 class IntermediateModelBuilder final : public IModelBuilder {
-
     public:
 
         /**
@@ -85,5 +83,4 @@ class IntermediateModelBuilder final : public IModelBuilder {
                      std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override;
 
         std::unique_ptr<IRuleModel> buildModel() override;
-
 };

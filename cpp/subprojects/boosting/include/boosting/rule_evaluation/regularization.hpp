@@ -5,7 +5,6 @@
 
 #include "common/data/types.hpp"
 
-
 namespace boosting {
 
     /**
@@ -13,7 +12,6 @@ namespace boosting {
      * rules.
      */
     class IRegularizationConfig {
-
         public:
 
             virtual ~IRegularizationConfig() { };
@@ -24,7 +22,6 @@ namespace boosting {
              * @return The weight of the regularization term
              */
             virtual float64 getWeight() const = 0;
-
     };
 
 }

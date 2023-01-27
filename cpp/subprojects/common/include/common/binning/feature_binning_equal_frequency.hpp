@@ -8,13 +8,11 @@
 #include "common/multi_threading/multi_threading.hpp"
 #include "common/macros.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to configure a method that assigns numerical feature values to bins,
  * such that each bins contains approximately the same number of values.
  */
 class MLRLCOMMON_API IEqualFrequencyFeatureBinningConfig {
-
     public:
 
         virtual ~IEqualFrequencyFeatureBinningConfig() { };
@@ -69,7 +67,6 @@ class MLRLCOMMON_API IEqualFrequencyFeatureBinningConfig {
          *                  configuration of the method that assigns numerical feature values to bins
          */
         virtual IEqualFrequencyFeatureBinningConfig& setMaxBins(uint32 maxBins) = 0;
-
 };
 
 /**
@@ -78,7 +75,6 @@ class MLRLCOMMON_API IEqualFrequencyFeatureBinningConfig {
  */
 class EqualFrequencyFeatureBinningConfig final : public IFeatureBinningConfig,
                                                  public IEqualFrequencyFeatureBinningConfig {
-
     private:
 
         float32 binRatio_;
@@ -112,5 +108,4 @@ class EqualFrequencyFeatureBinningConfig final : public IFeatureBinningConfig,
 
         std::unique_ptr<IThresholdsFactory> createThresholdsFactory(const IFeatureMatrix& featureMatrix,
                                                                     const ILabelMatrix& labelMatrix) const override;
-
 };

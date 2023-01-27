@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <stdexcept>
 
-
 namespace boosting {
 
     static inline const LabelVector* measureDistance(LabelVectorSet::const_iterator iterator,
@@ -145,7 +144,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class ExampleWiseBinaryPredictor final : public IBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -191,7 +189,6 @@ namespace boosting {
                 return predictInternally(featureMatrix_, model_, labelVectorSet_, numLabels_, *distanceMeasurePtr_,
                                          numThreads_);
             }
-
     };
 
     template<typename FeatureMatrix>
@@ -218,7 +215,6 @@ namespace boosting {
      * is closest to the aggregated score vector is finally predicted.
      */
     class ExampleWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
-
         private:
 
             std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr_;
@@ -238,7 +234,6 @@ namespace boosting {
             ExampleWiseBinaryPredictorFactory(std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr,
                                               uint32 numThreads)
                 : distanceMeasureFactoryPtr_(std::move(distanceMeasureFactoryPtr)), numThreads_(numThreads) {
-
             }
 
             /**
@@ -260,7 +255,6 @@ namespace boosting {
                 return createExampleWiseBinaryPredictor(featureMatrix, model, labelVectorSet, numLabels,
                                                         *distanceMeasureFactoryPtr_, numThreads_);
             }
-
     };
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
@@ -342,7 +336,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class ExampleWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -388,7 +381,6 @@ namespace boosting {
                 return predictSparseInternally(featureMatrix_, model_, labelVectorSet_, numLabels_,
                                                *distanceMeasurePtr_, numThreads_);
             }
-
     };
 
     template<typename FeatureMatrix>
@@ -413,7 +405,6 @@ namespace boosting {
      * is closest to the aggregated score vector is finally predicted.
      */
     class ExampleWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
-
         private:
 
             std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr_;
@@ -455,7 +446,6 @@ namespace boosting {
                 return createExampleWiseSparseBinaryPredictor(featureMatrix, model, labelVectorSet, numLabels,
                                                               *distanceMeasureFactoryPtr_, numThreads_);
             }
-
     };
 
     ExampleWiseBinaryPredictorConfig::ExampleWiseBinaryPredictorConfig(

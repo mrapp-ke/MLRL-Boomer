@@ -3,7 +3,6 @@
 #include "predictor_common.hpp"
 #include "omp.h"
 
-
 namespace boosting {
 
     static inline void applyThreshold(CContiguousConstView<float64>::value_const_iterator originalIterator,
@@ -95,7 +94,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class LabelWiseBinaryPredictor final : public IBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -133,7 +131,6 @@ namespace boosting {
             std::unique_ptr<DensePredictionMatrix<uint8>> predict() const override {
                 return predictInternally(featureMatrix_, model_, numLabels_, threshold_, numThreads_);
             }
-
     };
 
     /**
@@ -144,7 +141,6 @@ namespace boosting {
      * otherwise).
      */
     class LabelWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
-
         private:
 
             float64 threshold_;
@@ -183,7 +179,6 @@ namespace boosting {
                 return std::make_unique<LabelWiseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                     featureMatrix, model, numLabels, threshold_, numThreads_);
             }
-
     };
 
     std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
@@ -249,7 +244,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class LabelWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -287,7 +281,6 @@ namespace boosting {
             std::unique_ptr<BinarySparsePredictionMatrix> predict() const override {
                 return predictSparseInternally(featureMatrix_, model_, numLabels_, threshold_, numThreads_);
             }
-
     };
 
     /**
@@ -298,7 +291,6 @@ namespace boosting {
      * otherwise).
      */
     class LabelWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
-
         private:
 
             float64 threshold_;
@@ -337,7 +329,6 @@ namespace boosting {
                 return std::make_unique<LabelWiseSparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                     featureMatrix, model, numLabels, threshold_, numThreads_);
             }
-
     };
 
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(

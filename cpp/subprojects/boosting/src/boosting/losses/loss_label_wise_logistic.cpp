@@ -2,7 +2,6 @@
 #include "logistic_function.hpp"
 #include "loss_label_wise_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -67,13 +66,11 @@ namespace boosting {
      * that is applied label-wise.
      */
     class LabelWiseLogisticLossFactory final : public ILabelWiseLossFactory {
-
         public:
 
             std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override {
                 return std::make_unique<LabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
             }
-
     };
 
     LabelWiseLogisticLossConfig::LabelWiseLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)

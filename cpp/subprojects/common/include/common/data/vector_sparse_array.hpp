@@ -7,7 +7,6 @@
 #include "common/data/indexed_value.hpp"
 #include <iterator>
 
-
 /**
  * An one-dimensional sparse vector that stores a fixed number of elements, consisting of an index and a value, in a
  * C-contiguous array.
@@ -16,14 +15,12 @@
  */
 template<typename T>
 class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
-
     private:
 
         /**
          * An iterator that provides random read-only access to the indices in a `SparseArrayVector`.
          */
         class IndexConstIterator final {
-
             private:
 
                 typename VectorConstView<IndexedValue<T>>::const_iterator iterator_;
@@ -126,14 +123,12 @@ class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
                  * @return      The difference between the iterators
                  */
                 difference_type operator-(const IndexConstIterator& rhs) const;
-
         };
 
         /**
          * An iterator that provides random access to the indices in a `SparseArrayVector` and allows to modify them.
          */
         class IndexIterator final {
-
             private:
 
                 typename VectorView<IndexedValue<T>>::iterator iterator_;
@@ -235,14 +230,12 @@ class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
                  * @return      The difference between the iterators
                  */
                 difference_type operator-(const IndexIterator& rhs) const;
-
         };
 
         /**
          * An iterator that provides random access to the values in a `SparseArrayVector` and allows to modify them.
          */
         class ValueConstIterator final {
-
             private:
 
                 typename VectorConstView<IndexedValue<T>>::const_iterator iterator_;
@@ -344,14 +337,12 @@ class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
                  * @return      The difference between the iterators
                  */
                 difference_type operator-(const ValueConstIterator& rhs) const;
-
         };
 
         /**
          * An iterator that provides random access to the values in a `SparseArrayVector` and allows to modify them.
          */
         class ValueIterator final {
-
             private:
 
                 typename VectorView<IndexedValue<T>>::iterator iterator_;
@@ -453,7 +444,6 @@ class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
                  * @return      The difference between the iterators
                  */
                 difference_type operator-(const ValueIterator& rhs) const;
-
         };
 
     public:
@@ -538,5 +528,4 @@ class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
          * @return A `value_const_iterator` to the end
          */
         value_const_iterator values_cend() const;
-
 };

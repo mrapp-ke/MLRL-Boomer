@@ -3,7 +3,6 @@
 #include "predictor_common.hpp"
 #include "omp.h"
 
-
 namespace boosting {
 
     static inline void applyTransformationFunction(CContiguousConstView<float64>::value_const_iterator originalIterator,
@@ -100,7 +99,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class LabelWiseProbabilityPredictor final : public IProbabilityPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -140,7 +138,6 @@ namespace boosting {
             std::unique_ptr<DensePredictionMatrix<float64>> predict() const override {
                 return predictInternally(featureMatrix_, model_, numLabels_, *probabilityFunctionPtr_, numThreads_);
             }
-
     };
 
     /**
@@ -151,7 +148,6 @@ namespace boosting {
      * individually.
      */
     class LabelWiseProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
-
         private:
 
             std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
@@ -194,7 +190,6 @@ namespace boosting {
                 return std::make_unique<LabelWiseProbabilityPredictor<CsrConstView<const float32>, RuleList>>(
                     featureMatrix, model, numLabels, std::move(probabilityFunctionPtr), numThreads_);
             }
-
     };
 
     LabelWiseProbabilityPredictorConfig::LabelWiseProbabilityPredictorConfig(

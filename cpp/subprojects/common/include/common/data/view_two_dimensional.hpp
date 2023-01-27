@@ -6,12 +6,10 @@
 #include "common/data/types.hpp"
 #include "common/macros.hpp"
 
-
 /**
  * Defines an interface for all two-dimensional views.
  */
 class MLRLCOMMON_API ITwoDimensionalView {
-
     public:
 
         virtual ~ITwoDimensionalView() { };
@@ -29,5 +27,4 @@ class MLRLCOMMON_API ITwoDimensionalView {
          * @return The number of columns
          */
         virtual uint32 getNumCols() const = 0;
-
 };

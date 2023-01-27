@@ -1,7 +1,6 @@
 #include "seco/heuristics/heuristic_accuracy.hpp"
 #include "common/math/math.hpp"
 
-
 namespace seco {
 
     /**
@@ -9,7 +8,6 @@ namespace seco {
      * labels.
      */
     class Accuracy final : public IHeuristic {
-
         public:
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
@@ -20,7 +18,6 @@ namespace seco {
                 float64 numTotal = numCorrect + cip + crn + urn + urp;
                 return divideOrZero(numCorrect, numTotal);
             }
-
     };
 
     /**
@@ -29,13 +26,11 @@ namespace seco {
      * account as well.
      */
     class AccuracyFactory final : public IHeuristicFactory {
-
         public:
 
             std::unique_ptr<IHeuristic> create() const override {
                 return std::make_unique<Accuracy>();
             }
-
     };
 
     std::unique_ptr<IHeuristicFactory> AccuracyConfig::createHeuristicFactory() const {

@@ -2,7 +2,6 @@
 #include "rule_evaluation_example_wise_binned_common.hpp"
 #include "rule_evaluation_example_wise_partial_dynamic_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
     template<typename IndexVector>
     class DenseExampleWiseDynamicPartialBinnedRuleEvaluation final :
             public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector> {
-
         private:
 
             const IndexVector& labelIndices_;
@@ -99,7 +97,6 @@ namespace boosting {
                   exponent_(exponent) {
 
             }
-
     };
 
     ExampleWiseDynamicPartialBinnedRuleEvaluationFactory::ExampleWiseDynamicPartialBinnedRuleEvaluationFactory(

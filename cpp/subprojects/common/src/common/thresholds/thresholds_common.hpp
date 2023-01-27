@@ -8,7 +8,6 @@
 #include "common/input/feature_matrix.hpp"
 #include "omp.h"
 
-
 template<typename IndexIterator, typename WeightVector>
 static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator, uint32 numExamples,
                                                     const WeightVector& weights, const CoverageMask& coverageMask,
@@ -134,7 +133,6 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
  * rule that currently has an empty body and therefore covers the entire instance space.
  */
 class AbstractThresholds : public IThresholds {
-
     protected:
 
         /**
@@ -168,7 +166,6 @@ class AbstractThresholds : public IThresholds {
         AbstractThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
                            IStatisticsProvider& statisticsProvider)
             : featureMatrix_(featureMatrix), featureInfo_(featureInfo), statisticsProvider_(statisticsProvider) {
-
         }
 
         virtual ~AbstractThresholds() override { };
@@ -176,5 +173,4 @@ class AbstractThresholds : public IThresholds {
         IStatisticsProvider& getStatisticsProvider() const override final {
             return statisticsProvider_;
         }
-
 };

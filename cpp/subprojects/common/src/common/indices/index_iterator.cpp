@@ -1,6 +1,5 @@
 #include "common/iterator/index_iterator.hpp"
 
-
 IndexIterator::IndexIterator()
     : IndexIterator(0) {
 

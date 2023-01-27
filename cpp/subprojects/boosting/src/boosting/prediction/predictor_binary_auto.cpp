@@ -2,7 +2,6 @@
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
 
-
 namespace boosting {
 
     AutomaticBinaryPredictorConfig::AutomaticBinaryPredictorConfig(

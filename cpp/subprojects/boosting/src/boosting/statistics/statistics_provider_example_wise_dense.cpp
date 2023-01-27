@@ -14,7 +14,6 @@
 #include "omp.h"
 #include <cstdlib>
 
-
 namespace boosting {
 
     /**
@@ -22,7 +21,6 @@ namespace boosting {
      * using C-contiguous arrays.
      */
     class DenseExampleWiseStatisticMatrix final : public DenseExampleWiseStatisticView {
-
         public:
 
             /**
@@ -36,7 +34,6 @@ namespace boosting {
                       (float64*) malloc(numRows * triangularNumber(numGradients) * sizeof(float64))) {
 
             }
-
     };
 
     /**
@@ -54,7 +51,6 @@ namespace boosting {
                                                                                   IExampleWiseLoss, IEvaluationMeasure,
                                                                                   IExampleWiseRuleEvaluationFactory,
                                                                                   ILabelWiseRuleEvaluationFactory> {
-
         public:
 
             /**
@@ -124,7 +120,6 @@ namespace boosting {
                                                                                std::move(labelWiseStatisticMatrixPtr),
                                                                                std::move(this->scoreMatrixPtr_));
             }
-
     };
 
     template<typename LabelMatrix>

@@ -7,7 +7,6 @@
 #include "seco/heuristics/heuristic.hpp"
 #include "seco/macros.hpp"
 
-
 namespace seco {
 
     /**
@@ -17,7 +16,6 @@ namespace seco {
      * equivalent to "Precision". As beta approaches infinity, this heuristic becomes equivalent to "Recall".
      */
     class MLRLSECO_API IFMeasureConfig {
-
         public:
 
             virtual ~IFMeasureConfig() { };
@@ -37,7 +35,6 @@ namespace seco {
              *              heuristic
              */
             virtual IFMeasureConfig& setBeta(float64 beta) = 0;
-
     };
 
     /**
@@ -47,7 +44,6 @@ namespace seco {
      * infinity, this heuristic becomes equivalent to "Recall".
      */
     class FMeasureConfig final : public IHeuristicConfig, public IFMeasureConfig {
-
         private:
 
             float64 beta_;
@@ -61,7 +57,6 @@ namespace seco {
             IFMeasureConfig& setBeta(float64 beta) override;
 
             std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const override;
-
     };
 
 }

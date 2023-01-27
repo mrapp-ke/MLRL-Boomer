@@ -8,7 +8,6 @@
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "rule_evaluation_example_wise_complete_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -347,7 +346,6 @@ namespace boosting {
 
                 return scoreVector_;
             }
-
     };
 
     /**
@@ -406,7 +404,6 @@ namespace boosting {
                       std::move(binningPtr), blas, lapack) {
 
             }
-
     };
 
 }

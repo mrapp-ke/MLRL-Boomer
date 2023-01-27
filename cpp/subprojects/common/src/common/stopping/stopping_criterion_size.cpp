@@ -1,13 +1,11 @@
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/util/validation.hpp"
 
-
 /**
  * An implementation of the type `IStoppingCriterion` that ensures that the number of induced rules does not exceed a
  * certain maximum.
  */
 class SizeStoppingCriterion final : public IStoppingCriterion {
-
     private:
 
         uint32 maxRules_;
@@ -31,7 +29,6 @@ class SizeStoppingCriterion final : public IStoppingCriterion {
 
             return result;
         }
-
 };
 
 /**
@@ -39,7 +36,6 @@ class SizeStoppingCriterion final : public IStoppingCriterion {
  * exceed a certain maximum.
  */
 class SizeStoppingCriterionFactory final : public IStoppingCriterionFactory {
-
     private:
 
         uint32 maxRules_;
@@ -61,7 +57,6 @@ class SizeStoppingCriterionFactory final : public IStoppingCriterionFactory {
         std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
             return std::make_unique<SizeStoppingCriterion>(maxRules_);
         }
-
 };
 
 SizeStoppingCriterionConfig::SizeStoppingCriterionConfig()

@@ -7,12 +7,10 @@
 #include "common/math/math.hpp"
 #include <memory>
 
-
 /**
  * Defines an interface for all classes that allow to aggregate the values that are stored in a buffer.
  */
 class IAggregationFunction {
-
     public:
 
         virtual ~IAggregationFunction() { };
@@ -26,7 +24,6 @@ class IAggregationFunction {
          */
         virtual float64 aggregate(RingBuffer<float64>::const_iterator begin,
                                   RingBuffer<float64>::const_iterator end) const = 0;
-
 };
 
 /**
@@ -34,7 +31,6 @@ class IAggregationFunction {
  * finding the minimum value.
  */
 class MinAggregationFunction final : public IAggregationFunction {
-
     public:
 
         float64 aggregate(RingBuffer<float64>::const_iterator begin,
@@ -52,7 +48,6 @@ class MinAggregationFunction final : public IAggregationFunction {
 
             return min;
         }
-
 };
 
 /**
@@ -60,7 +55,6 @@ class MinAggregationFunction final : public IAggregationFunction {
  * finding the maximum value.
  */
 class MaxAggregationFunction final : public IAggregationFunction {
-
     public:
 
         float64 aggregate(RingBuffer<float64>::const_iterator begin,
@@ -78,7 +72,6 @@ class MaxAggregationFunction final : public IAggregationFunction {
 
             return max;
         }
-
 };
 
 /**
@@ -86,7 +79,6 @@ class MaxAggregationFunction final : public IAggregationFunction {
  * calculating the arithmetic mean.
  */
 class ArithmeticMeanAggregationFunction final : public IAggregationFunction {
-
     public:
 
         float64 aggregate(RingBuffer<float64>::const_iterator begin,
@@ -101,14 +93,12 @@ class ArithmeticMeanAggregationFunction final : public IAggregationFunction {
 
             return mean;
         }
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IAggregationFunction`.
  */
 class IAggregationFunctionFactory {
-
     public:
 
         virtual ~IAggregationFunctionFactory() { };
@@ -119,7 +109,6 @@ class IAggregationFunctionFactory {
          * @return An unique pointer to an object of type `IAggregationFunction` that has been created
          */
         virtual std::unique_ptr<IAggregationFunction> create() const = 0;
-
 };
 
 /**
@@ -127,13 +116,11 @@ class IAggregationFunctionFactory {
  * by finding the minimum value.
  */
 class MinAggregationFunctionFactory final : public IAggregationFunctionFactory {
-
     public:
 
         std::unique_ptr<IAggregationFunction> create() const override {
             return std::make_unique<MinAggregationFunction>();
         }
-
 };
 
 /**
@@ -141,13 +128,11 @@ class MinAggregationFunctionFactory final : public IAggregationFunctionFactory {
  * by finding the maximum value.
  */
 class MaxAggregationFunctionFactory final : public IAggregationFunctionFactory {
-
     public:
 
         std::unique_ptr<IAggregationFunction> create() const override {
             return std::make_unique<MaxAggregationFunction>();
         }
-
 };
 
 /**
@@ -155,13 +140,11 @@ class MaxAggregationFunctionFactory final : public IAggregationFunctionFactory {
  * by calculating the arithmetic mean.
  */
 class ArithmeticMeanAggregationFunctionFactory final : public IAggregationFunctionFactory {
-
     public:
 
         std::unique_ptr<IAggregationFunction> create() const override {
             return std::make_unique<ArithmeticMeanAggregationFunction>();
         }
-
 };
 
 /**

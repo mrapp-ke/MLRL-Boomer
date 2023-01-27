@@ -3,7 +3,6 @@
 #include "common/iterator/index_iterator.hpp"
 #include "common/util/validation.hpp"
 
-
 /**
  * Allows to use stratified sampling, where distinct label vectors are treated as individual classes, to split the
  * training examples into two mutually exclusive sets that may be used as a training set and a holdout set.
@@ -13,7 +12,6 @@
  */
 template<typename LabelMatrix>
 class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
-
     private:
 
         BiPartition partition_;
@@ -39,7 +37,6 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
             stratification_.sampleBiPartition(partition_, rng);
             return partition_;
         }
-
 };
 
 /**
@@ -48,7 +45,6 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
  * as a training set and a holdout set.
  */
 class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
-
     private:
 
         float32 holdoutSetSize_;
@@ -80,7 +76,6 @@ class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IPartitionS
             return std::make_unique<ExampleWiseStratifiedBiPartitionSampling<CsrLabelMatrix>>(labelMatrix, numTraining,
                                                                                               numHoldout);
         }
-
 };
 
 ExampleWiseStratifiedBiPartitionSamplingConfig::ExampleWiseStratifiedBiPartitionSamplingConfig()

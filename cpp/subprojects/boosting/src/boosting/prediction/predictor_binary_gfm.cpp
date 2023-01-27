@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <stdexcept>
 
-
 namespace boosting {
 
     static inline uint32 getMaxLabelCardinality(const LabelVectorSet& labelVectorSet) {
@@ -235,7 +234,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class GfmBinaryPredictor final : public IBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -280,7 +278,6 @@ namespace boosting {
                 return predictInternally(featureMatrix_, model_, labelVectorSet_, numLabels_, *probabilityFunctionPtr_,
                                          numThreads_);
             }
-
     };
 
     template<typename FeatureMatrix>
@@ -307,7 +304,6 @@ namespace boosting {
      * maximizer (GFM).
      */
     class GfmBinaryPredictorFactory final : public IBinaryPredictorFactory {
-
         private:
 
             std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
@@ -348,7 +344,6 @@ namespace boosting {
                 return createGfmBinaryPredictor(featureMatrix, model, labelVectorSet, numLabels,
                                                 *probabilityFunctionFactoryPtr_, numThreads_);
             }
-
     };
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
@@ -436,7 +431,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class GfmSparseBinaryPredictor final : public ISparseBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -481,7 +475,6 @@ namespace boosting {
                 return predictSparseInternally(featureMatrix_, model_, labelVectorSet_, numLabels_,
                                                *probabilityFunctionPtr_, numThreads_);
             }
-
     };
 
     template<typename FeatureMatrix>
@@ -508,7 +501,6 @@ namespace boosting {
      * maximizer (GFM).
      */
     class GfmSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
-
         private:
 
             std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
@@ -549,7 +541,6 @@ namespace boosting {
                 return createGfmSparseBinaryPredictor(featureMatrix, model, labelVectorSet, numLabels,
                                                       *probabilityFunctionFactoryPtr_, numThreads_);
             }
-
     };
 
     GfmBinaryPredictorConfig::GfmBinaryPredictorConfig(

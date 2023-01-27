@@ -7,7 +7,6 @@
 #include "common/rule_evaluation/score_vector.hpp"
 #include "seco/data/vector_confusion_matrix_dense.hpp"
 
-
 namespace seco {
 
     /**
@@ -15,7 +14,6 @@ namespace seco {
      * quality, based on confusion matrices.
      */
     class IRuleEvaluation {
-
         public:
 
             virtual ~IRuleEvaluation() { };
@@ -38,7 +36,6 @@ namespace seco {
             virtual const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
                                                         const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                         const DenseConfusionMatrixVector& confusionMatricesCovered) = 0;
-
     };
 
 }

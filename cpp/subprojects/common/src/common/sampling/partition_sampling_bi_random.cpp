@@ -3,13 +3,11 @@
 #include "common/util/validation.hpp"
 #include "index_sampling.hpp"
 
-
 /**
  * Allows to randomly split the training examples into two mutually exclusive sets that may be used as a training set
  * and a holdout set.
  */
 class RandomBiPartitionSampling final : public IPartitionSampling {
-
     private:
 
         BiPartition partition_;
@@ -44,7 +42,6 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
                                                                             numTraining, numTotal, numTraining, rng);
             return partition_;
         }
-
 };
 
 /**
@@ -52,7 +49,6 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
  * exclusive sets that may be used as a training set and a holdout set.
  */
 class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
-
     private:
 
         float32 holdoutSetSize_;
@@ -81,7 +77,6 @@ class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory 
             uint32 numTraining = numExamples - numHoldout;
             return std::make_unique<RandomBiPartitionSampling>(numTraining, numHoldout);
         }
-
 };
 
 

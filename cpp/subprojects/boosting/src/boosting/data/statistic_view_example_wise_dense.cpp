@@ -2,7 +2,6 @@
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
 
-
 namespace boosting {
 
     DenseExampleWiseStatisticConstView::DenseExampleWiseStatisticConstView(uint32 numRows, uint32 numGradients,

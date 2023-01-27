@@ -16,14 +16,12 @@
 #include "seco/rule_evaluation/head_type.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
 
-
 namespace seco {
 
     /**
      * Defines the interface of the multi-label SeCo algorithm.
      */
     class MLRLSECO_API IMultiLabelSeCoRuleLearner : virtual public ISeCoRuleLearner {
-
         public:
 
             /**
@@ -48,7 +46,6 @@ namespace seco {
                             virtual public IRuleLearner::ISizeStoppingCriterionMixin,
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
                             virtual public IRuleLearner::ISequentialPostOptimizationMixin {
-
                 public:
 
                     virtual ~IConfig() override { };
@@ -63,7 +60,6 @@ namespace seco {
      * The multi-label SeCo algorithm.
      */
     class MultiLabelSeCoRuleLearner final : public AbstractSeCoRuleLearner, virtual public IMultiLabelSeCoRuleLearner {
-
         public:
 
             /**
@@ -71,7 +67,6 @@ namespace seco {
              */
             class Config final : public AbstractSeCoRuleLearner::Config,
                                  virtual public IMultiLabelSeCoRuleLearner::IConfig {
-
                 public:
 
                     Config();
@@ -90,7 +85,6 @@ namespace seco {
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
             };
 
         private:
@@ -104,7 +98,6 @@ namespace seco {
              *                  specifies the configuration that should be used by the rule learner
              */
             MultiLabelSeCoRuleLearner(std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr);
-
     };
 
     /**

@@ -10,7 +10,6 @@
 #include <functional>
 #include <memory>
 
-
 namespace boosting {
 
     /**
@@ -19,7 +18,6 @@ namespace boosting {
      * statistic in the vector.
      */
     struct LabelInfo final {
-
         /**
          * The number of positive bins.
          */
@@ -49,14 +47,12 @@ namespace boosting {
          * The maximum among all statistics that belong to the negative bins.
          */
         float64 maxNegative;
-
     };
 
     /**
      * Defines an interface for methods that assign labels to bins, based on the corresponding gradients and Hessians.
      */
     class ILabelBinning {
-
         public:
 
             virtual ~ILabelBinning() { };
@@ -111,14 +107,12 @@ namespace boosting {
              */
             virtual void createBins(LabelInfo labelInfo, const float64* criteria, uint32 numElements, Callback callback,
                                     ZeroCallback zeroCallback) const = 0;
-
     };
 
     /**
      * Defines an interface for all factories that allows to create instances of the type `ILabelBinning`.
      */
     class ILabelBinningFactory {
-
         public:
 
             virtual ~ILabelBinningFactory() { };
@@ -129,14 +123,12 @@ namespace boosting {
              * @return An unique pointer to an object of type `ILabelBinning` that has been created
              */
             virtual std::unique_ptr<ILabelBinning> create() const = 0;
-
     };
 
     /**
      * Defines an interface for all classes that allow to configure a method that assigns labels to bins.
      */
     class ILabelBinningConfig {
-
         public:
 
             virtual ~ILabelBinningConfig() { };

@@ -5,13 +5,11 @@
 
 #include "common/input/feature_info.hpp"
 
-
 /**
  * Defines an interface for all classes that provide information about the types of individual features in cases where
  * different types of features, i.e., binary, nominal and numerical/ordinal ones, are available.
  */
 class MLRLCOMMON_API IMixedFeatureInfo : public IFeatureInfo {
-
     public:
 
         virtual ~IMixedFeatureInfo() override { };
@@ -36,7 +34,6 @@ class MLRLCOMMON_API IMixedFeatureInfo : public IFeatureInfo {
          * @param featureIndex The index of the feature
          */
         virtual void setNominal(uint32 featureIndex) = 0;
-
 };
 
 /**

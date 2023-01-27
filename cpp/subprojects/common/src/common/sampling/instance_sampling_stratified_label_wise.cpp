@@ -4,7 +4,6 @@
 #include "common/sampling/stratified_sampling_label_wise.hpp"
 #include "common/util/validation.hpp"
 
-
 /**
  * Implements stratified sampling for selecting a subset of the available training examples, such that for each label
  * the proportion of relevant and irrelevant examples is maintained.
@@ -16,7 +15,6 @@
  */
 template<typename LabelMatrix, typename IndexIterator>
 class LabelWiseStratifiedSampling final : public IInstanceSampling {
-
     private:
 
         float32 sampleSize_;
@@ -50,7 +48,6 @@ class LabelWiseStratifiedSampling final : public IInstanceSampling {
             stratification_.sampleWeights(weightVector_, sampleSize_, rng);
             return weightVector_;
         }
-
 };
 
 /**
@@ -59,7 +56,6 @@ class LabelWiseStratifiedSampling final : public IInstanceSampling {
  * maintained.
  */
 class LabelWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplingFactory {
-
     private:
 
         float32 sampleSize_;
@@ -99,7 +95,6 @@ class LabelWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplin
             return std::make_unique<LabelWiseStratifiedSampling<CsrLabelMatrix, BiPartition::const_iterator>>(
                 labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
         }
-
 };
 
 LabelWiseStratifiedInstanceSamplingConfig::LabelWiseStratifiedInstanceSamplingConfig()

@@ -1,7 +1,6 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_complete.hpp"
 #include "rule_evaluation_example_wise_complete_common.hpp"
 
-
 namespace boosting {
 
     ExampleWiseCompleteRuleEvaluationFactory::ExampleWiseCompleteRuleEvaluationFactory(

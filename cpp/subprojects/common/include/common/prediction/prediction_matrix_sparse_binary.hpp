@@ -7,7 +7,6 @@
 #include "common/data/view_csr_binary.hpp"
 #include <memory>
 
-
 /**
  * A sparse matrix that provides read-only access to binary predictions that are stored in the compressed sparse row
  * (CSR) format.
@@ -18,7 +17,6 @@
  * to the number of non-zero values in the matrix.
  */
 class MLRLCOMMON_API BinarySparsePredictionMatrix final : public BinaryCsrConstView {
-
     private:
 
         uint32* rowIndices_;
@@ -55,7 +53,6 @@ class MLRLCOMMON_API BinarySparsePredictionMatrix final : public BinaryCsrConstV
          * @return A pointer to the array `colIndices`
          */
         uint32* releaseColIndices();
-
 };
 
 /**

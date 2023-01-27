@@ -4,7 +4,6 @@
 #include "statistic_vector_label_wise_sparse_common.hpp"
 #include <cstdlib>
 
-
 namespace boosting {
 
     SparseLabelWiseStatisticVector::ConstIterator::ConstIterator(const Triple<float64>* iterator, float64 sumOfWeights)

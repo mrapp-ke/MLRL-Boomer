@@ -6,7 +6,6 @@
 #include "common/rule_evaluation/score_vector.hpp"
 #include "common/data/vector_binned_dense.hpp"
 
-
 /**
  * An one dimensional vector that stores the scores that may be predicted by a rule, corresponding to bins for which the
  * same prediction is made, as well as a numerical score that assesses the overall quality of the rule, in a
@@ -17,7 +16,6 @@
  */
 template<typename IndexVector>
 class DenseBinnedScoreVector final : virtual public IScoreVector {
-
     private:
 
         const IndexVector& labelIndices_;
@@ -197,5 +195,4 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
         void updatePrediction(AbstractPrediction& prediction) const override;
 
         void processScores(ScoreProcessor& scoreProcessor) const override;
-
 };

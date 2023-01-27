@@ -5,13 +5,11 @@
 
 #include "common/model/body.hpp"
 
-
 /**
  * A body that consists of a conjunction of conditions using the operators <= or > for numerical conditions, and = or !=
  * for nominal conditions, respectively.
  */
 class MLRLCOMMON_API ConjunctiveBody final : public IBody {
-
     private:
 
         uint32 numLeq_;
@@ -373,5 +371,4 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
                     uint32 n) const override;
 
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const override;
-
 };

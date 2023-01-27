@@ -6,7 +6,6 @@
 #include "boosting/data/statistic_vector_example_wise_dense.hpp"
 #include "rule_evaluation_label_wise_partial_fixed_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -33,7 +32,6 @@ namespace boosting {
             entry.index = i;
             entry.value = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i], l1RegularizationWeight,
                                                   l2RegularizationWeight);
-
         }
 
         std::partial_sort(tmpIterator, &tmpIterator[numPredictions], &tmpIterator[numLabels],

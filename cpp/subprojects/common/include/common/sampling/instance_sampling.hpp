@@ -14,12 +14,10 @@
 class BiPartition;
 class SinglePartition;
 
-
 /**
  * Defines an interface for all classes that implement a method for sampling training examples.
  */
 class IInstanceSampling {
-
     public:
 
         virtual ~IInstanceSampling() { };
@@ -32,14 +30,12 @@ class IInstanceSampling {
          *                  individual training examples
          */
         virtual const IWeightVector& sample(RNG& rng) = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IInstanceSampling`.
  */
 class IInstanceSamplingFactory {
-
     public:
 
         virtual ~IInstanceSamplingFactory() { };
@@ -106,12 +102,10 @@ class IInstanceSamplingFactory {
 
 };
 
-
 /**
  * Defines an interface for all classes that allow to configure a method for sampling instances.
  */
 class IInstanceSamplingConfig {
-
     public:
 
         virtual ~IInstanceSamplingConfig() { };
@@ -122,5 +116,4 @@ class IInstanceSamplingConfig {
          * @return An unique pointer to an object of type `IInstanceSamplingFactory` that has been created
          */
         virtual std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const = 0;
-
 };

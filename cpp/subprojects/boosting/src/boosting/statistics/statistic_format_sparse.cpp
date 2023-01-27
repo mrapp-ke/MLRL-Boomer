@@ -1,6 +1,5 @@
 #include "boosting/statistics/statistic_format_sparse.hpp"
 
-
 namespace boosting {
 
     SparseStatisticsConfig::SparseStatisticsConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr)

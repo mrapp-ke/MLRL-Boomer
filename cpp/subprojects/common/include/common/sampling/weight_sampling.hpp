@@ -6,7 +6,6 @@
 #include "common/sampling/weight_vector_bit.hpp"
 #include <unordered_set>
 
-
 /**
  * Randomly selects `numSamples` out of `numTotal` elements and sets their weights to 1, while the remaining weights are
  * set to 0, by using a set to keep track of the elements that have already been selected. This method is suitable if

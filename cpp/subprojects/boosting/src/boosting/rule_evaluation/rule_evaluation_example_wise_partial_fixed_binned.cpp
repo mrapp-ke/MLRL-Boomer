@@ -2,7 +2,6 @@
 #include "rule_evaluation_example_wise_binned_common.hpp"
 #include "rule_evaluation_example_wise_partial_fixed_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -16,7 +15,6 @@ namespace boosting {
     template<typename IndexVector>
     class DenseExampleWiseFixedPartialBinnedRuleEvaluation final :
             public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector> {
-
         private:
 
             const IndexVector& labelIndices_;
@@ -83,7 +81,6 @@ namespace boosting {
                   tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {
 
             }
-
     };
 
     ExampleWiseFixedPartialBinnedRuleEvaluationFactory::ExampleWiseFixedPartialBinnedRuleEvaluationFactory(

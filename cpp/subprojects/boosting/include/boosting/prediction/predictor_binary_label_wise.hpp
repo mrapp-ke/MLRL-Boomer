@@ -7,7 +7,6 @@
 #include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
      * (1 if a score exceeds the threshold, i.e., the label is relevant, 0 otherwise).
      */
     class LabelWiseBinaryPredictorConfig final : public IBinaryPredictorConfig {
-
         private:
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
@@ -52,7 +50,6 @@ namespace boosting {
              * @see `IPredictorConfig::isLabelVectorSetNeeded`
              */
             bool isLabelVectorSetNeeded() const override;
-
     };
 
 }

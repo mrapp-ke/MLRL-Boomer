@@ -10,12 +10,10 @@
 class IThresholds;
 class IThresholdsSubset;
 
-
 /**
  * Defines an interface for one-dimensional vectors that provide access to weights.
  */
 class IWeightVector {
-
     public:
 
         virtual ~IWeightVector() { };
@@ -36,5 +34,4 @@ class IWeightVector {
          * @return              An unique pointer to an object of type `IThresholdsSubset` that has been created
          */
         virtual std::unique_ptr<IThresholdsSubset> createThresholdsSubset(IThresholds& thresholds) const = 0;
-
 };

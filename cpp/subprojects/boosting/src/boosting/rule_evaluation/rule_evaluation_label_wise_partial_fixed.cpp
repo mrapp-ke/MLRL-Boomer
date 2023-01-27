@@ -2,7 +2,6 @@
 #include "rule_evaluation_label_wise_partial_fixed_common.hpp"
 #include "rule_evaluation_label_wise_complete_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -16,7 +15,6 @@ namespace boosting {
      */
     template<typename StatisticVector, typename IndexVector>
     class LabelWiseFixedPartialRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
-
         private:
 
             const IndexVector& labelIndices_;
@@ -77,7 +75,6 @@ namespace boosting {
                 scoreVector_.quality = quality;
                 return scoreVector_;
             }
-
     };
 
     LabelWiseFixedPartialRuleEvaluationFactory::LabelWiseFixedPartialRuleEvaluationFactory(

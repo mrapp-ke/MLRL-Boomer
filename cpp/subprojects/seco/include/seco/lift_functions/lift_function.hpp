@@ -7,7 +7,6 @@
 #include "common/input/label_matrix_row_wise.hpp"
 #include <memory>
 
-
 namespace seco {
 
     /**
@@ -15,7 +14,6 @@ namespace seco {
      * for which they predict.
      */
     class ILiftFunction {
-
         public:
 
             virtual ~ILiftFunction() { };
@@ -36,14 +34,12 @@ namespace seco {
              *                  size
              */
             virtual float64 getMaxLift(uint32 numLabels) const = 0;
-
     };
 
     /**
      * Defines an interface for all factories that allow to create instances of the type `ILiftFunction`.
      */
     class ILiftFunctionFactory {
-
         public:
 
             virtual ~ILiftFunctionFactory() { };
@@ -54,14 +50,12 @@ namespace seco {
              * @return An unique pointer to an object of type `ILiftFunction` that has been created
              */
             virtual std::unique_ptr<ILiftFunction> create() const = 0;
-
     };
 
     /**
      * Defines an interface for all classes that allow to configure a lift function.
      */
     class ILiftFunctionConfig {
-
         public:
 
             virtual ~ILiftFunctionConfig() { };
@@ -75,7 +69,6 @@ namespace seco {
              */
             virtual std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory(
                 const IRowWiseLabelMatrix& labelMatrix) const = 0;
-
     };
 
 }
