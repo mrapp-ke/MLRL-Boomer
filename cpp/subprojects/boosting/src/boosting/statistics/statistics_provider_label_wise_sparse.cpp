@@ -25,9 +25,7 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             SparseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
-                : SparseLabelWiseStatisticView(numCols, new SparseSetMatrix<Tuple<float64>>(numRows, numCols)) {
-
-            }
+                : SparseLabelWiseStatisticView(numCols, new SparseSetMatrix<Tuple<float64>>(numRows, numCols)) {}
 
             ~SparseLabelWiseStatisticMatrix() {
                 delete statistics_;
@@ -47,9 +45,7 @@ namespace boosting {
              */
             SparseLabelWiseHistogram(uint32 numBins, uint32 numCols)
                 : SparseLabelWiseHistogramView(numBins, numCols, new Triple<float64>[numBins * numCols],
-                                               new float64[numBins]) {
-
-            }
+                                               new float64[numBins]) {}
 
             ~SparseLabelWiseHistogram() {
                 delete[] statistics_;
@@ -99,9 +95,7 @@ namespace boosting {
                                               ISparseLabelWiseLoss, ISparseEvaluationMeasure,
                                               ISparseLabelWiseRuleEvaluationFactory>(
                       std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
-                      std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {
-
-            }
+                      std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
     };
 
     template<typename LabelMatrix>
@@ -146,9 +140,7 @@ namespace boosting {
         : lossFactoryPtr_(std::move(lossFactoryPtr)),
           evaluationMeasureFactoryPtr_(std::move(evaluationMeasureFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
-          pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {
-
-    }
+          pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
     std::unique_ptr<IStatisticsProvider> SparseLabelWiseStatisticsProviderFactory::create(
             const CContiguousConstView<const uint8>& labelMatrix) const {

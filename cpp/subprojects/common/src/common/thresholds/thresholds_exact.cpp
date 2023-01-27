@@ -253,9 +253,7 @@ class ExactThresholds final : public AbstractThresholds {
                          *                          retrieved
                          */
                         Callback(ThresholdsSubset& thresholdsSubset, uint32 featureIndex)
-                            : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {
-
-                        }
+                            : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {}
 
                         Result get() override {
                             auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
@@ -341,9 +339,7 @@ class ExactThresholds final : public AbstractThresholds {
                                  const WeightVector& weights)
                     : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
                       weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
-                      coverageMask_(CoverageMask(thresholds.featureMatrix_.getNumRows())), numModifications_(0) {
-
-                }
+                      coverageMask_(CoverageMask(thresholds.featureMatrix_.getNumRows())), numModifications_(0) {}
 
                 /**
                  * @param thresholdsSubset A reference to an object of type `ThresholdsSubset` to be copied
@@ -353,9 +349,7 @@ class ExactThresholds final : public AbstractThresholds {
                       weightedStatisticsPtr_(thresholdsSubset.weightedStatisticsPtr_->copy()),
                       weights_(thresholdsSubset.weights_), numCoveredExamples_(thresholdsSubset.numCoveredExamples_),
                       coverageMask_(CoverageMask(thresholdsSubset.coverageMask_)),
-                      numModifications_(thresholdsSubset.numModifications_) {
-
-                }
+                      numModifications_(thresholdsSubset.numModifications_) {}
 
                 std::unique_ptr<IThresholdsSubset> copy() const override {
                     return std::make_unique<ThresholdsSubset<WeightVector>>(*this);
@@ -511,9 +505,7 @@ class ExactThresholds final : public AbstractThresholds {
          */
         ExactThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
                         IStatisticsProvider& statisticsProvider, uint32 numThreads)
-            : AbstractThresholds(featureMatrix, featureInfo, statisticsProvider), numThreads_(numThreads) {
-
-        }
+            : AbstractThresholds(featureMatrix, featureInfo, statisticsProvider), numThreads_(numThreads) {}
 
         std::unique_ptr<IThresholdsSubset> createSubset(const EqualWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
@@ -538,9 +530,7 @@ class ExactThresholds final : public AbstractThresholds {
 };
 
 ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads)
-    : numThreads_(numThreads) {
-
-}
+    : numThreads_(numThreads) {}
 
 std::unique_ptr<IThresholds> ExactThresholdsFactory::create(const IColumnWiseFeatureMatrix& featureMatrix,
                                                             const IFeatureInfo& featureInfo,

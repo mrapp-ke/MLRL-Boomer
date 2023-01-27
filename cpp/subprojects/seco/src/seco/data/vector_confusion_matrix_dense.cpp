@@ -32,16 +32,12 @@ namespace seco {
     }
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements)
-        : DenseConfusionMatrixVector(numElements, false) {
-
-    }
+        : DenseConfusionMatrixVector(numElements, false) {}
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements, bool init)
         : array_(init ? (ConfusionMatrix*) calloc(numElements, sizeof(ConfusionMatrix))
                       : (ConfusionMatrix*) malloc(numElements * sizeof(ConfusionMatrix))),
-          numElements_(numElements) {
-
-    }
+          numElements_(numElements) {}
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
         : DenseConfusionMatrixVector(other.numElements_) {

@@ -98,9 +98,7 @@ namespace boosting {
                                       const IndexVector& labelIndices)
                 : sumVector_(StatisticVector(labelIndices.getNumElements(), true)), statisticView_(statisticView),
                   weights_(weights), labelIndices_(labelIndices),
-                  ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)) {
-
-            }
+                  ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)) {}
 
             /**
              * @see `IStatisticsSubset::hasNonZeroWeight`
@@ -184,9 +182,8 @@ namespace boosting {
                                                     IndexVector>(statistics.statisticView_,
                                                                  statistics.ruleEvaluationFactory_, statistics.weights_,
                                                                  labelIndices),
-                          tmpVector_(StatisticVector(labelIndices.getNumElements())), totalSumVector_(&totalSumVector) {
-
-                    }
+                          tmpVector_(StatisticVector(labelIndices.getNumElements())),
+                          totalSumVector_(&totalSumVector) {}
 
                     /**
                      * @see `IWeightedStatisticsSubset::resetSubset`
@@ -263,9 +260,7 @@ namespace boosting {
             AbstractLabelWiseImmutableWeightedStatistics(const StatisticView& statisticView,
                                                          const RuleEvaluationFactory& ruleEvaluationFactory,
                                                          const WeightVector& weights)
-                : statisticView_(statisticView), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {
-
-            }
+                : statisticView_(statisticView), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {}
 
             /**
              * @see `IImmutableWeightedStatistics::getNumStatistics`
@@ -335,12 +330,12 @@ namespace boosting {
                      */
                     WeightedStatisticsSubset(const LabelWiseHistogram& histogram, const StatisticVector& totalSumVector,
                                              const IndexVector& labelIndices)
-                        : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
-                                                                       RuleEvaluationFactory, BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(
-                              histogram, totalSumVector, labelIndices),
-                          histogram_(histogram) {
-
-                    }
+                        : AbstractLabelWiseImmutableWeightedStatistics<
+                            StatisticVector, Histogram, RuleEvaluationFactory,
+                            BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(histogram,
+                                                                                                     totalSumVector,
+                                                                                                     labelIndices),
+                          histogram_(histogram) {}
 
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
@@ -402,9 +397,7 @@ namespace boosting {
                                                                                 *binWeightVectorPtr),
                   histogramPtr_(std::move(histogramPtr)), binWeightVectorPtr_(std::move(binWeightVectorPtr)),
                   binIndexVector_(binIndexVector), originalStatisticView_(originalStatisticView),
-                  originalWeights_(originalWeights), totalSumVector_(totalSumVector) {
-
-            }
+                  originalWeights_(originalWeights), totalSumVector_(totalSumVector) {}
 
             /**
              * @see `IHistogram::clear`
@@ -551,11 +544,11 @@ namespace boosting {
                     WeightedStatisticsSubset(const LabelWiseWeightedStatistics& statistics,
                                              const StatisticVector& totalSumVector,
                                              const IndexVector& labelIndices)
-                        : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
-                                                                       RuleEvaluationFactory, WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(
-                              statistics, totalSumVector, labelIndices) {
-
-                    }
+                        : AbstractLabelWiseImmutableWeightedStatistics<
+                            StatisticVector, StatisticView, RuleEvaluationFactory,
+                            WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(statistics,
+                                                                                                  totalSumVector,
+                                                                                                  labelIndices) {}
 
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
@@ -606,12 +599,9 @@ namespace boosting {
              */
             LabelWiseWeightedStatistics(const LabelWiseWeightedStatistics& statistics)
                 : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                               WeightVector>(statistics.statisticView_,
-                                                                             statistics.ruleEvaluationFactory_,
-                                                                             statistics.weights_),
-                  totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {
-
-            }
+                                                               WeightVector>(
+                    statistics.statisticView_, statistics.ruleEvaluationFactory_, statistics.weights_),
+                  totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {}
 
             /**
              * @see `IWeightedStatistics::copy`
@@ -766,9 +756,7 @@ namespace boosting {
                                         std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
                 : lossPtr_(std::move(lossPtr)), evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
                   ruleEvaluationFactory_(&ruleEvaluationFactory), labelMatrix_(labelMatrix),
-                  statisticViewPtr_(std::move(statisticViewPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {
-
-            }
+                  statisticViewPtr_(std::move(statisticViewPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `ILabelWiseStatistics::setRuleEvaluationFactory`

@@ -42,8 +42,7 @@ namespace boosting {
              * @param evaluateFunction  The "evaluation function" to be used for evaluating predictions
              */
             LabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
-                : updateFunction_(updateFunction), evaluateFunction_(evaluateFunction) {
-            }
+                : updateFunction_(updateFunction), evaluateFunction_(evaluateFunction) {}
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
                                            const CContiguousConstView<float64>& scoreMatrix,

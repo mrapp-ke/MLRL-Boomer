@@ -7,9 +7,7 @@
 
 
 SinglePartition::SinglePartition(uint32 numElements)
-    : numElements_(numElements) {
-
-}
+    : numElements_(numElements) {}
 
 SinglePartition::const_iterator SinglePartition::cbegin() const {
     return IndexIterator();

@@ -39,9 +39,7 @@ namespace boosting {
                                         std::unique_ptr<ILabelWiseStatistics<RuleEvaluationFactory>> statisticsPtr)
                 : regularRuleEvaluationFactory_(regularRuleEvaluationFactory),
                   pruningRuleEvaluationFactory_(pruningRuleEvaluationFactory),
-                  statisticsPtr_(std::move(statisticsPtr)) {
-
-            }
+                  statisticsPtr_(std::move(statisticsPtr)) {}
 
             /**
              * @see `IStatisticsProvider::get`

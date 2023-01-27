@@ -12,9 +12,7 @@ namespace boosting {
                                              const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
         : lossConfigPtr_(lossConfigPtr), labelBinningConfigPtr_(labelBinningConfigPtr),
           multiThreadingConfigPtr_(multiThreadingConfigPtr), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
-          l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
-
-    }
+          l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,

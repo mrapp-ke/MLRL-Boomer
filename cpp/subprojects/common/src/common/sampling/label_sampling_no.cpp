@@ -16,9 +16,7 @@ class NoLabelSampling final : public ILabelSampling {
          * @param numLabels The total number of available labels
          */
         NoLabelSampling(uint32 numLabels)
-            : indexVector_(numLabels) {
-
-        }
+            : indexVector_(numLabels) {}
 
         const IIndexVector& sample(RNG& rng) override {
             return indexVector_;
@@ -39,9 +37,7 @@ class NoLabelSamplingFactory final : public ILabelSamplingFactory {
          * @param numLabels The total number of available labels
          */
         NoLabelSamplingFactory(uint32 numLabels)
-            : numLabels_(numLabels) {
-
-        }
+            : numLabels_(numLabels) {}
 
         std::unique_ptr<ILabelSampling> create() const override {
             return std::make_unique<NoLabelSampling>(numLabels_);

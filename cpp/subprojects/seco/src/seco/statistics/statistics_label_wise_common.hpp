@@ -133,9 +133,7 @@ namespace seco {
                 : sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)), labelMatrix_(labelMatrix),
                   coverageMatrix_(coverageMatrix), majorityLabelVector_(majorityLabelVector),
                   totalSumVector_(totalSumVector), weights_(weights), labelIndices_(labelIndices),
-                  ruleEvaluationPtr_(ruleEvaluationFactory.create(labelIndices)) {
-
-            }
+                  ruleEvaluationPtr_(ruleEvaluationFactory.create(labelIndices)) {}
 
             /**
              * @see `IStatisticsSubset::hasNonZeroWeight`
@@ -339,9 +337,7 @@ namespace seco {
                               statistics.totalSumVector_, statistics.ruleEvaluationFactory_, statistics.weights_,
                               labelIndices),
                           subsetSumVector_(&statistics.subsetSumVector_),
-                          tmpVector_(ConfusionMatrixVector(labelIndices.getNumElements())) {
-
-                    }
+                          tmpVector_(ConfusionMatrixVector(labelIndices.getNumElements())) {}
 
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
@@ -463,9 +459,7 @@ namespace seco {
                   labelMatrix_(statistics.labelMatrix_), majorityLabelVector_(statistics.majorityLabelVector_),
                   totalSumVector_(ConfusionMatrixVector(statistics.totalSumVector_)),
                   subsetSumVector_(ConfusionMatrixVector(statistics.subsetSumVector_)),
-                  coverageMatrix_(statistics.coverageMatrix_) {
-
-            }
+                  coverageMatrix_(statistics.coverageMatrix_) {}
 
             /**
              * @see `IImmutableWeightedStatistics::getNumStatistics`
@@ -625,9 +619,7 @@ namespace seco {
                                         const RuleEvaluationFactory& ruleEvaluationFactory)
                 : ruleEvaluationFactory_(&ruleEvaluationFactory), labelMatrix_(labelMatrix),
                   majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)),
-                  coverageMatrixPtr_(std::move(coverageMatrixPtr)) {
-
-            }
+                  coverageMatrixPtr_(std::move(coverageMatrixPtr)) {}
 
             /**
              * @see `ICoverageStatistics::getSumOfUncoveredWeights`

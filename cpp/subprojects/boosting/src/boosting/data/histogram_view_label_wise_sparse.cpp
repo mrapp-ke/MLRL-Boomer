@@ -7,9 +7,7 @@ namespace boosting {
 
     SparseLabelWiseHistogramConstView::SparseLabelWiseHistogramConstView(uint32 numRows, uint32 numCols,
                                                                          Triple<float64>* statistics, float64* weights)
-        : numRows_(numRows), numCols_(numCols), statistics_(statistics), weights_(weights) {
-
-    }
+        : numRows_(numRows), numCols_(numCols), statistics_(statistics), weights_(weights) {}
 
     SparseLabelWiseHistogramConstView::const_iterator SparseLabelWiseHistogramConstView::row_cbegin(uint32 row) const {
         return &statistics_[row * numCols_];
@@ -37,9 +35,7 @@ namespace boosting {
 
     SparseLabelWiseHistogramView::SparseLabelWiseHistogramView(uint32 numRows, uint32 numCols,
                                                                Triple<float64>* statistics, float64* weights)
-        : SparseLabelWiseHistogramConstView(numRows, numCols, statistics, weights) {
-
-    }
+        : SparseLabelWiseHistogramConstView(numRows, numCols, statistics, weights) {}
 
     void SparseLabelWiseHistogramView::clear() {
         setArrayToZeros(weights_, numRows_);

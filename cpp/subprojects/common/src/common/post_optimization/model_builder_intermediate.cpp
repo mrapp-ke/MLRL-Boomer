@@ -1,9 +1,7 @@
 #include "common/post_optimization/model_builder_intermediate.hpp"
 
 IntermediateModelBuilder::IntermediateModelBuilder(std::unique_ptr<IModelBuilder> modelBuilderPtr)
-    : modelBuilderPtr_(std::move(modelBuilderPtr)), numUsedRules_(0) {
-
-}
+    : modelBuilderPtr_(std::move(modelBuilderPtr)), numUsedRules_(0) {}
 
 IntermediateModelBuilder::iterator IntermediateModelBuilder::begin() {
     return intermediateRuleList_.begin();

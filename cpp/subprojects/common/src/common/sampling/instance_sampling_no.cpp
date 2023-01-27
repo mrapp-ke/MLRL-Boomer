@@ -45,9 +45,7 @@ class NoInstanceSampling final : public IInstanceSampling {
          *                  the examples that are included in the training set
          */
         NoInstanceSampling(Partition& partition)
-            : partition_(partition), weightVector_(WeightVector(partition.getNumElements())) {
-
-        }
+            : partition_(partition), weightVector_(WeightVector(partition.getNumElements())) {}
 
         const IWeightVector& sample(RNG& rng) override {
             sampleInternally(partition_, weightVector_, rng);

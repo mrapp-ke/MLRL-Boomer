@@ -3,9 +3,7 @@
 #include "common/data/arrays.hpp"
 
 AbstractPrediction::AbstractPrediction(uint32 numElements)
-    : predictedScoreVector_(DenseVector<float64>(numElements)) {
-
-}
+    : predictedScoreVector_(DenseVector<float64>(numElements)) {}
 
 uint32 AbstractPrediction::getNumElements() const {
     return predictedScoreVector_.getNumElements();

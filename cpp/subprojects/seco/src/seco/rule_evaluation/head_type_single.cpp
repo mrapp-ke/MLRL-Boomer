@@ -8,9 +8,7 @@ namespace seco {
 
     SingleLabelHeadConfig::SingleLabelHeadConfig(const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr,
                                                  const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr)
-        : heuristicConfigPtr_(heuristicConfigPtr), pruningHeuristicConfigPtr_(pruningHeuristicConfigPtr) {
-
-    }
+        : heuristicConfigPtr_(heuristicConfigPtr), pruningHeuristicConfigPtr_(pruningHeuristicConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
             const IRowWiseLabelMatrix& labelMatrix) const {

@@ -53,9 +53,7 @@ class AbstractRuleInduction : public IRuleInduction {
          *                               examples, if some of the examples have zero weights, false otherwise
          */
         AbstractRuleInduction(bool recalculatePredictions)
-            : recalculatePredictions_(recalculatePredictions) {
-
-        }
+            : recalculatePredictions_(recalculatePredictions) {}
 
         virtual ~AbstractRuleInduction() override {};
 

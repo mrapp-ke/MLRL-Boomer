@@ -41,9 +41,7 @@ class PostPruning final : public IStoppingCriterion {
          */
         PostPruning(Partition& partition, bool useHoldoutSet, uint32 minRules, uint32 interval)
             : partition_(partition), useHoldoutSet_(useHoldoutSet), minRules_(minRules), interval_(interval),
-              bestScore_(std::numeric_limits<float64>::infinity()), bestNumRules_(minRules) {
-
-        }
+              bestScore_(std::numeric_limits<float64>::infinity()), bestNumRules_(minRules) {}
 
         Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
@@ -86,9 +84,7 @@ class PostPruningFactory final : public IStoppingCriterionFactory {
          *                      far, e.g., a value of 10 means that the best model may contain 10, 20, ... rules
          */
         PostPruningFactory(bool useHoldoutSet, uint32 minRules, uint32 interval)
-            : useHoldoutSet_(useHoldoutSet), minRules_(minRules), interval_(interval) {
-
-        }
+            : useHoldoutSet_(useHoldoutSet), minRules_(minRules), interval_(interval) {}
 
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
             return std::make_unique<PostPruning<const SinglePartition>>(partition, useHoldoutSet_, minRules_,
@@ -101,9 +97,7 @@ class PostPruningFactory final : public IStoppingCriterionFactory {
 };
 
 PostPruningConfig::PostPruningConfig()
-    : useHoldoutSet_(true), removeUnusedRules_(true), minRules_(100), interval_(1) {
-
-}
+    : useHoldoutSet_(true), removeUnusedRules_(true), minRules_(100), interval_(1) {}
 
 bool PostPruningConfig::isHoldoutSetUsed() const {
     return useHoldoutSet_;

@@ -10,9 +10,7 @@ namespace seco {
                                          const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr,
                                          const std::unique_ptr<ILiftFunctionConfig>& liftFunctionConfigPtr)
         : heuristicConfigPtr_(heuristicConfigPtr), pruningHeuristicConfigPtr_(pruningHeuristicConfigPtr),
-          liftFunctionConfigPtr_(liftFunctionConfigPtr) {
-
-    }
+          liftFunctionConfigPtr_(liftFunctionConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> PartialHeadConfig::createStatisticsProviderFactory(
             const IRowWiseLabelMatrix& labelMatrix) const {

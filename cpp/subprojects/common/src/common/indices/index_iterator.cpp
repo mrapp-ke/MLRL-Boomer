@@ -1,14 +1,10 @@
 #include "common/iterator/index_iterator.hpp"
 
 IndexIterator::IndexIterator()
-    : IndexIterator(0) {
-
-}
+    : IndexIterator(0) {}
 
 IndexIterator::IndexIterator(uint32 index)
-    : index_(index) {
-
-}
+    : index_(index) {}
 
 IndexIterator::reference IndexIterator::operator[](uint32 index) const {
     return index;

@@ -6,9 +6,7 @@
 #include "common/statistics/statistics.hpp"
 
 CompletePrediction::CompletePrediction(uint32 numElements)
-    : AbstractEvaluatedPrediction(numElements), indexVector_(CompleteIndexVector(numElements)) {
-
-}
+    : AbstractEvaluatedPrediction(numElements), indexVector_(CompleteIndexVector(numElements)) {}
 
 CompletePrediction::index_const_iterator CompletePrediction::indices_cbegin() const {
     return indexVector_.cbegin();
@@ -69,9 +67,7 @@ void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) 
     statistics.revertPrediction(statisticIndex, *this);
 }
 
-void CompletePrediction::sort() {
-
-}
+void CompletePrediction::sort() {}
 
 std::unique_ptr<IHead> CompletePrediction::createHead() const {
     uint32 numElements = this->getNumElements();

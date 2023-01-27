@@ -95,9 +95,7 @@ namespace boosting {
              */
             LabelWiseScorePredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                     uint32 numThreads)
-                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {
-
-            }
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -124,9 +122,7 @@ namespace boosting {
              *                   in parallel. Must be at least 1
              */
             LabelWiseScorePredictorFactory(uint32 numThreads)
-                : numThreads_(numThreads) {
-
-            }
+                : numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -153,9 +149,7 @@ namespace boosting {
 
     LabelWiseScorePredictorConfig::LabelWiseScorePredictorConfig(
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-    }
+        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IScorePredictorFactory> LabelWiseScorePredictorConfig::createPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {

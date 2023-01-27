@@ -149,9 +149,7 @@ namespace boosting {
              * @param evaluateFunction  The "evaluation function" to be used for evaluating predictions
              */
             SparseLabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
-                : LabelWiseLoss(updateFunction, evaluateFunction) {
-
-            }
+                : LabelWiseLoss(updateFunction, evaluateFunction) {}
 
             // Keep "updateLabelWiseStatistics" functions from the parent class rather than hiding them
             using LabelWiseLoss::updateLabelWiseStatistics;

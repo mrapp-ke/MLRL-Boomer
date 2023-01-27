@@ -310,9 +310,7 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
             : AbstractRuleInduction(recalculatePredictions),
               ruleCompareFunction_(ruleCompareFunction), beamWidth_(beamWidth), resampleFeatures_(resampleFeatures),
               minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
-              numThreads_(numThreads) {
-
-        }
+              numThreads_(numThreads) {}
 
     protected:
 
@@ -412,9 +410,7 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
                                               uint32 maxHeadRefinements, bool recalculatePredictions, uint32 numThreads)
             : ruleCompareFunction_(ruleCompareFunction), beamWidth_(beamWidth), resampleFeatures_(resampleFeatures),
               minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
-              recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
-
-        }
+              recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {}
 
         std::unique_ptr<IRuleInduction> create() const override {
             return std::make_unique<BeamSearchTopDownRuleInduction>(ruleCompareFunction_, beamWidth_, resampleFeatures_,
@@ -427,9 +423,7 @@ BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
         RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
     : ruleCompareFunction_(ruleCompareFunction), beamWidth_(4), resampleFeatures_(false), minCoverage_(1),
       minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
-      multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-}
+      multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
 uint32 BeamSearchTopDownRuleInductionConfig::getBeamWidth() const {
     return beamWidth_;

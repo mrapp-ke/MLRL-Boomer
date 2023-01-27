@@ -8,16 +8,12 @@
 namespace boosting {
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements)
-        : DenseLabelWiseStatisticVector(numElements, false) {
-
-    }
+        : DenseLabelWiseStatisticVector(numElements, false) {}
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements, bool init)
         : numElements_(numElements),
           statistics_((Tuple<float64>*) (init ? calloc(numElements, sizeof(Tuple<float64>))
-                                              : malloc(numElements * sizeof(Tuple<float64>)))) {
-
-    }
+                                              : malloc(numElements * sizeof(Tuple<float64>)))) {}
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& vector)
         : DenseLabelWiseStatisticVector(vector.numElements_) {

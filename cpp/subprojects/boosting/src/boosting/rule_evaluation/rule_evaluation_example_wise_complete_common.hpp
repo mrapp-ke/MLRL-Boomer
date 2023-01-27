@@ -174,9 +174,7 @@ namespace boosting {
                       labelIndices.getNumElements(), lapack),
                   scoreVector_(DenseScoreVector<IndexVector>(labelIndices, true)),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  blas_(blas), lapack_(lapack) {
-
-            }
+                  blas_(blas), lapack_(lapack) {}
 
             /**
              * @see `IRuleEvaluation::evaluate`

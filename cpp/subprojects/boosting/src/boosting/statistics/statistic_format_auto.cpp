@@ -5,9 +5,7 @@ namespace boosting {
     AutomaticStatisticsConfig::AutomaticStatisticsConfig(
             const std::unique_ptr<ILossConfig>& lossConfigPtr, const std::unique_ptr<IHeadConfig>& headConfigPtr,
             const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr)
-        : lossConfigPtr_(lossConfigPtr), headConfigPtr_(headConfigPtr), defaultRuleConfigPtr_(defaultRuleConfigPtr) {
-
-    }
+        : lossConfigPtr_(lossConfigPtr), headConfigPtr_(headConfigPtr), defaultRuleConfigPtr_(defaultRuleConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> AutomaticStatisticsConfig::createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,

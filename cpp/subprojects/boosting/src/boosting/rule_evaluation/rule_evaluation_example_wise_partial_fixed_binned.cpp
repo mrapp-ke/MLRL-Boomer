@@ -79,9 +79,7 @@ namespace boosting {
                       *indexVectorPtr, false, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                       std::move(binningPtr), blas, lapack),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)),
-                  tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {
-
-            }
+                  tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {}
     };
 
     ExampleWiseFixedPartialBinnedRuleEvaluationFactory::ExampleWiseFixedPartialBinnedRuleEvaluationFactory(
@@ -90,9 +88,7 @@ namespace boosting {
             const Blas& blas, const Lapack& lapack)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-          labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)), blas_(blas), lapack_(lapack) {
-
-    }
+          labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)), blas_(blas), lapack_(lapack) {}
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseFixedPartialBinnedRuleEvaluationFactory::create(
             const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {

@@ -2,9 +2,7 @@
 
 template<typename T>
 FortranContiguousConstView<T>::FortranContiguousConstView(uint32 numRows, uint32 numCols, T* array)
-    : numRows_(numRows), numCols_(numCols), array_(array) {
-
-}
+    : numRows_(numRows), numCols_(numCols), array_(array) {}
 
 template<typename T>
 typename FortranContiguousConstView<T>::value_const_iterator FortranContiguousConstView<T>::column_values_cbegin(
@@ -39,9 +37,7 @@ template class FortranContiguousConstView<const float64>;
 
 template<typename T>
 FortranContiguousView<T>::FortranContiguousView(uint32 numRows, uint32 numCols, T* array)
-    : FortranContiguousConstView<T>(numRows, numCols, array) {
-
-}
+    : FortranContiguousConstView<T>(numRows, numCols, array) {}
 
 template<typename T>
 typename FortranContiguousView<T>::value_iterator FortranContiguousView<T>::column_values_begin(uint32 col) {

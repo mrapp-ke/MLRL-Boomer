@@ -36,9 +36,7 @@ namespace seco {
             LabelWiseSingleLabelRuleEvaluation(const T& labelIndices, std::unique_ptr<IHeuristic> heuristicPtr)
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(1)),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, true)),
-                  heuristicPtr_(std::move(heuristicPtr)) {
-
-            }
+                  heuristicPtr_(std::move(heuristicPtr)) {}
 
             const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
@@ -74,9 +72,7 @@ namespace seco {
 
     LabelWiseSingleLabelRuleEvaluationFactory::LabelWiseSingleLabelRuleEvaluationFactory(
             std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr)
-        : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)) {
-
-    }
+        : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)) {}
 
     std::unique_ptr<IRuleEvaluation> LabelWiseSingleLabelRuleEvaluationFactory::create(
             const CompleteIndexVector& indexVector) const {

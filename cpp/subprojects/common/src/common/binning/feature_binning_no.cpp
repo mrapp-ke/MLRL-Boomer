@@ -3,9 +3,7 @@
 #include "common/thresholds/thresholds_exact.hpp"
 
 NoFeatureBinningConfig::NoFeatureBinningConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-}
+    : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
 std::unique_ptr<IThresholdsFactory> NoFeatureBinningConfig::createThresholdsFactory(
         const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {

@@ -65,9 +65,7 @@ class NoPostOptimization final : public IPostOptimization {
          *                        the model
          */
         NoPostOptimization(std::unique_ptr<IModelBuilder> modelBuilderPtr)
-            : modelBuilderPtr_(std::move(modelBuilderPtr)) {
-
-        }
+            : modelBuilderPtr_(std::move(modelBuilderPtr)) {}
 
         IModelBuilder& getModelBuilder() const override {
             return *modelBuilderPtr_;

@@ -8,9 +8,7 @@ namespace boosting {
             const std::unique_ptr<ILossConfig>& lossConfigPtr, const std::unique_ptr<IHeadConfig>& headConfigPtr,
             const std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr)
         : lossConfigPtr_(lossConfigPtr), headConfigPtr_(headConfigPtr),
-          featureSamplingConfigPtr_(featureSamplingConfigPtr) {
-
-    }
+          featureSamplingConfigPtr_(featureSamplingConfigPtr) {}
 
     uint32 AutoParallelRuleRefinementConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
                                                            uint32 numLabels) const {

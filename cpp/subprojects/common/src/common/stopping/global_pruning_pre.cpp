@@ -177,9 +177,7 @@ class PrePruningFactory final : public IStoppingCriterionFactory {
                           uint32 stopInterval, uint32 numPast, uint32 numCurrent, float64 minImprovement)
             : aggregationFunctionFactoryPtr_(std::move(aggregationFunctionFactoryPtr)), useHoldoutSet_(useHoldoutSet),
               minRules_(minRules), updateInterval_(updateInterval), stopInterval_(stopInterval), numPast_(numPast),
-              numCurrent_(numCurrent), minImprovement_(minImprovement) {
-
-        }
+              numCurrent_(numCurrent), minImprovement_(minImprovement) {}
 
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
@@ -200,9 +198,7 @@ class PrePruningFactory final : public IStoppingCriterionFactory {
 
 PrePruningConfig::PrePruningConfig()
     : aggregationFunction_(AggregationFunction::ARITHMETIC_MEAN), useHoldoutSet_(true), removeUnusedRules_(true),
-      minRules_(100), updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005) {
-
-}
+      minRules_(100), updateInterval_(1), stopInterval_(1), numPast_(50), numCurrent_(50), minImprovement_(0.005) {}
 
 AggregationFunction PrePruningConfig::getAggregationFunction() const {
     return aggregationFunction_;

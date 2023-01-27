@@ -357,9 +357,7 @@ ApproximateRuleRefinement<IndexVector>::ApproximateRuleRefinement(const IndexVec
                                                                   uint32 featureIndex, bool nominal,
                                                                   std::unique_ptr<Callback> callbackPtr)
     : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
-      callbackPtr_(std::move(callbackPtr)) {
-
-}
+      callbackPtr_(std::move(callbackPtr)) {}
 
 template<typename IndexVector>
 void ApproximateRuleRefinement<IndexVector>::findRefinement(SingleRefinementComparator& comparator,

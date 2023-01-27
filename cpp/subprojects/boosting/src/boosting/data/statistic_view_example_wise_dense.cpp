@@ -9,9 +9,7 @@ namespace boosting {
                                                                            uint32 numHessians, float64* gradients,
                                                                            float64* hessians)
         : numRows_(numRows), numGradients_(numGradients), numHessians_(numHessians), gradients_(gradients),
-          hessians_(hessians) {
-
-    }
+          hessians_(hessians) {}
 
     DenseExampleWiseStatisticConstView::gradient_const_iterator DenseExampleWiseStatisticConstView::gradients_row_cbegin(
             uint32 row) const {
@@ -54,9 +52,7 @@ namespace boosting {
     DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(uint32 numRows, uint32 numGradients,
                                                                  uint32 numHessians, float64* gradients,
                                                                  float64* hessians)
-        : DenseExampleWiseStatisticConstView(numRows, numGradients, numHessians, gradients, hessians) {
-
-    }
+        : DenseExampleWiseStatisticConstView(numRows, numGradients, numHessians, gradients, hessians) {}
 
     DenseExampleWiseStatisticView::gradient_iterator DenseExampleWiseStatisticView::gradients_row_begin(uint32 row) {
         return &gradients_[row * numGradients_];

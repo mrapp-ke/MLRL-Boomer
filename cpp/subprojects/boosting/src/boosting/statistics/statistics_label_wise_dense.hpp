@@ -27,9 +27,7 @@ namespace boosting {
              */
             DenseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
                 : DenseLabelWiseStatisticView(numRows, numCols,
-                                              (Tuple<float64>*) malloc(numRows * numCols * sizeof(Tuple<float64>))) {
-
-            }
+                                              (Tuple<float64>*) malloc(numRows * numCols * sizeof(Tuple<float64>))) {}
 
             ~DenseLabelWiseStatisticMatrix() {
                 free(statistics_);
@@ -74,10 +72,8 @@ namespace boosting {
                 : AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticView,
                                               DenseLabelWiseStatisticMatrix, NumericDenseMatrix<float64>,
                                               ILabelWiseLoss, IEvaluationMeasure, ILabelWiseRuleEvaluationFactory>(
-                      std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
-                      std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {
-
-            }
+                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+                    std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
     };
 
 }

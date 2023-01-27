@@ -22,9 +22,7 @@ class LabelSamplingWithoutReplacement final : public ILabelSampling {
          * @param numSamples    The number of labels to be included in the sample
          */
         LabelSamplingWithoutReplacement(uint32 numLabels, uint32 numSamples)
-            : numLabels_(numLabels), indexVector_(PartialIndexVector(numSamples)) {
-
-        }
+            : numLabels_(numLabels), indexVector_(PartialIndexVector(numSamples)) {}
 
         const IIndexVector& sample(RNG& rng) override {
             sampleIndicesWithoutReplacement<IndexIterator>(indexVector_, IndexIterator(numLabels_), numLabels_, rng);
@@ -50,9 +48,7 @@ class LabelSamplingWithoutReplacementFactory final : public ILabelSamplingFactor
          * @param numSamples    The number of labels to be included in the sample. Must be at least 1
          */
         LabelSamplingWithoutReplacementFactory(uint32 numLabels, uint32 numSamples)
-            : numLabels_(numLabels), numSamples_(numSamples > numLabels ? numLabels : numSamples) {
-
-        }
+            : numLabels_(numLabels), numSamples_(numSamples > numLabels ? numLabels : numSamples) {}
 
         std::unique_ptr<ILabelSampling> create() const override {
             return std::make_unique<LabelSamplingWithoutReplacement>(numLabels_, numSamples_);
@@ -60,9 +56,7 @@ class LabelSamplingWithoutReplacementFactory final : public ILabelSamplingFactor
 };
 
 LabelSamplingWithoutReplacementConfig::LabelSamplingWithoutReplacementConfig()
-    : numSamples_(1) {
-
-}
+    : numSamples_(1) {}
 
 uint32 LabelSamplingWithoutReplacementConfig::getNumSamples() const {
     return numSamples_;

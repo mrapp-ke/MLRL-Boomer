@@ -27,9 +27,7 @@ class CscFeatureMatrix final : public CscConstView<const float32>,
          *                      The index at the last position is equal to `num_non_zero_values`
          */
         CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32* colIndices)
-            : CscConstView<const float32>(numRows, numCols, data, rowIndices, colIndices) {
-
-        }
+            : CscConstView<const float32>(numRows, numCols, data, rowIndices, colIndices) {}
 
         bool isSparse() const override {
             return true;

@@ -3,9 +3,7 @@
 namespace boosting {
 
     SparseStatisticsConfig::SparseStatisticsConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr)
-        : lossConfigPtr_(lossConfigPtr) {
-
-    }
+        : lossConfigPtr_(lossConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> SparseStatisticsConfig::createStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,

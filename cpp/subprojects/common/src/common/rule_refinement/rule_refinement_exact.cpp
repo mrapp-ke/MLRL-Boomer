@@ -533,9 +533,7 @@ ExactRuleRefinement<IndexVector>::ExactRuleRefinement(const IndexVector& labelIn
                                                       uint32 featureIndex, bool nominal, bool hasZeroWeights,
                                                       std::unique_ptr<Callback> callbackPtr)
     : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
-      hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {
-
-}
+      hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {}
 
 template<typename IndexVector>
 void ExactRuleRefinement<IndexVector>::findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) {

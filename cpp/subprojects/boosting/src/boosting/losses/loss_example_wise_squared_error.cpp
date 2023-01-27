@@ -249,9 +249,7 @@ namespace boosting {
 
     ExampleWiseSquaredErrorLossConfig::ExampleWiseSquaredErrorLossConfig(
             const std::unique_ptr<IHeadConfig>& headConfigPtr)
-        : headConfigPtr_(headConfigPtr) {
-
-    }
+        : headConfigPtr_(headConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> ExampleWiseSquaredErrorLossConfig::createStatisticsProviderFactory(
             const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,

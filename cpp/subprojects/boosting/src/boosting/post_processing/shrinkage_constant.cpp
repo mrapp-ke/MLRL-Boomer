@@ -18,9 +18,7 @@ namespace boosting {
              * @param shrinkage The shrinkage parameter. Must be in (0, 1)
              */
             ConstantShrinkage(float64 shrinkage)
-                : shrinkage_(shrinkage) {
-
-            }
+                : shrinkage_(shrinkage) {}
 
             /**
              * @see `IPostProcessor::postProcess`
@@ -50,9 +48,7 @@ namespace boosting {
              * @param shrinkage The value of the "shrinkage" parameter. Must be in (0, 1)
              */
             ConstantShrinkageFactory(float64 shrinkage)
-                : shrinkage_(shrinkage) {
-
-            }
+                : shrinkage_(shrinkage) {}
 
             /**
              * @see `IPostProcessorFactory::create`
@@ -63,9 +59,7 @@ namespace boosting {
     };
 
     ConstantShrinkageConfig::ConstantShrinkageConfig()
-        : shrinkage_(0.3) {
-
-    }
+        : shrinkage_(0.3) {}
 
     float64 ConstantShrinkageConfig::getShrinkage() const {
         return shrinkage_;

@@ -64,9 +64,7 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
          *                  number of bins should not be restricted
          */
         EqualFrequencyFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
-            : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-
-        }
+            : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {}
 
         Result createBins(FeatureVector& featureVector, uint32 numExamples) const override {
             Result result;
@@ -179,9 +177,7 @@ class EqualFrequencyFeatureBinningFactory final : public IFeatureBinningFactory 
          *                  number of bins should not be restricted
          */
         EqualFrequencyFeatureBinningFactory(float32 binRatio, uint32 minBins, uint32 maxBins)
-            : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-
-        }
+            : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {}
 
         std::unique_ptr<IFeatureBinning> create() const override {
             return std::make_unique<EqualFrequencyFeatureBinning>(binRatio_, minBins_, maxBins_);
@@ -190,9 +186,7 @@ class EqualFrequencyFeatureBinningFactory final : public IFeatureBinningFactory 
 
 EqualFrequencyFeatureBinningConfig::EqualFrequencyFeatureBinningConfig(
         const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : binRatio_(0.33f), minBins_(2), maxBins_(0), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-}
+    : binRatio_(0.33f), minBins_(2), maxBins_(0), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
 float32 EqualFrequencyFeatureBinningConfig::getBinRatio() const {
     return binRatio_;

@@ -3,9 +3,7 @@
 #include "common/statistics/statistics_weighted.hpp"
 
 DokBinIndexVector::DokBinIndexVector()
-    : vector_(DokVector<uint32>(BIN_INDEX_SPARSE)) {
-
-}
+    : vector_(DokVector<uint32>(BIN_INDEX_SPARSE)) {}
 
 DokBinIndexVector::iterator DokBinIndexVector::begin() {
     return vector_.begin();

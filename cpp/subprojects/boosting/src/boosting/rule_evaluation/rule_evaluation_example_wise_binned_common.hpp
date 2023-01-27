@@ -398,10 +398,8 @@ namespace boosting {
                                                          std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                          const Lapack& lapack)
                 : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(
-                      labelIndices, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
-                      std::move(binningPtr), blas, lapack) {
-
-            }
+                    labelIndices, true, maxBins, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr),
+                    blas, lapack) {}
     };
 
 }

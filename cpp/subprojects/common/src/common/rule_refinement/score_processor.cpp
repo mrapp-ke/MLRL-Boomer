@@ -43,9 +43,7 @@ static inline void processPartialScores(std::unique_ptr<AbstractEvaluatedPredict
 }
 
 ScoreProcessor::ScoreProcessor(std::unique_ptr<AbstractEvaluatedPrediction>& headPtr)
-    : headPtr_(headPtr) {
-
-}
+    : headPtr_(headPtr) {}
 
 void ScoreProcessor::processScores(const DenseScoreVector<CompleteIndexVector>& scoreVector) {
     processCompleteScores(headPtr_, scoreVector);

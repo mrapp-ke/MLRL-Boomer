@@ -37,9 +37,7 @@ namespace boosting {
              *                  0, if the maximum number of bins should not be restricted
              */
             EqualWidthLabelBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
-                : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-
-            }
+                : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {}
 
             uint32 getMaxBins(uint32 numLabels) const override {
                 return calculateBoundedFraction(numLabels, binRatio_, minBins_, maxBins_) + 1;
@@ -158,9 +156,7 @@ namespace boosting {
              *                  maximum number of bins should not be restricted
              */
             EqualWidthLabelBinningFactory(float32 binRatio, uint32 minBins, uint32 maxBins)
-                : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-
-            }
+                : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {}
 
             std::unique_ptr<ILabelBinning> create() const override {
                 return std::make_unique<EqualWidthLabelBinning>(binRatio_, minBins_, maxBins_);
@@ -171,9 +167,7 @@ namespace boosting {
             const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
             const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
         : binRatio_(0.04f), minBins_(1), maxBins_(0), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
-          l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
-
-    }
+          l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {}
 
     float32 EqualWidthLabelBinningConfig::getBinRatio() const {
         return binRatio_;

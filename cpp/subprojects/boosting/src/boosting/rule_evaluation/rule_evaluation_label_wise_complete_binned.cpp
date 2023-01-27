@@ -8,9 +8,7 @@ namespace boosting {
             float64 l1RegularizationWeight, float64 l2RegularizationWeight,
             std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-          labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)) {
-
-    }
+          labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)) {}
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseCompleteBinnedRuleEvaluationFactory::create(
             const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {

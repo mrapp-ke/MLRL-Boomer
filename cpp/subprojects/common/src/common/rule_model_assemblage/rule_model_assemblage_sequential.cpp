@@ -98,9 +98,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
               postProcessorFactoryPtr_(std::move(postProcessorFactoryPtr)),
               postOptimizationFactoryPtr_(std::move(postOptimizationFactoryPtr)),
               stoppingCriterionFactoryPtr_(std::move(stoppingCriterionFactoryPtr)),
-              useDefaultRule_(useDefaultRule) {
-
-        }
+              useDefaultRule_(useDefaultRule) {}
 
         std::unique_ptr<IRuleModel> induceRules(const IFeatureInfo& featureInfo,
                                                 const IColumnWiseFeatureMatrix& featureMatrix,
@@ -229,9 +227,7 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
 
 SequentialRuleModelAssemblageConfig::SequentialRuleModelAssemblageConfig(
         const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr)
-    : defaultRuleConfigPtr_(defaultRuleConfigPtr) {
-
-}
+    : defaultRuleConfigPtr_(defaultRuleConfigPtr) {}
 
 std::unique_ptr<IRuleModelAssemblageFactory> SequentialRuleModelAssemblageConfig::createRuleModelAssemblageFactory(
         const IRowWiseLabelMatrix& labelMatrix) const {
