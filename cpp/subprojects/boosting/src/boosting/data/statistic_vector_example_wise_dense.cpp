@@ -88,8 +88,8 @@ namespace boosting {
 
     void DenseExampleWiseStatisticVector::add(gradient_const_iterator gradientsBegin,
                                               gradient_const_iterator gradientsEnd,
-                                              hessian_const_iterator hessiansBegin,
-                                              hessian_const_iterator hessiansEnd, float64 weight) {
+                                              hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd,
+                                              float64 weight) {
         addToArray(gradients_, gradientsBegin, numGradients_, weight);
         addToArray(hessians_, hessiansBegin, numHessians_, weight);
     }

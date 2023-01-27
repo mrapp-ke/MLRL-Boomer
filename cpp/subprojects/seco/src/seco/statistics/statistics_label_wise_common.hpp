@@ -232,12 +232,12 @@ namespace seco {
             LabelWiseStatisticsSubset(std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr,
                                       const LabelMatrix& labelMatrix, const CoverageMatrix& coverageMatrix,
                                       const BinarySparseArrayVector& majorityLabelVector,
-                                      const RuleEvaluationFactory& ruleEvaluationFactory,
-                                      const WeightVector& weights, const IndexVector& labelIndices)
+                                      const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights,
+                                      const IndexVector& labelIndices)
                 : AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                     RuleEvaluationFactory, WeightVector, IndexVector>(
-                      labelMatrix, coverageMatrix, majorityLabelVector, *totalSumVectorPtr, ruleEvaluationFactory,
-                      weights, labelIndices),
+                    labelMatrix, coverageMatrix, majorityLabelVector, *totalSumVectorPtr, ruleEvaluationFactory,
+                    weights, labelIndices),
                   totalSumVectorPtr_(std::move(totalSumVectorPtr)) {
                 initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
                                                    *totalSumVectorPtr_);
@@ -333,9 +333,9 @@ namespace seco {
                                              const IndexVector& labelIndices)
                         : AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                             RuleEvaluationFactory, WeightVector, IndexVector>(
-                              statistics.labelMatrix_, statistics.coverageMatrix_, statistics.majorityLabelVector_,
-                              statistics.totalSumVector_, statistics.ruleEvaluationFactory_, statistics.weights_,
-                              labelIndices),
+                            statistics.labelMatrix_, statistics.coverageMatrix_, statistics.majorityLabelVector_,
+                            statistics.totalSumVector_, statistics.ruleEvaluationFactory_, statistics.weights_,
+                            labelIndices),
                           subsetSumVector_(&statistics.subsetSumVector_),
                           tmpVector_(ConfusionMatrixVector(labelIndices.getNumElements())) {}
 

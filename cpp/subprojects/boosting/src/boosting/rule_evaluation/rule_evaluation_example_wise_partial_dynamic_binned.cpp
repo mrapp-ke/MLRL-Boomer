@@ -84,13 +84,10 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            DenseExampleWiseDynamicPartialBinnedRuleEvaluation(const IndexVector& labelIndices, uint32 maxBins,
-                                                               std::unique_ptr<PartialIndexVector> indexVectorPtr,
-                                                               float32 threshold, float32 exponent,
-                                                               float64 l1RegularizationWeight,
-                                                               float64 l2RegularizationWeight,
-                                                               std::unique_ptr<ILabelBinning> binningPtr,
-                                                               const Blas& blas, const Lapack& lapack)
+            DenseExampleWiseDynamicPartialBinnedRuleEvaluation(
+                const IndexVector& labelIndices, uint32 maxBins, std::unique_ptr<PartialIndexVector> indexVectorPtr,
+                float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+                std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas, const Lapack& lapack)
                 : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector>(
                       *indexVectorPtr, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                       std::move(binningPtr), blas, lapack),

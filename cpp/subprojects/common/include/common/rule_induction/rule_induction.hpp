@@ -54,8 +54,8 @@ class IRuleInduction {
          * @param modelBuilder      A reference to an object of type `IModelBuilder`, the rule should be added to
          * @return                  True, if a rule has been induced, false otherwise
          */
-        virtual bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices,
-                                const IWeightVector& weights, IPartition& partition, IFeatureSampling& featureSampling,
+        virtual bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
+                                IPartition& partition, IFeatureSampling& featureSampling,
                                 const IRulePruning& rulePruning, const IPostProcessor& postProcessor, RNG& rng,
                                 IModelBuilder& modelBuilder) const = 0;
 };
