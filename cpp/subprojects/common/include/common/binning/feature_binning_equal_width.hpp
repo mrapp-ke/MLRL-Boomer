@@ -73,7 +73,8 @@ class MLRLCOMMON_API IEqualWidthFeatureBinningConfig {
  * Allows to configure a method that assigns numerical feature values to bins, such that each bin contains values from
  * equally sized value ranges.
  */
-class EqualWidthFeatureBinningConfig final : public IFeatureBinningConfig, public IEqualWidthFeatureBinningConfig {
+class EqualWidthFeatureBinningConfig final : public IFeatureBinningConfig,
+                                             public IEqualWidthFeatureBinningConfig {
     private:
 
         float32 binRatio_;

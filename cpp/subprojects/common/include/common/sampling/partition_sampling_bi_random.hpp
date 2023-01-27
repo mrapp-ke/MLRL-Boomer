@@ -39,7 +39,8 @@ class MLRLCOMMON_API IRandomBiPartitionSamplingConfig {
  * Allows to configure a method for partitioning the available training examples into a training set and a holdout set
  * that randomly splits the training examples into two mutually exclusive sets.
  */
-class RandomBiPartitionSamplingConfig final : public IPartitionSamplingConfig, public IRandomBiPartitionSamplingConfig {
+class RandomBiPartitionSamplingConfig final : public IPartitionSamplingConfig,
+                                              public IRandomBiPartitionSamplingConfig {
     private:
 
         float32 holdoutSetSize_;

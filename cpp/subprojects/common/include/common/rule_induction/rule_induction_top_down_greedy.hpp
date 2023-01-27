@@ -113,7 +113,8 @@ class MLRLCOMMON_API IGreedyTopDownRuleInductionConfig {
 /**
  * Allows to configure an algorithm for the induction of individual rules that uses a greedy top-down search.
  */
-class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig, public IGreedyTopDownRuleInductionConfig {
+class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig,
+                                               public IGreedyTopDownRuleInductionConfig {
     private:
 
         RuleCompareFunction ruleCompareFunction_;

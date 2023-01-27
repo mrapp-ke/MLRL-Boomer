@@ -37,7 +37,8 @@ class MLRLCOMMON_API IManualMultiThreadingConfig {
  * Allows to configure the multi-threading behavior of a parallelizable algorithm by manually specifying the number of
  * threads to be used.
  */
-class ManualMultiThreadingConfig final : public IMultiThreadingConfig, public IManualMultiThreadingConfig{
+class ManualMultiThreadingConfig final : public IMultiThreadingConfig,
+                                         public IManualMultiThreadingConfig {
     private:
 
         uint32 numThreads_;

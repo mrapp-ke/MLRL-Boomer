@@ -43,7 +43,8 @@ namespace seco {
      * both heuristics are weighed equally. If beta = 0, this heuristic is equivalent to "Precision". As beta approaches
      * infinity, this heuristic becomes equivalent to "Recall".
      */
-    class FMeasureConfig final : public IHeuristicConfig, public IFMeasureConfig {
+    class FMeasureConfig final : public IHeuristicConfig,
+                                 public IFMeasureConfig {
         private:
 
             float64 beta_;

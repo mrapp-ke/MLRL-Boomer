@@ -17,7 +17,8 @@ namespace boosting {
     /**
      * Defines an interface for all loss functions.
      */
-    class ILoss : public IEvaluationMeasure, public IDistanceMeasure {
+    class ILoss : public IEvaluationMeasure,
+                  public IDistanceMeasure {
         public:
 
             virtual ~ILoss() override {};

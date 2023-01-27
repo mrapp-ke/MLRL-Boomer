@@ -38,7 +38,8 @@ namespace boosting {
      * Allows to configure a regularization term that affects the evaluation of rules by manually specifying the weight
      * of the regularization term.
      */
-    class ManualRegularizationConfig final : public IRegularizationConfig, public IManualRegularizationConfig {
+    class ManualRegularizationConfig final : public IRegularizationConfig,
+                                             public IManualRegularizationConfig {
         private:
 
             float64 regularizationWeight_;

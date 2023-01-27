@@ -119,13 +119,15 @@ namespace boosting {
     /**
      * The BOOMER algorithm.
      */
-    class Boomer final : public AbstractBoostingRuleLearner, virtual public IBoomer {
+    class Boomer final : public AbstractBoostingRuleLearner,
+                         virtual public IBoomer {
         public:
 
             /**
              * Allows to configure the BOOMER algorithm.
              */
-            class Config final : public AbstractBoostingRuleLearner::Config, virtual public IBoomer::IConfig {
+            class Config final : public AbstractBoostingRuleLearner::Config,
+                                 virtual public IBoomer::IConfig {
                 public:
 
                     Config();

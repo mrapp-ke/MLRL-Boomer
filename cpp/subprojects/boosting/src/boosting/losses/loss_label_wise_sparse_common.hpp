@@ -140,7 +140,8 @@ namespace boosting {
      * "evaluation function" for updating the gradients and Hessians and evaluation the predictions for an individual
      * label, respectively.
      */
-    class SparseLabelWiseLoss final : public LabelWiseLoss, public ISparseLabelWiseLoss {
+    class SparseLabelWiseLoss final : public LabelWiseLoss,
+                                      public ISparseLabelWiseLoss {
         public:
 
             /**
