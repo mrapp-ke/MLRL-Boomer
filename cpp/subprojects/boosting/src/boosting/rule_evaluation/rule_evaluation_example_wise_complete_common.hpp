@@ -139,8 +139,8 @@ namespace boosting {
      *                     calculated
      */
     template<typename IndexVector>
-    class DenseExampleWiseCompleteRuleEvaluation final :
-            public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
+    class DenseExampleWiseCompleteRuleEvaluation final
+        : public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
         private:
 
             DenseScoreVector<IndexVector> scoreVector_;

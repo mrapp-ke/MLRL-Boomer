@@ -148,10 +148,10 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class AbstractWeightedStatisticsSubset : public LabelWiseStatisticsSubset<StatisticVector, StatisticView,
-                                                                                      RuleEvaluationFactory,
-                                                                                      WeightVector, IndexVector>,
-                                                     virtual public IWeightedStatisticsSubset {
+            class AbstractWeightedStatisticsSubset
+                : public LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector,
+                                                   IndexVector>,
+                  virtual public IWeightedStatisticsSubset {
                 private:
 
                     StatisticVector tmpVector_;
@@ -299,10 +299,10 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
              typename BinIndexVector, typename WeightVector>
-    class LabelWiseHistogram final : virtual public IHistogram,
-                                     public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
-                                                                                         RuleEvaluationFactory,
-                                                                                         BinWeightVector> {
+    class LabelWiseHistogram final
+        : virtual public IHistogram,
+          public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram, RuleEvaluationFactory,
+                                                              BinWeightVector> {
         private:
 
             /**
@@ -313,9 +313,10 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class WeightedStatisticsSubset final :
-                    public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
-                                                                        RuleEvaluationFactory, BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
+            class WeightedStatisticsSubset final
+                : public AbstractLabelWiseImmutableWeightedStatistics<
+                      StatisticVector, Histogram, RuleEvaluationFactory,
+                      BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
                 private:
 
                     const LabelWiseHistogram& histogram_;
@@ -515,11 +516,10 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
              typename WeightVector>
-    class LabelWiseWeightedStatistics final : virtual public IWeightedStatistics,
-                                              public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector,
-                                                                                                  StatisticView,
-                                                                                                  RuleEvaluationFactory,
-                                                                                                  WeightVector> {
+    class LabelWiseWeightedStatistics final
+        : virtual public IWeightedStatistics,
+          public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                              WeightVector> {
         private:
 
             /**
@@ -530,9 +530,10 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class WeightedStatisticsSubset final :
-                    public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
-                                                                        RuleEvaluationFactory, WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
+            class WeightedStatisticsSubset final
+                : public AbstractLabelWiseImmutableWeightedStatistics<
+                      StatisticVector, StatisticView, RuleEvaluationFactory,
+                      WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
                 private:
 
                     std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;

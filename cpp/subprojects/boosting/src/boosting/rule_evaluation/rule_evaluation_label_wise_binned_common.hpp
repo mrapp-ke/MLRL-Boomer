@@ -175,8 +175,8 @@ namespace boosting {
      *                          be calculated
      */
     template<typename StatisticVector, typename IndexVector>
-    class LabelWiseCompleteBinnedRuleEvaluation final :
-            public AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, IndexVector> {
+    class LabelWiseCompleteBinnedRuleEvaluation final
+        : public AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, IndexVector> {
         protected:
 
             uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
