@@ -90,7 +90,7 @@ namespace boosting {
     }
 
     static inline uint32 storePrediction(const SparseArrayVector<float64>& tmpVector,
-                                       DensePredictionMatrix<uint8>::value_iterator predictionIterator) {
+                                         DensePredictionMatrix<uint8>::value_iterator predictionIterator) {
         uint32 numRelevantLabels = tmpVector.getNumElements();
         SparseArrayVector<float64>::const_iterator iterator = tmpVector.cbegin();
 

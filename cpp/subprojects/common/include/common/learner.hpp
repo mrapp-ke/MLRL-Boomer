@@ -1503,7 +1503,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                               const ITrainingResult& trainingResult) const override;
+                                                                const ITrainingResult& trainingResult) const override;
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                 const IRuleModel& ruleModel,

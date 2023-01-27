@@ -28,8 +28,8 @@ namespace boosting {
         protected:
 
             uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
-                                            uint32 numCriteria, float64 l1RegularizationWeight,
-                                            float64 l2RegularizationWeight) override {
+                                              uint32 numCriteria, float64 l1RegularizationWeight,
+                                              float64 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();

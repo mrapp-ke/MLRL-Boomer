@@ -278,8 +278,8 @@ namespace seco {
             }
 
             std::unique_ptr<IBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                    const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                    uint32 numLabels) const override {
+                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                     uint32 numLabels) const override {
                 return std::make_unique<LabelWiseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                     featureMatrix, model, numLabels, numThreads_);
             }
