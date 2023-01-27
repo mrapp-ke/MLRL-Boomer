@@ -30,13 +30,9 @@ struct Condition {
          * @param condition A reference to an existing condition to be copied
          */
         Condition(const Condition& condition)
-            : featureIndex(condition.featureIndex),
-              comparator(condition.comparator),
-              threshold(condition.threshold),
-              start(condition.start),
-              end(condition.end),
-              covered(condition.covered),
-              numCovered(condition.numCovered) {}
+            : featureIndex(condition.featureIndex), comparator(condition.comparator), threshold(condition.threshold),
+              start(condition.start), end(condition.end), covered(condition.covered), numCovered(condition.numCovered) {
+        }
 
         /**
          * Assigns the properties of an existing condition to this condition.
