@@ -188,8 +188,8 @@ namespace boosting {
                                                       WeightVector, IndexVector>(statistics.statisticView_,
                                                                                  statistics.ruleEvaluationFactory_,
                                                                                  statistics.weights_, labelIndices),
-                          tmpVector_(StatisticVector(labelIndices.getNumElements())),
-                          totalSumVector_(&totalSumVector) {}
+                          tmpVector_(StatisticVector(labelIndices.getNumElements())), totalSumVector_(&totalSumVector) {
+                    }
 
                     /**
                      * @see `IWeightedStatisticsSubset::resetSubset`
