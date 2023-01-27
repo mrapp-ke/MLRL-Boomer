@@ -5,6 +5,7 @@
 
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_csr_binary.hpp"
+
 #include <memory>
 
 /**

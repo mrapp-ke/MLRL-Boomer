@@ -3,11 +3,11 @@
  */
 #pragma once
 
+#include "boosting/binning/label_binning.hpp"
+#include "boosting/macros.hpp"
 #include "boosting/rule_evaluation/head_type.hpp"
 #include "boosting/rule_evaluation/regularization.hpp"
-#include "boosting/binning/label_binning.hpp"
 #include "common/multi_threading/multi_threading.hpp"
-#include "boosting/macros.hpp"
 
 namespace boosting {
 

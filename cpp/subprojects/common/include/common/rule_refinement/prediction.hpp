@@ -3,13 +3,14 @@
  */
 #pragma once
 
-#include "common/data/vector_dense.hpp"
 #include "common/data/vector_binned_dense.hpp"
+#include "common/data/vector_dense.hpp"
 #include "common/indices/index_vector.hpp"
-#include "common/sampling/weight_vector_equal.hpp"
 #include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/weight_vector_dense.hpp"
+#include "common/sampling/weight_vector_equal.hpp"
 #include "common/sampling/weight_vector_out_of_sample.hpp"
+
 #include <memory>
 
 // Forward declarations

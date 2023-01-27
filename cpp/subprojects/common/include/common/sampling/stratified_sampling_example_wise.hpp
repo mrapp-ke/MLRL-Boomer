@@ -3,11 +3,12 @@
  */
 #pragma once
 
-#include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/partition_bi.hpp"
+#include "common/sampling/weight_vector_bit.hpp"
+
+#include <functional>
 #include <unordered_map>
 #include <vector>
-#include <functional>
 
 /**
  * Implements stratified sampling, where distinct label vectors are treated as individual classes.

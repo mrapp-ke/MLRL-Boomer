@@ -1,4 +1,5 @@
 #include "common/sampling/instance_sampling_without_replacement.hpp"
+
 #include "common/iterator/index_iterator.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"

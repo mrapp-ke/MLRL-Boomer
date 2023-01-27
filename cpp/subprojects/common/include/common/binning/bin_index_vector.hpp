@@ -4,8 +4,9 @@
 #pragma once
 
 #include "common/data/types.hpp"
-#include <memory>
+
 #include <limits>
+#include <memory>
 
 // Forward declarations
 class IHistogram;

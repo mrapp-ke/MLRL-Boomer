@@ -3,14 +3,14 @@
  */
 #pragma once
 
+#include "boosting/math/blas.hpp"
+#include "boosting/math/lapack.hpp"
+#include "boosting/prediction/probability_function.hpp"
 #include "common/input/feature_matrix.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/measures/measure_distance.hpp"
 #include "common/measures/measure_evaluation.hpp"
 #include "common/statistics/statistics_provider.hpp"
-#include "boosting/math/blas.hpp"
-#include "boosting/math/lapack.hpp"
-#include "boosting/prediction/probability_function.hpp"
 
 namespace boosting {
 

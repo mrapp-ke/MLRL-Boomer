@@ -1,9 +1,9 @@
 #include "common/rule_refinement/prediction_complete.hpp"
+
+#include "common/data/arrays.hpp"
+#include "common/model/head_complete.hpp"
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/statistics/statistics.hpp"
-#include "common/model/head_complete.hpp"
-#include "common/data/arrays.hpp"
-
 
 CompletePrediction::CompletePrediction(uint32 numElements)
     : AbstractEvaluatedPrediction(numElements), indexVector_(CompleteIndexVector(numElements)) {

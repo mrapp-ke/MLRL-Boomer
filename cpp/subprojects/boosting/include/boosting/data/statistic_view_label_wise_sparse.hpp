@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/data/tuple.hpp"
 #include "common/data/matrix_sparse_set.hpp"
+#include "common/data/tuple.hpp"
 
 namespace boosting {
 

@@ -3,9 +3,9 @@
  */
 #pragma once
 
+#include "boosting/iterator/diagonal_iterator.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "boosting/iterator/diagonal_iterator.hpp"
 
 namespace boosting {
 

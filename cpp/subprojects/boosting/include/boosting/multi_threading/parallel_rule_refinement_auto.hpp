@@ -3,10 +3,10 @@
  */
 #pragma once
 
-#include "common/multi_threading/multi_threading.hpp"
-#include "common/sampling/feature_sampling.hpp"
 #include "boosting/losses/loss.hpp"
 #include "boosting/rule_evaluation/head_type.hpp"
+#include "common/multi_threading/multi_threading.hpp"
+#include "common/sampling/feature_sampling.hpp"
 
 namespace boosting {
 

@@ -1,4 +1,5 @@
 #include "common/input/feature_matrix_csr.hpp"
+
 #include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"

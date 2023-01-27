@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/rule_evaluation/score_vector.hpp"
 #include "common/data/vector_dense.hpp"
+#include "common/rule_evaluation/score_vector.hpp"
 
 /**
  * An one-dimensional vector that stores the scores that may be predicted by a rule, as well as an overall quality

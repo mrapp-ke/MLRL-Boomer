@@ -1,8 +1,10 @@
 #include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
-#include "common/util/validation.hpp"
+
 #include "common/math/math.hpp"
+#include "common/util/validation.hpp"
 #include "rule_induction_common.hpp"
 #include "rule_induction_top_down_common.hpp"
+
 #include <algorithm>
 
 /**

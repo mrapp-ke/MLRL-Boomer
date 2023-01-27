@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/prediction/predictor_binary.hpp"
 #include "common/multi_threading/multi_threading.hpp"
+#include "common/prediction/predictor_binary.hpp"
 
 namespace seco {
 

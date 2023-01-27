@@ -1,4 +1,5 @@
 #include "common/binning/feature_binning_no.hpp"
+
 #include "common/thresholds/thresholds_exact.hpp"
 
 NoFeatureBinningConfig::NoFeatureBinningConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)

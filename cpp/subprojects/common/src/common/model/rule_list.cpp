@@ -1,4 +1,5 @@
 #include "common/model/rule_list.hpp"
+
 #include "common/model/body_empty.hpp"
 #include "common/prediction/label_space_info.hpp"
 #include "common/prediction/predictor_binary.hpp"

@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "boosting/rule_evaluation/rule_evaluation.hpp"
 #include "boosting/math/lapack.hpp"
+#include "boosting/rule_evaluation/rule_evaluation.hpp"
 
 namespace boosting {
 

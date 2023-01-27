@@ -5,6 +5,7 @@
 
 #include "common/data/ring_buffer.hpp"
 #include "common/math/math.hpp"
+
 #include <memory>
 
 /**

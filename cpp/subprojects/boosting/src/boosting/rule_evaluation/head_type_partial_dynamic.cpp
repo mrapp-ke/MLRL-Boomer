@@ -1,4 +1,5 @@
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
+
 #include "boosting/statistics/statistics_provider_example_wise_dense.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
 #include "boosting/statistics/statistics_provider_label_wise_sparse.hpp"

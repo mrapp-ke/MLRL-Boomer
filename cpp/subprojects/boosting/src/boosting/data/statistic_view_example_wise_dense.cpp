@@ -1,4 +1,5 @@
 #include "boosting/data/statistic_view_example_wise_dense.hpp"
+
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
 

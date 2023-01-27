@@ -1,10 +1,10 @@
 #include "common/input/label_matrix_csr.hpp"
-#include "common/statistics/statistics_provider.hpp"
-#include "common/sampling/partition_sampling.hpp"
-#include "common/sampling/instance_sampling.hpp"
+
 #include "common/data/arrays.hpp"
 #include "common/math/math.hpp"
-
+#include "common/sampling/instance_sampling.hpp"
+#include "common/sampling/partition_sampling.hpp"
+#include "common/statistics/statistics_provider.hpp"
 
 CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
     : VectorConstView<const uint32>(labelMatrix.row_indices_cend(row) - labelMatrix.row_indices_cbegin(row),

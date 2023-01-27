@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/rule_evaluation/score_vector.hpp"
+
 #include <memory>
 
 namespace boosting {

@@ -1,4 +1,5 @@
 #include "common/prediction/prediction_matrix_sparse_binary.hpp"
+
 #include <cstdlib>
 
 BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices,

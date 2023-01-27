@@ -1,8 +1,9 @@
 #include "common/sampling/instance_sampling_with_replacement.hpp"
-#include "common/sampling/weight_vector_dense.hpp"
+
+#include "common/data/arrays.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
-#include "common/data/arrays.hpp"
+#include "common/sampling/weight_vector_dense.hpp"
 #include "common/util/validation.hpp"
 
 static inline void sampleInternally(const SinglePartition& partition, float32 sampleSize,

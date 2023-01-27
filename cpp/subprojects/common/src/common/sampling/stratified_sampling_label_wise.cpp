@@ -1,14 +1,15 @@
 #include "common/sampling/stratified_sampling_label_wise.hpp"
+
 #include "common/data/indexed_value.hpp"
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csc.hpp"
 #include "common/input/label_matrix_csr.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "stratified_sampling_common.hpp"
-#include <unordered_map>
-#include <set>
-#include <cmath>
 
+#include <cmath>
+#include <set>
+#include <unordered_map>
 
 static inline void updateNumExamplesPerLabel(const CContiguousLabelMatrix& labelMatrix, uint32 exampleIndex,
                                              uint32* numExamplesPerLabel,

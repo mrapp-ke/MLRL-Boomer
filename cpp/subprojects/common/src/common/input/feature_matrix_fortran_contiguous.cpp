@@ -4,6 +4,7 @@
 #endif
 
 #include "common/input/feature_matrix_fortran_contiguous.hpp"
+
 #include "common/data/view_fortran_contiguous.hpp"
 
 /**

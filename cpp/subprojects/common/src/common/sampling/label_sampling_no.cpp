@@ -1,4 +1,5 @@
 #include "common/sampling/label_sampling_no.hpp"
+
 #include "common/indices/index_vector_complete.hpp"
 
 /**

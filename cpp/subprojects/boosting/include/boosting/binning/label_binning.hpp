@@ -7,6 +7,7 @@
 #include "boosting/math/lapack.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
+
 #include <functional>
 #include <memory>
 

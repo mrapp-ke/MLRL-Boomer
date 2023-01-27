@@ -1,14 +1,14 @@
 #include "common/binning/feature_binning_equal_width.hpp"
+
 #include "common/binning/bin_index_vector_dense.hpp"
 #include "common/binning/bin_index_vector_dok.hpp"
-#include "common/thresholds/thresholds_approximate.hpp"
 #include "common/math/math.hpp"
+#include "common/thresholds/thresholds_approximate.hpp"
 #include "common/util/validation.hpp"
 #include "feature_binning_nominal.hpp"
-#include <unordered_set>
+
 #include <tuple>
-
-
+#include <unordered_set>
 
 static inline std::tuple<uint32, float32, float32> preprocess(const FeatureVector& featureVector, bool sparse,
                                                               float32 binRatio, uint32 minBins, uint32 maxBins) {

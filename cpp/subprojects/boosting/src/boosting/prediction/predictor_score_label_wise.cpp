@@ -1,6 +1,7 @@
 #include "boosting/prediction/predictor_score_label_wise.hpp"
-#include "predictor_common.hpp"
+
 #include "omp.h"
+#include "predictor_common.hpp"
 
 namespace boosting {
 

@@ -1,4 +1,5 @@
 #include "common/learner.hpp"
+
 #include "common/binning/feature_binning_no.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"

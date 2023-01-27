@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/rule_model_assemblage/rule_model_assemblage.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
+#include "common/rule_model_assemblage/rule_model_assemblage.hpp"
 
 /**
  * Allows to configure an algorithm that sequentially induces several rules, optionally starting with a default rule,

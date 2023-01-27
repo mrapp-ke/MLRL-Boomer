@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/sampling/weight_vector_bit.hpp"
+
 #include <unordered_set>
 
 /**

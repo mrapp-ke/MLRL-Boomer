@@ -1,4 +1,5 @@
 #include "seco/data/matrix_coverage_dense.hpp"
+
 #include "common/iterator/binary_forward_iterator.hpp"
 
 namespace seco {

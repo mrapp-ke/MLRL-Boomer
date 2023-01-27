@@ -4,6 +4,7 @@
 #pragma once
 
 #include "boosting/prediction/probability_function.hpp"
+
 #include <cmath>
 
 namespace boosting {

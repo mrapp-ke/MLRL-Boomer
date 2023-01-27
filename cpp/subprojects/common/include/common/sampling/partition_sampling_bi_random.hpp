@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/sampling/partition_sampling.hpp"
 #include "common/macros.hpp"
+#include "common/sampling/partition_sampling.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a method for partitioning the available training

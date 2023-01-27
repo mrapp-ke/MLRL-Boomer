@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/data/view_csc_binary.hpp"
 #include "common/data/view_c_contiguous.hpp"
+#include "common/data/view_csc_binary.hpp"
 #include "common/data/view_csr_binary.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"

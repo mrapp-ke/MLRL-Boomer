@@ -1,6 +1,7 @@
 #include "boosting/math/lapack.hpp"
-#include <string>
+
 #include <stdexcept>
+#include <string>
 
 namespace boosting {
 

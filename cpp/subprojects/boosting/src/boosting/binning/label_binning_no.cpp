@@ -1,4 +1,5 @@
 #include "boosting/binning/label_binning_no.hpp"
+
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_complete.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_partial_fixed.hpp"

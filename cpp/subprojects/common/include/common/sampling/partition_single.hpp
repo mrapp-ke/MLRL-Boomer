@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/sampling/partition.hpp"
 #include "common/iterator/index_iterator.hpp"
+#include "common/sampling/partition.hpp"
 
 /**
  * An implementation of the class `IPartition` that provides random access to the indices of elements that are included

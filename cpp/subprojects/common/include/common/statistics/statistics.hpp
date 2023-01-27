@@ -4,13 +4,13 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_weighted.hpp"
 #include "common/rule_refinement/prediction_complete.hpp"
 #include "common/rule_refinement/prediction_partial.hpp"
 #include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/weight_vector_dense.hpp"
 #include "common/sampling/weight_vector_equal.hpp"
 #include "common/sampling/weight_vector_out_of_sample.hpp"
+#include "common/statistics/statistics_weighted.hpp"
 
 /**
  * Defines an interface for all classes that provide access to statistics about the labels of the training examples,

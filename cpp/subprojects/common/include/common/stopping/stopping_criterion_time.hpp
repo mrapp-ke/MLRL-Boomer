@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/stopping/stopping_criterion.hpp"
 #include "common/macros.hpp"
+#include "common/stopping/stopping_criterion.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that ensures that a certain time

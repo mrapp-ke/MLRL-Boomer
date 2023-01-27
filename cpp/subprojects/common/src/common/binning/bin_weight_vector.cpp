@@ -1,4 +1,5 @@
 #include "common/binning/bin_weight_vector.hpp"
+
 #include "common/data/arrays.hpp"
 
 BinWeightVector::BinWeightVector(uint32 numElements)

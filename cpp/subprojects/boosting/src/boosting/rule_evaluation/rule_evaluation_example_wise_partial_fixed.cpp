@@ -1,4 +1,5 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_partial_fixed.hpp"
+
 #include "rule_evaluation_example_wise_complete_common.hpp"
 #include "rule_evaluation_example_wise_partial_common.hpp"
 #include "rule_evaluation_example_wise_partial_fixed_common.hpp"

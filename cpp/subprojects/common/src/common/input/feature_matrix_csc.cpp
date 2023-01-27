@@ -4,6 +4,7 @@
 #endif
 
 #include "common/input/feature_matrix_csc.hpp"
+
 #include "common/data/view_csc.hpp"
 
 /**

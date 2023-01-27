@@ -1,4 +1,5 @@
 #include "boosting/losses/loss_label_wise_logistic.hpp"
+
 #include "logistic_function.hpp"
 #include "loss_label_wise_common.hpp"
 

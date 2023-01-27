@@ -3,8 +3,9 @@
  */
 #pragma once
 
-#include "common/model/condition.hpp"
 #include "common/model/body_conjunctive.hpp"
+#include "common/model/condition.hpp"
+
 #include <array>
 #include <memory>
 #include <vector>

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/data/vector_dense.hpp"
+
 #include <iterator>
 
 /**

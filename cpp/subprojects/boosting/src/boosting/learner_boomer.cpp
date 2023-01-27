@@ -1,4 +1,5 @@
 #include "boosting/learner_boomer.hpp"
+
 #include "boosting/binning/feature_binning_auto.hpp"
 #include "boosting/binning/label_binning_auto.hpp"
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"

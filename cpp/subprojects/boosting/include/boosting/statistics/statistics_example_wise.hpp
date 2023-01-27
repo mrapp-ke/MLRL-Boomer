@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "boosting/statistics/statistics_label_wise.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
+#include "boosting/statistics/statistics_label_wise.hpp"
 
 namespace boosting {
 

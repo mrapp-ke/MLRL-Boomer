@@ -1,4 +1,5 @@
 #include "boosting/rule_evaluation/rule_evaluation_example_wise_partial_dynamic.hpp"
+
 #include "rule_evaluation_example_wise_complete_common.hpp"
 #include "rule_evaluation_example_wise_partial_common.hpp"
 #include "rule_evaluation_example_wise_partial_dynamic_common.hpp"

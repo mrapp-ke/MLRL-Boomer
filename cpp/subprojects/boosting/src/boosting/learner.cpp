@@ -1,4 +1,5 @@
 #include "boosting/learner.hpp"
+
 #include "boosting/binning/label_binning_no.hpp"
 #include "boosting/losses/loss_label_wise_logistic.hpp"
 #include "boosting/model/rule_list_builder.hpp"

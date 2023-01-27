@@ -1,6 +1,7 @@
 #include "boosting/losses/loss_label_wise.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
 #include "common/math/math.hpp"
+
 #include <algorithm>
 
 namespace boosting {

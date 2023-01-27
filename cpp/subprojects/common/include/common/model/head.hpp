@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/macros.hpp"
+
 #include <functional>
 
 // Forward declarations

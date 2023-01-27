@@ -1,5 +1,7 @@
 #include "common/rule_refinement/refinement_comparator_fixed.hpp"
+
 #include "common/rule_refinement/score_processor.hpp"
+
 #include <algorithm>
 
 FixedRefinementComparator::FixedRefinementComparator(RuleCompareFunction ruleCompareFunction, uint32 maxRefinements,

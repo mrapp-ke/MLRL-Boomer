@@ -3,9 +3,9 @@
  */
 #pragma once
 
+#include "common/macros.hpp"
 #include "common/stopping/aggregation_function.hpp"
 #include "common/stopping/global_pruning.hpp"
-#include "common/macros.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that stops the induction of rules

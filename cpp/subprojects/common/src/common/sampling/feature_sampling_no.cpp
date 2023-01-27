@@ -1,7 +1,7 @@
 #include "common/sampling/feature_sampling_no.hpp"
-#include "common/sampling/feature_sampling_predefined.hpp"
-#include "common/indices/index_vector_complete.hpp"
 
+#include "common/indices/index_vector_complete.hpp"
+#include "common/sampling/feature_sampling_predefined.hpp"
 
 /**
  * An implementation of the class `IFeatureSampling` that does not perform any sampling, but includes all features.

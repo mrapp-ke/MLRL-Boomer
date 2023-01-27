@@ -1,9 +1,9 @@
 #include "common/rule_evaluation/score_vector_dense.hpp"
-#include "common/rule_refinement/prediction.hpp"
-#include "common/rule_refinement/score_processor.hpp"
+
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-
+#include "common/rule_refinement/prediction.hpp"
+#include "common/rule_refinement/score_processor.hpp"
 
 template<typename IndexVector>
 DenseScoreVector<IndexVector>::DenseScoreVector(const IndexVector& labelIndices, bool sorted)

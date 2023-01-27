@@ -1,4 +1,5 @@
 #include "common/stopping/stopping_criterion_size.hpp"
+
 #include "common/util/validation.hpp"
 
 /**

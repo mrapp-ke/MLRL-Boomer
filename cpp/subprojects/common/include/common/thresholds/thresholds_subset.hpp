@@ -3,15 +3,16 @@
  */
 #pragma once
 
-#include "common/thresholds/coverage_mask.hpp"
-#include "common/thresholds/coverage_set.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "common/rule_refinement/rule_refinement.hpp"
-#include "common/rule_refinement/prediction.hpp"
 #include "common/model/condition.hpp"
+#include "common/rule_refinement/prediction.hpp"
+#include "common/rule_refinement/rule_refinement.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
+#include "common/thresholds/coverage_mask.hpp"
+#include "common/thresholds/coverage_set.hpp"
+
 #include <memory>
 
 /**

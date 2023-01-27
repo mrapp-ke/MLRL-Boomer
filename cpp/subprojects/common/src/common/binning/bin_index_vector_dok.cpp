@@ -1,4 +1,5 @@
 #include "common/binning/bin_index_vector_dok.hpp"
+
 #include "common/statistics/statistics_weighted.hpp"
 
 DokBinIndexVector::DokBinIndexVector()

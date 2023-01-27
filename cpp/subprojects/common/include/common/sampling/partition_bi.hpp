@@ -3,10 +3,10 @@
  */
 #pragma once
 
-#include "common/sampling/partition.hpp"
-#include "common/sampling/instance_sampling.hpp"
-#include "common/data/vector_dense.hpp"
 #include "common/data/vector_bit.hpp"
+#include "common/data/vector_dense.hpp"
+#include "common/sampling/instance_sampling.hpp"
+#include "common/sampling/partition.hpp"
 
 /**
  * An implementation of the class `IPartition` that provides random access to the indices of elements that are included

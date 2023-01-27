@@ -1,6 +1,8 @@
 #include "common/thresholds/thresholds_approximate.hpp"
+
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
 #include "thresholds_common.hpp"
+
 #include <unordered_map>
 
 /**

@@ -1,10 +1,10 @@
 #include "common/rule_refinement/prediction_partial.hpp"
-#include "common/rule_refinement/rule_refinement.hpp"
-#include "common/statistics/statistics.hpp"
-#include "common/model/head_partial.hpp"
+
 #include "common/data/arrays.hpp"
 #include "common/data/vector_sparse_array.hpp"
-
+#include "common/model/head_partial.hpp"
+#include "common/rule_refinement/rule_refinement.hpp"
+#include "common/statistics/statistics.hpp"
 
 PartialPrediction::PartialPrediction(uint32 numElements, bool sorted)
     : AbstractEvaluatedPrediction(numElements), indexVector_(PartialIndexVector(numElements)), sorted_(sorted) {

@@ -1,4 +1,5 @@
 #include "common/prediction/prediction_matrix_dense.hpp"
+
 #include <cstdlib>
 
 template<typename T>

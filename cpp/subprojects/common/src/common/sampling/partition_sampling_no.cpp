@@ -1,4 +1,5 @@
 #include "common/sampling/partition_sampling_no.hpp"
+
 #include "common/sampling/partition_single.hpp"
 
 /**

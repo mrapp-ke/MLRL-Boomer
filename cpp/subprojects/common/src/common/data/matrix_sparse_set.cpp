@@ -1,7 +1,9 @@
 #include "common/data/matrix_sparse_set.hpp"
+
 #include "common/data/arrays.hpp"
-#include "common/data/tuple.hpp"
 #include "common/data/triple.hpp"
+#include "common/data/tuple.hpp"
+
 #include <limits>
 
 static const uint32 MAX_INDEX = std::numeric_limits<uint32>::max();

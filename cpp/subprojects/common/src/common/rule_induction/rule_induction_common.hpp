@@ -3,9 +3,9 @@
  */
 #pragma once
 
+#include "common/indices/index_vector_complete.hpp"
 #include "common/rule_induction/rule_induction.hpp"
 #include "common/rule_refinement/score_processor.hpp"
-#include "common/indices/index_vector_complete.hpp"
 
 /**
  * An abstract base class for all classes that implement an algorithm for the induction of individual rules.

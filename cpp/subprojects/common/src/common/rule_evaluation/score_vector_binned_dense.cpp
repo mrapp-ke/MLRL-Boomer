@@ -1,9 +1,9 @@
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
-#include "common/rule_refinement/prediction.hpp"
-#include "common/rule_refinement/score_processor.hpp"
+
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-
+#include "common/rule_refinement/prediction.hpp"
+#include "common/rule_refinement/score_processor.hpp"
 
 template<typename IndexVector>
 DenseBinnedScoreVector<IndexVector>::DenseBinnedScoreVector(const IndexVector& labelIndices, uint32 numBins,

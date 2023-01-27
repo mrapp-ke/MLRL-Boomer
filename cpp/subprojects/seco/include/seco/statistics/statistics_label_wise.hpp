@@ -4,8 +4,8 @@
  */
 #pragma once
 
-#include "seco/statistics/statistics.hpp"
 #include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
+#include "seco/statistics/statistics.hpp"
 
 namespace seco {
 

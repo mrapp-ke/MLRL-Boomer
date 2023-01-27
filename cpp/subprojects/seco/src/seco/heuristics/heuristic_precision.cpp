@@ -1,4 +1,5 @@
 #include "seco/heuristics/heuristic_precision.hpp"
+
 #include "heuristic_common.hpp"
 
 namespace seco {

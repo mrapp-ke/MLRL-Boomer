@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/data/indexed_value.hpp"
+
 #include <vector>
 
 /**

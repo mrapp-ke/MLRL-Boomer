@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/stopping/stopping_criterion.hpp"
+
 #include <vector>
 
 /**

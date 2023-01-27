@@ -8,10 +8,10 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "common/input/label_matrix_row_wise.hpp"
+#include "common/data/functions.hpp"
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_vector.hpp"
-#include "common/data/functions.hpp"
+#include "common/input/label_matrix_row_wise.hpp"
 
 /**
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that

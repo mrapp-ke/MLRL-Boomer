@@ -8,8 +8,8 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "common/input/feature_matrix_row_wise.hpp"
 #include "common/data/view_c_contiguous.hpp"
+#include "common/input/feature_matrix_row_wise.hpp"
 
 /**
  * Defines an interface for all feature matrices that provide row-wise access to the feature values of examples that are

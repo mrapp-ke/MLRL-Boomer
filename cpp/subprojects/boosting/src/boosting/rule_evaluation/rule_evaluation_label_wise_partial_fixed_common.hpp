@@ -3,9 +3,10 @@
  */
 #pragma once
 
-#include "common/data/vector_sparse_array.hpp"
 #include "boosting/data/statistic_vector_label_wise_dense.hpp"
+#include "common/data/vector_sparse_array.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
+
 #include <algorithm>
 
 namespace boosting {

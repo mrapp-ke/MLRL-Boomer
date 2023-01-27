@@ -4,8 +4,8 @@
  */
 #pragma once
 
-#include "common/sampling/instance_sampling.hpp"
 #include "common/macros.hpp"
+#include "common/sampling/instance_sampling.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a method for selecting a subset of the available

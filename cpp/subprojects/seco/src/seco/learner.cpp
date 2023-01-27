@@ -1,4 +1,5 @@
 #include "seco/learner.hpp"
+
 #include "seco/heuristics/heuristic_precision.hpp"
 #include "seco/lift_functions/lift_function_no.hpp"
 #include "seco/model/decision_list_builder.hpp"

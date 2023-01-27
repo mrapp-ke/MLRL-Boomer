@@ -5,6 +5,7 @@
 
 #include "common/data/matrix_lil_binary.hpp"
 #include "common/data/view_csr_binary.hpp"
+
 #include <memory>
 
 /**

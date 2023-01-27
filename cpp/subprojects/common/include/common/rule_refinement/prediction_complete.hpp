@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/rule_refinement/prediction_evaluated.hpp"
 #include "common/indices/index_vector_complete.hpp"
+#include "common/rule_refinement/prediction_evaluated.hpp"
 
 /**
  * Stores the scores that are predicted by a rule that predicts for all available labels.

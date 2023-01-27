@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "common/rule_refinement/prediction_evaluated.hpp"
-#include "common/model/rule_model.hpp"
 #include "common/model/condition_list.hpp"
+#include "common/model/rule_model.hpp"
+#include "common/rule_refinement/prediction_evaluated.hpp"
 
 /**
  * Defines an interface for all classes that allow to incrementally build rule-based models.

@@ -4,9 +4,9 @@
  */
 #pragma once
 
+#include "common/binning/threshold_vector.hpp"
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/rule_refinement/rule_refinement_callback.hpp"
-#include "common/binning/threshold_vector.hpp"
 #include "common/statistics/histogram.hpp"
 
 /**

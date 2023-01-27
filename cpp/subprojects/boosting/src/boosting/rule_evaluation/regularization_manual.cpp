@@ -1,5 +1,7 @@
 #include "boosting/rule_evaluation/regularization_manual.hpp"
+
 #include "common/util/validation.hpp"
+
 #include <iostream>
 
 namespace boosting {

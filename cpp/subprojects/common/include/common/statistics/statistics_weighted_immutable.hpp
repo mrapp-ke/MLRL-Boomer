@@ -3,9 +3,10 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_subset_weighted.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
+#include "common/statistics/statistics_subset_weighted.hpp"
+
 #include <memory>
 
 /**

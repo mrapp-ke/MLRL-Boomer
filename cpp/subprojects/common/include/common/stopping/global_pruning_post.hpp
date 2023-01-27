@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/stopping/global_pruning.hpp"
 #include "common/macros.hpp"
+#include "common/stopping/global_pruning.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that keeps track of the number of

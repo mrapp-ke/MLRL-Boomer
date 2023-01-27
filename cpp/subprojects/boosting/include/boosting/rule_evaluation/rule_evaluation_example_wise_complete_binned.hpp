@@ -3,10 +3,10 @@
  */
 #pragma once
 
-#include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 #include "boosting/binning/label_binning.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
+#include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 
 namespace boosting {
 

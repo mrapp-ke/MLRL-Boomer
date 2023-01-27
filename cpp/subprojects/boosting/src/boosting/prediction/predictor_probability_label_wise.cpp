@@ -1,7 +1,8 @@
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
+
 #include "boosting/prediction/probability_function.hpp"
-#include "predictor_common.hpp"
 #include "omp.h"
+#include "predictor_common.hpp"
 
 namespace boosting {
 

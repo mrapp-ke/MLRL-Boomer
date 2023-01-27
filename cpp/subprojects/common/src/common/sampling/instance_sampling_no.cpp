@@ -1,9 +1,9 @@
 #include "common/sampling/instance_sampling_no.hpp"
-#include "common/sampling/weight_vector_bit.hpp"
-#include "common/sampling/weight_vector_equal.hpp"
+
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
-
+#include "common/sampling/weight_vector_bit.hpp"
+#include "common/sampling/weight_vector_equal.hpp"
 
 static inline void sampleInternally(const SinglePartition& partition, EqualWeightVector& weightVector, RNG& rng) {
     return;

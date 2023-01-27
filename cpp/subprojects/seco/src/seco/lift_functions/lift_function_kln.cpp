@@ -1,5 +1,7 @@
 #include "seco/lift_functions/lift_function_kln.hpp"
+
 #include "common/util/validation.hpp"
+
 #include <cmath>
 
 namespace seco {

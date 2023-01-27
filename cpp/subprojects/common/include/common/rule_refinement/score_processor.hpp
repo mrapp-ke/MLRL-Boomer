@@ -3,11 +3,11 @@
  */
 #pragma once
 
-#include "common/rule_evaluation/score_vector_dense.hpp"
-#include "common/rule_evaluation/score_vector_binned_dense.hpp"
-#include "common/rule_refinement/prediction_evaluated.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
+#include "common/rule_evaluation/score_vector_binned_dense.hpp"
+#include "common/rule_evaluation/score_vector_dense.hpp"
+#include "common/rule_refinement/prediction_evaluated.hpp"
 
 /**
  * Allows to process the scores that are stored by an `IScoreVector` in order to convert them into the head of a rule,

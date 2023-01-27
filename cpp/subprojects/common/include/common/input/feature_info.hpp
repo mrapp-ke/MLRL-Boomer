@@ -6,6 +6,7 @@
 #include "common/data/types.hpp"
 #include "common/input/feature_type.hpp"
 #include "common/macros.hpp"
+
 #include <memory>
 
 /**
