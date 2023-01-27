@@ -17,17 +17,19 @@ namespace boosting {
      * it goes before the second one.
      */
     struct CompareLabelWiseCriteria final {
-        /**
-         * Returns whether the a given object of type `IndexedValue` that stores the optimal prediction for a label, as
-         * well as its index, should go before a second one.
-         *
-         * @param lhs   A reference to a first object of type `IndexedValue`
-         * @param rhs   A reference to a second object of type `IndexedValue`
-         * @return      True, if the first object should go before the second one, false otherwise
-         */
-        inline bool operator()(const IndexedValue<float64>& lhs, const IndexedValue<float64>& rhs) const {
-            return std::abs(lhs.value) > std::abs(rhs.value);
-        }
+        public:
+
+            /**
+             * Returns whether the a given object of type `IndexedValue` that stores the optimal prediction for a label,
+             * as well as its index, should go before a second one.
+             *
+             * @param lhs   A reference to a first object of type `IndexedValue`
+             * @param rhs   A reference to a second object of type `IndexedValue`
+             * @return      True, if the first object should go before the second one, false otherwise
+             */
+            inline bool operator()(const IndexedValue<float64>& lhs, const IndexedValue<float64>& rhs) const {
+                return std::abs(lhs.value) > std::abs(rhs.value);
+            }
     };
 
     /**

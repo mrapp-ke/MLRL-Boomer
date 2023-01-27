@@ -19,25 +19,27 @@ class IRuleRefinementCallback {
          * The data that is provided via the callback's `get` function.
          */
         struct Result final {
-            /**
-             * @param s A reference to an object of template type `Statistics` that should be used to search for
-             *          potential refinements
-             * @param v A reference to an object of template type `Vector` that should be used to search for potential
-             *          refinements
-             */
-            Result(const Statistics& s, const Vector& v) : statistics(s), vector(v) { }
+            public:
 
-            /**
-             * A reference to an object of template type `Statistics` that should be used to search for potential
-             * refinements.
-             */
-            const Statistics& statistics;
+                /**
+                 * @param s A reference to an object of template type `Statistics` that should be used to search for
+                 *          potential refinements
+                 * @param v A reference to an object of template type `Vector` that should be used to search for
+                 * potential refinements
+                 */
+                Result(const Statistics& s, const Vector& v) : statistics(s), vector(v) {}
 
-            /**
-             * A reference to an object of template type `Vector` that should be used to search for potential
-             * refinements.
-             */
-            const Vector& vector;
+                /**
+                 * A reference to an object of template type `Statistics` that should be used to search for potential
+                 * refinements.
+                 */
+                const Statistics& statistics;
+
+                /**
+                 * A reference to an object of template type `Vector` that should be used to search for potential
+                 * refinements.
+                 */
+                const Vector& vector;
         };
 
         virtual ~IRuleRefinementCallback() {};
