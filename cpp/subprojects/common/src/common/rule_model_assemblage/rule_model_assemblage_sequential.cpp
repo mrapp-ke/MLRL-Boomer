@@ -194,18 +194,18 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
         SequentialRuleModelAssemblageFactory(bool useDefaultRule) : useDefaultRule_(useDefaultRule) {}
 
         std::unique_ptr<IRuleModelAssemblage> create(
-                std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
-                std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
-                std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-                std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
-                std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
-                std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
-                std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
-                std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-                std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
-                std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-                std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
-                std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const override {
+            std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
+            std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
+            std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
+            std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
+            std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
+            std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
+            std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
+            std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
+            std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
+            std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
+            std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
+            std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const override {
             return std::make_unique<SequentialRuleModelAssemblage>(std::move(modelBuilderFactoryPtr),
                                                                    std::move(statisticsProviderFactoryPtr),
                                                                    std::move(thresholdsFactoryPtr),
@@ -223,11 +223,11 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
 };
 
 SequentialRuleModelAssemblageConfig::SequentialRuleModelAssemblageConfig(
-        const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr)
+    const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr)
     : defaultRuleConfigPtr_(defaultRuleConfigPtr) {}
 
 std::unique_ptr<IRuleModelAssemblageFactory> SequentialRuleModelAssemblageConfig::createRuleModelAssemblageFactory(
-        const IRowWiseLabelMatrix& labelMatrix) const {
+    const IRowWiseLabelMatrix& labelMatrix) const {
     bool useDefaultRule = defaultRuleConfigPtr_->isDefaultRuleUsed(labelMatrix);
     return std::make_unique<SequentialRuleModelAssemblageFactory>(useDefaultRule);
 }

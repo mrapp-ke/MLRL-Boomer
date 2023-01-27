@@ -6,13 +6,13 @@ FortranContiguousConstView<T>::FortranContiguousConstView(uint32 numRows, uint32
 
 template<typename T>
 typename FortranContiguousConstView<T>::value_const_iterator FortranContiguousConstView<T>::column_values_cbegin(
-        uint32 col) const {
+    uint32 col) const {
     return &array_[col * numRows_];
 }
 
 template<typename T>
 typename FortranContiguousConstView<T>::value_const_iterator FortranContiguousConstView<T>::column_values_cend(
-        uint32 col) const {
+    uint32 col) const {
     return &array_[(col + 1) * numRows_];
 }
 

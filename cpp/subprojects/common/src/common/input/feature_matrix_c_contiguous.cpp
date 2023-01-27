@@ -12,14 +12,14 @@ bool CContiguousFeatureMatrix::isSparse() const {
 }
 
 std::unique_ptr<IBinaryPredictor> CContiguousFeatureMatrix::createBinaryPredictor(
-        const IBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-        uint32 numLabels) const {
+    const IBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+    uint32 numLabels) const {
     return ruleModel.createBinaryPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
 std::unique_ptr<ISparseBinaryPredictor> CContiguousFeatureMatrix::createSparseBinaryPredictor(
-        const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
-        const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
+    const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+    uint32 numLabels) const {
     return ruleModel.createSparseBinaryPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
@@ -31,8 +31,8 @@ std::unique_ptr<IScorePredictor> CContiguousFeatureMatrix::createScorePredictor(
 }
 
 std::unique_ptr<IProbabilityPredictor> CContiguousFeatureMatrix::createProbabilityPredictor(
-        const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-        uint32 numLabels) const {
+    const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+    uint32 numLabels) const {
     return ruleModel.createProbabilityPredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 

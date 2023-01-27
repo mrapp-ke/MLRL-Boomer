@@ -16,8 +16,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-            const ILabelWiseLossConfig& lossConfig) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const ILabelWiseLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
@@ -37,15 +37,15 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-            const ISparseLabelWiseLossConfig& lossConfig) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const ISparseLabelWiseLossConfig& lossConfig) const {
         return this->createStatisticsProviderFactory(featureMatrix, labelMatrix,
                                                      static_cast<const ILabelWiseLossConfig&>(lossConfig));
     }
 
     std::unique_ptr<IStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-            const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
         std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.createExampleWiseLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =

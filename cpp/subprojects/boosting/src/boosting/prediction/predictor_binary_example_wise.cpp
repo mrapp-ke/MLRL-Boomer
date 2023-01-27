@@ -69,9 +69,9 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
-            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
-            uint32 numThreads) {
+        const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+        const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
+        uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
             std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
@@ -101,9 +101,8 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
-            uint32 numThreads) {
+        const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
+        uint32 numLabels, const IDistanceMeasure& distanceMeasure, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
@@ -193,8 +192,8 @@ namespace boosting {
 
     template<typename FeatureMatrix>
     static inline std::unique_ptr<IBinaryPredictor> createExampleWiseBinaryPredictor(
-            const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
-            uint32 numLabels, const IDistanceMeasureFactory& distanceMeasureFactory, uint32 numThreads) {
+        const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
+        uint32 numLabels, const IDistanceMeasureFactory& distanceMeasureFactory, uint32 numThreads) {
         if (!labelVectorSet) {
             throw std::runtime_error("Information about the label vectors that have been encountered in the training "
                 "data is required for predicting binary labels, but no such information is provided by the model. Most "
@@ -255,9 +254,9 @@ namespace boosting {
     };
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
-            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
-            uint32 numThreads) {
+        const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+        const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
+        uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         BinaryLilMatrix lilMatrix(numExamples);
         uint32 numNonZeroElements = 0;
@@ -287,9 +286,8 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
-            uint32 numThreads) {
+        const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
+        uint32 numLabels, const IDistanceMeasure& distanceMeasure, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         BinaryLilMatrix lilMatrix(numExamples);
@@ -380,8 +378,8 @@ namespace boosting {
 
     template<typename FeatureMatrix>
     static inline std::unique_ptr<ISparseBinaryPredictor> createExampleWiseSparseBinaryPredictor(
-            const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
-            uint32 numLabels, const IDistanceMeasureFactory& distanceMeasureFactory, uint32 numThreads) {
+        const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
+        uint32 numLabels, const IDistanceMeasureFactory& distanceMeasureFactory, uint32 numThreads) {
         if (!labelVectorSet) {
             throw std::runtime_error("Information about the label vectors that have been encountered in the training "
                 "data is required for predicting binary labels, but no such information is provided by the model. Most "
@@ -442,12 +440,12 @@ namespace boosting {
     };
 
     ExampleWiseBinaryPredictorConfig::ExampleWiseBinaryPredictorConfig(
-            const std::unique_ptr<ILossConfig>& lossConfigPtr,
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        const std::unique_ptr<ILossConfig>& lossConfigPtr,
+        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
             lossConfigPtr_->createDistanceMeasureFactory();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
@@ -455,7 +453,7 @@ namespace boosting {
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createSparsePredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
             lossConfigPtr_->createDistanceMeasureFactory();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);

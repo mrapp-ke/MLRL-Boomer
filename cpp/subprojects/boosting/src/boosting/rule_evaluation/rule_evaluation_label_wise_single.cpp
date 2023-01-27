@@ -77,26 +77,26 @@ namespace boosting {
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseSingleLabelRuleEvaluationFactory::create(
-            const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+        const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         return std::make_unique<LabelWiseSingleLabelRuleEvaluation<DenseLabelWiseStatisticVector, CompleteIndexVector>>(
             indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseSingleLabelRuleEvaluationFactory::create(
-            const DenseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+        const DenseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
         return std::make_unique<LabelWiseSingleLabelRuleEvaluation<DenseLabelWiseStatisticVector, PartialIndexVector>>(
             indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseSingleLabelRuleEvaluationFactory::create(
-            const SparseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+        const SparseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         return std::make_unique<
             LabelWiseSingleLabelRuleEvaluation<SparseLabelWiseStatisticVector, CompleteIndexVector>>(
             indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
     std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseSingleLabelRuleEvaluationFactory::create(
-            const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+        const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
         return std::make_unique<LabelWiseSingleLabelRuleEvaluation<SparseLabelWiseStatisticVector, PartialIndexVector>>(
             indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }

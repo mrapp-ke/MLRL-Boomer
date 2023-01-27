@@ -246,22 +246,22 @@ void AbstractRuleLearner::Config::useNoSequentialPostOptimization() {
 AbstractRuleLearner::AbstractRuleLearner(IRuleLearner::IConfig& config) : config_(config) {}
 
 std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory(
-        const IRowWiseLabelMatrix& labelMatrix) const {
+    const IRowWiseLabelMatrix& labelMatrix) const {
     return config_.getRuleModelAssemblageConfigPtr()->createRuleModelAssemblageFactory(labelMatrix);
 }
 
 std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory(
-        const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+    const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
     return config_.getFeatureBinningConfigPtr()->createThresholdsFactory(featureMatrix, labelMatrix);
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory(
-        const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+    const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
     return config_.getRuleInductionConfigPtr()->createRuleInductionFactory(featureMatrix, labelMatrix);
 }
 
 std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory(
-        const ILabelMatrix& labelMatrix) const {
+    const ILabelMatrix& labelMatrix) const {
     return config_.getLabelSamplingConfigPtr()->createLabelSamplingFactory(labelMatrix);
 }
 
@@ -270,7 +270,7 @@ std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSam
 }
 
 std::unique_ptr<IFeatureSamplingFactory> AbstractRuleLearner::createFeatureSamplingFactory(
-        const IFeatureMatrix& featureMatrix) const {
+    const IFeatureMatrix& featureMatrix) const {
     return config_.getFeatureSamplingConfigPtr()->createFeatureSamplingFactory(featureMatrix);
 }
 
@@ -353,7 +353,7 @@ void AbstractRuleLearner::createPostOptimizationPhaseFactories(PostOptimizationP
 }
 
 std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo(
-        const IRowWiseLabelMatrix& labelMatrix) const {
+    const IRowWiseLabelMatrix& labelMatrix) const {
     const IBinaryPredictorConfig* binaryPredictorConfig = config_.getBinaryPredictorConfigPtr().get();
     const IScorePredictorConfig* scorePredictorConfig = config_.getScorePredictorConfigPtr().get();
     const IProbabilityPredictorConfig* probabilityPredictorConfig = config_.getProbabilityPredictorConfigPtr().get();
@@ -368,25 +368,25 @@ std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo(
 }
 
 std::unique_ptr<IBinaryPredictorFactory> AbstractRuleLearner::createBinaryPredictorFactory(
-        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
     const IBinaryPredictorConfig* config = config_.getBinaryPredictorConfigPtr().get();
     return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
 }
 
 std::unique_ptr<ISparseBinaryPredictorFactory> AbstractRuleLearner::createSparseBinaryPredictorFactory(
-        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
     const IBinaryPredictorConfig* config = config_.getBinaryPredictorConfigPtr().get();
     return config ? config->createSparsePredictorFactory(featureMatrix, numLabels) : nullptr;
 }
 
 std::unique_ptr<IScorePredictorFactory> AbstractRuleLearner::createScorePredictorFactory(
-        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
     const IScorePredictorConfig* config = config_.getScorePredictorConfigPtr().get();
     return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
 }
 
 std::unique_ptr<IProbabilityPredictorFactory> AbstractRuleLearner::createProbabilityPredictorFactory(
-        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+    const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
     const IProbabilityPredictorConfig* config = config_.getProbabilityPredictorConfigPtr().get();
     return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
 }
@@ -433,7 +433,7 @@ bool AbstractRuleLearner::canPredictBinary(const IRowWiseFeatureMatrix& featureM
 }
 
 std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
-        const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
+    const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
     return this->createBinaryPredictor(featureMatrix, *trainingResult.getRuleModel(),
                                        *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
@@ -453,14 +453,14 @@ std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(con
 }
 
 std::unique_ptr<ISparseBinaryPredictor> AbstractRuleLearner::createSparseBinaryPredictor(
-        const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
+    const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
     return this->createSparseBinaryPredictor(featureMatrix, *trainingResult.getRuleModel(),
                                              *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
 
 std::unique_ptr<ISparseBinaryPredictor> AbstractRuleLearner::createSparseBinaryPredictor(
-        const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-        uint32 numLabels) const {
+    const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+    uint32 numLabels) const {
     std::unique_ptr<ISparseBinaryPredictorFactory> predictorFactoryPtr =
         this->createSparseBinaryPredictorFactory(featureMatrix, numLabels);
 
@@ -481,7 +481,7 @@ bool AbstractRuleLearner::canPredictScores(const IRowWiseFeatureMatrix& featureM
 }
 
 std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(
-        const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
+    const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
     return this->createScorePredictor(featureMatrix, *trainingResult.getRuleModel(),
                                       *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
@@ -510,14 +510,14 @@ bool AbstractRuleLearner::canPredictProbabilities(const IRowWiseFeatureMatrix& f
 }
 
 std::unique_ptr<IProbabilityPredictor> AbstractRuleLearner::createProbabilityPredictor(
-        const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
+    const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
     return this->createProbabilityPredictor(featureMatrix, *trainingResult.getRuleModel(),
                                             *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
 
 std::unique_ptr<IProbabilityPredictor> AbstractRuleLearner::createProbabilityPredictor(
-        const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-        uint32 numLabels) const {
+    const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+    uint32 numLabels) const {
     std::unique_ptr<IProbabilityPredictorFactory> predictorFactoryPtr =
         this->createProbabilityPredictorFactory(featureMatrix, numLabels);
 

@@ -5,8 +5,8 @@
 namespace boosting {
 
     AutoParallelRuleRefinementConfig::AutoParallelRuleRefinementConfig(
-            const std::unique_ptr<ILossConfig>& lossConfigPtr, const std::unique_ptr<IHeadConfig>& headConfigPtr,
-            const std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr)
+        const std::unique_ptr<ILossConfig>& lossConfigPtr, const std::unique_ptr<IHeadConfig>& headConfigPtr,
+        const std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr)
         : lossConfigPtr_(lossConfigPtr), headConfigPtr_(headConfigPtr),
           featureSamplingConfigPtr_(featureSamplingConfigPtr) {}
 

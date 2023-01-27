@@ -7,7 +7,7 @@ DenseBinnedVector<T>::ValueConstIterator::ValueConstIterator(DenseVector<uint32>
 
 template<typename T>
 typename DenseBinnedVector<T>::ValueConstIterator::reference DenseBinnedVector<T>::ValueConstIterator::operator[](
-        uint32 index) const {
+    uint32 index) const {
     uint32 binIndex = binIndexIterator_[index];
     return valueIterator_[binIndex];
 }
@@ -55,7 +55,7 @@ bool DenseBinnedVector<T>::ValueConstIterator::operator==(const ValueConstIterat
 
 template<typename T>
 typename DenseBinnedVector<T>::ValueConstIterator::difference_type DenseBinnedVector<T>::ValueConstIterator::operator-(
-        const ValueConstIterator& rhs) const {
+    const ValueConstIterator& rhs) const {
     return (difference_type) (binIndexIterator_ - rhs.binIndexIterator_);
 }
 

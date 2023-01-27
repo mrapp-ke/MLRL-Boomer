@@ -19,8 +19,8 @@ class PostOptimizationPhaseList final : public IPostOptimization {
          *                                          create instances of the optimization phases to be carried out
          */
         PostOptimizationPhaseList(
-                std::unique_ptr<IModelBuilder> modelBuilderPtr,
-                const std::vector<std::unique_ptr<IPostOptimizationPhaseFactory>>& postOptimizationPhaseFactories)
+            std::unique_ptr<IModelBuilder> modelBuilderPtr,
+            const std::vector<std::unique_ptr<IPostOptimizationPhaseFactory>>& postOptimizationPhaseFactories)
             : intermediateModelBuilderPtr_(std::make_unique<IntermediateModelBuilder>(std::move(modelBuilderPtr))) {
             postOptimizationPhases_.reserve(postOptimizationPhaseFactories.size());
 
@@ -80,12 +80,12 @@ class NoPostOptimization final : public IPostOptimization {
 };
 
 void PostOptimizationPhaseListFactory::addPostOptimizationPhaseFactory(
-        std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactoryPtr) {
+    std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactoryPtr) {
     postOptimizationPhaseFactories_.push_back(std::move(postOptimizationPhaseFactoryPtr));
 }
 
 std::unique_ptr<IPostOptimization> PostOptimizationPhaseListFactory::create(
-        const IModelBuilderFactory& modelBuilderFactory) const {
+    const IModelBuilderFactory& modelBuilderFactory) const {
     std::unique_ptr<IModelBuilder> modelBuilderPtr = modelBuilderFactory.create();
 
     if (postOptimizationPhaseFactories_.empty()) {

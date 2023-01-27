@@ -81,7 +81,7 @@ float32 ExampleWiseStratifiedBiPartitionSamplingConfig::getHoldoutSetSize() cons
 }
 
 IExampleWiseStratifiedBiPartitionSamplingConfig& ExampleWiseStratifiedBiPartitionSamplingConfig::setHoldoutSetSize(
-        float32 holdoutSetSize) {
+    float32 holdoutSetSize) {
     assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
     assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);
     holdoutSetSize_ = holdoutSetSize;

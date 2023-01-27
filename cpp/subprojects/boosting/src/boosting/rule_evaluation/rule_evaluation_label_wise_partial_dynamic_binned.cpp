@@ -88,8 +88,8 @@ namespace boosting {
     };
 
     LabelWiseDynamicPartialBinnedRuleEvaluationFactory::LabelWiseDynamicPartialBinnedRuleEvaluationFactory(
-            float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
-            std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
+        float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+        std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)) {}
 

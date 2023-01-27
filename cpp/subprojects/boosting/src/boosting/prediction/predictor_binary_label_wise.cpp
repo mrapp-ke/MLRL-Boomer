@@ -33,8 +33,8 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            float64 threshold, uint32 numThreads) {
+        const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+        float64 threshold, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
             std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
@@ -57,8 +57,8 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            float64 threshold, uint32 numThreads) {
+        const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, float64 threshold,
+        uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
@@ -179,8 +179,8 @@ namespace boosting {
     };
 
     std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            float64 threshold, uint32 numThreads) {
+        const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+        float64 threshold, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         BinaryLilMatrix lilMatrix(numExamples);
         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
@@ -203,8 +203,8 @@ namespace boosting {
     }
 
     std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            float64 threshold, uint32 numThreads) {
+        const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, float64 threshold,
+        uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         BinaryLilMatrix lilMatrix(numExamples);
@@ -325,19 +325,19 @@ namespace boosting {
     };
 
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
-            const std::unique_ptr<ILossConfig>& lossConfigPtr,
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        const std::unique_ptr<ILossConfig>& lossConfigPtr,
+        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         float64 threshold = lossConfigPtr_->getDefaultPrediction();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseBinaryPredictorFactory>(threshold, numThreads);
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createSparsePredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         float64 threshold = lossConfigPtr_->getDefaultPrediction();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseSparseBinaryPredictorFactory>(threshold, numThreads);

@@ -18,8 +18,8 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
+        const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+        const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
             std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
@@ -49,8 +49,8 @@ namespace boosting {
         }
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
+        const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+        const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
@@ -163,7 +163,7 @@ namespace boosting {
              *                                      different query examples in parallel. Must be at least 1
              */
             LabelWiseProbabilityPredictorFactory(
-                    std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
+                std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
                 : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {}
 
             /**
@@ -190,12 +190,12 @@ namespace boosting {
     };
 
     LabelWiseProbabilityPredictorConfig::LabelWiseProbabilityPredictorConfig(
-            const std::unique_ptr<ILossConfig>& lossConfigPtr,
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        const std::unique_ptr<ILossConfig>& lossConfigPtr,
+        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IProbabilityPredictorFactory> LabelWiseProbabilityPredictorConfig::createPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
             lossConfigPtr_->createProbabilityFunctionFactory();
 

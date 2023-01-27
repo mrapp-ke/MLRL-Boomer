@@ -71,18 +71,18 @@ namespace seco {
     };
 
     LabelWiseSingleLabelRuleEvaluationFactory::LabelWiseSingleLabelRuleEvaluationFactory(
-            std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr)
+        std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr)
         : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)) {}
 
     std::unique_ptr<IRuleEvaluation> LabelWiseSingleLabelRuleEvaluationFactory::create(
-            const CompleteIndexVector& indexVector) const {
+        const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<LabelWiseSingleLabelRuleEvaluation<CompleteIndexVector>>(indexVector,
                                                                                          std::move(heuristicPtr));
     }
 
     std::unique_ptr<IRuleEvaluation> LabelWiseSingleLabelRuleEvaluationFactory::create(
-            const PartialIndexVector& indexVector) const {
+        const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         return std::make_unique<LabelWiseSingleLabelRuleEvaluation<PartialIndexVector>>(indexVector,
                                                                                         std::move(heuristicPtr));

@@ -13,9 +13,9 @@ namespace boosting {
 
     template<typename LabelMatrix>
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
-            const ILabelWiseLossFactory& lossFactory, const IEvaluationMeasureFactory& evaluationMeasureFactory,
-            const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
-            const LabelMatrix& labelMatrix) {
+        const ILabelWiseLossFactory& lossFactory, const IEvaluationMeasureFactory& evaluationMeasureFactory,
+        const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
+        const LabelMatrix& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<ILabelWiseLoss> lossPtr = lossFactory.createLabelWiseLoss();
@@ -42,11 +42,11 @@ namespace boosting {
     }
 
     DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(
-            std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr,
-            std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
+        std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr,
+        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+        std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+        std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+        std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
         : lossFactoryPtr_(std::move(lossFactoryPtr)),
           evaluationMeasureFactoryPtr_(std::move(evaluationMeasureFactoryPtr)),
           defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
@@ -54,7 +54,7 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
-            const CContiguousConstView<const uint8>& labelMatrix) const {
+        const CContiguousConstView<const uint8>& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr =
             createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *defaultRuleEvaluationFactoryPtr_,
                              numThreads_, labelMatrix);
@@ -63,7 +63,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
-            const BinaryCsrConstView& labelMatrix) const {
+        const BinaryCsrConstView& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr =
             createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *defaultRuleEvaluationFactoryPtr_,
                              numThreads_, labelMatrix);

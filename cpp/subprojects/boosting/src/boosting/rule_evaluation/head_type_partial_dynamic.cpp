@@ -8,8 +8,8 @@
 namespace boosting {
 
     DynamicPartialHeadConfig::DynamicPartialHeadConfig(
-            const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
+        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : threshold_(0.02f), exponent_(2.0f), labelBinningConfigPtr_(labelBinningConfigPtr),
           multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
@@ -35,8 +35,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-            const ILabelWiseLossConfig& lossConfig) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const ILabelWiseLossConfig& lossConfig) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
         std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.createLabelWiseLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
@@ -54,8 +54,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-            const ISparseLabelWiseLossConfig& lossConfig) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const ISparseLabelWiseLossConfig& lossConfig) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
         std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr = lossConfig.createSparseLabelWiseLossFactory();
         std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
@@ -70,8 +70,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-            const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
         std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.createExampleWiseLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =

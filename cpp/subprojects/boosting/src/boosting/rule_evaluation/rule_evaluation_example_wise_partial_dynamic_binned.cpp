@@ -89,15 +89,15 @@ namespace boosting {
                 float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                 std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas, const Lapack& lapack)
                 : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector>(
-                      *indexVectorPtr, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
-                      std::move(binningPtr), blas, lapack),
+                    *indexVectorPtr, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
+                    std::move(binningPtr), blas, lapack),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)), threshold_(1.0 - threshold),
                   exponent_(exponent) {}
     };
 
     ExampleWiseDynamicPartialBinnedRuleEvaluationFactory::ExampleWiseDynamicPartialBinnedRuleEvaluationFactory(
-            float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
-            std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas, const Lapack& lapack)
+        float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+        std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas, const Lapack& lapack)
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)),
           blas_(blas), lapack_(lapack) {}

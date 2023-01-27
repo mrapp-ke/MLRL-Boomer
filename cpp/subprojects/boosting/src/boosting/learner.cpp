@@ -97,7 +97,7 @@ namespace boosting {
           lapack_(Lapack(dsysvFunction)) {}
 
     std::unique_ptr<IStatisticsProviderFactory> AbstractBoostingRuleLearner::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
         return config_.getStatisticsConfigPtr()->createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_,
                                                                                  lapack_);
     }

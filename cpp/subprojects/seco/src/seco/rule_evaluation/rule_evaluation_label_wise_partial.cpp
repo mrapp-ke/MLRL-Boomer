@@ -183,13 +183,13 @@ namespace seco {
     };
 
     LabelWisePartialRuleEvaluationFactory::LabelWisePartialRuleEvaluationFactory(
-            std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr,
-            std::unique_ptr<ILiftFunctionFactory> liftFunctionFactoryPtr)
+        std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr,
+        std::unique_ptr<ILiftFunctionFactory> liftFunctionFactoryPtr)
         : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)),
           liftFunctionFactoryPtr_(std::move(liftFunctionFactoryPtr)) {}
 
     std::unique_ptr<IRuleEvaluation> LabelWisePartialRuleEvaluationFactory::create(
-            const CompleteIndexVector& indexVector) const {
+        const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
         return std::make_unique<LabelWisePartialRuleEvaluation<CompleteIndexVector>>(
@@ -197,7 +197,7 @@ namespace seco {
     }
 
     std::unique_ptr<IRuleEvaluation> LabelWisePartialRuleEvaluationFactory::create(
-            const PartialIndexVector& indexVector) const {
+        const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
         return std::make_unique<LabelWiseCompleteRuleEvaluation>(indexVector, std::move(heuristicPtr),

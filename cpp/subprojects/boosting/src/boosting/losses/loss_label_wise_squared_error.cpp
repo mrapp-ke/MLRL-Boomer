@@ -33,8 +33,8 @@ namespace boosting {
         : headConfigPtr_(headConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> LabelWiseSquaredErrorLossConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-            const Lapack& lapack, bool preferSparseStatistics) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+        const Lapack& lapack, bool preferSparseStatistics) const {
         return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
     }
 

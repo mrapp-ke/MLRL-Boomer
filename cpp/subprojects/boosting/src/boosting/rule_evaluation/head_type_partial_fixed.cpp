@@ -16,8 +16,8 @@ namespace boosting {
     }
 
     FixedPartialHeadConfig::FixedPartialHeadConfig(
-            const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
+        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : labelRatio_(0.0f), minLabels_(2), maxLabels_(0), labelBinningConfigPtr_(labelBinningConfigPtr),
           multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
@@ -55,8 +55,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-            const ILabelWiseLossConfig& lossConfig) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const ILabelWiseLossConfig& lossConfig) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
         float32 labelRatio = calculateLabelRatio(labelRatio_, labelMatrix);
         std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.createLabelWiseLossFactory();
@@ -77,8 +77,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-            const ISparseLabelWiseLossConfig& lossConfig) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const ISparseLabelWiseLossConfig& lossConfig) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
         float32 labelRatio = calculateLabelRatio(labelRatio_, labelMatrix);
         std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr = lossConfig.createSparseLabelWiseLossFactory();
@@ -96,8 +96,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-            const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
         float32 labelRatio = calculateLabelRatio(labelRatio_, labelMatrix);
         std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.createExampleWiseLossFactory();

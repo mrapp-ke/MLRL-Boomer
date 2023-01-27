@@ -13,7 +13,7 @@ namespace seco {
           liftFunctionConfigPtr_(liftFunctionConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> PartialHeadConfig::createStatisticsProviderFactory(
-            const IRowWiseLabelMatrix& labelMatrix) const {
+        const IRowWiseLabelMatrix& labelMatrix) const {
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
             std::make_unique<LabelWiseMajorityRuleEvaluationFactory>();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =

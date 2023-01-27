@@ -6,8 +6,8 @@
 namespace boosting {
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            uint32 numThreads) {
+        const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+        uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
             std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
@@ -29,8 +29,7 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            uint32 numThreads) {
+        const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
@@ -145,11 +144,11 @@ namespace boosting {
     };
 
     LabelWiseScorePredictorConfig::LabelWiseScorePredictorConfig(
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IScorePredictorFactory> LabelWiseScorePredictorConfig::createPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseScorePredictorFactory>(numThreads);
     }
