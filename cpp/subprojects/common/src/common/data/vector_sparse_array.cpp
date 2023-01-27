@@ -14,7 +14,8 @@ typename SparseArrayVector<T>::IndexConstIterator::reference SparseArrayVector<T
 }
 
 template<typename T>
-typename SparseArrayVector<T>::IndexConstIterator::reference SparseArrayVector<T>::IndexConstIterator::operator*() const {
+typename SparseArrayVector<T>::IndexConstIterator::reference SparseArrayVector<T>::IndexConstIterator::operator*()
+    const {
     return (*iterator_).index;
 }
 
@@ -125,7 +126,8 @@ typename SparseArrayVector<T>::ValueConstIterator::reference SparseArrayVector<T
 }
 
 template<typename T>
-typename SparseArrayVector<T>::ValueConstIterator::reference SparseArrayVector<T>::ValueConstIterator::operator*() const {
+typename SparseArrayVector<T>::ValueConstIterator::reference SparseArrayVector<T>::ValueConstIterator::operator*()
+    const {
     return (*iterator_).value;
 }
 

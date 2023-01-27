@@ -13,7 +13,8 @@ typename DenseBinnedVector<T>::ValueConstIterator::reference DenseBinnedVector<T
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::ValueConstIterator::reference DenseBinnedVector<T>::ValueConstIterator::operator*() const {
+typename DenseBinnedVector<T>::ValueConstIterator::reference DenseBinnedVector<T>::ValueConstIterator::operator*()
+    const {
     uint32 binIndex = *binIndexIterator_;
     return valueIterator_[binIndex];
 }

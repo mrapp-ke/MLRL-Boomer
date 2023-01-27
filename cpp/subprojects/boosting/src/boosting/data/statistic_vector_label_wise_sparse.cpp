@@ -19,7 +19,8 @@ namespace boosting {
         return Tuple<float64>(gradient, hessian);
     }
 
-    SparseLabelWiseStatisticVector::ConstIterator::value_type SparseLabelWiseStatisticVector::ConstIterator::operator*() const {
+    SparseLabelWiseStatisticVector::ConstIterator::value_type SparseLabelWiseStatisticVector::ConstIterator::operator*()
+        const {
         const Triple<float64>& triple = *iterator_;
         float64 gradient = triple.first;
         float64 hessian = triple.second + (sumOfWeights_ - triple.third);
@@ -54,8 +55,8 @@ namespace boosting {
         return iterator_ == rhs.iterator_;
     }
 
-    SparseLabelWiseStatisticVector::ConstIterator::difference_type SparseLabelWiseStatisticVector::ConstIterator::operator-(
-            const ConstIterator& rhs) const {
+    SparseLabelWiseStatisticVector::ConstIterator::difference_type
+        SparseLabelWiseStatisticVector::ConstIterator::operator-(const ConstIterator& rhs) const {
         return iterator_ - rhs.iterator_;
     }
 

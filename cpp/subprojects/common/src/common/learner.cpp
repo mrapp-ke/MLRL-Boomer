@@ -150,7 +150,8 @@ std::unique_ptr<IGlobalPruningConfig>& AbstractRuleLearner::Config::getGlobalPru
     return globalPruningConfigPtr_;
 }
 
-std::unique_ptr<SequentialPostOptimizationConfig>& AbstractRuleLearner::Config::getSequentialPostOptimizationConfigPtr() {
+std::unique_ptr<SequentialPostOptimizationConfig>&
+    AbstractRuleLearner::Config::getSequentialPostOptimizationConfigPtr() {
     return sequentialPostOptimizationConfigPtr_;
 }
 
@@ -437,9 +438,10 @@ std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
                                        *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
 
-std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
-        const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-        uint32 numLabels) const {
+std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                             const IRuleModel& ruleModel,
+                                                                             const ILabelSpaceInfo& labelSpaceInfo,
+                                                                             uint32 numLabels) const {
     std::unique_ptr<IBinaryPredictorFactory> predictorFactoryPtr =
         this->createBinaryPredictorFactory(featureMatrix, numLabels);
 

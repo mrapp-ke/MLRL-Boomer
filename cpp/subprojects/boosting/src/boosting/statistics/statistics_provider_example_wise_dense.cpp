@@ -115,10 +115,12 @@ namespace boosting {
     };
 
     template<typename LabelMatrix>
-    static inline std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>> createStatistics(
-            const IExampleWiseLossFactory& lossFactory, const IEvaluationMeasureFactory& evaluationMeasureFactory,
-            const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
-            const LabelMatrix& labelMatrix) {
+    static inline std::unique_ptr<
+        IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
+        createStatistics(const IExampleWiseLossFactory& lossFactory,
+                         const IEvaluationMeasureFactory& evaluationMeasureFactory,
+                         const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
+                         const LabelMatrix& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<IExampleWiseLoss> lossPtr = lossFactory.createExampleWiseLoss();

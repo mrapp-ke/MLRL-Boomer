@@ -128,14 +128,16 @@ namespace boosting {
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), blas_(blas), lapack_(lapack) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseDynamicPartialRuleEvaluationFactory::create(
-            const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
+        ExampleWiseDynamicPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+                                                               const CompleteIndexVector& indexVector) const {
         return std::make_unique<DenseExampleWiseDynamicPartialRuleEvaluation<CompleteIndexVector>>(
             indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseDynamicPartialRuleEvaluationFactory::create(
-            const DenseExampleWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
+        ExampleWiseDynamicPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+                                                               const PartialIndexVector& indexVector) const {
         return std::make_unique<DenseExampleWiseCompleteRuleEvaluation<PartialIndexVector>>(
             indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);;
     }
