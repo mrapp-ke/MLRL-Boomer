@@ -2,8 +2,7 @@
 
 #include "common/thresholds/thresholds_subset.hpp"
 
-PartialIndexVector::PartialIndexVector(uint32 numElements)
-    : PartialIndexVector(numElements, false) {}
+PartialIndexVector::PartialIndexVector(uint32 numElements) : PartialIndexVector(numElements, false) {}
 
 PartialIndexVector::PartialIndexVector(uint32 numElements, bool init)
     : vector_(DenseVector<uint32>(numElements, init)) {}

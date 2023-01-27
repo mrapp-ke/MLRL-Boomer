@@ -121,8 +121,7 @@ namespace boosting {
              * @param numThreads The number of CPU threads to be used to make predictions for different query examples
              *                   in parallel. Must be at least 1
              */
-            LabelWiseScorePredictorFactory(uint32 numThreads)
-                : numThreads_(numThreads) {}
+            LabelWiseScorePredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`

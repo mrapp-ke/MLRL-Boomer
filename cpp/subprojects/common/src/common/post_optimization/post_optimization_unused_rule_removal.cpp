@@ -14,8 +14,7 @@ class UnusedRuleRemoval final : public IPostOptimizationPhase {
          * @param modelBuilder A reference to an object of type `IntermediateModelBuilder` that provides access to the
          *                     rules in a model
          */
-        UnusedRuleRemoval(IntermediateModelBuilder& modelBuilder)
-            : modelBuilder_(modelBuilder) {}
+        UnusedRuleRemoval(IntermediateModelBuilder& modelBuilder) : modelBuilder_(modelBuilder) {}
 
         void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
                            ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,

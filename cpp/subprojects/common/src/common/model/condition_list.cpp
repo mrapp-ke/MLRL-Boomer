@@ -1,7 +1,6 @@
 #include "common/model/condition_list.hpp"
 
-ConditionList::ConditionList()
-    : numConditionsPerComparator_({0, 0, 0, 0}) {}
+ConditionList::ConditionList() : numConditionsPerComparator_({0, 0, 0, 0}) {}
 
 ConditionList::ConditionList(const ConditionList& conditionList)
     : vector_(conditionList.vector_),numConditionsPerComparator_({conditionList.numConditionsPerComparator_[0],

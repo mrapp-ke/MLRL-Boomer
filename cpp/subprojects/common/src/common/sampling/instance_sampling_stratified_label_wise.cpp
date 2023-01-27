@@ -65,8 +65,7 @@ class LabelWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplin
          * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
          *                   60 % of the available examples). Must be in (0, 1]
          */
-        LabelWiseStratifiedInstanceSamplingFactory(float32 sampleSize)
-            : sampleSize_(sampleSize) {}
+        LabelWiseStratifiedInstanceSamplingFactory(float32 sampleSize) : sampleSize_(sampleSize) {}
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
                                                   const SinglePartition& partition,
@@ -95,8 +94,7 @@ class LabelWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplin
         }
 };
 
-LabelWiseStratifiedInstanceSamplingConfig::LabelWiseStratifiedInstanceSamplingConfig()
-    : sampleSize_(0.66f) {}
+LabelWiseStratifiedInstanceSamplingConfig::LabelWiseStratifiedInstanceSamplingConfig() : sampleSize_(0.66f) {}
 
 float32 LabelWiseStratifiedInstanceSamplingConfig::getSampleSize() const {
     return sampleSize_;

@@ -117,10 +117,7 @@ namespace seco {
             }
     };
 
-    PeakLiftFunctionConfig::PeakLiftFunctionConfig()
-        : peakLabel_(2), maxLift_(1.08), curvature_(1.0) {
-
-    }
+    PeakLiftFunctionConfig::PeakLiftFunctionConfig() : peakLabel_(2), maxLift_(1.08), curvature_(1.0) {}
 
     uint32 PeakLiftFunctionConfig::getPeakLabel() const {
         return peakLabel_;

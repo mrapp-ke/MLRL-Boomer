@@ -5,9 +5,7 @@
 #include "common/stopping/stopping_criterion.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
-
-SinglePartition::SinglePartition(uint32 numElements)
-    : numElements_(numElements) {}
+SinglePartition::SinglePartition(uint32 numElements) : numElements_(numElements) {}
 
 SinglePartition::const_iterator SinglePartition::cbegin() const {
     return IndexIterator();

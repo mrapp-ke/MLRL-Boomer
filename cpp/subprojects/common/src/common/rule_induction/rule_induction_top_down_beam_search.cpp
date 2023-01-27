@@ -100,8 +100,7 @@ class Beam final {
         /**
          * @param beamWidth The maximum number of rules to keep track of
          */
-        Beam(uint32 beamWidth)
-            : numEntries_(beamWidth), entries_(new BeamEntry[numEntries_]) {
+        Beam(uint32 beamWidth) : numEntries_(beamWidth), entries_(new BeamEntry[numEntries_]) {
             order_.reserve(numEntries_);
         }
 

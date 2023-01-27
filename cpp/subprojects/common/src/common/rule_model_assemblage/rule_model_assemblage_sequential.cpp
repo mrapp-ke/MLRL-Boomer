@@ -191,10 +191,7 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
         /**
          * @param useDefaultRule True, if a default rule should be used, false otherwise
          */
-        SequentialRuleModelAssemblageFactory(bool useDefaultRule)
-            : useDefaultRule_(useDefaultRule) {
-
-        }
+        SequentialRuleModelAssemblageFactory(bool useDefaultRule) : useDefaultRule_(useDefaultRule) {}
 
         std::unique_ptr<IRuleModelAssemblage> create(
                 std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,

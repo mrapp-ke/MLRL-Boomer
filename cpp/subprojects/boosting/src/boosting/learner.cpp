@@ -13,8 +13,7 @@
 
 namespace boosting {
 
-    AbstractBoostingRuleLearner::Config::Config()
-        : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION) {
+    AbstractBoostingRuleLearner::Config::Config() : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION) {
         this->useCompleteHeads();
         this->useDenseStatistics();
         this->useNoL1Regularization();

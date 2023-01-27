@@ -61,8 +61,7 @@ class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
         /**
          * @param timeLimit The time limit in seconds. Must be at least 1
          */
-        TimeStoppingCriterionFactory(uint32 timeLimit)
-            : timeLimit_(timeLimit) {}
+        TimeStoppingCriterionFactory(uint32 timeLimit) : timeLimit_(timeLimit) {}
 
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
             return std::make_unique<TimeStoppingCriterion>(timeLimit_);
@@ -73,8 +72,7 @@ class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
         }
 };
 
-TimeStoppingCriterionConfig::TimeStoppingCriterionConfig()
-    : timeLimit_(3600) {}
+TimeStoppingCriterionConfig::TimeStoppingCriterionConfig() : timeLimit_(3600) {}
 
 uint32 TimeStoppingCriterionConfig::getTimeLimit() const {
     return timeLimit_;

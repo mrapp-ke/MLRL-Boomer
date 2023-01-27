@@ -242,8 +242,7 @@ void AbstractRuleLearner::Config::useNoSequentialPostOptimization() {
     sequentialPostOptimizationConfigPtr_ = nullptr;
 }
 
-AbstractRuleLearner::AbstractRuleLearner(IRuleLearner::IConfig& config)
-    : config_(config) {}
+AbstractRuleLearner::AbstractRuleLearner(IRuleLearner::IConfig& config) : config_(config) {}
 
 std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory(
         const IRowWiseLabelMatrix& labelMatrix) const {

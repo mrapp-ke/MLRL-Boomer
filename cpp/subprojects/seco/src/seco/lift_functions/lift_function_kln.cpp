@@ -28,8 +28,7 @@ namespace seco {
              *                  values for "k". Must be at least 0
              * @param maxLift   The maximum possible lift
              */
-            KlnLiftFunction(float64 k, float64 maxLift)
-                : k_(k), maxLift_(maxLift) {}
+            KlnLiftFunction(float64 k, float64 maxLift) : k_(k), maxLift_(maxLift) {}
 
             float64 calculateLift(uint32 numLabels) const override {
                 return calculateLiftInternally(numLabels, k_);
@@ -66,8 +65,7 @@ namespace seco {
             }
     };
 
-    KlnLiftFunctionConfig::KlnLiftFunctionConfig()
-        : k_(0.2) {}
+    KlnLiftFunctionConfig::KlnLiftFunctionConfig() : k_(0.2) {}
 
     float64 KlnLiftFunctionConfig::getK() const {
         return k_;

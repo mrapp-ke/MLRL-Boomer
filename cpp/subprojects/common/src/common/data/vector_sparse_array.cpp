@@ -225,8 +225,7 @@ typename SparseArrayVector<T>::ValueIterator::difference_type SparseArrayVector<
 }
 
 template<typename T>
-SparseArrayVector<T>::SparseArrayVector(uint32 numElements)
-    : DenseVector<IndexedValue<T>>(numElements) {}
+SparseArrayVector<T>::SparseArrayVector(uint32 numElements) : DenseVector<IndexedValue<T>>(numElements) {}
 
 template<typename T>
 typename SparseArrayVector<T>::index_iterator SparseArrayVector<T>::indices_begin() {

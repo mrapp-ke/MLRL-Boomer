@@ -16,8 +16,7 @@ class SizeStoppingCriterion final : public IStoppingCriterion {
         /**
          * @param maxRules The maximum number of rules. Must be at least 1
          */
-        SizeStoppingCriterion(uint32 maxRules)
-            : maxRules_(maxRules) {}
+        SizeStoppingCriterion(uint32 maxRules) : maxRules_(maxRules) {}
 
         Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
@@ -44,8 +43,7 @@ class SizeStoppingCriterionFactory final : public IStoppingCriterionFactory {
         /**
          * @param maxRules The maximum number of rules. Must be at least 1
          */
-        SizeStoppingCriterionFactory(uint32 maxRules)
-            : maxRules_(maxRules) {}
+        SizeStoppingCriterionFactory(uint32 maxRules) : maxRules_(maxRules) {}
 
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
             return std::make_unique<SizeStoppingCriterion>(maxRules_);
@@ -56,8 +54,7 @@ class SizeStoppingCriterionFactory final : public IStoppingCriterionFactory {
         }
 };
 
-SizeStoppingCriterionConfig::SizeStoppingCriterionConfig()
-    : maxRules_(10) {}
+SizeStoppingCriterionConfig::SizeStoppingCriterionConfig() : maxRules_(10) {}
 
 uint32 SizeStoppingCriterionConfig::getMaxRules() const {
     return maxRules_;
