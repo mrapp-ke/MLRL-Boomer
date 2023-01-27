@@ -25,7 +25,7 @@ class IEvaluationMeasure {
          * @param exampleIndex  The index of the example for which the predictions should be evaluated
          * @param labelMatrix   A reference to an object of type `CContiguousConstView` that provides random access to
          *                      the labels of the training examples
-         * @param scoreMatrix   A reference to an object of type `CContiguousConstView` that stores the currently 
+         * @param scoreMatrix   A reference to an object of type `CContiguousConstView` that stores the currently
          *                      predicted scores
          * @return              The numerical score that has been calculated
          */
@@ -40,7 +40,7 @@ class IEvaluationMeasure {
          * @param exampleIndex  The index of the example for which the predictions should be evaluated
          * @param labelMatrix   A reference to an object of type `BinaryCsrConstView` that provides row-wise access to
          *                      the labels of the training examples
-         * @param scoreMatrix   A reference to an object of type `CContiguousConstView` that stores the currently 
+         * @param scoreMatrix   A reference to an object of type `CContiguousConstView` that stores the currently
          *                      predicted scores
          * @return              The numerical score that has been calculated
          */

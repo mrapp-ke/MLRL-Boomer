@@ -86,7 +86,7 @@ namespace boosting {
 
         // For each label `c`, calculate `x = -expectedScore_c * predictedScore_c` and find the largest and second
         // largest values (that must be greater than 0, because `exp(1) = 0`) among all of them...
-        float64 max = 0;  // The largest value
+        float64 max = 0;   // The largest value
         float64 max2 = 0;  // The second largest value
 
         for (uint32 c = 0; c < numLabels; c++) {
