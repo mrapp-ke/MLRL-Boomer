@@ -5,9 +5,7 @@
 #include "common/thresholds/thresholds_subset.hpp"
 
 CoverageMask::CoverageMask(uint32 numElements)
-    : array_(new uint32[numElements]{0}), numElements_(numElements), indicatorValue_(0) {
-
-}
+    : array_(new uint32[numElements]{0}), numElements_(numElements), indicatorValue_(0) {}
 
 CoverageMask::CoverageMask(const CoverageMask& coverageMask)
     : array_(new uint32[coverageMask.numElements_]), numElements_(coverageMask.numElements_),

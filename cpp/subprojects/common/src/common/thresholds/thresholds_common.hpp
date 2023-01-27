@@ -165,8 +165,7 @@ class AbstractThresholds : public IThresholds {
          */
         AbstractThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
                            IStatisticsProvider& statisticsProvider)
-            : featureMatrix_(featureMatrix), featureInfo_(featureInfo), statisticsProvider_(statisticsProvider) {
-        }
+            : featureMatrix_(featureMatrix), featureInfo_(featureInfo), statisticsProvider_(statisticsProvider) {}
 
         virtual ~AbstractThresholds() override {};
 

@@ -5,9 +5,7 @@
 template<typename T>
 SparseArrayVector<T>::IndexConstIterator::IndexConstIterator(
         typename VectorConstView<IndexedValue<T>>::const_iterator iterator)
-    : iterator_(iterator) {
-
-}
+    : iterator_(iterator) {}
 
 template<typename T>
 typename SparseArrayVector<T>::IndexConstIterator::reference SparseArrayVector<T>::IndexConstIterator::operator[](
@@ -62,9 +60,7 @@ typename SparseArrayVector<T>::IndexConstIterator::difference_type SparseArrayVe
 
 template<typename T>
 SparseArrayVector<T>::IndexIterator::IndexIterator(typename VectorView<IndexedValue<T>>::iterator iterator)
-    : iterator_(iterator) {
-
-}
+    : iterator_(iterator) {}
 
 template<typename T>
 typename SparseArrayVector<T>::IndexIterator::reference SparseArrayVector<T>::IndexIterator::operator[](
@@ -120,9 +116,7 @@ typename SparseArrayVector<T>::IndexIterator::difference_type SparseArrayVector<
 template<typename T>
 SparseArrayVector<T>::ValueConstIterator::ValueConstIterator(
         typename VectorConstView<IndexedValue<T>>::const_iterator iterator)
-    : iterator_(iterator) {
-
-}
+    : iterator_(iterator) {}
 
 template<typename T>
 typename SparseArrayVector<T>::ValueConstIterator::reference SparseArrayVector<T>::ValueConstIterator::operator[](
@@ -177,9 +171,7 @@ typename SparseArrayVector<T>::ValueConstIterator::difference_type SparseArrayVe
 
 template<typename T>
 SparseArrayVector<T>::ValueIterator::ValueIterator(typename VectorView<IndexedValue<T>>::iterator iterator)
-    : iterator_(iterator) {
-
-}
+    : iterator_(iterator) {}
 
 template<typename T>
 typename SparseArrayVector<T>::ValueIterator::reference SparseArrayVector<T>::ValueIterator::operator[](
@@ -234,9 +226,7 @@ typename SparseArrayVector<T>::ValueIterator::difference_type SparseArrayVector<
 
 template<typename T>
 SparseArrayVector<T>::SparseArrayVector(uint32 numElements)
-    : DenseVector<IndexedValue<T>>(numElements) {
-
-}
+    : DenseVector<IndexedValue<T>>(numElements) {}
 
 template<typename T>
 typename SparseArrayVector<T>::index_iterator SparseArrayVector<T>::indices_begin() {

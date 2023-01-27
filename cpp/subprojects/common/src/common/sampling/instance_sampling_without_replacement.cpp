@@ -48,9 +48,7 @@ class InstanceSamplingWithoutReplacement final : public IInstanceSampling {
          */
         InstanceSamplingWithoutReplacement(Partition& partition, float32 sampleSize)
             : partition_(partition), sampleSize_(sampleSize),
-              weightVector_(BitWeightVector(partition.getNumElements())) {
-
-        }
+              weightVector_(BitWeightVector(partition.getNumElements())) {}
 
         const IWeightVector& sample(RNG& rng) override {
             sampleInternally(partition_, sampleSize_, weightVector_, rng);
@@ -74,9 +72,7 @@ class InstanceSamplingWithoutReplacementFactory final : public IInstanceSampling
          *                   60 % of the available examples). Must be in (0, 1)
          */
         InstanceSamplingWithoutReplacementFactory(float32 sampleSize)
-            : sampleSize_(sampleSize) {
-
-        }
+            : sampleSize_(sampleSize) {}
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
                                                   const SinglePartition& partition,
@@ -101,9 +97,7 @@ class InstanceSamplingWithoutReplacementFactory final : public IInstanceSampling
 };
 
 InstanceSamplingWithoutReplacementConfig::InstanceSamplingWithoutReplacementConfig()
-    : sampleSize_(0.66f) {
-
-}
+    : sampleSize_(0.66f) {}
 
 float32 InstanceSamplingWithoutReplacementConfig::getSampleSize() const {
     return sampleSize_;

@@ -57,9 +57,7 @@ namespace seco {
             PeakLiftFunction(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature,
                              const float64* maxLiftsAfterPeak)
                 : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), exponent_(1.0 / curvature),
-                  maxLiftsAfterPeak_(maxLiftsAfterPeak) {
-
-            }
+                  maxLiftsAfterPeak_(maxLiftsAfterPeak) {}
 
             float64 calculateLift(uint32 numLabels) const override {
                 return calculateLiftInternally(numLabels, numLabels_, peakLabel_, maxLift_, exponent_);

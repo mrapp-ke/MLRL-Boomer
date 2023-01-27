@@ -21,9 +21,7 @@ namespace seco {
              * @param threshold The threshold. Must be at least 0
              */
             CoverageStoppingCriterion(float64 threshold)
-                : threshold_(threshold) {
-
-            }
+                : threshold_(threshold) {}
 
             Result test(const IStatistics& statistics, uint32 numRules) override {
                 Result result;
@@ -53,9 +51,7 @@ namespace seco {
              * @param threshold The threshold. Must be at least 0
              */
             CoverageStoppingCriterionFactory(float64 threshold)
-                : threshold_(threshold) {
-
-            }
+                : threshold_(threshold) {}
 
             std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
                 return std::make_unique<CoverageStoppingCriterion>(threshold_);
@@ -67,9 +63,7 @@ namespace seco {
     };
 
     CoverageStoppingCriterionConfig::CoverageStoppingCriterionConfig()
-        : threshold_(0) {
-
-    }
+        : threshold_(0) {}
 
     float64 CoverageStoppingCriterionConfig::getThreshold() const {
         return threshold_;

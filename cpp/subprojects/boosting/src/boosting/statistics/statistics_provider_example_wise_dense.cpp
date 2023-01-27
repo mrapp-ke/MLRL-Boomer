@@ -33,9 +33,7 @@ namespace boosting {
                 : DenseExampleWiseStatisticView(
                       numRows, numGradients, triangularNumber(numGradients),
                       (float64*) malloc(numRows * numGradients * sizeof(float64)),
-                      (float64*) malloc(numRows * triangularNumber(numGradients) * sizeof(float64))) {
-
-            }
+                      (float64*) malloc(numRows * triangularNumber(numGradients) * sizeof(float64))) {}
     };
 
     /**
@@ -79,9 +77,7 @@ namespace boosting {
                                                 NumericDenseMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
                                                 IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>(
                       std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
-                      std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {
-
-            }
+                      std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `IExampleWiseStatistics::toLabelWiseStatistics`
@@ -160,9 +156,7 @@ namespace boosting {
           evaluationMeasureFactoryPtr_(std::move(evaluationMeasureFactoryPtr)),
           defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
-          pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {
-
-    }
+          pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
     std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(
             const CContiguousConstView<const uint8>& labelMatrix) const {
@@ -192,9 +186,7 @@ namespace boosting {
           evaluationMeasureFactoryPtr_(std::move(evaluationMeasureFactoryPtr)),
           defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
-          pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {
-
-    }
+          pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleExampleWiseStatisticsProviderFactory::create(
             const CContiguousConstView<const uint8>& labelMatrix) const {

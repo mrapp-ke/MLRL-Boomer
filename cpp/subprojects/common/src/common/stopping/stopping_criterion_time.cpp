@@ -27,9 +27,7 @@ class TimeStoppingCriterion final : public IStoppingCriterion {
          */
         TimeStoppingCriterion(uint32 timeLimit)
             : timeLimit_(std::chrono::duration_cast<timer_unit>(std::chrono::seconds(timeLimit))),
-              startTime_(timer::now()), timerStarted_(false) {
-
-        }
+              startTime_(timer::now()), timerStarted_(false) {}
 
         Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
@@ -64,9 +62,7 @@ class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
          * @param timeLimit The time limit in seconds. Must be at least 1
          */
         TimeStoppingCriterionFactory(uint32 timeLimit)
-            : timeLimit_(timeLimit) {
-
-        }
+            : timeLimit_(timeLimit) {}
 
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
             return std::make_unique<TimeStoppingCriterion>(timeLimit_);
@@ -78,9 +74,7 @@ class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
 };
 
 TimeStoppingCriterionConfig::TimeStoppingCriterionConfig()
-    : timeLimit_(3600) {
-
-}
+    : timeLimit_(3600) {}
 
 uint32 TimeStoppingCriterionConfig::getTimeLimit() const {
     return timeLimit_;

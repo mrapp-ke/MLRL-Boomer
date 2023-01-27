@@ -4,14 +4,10 @@
 #include "common/thresholds/thresholds_subset.hpp"
 
 BitWeightVector::BitWeightVector(uint32 numElements)
-    : BitWeightVector(numElements, false) {
-
-}
+    : BitWeightVector(numElements, false) {}
 
 BitWeightVector::BitWeightVector(uint32 numElements, bool init)
-    : vector_(BitVector(numElements, init)), numNonZeroWeights_(0) {
-
-}
+    : vector_(BitVector(numElements, init)), numNonZeroWeights_(0) {}
 
 uint32 BitWeightVector::getNumElements() const {
     return vector_.getNumElements();

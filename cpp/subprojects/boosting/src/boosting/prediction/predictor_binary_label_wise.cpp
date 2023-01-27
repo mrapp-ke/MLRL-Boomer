@@ -122,9 +122,7 @@ namespace boosting {
             LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                      float64 threshold, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), threshold_(threshold),
-                  numThreads_(numThreads) {
-
-            }
+                  numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -157,9 +155,7 @@ namespace boosting {
              *                      examples in parallel. Must be at least 1
              */
             LabelWiseBinaryPredictorFactory(float64 threshold, uint32 numThreads)
-                : threshold_(threshold), numThreads_(numThreads) {
-
-            }
+                : threshold_(threshold), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -272,9 +268,7 @@ namespace boosting {
             LabelWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                            float64 threshold, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), threshold_(threshold),
-                  numThreads_(numThreads) {
-
-            }
+                  numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -307,9 +301,7 @@ namespace boosting {
              *                      examples in parallel. Must be at least 1
              */
             LabelWiseSparseBinaryPredictorFactory(float64 threshold, uint32 numThreads)
-                : threshold_(threshold), numThreads_(numThreads) {
-
-            }
+                : threshold_(threshold), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -335,9 +327,7 @@ namespace boosting {
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
             const std::unique_ptr<ILossConfig>& lossConfigPtr,
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-    }
+        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {

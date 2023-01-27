@@ -21,9 +21,7 @@ class FortranContiguousFeatureMatrix final : public FortranContiguousConstView<c
          * @param array     A pointer to a Fortran-contiguous array of type `float32` that stores the feature values
          */
         FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array)
-            : FortranContiguousConstView<const float32>(numRows, numCols, array) {
-
-        }
+            : FortranContiguousConstView<const float32>(numRows, numCols, array) {}
 
         bool isSparse() const override {
             return false;

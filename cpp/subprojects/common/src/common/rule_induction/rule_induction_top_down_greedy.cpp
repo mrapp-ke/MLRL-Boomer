@@ -43,9 +43,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
                                    uint32 maxHeadRefinements, bool recalculatePredictions, uint32 numThreads)
             : AbstractRuleInduction(recalculatePredictions),
               ruleCompareFunction_(ruleCompareFunction), minCoverage_(minCoverage), maxConditions_(maxConditions),
-              maxHeadRefinements_(maxHeadRefinements), numThreads_(numThreads) {
-
-        }
+              maxHeadRefinements_(maxHeadRefinements), numThreads_(numThreads) {}
 
     protected:
 
@@ -148,9 +146,7 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
                                           uint32 numThreads)
             : ruleCompareFunction_(ruleCompareFunction), minCoverage_(minCoverage), maxConditions_(maxConditions),
               maxHeadRefinements_(maxHeadRefinements), recalculatePredictions_(recalculatePredictions),
-              numThreads_(numThreads) {
-
-        }
+              numThreads_(numThreads) {}
 
         std::unique_ptr<IRuleInduction> create() const override {
             return std::make_unique<GreedyTopDownRuleInduction>(ruleCompareFunction_, minCoverage_, maxConditions_,
@@ -162,9 +158,7 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
 GreedyTopDownRuleInductionConfig::GreedyTopDownRuleInductionConfig(
         RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
     : ruleCompareFunction_(ruleCompareFunction), minCoverage_(1), minSupport_(0.0f), maxConditions_(0),
-      maxHeadRefinements_(1), recalculatePredictions_(true), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-}
+      maxHeadRefinements_(1), recalculatePredictions_(true), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
 uint32 GreedyTopDownRuleInductionConfig::getMinCoverage() const {
     return minCoverage_;

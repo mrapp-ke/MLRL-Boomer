@@ -6,14 +6,10 @@
 #include "common/statistics/statistics_provider.hpp"
 
 CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)
-    : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.row_values_cbegin(row)) {
-
-}
+    : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.row_values_cbegin(row)) {}
 
 CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
-    : CContiguousConstView<const uint8>(numRows, numCols, array) {
-
-}
+    : CContiguousConstView<const uint8>(numRows, numCols, array) {}
 
 bool CContiguousLabelMatrix::isSparse() const {
     return false;

@@ -19,9 +19,7 @@ namespace boosting {
             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : labelRatio_(0.0f), minLabels_(2), maxLabels_(0), labelBinningConfigPtr_(labelBinningConfigPtr),
-          multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-    }
+          multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     float32 FixedPartialHeadConfig::getLabelRatio() const {
         return labelRatio_;

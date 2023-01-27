@@ -2,9 +2,7 @@
 
 template<typename T>
 DokVector<T>::DokVector(T sparseValue)
-    : sparseValue_(sparseValue) {
-
-}
+    : sparseValue_(sparseValue) {}
 
 template<typename T>
 typename DokVector<T>::iterator DokVector<T>::begin() {

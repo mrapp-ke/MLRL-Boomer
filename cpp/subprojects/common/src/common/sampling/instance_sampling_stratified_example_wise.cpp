@@ -40,9 +40,7 @@ class ExampleWiseStratifiedSampling final : public IInstanceSampling {
             : sampleSize_(sampleSize), weightVector_(BitWeightVector(labelMatrix.getNumRows(),
               (uint32) (indicesEnd - indicesBegin) < labelMatrix.getNumRows())),
               stratification_(ExampleWiseStratification<LabelMatrix, IndexIterator>(labelMatrix, indicesBegin,
-                                                                                    indicesEnd)) {
-
-        }
+                                                                                    indicesEnd)) {}
 
         const IWeightVector& sample(RNG& rng) override {
             stratification_.sampleWeights(weightVector_, sampleSize_, rng);
@@ -66,9 +64,7 @@ class ExampleWiseStratifiedInstanceSamplingFactory final : public IInstanceSampl
          *                   60 % of the available examples). Must be in (0, 1]
          */
         ExampleWiseStratifiedInstanceSamplingFactory(float32 sampleSize)
-            : sampleSize_(sampleSize) {
-
-        }
+            : sampleSize_(sampleSize) {}
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
                                                   const SinglePartition& partition,
@@ -97,9 +93,7 @@ class ExampleWiseStratifiedInstanceSamplingFactory final : public IInstanceSampl
 };
 
 ExampleWiseStratifiedInstanceSamplingConfig::ExampleWiseStratifiedInstanceSamplingConfig()
-    : sampleSize_(0.66f) {
-
-}
+    : sampleSize_(0.66f) {}
 
 float32 ExampleWiseStratifiedInstanceSamplingConfig::getSampleSize() const {
     return sampleSize_;

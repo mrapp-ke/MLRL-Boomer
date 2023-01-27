@@ -5,9 +5,7 @@
 #include "common/prediction/predictor_score.hpp"
 
 CContiguousFeatureMatrix::CContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array)
-    : CContiguousConstView<const float32>(numRows, numCols, array) {
-
-}
+    : CContiguousConstView<const float32>(numRows, numCols, array) {}
 
 bool CContiguousFeatureMatrix::isSparse() const {
     return false;

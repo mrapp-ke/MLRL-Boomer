@@ -8,14 +8,10 @@
 
 CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
     : VectorConstView<const uint32>(labelMatrix.row_indices_cend(row) - labelMatrix.row_indices_cbegin(row),
-                                    labelMatrix.row_indices_cbegin(row)) {
-
-}
+                                    labelMatrix.row_indices_cbegin(row)) {}
 
 CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
-    : BinaryCsrConstView(numRows, numCols, rowIndices, colIndices) {
-
-}
+    : BinaryCsrConstView(numRows, numCols, rowIndices, colIndices) {}
 
 bool CsrLabelMatrix::isSparse() const {
     return true;

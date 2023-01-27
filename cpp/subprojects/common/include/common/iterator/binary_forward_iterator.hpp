@@ -34,9 +34,7 @@ class BinaryForwardIterator final {
          * @param index The index to start at
          */
         BinaryForwardIterator(Iterator begin, Iterator end, uint32 index)
-            : iterator_(begin), end_(end), index_(index), iteratorIndex_(iterator_ != end_ ? *iterator_ : 0) {
-
-        }
+            : iterator_(begin), end_(end), index_(index), iteratorIndex_(iterator_ != end_ ? *iterator_ : 0) {}
 
         /**
          * The type that is used to represent the difference between two iterators.

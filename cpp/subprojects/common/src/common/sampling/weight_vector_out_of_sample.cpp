@@ -6,9 +6,7 @@
 
 template<typename WeightVector>
 OutOfSampleWeightVector<WeightVector>::OutOfSampleWeightVector(const WeightVector& vector)
-    : vector_(vector) {
-
-}
+    : vector_(vector) {}
 
 template<typename WeightVector>
 uint32 OutOfSampleWeightVector<WeightVector>::getNumElements() const {

@@ -45,9 +45,7 @@ namespace boosting {
                     std::unique_ptr<IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory>> statisticsPtr)
                 : regularRuleEvaluationFactory_(regularRuleEvaluationFactory),
                   pruningRuleEvaluationFactory_(pruningRuleEvaluationFactory),
-                  statisticsPtr_(std::move(statisticsPtr)) {
-
-            }
+                  statisticsPtr_(std::move(statisticsPtr)) {}
 
             /**
              * @see `IStatisticsProvider::get`
@@ -115,9 +113,7 @@ namespace boosting {
                     uint32 numThreads)
                 : regularRuleEvaluationFactory_(regularRuleEvaluationFactory),
                   pruningRuleEvaluationFactory_(pruningRuleEvaluationFactory),
-                  exampleWiseStatisticsPtr_(std::move(statisticsPtr)), numThreads_(numThreads) {
-
-            }
+                  exampleWiseStatisticsPtr_(std::move(statisticsPtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IStatisticsProvider::get`

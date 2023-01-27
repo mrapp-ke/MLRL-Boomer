@@ -18,9 +18,7 @@ namespace seco {
         public:
 
             DecisionListBuilder()
-                : modelPtr_(std::make_unique<RuleList>(false)) {
-
-            }
+                : modelPtr_(std::make_unique<RuleList>(false)) {}
 
             /**
              * @see `IModelBuilder::setDefaultRule`

@@ -5,9 +5,7 @@
 
 template<typename T>
 VectorConstView<T>::VectorConstView(uint32 numElements, T* array)
-    : numElements_(numElements), array_(array) {
-
-}
+    : numElements_(numElements), array_(array) {}
 
 template<typename T>
 typename VectorConstView<T>::const_iterator VectorConstView<T>::cbegin() const {
@@ -48,9 +46,7 @@ template class VectorConstView<IndexedValue<Tuple<float64>>>;
 
 template<typename T>
 VectorView<T>::VectorView(uint32 numElements, T* array)
-    : VectorConstView<T>(numElements, array) {
-
-}
+    : VectorConstView<T>(numElements, array) {}
 
 template<typename T>
 typename VectorView<T>::iterator VectorView<T>::begin() {

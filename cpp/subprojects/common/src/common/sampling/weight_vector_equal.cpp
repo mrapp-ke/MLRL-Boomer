@@ -4,9 +4,7 @@
 #include "common/thresholds/thresholds_subset.hpp"
 
 EqualWeightVector::EqualWeightVector(uint32 numElements)
-    : numElements_(numElements) {
-
-}
+    : numElements_(numElements) {}
 
 uint32 EqualWeightVector::getNumElements() const {
     return numElements_;

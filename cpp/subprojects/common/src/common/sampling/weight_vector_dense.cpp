@@ -5,15 +5,11 @@
 
 template<typename T>
 DenseWeightVector<T>::DenseWeightVector(uint32 numElements)
-    : DenseWeightVector<T>(numElements, false) {
-
-}
+    : DenseWeightVector<T>(numElements, false) {}
 
 template<typename T>
 DenseWeightVector<T>::DenseWeightVector(uint32 numElements, bool init)
-    : vector_(DenseVector<T>(numElements, init)), numNonZeroWeights_(0) {
-
-}
+    : vector_(DenseVector<T>(numElements, init)), numNonZeroWeights_(0) {}
 
 template<typename T>
 typename DenseWeightVector<T>::iterator DenseWeightVector<T>::begin() {

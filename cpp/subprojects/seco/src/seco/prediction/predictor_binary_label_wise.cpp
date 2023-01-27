@@ -238,9 +238,7 @@ namespace seco {
              */
             LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                      uint32 numThreads)
-                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {
-
-            }
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
             std::unique_ptr<DensePredictionMatrix<uint8>> predict() const override {
                 return predictInternally(featureMatrix_, model_, numLabels_, numThreads_);
@@ -266,9 +264,7 @@ namespace seco {
              *                   in parallel. Must be at least 1
              */
             LabelWiseBinaryPredictorFactory(uint32 numThreads)
-                : numThreads_(numThreads) {
-
-            }
+                : numThreads_(numThreads) {}
 
             std::unique_ptr<IBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
@@ -391,9 +387,7 @@ namespace seco {
              */
             LabelWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                            uint32 numThreads)
-                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {
-
-            }
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
             std::unique_ptr<BinarySparsePredictionMatrix> predict() const override {
                 return predictSparseInternally(featureMatrix_, model_, numLabels_, numThreads_);
@@ -419,9 +413,7 @@ namespace seco {
              *                   in parallel. Must be at least 1
              */
             LabelWiseSparseBinaryPredictorFactory(uint32 numThreads)
-                : numThreads_(numThreads) {
-
-            }
+                : numThreads_(numThreads) {}
 
             std::unique_ptr<ISparseBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
                                                            const RuleList& model, const LabelVectorSet* labelVectorSet,
@@ -440,9 +432,7 @@ namespace seco {
 
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-    }
+        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {

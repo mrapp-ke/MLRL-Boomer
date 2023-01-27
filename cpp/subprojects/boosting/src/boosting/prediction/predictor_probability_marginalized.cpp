@@ -160,9 +160,7 @@ namespace boosting {
                                              std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
                                              uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), labelVectorSet_(labelVectorSet), numLabels_(numLabels),
-                  probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {
-
-            }
+                  probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -214,9 +212,7 @@ namespace boosting {
              */
             MarginalizedProbabilityPredictorFactory(
                     std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
-                : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {
-
-            }
+                : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -242,9 +238,7 @@ namespace boosting {
     MarginalizedProbabilityPredictorConfig::MarginalizedProbabilityPredictorConfig(
             const std::unique_ptr<ILossConfig>& lossConfigPtr,
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(std::move(lossConfigPtr)), multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {
-
-    }
+        : lossConfigPtr_(std::move(lossConfigPtr)), multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {}
 
     std::unique_ptr<IProbabilityPredictorFactory> MarginalizedProbabilityPredictorConfig::createPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {

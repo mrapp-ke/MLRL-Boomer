@@ -2,9 +2,7 @@
 
 template<typename T>
 RingBuffer<T>::RingBuffer(uint32 capacity)
-    : array_(new T[capacity]), capacity_(capacity), pos_(0), full_(false) {
-
-}
+    : array_(new T[capacity]), capacity_(capacity), pos_(0), full_(false) {}
 
 template<typename T>
 RingBuffer<T>::~RingBuffer() {

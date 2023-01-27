@@ -37,9 +37,7 @@ class TrainingResult final : public ITrainingResult {
         TrainingResult(uint32 numLabels, std::unique_ptr<IRuleModel> ruleModelPtr,
                        std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr)
             : numLabels_(numLabels), ruleModelPtr_(std::move(ruleModelPtr)),
-              labelSpaceInfoPtr_(std::move(labelSpaceInfoPtr)) {
-
-        }
+              labelSpaceInfoPtr_(std::move(labelSpaceInfoPtr)) {}
 
         uint32 getNumLabels() const override {
             return numLabels_;
@@ -245,9 +243,7 @@ void AbstractRuleLearner::Config::useNoSequentialPostOptimization() {
 }
 
 AbstractRuleLearner::AbstractRuleLearner(IRuleLearner::IConfig& config)
-    : config_(config) {
-
-}
+    : config_(config) {}
 
 std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory(
         const IRowWiseLabelMatrix& labelMatrix) const {

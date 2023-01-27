@@ -1,9 +1,7 @@
 #include "common/data/view_csr_binary.hpp"
 
 BinaryCsrConstView::BinaryCsrConstView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
-    : numRows_(numRows), numCols_(numCols), rowIndices_(rowIndices), colIndices_(colIndices) {
-
-}
+    : numRows_(numRows), numCols_(numCols), rowIndices_(rowIndices), colIndices_(colIndices) {}
 
 BinaryCsrConstView::index_const_iterator BinaryCsrConstView::row_indices_cbegin(uint32 row) const {
     return &colIndices_[rowIndices_[row]];
@@ -26,9 +24,7 @@ uint32 BinaryCsrConstView::getNumCols() const {
 }
 
 BinaryCsrView::BinaryCsrView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
-    : BinaryCsrConstView(numRows, numCols, rowIndices, colIndices) {
-
-}
+    : BinaryCsrConstView(numRows, numCols, rowIndices, colIndices) {}
 
 BinaryCsrView::index_iterator BinaryCsrView::row_indices_begin(uint32 row) {
     return &BinaryCsrConstView::colIndices_[BinaryCsrConstView::rowIndices_[row]];

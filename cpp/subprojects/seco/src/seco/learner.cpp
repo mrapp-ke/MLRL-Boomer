@@ -70,9 +70,7 @@ namespace seco {
     }
 
     AbstractSeCoRuleLearner::AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config)
-        : AbstractRuleLearner(config), config_(config) {
-
-    }
+        : AbstractRuleLearner(config), config_(config) {}
 
     std::unique_ptr<IStoppingCriterionFactory> AbstractSeCoRuleLearner::createCoverageStoppingCriterionFactory() const {
         std::unique_ptr<CoverageStoppingCriterionConfig>& configPtr = config_.getCoverageStoppingCriterionConfigPtr();

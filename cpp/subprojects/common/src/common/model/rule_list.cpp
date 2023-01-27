@@ -7,9 +7,7 @@
 #include "common/prediction/predictor_score.hpp"
 
 RuleList::Rule::Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr)
-    : bodyPtr_(std::move(bodyPtr)), headPtr_(std::move(headPtr)) {
-
-}
+    : bodyPtr_(std::move(bodyPtr)), headPtr_(std::move(headPtr)) {}
 
 const IBody& RuleList::Rule::getBody() const {
     return *bodyPtr_;
@@ -31,9 +29,7 @@ RuleList::ConstIterator::ConstIterator(bool defaultRuleTakesPrecedence, const Ru
                                        std::vector<Rule>::const_iterator iterator, uint32 start, uint32 end)
     : defaultRule_(defaultRule), iterator_(iterator),
       offset_(defaultRuleTakesPrecedence && defaultRule != nullptr ? 1 : 0),
-      defaultRuleIndex_(offset_ > 0 ? 0 : end - (defaultRule != nullptr ? 1 : 0)), index_(start) {
-
-}
+      defaultRuleIndex_(offset_ > 0 ? 0 : end - (defaultRule != nullptr ? 1 : 0)), index_(start) {}
 
 RuleList::ConstIterator::reference RuleList::ConstIterator::operator*() const {
     uint32 index = index_;
@@ -64,9 +60,7 @@ bool RuleList::ConstIterator::operator==(const ConstIterator& rhs) const {
 }
 
 RuleList::RuleList(bool defaultRuleTakesPrecedence)
-    : numUsedRules_(0), defaultRuleTakesPrecedence_(defaultRuleTakesPrecedence) {
-
-}
+    : numUsedRules_(0), defaultRuleTakesPrecedence_(defaultRuleTakesPrecedence) {}
 
 RuleList::const_iterator RuleList::cbegin() const {
     return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), 0,

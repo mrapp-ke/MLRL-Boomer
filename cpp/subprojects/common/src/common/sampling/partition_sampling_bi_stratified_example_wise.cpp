@@ -30,9 +30,7 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
         ExampleWiseStratifiedBiPartitionSampling(const LabelMatrix& labelMatrix, uint32 numTraining, uint32 numHoldout)
             : partition_(BiPartition(numTraining, numHoldout)),
               stratification_(ExampleWiseStratification<LabelMatrix, IndexIterator>(
-                  labelMatrix, IndexIterator(), IndexIterator(labelMatrix.getNumRows()))) {
-
-        }
+                  labelMatrix, IndexIterator(), IndexIterator(labelMatrix.getNumRows()))) {}
 
         IPartition& partition(RNG& rng) override {
             stratification_.sampleBiPartition(partition_, rng);
@@ -57,9 +55,7 @@ class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IPartitionS
          *                       corresponds to 60 % of the available examples). Must be in (0, 1)
          */
         ExampleWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize)
-            : holdoutSetSize_(holdoutSetSize) {
-
-        }
+            : holdoutSetSize_(holdoutSetSize) {}
 
         std::unique_ptr<IPartitionSampling> create(const CContiguousLabelMatrix& labelMatrix) const override {
             uint32 numExamples = labelMatrix.getNumRows();
@@ -80,9 +76,7 @@ class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IPartitionS
 };
 
 ExampleWiseStratifiedBiPartitionSamplingConfig::ExampleWiseStratifiedBiPartitionSamplingConfig()
-    : holdoutSetSize_(0.33f) {
-
-}
+    : holdoutSetSize_(0.33f) {}
 
 float32 ExampleWiseStratifiedBiPartitionSamplingConfig::getHoldoutSetSize() const {
     return holdoutSetSize_;

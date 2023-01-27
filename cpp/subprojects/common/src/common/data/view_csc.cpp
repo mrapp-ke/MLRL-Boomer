@@ -2,9 +2,7 @@
 
 template<typename T>
 CscConstView<T>::CscConstView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices)
-    : numRows_(numRows), numCols_(numCols), data_(data), rowIndices_(rowIndices), colIndices_(colIndices) {
-
-}
+    : numRows_(numRows), numCols_(numCols), data_(data), rowIndices_(rowIndices), colIndices_(colIndices) {}
 
 template<typename T>
 typename CscConstView<T>::value_const_iterator CscConstView<T>::column_values_cbegin(uint32 col) const {
@@ -52,9 +50,7 @@ template class CscConstView<const float64>;
 
 template<typename T>
 CscView<T>::CscView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices)
-    : CscConstView<T>(numRows, numCols, data, rowIndices, colIndices) {
-
-}
+    : CscConstView<T>(numRows, numCols, data, rowIndices, colIndices) {}
 
 template<typename T>
 typename CscView<T>::value_iterator CscView<T>::column_values_begin(uint32 col) {

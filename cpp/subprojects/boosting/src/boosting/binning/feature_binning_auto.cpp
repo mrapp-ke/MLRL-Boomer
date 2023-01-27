@@ -7,9 +7,7 @@ namespace boosting {
 
     AutomaticFeatureBinningConfig::AutomaticFeatureBinningConfig(
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-    }
+        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IThresholdsFactory> AutomaticFeatureBinningConfig::createThresholdsFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {

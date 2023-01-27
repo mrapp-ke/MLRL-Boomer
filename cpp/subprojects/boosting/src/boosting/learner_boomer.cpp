@@ -89,9 +89,7 @@ namespace boosting {
     Boomer::Boomer(std::unique_ptr<IBoomer::IConfig> configPtr, Blas::DdotFunction ddotFunction,
                    Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction)
         : AbstractBoostingRuleLearner(*configPtr, ddotFunction, dspmvFunction, dsysvFunction),
-          configPtr_(std::move(configPtr)) {
-
-    }
+          configPtr_(std::move(configPtr)) {}
 
     std::unique_ptr<IBoomer::IConfig> createBoomerConfig() {
         return std::make_unique<Boomer::Config>();

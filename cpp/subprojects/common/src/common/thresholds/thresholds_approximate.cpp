@@ -132,9 +132,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                          *                          otherwise
                          */
                         Callback(ThresholdsSubset& thresholdsSubset, uint32 featureIndex, bool nominal)
-                            : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex), nominal_(nominal) {
-
-                        }
+                            : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex), nominal_(nominal) {}
 
                         Result get() override {
                             auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
@@ -225,9 +223,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                  std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr,
                                  const WeightVector& weights)
                     : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
-                      weights_(weights), coverageSet_(CoverageSet(thresholds.featureMatrix_.getNumRows())) {
-
-                }
+                      weights_(weights), coverageSet_(CoverageSet(thresholds.featureMatrix_.getNumRows())) {}
 
                 /**
                  * @param thresholdsSubset A reference to an object of type `ThresholdsSubset` to be copied
@@ -235,9 +231,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                 ThresholdsSubset(const ThresholdsSubset& thresholdsSubset)
                     : thresholds_(thresholdsSubset.thresholds_),
                       weightedStatisticsPtr_(thresholdsSubset.weightedStatisticsPtr_->copy()),
-                      weights_(thresholdsSubset.weights_), coverageSet_(CoverageSet(thresholdsSubset.coverageSet_)) {
-
-                }
+                      weights_(thresholdsSubset.weights_), coverageSet_(CoverageSet(thresholdsSubset.coverageSet_)) {}
 
                 std::unique_ptr<IThresholdsSubset> copy() const override {
                     return std::make_unique<ThresholdsSubset<WeightVector>>(*this);
@@ -383,9 +377,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                               std::unique_ptr<IFeatureBinning> nominalFeatureBinningPtr, uint32 numThreads)
             : AbstractThresholds(featureMatrix, featureInfo, statisticsProvider),
               numericalFeatureBinningPtr_(std::move(numericalFeatureBinningPtr)),
-              nominalFeatureBinningPtr_(std::move(nominalFeatureBinningPtr)), numThreads_(numThreads) {
-
-        }
+              nominalFeatureBinningPtr_(std::move(nominalFeatureBinningPtr)), numThreads_(numThreads) {}
 
         std::unique_ptr<IThresholdsSubset> createSubset(const EqualWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
@@ -413,9 +405,7 @@ ApproximateThresholdsFactory::ApproximateThresholdsFactory(
         std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr,
         std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr, uint32 numThreads)
     : numericalFeatureBinningFactoryPtr_(std::move(numericalFeatureBinningFactoryPtr)),
-      nominalFeatureBinningFactoryPtr_(std::move(nominalFeatureBinningFactoryPtr)), numThreads_(numThreads) {
-
-}
+      nominalFeatureBinningFactoryPtr_(std::move(nominalFeatureBinningFactoryPtr)), numThreads_(numThreads) {}
 
 std::unique_ptr<IThresholds> ApproximateThresholdsFactory::create(const IColumnWiseFeatureMatrix& featureMatrix,
                                                                   const IFeatureInfo& featureInfo,

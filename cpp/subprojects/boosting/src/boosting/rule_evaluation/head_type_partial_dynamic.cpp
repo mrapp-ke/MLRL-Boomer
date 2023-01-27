@@ -11,9 +11,7 @@ namespace boosting {
             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : threshold_(0.02f), exponent_(2.0f), labelBinningConfigPtr_(labelBinningConfigPtr),
-          multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-    }
+          multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     float32 DynamicPartialHeadConfig::getThreshold() const {
         return threshold_;

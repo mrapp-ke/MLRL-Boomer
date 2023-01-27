@@ -21,9 +21,7 @@ static inline void clearRow(typename LilMatrix<T>::row row,
 template<typename T>
 SparseSetMatrix<T>::ConstRow::ConstRow(typename LilMatrix<T>::const_row row,
                                        typename CContiguousView<uint32>::value_const_iterator indexIterator)
-    : row_(row), indexIterator_(indexIterator) {
-
-}
+    : row_(row), indexIterator_(indexIterator) {}
 
 template<typename T>
 typename LilMatrix<T>::const_iterator SparseSetMatrix<T>::ConstRow::cbegin() const {
@@ -49,9 +47,7 @@ const IndexedValue<T>* SparseSetMatrix<T>::ConstRow::operator[](uint32 index) co
 template<typename T>
 SparseSetMatrix<T>::Row::Row(typename LilMatrix<T>::row row,
                              typename CContiguousView<uint32>::value_iterator indexIterator)
-    : row_(row), indexIterator_(indexIterator) {
-
-}
+    : row_(row), indexIterator_(indexIterator) {}
 
 template<typename T>
 typename LilMatrix<T>::iterator SparseSetMatrix<T>::Row::begin() {

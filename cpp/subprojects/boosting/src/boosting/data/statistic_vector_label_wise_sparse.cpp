@@ -9,9 +9,7 @@
 namespace boosting {
 
     SparseLabelWiseStatisticVector::ConstIterator::ConstIterator(const Triple<float64>* iterator, float64 sumOfWeights)
-        : iterator_(iterator), sumOfWeights_(sumOfWeights) {
-
-    }
+        : iterator_(iterator), sumOfWeights_(sumOfWeights) {}
 
     SparseLabelWiseStatisticVector::ConstIterator::value_type SparseLabelWiseStatisticVector::ConstIterator::operator[](
             uint32 index) const {
@@ -62,17 +60,13 @@ namespace boosting {
     }
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements)
-        : SparseLabelWiseStatisticVector(numElements, false) {
-
-    }
+        : SparseLabelWiseStatisticVector(numElements, false) {}
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements, bool init)
         : numElements_(numElements),
           statistics_((Triple<float64>*) (init ? calloc(numElements, sizeof(Triple<float64>))
                                                : malloc(numElements * sizeof(Triple<float64>)))),
-          sumOfWeights_(0) {
-
-    }
+          sumOfWeights_(0) {}
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(const SparseLabelWiseStatisticVector& vector)
         : SparseLabelWiseStatisticVector(vector.numElements_) {

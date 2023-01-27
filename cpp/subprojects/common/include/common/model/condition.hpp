@@ -36,8 +36,7 @@ struct Condition {
               start(condition.start),
               end(condition.end),
               covered(condition.covered),
-              numCovered(condition.numCovered) {
-        }
+              numCovered(condition.numCovered) {}
 
         /**
          * Assigns the properties of an existing condition to this condition.

@@ -4,9 +4,7 @@
 #include "common/util/validation.hpp"
 
 ManualMultiThreadingConfig::ManualMultiThreadingConfig()
-    : numThreads_(0) {
-
-}
+    : numThreads_(0) {}
 
 uint32 ManualMultiThreadingConfig::getNumThreads() const {
     return numThreads_;

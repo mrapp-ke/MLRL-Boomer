@@ -1,9 +1,7 @@
 #include "common/data/matrix_lil_binary.hpp"
 
 BinaryLilMatrix::BinaryLilMatrix(uint32 numRows)
-    : numRows_(numRows), array_(new std::vector<uint32>[numRows] {}) {
-
-}
+    : numRows_(numRows), array_(new std::vector<uint32>[numRows] {}) {}
 
 BinaryLilMatrix::~BinaryLilMatrix() {
     delete[] array_;

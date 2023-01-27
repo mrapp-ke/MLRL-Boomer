@@ -180,9 +180,7 @@ namespace boosting {
                                        const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                        std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), labelVectorSet_(labelVectorSet), numLabels_(numLabels),
-                  distanceMeasurePtr_(std::move(distanceMeasurePtr)), numThreads_(numThreads) {
-
-            }
+                  distanceMeasurePtr_(std::move(distanceMeasurePtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -235,8 +233,7 @@ namespace boosting {
              */
             ExampleWiseBinaryPredictorFactory(std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr,
                                               uint32 numThreads)
-                : distanceMeasureFactoryPtr_(std::move(distanceMeasureFactoryPtr)), numThreads_(numThreads) {
-            }
+                : distanceMeasureFactoryPtr_(std::move(distanceMeasureFactoryPtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -372,9 +369,7 @@ namespace boosting {
                                              const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                              std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), labelVectorSet_(labelVectorSet), numLabels_(numLabels),
-                  distanceMeasurePtr_(std::move(distanceMeasurePtr)), numThreads_(numThreads) {
-
-            }
+                  distanceMeasurePtr_(std::move(distanceMeasurePtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -425,9 +420,7 @@ namespace boosting {
              */
             ExampleWiseSparseBinaryPredictorFactory(std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr,
                                                     uint32 numThreads)
-                : distanceMeasureFactoryPtr_(std::move(distanceMeasureFactoryPtr)), numThreads_(numThreads) {
-
-            }
+                : distanceMeasureFactoryPtr_(std::move(distanceMeasureFactoryPtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -453,9 +446,7 @@ namespace boosting {
     ExampleWiseBinaryPredictorConfig::ExampleWiseBinaryPredictorConfig(
             const std::unique_ptr<ILossConfig>& lossConfigPtr,
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-    }
+        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {

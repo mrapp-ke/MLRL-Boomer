@@ -6,9 +6,7 @@ namespace boosting {
 
     AutoParallelStatisticUpdateConfig::AutoParallelStatisticUpdateConfig(
             const std::unique_ptr<ILossConfig>& lossConfigPtr)
-        : lossConfigPtr_(lossConfigPtr) {
-
-    }
+        : lossConfigPtr_(lossConfigPtr) {}
 
     uint32 AutoParallelStatisticUpdateConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
                                                             uint32 numLabels) const {

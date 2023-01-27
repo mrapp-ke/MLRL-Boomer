@@ -46,9 +46,7 @@ namespace boosting {
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(numPredictions)),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())){
-
-            }
+                  tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
@@ -82,9 +80,7 @@ namespace boosting {
             float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
             float64 l2RegularizationWeight)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
-          l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
-
-    }
+          l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseFixedPartialRuleEvaluationFactory::create(
             const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {

@@ -129,9 +129,7 @@ namespace boosting {
                                           std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
                                           uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels),
-                  probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {
-
-            }
+                  probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -166,9 +164,7 @@ namespace boosting {
              */
             LabelWiseProbabilityPredictorFactory(
                     std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
-                : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {
-
-            }
+                : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -196,9 +192,7 @@ namespace boosting {
     LabelWiseProbabilityPredictorConfig::LabelWiseProbabilityPredictorConfig(
             const std::unique_ptr<ILossConfig>& lossConfigPtr,
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-    }
+        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IProbabilityPredictorFactory> LabelWiseProbabilityPredictorConfig::createPredictorFactory(
             const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {

@@ -58,9 +58,7 @@ namespace boosting {
                   labelIndices_(labelIndices), indexVector_(PartialIndexVector(numPredictions)),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  blas_(blas), lapack_(lapack), tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {
-
-            }
+                  blas_(blas), lapack_(lapack), tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {}
 
             /**
              * @see `IRuleEvaluation::evaluate`
@@ -118,9 +116,7 @@ namespace boosting {
             float64 l2RegularizationWeight, const Blas& blas, const Lapack& lapack)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight), blas_(blas),
-          lapack_(lapack) {
-
-    }
+          lapack_(lapack) {}
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseFixedPartialRuleEvaluationFactory::create(
             const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {

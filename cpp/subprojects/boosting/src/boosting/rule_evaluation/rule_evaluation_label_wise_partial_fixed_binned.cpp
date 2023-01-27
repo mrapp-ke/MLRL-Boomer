@@ -70,9 +70,7 @@ namespace boosting {
                                                                                              l2RegularizationWeight,
                                                                                              std::move(binningPtr)),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)),
-                  tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {
-
-            }
+                  tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {}
     };
 
     LabelWiseFixedPartialBinnedRuleEvaluationFactory::LabelWiseFixedPartialBinnedRuleEvaluationFactory(
@@ -80,9 +78,7 @@ namespace boosting {
             float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-          labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)) {
-
-    }
+          labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)) {}
 
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseFixedPartialBinnedRuleEvaluationFactory::create(
             const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {

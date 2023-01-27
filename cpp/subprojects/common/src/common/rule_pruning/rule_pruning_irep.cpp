@@ -16,9 +16,7 @@ class Irep final : public IRulePruning {
          *                            used for comparing the quality of different rules
          */
         Irep(RuleCompareFunction ruleCompareFunction)
-            : ruleCompareFunction_(ruleCompareFunction) {
-
-        }
+            : ruleCompareFunction_(ruleCompareFunction) {}
 
         std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
                                               ConditionList& conditions,
@@ -94,9 +92,7 @@ class IrepFactory final : public IRulePruningFactory {
          *                            used for comparing the quality of different rules
          */
         IrepFactory(RuleCompareFunction ruleCompareFunction)
-            : ruleCompareFunction_(ruleCompareFunction) {
-
-        }
+            : ruleCompareFunction_(ruleCompareFunction) {}
 
         std::unique_ptr<IRulePruning> create() const override {
             return std::make_unique<Irep>(ruleCompareFunction_);
@@ -104,9 +100,7 @@ class IrepFactory final : public IRulePruningFactory {
 };
 
 IrepConfig::IrepConfig(RuleCompareFunction ruleCompareFunction)
-    : ruleCompareFunction_(ruleCompareFunction) {
-
-}
+    : ruleCompareFunction_(ruleCompareFunction) {}
 
 std::unique_ptr<IRulePruningFactory> IrepConfig::createRulePruningFactory() const {
     return std::make_unique<IrepFactory>(ruleCompareFunction_);
