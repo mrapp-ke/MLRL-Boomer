@@ -15,19 +15,19 @@
  */
 template<typename RefinementComparator>
 struct RuleRefinement final {
+    public:
 
-    /**
-     * An unique pointer to an object of type `IRuleRefinement` that may be used to search for potential refinements of
-     * a rule.
-     */
-    std::unique_ptr<IRuleRefinement> ruleRefinementPtr;
+        /**
+         * An unique pointer to an object of type `IRuleRefinement` that may be used to search for potential refinements
+         * of a rule.
+         */
+        std::unique_ptr<IRuleRefinement> ruleRefinementPtr;
 
-    /**
-     * An unique pointer to an object of template type `RefinementComparator` that allows comparing different
-     * refinements and keeping track of the best one(s).
-     */
-    std::unique_ptr<RefinementComparator> comparatorPtr;
-
+        /**
+         * An unique pointer to an object of template type `RefinementComparator` that allows comparing different
+         * refinements and keeping track of the best one(s).
+         */
+        std::unique_ptr<RefinementComparator> comparatorPtr;
 };
 
 /**

@@ -11,25 +11,27 @@
  * Defines a function for comparing the quality of different rules.
  */
 struct RuleCompareFunction {
-    /**
-     * A function for comparing two objects of type `Quality`. It should return true, if the first object is better than
-     * the second one, false otherwise.
-     */
-    typedef std::function<bool(const Quality&, const Quality&)> CompareFunction;
+    public:
 
-    /**
-     * @param c A function of type `CompareFunction` for comparing the quality of different rules
-     * @param m The minimum quality of a rule
-     */
-    RuleCompareFunction(CompareFunction c, float64 m) : compare(c), minQuality(m) { };
+        /**
+         * A function for comparing two objects of type `Quality`. It should return true, if the first object is better
+         * than the second one, false otherwise.
+         */
+        typedef std::function<bool(const Quality&, const Quality&)> CompareFunction;
 
-    /**
-     * A function of type `CompareFunction` for comparing the quality of different rules.
-     */
-    CompareFunction compare;
+        /**
+         * @param c A function of type `CompareFunction` for comparing the quality of different rules
+         * @param m The minimum quality of a rule
+         */
+        RuleCompareFunction(CompareFunction c, float64 m) : compare(c), minQuality(m) {};
 
-    /**
-     * The minimum quality of a rule.
-     */
-    float64 minQuality;
+        /**
+         * A function of type `CompareFunction` for comparing the quality of different rules.
+         */
+        CompareFunction compare;
+
+        /**
+         * The minimum quality of a rule.
+         */
+        float64 minQuality;
 };

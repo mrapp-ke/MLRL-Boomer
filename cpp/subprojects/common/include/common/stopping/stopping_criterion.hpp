@@ -19,19 +19,19 @@ class IStoppingCriterion {
          * number of rules to be used, if the action is not `CONTINUE`.
          */
         struct Result final {
+            public:
 
-            Result() : stop(false), numUsedRules(0) {};
+                Result() : stop(false), numUsedRules(0) {};
 
-            /**
-             True, if the induction of rules should be stopped, false otherwise.
-             */
-            bool stop;
+                /**
+                 True, if the induction of rules should be stopped, false otherwise.
+                 */
+                bool stop;
 
-            /**
-             * The number of rules to be used.
-             */
-            uint32 numUsedRules;
-
+                /**
+                 * The number of rules to be used.
+                 */
+                uint32 numUsedRules;
         };
 
         virtual ~IStoppingCriterion() {};

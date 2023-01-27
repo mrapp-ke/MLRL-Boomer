@@ -41,41 +41,45 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>,
                  * Allows to compute hash values for objects of type `CContiguousLabelMatrix::View`.
                  */
                 struct Hash final {
-                    /**
-                     * Computes and returns a hash value for an object of type `CContiguousLabelMatrix::View`.
-                     *
-                     * @param v A reference to an object of type `CContiguousLabelMatrix::View`
-                     * @return  The hash value
-                     */
-                    inline std::size_t operator()(const View& v) const {
-                        uint32 numElements = v.getNumElements();
-                        std::size_t hashValue = (std::size_t) numElements;
-                        View::const_iterator it = v.cbegin();
+                    public:
 
-                        for (uint32 i = 0; i < numElements; i++) {
-                            if (it[i]) {
-                                hashValue ^= i + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
+                        /**
+                         * Computes and returns a hash value for an object of type `CContiguousLabelMatrix::View`.
+                         *
+                         * @param v A reference to an object of type `CContiguousLabelMatrix::View`
+                         * @return  The hash value
+                         */
+                        inline std::size_t operator()(const View& v) const {
+                            uint32 numElements = v.getNumElements();
+                            std::size_t hashValue = (std::size_t) numElements;
+                            View::const_iterator it = v.cbegin();
+
+                            for (uint32 i = 0; i < numElements; i++) {
+                                if (it[i]) {
+                                    hashValue ^= i + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
+                                }
                             }
-                        }
 
-                        return hashValue;
-                    }
+                            return hashValue;
+                        }
                 };
 
                 /**
                  * Allows to check whether two objects of type `CContiguousLabelMatrix::View` are equal or not.
                  */
                 struct Pred final {
-                    /**
-                     * Returns whether two objects of type `CContiguousLabelMatrix::View` are equal or not.
-                     *
-                     * @param lhs   A reference to a first object of type `CContiguousLabelMatrix::View`
-                     * @param rhs   A reference to a second object of type `CContiguousLabelMatrix::View`
-                     * @return      True, if the given objects are equal, false otherwise
-                     */
-                    inline bool operator()(const View& lhs, const View& rhs) const {
-                        return compareArrays(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
-                    }
+                    public:
+
+                        /**
+                         * Returns whether two objects of type `CContiguousLabelMatrix::View` are equal or not.
+                         *
+                         * @param lhs   A reference to a first object of type `CContiguousLabelMatrix::View`
+                         * @param rhs   A reference to a second object of type `CContiguousLabelMatrix::View`
+                         * @return      True, if the given objects are equal, false otherwise
+                         */
+                        inline bool operator()(const View& lhs, const View& rhs) const {
+                            return compareArrays(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
+                        }
                 };
 
                 /**

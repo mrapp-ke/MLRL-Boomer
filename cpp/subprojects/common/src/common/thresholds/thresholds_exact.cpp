@@ -12,17 +12,19 @@
  * check if the vector is still valid or must be updated.
  */
 struct FilteredCacheEntry final {
-    FilteredCacheEntry() : numConditions(0) { };
+    public:
 
-    /**
-     * An unique pointer to an object of type `FeatureVector` that stores feature values.
-     */
-    std::unique_ptr<FeatureVector> vectorPtr;
+        FilteredCacheEntry() : numConditions(0) {};
 
-    /**
-     * The number of conditions that were contained by the rule when the cache was updated for the last time.
-     */
-    uint32 numConditions;
+        /**
+         * An unique pointer to an object of type `FeatureVector` that stores feature values.
+         */
+        std::unique_ptr<FeatureVector> vectorPtr;
+
+        /**
+         * The number of conditions that were contained by the rule when the cache was updated for the last time.
+         */
+        uint32 numConditions;
 };
 
 /**
@@ -465,8 +467,8 @@ class ExactThresholds final : public AbstractThresholds {
                     IStatistics* statisticsPtr = &statistics;
                     uint32 numThreads = thresholds_.numThreads_;
 
-                    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) \
-                    firstprivate(predictionPtr) firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
+    firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
                     for (int64 i = 0; i < numStatistics; i++) {
                         if (coverageMaskPtr->isCovered(i)) {
                             predictionPtr->apply(*statisticsPtr, i);
@@ -482,8 +484,8 @@ class ExactThresholds final : public AbstractThresholds {
                     IStatistics* statisticsPtr = &statistics;
                     uint32 numThreads = thresholds_.numThreads_;
 
-                    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) \
-                    firstprivate(predictionPtr) firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
+    firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
                     for (int64 i = 0; i < numStatistics; i++) {
                         if (coverageMaskPtr->isCovered(i)) {
                             predictionPtr->revert(*statisticsPtr, i);

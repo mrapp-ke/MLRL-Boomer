@@ -14,28 +14,30 @@
  * refinements may predict.
  */
 struct BeamEntry final {
-    /**
-     * An unique pointer to an object of type `ConditionList` that stores the conditions of the rule.
-     */
-    std::unique_ptr<ConditionList> conditionListPtr;
+    public:
 
-    /**
-     * An unique pointer to an object of type `AbstractEvaluatedPrediction` that stores the prediction of the rule, as
-     * well as its quality.
-     */
-    std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
+        /**
+         * An unique pointer to an object of type `ConditionList` that stores the conditions of the rule.
+         */
+        std::unique_ptr<ConditionList> conditionListPtr;
 
-    /**
-     * An unique pointer to an object of type `IThresholdsSubset` that may be used to search for potential refinements
-     * of the rule.
-     */
-    std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr;
+        /**
+         * An unique pointer to an object of type `AbstractEvaluatedPrediction` that stores the prediction of the rule,
+         * as well as its quality.
+         */
+        std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
 
-    /**
-     * A pointer to an object of type `IIndexVector` that provides access to the indices of the labels  for which
-     * potential refinements of the rule may predict.
-     */
-    const IIndexVector* labelIndices;
+        /**
+         * An unique pointer to an object of type `IThresholdsSubset` that may be used to search for potential
+         * refinements of the rule.
+         */
+        std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr;
+
+        /**
+         * A pointer to an object of type `IIndexVector` that provides access to the indices of the labels  for which
+         * potential refinements of the rule may predict.
+         */
+        const IIndexVector* labelIndices;
 };
 
 static inline void initializeEntry(BeamEntry& entry, Refinement& refinement,

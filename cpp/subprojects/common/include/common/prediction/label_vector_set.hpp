@@ -50,19 +50,23 @@ class LabelVectorSet final : public ILabelVectorSet {
          * Allows to compute hashes for objects of type `LabelVector`.
          */
         struct Hash final {
-            inline std::size_t operator()(const std::unique_ptr<LabelVector>& v) const {
-                return hashArray(v->cbegin(), v->getNumElements());
-            }
+            public:
+
+                inline std::size_t operator()(const std::unique_ptr<LabelVector>& v) const {
+                    return hashArray(v->cbegin(), v->getNumElements());
+                }
         };
 
         /**
          * Allows to check whether two objects of type `LabelVector` are equal or not.
          */
         struct Pred final {
-            inline bool operator()(const std::unique_ptr<LabelVector>& lhs,
-                                   const std::unique_ptr<LabelVector>& rhs) const {
-                return compareArrays(lhs->cbegin(), lhs->getNumElements(), rhs->cbegin(), rhs->getNumElements());
-            }
+            public:
+
+                inline bool operator()(const std::unique_ptr<LabelVector>& lhs,
+                                       const std::unique_ptr<LabelVector>& rhs) const {
+                    return compareArrays(lhs->cbegin(), lhs->getNumElements(), rhs->cbegin(), rhs->getNumElements());
+                }
         };
 
         typedef std::unordered_map<std::unique_ptr<LabelVector>, uint32, Hash, Pred> Map;
