@@ -439,7 +439,7 @@ bool AbstractRuleLearner::canPredictBinary(const IRowWiseFeatureMatrix& featureM
 std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
         const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
     return this->createBinaryPredictor(featureMatrix, *trainingResult.getRuleModel(),
-                                      *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
+                                       *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
 
 std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(

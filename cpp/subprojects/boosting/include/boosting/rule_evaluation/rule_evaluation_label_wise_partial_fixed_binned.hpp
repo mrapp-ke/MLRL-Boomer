@@ -48,8 +48,8 @@ namespace boosting {
              *                                  allows to create the implementation to be used to assign labels to bins
              */
             LabelWiseFixedPartialBinnedRuleEvaluationFactory(
-                    float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
-                    float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
+                float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
+                float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
 
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
                 const DenseLabelWiseStatisticVector& statisticVector,

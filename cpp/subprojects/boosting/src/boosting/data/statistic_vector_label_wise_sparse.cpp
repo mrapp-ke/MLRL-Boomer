@@ -125,7 +125,7 @@ namespace boosting {
     }
 
     void SparseLabelWiseStatisticVector::remove(const SparseLabelWiseStatisticConstView& view, uint32 row,
-                                             float64 weight) {
+                                                float64 weight) {
         if (weight != 0) {
             sumOfWeights_ -= weight;
             removeFromSparseLabelWiseStatisticVector(statistics_, view.row_cbegin(row), view.row_cend(row), weight);

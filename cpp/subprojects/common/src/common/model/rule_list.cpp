@@ -124,18 +124,17 @@ bool RuleList::isDefaultRuleTakingPrecedence() const {
 }
 
 void RuleList::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                      IHead::CompleteHeadVisitor completeHeadVisitor,
-                      IHead::PartialHeadVisitor partialHeadVisitor) const {
+                     IHead::CompleteHeadVisitor completeHeadVisitor,
+                     IHead::PartialHeadVisitor partialHeadVisitor) const {
     for (auto it = this->cbegin(); it != this->cend(); it++) {
         const Rule& rule = *it;
         rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, completeHeadVisitor, partialHeadVisitor);
     }
 }
 
-void RuleList::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                          IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                          IHead::CompleteHeadVisitor completeHeadVisitor,
-                          IHead::PartialHeadVisitor partialHeadVisitor) const {
+void RuleList::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                         IHead::CompleteHeadVisitor completeHeadVisitor,
+                         IHead::PartialHeadVisitor partialHeadVisitor) const {
     for (auto it = this->used_cbegin(); it != this->used_cend(); it++) {
         const Rule& rule = *it;
         rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, completeHeadVisitor, partialHeadVisitor);
