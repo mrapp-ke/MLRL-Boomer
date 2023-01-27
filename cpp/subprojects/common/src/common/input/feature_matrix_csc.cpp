@@ -1,6 +1,6 @@
 #ifdef _WIN32
-    #pragma warning( push )
-    #pragma warning( disable : 4250 )
+    #pragma warning(push)
+    #pragma warning(disable : 4250)
 #endif
 
 #include "common/input/feature_matrix_csc.hpp"
@@ -67,5 +67,5 @@ std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(uint32 numRows, uint32
 }
 
 #ifdef _WIN32
-    #pragma warning ( pop )
+    #pragma warning(pop)
 #endif

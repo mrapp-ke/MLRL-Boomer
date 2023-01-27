@@ -1,6 +1,6 @@
 #ifdef _WIN32
-    #pragma warning( push )
-    #pragma warning( disable : 4250 )
+    #pragma warning(push)
+    #pragma warning(disable : 4250)
 #endif
 
 #include "common/input/feature_matrix_fortran_contiguous.hpp"
@@ -59,5 +59,5 @@ std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureM
 }
 
 #ifdef _WIN32
-    #pragma warning ( pop )
+    #pragma warning(pop)
 #endif
