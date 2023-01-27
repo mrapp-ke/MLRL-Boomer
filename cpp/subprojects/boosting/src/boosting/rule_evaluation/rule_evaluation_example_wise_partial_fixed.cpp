@@ -118,16 +118,18 @@ namespace boosting {
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight), blas_(blas),
           lapack_(lapack) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseFixedPartialRuleEvaluationFactory::create(
-            const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
+        ExampleWiseFixedPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+                                                             const CompleteIndexVector& indexVector) const {
         uint32 numPredictions = calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_,
                                                          maxLabels_);
         return std::make_unique<DenseExampleWiseFixedPartialRuleEvaluation<CompleteIndexVector>>(
             indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> ExampleWiseFixedPartialRuleEvaluationFactory::create(
-            const DenseExampleWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
+        ExampleWiseFixedPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+                                                             const PartialIndexVector& indexVector) const {
         return std::make_unique<DenseExampleWiseCompleteRuleEvaluation<PartialIndexVector>>(
             indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);;
     }

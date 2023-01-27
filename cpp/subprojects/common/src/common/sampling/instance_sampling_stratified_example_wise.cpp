@@ -106,6 +106,7 @@ IExampleWiseStratifiedInstanceSamplingConfig& ExampleWiseStratifiedInstanceSampl
     return *this;
 }
 
-std::unique_ptr<IInstanceSamplingFactory> ExampleWiseStratifiedInstanceSamplingConfig::createInstanceSamplingFactory() const {
+std::unique_ptr<IInstanceSamplingFactory> ExampleWiseStratifiedInstanceSamplingConfig::createInstanceSamplingFactory()
+    const {
     return std::make_unique<ExampleWiseStratifiedInstanceSamplingFactory>(sampleSize_);
 }

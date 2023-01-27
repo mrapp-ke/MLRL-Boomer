@@ -18,7 +18,8 @@ namespace seco {
         this->useLabelWiseBinaryPredictor();
     }
 
-    std::unique_ptr<CoverageStoppingCriterionConfig>& AbstractSeCoRuleLearner::Config::getCoverageStoppingCriterionConfigPtr() {
+    std::unique_ptr<CoverageStoppingCriterionConfig>&
+        AbstractSeCoRuleLearner::Config::getCoverageStoppingCriterionConfigPtr() {
         return coverageStoppingCriterionConfigPtr_;
     }
 

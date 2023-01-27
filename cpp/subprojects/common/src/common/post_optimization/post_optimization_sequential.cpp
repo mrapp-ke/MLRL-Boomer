@@ -184,6 +184,7 @@ ISequentialPostOptimizationConfig& SequentialPostOptimizationConfig::setResample
     return *this;
 }
 
-std::unique_ptr<IPostOptimizationPhaseFactory> SequentialPostOptimizationConfig::createPostOptimizationPhaseFactory() const {
+std::unique_ptr<IPostOptimizationPhaseFactory> SequentialPostOptimizationConfig::createPostOptimizationPhaseFactory()
+    const {
     return std::make_unique<SequentialPostOptimizationFactory>(numIterations_, refineHeads_, resampleFeatures_);
 }

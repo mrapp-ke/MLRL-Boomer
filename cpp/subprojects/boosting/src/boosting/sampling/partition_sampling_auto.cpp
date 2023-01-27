@@ -11,7 +11,8 @@ namespace boosting {
             const std::unique_ptr<ILossConfig>& lossConfigPtr)
         : globalPruningConfigPtr_(globalPruningConfigPtr), lossConfigPtr_(lossConfigPtr) {}
 
-    std::unique_ptr<IPartitionSamplingFactory> AutomaticPartitionSamplingConfig::createPartitionSamplingFactory() const {
+    std::unique_ptr<IPartitionSamplingFactory> AutomaticPartitionSamplingConfig::createPartitionSamplingFactory()
+        const {
         if (globalPruningConfigPtr_.get() && globalPruningConfigPtr_->shouldUseHoldoutSet()) {
             if (lossConfigPtr_->isDecomposable()) {
                 return LabelWiseStratifiedBiPartitionSamplingConfig().createPartitionSamplingFactory();

@@ -1290,7 +1290,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IGlobalPruningConfig>& getGlobalPruningConfigPtr() override final;
 
-                std::unique_ptr<SequentialPostOptimizationConfig>& getSequentialPostOptimizationConfigPtr() override final;
+                std::unique_ptr<SequentialPostOptimizationConfig>& getSequentialPostOptimizationConfigPtr()
+                    override final;
 
                 std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() override final;
 

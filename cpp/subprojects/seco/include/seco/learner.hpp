@@ -47,7 +47,8 @@ namespace seco {
                      *         the sum of the weights of the uncovered labels is smaller or equal to a certain threshold
                      *         or a null pointer, if no such stopping criterion should be used
                      */
-                    virtual std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() = 0;
+                    virtual std::unique_ptr<CoverageStoppingCriterionConfig>&
+                        getCoverageStoppingCriterionConfigPtr() = 0;
 
                     /**
                      * Returns an unique pointer to the configuration of the rule heads that should be induced by the
@@ -437,7 +438,8 @@ namespace seco {
 
                 private:
 
-                    std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() override final;
+                    std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr()
+                        override final;
 
                     std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final;
 
