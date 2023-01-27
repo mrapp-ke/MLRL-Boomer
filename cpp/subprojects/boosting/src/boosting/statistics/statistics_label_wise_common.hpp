@@ -581,8 +581,7 @@ namespace boosting {
              *                              access to the weights of individual statistics
              */
             LabelWiseWeightedStatistics(const StatisticView& statisticView,
-                                        const RuleEvaluationFactory& ruleEvaluationFactory,
-                                        const WeightVector& weights)
+                                        const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights)
                 : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
                                                                WeightVector>(statisticView, ruleEvaluationFactory,
                                                                              weights),

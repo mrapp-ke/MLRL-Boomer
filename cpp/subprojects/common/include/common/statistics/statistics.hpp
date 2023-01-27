@@ -266,8 +266,7 @@ class IStatistics {
          *                  individual training examples
          * @return          An unique pointer to an object of type `IWeightedStatistics` that has been created
          */
-        virtual std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-            const BitWeightVector& weights) const = 0;
+        virtual std::unique_ptr<IWeightedStatistics> createWeightedStatistics(const BitWeightVector& weights) const = 0;
 
         /**
          * Creates and returns a new object of type `IWeightedStatistics`.

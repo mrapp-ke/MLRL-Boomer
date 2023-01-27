@@ -22,8 +22,8 @@ namespace boosting {
     template<typename IndexIterator>
     static inline uint32 fetchNextStatistic(IndexIterator& indexIterator, IndexIterator indicesEnd,
                                             SparseSetMatrix<float64>::const_iterator& scoreIterator,
-                                            SparseSetMatrix<float64>::const_iterator scoresEnd,
-                                            Tuple<float64>& tuple, LabelWiseLoss::UpdateFunction updateFunction) {
+                                            SparseSetMatrix<float64>::const_iterator scoresEnd, Tuple<float64>& tuple,
+                                            LabelWiseLoss::UpdateFunction updateFunction) {
         uint32 labelIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
@@ -48,7 +48,8 @@ namespace boosting {
     template<typename IndexIterator>
     static inline uint32 fetchNextNonZeroStatistic(IndexIterator& indexIterator, IndexIterator indicesEnd,
                                                    SparseSetMatrix<float64>::const_iterator& scoreIterator,
-                                                   SparseSetMatrix<float64>::const_iterator scoresEnd, Tuple<float64>& tuple,
+                                                   SparseSetMatrix<float64>::const_iterator scoresEnd,
+                                                   Tuple<float64>& tuple,
                                                    LabelWiseLoss::UpdateFunction updateFunction) {
         uint32 index = fetchNextStatistic(indexIterator, indicesEnd, scoreIterator, scoresEnd, tuple, updateFunction);
 
@@ -79,8 +80,8 @@ namespace boosting {
     template<typename IndexIterator>
     static inline uint32 fetchNextEvaluation(IndexIterator& indexIterator, IndexIterator indicesEnd,
                                              SparseSetMatrix<float64>::const_iterator& scoreIterator,
-                                             SparseSetMatrix<float64>::const_iterator scoresEnd,
-                                             float64& score, LabelWiseLoss::EvaluateFunction evaluateFunction) {
+                                             SparseSetMatrix<float64>::const_iterator scoresEnd, float64& score,
+                                             LabelWiseLoss::EvaluateFunction evaluateFunction) {
         uint32 labelIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
@@ -105,8 +106,8 @@ namespace boosting {
     template<typename IndexIterator>
     static inline uint32 fetchNextNonZeroEvaluation(IndexIterator& indexIterator, IndexIterator indicesEnd,
                                                     SparseSetMatrix<float64>::const_iterator& scoreIterator,
-                                                    SparseSetMatrix<float64>::const_iterator scoresEnd,
-                                                    float64& score, LabelWiseLoss::EvaluateFunction evaluateFunction) {
+                                                    SparseSetMatrix<float64>::const_iterator scoresEnd, float64& score,
+                                                    LabelWiseLoss::EvaluateFunction evaluateFunction) {
         uint32 index = fetchNextEvaluation(indexIterator, indicesEnd, scoreIterator, scoresEnd, score,
                                            evaluateFunction);
 

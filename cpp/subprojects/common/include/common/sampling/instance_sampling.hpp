@@ -98,9 +98,8 @@ class IInstanceSamplingFactory {
          *                      which serve as a basis for learning rules
          * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
-        virtual std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix,
-                                                          BiPartition& partition, IStatistics& statistics) const = 0;
-
+        virtual std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix, BiPartition& partition,
+                                                          IStatistics& statistics) const = 0;
 };
 
 /**

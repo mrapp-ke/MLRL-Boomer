@@ -66,8 +66,7 @@ class IPartition {
          * @return                  An object of type `Quality` that stores the calculated quality
          */
         virtual Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
-                                            const ICoverageState& coverageState,
-                                            const AbstractPrediction& head) = 0;
+                                            const ICoverageState& coverageState, const AbstractPrediction& head) = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as

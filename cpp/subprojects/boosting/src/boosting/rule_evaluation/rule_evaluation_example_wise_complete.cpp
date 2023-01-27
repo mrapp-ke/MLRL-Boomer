@@ -4,8 +4,10 @@
 
 namespace boosting {
 
-    ExampleWiseCompleteRuleEvaluationFactory::ExampleWiseCompleteRuleEvaluationFactory(
-            float64 l1RegularizationWeight, float64 l2RegularizationWeight, const Blas& blas, const Lapack& lapack)
+    ExampleWiseCompleteRuleEvaluationFactory::ExampleWiseCompleteRuleEvaluationFactory(float64 l1RegularizationWeight,
+                                                                                       float64 l2RegularizationWeight,
+                                                                                       const Blas& blas,
+                                                                                       const Lapack& lapack)
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight), blas_(blas),
           lapack_(lapack) {}
 

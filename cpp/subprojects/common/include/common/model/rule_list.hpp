@@ -288,14 +288,11 @@ class RuleList final : public IRuleList {
 
         bool isDefaultRuleTakingPrecedence() const override;
 
-        void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                   IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+        void visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                    IHead::CompleteHeadVisitor completeHeadVisitor,
                    IHead::PartialHeadVisitor partialHeadVisitor) const override;
 
-
-        void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                       IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+        void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                        IHead::CompleteHeadVisitor completeHeadVisitor,
                        IHead::PartialHeadVisitor partialHeadVisitor) const override;
 
