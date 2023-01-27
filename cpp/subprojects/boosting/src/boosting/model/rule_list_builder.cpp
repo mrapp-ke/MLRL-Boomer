@@ -14,8 +14,7 @@ namespace boosting {
 
         public:
 
-            RuleListBuilder()
-                : modelPtr_(std::make_unique<RuleList>(true)) {}
+            RuleListBuilder() : modelPtr_(std::make_unique<RuleList>(true)) {}
 
             /**
              * @see `IModelBuilder::setDefaultRule`

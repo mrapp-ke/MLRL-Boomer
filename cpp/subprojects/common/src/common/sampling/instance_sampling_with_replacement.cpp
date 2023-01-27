@@ -106,8 +106,7 @@ class InstanceSamplingWithReplacementFactory final : public IInstanceSamplingFac
          * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
          *                   60 % of the available examples). Must be in (0, 1]
          */
-        InstanceSamplingWithReplacementFactory(float32 sampleSize)
-            : sampleSize_(sampleSize) {}
+        InstanceSamplingWithReplacementFactory(float32 sampleSize) : sampleSize_(sampleSize) {}
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
                                                   const SinglePartition& partition,
@@ -131,8 +130,7 @@ class InstanceSamplingWithReplacementFactory final : public IInstanceSamplingFac
         }
 };
 
-InstanceSamplingWithReplacementConfig::InstanceSamplingWithReplacementConfig()
-    : sampleSize_(0.66f) {}
+InstanceSamplingWithReplacementConfig::InstanceSamplingWithReplacementConfig() : sampleSize_(0.66f) {}
 
 float32 InstanceSamplingWithReplacementConfig::getSampleSize() const {
     return sampleSize_;

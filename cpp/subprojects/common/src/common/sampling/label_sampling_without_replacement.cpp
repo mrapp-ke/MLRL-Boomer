@@ -55,8 +55,7 @@ class LabelSamplingWithoutReplacementFactory final : public ILabelSamplingFactor
         }
 };
 
-LabelSamplingWithoutReplacementConfig::LabelSamplingWithoutReplacementConfig()
-    : numSamples_(1) {}
+LabelSamplingWithoutReplacementConfig::LabelSamplingWithoutReplacementConfig() : numSamples_(1) {}
 
 uint32 LabelSamplingWithoutReplacementConfig::getNumSamples() const {
     return numSamples_;

@@ -5,8 +5,7 @@
 #include "common/sampling/weight_vector_equal.hpp"
 
 template<typename WeightVector>
-OutOfSampleWeightVector<WeightVector>::OutOfSampleWeightVector(const WeightVector& vector)
-    : vector_(vector) {}
+OutOfSampleWeightVector<WeightVector>::OutOfSampleWeightVector(const WeightVector& vector) : vector_(vector) {}
 
 template<typename WeightVector>
 uint32 OutOfSampleWeightVector<WeightVector>::getNumElements() const {

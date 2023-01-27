@@ -18,8 +18,7 @@ static inline constexpr uint32 mask(uint32 pos) {
     return 1U << (pos % UINT32_SIZE);
 }
 
-BitVector::BitVector(uint32 numElements)
-    : BitVector(numElements, false) {}
+BitVector::BitVector(uint32 numElements) : BitVector(numElements, false) {}
 
 BitVector::BitVector(uint32 numElements, bool init)
     : numElements_(numElements), array_(init ? new uint32[size(numElements)]{} : new uint32[size(numElements)]) {}

@@ -58,8 +58,7 @@ class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory 
          * @param holdoutSetSize The fraction of examples to be included in the holdout set (e.g. a value of 0.6
          *                       corresponds to 60 % of the available examples). Must be in (0, 1)
          */
-        RandomBiPartitionSamplingFactory(float32 holdoutSetSize)
-            : holdoutSetSize_(holdoutSetSize) {}
+        RandomBiPartitionSamplingFactory(float32 holdoutSetSize) : holdoutSetSize_(holdoutSetSize) {}
 
         std::unique_ptr<IPartitionSampling> create(const CContiguousLabelMatrix& labelMatrix) const override {
             uint32 numExamples = labelMatrix.getNumRows();
@@ -76,9 +75,7 @@ class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory 
         }
 };
 
-
-RandomBiPartitionSamplingConfig::RandomBiPartitionSamplingConfig()
-    : holdoutSetSize_(0.33f) {}
+RandomBiPartitionSamplingConfig::RandomBiPartitionSamplingConfig() : holdoutSetSize_(0.33f) {}
 
 float32 RandomBiPartitionSamplingConfig::getHoldoutSetSize() const {
     return holdoutSetSize_;

@@ -263,8 +263,7 @@ namespace seco {
              * @param numThreads The number of CPU threads to be used to make predictions for different query examples
              *                   in parallel. Must be at least 1
              */
-            LabelWiseBinaryPredictorFactory(uint32 numThreads)
-                : numThreads_(numThreads) {}
+            LabelWiseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             std::unique_ptr<IBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
@@ -412,8 +411,7 @@ namespace seco {
              * @param numThreads The number of CPU threads to be used to make predictions for different query examples
              *                   in parallel. Must be at least 1
              */
-            LabelWiseSparseBinaryPredictorFactory(uint32 numThreads)
-                : numThreads_(numThreads) {}
+            LabelWiseSparseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             std::unique_ptr<ISparseBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
                                                            const RuleList& model, const LabelVectorSet* labelVectorSet,

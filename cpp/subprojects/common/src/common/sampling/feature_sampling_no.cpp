@@ -16,8 +16,7 @@ class NoFeatureSampling final : public IFeatureSampling {
         /**
          * @param numFeatures The total number of available features
          */
-        NoFeatureSampling(uint32 numFeatures)
-            : indexVector_(CompleteIndexVector(numFeatures)) {}
+        NoFeatureSampling(uint32 numFeatures) : indexVector_(CompleteIndexVector(numFeatures)) {}
 
         const IIndexVector& sample(RNG& rng) override {
             return indexVector_;
@@ -41,8 +40,7 @@ class NoFeatureSamplingFactory final : public IFeatureSamplingFactory {
         /**
          * @param numFeatures The total number of available features
          */
-        NoFeatureSamplingFactory(uint32 numFeatures)
-            : numFeatures_(numFeatures) {}
+        NoFeatureSamplingFactory(uint32 numFeatures) : numFeatures_(numFeatures) {}
 
         std::unique_ptr<IFeatureSampling> create() const override {
             return std::make_unique<NoFeatureSampling>(numFeatures_);

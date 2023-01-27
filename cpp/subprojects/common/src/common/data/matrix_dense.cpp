@@ -3,8 +3,7 @@
 #include <cstdlib>
 
 template<typename T>
-DenseMatrix<T>::DenseMatrix(uint32 numRows, uint32 numCols)
-    : DenseMatrix<T>(numRows, numCols, false) {}
+DenseMatrix<T>::DenseMatrix(uint32 numRows, uint32 numCols) : DenseMatrix<T>(numRows, numCols, false) {}
 
 template<typename T>
 DenseMatrix<T>::DenseMatrix(uint32 numRows, uint32 numCols, bool init)

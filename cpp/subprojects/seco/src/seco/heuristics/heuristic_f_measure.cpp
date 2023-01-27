@@ -21,8 +21,7 @@ namespace seco {
             /**
              * @param beta The value of the "beta" parameter. Must be at least 0
              */
-            FMeasure(float64 beta)
-                : beta_(beta) {}
+            FMeasure(float64 beta) : beta_(beta) {}
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) const override {
@@ -61,16 +60,14 @@ namespace seco {
             /**
              * @param beta The value of the "beta" parameter. Must be at least 0
              */
-            FMeasureFactory(float64 beta)
-                : beta_(beta) {}
+            FMeasureFactory(float64 beta) : beta_(beta) {}
 
             std::unique_ptr<IHeuristic> create() const override {
                 return std::make_unique<FMeasure>(beta_);
             }
     };
 
-    FMeasureConfig::FMeasureConfig()
-        : beta_(0.25) {}
+    FMeasureConfig::FMeasureConfig() : beta_(0.25) {}
 
     float64 FMeasureConfig::getBeta() const {
         return beta_;

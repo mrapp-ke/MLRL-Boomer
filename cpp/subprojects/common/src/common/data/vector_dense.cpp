@@ -6,8 +6,7 @@
 #include <cstdlib>
 
 template<typename T>
-DenseVector<T>::DenseVector(uint32 numElements)
-    : DenseVector<T>(numElements, false) {}
+DenseVector<T>::DenseVector(uint32 numElements) : DenseVector<T>(numElements, false) {}
 
 template<typename T>
 DenseVector<T>::DenseVector(uint32 numElements, bool init)

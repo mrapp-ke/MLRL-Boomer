@@ -5,8 +5,7 @@
 
 namespace boosting {
 
-    Lapack::Lapack(DsysvFunction dsysvFunction)
-        : dsysvFunction_(dsysvFunction) {}
+    Lapack::Lapack(DsysvFunction dsysvFunction) : dsysvFunction_(dsysvFunction) {}
 
     int Lapack::queryDsysvLworkParameter(float64* tmpArray1, float64* output, int n) const {
         // "U" if the upper-right triangle of A should be used, "L" if the lower-left triangle should be used

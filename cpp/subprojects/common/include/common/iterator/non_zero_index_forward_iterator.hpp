@@ -30,8 +30,7 @@ class NonZeroIndexForwardIterator {
          * @param begin An iterator to the beginning of the values
          * @param end   An iterator to the end of the values
          */
-        NonZeroIndexForwardIterator(Iterator begin, Iterator end)
-            : iterator_(begin), end_(end), index_(0) {
+        NonZeroIndexForwardIterator(Iterator begin, Iterator end) : iterator_(begin), end_(end), index_(0) {
             for (; iterator_ != end_; iterator_++) {
                 auto value = *iterator_;
 

@@ -55,8 +55,7 @@ class LabelWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSam
          * @param holdoutSetSize The fraction of examples to be included in the holdout set (e.g. a value of 0.6
          *                       corresponds to 60 % of the available examples). Must be in (0, 1)
          */
-        LabelWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize)
-            : holdoutSetSize_(holdoutSetSize) {}
+        LabelWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize) : holdoutSetSize_(holdoutSetSize) {}
 
         std::unique_ptr<IPartitionSampling> create(const CContiguousLabelMatrix& labelMatrix) const override {
             uint32 numExamples = labelMatrix.getNumRows();
@@ -75,9 +74,7 @@ class LabelWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSam
         }
 };
 
-
-LabelWiseStratifiedBiPartitionSamplingConfig::LabelWiseStratifiedBiPartitionSamplingConfig()
-    : holdoutSetSize_(0.33f) {}
+LabelWiseStratifiedBiPartitionSamplingConfig::LabelWiseStratifiedBiPartitionSamplingConfig() : holdoutSetSize_(0.33f) {}
 
 float32 LabelWiseStratifiedBiPartitionSamplingConfig::getHoldoutSetSize() const {
     return holdoutSetSize_;

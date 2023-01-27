@@ -6,8 +6,7 @@
 
 namespace boosting {
 
-    ManualRegularizationConfig::ManualRegularizationConfig()
-        : regularizationWeight_(1) {}
+    ManualRegularizationConfig::ManualRegularizationConfig() : regularizationWeight_(1) {}
 
     float64 ManualRegularizationConfig::getRegularizationWeight() const {
         return regularizationWeight_;

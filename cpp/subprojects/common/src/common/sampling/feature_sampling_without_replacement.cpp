@@ -67,8 +67,7 @@ class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFa
         }
 };
 
-FeatureSamplingWithoutReplacementConfig::FeatureSamplingWithoutReplacementConfig()
-    : sampleSize_(0) {}
+FeatureSamplingWithoutReplacementConfig::FeatureSamplingWithoutReplacementConfig() : sampleSize_(0) {}
 
 float32 FeatureSamplingWithoutReplacementConfig::getSampleSize() const {
     return sampleSize_;

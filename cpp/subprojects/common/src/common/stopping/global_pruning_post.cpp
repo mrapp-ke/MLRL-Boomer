@@ -96,8 +96,7 @@ class PostPruningFactory final : public IStoppingCriterionFactory {
         }
 };
 
-PostPruningConfig::PostPruningConfig()
-    : useHoldoutSet_(true), removeUnusedRules_(true), minRules_(100), interval_(1) {}
+PostPruningConfig::PostPruningConfig() : useHoldoutSet_(true), removeUnusedRules_(true), minRules_(100), interval_(1) {}
 
 bool PostPruningConfig::isHoldoutSetUsed() const {
     return useHoldoutSet_;

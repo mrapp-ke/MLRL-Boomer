@@ -1,7 +1,6 @@
 #include "common/input/missing_feature_vector.hpp"
 
-MissingFeatureVector::MissingFeatureVector()
-    : missingIndicesPtr_(std::make_unique<BinaryDokVector>()) {}
+MissingFeatureVector::MissingFeatureVector() : missingIndicesPtr_(std::make_unique<BinaryDokVector>()) {}
 
 MissingFeatureVector::MissingFeatureVector(MissingFeatureVector& missingFeatureVector)
     : missingIndicesPtr_(std::move(missingFeatureVector.missingIndicesPtr_)) {}

@@ -3,8 +3,7 @@
 namespace boosting {
 
     template<typename T>
-    NumericDenseMatrix<T>::NumericDenseMatrix(uint32 numRows, uint32 numCols)
-        : DenseMatrix<T>(numRows, numCols) {}
+    NumericDenseMatrix<T>::NumericDenseMatrix(uint32 numRows, uint32 numCols) : DenseMatrix<T>(numRows, numCols) {}
 
     template<typename T>
     NumericDenseMatrix<T>::NumericDenseMatrix(uint32 numRows, uint32 numCols, bool init)

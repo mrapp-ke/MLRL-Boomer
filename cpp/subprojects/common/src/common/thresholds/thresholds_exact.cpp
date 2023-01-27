@@ -528,8 +528,7 @@ class ExactThresholds final : public AbstractThresholds {
         }
 };
 
-ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads)
-    : numThreads_(numThreads) {}
+ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
 std::unique_ptr<IThresholds> ExactThresholdsFactory::create(const IColumnWiseFeatureMatrix& featureMatrix,
                                                             const IFeatureInfo& featureInfo,

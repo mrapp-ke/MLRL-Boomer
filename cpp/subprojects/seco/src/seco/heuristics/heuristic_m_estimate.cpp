@@ -21,8 +21,7 @@ namespace seco {
             /**
              * @param m The value of the "m" parameter. Must be at least 0
              */
-            MEstimate(float64 m)
-                : m_(m) {}
+            MEstimate(float64 m) : m_(m) {}
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) const override {
@@ -64,16 +63,14 @@ namespace seco {
             /**
              * @param The value of the "m" parameter. Must be at least 0
              */
-            MEstimateFactory(float64 m)
-                : m_(m) {}
+            MEstimateFactory(float64 m) : m_(m) {}
 
             std::unique_ptr<IHeuristic> create() const override {
                 return std::make_unique<MEstimate>(m_);
             }
     };
 
-    MEstimateConfig::MEstimateConfig()
-        : m_(22.466) {}
+    MEstimateConfig::MEstimateConfig() : m_(22.466) {}
 
     float64 MEstimateConfig::getM() const {
         return m_;
