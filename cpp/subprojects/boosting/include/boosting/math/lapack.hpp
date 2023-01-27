@@ -16,7 +16,8 @@ namespace boosting {
             /**
              * A function pointer to LAPACK'S DSYSV routine.
              */
-            typedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* lda, int* ipiv, double* b, int* ldb, double* work, int* lwork, int* info);
+            typedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* lda, int* ipiv, double* b,
+                                          int* ldb, double* work, int* lwork, int* info);
 
         private:
 
