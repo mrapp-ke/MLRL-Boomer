@@ -63,7 +63,7 @@ static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry, Refinemen
     if (refinement.numCovered <= minCoverage) {
         newEntry.labelIndices = nullptr;
     } else {
-        newEntry.labelIndices =  keepHead ? newEntry.headPtr.get() : oldEntry.labelIndices;
+        newEntry.labelIndices = keepHead ? newEntry.headPtr.get() : oldEntry.labelIndices;
     }
 }
 
