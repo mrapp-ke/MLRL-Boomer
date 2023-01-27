@@ -33,7 +33,7 @@ namespace seco {
              * separate-and-conquer (SeCo) paradigm.
              */
             class IConfig : virtual public IRuleLearner::IConfig {
-                friend class AbstractSeCoRuleLearner;
+                    friend class AbstractSeCoRuleLearner;
 
                 protected:
 

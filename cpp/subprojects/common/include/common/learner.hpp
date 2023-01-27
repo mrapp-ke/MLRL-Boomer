@@ -97,8 +97,7 @@ class MLRLCOMMON_API IRuleLearner {
          * Defines an interface for all classes that allow to configure a rule learner.
          */
         class IConfig {
-
-            friend class AbstractRuleLearner;
+                friend class AbstractRuleLearner;
 
             protected:
 
