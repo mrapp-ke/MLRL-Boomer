@@ -37,7 +37,7 @@ class IFeatureBinning {
             std::unique_ptr<IBinIndexVector> binIndicesPtr;
         };
 
-        virtual ~IFeatureBinning() { };
+        virtual ~IFeatureBinning() {};
 
         /**
          * Assigns the values in a given `FeatureVector` to bins.
@@ -57,7 +57,7 @@ class IFeatureBinning {
 class IFeatureBinningFactory {
     public:
 
-        virtual ~IFeatureBinningFactory() { };
+        virtual ~IFeatureBinningFactory() {};
 
         /**
          * Creates and returns a new object of type `IFeatureBinning`.
@@ -73,7 +73,7 @@ class IFeatureBinningFactory {
 class IFeatureBinningConfig {
     public:
 
-        virtual ~IFeatureBinningConfig() { };
+        virtual ~IFeatureBinningConfig() {};
 
         /**
          * Creates and returns a new object of type `IThresholdsFactory` according to the specified configuration.

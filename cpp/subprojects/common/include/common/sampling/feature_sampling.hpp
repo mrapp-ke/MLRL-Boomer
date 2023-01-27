@@ -14,7 +14,7 @@
 class IFeatureSampling {
     public:
 
-        virtual ~IFeatureSampling() { };
+        virtual ~IFeatureSampling() {};
 
         /**
          * Creates and returns a sample of the available features.
@@ -42,7 +42,7 @@ class IFeatureSampling {
 class IFeatureSamplingFactory {
     public:
 
-        virtual ~IFeatureSamplingFactory() { };
+        virtual ~IFeatureSamplingFactory() {};
 
         /**
          * Creates and returns a new object of type `IFeatureSampling`.
@@ -58,7 +58,7 @@ class IFeatureSamplingFactory {
 class IFeatureSamplingConfig {
     public:
 
-        virtual ~IFeatureSamplingConfig() { };
+        virtual ~IFeatureSamplingConfig() {};
 
         /**
          * Creates and returns a new object of type `IFeatureSamplingFactory` according to the specified configuration.

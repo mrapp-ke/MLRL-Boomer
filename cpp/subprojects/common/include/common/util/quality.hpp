@@ -10,7 +10,7 @@
  */
 struct Quality {
 
-    Quality() { };
+    Quality() {};
 
     /**
      * @param q A numerical score that represents the quality

@@ -16,7 +16,7 @@ class IThresholdsSubset;
 class IIndexVector {
     public:
 
-        virtual ~IIndexVector() { };
+        virtual ~IIndexVector() {};
 
         /**
          * Returns the number of indices.

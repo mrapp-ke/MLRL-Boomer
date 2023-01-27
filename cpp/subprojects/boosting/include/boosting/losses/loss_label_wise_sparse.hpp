@@ -17,7 +17,7 @@ namespace boosting {
     class ISparseLabelWiseLoss : virtual public ILabelWiseLoss, public ISparseEvaluationMeasure {
         public:
 
-            virtual ~ISparseLabelWiseLoss() override { };
+            virtual ~ISparseLabelWiseLoss() override {};
 
             // Keep "updateLabelWiseStatistics" functions from the parent class rather than hiding them
             using ILabelWiseLoss::updateLabelWiseStatistics;
@@ -107,7 +107,7 @@ namespace boosting {
     class ISparseLabelWiseLossFactory : public ILabelWiseLossFactory, public ISparseEvaluationMeasureFactory {
         public:
 
-            virtual ~ISparseLabelWiseLossFactory() override { };
+            virtual ~ISparseLabelWiseLossFactory() override {};
 
             /**
              * Creates and returns a new object of type `ISparseLabelWiseLoss`.
@@ -138,7 +138,7 @@ namespace boosting {
     class ISparseLabelWiseLossConfig : public ILabelWiseLossConfig {
         public:
 
-            virtual ~ISparseLabelWiseLossConfig() override { };
+            virtual ~ISparseLabelWiseLossConfig() override {};
 
             /**
              * Creates and returns a new object of type `ISparseLabelWiseLossFactory` according to the specified

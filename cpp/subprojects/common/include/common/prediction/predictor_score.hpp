@@ -12,8 +12,7 @@
 class IScorePredictor : public IPredictor<DensePredictionMatrix<float64>> {
     public:
 
-        virtual ~IScorePredictor() override { };
-
+        virtual ~IScorePredictor() override {};
 };
 
 /**
@@ -22,8 +21,7 @@ class IScorePredictor : public IPredictor<DensePredictionMatrix<float64>> {
 class IScorePredictorFactory : public IPredictorFactory<IScorePredictor> {
     public:
 
-        virtual ~IScorePredictorFactory() override { };
-
+        virtual ~IScorePredictorFactory() override {};
 };
 
 /**
@@ -32,6 +30,5 @@ class IScorePredictorFactory : public IPredictorFactory<IScorePredictor> {
 class IScorePredictorConfig : public IPredictorConfig<IScorePredictorFactory> {
     public:
 
-        virtual ~IScorePredictorConfig() override { };
-
+        virtual ~IScorePredictorConfig() override {};
 };

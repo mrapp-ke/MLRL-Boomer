@@ -14,7 +14,7 @@
 class IDistanceMeasure {
     public:
 
-        virtual ~IDistanceMeasure() { };
+        virtual ~IDistanceMeasure() {};
 
         /**
          * Calculates and returns the distance between the predicted scores for a single example and the corresponding
@@ -37,7 +37,7 @@ class IDistanceMeasure {
 class IDistanceMeasureFactory {
     public:
 
-        virtual ~IDistanceMeasureFactory() { };
+        virtual ~IDistanceMeasureFactory() {};
 
         /**
          * Creates and returns a new object of type `IDistanceMeasure`.

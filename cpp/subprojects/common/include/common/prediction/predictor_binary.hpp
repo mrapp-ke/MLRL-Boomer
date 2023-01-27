@@ -13,8 +13,7 @@
 class IBinaryPredictor : public IPredictor<DensePredictionMatrix<uint8>> {
     public:
 
-        virtual ~IBinaryPredictor() override { };
-
+        virtual ~IBinaryPredictor() override {};
 };
 
 /**
@@ -23,8 +22,7 @@ class IBinaryPredictor : public IPredictor<DensePredictionMatrix<uint8>> {
 class IBinaryPredictorFactory : public IPredictorFactory<IBinaryPredictor> {
     public:
 
-        virtual ~IBinaryPredictorFactory() override { };
-
+        virtual ~IBinaryPredictorFactory() override {};
 };
 
 /**
@@ -33,8 +31,7 @@ class IBinaryPredictorFactory : public IPredictorFactory<IBinaryPredictor> {
 class ISparseBinaryPredictor : public IPredictor<BinarySparsePredictionMatrix> {
     public:
 
-        virtual ~ISparseBinaryPredictor() override { };
-
+        virtual ~ISparseBinaryPredictor() override {};
 };
 
 /**
@@ -43,8 +40,7 @@ class ISparseBinaryPredictor : public IPredictor<BinarySparsePredictionMatrix> {
 class ISparseBinaryPredictorFactory : public IPredictorFactory<ISparseBinaryPredictor> {
     public:
 
-        virtual ~ISparseBinaryPredictorFactory() override { };
-
+        virtual ~ISparseBinaryPredictorFactory() override {};
 };
 
 /**
@@ -53,7 +49,7 @@ class ISparseBinaryPredictorFactory : public IPredictorFactory<ISparseBinaryPred
 class IBinaryPredictorConfig : public IPredictorConfig<IBinaryPredictorFactory> {
     public:
 
-        virtual ~IBinaryPredictorConfig() override { };
+        virtual ~IBinaryPredictorConfig() override {};
 
         /**
          * Creates and returns a new object of type `ISparseBinaryPredictorFactory` according to the specified

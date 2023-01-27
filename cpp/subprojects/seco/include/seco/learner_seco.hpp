@@ -48,12 +48,10 @@ namespace seco {
                             virtual public IRuleLearner::ISequentialPostOptimizationMixin {
                 public:
 
-                    virtual ~IConfig() override { };
-
+                    virtual ~IConfig() override {};
             };
 
-            virtual ~IMultiLabelSeCoRuleLearner() override { };
-
+            virtual ~IMultiLabelSeCoRuleLearner() override {};
     };
 
     /**

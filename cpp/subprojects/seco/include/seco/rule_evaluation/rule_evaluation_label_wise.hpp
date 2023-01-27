@@ -18,7 +18,7 @@ namespace seco {
     class ILabelWiseRuleEvaluationFactory {
         public:
 
-            virtual ~ILabelWiseRuleEvaluationFactory() { };
+            virtual ~ILabelWiseRuleEvaluationFactory() {};
 
             /**
              * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of

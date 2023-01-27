@@ -24,7 +24,7 @@
 class IRuleModelAssemblage {
     public:
 
-        virtual ~IRuleModelAssemblage() { };
+        virtual ~IRuleModelAssemblage() {};
 
         /**
          * Assembles and returns a rule-based model that consists of several rules.
@@ -51,7 +51,7 @@ class IRuleModelAssemblage {
 class IRuleModelAssemblageFactory {
     public:
 
-        virtual ~IRuleModelAssemblageFactory() { };
+        virtual ~IRuleModelAssemblageFactory() {};
 
         /**
          * Creates and returns a new object of the type `IRuleModelAssemblage`.
@@ -113,7 +113,7 @@ class IRuleModelAssemblageFactory {
 class IRuleModelAssemblageConfig {
     public:
 
-        virtual ~IRuleModelAssemblageConfig() { };
+        virtual ~IRuleModelAssemblageConfig() {};
 
         /**
          * Creates and returns a new object of type `IRuleModelAssemblageFactory` according to specified configuration.
