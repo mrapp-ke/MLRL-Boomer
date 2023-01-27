@@ -4,8 +4,8 @@
 #pragma once
 
 #ifdef _WIN32
-    #pragma warning( push )
-    #pragma warning( disable : 4250 )
+    #pragma warning(push)
+    #pragma warning(disable : 4250)
 #endif
 
 #include "seco/learner.hpp"
@@ -118,5 +118,5 @@ namespace seco {
 }
 
 #ifdef _WIN32
-    #pragma warning ( pop )
+    #pragma warning(pop)
 #endif

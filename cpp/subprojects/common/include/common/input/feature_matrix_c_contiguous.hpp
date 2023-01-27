@@ -4,8 +4,8 @@
 #pragma once
 
 #ifdef _WIN32
-    #pragma warning( push )
-    #pragma warning( disable : 4250 )
+    #pragma warning(push)
+    #pragma warning(disable : 4250)
 #endif
 
 #include "common/input/feature_matrix_row_wise.hpp"
@@ -72,5 +72,5 @@ MLRLCOMMON_API std::unique_ptr<ICContiguousFeatureMatrix> createCContiguousFeatu
                                                                                          const float32* array);
 
 #ifdef _WIN32
-    #pragma warning ( pop )
+    #pragma warning(pop)
 #endif

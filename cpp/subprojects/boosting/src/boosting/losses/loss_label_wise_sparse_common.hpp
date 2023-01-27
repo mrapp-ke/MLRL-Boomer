@@ -4,8 +4,8 @@
 #pragma once
 
 #ifdef _WIN32
-    #pragma warning( push )
-    #pragma warning( disable : 4250 )
+    #pragma warning(push)
+    #pragma warning(disable : 4250)
 #endif
 
 #include "boosting/losses/loss_label_wise_sparse.hpp"
@@ -268,5 +268,5 @@ namespace boosting {
 }
 
 #ifdef _WIN32
-    #pragma warning ( pop )
+    #pragma warning(pop)
 #endif
