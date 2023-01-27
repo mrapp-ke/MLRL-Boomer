@@ -25,7 +25,8 @@ class MLRLCOMMON_API ICsrFeatureMatrix : virtual public IRowWiseFeatureMatrix {
  * An implementation of the type `ICsrFeatureMatrix` that provides row-wise read-only access to the feature values of
  * examples that are stored in a sparse matrix in the compressed sparse row (CSR) format.
  */
-class CsrFeatureMatrix final : public CsrConstView<const float32>, virtual public ICsrFeatureMatrix {
+class CsrFeatureMatrix final : public CsrConstView<const float32>,
+                               virtual public ICsrFeatureMatrix {
     public:
 
         /**

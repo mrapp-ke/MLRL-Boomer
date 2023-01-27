@@ -100,7 +100,8 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type `ILabelWiseLoss`.
      */
-    class ILabelWiseLossFactory : public IEvaluationMeasureFactory, public IDistanceMeasureFactory {
+    class ILabelWiseLossFactory : public IEvaluationMeasureFactory,
+                                  public IDistanceMeasureFactory {
         public:
 
             virtual ~ILabelWiseLossFactory() override {};

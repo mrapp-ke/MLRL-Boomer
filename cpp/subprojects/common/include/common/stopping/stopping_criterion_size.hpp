@@ -36,7 +36,8 @@ class MLRLCOMMON_API ISizeStoppingCriterionConfig {
  * Allows to configure a stopping criterion that ensures that the number of induced rules does not exceed a certain
  * maximum.
  */
-class SizeStoppingCriterionConfig final : public IStoppingCriterionConfig, public ISizeStoppingCriterionConfig {
+class SizeStoppingCriterionConfig final : public IStoppingCriterionConfig,
+                                          public ISizeStoppingCriterionConfig {
     private:
 
         uint32 maxRules_;

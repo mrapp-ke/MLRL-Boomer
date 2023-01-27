@@ -35,7 +35,8 @@ class MLRLCOMMON_API ITimeStoppingCriterionConfig {
 /**
  * Allows to configure a stopping criterion that ensures that a certain time limit is not exceeded.
  */
-class TimeStoppingCriterionConfig final : public IStoppingCriterionConfig, public ITimeStoppingCriterionConfig {
+class TimeStoppingCriterionConfig final : public IStoppingCriterionConfig,
+                                          public ITimeStoppingCriterionConfig {
     private:
 
         uint32 timeLimit_;

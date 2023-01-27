@@ -14,7 +14,8 @@ namespace boosting {
      * of sparse data structures. To meet this requirement, the gradients and Hessians that are computed by the loss
      * function should be zero, if the prediction for a label is correct.
      */
-    class ISparseLabelWiseLoss : virtual public ILabelWiseLoss, public ISparseEvaluationMeasure {
+    class ISparseLabelWiseLoss : virtual public ILabelWiseLoss,
+                                 public ISparseEvaluationMeasure {
         public:
 
             virtual ~ISparseLabelWiseLoss() override {};
@@ -104,7 +105,8 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type `ISparseLabelWiseLoss`.
      */
-    class ISparseLabelWiseLossFactory : public ILabelWiseLossFactory, public ISparseEvaluationMeasureFactory {
+    class ISparseLabelWiseLossFactory : public ILabelWiseLossFactory,
+                                        public ISparseEvaluationMeasureFactory {
         public:
 
             virtual ~ISparseLabelWiseLossFactory() override {};

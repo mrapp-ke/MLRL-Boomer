@@ -11,8 +11,8 @@
  * An implementation of the type `ICscFeatureMatrix` that provides column-wise read-only access to the feature values of
  * examples that are stored in a pre-allocated sparse matrix in the compressed sparse column (CSC) format.
  */
-class CscFeatureMatrix final : public CscConstView<const float32>, virtual public ICscFeatureMatrix {
-
+class CscFeatureMatrix final : public CscConstView<const float32>,
+                               virtual public ICscFeatureMatrix {
     public:
 
         /**

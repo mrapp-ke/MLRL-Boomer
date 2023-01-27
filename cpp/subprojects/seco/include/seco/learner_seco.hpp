@@ -57,7 +57,8 @@ namespace seco {
     /**
      * The multi-label SeCo algorithm.
      */
-    class MultiLabelSeCoRuleLearner final : public AbstractSeCoRuleLearner, virtual public IMultiLabelSeCoRuleLearner {
+    class MultiLabelSeCoRuleLearner final : public AbstractSeCoRuleLearner,
+                                            virtual public IMultiLabelSeCoRuleLearner {
         public:
 
             /**

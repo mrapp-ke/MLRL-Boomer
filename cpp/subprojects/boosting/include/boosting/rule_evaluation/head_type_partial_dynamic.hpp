@@ -66,7 +66,8 @@ namespace boosting {
      * dynamically. Only those labels for which the square of the predictive quality exceeds a certain threshold are
      * included in a rule head.
      */
-    class DynamicPartialHeadConfig final : public IHeadConfig, public IDynamicPartialHeadConfig {
+    class DynamicPartialHeadConfig final : public IHeadConfig,
+                                           public IDynamicPartialHeadConfig {
         private:
 
             float32 threshold_;

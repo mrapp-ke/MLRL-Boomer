@@ -73,8 +73,8 @@ namespace seco {
      * Allows to configure a lift function that monotonously increases until a certain number of labels, where the
      * maximum lift is reached, and monotonously decreases afterwards.
      */
-    class PeakLiftFunctionConfig final : public ILiftFunctionConfig, public IPeakLiftFunctionConfig {
-
+    class PeakLiftFunctionConfig final : public ILiftFunctionConfig,
+                                         public IPeakLiftFunctionConfig {
         private:
 
             uint32 peakLabel_;

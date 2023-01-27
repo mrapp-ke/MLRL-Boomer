@@ -27,7 +27,8 @@ class MLRLCOMMON_API ICContiguousLabelMatrix : virtual public IRowWiseLabelMatri
  * Implements random read-only access to the labels of individual training examples that are stored in a pre-allocated
  * C-contiguous array.
  */
-class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>, virtual public ICContiguousLabelMatrix {
+class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>,
+                                     virtual public ICContiguousLabelMatrix {
     public:
 
         /**

@@ -37,7 +37,8 @@ namespace boosting {
     /**
      * Allows to configure a post-processor that shrinks the weights of rules by a constant "shrinkage" parameter.
      */
-    class ConstantShrinkageConfig final : public IPostProcessorConfig, public IConstantShrinkageConfig {
+    class ConstantShrinkageConfig final : public IPostProcessorConfig,
+                                          public IConstantShrinkageConfig {
         private:
 
             float64 shrinkage_;

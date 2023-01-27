@@ -78,7 +78,8 @@ namespace boosting {
     /**
      * Allows to configure partial rule heads that predict for a predefined number of labels.
      */
-    class FixedPartialHeadConfig final : public IHeadConfig, public IFixedPartialHeadConfig {
+    class FixedPartialHeadConfig final : public IHeadConfig,
+                                         public IFixedPartialHeadConfig {
         private:
 
             float32 labelRatio_;

@@ -95,7 +95,8 @@ class MLRLCOMMON_API IPostPruningConfig {
  * Allows to configure a stopping criterion the keeps track of the number of rules in a model that perform best with
  * respect to the examples in the training or holdout set according to a certain measure.
  */
-class PostPruningConfig final : public IGlobalPruningConfig, public IPostPruningConfig {
+class PostPruningConfig final : public IGlobalPruningConfig,
+                                public IPostPruningConfig {
     private:
 
         bool useHoldoutSet_;

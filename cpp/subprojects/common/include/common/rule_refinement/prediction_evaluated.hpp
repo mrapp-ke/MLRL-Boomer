@@ -10,7 +10,8 @@
  * An abstract base class for all classes that store the scores that are predicted by a rule, as well as a numerical
  * score that assesses the overall quality of the rule.
  */
-class AbstractEvaluatedPrediction : public AbstractPrediction, public Quality {
+class AbstractEvaluatedPrediction : public AbstractPrediction,
+                                    public Quality {
     public:
 
         /**

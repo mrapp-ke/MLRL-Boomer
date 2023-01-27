@@ -39,7 +39,8 @@ namespace seco {
      * Allows to configure a lift function that monotonously increases according to the natural logarithm of the number
      * of labels for which a rule predicts.
      */
-    class KlnLiftFunctionConfig final : public ILiftFunctionConfig, public IKlnLiftFunctionConfig {
+    class KlnLiftFunctionConfig final : public ILiftFunctionConfig,
+                                        public IKlnLiftFunctionConfig {
         private:
 
             float64 k_;

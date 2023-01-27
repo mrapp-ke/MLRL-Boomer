@@ -27,7 +27,8 @@ class MLRLCOMMON_API ICsrLabelMatrix : virtual public IRowWiseLabelMatrix {
  * Implements row-wise read-only access to the labels of individual training examples that are stored in a pre-allocated
  * sparse matrix in the compressed sparse row (CSR) format.
  */
-class CsrLabelMatrix final : public BinaryCsrConstView, virtual public ICsrLabelMatrix {
+class CsrLabelMatrix final : public BinaryCsrConstView,
+                             virtual public ICsrLabelMatrix {
     public:
 
         /**

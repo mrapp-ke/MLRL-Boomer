@@ -42,7 +42,8 @@ namespace seco {
      * parameter controls the trade-off between both heuristics. If m = 0, this heuristic is equivalent to "Precision".
      * As m approaches infinity, the isometrics of this heuristic become equivalent to those of "WRA".
      */
-    class MEstimateConfig final : public IHeuristicConfig, public IMEstimateConfig {
+    class MEstimateConfig final : public IHeuristicConfig,
+                                  public IMEstimateConfig {
         private:
 
             float64 m_;

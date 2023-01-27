@@ -520,13 +520,15 @@ namespace boosting {
     /**
      * An abstract base class for all rule learners that makes use of gradient boosting.
      */
-    class AbstractBoostingRuleLearner : public AbstractRuleLearner, virtual public IBoostingRuleLearner {
+    class AbstractBoostingRuleLearner : public AbstractRuleLearner,
+                                        virtual public IBoostingRuleLearner {
         public:
 
             /**
              * Allows to configure a rule learner that makes use of gradient boosting.
              */
-            class Config : public AbstractRuleLearner::Config, virtual public IBoostingRuleLearner::IConfig {
+            class Config : public AbstractRuleLearner::Config,
+                           virtual public IBoostingRuleLearner::IConfig {
                 protected:
 
                     /**
