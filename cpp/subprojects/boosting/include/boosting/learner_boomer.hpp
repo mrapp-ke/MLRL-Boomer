@@ -51,7 +51,7 @@ namespace boosting {
                             virtual public IRuleLearner::ISequentialPostOptimizationMixin {
                 public:
 
-                    virtual ~IConfig() override { };
+                    virtual ~IConfig() override {};
 
                     /**
                      * Configures the rule learner to automatically decide whether a default rule should be induced or
@@ -113,8 +113,7 @@ namespace boosting {
                     virtual void useAutomaticProbabilityPredictor() = 0;
             };
 
-            virtual ~IBoomer() override { };
-
+            virtual ~IBoomer() override {};
     };
 
     /**

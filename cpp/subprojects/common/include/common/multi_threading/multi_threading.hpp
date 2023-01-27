@@ -12,7 +12,7 @@
 class IMultiThreadingConfig {
     public:
 
-        virtual ~IMultiThreadingConfig() { };
+        virtual ~IMultiThreadingConfig() {};
 
         /**
          * Determines and returns the number of threads to be used by a parallelizable algorithm.

@@ -16,7 +16,7 @@
 class IPartitionSampling {
     public:
 
-        virtual ~IPartitionSampling() { };
+        virtual ~IPartitionSampling() {};
 
         /**
          * Creates and returns a partition of the available training examples.
@@ -34,7 +34,7 @@ class IPartitionSampling {
 class IPartitionSamplingFactory {
     public:
 
-        virtual ~IPartitionSamplingFactory() { };
+        virtual ~IPartitionSamplingFactory() {};
 
         /**
          * Creates and returns a new object of type `IPartitionSampling`.
@@ -62,7 +62,7 @@ class IPartitionSamplingFactory {
 class IPartitionSamplingConfig {
     public:
 
-        virtual ~IPartitionSamplingConfig() { };
+        virtual ~IPartitionSamplingConfig() {};
 
         /**
          * Creates and returns a new object of type `IPartitionSamplingFactory` according to the specified

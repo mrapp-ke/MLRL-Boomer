@@ -22,7 +22,7 @@
 class IThresholdsSubset {
     public:
 
-        virtual ~IThresholdsSubset() { };
+        virtual ~IThresholdsSubset() {};
 
         /**
          * Creates and returns a copy of this object.

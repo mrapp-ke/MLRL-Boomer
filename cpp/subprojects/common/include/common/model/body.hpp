@@ -18,7 +18,7 @@ class ConjunctiveBody;
 class MLRLCOMMON_API IBody {
     public:
 
-        virtual ~IBody() { };
+        virtual ~IBody() {};
 
         /**
          * A visitor function for handling objects of the type `EmptyBody`.

@@ -24,7 +24,7 @@ class BiPartition;
 class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
     public:
 
-        virtual ~IRowWiseLabelMatrix() override { };
+        virtual ~IRowWiseLabelMatrix() override {};
 
         /**
          * Calculates and returns the label cardinality, i.e., the average number of relevant labels per example.

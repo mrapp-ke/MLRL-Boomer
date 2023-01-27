@@ -20,8 +20,7 @@
 class MLRLCOMMON_API ICsrLabelMatrix : virtual public IRowWiseLabelMatrix {
     public:
 
-        virtual ~ICsrLabelMatrix() override { };
-
+        virtual ~ICsrLabelMatrix() override {};
 };
 
 /**

@@ -14,7 +14,7 @@
 class IEvaluationMeasure {
     public:
 
-        virtual ~IEvaluationMeasure() { };
+        virtual ~IEvaluationMeasure() {};
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -53,7 +53,7 @@ class IEvaluationMeasure {
 class IEvaluationMeasureFactory {
     public:
 
-        virtual ~IEvaluationMeasureFactory() { };
+        virtual ~IEvaluationMeasureFactory() {};
 
         /**
          * Creates and returns a new object of type `IEvaluationMeasure`.

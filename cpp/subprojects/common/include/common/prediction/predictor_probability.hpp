@@ -12,8 +12,7 @@
 class IProbabilityPredictor : public IPredictor<DensePredictionMatrix<float64>> {
     public:
 
-        virtual ~IProbabilityPredictor() override { };
-
+        virtual ~IProbabilityPredictor() override {};
 };
 
 /**
@@ -22,8 +21,7 @@ class IProbabilityPredictor : public IPredictor<DensePredictionMatrix<float64>> 
 class IProbabilityPredictorFactory : public IPredictorFactory<IProbabilityPredictor> {
     public:
 
-        virtual ~IProbabilityPredictorFactory() override { };
-
+        virtual ~IProbabilityPredictorFactory() override {};
 };
 
 /**
@@ -32,6 +30,5 @@ class IProbabilityPredictorFactory : public IPredictorFactory<IProbabilityPredic
 class IProbabilityPredictorConfig : public IPredictorConfig<IProbabilityPredictorFactory> {
     public:
 
-        virtual ~IProbabilityPredictorConfig() override { };
-
+        virtual ~IProbabilityPredictorConfig() override {};
 };

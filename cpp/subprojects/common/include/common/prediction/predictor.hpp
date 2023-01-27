@@ -19,7 +19,7 @@ template<typename PredictionMatrix>
 class IPredictor {
     public:
 
-        virtual ~IPredictor() { };
+        virtual ~IPredictor() {};
 
         /**
          * Obtains and returns predictions for all query examples.
@@ -38,7 +38,7 @@ template<typename Predictor>
 class IPredictorFactory {
     public:
 
-        virtual ~IPredictorFactory() { };
+        virtual ~IPredictorFactory() {};
 
         /**
          * Creates and returns a new object of the template type `Predictor`.
@@ -82,7 +82,7 @@ template<typename PredictorFactory>
 class IPredictorConfig {
     public:
 
-        virtual ~IPredictorConfig() { };
+        virtual ~IPredictorConfig() {};
 
         /**
          * Creates and returns a new object of type `IPredictorFactory` according to the specified configuration.

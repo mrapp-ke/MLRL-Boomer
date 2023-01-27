@@ -55,7 +55,7 @@ namespace boosting {
     class ILabelBinning {
         public:
 
-            virtual ~ILabelBinning() { };
+            virtual ~ILabelBinning() {};
 
             /**
              * A callback function that is invoked when a label is assigned to a bin. It takes the index of the bin and
@@ -115,7 +115,7 @@ namespace boosting {
     class ILabelBinningFactory {
         public:
 
-            virtual ~ILabelBinningFactory() { };
+            virtual ~ILabelBinningFactory() {};
 
             /**
              * Creates and returns a new object of type `ILabelBinning`.
@@ -131,7 +131,7 @@ namespace boosting {
     class ILabelBinningConfig {
         public:
 
-            virtual ~ILabelBinningConfig() { };
+            virtual ~ILabelBinningConfig() {};
 
             /**
              * Creates and returns a new object of type `ILabelWiseRuleEvaluationFactory` that allows to calculate the

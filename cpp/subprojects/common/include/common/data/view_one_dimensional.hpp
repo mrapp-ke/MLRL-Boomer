@@ -12,7 +12,7 @@
 class MLRLCOMMON_API IOneDimensionalView {
     public:
 
-        virtual ~IOneDimensionalView() { };
+        virtual ~IOneDimensionalView() {};
 
         /**
          * Returns the number of elements in the view.

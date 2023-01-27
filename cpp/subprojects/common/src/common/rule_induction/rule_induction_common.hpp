@@ -57,7 +57,7 @@ class AbstractRuleInduction : public IRuleInduction {
 
         }
 
-        virtual ~AbstractRuleInduction() override { };
+        virtual ~AbstractRuleInduction() override {};
 
         void induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const override final {
             uint32 numStatistics = statistics.getNumStatistics();

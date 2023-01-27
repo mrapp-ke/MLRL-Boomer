@@ -16,7 +16,7 @@ namespace boosting {
     class ILabelWiseLoss : public ILoss {
         public:
 
-            virtual ~ILabelWiseLoss() override { };
+            virtual ~ILabelWiseLoss() override {};
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -103,7 +103,7 @@ namespace boosting {
     class ILabelWiseLossFactory : public IEvaluationMeasureFactory, public IDistanceMeasureFactory {
         public:
 
-            virtual ~ILabelWiseLossFactory() override { };
+            virtual ~ILabelWiseLossFactory() override {};
 
             /**
              * Creates and returns a new object of type `ILabelWiseLoss`.
@@ -134,7 +134,7 @@ namespace boosting {
     class ILabelWiseLossConfig : public ILossConfig {
         public:
 
-            virtual ~ILabelWiseLossConfig() override { };
+            virtual ~ILabelWiseLossConfig() override {};
 
             /**
              * Creates and returns a new object of type `ILabelWiseLossFactory` according to the specified

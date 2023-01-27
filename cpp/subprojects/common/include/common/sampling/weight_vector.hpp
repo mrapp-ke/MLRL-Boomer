@@ -16,7 +16,7 @@ class IThresholdsSubset;
 class IWeightVector {
     public:
 
-        virtual ~IWeightVector() { };
+        virtual ~IWeightVector() {};
 
         /**
          * Returns whether the vector contains any zero weights or not.

@@ -16,7 +16,7 @@ class PartialHead;
 class MLRLCOMMON_API IHead {
     public:
 
-        virtual ~IHead() { };
+        virtual ~IHead() {};
 
         /**
          * A visitor function for handling objects of the type `CompleteHead`.

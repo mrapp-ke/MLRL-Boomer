@@ -20,7 +20,7 @@ class IStoppingCriterion {
          */
         struct Result final {
 
-            Result() : stop(false), numUsedRules(0) { };
+            Result() : stop(false), numUsedRules(0) {};
 
             /**
              True, if the induction of rules should be stopped, false otherwise.
@@ -34,7 +34,7 @@ class IStoppingCriterion {
 
         };
 
-        virtual ~IStoppingCriterion() { };
+        virtual ~IStoppingCriterion() {};
 
         /**
          * Checks whether additional rules should be induced or not.
@@ -56,7 +56,7 @@ class IStoppingCriterion {
 class IStoppingCriterionFactory {
     public:
 
-        virtual ~IStoppingCriterionFactory() { };
+        virtual ~IStoppingCriterionFactory() {};
 
         /**
          * Creates and returns a new object of type `IStoppingCriterion`.
@@ -85,7 +85,7 @@ class IStoppingCriterionFactory {
 class IStoppingCriterionConfig {
     public:
 
-        virtual ~IStoppingCriterionConfig() { };
+        virtual ~IStoppingCriterionConfig() {};
 
         /**
          * Creates and returns a new object of type `IStoppingCriterionFactory` according to the specified

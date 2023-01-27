@@ -13,7 +13,7 @@
 class IProbabilityFunction {
     public:
 
-        virtual ~IProbabilityFunction() { };
+        virtual ~IProbabilityFunction() {};
 
         /**
          * Transforms the score that is predicted for an individual label into a probability.
@@ -30,7 +30,7 @@ class IProbabilityFunction {
 class IProbabilityFunctionFactory {
     public:
 
-        virtual ~IProbabilityFunctionFactory() { };
+        virtual ~IProbabilityFunctionFactory() {};
 
         /**
          * Creates and returns a new object of the type `IProbabilityFunction`.
