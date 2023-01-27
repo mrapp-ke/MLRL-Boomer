@@ -6,7 +6,6 @@
 #include "boosting/losses/loss_example_wise.hpp"
 #include "boosting/rule_evaluation/head_type.hpp"
 
-
 namespace boosting {
 
     /**
@@ -14,7 +13,6 @@ namespace boosting {
      * example-wise.
      */
     class ExampleWiseLogisticLossConfig final : public IExampleWiseLossConfig {
-
         private:
 
             const std::unique_ptr<IHeadConfig>& headConfigPtr_;
@@ -35,8 +33,6 @@ namespace boosting {
             float64 getDefaultPrediction() const override;
 
             std::unique_ptr<IExampleWiseLossFactory> createExampleWiseLossFactory() const override;
-
-
     };
 
 }

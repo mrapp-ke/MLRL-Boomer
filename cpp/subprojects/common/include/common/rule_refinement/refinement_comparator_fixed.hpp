@@ -9,12 +9,10 @@
 #include <functional>
 #include <vector>
 
-
 /**
  * Allows comparing potential refinements of a rule and keeping track of the best ones.
  */
 class FixedRefinementComparator final {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -109,5 +107,4 @@ class FixedRefinementComparator final {
          *                      comparator
          */
         bool merge(FixedRefinementComparator& comparator);
-
 };

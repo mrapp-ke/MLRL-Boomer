@@ -6,7 +6,6 @@
 #include "seco/statistics/statistics_label_wise.hpp"
 #include "common/data/vector_sparse_array_binary.hpp"
 
-
 namespace seco {
 
     static inline bool hasNonZeroWeightLabelWise(const EqualWeightVector& weights, uint32 statisticIndex) {
@@ -57,7 +56,6 @@ namespace seco {
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory, typename WeightVector, typename IndexVector>
     class AbstractLabelWiseStatisticsSubset : virtual public IStatisticsSubset {
-
         protected:
 
             /**
@@ -160,7 +158,6 @@ namespace seco {
             const IScoreVector& calculateScores() override final {
                 return ruleEvaluationPtr_->calculateScores(majorityLabelVector_, totalSumVector_, sumVector_);
             }
-
     };
 
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
@@ -211,7 +208,6 @@ namespace seco {
                                                                                      ConfusionMatrixVector,
                                                                                      RuleEvaluationFactory,
                                                                                      WeightVector, IndexVector> {
-
         private:
 
             std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr_;
@@ -249,7 +245,6 @@ namespace seco {
                 initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
                                                    *totalSumVectorPtr_);
             }
-
     };
 
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
@@ -304,7 +299,6 @@ namespace seco {
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory, typename WeightVector>
     class LabelWiseWeightedStatistics final : public IWeightedStatistics {
-
         private:
 
             /**
@@ -320,7 +314,6 @@ namespace seco {
                                                                                             ConfusionMatrixVector,
                                                                                             RuleEvaluationFactory,
                                                                                             WeightVector, IndexVector> {
-
                 private:
 
                     const ConfusionMatrixVector* subsetSumVector_;
@@ -413,7 +406,6 @@ namespace seco {
                         return this->ruleEvaluationPtr_->calculateScores(this->majorityLabelVector_,
                                                                          this->totalSumVector_, tmpVector_);
                     }
-
             };
 
             const WeightVector& weights_;
@@ -463,7 +455,6 @@ namespace seco {
                                                    totalSumVector_);
                 initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
                                                    subsetSumVector_);
-
             }
 
             /**
@@ -556,7 +547,6 @@ namespace seco {
                 //TODO Support creation of histograms
                 return nullptr;
             }
-
     };
 
     template<typename Prediction, typename CoverageMatrix>
@@ -607,7 +597,6 @@ namespace seco {
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory>
     class AbstractLabelWiseStatistics : public ILabelWiseStatistics<RuleEvaluationFactory> {
-
         private:
 
             const RuleEvaluationFactory* ruleEvaluationFactory_;
@@ -911,7 +900,6 @@ namespace seco {
                                                                     RuleEvaluationFactory, DenseWeightVector<uint32>>>(
                     labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, weights);
             }
-
     };
 
 }

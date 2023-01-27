@@ -2,7 +2,6 @@
 #include "common/util/validation.hpp"
 #include <iostream>
 
-
 namespace boosting {
 
     ManualRegularizationConfig::ManualRegularizationConfig()

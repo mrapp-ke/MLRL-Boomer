@@ -6,7 +6,6 @@
 #include "common/data/types.hpp"
 #include <algorithm>
 
-
 /**
  * Sets all elements in an array to zero.
  *

@@ -12,13 +12,11 @@
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/util/validation.hpp"
 
-
 /**
  * An implementation of the type `ITrainingResult` that provides access to the result of training an
  * `AbstractRuleLearner`.
  */
 class TrainingResult final : public ITrainingResult {
-
     private:
 
         uint32 numLabels_;
@@ -61,7 +59,6 @@ class TrainingResult final : public ITrainingResult {
         const std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() const override {
             return labelSpaceInfoPtr_;
         }
-
 };
 
 AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)

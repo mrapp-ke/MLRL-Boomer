@@ -9,7 +9,6 @@
 #include "boosting/data/histogram_view_label_wise_sparse.hpp"
 #include "boosting/data/statistic_view_label_wise_sparse.hpp"
 
-
 namespace boosting {
 
     /**
@@ -18,7 +17,6 @@ namespace boosting {
      * and Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
      */
     class SparseLabelWiseStatisticVector final {
-
         private:
 
             /**
@@ -26,7 +24,6 @@ namespace boosting {
              * `SparseLabelWiseStatisticVector`.
              */
             class ConstIterator final {
-
                 private:
 
                     const Triple<float64>* iterator_;
@@ -133,7 +130,6 @@ namespace boosting {
                      * @return      The difference between the iterators
                      */
                     difference_type operator-(const ConstIterator& rhs) const;
-
             };
 
             uint32 numElements_;
@@ -376,7 +372,6 @@ namespace boosting {
              */
             void difference(const SparseLabelWiseStatisticVector& first, const PartialIndexVector& firstIndices,
                             const SparseLabelWiseStatisticVector& second);
-
     };
 
 }

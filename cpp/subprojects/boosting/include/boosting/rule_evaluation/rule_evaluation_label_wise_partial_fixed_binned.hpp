@@ -6,7 +6,6 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
 #include "boosting/binning/label_binning.hpp"
 
-
 namespace boosting {
 
     /**
@@ -15,7 +14,6 @@ namespace boosting {
      * binning.
      */
     class LabelWiseFixedPartialBinnedRuleEvaluationFactory final : public ISparseLabelWiseRuleEvaluationFactory {
-
         private:
 
             float32 labelRatio_;
@@ -68,7 +66,6 @@ namespace boosting {
             std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
                 const SparseLabelWiseStatisticVector& statisticVector,
                 const PartialIndexVector& indexVector) const override;
-
     };
 
 }

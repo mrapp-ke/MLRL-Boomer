@@ -6,14 +6,12 @@
 #include "common/post_optimization/post_optimization.hpp"
 #include "common/macros.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to configure a method that optimizes each rule in a model by
  * relearning it in the context of the other rules. Multiple iterations, where the rules in a model are relearned in the
  * order of their induction, may be carried out.
  */
 class MLRLCOMMON_API ISequentialPostOptimizationConfig {
-
     public:
 
         virtual ~ISequentialPostOptimizationConfig() { };
@@ -68,7 +66,6 @@ class MLRLCOMMON_API ISequentialPostOptimizationConfig {
          *                          further configuration of the optimization method
          */
         virtual ISequentialPostOptimizationConfig& setResampleFeatures(bool resampleFeatures) = 0;
-
 };
 
 /**
@@ -76,7 +73,6 @@ class MLRLCOMMON_API ISequentialPostOptimizationConfig {
  */
 class SequentialPostOptimizationConfig final : public ISequentialPostOptimizationConfig,
                                                public IPostOptimizationPhaseConfig {
-
     private:
 
         uint32 numIterations_;
@@ -102,5 +98,4 @@ class SequentialPostOptimizationConfig final : public ISequentialPostOptimizatio
         ISequentialPostOptimizationConfig& setResampleFeatures(bool resampleFeatures) override;
 
         std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory() const override;
-
 };

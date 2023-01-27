@@ -2,7 +2,6 @@
 #include "common/binning/feature_binning_equal_width.hpp"
 #include "common/binning/feature_binning_no.hpp"
 
-
 namespace boosting {
 
     AutomaticFeatureBinningConfig::AutomaticFeatureBinningConfig(

@@ -9,7 +9,6 @@
 #include "seco/rule_evaluation/rule_evaluation.hpp"
 #include <memory>
 
-
 namespace seco {
 
     /**
@@ -17,7 +16,6 @@ namespace seco {
      * calculate the predictions of rules, as well as their overall quality, based on label-wise confusion matrices.
      */
     class ILabelWiseRuleEvaluationFactory {
-
         public:
 
             virtual ~ILabelWiseRuleEvaluationFactory() { };
@@ -41,7 +39,6 @@ namespace seco {
              * @return              An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
             virtual std::unique_ptr<IRuleEvaluation> create(const PartialIndexVector& indexVector) const = 0;
-
     };
 
 }

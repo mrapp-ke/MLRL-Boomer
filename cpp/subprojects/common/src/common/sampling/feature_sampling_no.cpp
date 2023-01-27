@@ -7,7 +7,6 @@
  * An implementation of the class `IFeatureSampling` that does not perform any sampling, but includes all features.
  */
 class NoFeatureSampling final : public IFeatureSampling {
-
     private:
 
         CompleteIndexVector indexVector_;
@@ -29,14 +28,12 @@ class NoFeatureSampling final : public IFeatureSampling {
         std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) override {
             return std::make_unique<PredefinedFeatureSampling>(indexVector_);
         }
-
 };
 
 /**
  * Allows to create instances of the type `IFeatureSampling` that do not perform any sampling, but include all features.
  */
 class NoFeatureSamplingFactory final : public IFeatureSamplingFactory {
-
     private:
 
         uint32 numFeatures_;
@@ -54,7 +51,6 @@ class NoFeatureSamplingFactory final : public IFeatureSamplingFactory {
         std::unique_ptr<IFeatureSampling> create() const override {
             return std::make_unique<NoFeatureSampling>(numFeatures_);
         }
-
 };
 
 std::unique_ptr<IFeatureSamplingFactory> NoFeatureSamplingConfig::createFeatureSamplingFactory(

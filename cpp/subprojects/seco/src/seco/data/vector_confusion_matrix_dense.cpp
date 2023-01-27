@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <cstdlib>
 
-
 namespace seco {
 
     template<typename LabelIterator>

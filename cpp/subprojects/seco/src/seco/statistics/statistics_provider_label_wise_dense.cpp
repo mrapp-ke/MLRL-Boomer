@@ -8,7 +8,6 @@
 #include "statistics_label_wise_common.hpp"
 #include "statistics_provider_label_wise.hpp"
 
-
 namespace seco {
 
     /**
@@ -123,7 +122,6 @@ namespace seco {
                                                                               std::move(majorityLabelVectorPtr),
                                                                               ruleEvaluationFactory);
     }
-
 
     DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(
             std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,

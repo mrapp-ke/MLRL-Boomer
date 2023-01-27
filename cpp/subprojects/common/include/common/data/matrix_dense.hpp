@@ -5,7 +5,6 @@
 
 #include "common/data/view_c_contiguous.hpp"
 
-
 /**
  * A two-dimensional matrix that provides random access to a fixed number of elements stored in a C-contiguous array.
  *
@@ -13,7 +12,6 @@
  */
 template<typename T>
 class DenseMatrix : public CContiguousView<T> {
-
     public:
 
         /**
@@ -30,5 +28,4 @@ class DenseMatrix : public CContiguousView<T> {
         DenseMatrix(uint32 numRows, uint32 numCols, bool init);
 
         virtual ~DenseMatrix();
-
 };

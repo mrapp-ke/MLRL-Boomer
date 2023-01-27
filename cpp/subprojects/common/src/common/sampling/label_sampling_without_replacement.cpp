@@ -4,12 +4,10 @@
 #include "common/util/validation.hpp"
 #include "index_sampling.hpp"
 
-
 /**
  * Allows to select a subset of the available labels without replacement.
  */
 class LabelSamplingWithoutReplacement final : public ILabelSampling {
-
     private:
 
         uint32 numLabels_;
@@ -31,7 +29,6 @@ class LabelSamplingWithoutReplacement final : public ILabelSampling {
             sampleIndicesWithoutReplacement<IndexIterator>(indexVector_, IndexIterator(numLabels_), numLabels_, rng);
             return indexVector_;
         }
-
 };
 
 /**
@@ -39,7 +36,6 @@ class LabelSamplingWithoutReplacement final : public ILabelSampling {
  * replacement.
  */
 class LabelSamplingWithoutReplacementFactory final : public ILabelSamplingFactory {
-
     private:
 
         uint32 numLabels_;
@@ -60,7 +56,6 @@ class LabelSamplingWithoutReplacementFactory final : public ILabelSamplingFactor
         std::unique_ptr<ILabelSampling> create() const override {
             return std::make_unique<LabelSamplingWithoutReplacement>(numLabels_, numSamples_);
         }
-
 };
 
 LabelSamplingWithoutReplacementConfig::LabelSamplingWithoutReplacementConfig()

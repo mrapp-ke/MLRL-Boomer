@@ -7,7 +7,6 @@
 #include "boosting/data/statistic_view_label_wise_sparse.hpp"
 #include "common/measures/measure_evaluation_sparse.hpp"
 
-
 namespace boosting {
 
     /**
@@ -16,7 +15,6 @@ namespace boosting {
      * function should be zero, if the prediction for a label is correct.
      */
     class ISparseLabelWiseLoss : virtual public ILabelWiseLoss, public ISparseEvaluationMeasure {
-
         public:
 
             virtual ~ISparseLabelWiseLoss() override { };
@@ -101,14 +99,12 @@ namespace boosting {
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    SparseLabelWiseStatisticView& statisticView) const = 0;
-
     };
 
     /**
      * Defines an interface for all factories that allow to create instances of the type `ISparseLabelWiseLoss`.
      */
     class ISparseLabelWiseLossFactory : public ILabelWiseLossFactory, public ISparseEvaluationMeasureFactory {
-
         public:
 
             virtual ~ISparseLabelWiseLossFactory() override { };
@@ -133,7 +129,6 @@ namespace boosting {
             std::unique_ptr<ISparseEvaluationMeasure> createSparseEvaluationMeasure() const override final {
                 return this->createSparseLabelWiseLoss();
             }
-
     };
 
     /**
@@ -141,7 +136,6 @@ namespace boosting {
      * label-wise and is suited for the use of sparse data structures.
      */
     class ISparseLabelWiseLossConfig : public ILabelWiseLossConfig {
-
         public:
 
             virtual ~ISparseLabelWiseLossConfig() override { };
@@ -171,7 +165,6 @@ namespace boosting {
             bool isSparse() const override final {
                 return true;
             }
-
     };
 
 }

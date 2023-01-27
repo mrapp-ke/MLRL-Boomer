@@ -2,7 +2,6 @@
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/binning/label_binning_no.hpp"
 
-
 namespace boosting {
 
     AutomaticLabelBinningConfig::AutomaticLabelBinningConfig(

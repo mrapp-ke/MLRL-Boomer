@@ -1,7 +1,6 @@
 #include "common/data/vector_sparse_array.hpp"
 #include "common/data/tuple.hpp"
 
-
 template<typename T>
 SparseArrayVector<T>::IndexConstIterator::IndexConstIterator(
         typename VectorConstView<IndexedValue<T>>::const_iterator iterator)
@@ -174,7 +173,6 @@ typename SparseArrayVector<T>::ValueConstIterator::difference_type SparseArrayVe
         const ValueConstIterator& rhs) const {
     return iterator_ - rhs.iterator_;
 }
-
 
 template<typename T>
 SparseArrayVector<T>::ValueIterator::ValueIterator(typename VectorView<IndexedValue<T>>::iterator iterator)

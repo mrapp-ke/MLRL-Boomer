@@ -2,7 +2,6 @@
 #include "common/data/arrays.hpp"
 #include <cstdlib>
 
-
 template<typename IndexIterator>
 static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices,
                                       const CContiguousConstView<const uint8>& labelMatrix, IndexIterator indicesBegin,

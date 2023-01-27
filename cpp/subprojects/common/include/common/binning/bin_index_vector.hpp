@@ -11,13 +11,11 @@
 class IHistogram;
 class IWeightedStatistics;
 
-
 /**
  * Defines an interface for all classes that provide access to the indices of the bins, individual examples have been
  * assigned to.
  */
 class IBinIndexVector {
-
     public:
 
         /**
@@ -52,5 +50,4 @@ class IBinIndexVector {
          */
         virtual std::unique_ptr<IHistogram> createHistogram(const IWeightedStatistics& statistics,
                                                             uint32 numBins) const = 0;
-
 };

@@ -7,12 +7,10 @@
 #include "common/model/rule_model.hpp"
 #include "common/model/condition_list.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to incrementally build rule-based models.
  */
 class IModelBuilder {
-
     public:
 
         virtual ~IModelBuilder() { };
@@ -49,14 +47,12 @@ class IModelBuilder {
          * @return An unique pointer to an object of type `IRuleModel` that has been built
          */
         virtual std::unique_ptr<IRuleModel> buildModel() = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IModelBuilder`.
  */
 class IModelBuilderFactory {
-
     public:
 
         virtual ~IModelBuilderFactory() { };
@@ -67,5 +63,4 @@ class IModelBuilderFactory {
          * @return An unique pointer to an object of type `IModelBuilder` that has been created
          */
         virtual std::unique_ptr<IModelBuilder> create() const = 0;
-
 };

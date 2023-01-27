@@ -7,7 +7,6 @@
 #include "common/indices/index_vector_partial.hpp"
 #include "boosting/iterator/diagonal_iterator.hpp"
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
      * as a symmetric Hessian matrix with `n` rows and columns.
      */
     class DenseExampleWiseStatisticVector final {
-
         private:
 
             uint32 numGradients_;
@@ -310,7 +308,6 @@ namespace boosting {
                             const PartialIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
                             gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
                             hessian_const_iterator secondHessiansEnd);
-
     };
 
 }

@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <thread>
 
-
 /**
  * Returns the number of threads that are available for parallelized algorithms.
  *

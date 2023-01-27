@@ -6,7 +6,6 @@
 #include "common/model/head_partial.hpp"
 #include "omp.h"
 
-
 namespace seco {
 
     static inline void applyCompleteHead(const CompleteHead& head, CContiguousView<uint8>::value_iterator begin,
@@ -216,7 +215,6 @@ namespace seco {
      */
     template<typename FeatureMatrix, typename Model>
     class LabelWiseBinaryPredictor final : public IBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -246,7 +244,6 @@ namespace seco {
             std::unique_ptr<DensePredictionMatrix<uint8>> predict() const override {
                 return predictInternally(featureMatrix_, model_, numLabels_, numThreads_);
             }
-
     };
 
     /**
@@ -257,7 +254,6 @@ namespace seco {
      * and label.
      */
     class LabelWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
-
         private:
 
             uint32 numThreads_;
@@ -286,9 +282,7 @@ namespace seco {
                 return std::make_unique<LabelWiseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                     featureMatrix, model, numLabels, numThreads_);
             }
-
     };
-
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
             const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
@@ -374,7 +368,6 @@ namespace seco {
      */
     template<typename FeatureMatrix, typename Model>
     class LabelWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -404,7 +397,6 @@ namespace seco {
             std::unique_ptr<BinarySparsePredictionMatrix> predict() const override {
                 return predictSparseInternally(featureMatrix_, model_, numLabels_, numThreads_);
             }
-
     };
 
     /**
@@ -415,7 +407,6 @@ namespace seco {
      * particular example and label.
      */
     class LabelWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
-
         private:
 
             uint32 numThreads_;
@@ -444,7 +435,6 @@ namespace seco {
                 return std::make_unique<LabelWiseSparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                     featureMatrix, model, numLabels, numThreads_);
             }
-
     };
 
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(

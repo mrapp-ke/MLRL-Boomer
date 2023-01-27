@@ -6,7 +6,6 @@
 
 #include "seco/heuristics/heuristic.hpp"
 
-
 namespace seco {
 
     /**
@@ -14,11 +13,9 @@ namespace seco {
      * rule's prediction is (or would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
      */
     class RecallConfig final : public IHeuristicConfig {
-
         public:
 
             std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const override;
-
     };
 
 }

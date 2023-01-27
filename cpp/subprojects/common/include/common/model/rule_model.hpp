@@ -20,12 +20,10 @@ class IScorePredictorFactory;
 class IProbabilityPredictor;
 class IProbabilityPredictorFactory;
 
-
 /**
  * Defines an interface for all rule-based models.
  */
 class MLRLCOMMON_API IRuleModel {
-
     public:
 
         virtual ~IRuleModel() { };
@@ -192,5 +190,4 @@ class MLRLCOMMON_API IRuleModel {
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
             const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
-
 };

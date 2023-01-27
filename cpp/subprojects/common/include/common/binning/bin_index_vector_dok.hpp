@@ -6,13 +6,11 @@
 #include "common/binning/bin_index_vector.hpp"
 #include "common/data/vector_dok.hpp"
 
-
 /**
  * Stores the indices of the bins, individual examples have been assigned to, using the dictionaries of keys (DOK)
  * format.
  */
 class DokBinIndexVector final : public IBinIndexVector {
-
     private:
 
         DokVector<uint32> vector_;
@@ -46,5 +44,4 @@ class DokBinIndexVector final : public IBinIndexVector {
 
         std::unique_ptr<IHistogram> createHistogram(const IWeightedStatistics& statistics,
                                                     uint32 numBins) const override;
-
 };

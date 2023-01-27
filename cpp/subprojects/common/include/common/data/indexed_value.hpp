@@ -5,7 +5,6 @@
 
 #include "common/data/types.hpp"
 
-
 /**
  * A tuple that consists of an index and a value.
  *

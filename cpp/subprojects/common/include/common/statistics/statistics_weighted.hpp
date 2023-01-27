@@ -8,13 +8,11 @@
 #include "common/binning/bin_index_vector_dense.hpp"
 #include "common/binning/bin_index_vector_dok.hpp"
 
-
 /**
  * Defines an interface for all classes that inherit from `IImmutableWeightedStatistics`, but do also provide functions
  * that allow to only use a sub-sample of the available statistics.
  */
 class IWeightedStatistics : virtual public IImmutableWeightedStatistics {
-
     public:
 
         virtual ~IWeightedStatistics() override { };
@@ -90,5 +88,4 @@ class IWeightedStatistics : virtual public IImmutableWeightedStatistics {
          */
         virtual std::unique_ptr<IHistogram> createHistogram(const DokBinIndexVector& binIndexVector,
                                                             uint32 numBins) const = 0;
-
 };

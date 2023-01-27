@@ -2,12 +2,10 @@
 #include "common/util/validation.hpp"
 #include <chrono>
 
-
 /**
  * An implementation of the type `IStoppingCriterion` that ensures that a certain time limit is not exceeded.
  */
 class TimeStoppingCriterion final : public IStoppingCriterion {
-
     private:
 
         typedef std::chrono::steady_clock timer;
@@ -48,14 +46,12 @@ class TimeStoppingCriterion final : public IStoppingCriterion {
 
             return result;
         }
-
 };
 
 /**
  * Allows to create instances of the type `IStoppingCriterion` that ensure that a certain time limit is not exceeded.
  */
 class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
-
     private:
 
         uint32 timeLimit_;
@@ -77,7 +73,6 @@ class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
         std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
             return std::make_unique<TimeStoppingCriterion>(timeLimit_);
         }
-
 };
 
 TimeStoppingCriterionConfig::TimeStoppingCriterionConfig()

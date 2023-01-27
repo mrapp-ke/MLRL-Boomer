@@ -5,12 +5,10 @@
 
 #include "common/model/body.hpp"
 
-
 /**
  * An empty body that does not contain any conditions and therefore covers any examples.
  */
 class MLRLCOMMON_API EmptyBody final : public IBody {
-
     public:
 
         bool covers(CContiguousConstView<const float32>::value_const_iterator begin,
@@ -23,5 +21,4 @@ class MLRLCOMMON_API EmptyBody final : public IBody {
                     uint32 n) const override;
 
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const override;
-
 };

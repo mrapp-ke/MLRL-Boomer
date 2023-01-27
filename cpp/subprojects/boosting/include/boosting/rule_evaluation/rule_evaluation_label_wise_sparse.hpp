@@ -6,7 +6,6 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 #include "boosting/data/statistic_vector_label_wise_sparse.hpp"
 
-
 namespace boosting {
 
     /**
@@ -15,7 +14,6 @@ namespace boosting {
      * loss function that is applied label-wise and are stored using a sparse data structure.
      */
     class ISparseLabelWiseRuleEvaluationFactory : public ILabelWiseRuleEvaluationFactory {
-
         public:
 
             virtual ~ISparseLabelWiseRuleEvaluationFactory() override { };
@@ -53,7 +51,6 @@ namespace boosting {
              */
             virtual std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
                 const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const = 0;
-
     };
 
 }

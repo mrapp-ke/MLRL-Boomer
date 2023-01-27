@@ -7,7 +7,6 @@
 #include "boosting/statistics/statistics_example_wise.hpp"
 #include "boosting/statistics/statistics_label_wise.hpp"
 
-
 namespace boosting {
 
     /**
@@ -20,7 +19,6 @@ namespace boosting {
      */
     template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
     class ExampleWiseStatisticsProvider final : public IStatisticsProvider {
-
         private:
 
             const ExampleWiseRuleEvaluationFactory& regularRuleEvaluationFactory_;
@@ -71,7 +69,6 @@ namespace boosting {
             void switchToPruningRuleEvaluation() override {
                 statisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);
             }
-
     };
 
     /**
@@ -85,7 +82,6 @@ namespace boosting {
      */
     template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
     class ConvertibleExampleWiseStatisticsProvider final : public IStatisticsProvider {
-
         private:
 
             const LabelWiseRuleEvaluationFactory& regularRuleEvaluationFactory_;
@@ -168,7 +164,6 @@ namespace boosting {
                     labelWiseStatisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);
                 }
             }
-
     };
 
 }

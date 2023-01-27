@@ -5,7 +5,6 @@
 
 #include "common/data/view_one_dimensional.hpp"
 
-
 /**
  * Implements read-only access to the values that are stored in a pre-allocated C-contiguous array.
  *
@@ -13,7 +12,6 @@
  */
 template<typename T>
 class MLRLCOMMON_API VectorConstView : public IOneDimensionalView {
-
     protected:
 
         /**
@@ -66,7 +64,6 @@ class MLRLCOMMON_API VectorConstView : public IOneDimensionalView {
          * @see `IOneDimensionalView::getNumElements`
          */
         uint32 getNumElements() const override final;
-
 };
 
 /**
@@ -76,7 +73,6 @@ class MLRLCOMMON_API VectorConstView : public IOneDimensionalView {
  */
 template<typename T>
 class MLRLCOMMON_API VectorView : public VectorConstView<T> {
-
     public:
 
         /**
@@ -120,5 +116,4 @@ class MLRLCOMMON_API VectorView : public VectorConstView<T> {
          * @return      A reference to the specified element
          */
         T& operator[](uint32 pos);
-
 };

@@ -1,6 +1,5 @@
 #include "common/model/condition_list.hpp"
 
-
 ConditionList::ConditionList()
     : numConditionsPerComparator_({0, 0, 0, 0}) {
 

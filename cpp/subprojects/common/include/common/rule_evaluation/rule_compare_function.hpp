@@ -6,12 +6,10 @@
 #include "common/util/quality.hpp"
 #include <functional>
 
-
 /**
  * Defines a function for comparing the quality of different rules.
  */
 struct RuleCompareFunction {
-
     /**
      * A function for comparing two objects of type `Quality`. It should return true, if the first object is better than
      * the second one, false otherwise.
@@ -33,5 +31,4 @@ struct RuleCompareFunction {
      * The minimum quality of a rule.
      */
     float64 minQuality;
-
 };

@@ -6,7 +6,6 @@
 #include "boosting/statistics/statistics_label_wise.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 
-
 namespace boosting {
 
     /**
@@ -20,7 +19,6 @@ namespace boosting {
      */
     template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
     class IExampleWiseStatistics : virtual public IStatistics {
-
         public:
 
             virtual ~IExampleWiseStatistics() override { };
@@ -48,7 +46,6 @@ namespace boosting {
              */
             virtual std::unique_ptr<ILabelWiseStatistics<LabelWiseRuleEvaluationFactory>> toLabelWiseStatistics(
                 const LabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) = 0;
-
     };
 
 }

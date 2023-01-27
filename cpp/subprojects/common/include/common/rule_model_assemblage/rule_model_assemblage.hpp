@@ -17,13 +17,11 @@
 #include "common/stopping/stopping_criterion.hpp"
 #include "common/thresholds/thresholds.hpp"
 
-
 /**
  * Defines an interface for all classes that implement an algorithm for the induction of several rules that will be
  * added to a rule-based model.
  */
 class IRuleModelAssemblage {
-
     public:
 
         virtual ~IRuleModelAssemblage() { };
@@ -45,14 +43,12 @@ class IRuleModelAssemblage {
                                                         const IColumnWiseFeatureMatrix& featureMatrix,
                                                         const IRowWiseLabelMatrix& labelMatrix,
                                                         uint32 randomState) const = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IRuleModelAssemblage`.
  */
 class IRuleModelAssemblageFactory {
-
     public:
 
         virtual ~IRuleModelAssemblageFactory() { };
@@ -108,7 +104,6 @@ class IRuleModelAssemblageFactory {
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
             std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
             std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const = 0;
-
 };
 
 /**
@@ -116,7 +111,6 @@ class IRuleModelAssemblageFactory {
  * will be added to a rule-based model.
  */
 class IRuleModelAssemblageConfig {
-
     public:
 
         virtual ~IRuleModelAssemblageConfig() { };
@@ -131,5 +125,4 @@ class IRuleModelAssemblageConfig {
          */
         virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
             const IRowWiseLabelMatrix& labelMatrix) const = 0;
-
 };

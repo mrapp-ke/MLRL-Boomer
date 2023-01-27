@@ -1,7 +1,6 @@
 #include "common/rule_refinement/prediction.hpp"
 #include "common/data/arrays.hpp"
 
-
 AbstractPrediction::AbstractPrediction(uint32 numElements)
     : predictedScoreVector_(DenseVector<float64>(numElements)) {
 

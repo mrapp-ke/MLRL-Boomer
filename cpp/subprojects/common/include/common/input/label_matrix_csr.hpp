@@ -13,13 +13,11 @@
 #include "common/data/view_vector.hpp"
 #include "common/data/functions.hpp"
 
-
 /**
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
  * are stored in a sparse matrix in the compressed sparse row (CSR) format.
  */
 class MLRLCOMMON_API ICsrLabelMatrix : virtual public IRowWiseLabelMatrix {
-
     public:
 
         virtual ~ICsrLabelMatrix() override { };
@@ -31,21 +29,18 @@ class MLRLCOMMON_API ICsrLabelMatrix : virtual public IRowWiseLabelMatrix {
  * sparse matrix in the compressed sparse row (CSR) format.
  */
 class CsrLabelMatrix final : public BinaryCsrConstView, virtual public ICsrLabelMatrix {
-
     public:
 
         /**
          * Provides access to the values that are stored in a single row of a `CsrLabelMatrix``.
          */
         class View final : public VectorConstView<const uint32> {
-
             public:
 
                 /**
                  * Allows to compute hash values for objects of type `CsrLabelMatrix::View`.
                  */
                 struct Hash final {
-
                     /**
                      * Computes and returns a hash value for a given object of type `CsrLabelMatrix::View`.
                      *
@@ -55,14 +50,12 @@ class CsrLabelMatrix final : public BinaryCsrConstView, virtual public ICsrLabel
                     inline std::size_t operator()(const View& v) const {
                         return hashArray(v.cbegin(), v.getNumElements());
                     }
-
                 };
 
                 /**
                  * Allows to check whether two objects of type `CsrLabelMatrix::View` are equal or not.
                  */
                 struct Pred final {
-
                     /**
                      * Returns whether two objects of type `CsrLabelMatrix::View` are equal or not.
                      *
@@ -73,7 +66,6 @@ class CsrLabelMatrix final : public BinaryCsrConstView, virtual public ICsrLabel
                     inline bool operator()(const View& lhs, const View& rhs) const {
                         return compareArrays(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
                     }
-
                 };
 
                 /**
@@ -81,7 +73,6 @@ class CsrLabelMatrix final : public BinaryCsrConstView, virtual public ICsrLabel
                  * @param row           The row, the view provides access to
                  */
                 View(const CsrLabelMatrix& labelMatrix, uint32 row);
-
         };
 
         /**
@@ -127,7 +118,6 @@ class CsrLabelMatrix final : public BinaryCsrConstView, virtual public ICsrLabel
         std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
                                                                   BiPartition& partition,
                                                                   IStatistics& statistics) const override;
-
 };
 
 /**

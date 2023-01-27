@@ -6,14 +6,12 @@
 #include "boosting/losses/loss_label_wise.hpp"
 #include "boosting/data/statistic_view_example_wise_dense.hpp"
 
-
 namespace boosting {
 
     /**
      * Defines an interface for all (non-decomposable) loss functions that are applied example-wise.
      */
     class IExampleWiseLoss : public ILabelWiseLoss {
-
         public:
 
             virtual ~IExampleWiseLoss() override { };
@@ -46,14 +44,12 @@ namespace boosting {
             virtual void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                                                      const CContiguousConstView<float64>& scoreMatrix,
                                                      DenseExampleWiseStatisticView& statisticView) const = 0;
-
     };
 
     /**
      * Defines an interface for all factories that allow to create instances of the type `IExampleWiseLoss`.
      */
     class IExampleWiseLossFactory : public ILabelWiseLossFactory {
-
         public:
 
             virtual ~IExampleWiseLossFactory() override { };
@@ -68,7 +64,6 @@ namespace boosting {
             std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override final {
                 return this->createExampleWiseLoss();
             }
-
     };
 
     /**
@@ -76,7 +71,6 @@ namespace boosting {
      * example-wise.
      */
     class IExampleWiseLossConfig : public ILossConfig {
-
         public:
 
             virtual ~IExampleWiseLossConfig() override { };
@@ -104,7 +98,6 @@ namespace boosting {
             bool isSparse() const override {
                 return true;
             }
-
     };
 
 }

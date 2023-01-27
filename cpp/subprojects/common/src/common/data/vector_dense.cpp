@@ -3,7 +3,6 @@
 #include "common/data/tuple.hpp"
 #include <cstdlib>
 
-
 template<typename T>
 DenseVector<T>::DenseVector(uint32 numElements)
     : DenseVector<T>(numElements, false) {

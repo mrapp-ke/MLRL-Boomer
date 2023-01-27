@@ -39,14 +39,12 @@
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/stopping/stopping_criterion_time.hpp"
 
-
 /**
  * Defines an interface for all classes that provide access to the results of fitting a rule learner to training data.
  * It incorporates the model that has been trained, as well as additional information that is necessary for obtaining
  * predictions for unseen data.
  */
 class MLRLCOMMON_API ITrainingResult {
-
     public:
 
         virtual ~ITrainingResult() { };
@@ -87,14 +85,12 @@ class MLRLCOMMON_API ITrainingResult {
          *         predictions
          */
         virtual const std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() const = 0;
-
 };
 
 /**
  * Defines an interface for all rule learners.
  */
 class MLRLCOMMON_API IRuleLearner {
-
     public:
 
         /**
@@ -415,14 +411,12 @@ class MLRLCOMMON_API IRuleLearner {
                  * by relearning it in the context of the other rules.
                  */
                 virtual void useNoSequentialPostOptimization() = 0;
-
         };
 
         /**
          * Defines an interface for all classes that allow to configure a rule learner to use a top-down beam search.
          */
         class IBeamSearchTopDownMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~IBeamSearchTopDownMixin() { };
@@ -442,14 +436,12 @@ class MLRLCOMMON_API IRuleLearner {
                     ruleInductionConfigPtr = std::move(ptr);
                     return ref;
                 }
-
         };
 
         /**
          * Defines an interface for all classes that allow to configure a rule learner to use feature binning.
          */
         class IFeatureBinningMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~IFeatureBinningMixin() { };
@@ -488,14 +480,12 @@ class MLRLCOMMON_API IRuleLearner {
                     featureBinningConfigPtr = std::move(ptr);
                     return ref;
                 }
-
         };
 
         /**
          * Defines an interface for all classes that allow to configure a rule learner to use label sampling.
          */
         class ILabelSamplingMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~ILabelSamplingMixin() { };
@@ -515,14 +505,12 @@ class MLRLCOMMON_API IRuleLearner {
                     labelSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
-
         };
 
         /**
          * Defines an interface for all classes that allow to configure a rule learner to use instance sampling.
          */
         class IInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~IInstanceSamplingMixin() { };
@@ -596,14 +584,12 @@ class MLRLCOMMON_API IRuleLearner {
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
-
         };
 
         /**
          * Defines an interface for all classes that allow to configure a rule learner to use feature sampling.
          */
         class IFeatureSamplingMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~IFeatureSamplingMixin() { };
@@ -624,14 +610,12 @@ class MLRLCOMMON_API IRuleLearner {
                     featureSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
-
         };
 
         /**
          * Defines an interface for all classes that allow to configure a rule learner to use partition sampling.
          */
         class IPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~IPartitionSamplingMixin() { };
@@ -690,14 +674,12 @@ class MLRLCOMMON_API IRuleLearner {
                     partitionSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
-
         };
 
         /**
          * Defines an interface for all classes that allow to configure a rule learner to use pruning.
          */
         class IRulePruningMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~IRulePruningMixin() { };
@@ -710,14 +692,12 @@ class MLRLCOMMON_API IRuleLearner {
                     std::unique_ptr<IRulePruningConfig>& rulePruningConfigPtr = this->getRulePruningConfigPtr();
                     rulePruningConfigPtr = std::make_unique<IrepConfig>(this->getRuleCompareFunction());
                 }
-
         };
 
         /**
          * Defines an interface for all classes that allow to configure a rule learner to use multi-threading.
          */
         class IMultiThreadingMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~IMultiThreadingMixin() { };
@@ -736,7 +716,6 @@ class MLRLCOMMON_API IRuleLearner {
                     parallelRuleRefinementConfigPtr = std::move(ptr);
                     return ref;
                 }
-
 
                 /**
                  * Configures the rule learner to use multi-threading for the parallel update of statistics.
@@ -767,7 +746,6 @@ class MLRLCOMMON_API IRuleLearner {
                     parallelPredictionConfigPtr = std::move(ptr);
                     return ref;
                 }
-
         };
 
         /**
@@ -775,7 +753,6 @@ class MLRLCOMMON_API IRuleLearner {
          * ensures that the number of induced rules does not exceed a certain maximum.
          */
         class ISizeStoppingCriterionMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~ISizeStoppingCriterionMixin() { };
@@ -795,7 +772,6 @@ class MLRLCOMMON_API IRuleLearner {
                     sizeStoppingCriterionConfigPtr = std::move(ptr);
                     return ref;
                 }
-
         };
 
         /**
@@ -803,7 +779,6 @@ class MLRLCOMMON_API IRuleLearner {
          * ensures that a certain time limit is not exceeded.
          */
         class ITimeStoppingCriterionMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~ITimeStoppingCriterionMixin() { };
@@ -823,7 +798,6 @@ class MLRLCOMMON_API IRuleLearner {
                     timeStoppingCriterionConfigPtr = std::move(ptr);
                     return ref;
                 }
-
         };
 
         /**
@@ -832,7 +806,6 @@ class MLRLCOMMON_API IRuleLearner {
          * or holdout set do not improve according to a certain measure.
          */
         class IPrePruningMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~IPrePruningMixin() { };
@@ -852,7 +825,6 @@ class MLRLCOMMON_API IRuleLearner {
                     globalPruningConfigPtr = std::move(ptr);
                     return ref;
                 }
-
         };
 
         /**
@@ -861,7 +833,6 @@ class MLRLCOMMON_API IRuleLearner {
          * or holdout set according to a certain measure.
          */
         class IPostPruningMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~IPostPruningMixin() { };
@@ -878,7 +849,6 @@ class MLRLCOMMON_API IRuleLearner {
                     globalPruningConfigPtr = std::move(ptr);
                     return ref;
                 }
-
         };
 
         /**
@@ -886,7 +856,6 @@ class MLRLCOMMON_API IRuleLearner {
          * that optimizes each rule in a model by relearning it in the context of the other rules.
          */
         class ISequentialPostOptimizationMixin : virtual public IRuleLearner::IConfig {
-
             public:
 
                 virtual ~ISequentialPostOptimizationMixin() { };
@@ -907,7 +876,6 @@ class MLRLCOMMON_API IRuleLearner {
                     sequentialPostOptimizationConfigPtr = std::move(ptr);
                     return ref;
                 }
-
         };
 
         virtual ~IRuleLearner() { };
@@ -1149,21 +1117,18 @@ class MLRLCOMMON_API IRuleLearner {
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
-
 };
 
 /**
  * An abstract base class for all rule learners.
  */
 class AbstractRuleLearner : virtual public IRuleLearner {
-
     public:
 
         /**
          * Allows to configure a rule learner.
          */
         class Config : virtual public IRuleLearner::IConfig {
-
             protected:
 
                 /**
@@ -1377,7 +1342,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoGlobalPruning() override;
 
                 void useNoSequentialPostOptimization() override;
-
         };
 
     private:
@@ -1579,5 +1543,4 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                                                                           const IRuleModel& ruleModel,
                                                                           const ILabelSpaceInfo& labelSpaceInfo,
                                                                           uint32 numLabels) const override;
-
 };

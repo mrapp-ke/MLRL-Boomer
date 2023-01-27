@@ -2,7 +2,6 @@
 #include "common/util/threads.hpp"
 #include "common/util/validation.hpp"
 
-
 ManualMultiThreadingConfig::ManualMultiThreadingConfig()
     : numThreads_(0) {
 

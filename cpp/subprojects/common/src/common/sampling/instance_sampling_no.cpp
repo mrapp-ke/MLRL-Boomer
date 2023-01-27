@@ -32,7 +32,6 @@ static inline void sampleInternally(BiPartition& partition, BitWeightVector& wei
  */
 template<typename Partition, typename WeightVector>
 class NoInstanceSampling final : public IInstanceSampling {
-
     private:
 
         Partition& partition_;
@@ -54,7 +53,6 @@ class NoInstanceSampling final : public IInstanceSampling {
             sampleInternally(partition_, weightVector_, rng);
             return weightVector_;
         }
-
 };
 
 /**
@@ -62,7 +60,6 @@ class NoInstanceSampling final : public IInstanceSampling {
  * to all examples.
  */
 class NoInstanceSamplingFactory final : public IInstanceSamplingFactory {
-
     public:
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
@@ -85,7 +82,6 @@ class NoInstanceSamplingFactory final : public IInstanceSamplingFactory {
                                                   IStatistics& statistics) const override {
             return std::make_unique<NoInstanceSampling<BiPartition, BitWeightVector>>(partition);
         }
-
 };
 
 std::unique_ptr<IInstanceSamplingFactory> NoInstanceSamplingConfig::createInstanceSamplingFactory() const {

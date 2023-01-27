@@ -6,7 +6,6 @@
 
 #include "common/math/math.hpp"
 
-
 namespace seco {
 
     static inline constexpr float64 precision(float64 cin, float64 cip, float64 crn, float64 crp) {

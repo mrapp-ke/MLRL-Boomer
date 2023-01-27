@@ -6,7 +6,6 @@
 #include "boosting/statistics/statistics_example_wise.hpp"
 #include "common/binning/bin_weight_vector.hpp"
 
-
 namespace boosting {
 
     static inline bool hasNonZeroWeightExampleWise(const EqualWeightVector& weights, uint32 statisticIndex) {
@@ -56,7 +55,6 @@ namespace boosting {
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector,
              typename IndexVector>
     class ExampleWiseStatisticsSubset : virtual public IStatisticsSubset {
-
         protected:
 
             /**
@@ -130,7 +128,6 @@ namespace boosting {
             const IScoreVector& calculateScores() override final {
                 return ruleEvaluationPtr_->calculateScores(sumVector_);
             }
-
     };
 
     /**
@@ -147,7 +144,6 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector>
     class AbstractExampleWiseImmutableWeightedStatistics : virtual public IImmutableWeightedStatistics {
-
         protected:
 
             /**
@@ -162,7 +158,6 @@ namespace boosting {
                                                      public ExampleWiseStatisticsSubset<StatisticVector, StatisticView,
                                                                                         RuleEvaluationFactory,
                                                                                         WeightVector, IndexVector> {
-
                 private:
 
                     StatisticVector tmpVector_;
@@ -251,7 +246,6 @@ namespace boosting {
                                               accumulatedSumVectorPtr_->hessians_cend());
                         return this->ruleEvaluationPtr_->calculateScores(tmpVector_);
                     }
-
             };
 
         protected:
@@ -304,7 +298,6 @@ namespace boosting {
             uint32 getNumLabels() const override final {
                 return statisticView_.getNumCols();
             }
-
     };
 
     /**
@@ -328,7 +321,6 @@ namespace boosting {
                                        public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, Histogram,
                                                                                              RuleEvaluationFactory,
                                                                                              BinWeightVector> {
-
         private:
 
             /**
@@ -342,7 +334,6 @@ namespace boosting {
             class WeightedStatisticsSubset final :
                     public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, Histogram,
                                                                           RuleEvaluationFactory, BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
-
                 private:
 
                     const ExampleWiseHistogram& histogram_;
@@ -384,7 +375,6 @@ namespace boosting {
                         removeExampleWiseStatistic(histogram_.originalWeights_, histogram_.originalStatisticView_,
                                                    *totalCoverableSumVectorPtr_, statisticIndex);
                     }
-
             };
 
             std::unique_ptr<Histogram> histogramPtr_;
@@ -485,7 +475,6 @@ namespace boosting {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, totalSumVector_,
                                                                                       labelIndices);
             }
-
     };
 
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
@@ -564,9 +553,7 @@ namespace boosting {
             virtual public IWeightedStatistics,
             public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
                                                                   WeightVector> {
-
         private:
-
 
             /**
              * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
@@ -579,7 +566,6 @@ namespace boosting {
             class WeightedStatisticsSubset final :
                     public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
                                                                           RuleEvaluationFactory, WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
-
                 private:
 
                     std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
@@ -618,7 +604,6 @@ namespace boosting {
                         removeExampleWiseStatistic(this->weights_, this->statisticView_, *totalCoverableSumVectorPtr_,
                                                    statisticIndex);
                     }
-
             };
 
             std::unique_ptr<StatisticVector> totalSumVectorPtr_;
@@ -728,7 +713,6 @@ namespace boosting {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, *totalSumVectorPtr_,
                                                                                       labelIndices);
             }
-
     };
 
     template<typename LabelMatrix, typename StatisticView, typename ScoreMatrix, typename LossFunction>
@@ -764,7 +748,6 @@ namespace boosting {
              typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
     class AbstractExampleWiseStatistics : virtual public IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory,
                                                                                 LabelWiseRuleEvaluationFactory> {
-
         private:
 
             const ExampleWiseRuleEvaluationFactory* ruleEvaluationFactory_;
@@ -1086,7 +1069,6 @@ namespace boosting {
                                                                       DenseWeightVector<uint32>>>(
                     *statisticViewPtr_, *ruleEvaluationFactory_, weights);
             }
-
     };
 
 }

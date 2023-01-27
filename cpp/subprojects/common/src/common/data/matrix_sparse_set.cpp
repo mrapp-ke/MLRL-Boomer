@@ -4,7 +4,6 @@
 #include "common/data/triple.hpp"
 #include <limits>
 
-
 static const uint32 MAX_INDEX = std::numeric_limits<uint32>::max();
 
 template<typename T>

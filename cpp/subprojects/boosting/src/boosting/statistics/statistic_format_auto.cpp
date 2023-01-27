@@ -1,6 +1,5 @@
 #include "boosting/statistics/statistic_format_auto.hpp"
 
-
 namespace boosting {
 
     AutomaticStatisticsConfig::AutomaticStatisticsConfig(

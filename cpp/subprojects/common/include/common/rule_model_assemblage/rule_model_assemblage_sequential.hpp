@@ -6,13 +6,11 @@
 #include "common/rule_model_assemblage/rule_model_assemblage.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
 
-
 /**
  * Allows to configure an algorithm that sequentially induces several rules, optionally starting with a default rule,
  * that are added to a rule-based model.
  */
 class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageConfig {
-
     private:
 
         const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr_;
@@ -27,5 +25,4 @@ class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageCon
 
         std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
             const IRowWiseLabelMatrix& labelMatrix) const override;
-
 };

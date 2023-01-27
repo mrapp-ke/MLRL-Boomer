@@ -2,7 +2,6 @@
 #include "predictor_common.hpp"
 #include "omp.h"
 
-
 namespace boosting {
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
@@ -72,7 +71,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class LabelWiseScorePredictor final : public IScorePredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -106,7 +104,6 @@ namespace boosting {
             std::unique_ptr<DensePredictionMatrix<float64>> predict() const override {
                 return predictInternally(featureMatrix_, model_, numLabels_, numThreads_);
             }
-
     };
 
     /**
@@ -115,7 +112,6 @@ namespace boosting {
      * model for each label individually.
      */
     class LabelWiseScorePredictorFactory final : public IScorePredictorFactory {
-
         private:
 
             uint32 numThreads_;
@@ -152,7 +148,6 @@ namespace boosting {
                 return std::make_unique<LabelWiseScorePredictor<CsrConstView<const float32>, RuleList>>(
                     featureMatrix, model, numLabels, numThreads_);
             }
-
     };
 
     LabelWiseScorePredictorConfig::LabelWiseScorePredictorConfig(

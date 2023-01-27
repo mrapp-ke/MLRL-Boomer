@@ -1,7 +1,6 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
 #include <iostream>
 
-
 template<typename IndexVector, typename RefinementComparator>
 static inline void findRefinementInternally(const IndexVector& labelIndices, uint32 numExamples, uint32 featureIndex,
                                             bool nominal, uint32 minCoverage,
@@ -273,7 +272,6 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     comparator.pushRefinement(refinement, scoreVector);
                 }
             }
-
 
             // Check if a condition that uses the <= operator (or the != operator in case of a nominal feature) covers
             // at least `minCoverage` examples...

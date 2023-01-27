@@ -8,7 +8,6 @@
 #include "rule_evaluation_label_wise_common.hpp"
 #include <algorithm>
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
      * it goes before the second one.
      */
     struct CompareLabelWiseCriteria final {
-
         /**
          * Returns whether the a given object of type `IndexedValue` that stores the optimal prediction for a label, as
          * well as its index, should go before a second one.
@@ -29,7 +27,6 @@ namespace boosting {
         inline bool operator()(const IndexedValue<float64>& lhs, const IndexedValue<float64>& rhs) const {
             return std::abs(lhs.value) > std::abs(rhs.value);
         }
-
     };
 
     /**

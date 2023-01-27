@@ -8,7 +8,6 @@
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
      * binning.
      */
     class ExampleWiseFixedPartialBinnedRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
-
         private:
 
             float32 labelRatio_;
@@ -71,7 +69,6 @@ namespace boosting {
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
                 const DenseExampleWiseStatisticVector& statisticVector,
                 const PartialIndexVector& indexVector) const override;
-
     };
 
 }

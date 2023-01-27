@@ -3,12 +3,10 @@
 #include "common/util/validation.hpp"
 #include <unordered_set>
 
-
 /**
  * An implementation of the class `IModelBuilder` that allows to replace a single rule of an `IntermediateModelBuilder`.
  */
 class RuleReplacementBuilder final : public IModelBuilder {
-
     private:
 
         IntermediateModelBuilder::IntermediateRule& intermediateRule_;
@@ -41,7 +39,6 @@ class RuleReplacementBuilder final : public IModelBuilder {
         std::unique_ptr<IRuleModel> buildModel() override {
             return nullptr;
         }
-
 };
 
 /**
@@ -49,7 +46,6 @@ class RuleReplacementBuilder final : public IModelBuilder {
  * context of the other rules.
  */
 class SequentialPostOptimization final : public IPostOptimizationPhase {
-
     private:
 
         IntermediateModelBuilder& modelBuilder_;
@@ -131,7 +127,6 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                 }
             }
         }
-
 };
 
 /**
@@ -139,7 +134,6 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
  * in the context of the other rules.
  */
 class SequentialPostOptimizationFactory final : public IPostOptimizationPhaseFactory {
-
     private:
 
         uint32 numIterations_;
@@ -165,7 +159,6 @@ class SequentialPostOptimizationFactory final : public IPostOptimizationPhaseFac
             return std::make_unique<SequentialPostOptimization>(modelBuilder, numIterations_, refineHeads_,
                                                                 resampleFeatures_);
         }
-
 };
 
 SequentialPostOptimizationConfig::SequentialPostOptimizationConfig()

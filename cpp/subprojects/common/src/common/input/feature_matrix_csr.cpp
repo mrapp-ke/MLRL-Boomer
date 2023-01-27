@@ -3,7 +3,6 @@
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 
-
 CsrFeatureMatrix::CsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices,
                                    uint32* colIndices)
     : CsrConstView<const float32>(numRows, numCols, data, rowIndices, colIndices) {

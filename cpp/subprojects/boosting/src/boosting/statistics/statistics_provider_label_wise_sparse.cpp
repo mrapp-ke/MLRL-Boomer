@@ -10,7 +10,6 @@
 #include "statistics_provider_label_wise.hpp"
 #include "omp.h"
 
-
 namespace boosting {
 
     /**
@@ -18,7 +17,6 @@ namespace boosting {
      * function in the list of lists (LIL) format.
      */
     class SparseLabelWiseStatisticMatrix final : public SparseLabelWiseStatisticView {
-
         public:
 
             /**
@@ -33,7 +31,6 @@ namespace boosting {
             ~SparseLabelWiseStatisticMatrix() {
                 delete statistics_;
             }
-
     };
 
     /**
@@ -41,7 +38,6 @@ namespace boosting {
      * function in the list of lists (LIL) format.
      */
     class SparseLabelWiseHistogram final : public SparseLabelWiseHistogramView {
-
         public:
 
             /**
@@ -58,7 +54,6 @@ namespace boosting {
                 delete[] statistics_;
                 delete[] weights_;
             }
-
     };
 
     /**
@@ -76,7 +71,6 @@ namespace boosting {
                                                                                ISparseLabelWiseLoss,
                                                                                ISparseEvaluationMeasure,
                                                                                ISparseLabelWiseRuleEvaluationFactory> {
-
         public:
 
             /**
@@ -110,7 +104,6 @@ namespace boosting {
                       std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {
 
             }
-
     };
 
     template<typename LabelMatrix>

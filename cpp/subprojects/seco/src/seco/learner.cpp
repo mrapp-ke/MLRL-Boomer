@@ -6,7 +6,6 @@
 #include "seco/rule_evaluation/head_type_single.hpp"
 #include "seco/rule_evaluation/rule_compare_function.hpp"
 
-
 namespace seco {
 
     AbstractSeCoRuleLearner::Config::Config()

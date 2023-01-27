@@ -7,12 +7,10 @@
 #include "common/rule_refinement/score_processor.hpp"
 #include "common/rule_evaluation/rule_compare_function.hpp"
 
-
 /**
  * Allows comparing potential refinements of a rule and keeping track of the best one.
  */
 class SingleRefinementComparator final {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -92,5 +90,4 @@ class SingleRefinementComparator final {
          *                      an improvement over the best refinement that has been provided to this comparator
          */
         bool merge(SingleRefinementComparator& comparator);
-
 };

@@ -7,7 +7,6 @@
 #include <iterator>
 #include <type_traits>
 
-
 /**
  * An iterator adaptor that adapts an iterator, which provides access to a fixed number of values, such that it acts as
  * a forward iterator that returns the indices of all non-zero values.
@@ -16,7 +15,6 @@
  */
 template<typename Iterator>
 class NonZeroIndexForwardIterator {
-
     private:
 
         Iterator iterator_;
@@ -141,7 +139,6 @@ class NonZeroIndexForwardIterator {
         bool operator==(const NonZeroIndexForwardIterator<Iterator>& rhs) const {
             return iterator_ == rhs.iterator_;
         }
-
 };
 
 /**

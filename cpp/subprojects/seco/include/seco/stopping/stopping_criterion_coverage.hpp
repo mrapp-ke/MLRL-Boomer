@@ -7,7 +7,6 @@
 #include "common/stopping/stopping_criterion.hpp"
 #include "seco/macros.hpp"
 
-
 namespace seco {
 
     /**
@@ -15,7 +14,6 @@ namespace seco {
      * rules as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
      */
     class MLRLSECO_API ICoverageStoppingCriterionConfig {
-
         public:
 
             virtual ~ICoverageStoppingCriterionConfig() { };
@@ -36,7 +34,6 @@ namespace seco {
              *                  configuration of the stopping criterion
              */
             virtual ICoverageStoppingCriterionConfig& setThreshold(float64 threshold) = 0;
-
     };
 
     /**
@@ -45,7 +42,6 @@ namespace seco {
      */
     class CoverageStoppingCriterionConfig final : public IStoppingCriterionConfig,
                                                   public ICoverageStoppingCriterionConfig {
-
         private:
 
             float64 threshold_;
@@ -59,7 +55,6 @@ namespace seco {
             ICoverageStoppingCriterionConfig& setThreshold(float64 threshold) override;
 
             std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
-
     };
 
 }

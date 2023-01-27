@@ -7,7 +7,6 @@
 #include "rule_evaluation_label_wise_common.hpp"
 #include <utility>
 
-
 namespace boosting {
 
     /**

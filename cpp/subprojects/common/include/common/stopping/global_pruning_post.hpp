@@ -6,7 +6,6 @@
 #include "common/stopping/global_pruning.hpp"
 #include "common/macros.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that keeps track of the number of
  * rules in a model that perform best with respect to the examples in the training or holdout set according to a certain
@@ -16,7 +15,6 @@
  * checks whether the current model is the best one evaluated so far.
  */
 class MLRLCOMMON_API IPostPruningConfig {
-
     public:
 
         virtual ~IPostPruningConfig() { };
@@ -91,7 +89,6 @@ class MLRLCOMMON_API IPostPruningConfig {
          *                  the stopping criterion
          */
         virtual IPostPruningConfig& setInterval(uint32 interval) = 0;
-
 };
 
 /**
@@ -99,7 +96,6 @@ class MLRLCOMMON_API IPostPruningConfig {
  * respect to the examples in the training or holdout set according to a certain measure.
  */
 class PostPruningConfig final : public IGlobalPruningConfig, public IPostPruningConfig {
-
     private:
 
         bool useHoldoutSet_;
@@ -141,5 +137,4 @@ class PostPruningConfig final : public IGlobalPruningConfig, public IPostPruning
          * @see `IGlobalPruningConfig::shouldRemoveUnusedRules`
          */
         bool shouldRemoveUnusedRules() const override;
-
 };

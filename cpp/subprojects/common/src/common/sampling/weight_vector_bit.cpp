@@ -2,7 +2,6 @@
 #include "common/thresholds/thresholds.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
-
 BitWeightVector::BitWeightVector(uint32 numElements)
     : BitWeightVector(numElements, false) {
 

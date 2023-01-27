@@ -11,7 +11,6 @@ namespace seco {
      * to a certain threshold.
      */
     class CoverageStoppingCriterion final : public IStoppingCriterion {
-
         private:
 
             float64 threshold_;
@@ -36,7 +35,6 @@ namespace seco {
 
                 return result;
             }
-
     };
 
     /**
@@ -45,7 +43,6 @@ namespace seco {
      * equal to a certain threshold.
      */
     class CoverageStoppingCriterionFactory final : public IStoppingCriterionFactory {
-
         private:
 
             float64 threshold_;
@@ -67,7 +64,6 @@ namespace seco {
             std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
                 return std::make_unique<CoverageStoppingCriterion>(threshold_);
             }
-
     };
 
     CoverageStoppingCriterionConfig::CoverageStoppingCriterionConfig()

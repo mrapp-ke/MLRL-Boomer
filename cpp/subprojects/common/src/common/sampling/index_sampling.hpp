@@ -6,7 +6,6 @@
 #include "common/indices/index_vector_partial.hpp"
 #include <unordered_set>
 
-
 /**
  * Randomly selects `numSamples` out of `numTotal` indices without replacement by using a set to keep track of the
  * indices that have already been selected. This method is suitable if `numSamples` is much smaller than `numTotal`

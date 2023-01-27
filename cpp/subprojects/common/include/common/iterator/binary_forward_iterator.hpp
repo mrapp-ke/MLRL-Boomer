@@ -6,7 +6,6 @@
 #include "common/data/types.hpp"
 #include <iterator>
 
-
 /**
  * An iterator adaptor that adapts an iterator, which provides access to a fixed number of indices in increasing order,
  * such that it acts as a forward iterator that returns a boolean value for each possible index, indicating whether the
@@ -16,7 +15,6 @@
  */
 template<typename Iterator>
 class BinaryForwardIterator final {
-
     private:
 
         Iterator iterator_;
@@ -124,7 +122,6 @@ class BinaryForwardIterator final {
         bool operator==(const BinaryForwardIterator<Iterator>& rhs) const {
             return index_ == rhs.index_;
         }
-
 };
 
 /**

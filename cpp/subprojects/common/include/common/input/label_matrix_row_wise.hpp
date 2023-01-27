@@ -18,12 +18,10 @@ class IStatistics;
 class SinglePartition;
 class BiPartition;
 
-
 /**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
  */
 class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
-
     public:
 
         virtual ~IRowWiseLabelMatrix() override { };
@@ -94,5 +92,4 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
         virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
                                                                           BiPartition& partition,
                                                                           IStatistics& statistics) const = 0;
-
 };

@@ -6,12 +6,10 @@
 #include "index_sampling.hpp"
 #include <cmath>
 
-
 /**
  * Allows to select a subset of the available features without replacement.
  */
 class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
-
     private:
 
         uint32 numFeatures_;
@@ -42,7 +40,6 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
                 return std::make_unique<PredefinedFeatureSampling>(this->sample(rng));
             }
         }
-
 };
 
 /**
@@ -50,7 +47,6 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
  * without replacement.
  */
 class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFactory {
-
     private:
 
         uint32 numFeatures_;
@@ -71,7 +67,6 @@ class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFa
         std::unique_ptr<IFeatureSampling> create() const override {
             return std::make_unique<FeatureSamplingWithoutReplacement>(numFeatures_, numSamples_);
         }
-
 };
 
 FeatureSamplingWithoutReplacementConfig::FeatureSamplingWithoutReplacementConfig()

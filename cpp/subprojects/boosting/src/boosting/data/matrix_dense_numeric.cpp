@@ -1,6 +1,5 @@
 #include "boosting/data/matrix_dense_numeric.hpp"
 
-
 namespace boosting {
 
     template<typename T>

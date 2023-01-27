@@ -1,6 +1,5 @@
 #include "common/data/view_csc_binary.hpp"
 
-
 BinaryCscConstView::BinaryCscConstView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
     : numRows_(numRows), numCols_(numCols), rowIndices_(rowIndices), colIndices_(colIndices) {
 

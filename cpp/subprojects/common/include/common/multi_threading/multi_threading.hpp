@@ -5,13 +5,11 @@
 
 #include "common/input/feature_matrix.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to configure the multi-threading behavior of a parallelizable
  * algorithm.
  */
 class IMultiThreadingConfig {
-
     public:
 
         virtual ~IMultiThreadingConfig() { };
@@ -25,5 +23,4 @@ class IMultiThreadingConfig {
          * @return              The number of threads to be used
          */
         virtual uint32 getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
-
 };

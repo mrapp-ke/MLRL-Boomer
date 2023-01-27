@@ -5,7 +5,6 @@
 
 #include "common/data/types.hpp"
 
-
 /**
  * A tuple that consists of two values of the same type.
  *
@@ -13,7 +12,6 @@
  */
 template<typename T>
 struct Tuple final {
-
     Tuple() {
 
     }
@@ -173,5 +171,4 @@ struct Tuple final {
         lhs *= rhs;
         return lhs;
     }
-
 };

@@ -4,7 +4,6 @@
 #include "common/statistics/statistics_provider.hpp"
 #include "seco/statistics/statistics_label_wise.hpp"
 
-
 namespace seco {
 
     /**
@@ -15,7 +14,6 @@ namespace seco {
      */
     template<typename RuleEvaluationFactory>
     class LabelWiseStatisticsProvider final : public IStatisticsProvider {
-
         private:
 
             const RuleEvaluationFactory& regularRuleEvaluationFactory_;
@@ -63,7 +61,6 @@ namespace seco {
             void switchToPruningRuleEvaluation() override {
                 statisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);
             }
-
     };
 
 }

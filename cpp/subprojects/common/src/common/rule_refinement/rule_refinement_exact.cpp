@@ -1,7 +1,6 @@
 #include "common/rule_refinement/rule_refinement_exact.hpp"
 #include "common/math/math.hpp"
 
-
 static inline uint32 upperBound(FeatureVector::const_iterator iterator, uint32 start, uint32 end, float32 threshold) {
     while (start < end) {
         uint32 pivot = start + ((end - start) / 2);
@@ -126,7 +125,6 @@ static inline void findRefinementInternally(
                             comparator.pushRefinement(refinement, scoreVector);
                         }
                     }
-
 
                     // Check if a condition that uses the > operator (or the != operator in case of a nominal feature)
                     // covers at least `minCoverage` examples...

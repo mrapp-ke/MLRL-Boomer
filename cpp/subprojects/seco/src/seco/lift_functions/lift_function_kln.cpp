@@ -2,7 +2,6 @@
 #include "common/util/validation.hpp"
 #include <cmath>
 
-
 namespace seco {
 
     static inline float64 calculateLiftInternally(uint32 numLabels, float64 k) {
@@ -14,7 +13,6 @@ namespace seco {
      * a rule predicts.
      */
     class KlnLiftFunction final : public ILiftFunction {
-
         private:
 
             float64 k_;
@@ -40,7 +38,6 @@ namespace seco {
             float64 getMaxLift(uint32 numLabels) const override {
                 return maxLift_;
             }
-
     };
 
     /**
@@ -48,7 +45,6 @@ namespace seco {
      * logarithm of the number of labels for which a rule predicts.
      */
     class KlnLiftFunctionFactory final : public ILiftFunctionFactory {
-
         private:
 
             float64 k_;
@@ -70,7 +66,6 @@ namespace seco {
             std::unique_ptr<ILiftFunction> create() const override {
                 return std::make_unique<KlnLiftFunction>(k_, maxLift_);
             }
-
     };
 
     KlnLiftFunctionConfig::KlnLiftFunctionConfig()

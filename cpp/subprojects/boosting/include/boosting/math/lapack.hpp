@@ -5,14 +5,12 @@
 
 #include "common/data/types.hpp"
 
-
 namespace boosting {
 
     /**
      * Allows to execute LAPACK routines.
      */
     class Lapack final {
-
         public:
 
             /**
@@ -86,7 +84,6 @@ namespace boosting {
              *                                  Must have been determined using the function `queryDsysvLworkParameter`
              */
             void dsysv(float64* tmpArray1, int* tmpArray2, double* tmpArray3, float64* output, int n, int lwork) const;
-
     };
 
 }

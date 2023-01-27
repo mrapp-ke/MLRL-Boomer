@@ -1,12 +1,10 @@
 #include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 
-
 /**
  * Allows to sequentially induce several rules, optionally starting with a default rule, that are added to a rule-based
  * model.
  */
 class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
-
     private:
 
         std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr_;
@@ -179,7 +177,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             // Build and return the final model...
             return modelBuilder.buildModel();
         }
-
 };
 
 /**
@@ -187,7 +184,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
  * several rules, optionally starting with a default rule, that are added to a rule-based model.
  */
 class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFactory {
-
     private:
 
         bool useDefaultRule_;
@@ -229,7 +225,6 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
                                                                    std::move(stoppingCriterionFactoryPtr),
                                                                    useDefaultRule_);
         }
-
 };
 
 SequentialRuleModelAssemblageConfig::SequentialRuleModelAssemblageConfig(

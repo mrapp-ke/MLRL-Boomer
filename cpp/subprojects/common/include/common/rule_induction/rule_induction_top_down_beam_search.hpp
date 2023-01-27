@@ -7,13 +7,11 @@
 #include "common/multi_threading/multi_threading.hpp"
 #include "common/macros.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules that
  * uses a top-down beam search.
  */
 class MLRLCOMMON_API IBeamSearchTopDownRuleInductionConfig {
-
     public:
 
         virtual ~IBeamSearchTopDownRuleInductionConfig() { };
@@ -145,7 +143,6 @@ class MLRLCOMMON_API IBeamSearchTopDownRuleInductionConfig {
          *                                  individual rules
          */
         virtual IBeamSearchTopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) = 0;
-
 };
 
 /**
@@ -153,7 +150,6 @@ class MLRLCOMMON_API IBeamSearchTopDownRuleInductionConfig {
  */
 class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
                                                    public IBeamSearchTopDownRuleInductionConfig {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -216,5 +212,4 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
 
         std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
-
 };

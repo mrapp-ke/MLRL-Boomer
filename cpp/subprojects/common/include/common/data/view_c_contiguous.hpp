@@ -5,7 +5,6 @@
 
 #include "common/data/view_two_dimensional.hpp"
 
-
 /**
  * Implements row-wise read-only access to the values that are stored in a pre-allocated C-contiguous array.
  *
@@ -13,7 +12,6 @@
  */
 template<typename T>
 class MLRLCOMMON_API CContiguousConstView : virtual public ITwoDimensionalView {
-
     protected:
 
         /**
@@ -71,7 +69,6 @@ class MLRLCOMMON_API CContiguousConstView : virtual public ITwoDimensionalView {
          * @see `ITwoDimensionalView::getNumCols`
          */
         uint32 getNumCols() const override final;
-
 };
 
 /**
@@ -81,7 +78,6 @@ class MLRLCOMMON_API CContiguousConstView : virtual public ITwoDimensionalView {
  */
 template<typename T>
 class MLRLCOMMON_API CContiguousView : public CContiguousConstView<T> {
-
     public:
 
         /**
@@ -112,5 +108,4 @@ class MLRLCOMMON_API CContiguousView : public CContiguousConstView<T> {
          * @return      A `value_iterator` to the end of the given row
          */
         value_iterator row_values_end(uint32 row);
-
 };

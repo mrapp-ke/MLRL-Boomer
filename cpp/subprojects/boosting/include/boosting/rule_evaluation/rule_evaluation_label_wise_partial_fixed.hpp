@@ -5,7 +5,6 @@
 
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
 
-
 namespace boosting {
 
     /**
@@ -13,7 +12,6 @@ namespace boosting {
      * predictions of partial rules, which predict for a predefined number of labels.
      */
     class LabelWiseFixedPartialRuleEvaluationFactory final : public ISparseLabelWiseRuleEvaluationFactory {
-
         private:
 
             float32 labelRatio_;
@@ -61,7 +59,6 @@ namespace boosting {
             std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
                 const SparseLabelWiseStatisticVector& statisticVector,
                 const PartialIndexVector& indexVector) const override;
-
     };
 
 }

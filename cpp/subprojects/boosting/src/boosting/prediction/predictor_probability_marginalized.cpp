@@ -5,7 +5,6 @@
 #include "omp.h"
 #include <stdexcept>
 
-
 namespace boosting {
 
     static inline void calculateMarginalizedProbabilities(CContiguousView<float64>::value_iterator predictionIterator,
@@ -125,7 +124,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class MarginalizedProbabilityPredictor final : public IProbabilityPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -171,7 +169,6 @@ namespace boosting {
                 return predictInternally(featureMatrix_, model_, labelVectorSet_, numLabels_, *probabilityFunctionPtr_,
                                          numThreads_);
             }
-
     };
 
     template<typename FeatureMatrix>
@@ -198,7 +195,6 @@ namespace boosting {
      * is specified to be relevant, divided by the total sum of all distances.
      */
     class MarginalizedProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
-
         private:
 
             std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
@@ -239,7 +235,6 @@ namespace boosting {
                 return createMarginalizedProbabilityPredictor(featureMatrix, model, labelVectorSet, numLabels,
                                                               *probabilityFunctionFactoryPtr_, numThreads_);
             }
-
     };
 
     MarginalizedProbabilityPredictorConfig::MarginalizedProbabilityPredictorConfig(

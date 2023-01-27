@@ -2,7 +2,6 @@
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -15,7 +14,6 @@ namespace boosting {
      */
     template<typename StatisticVector, typename IndexVector>
     class LabelWiseSingleLabelRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
-
         private:
 
             const IndexVector& labelIndices_;
@@ -73,7 +71,6 @@ namespace boosting {
                                                                  l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }
-
     };
 
     LabelWiseSingleLabelRuleEvaluationFactory::LabelWiseSingleLabelRuleEvaluationFactory(float64 l1RegularizationWeight,

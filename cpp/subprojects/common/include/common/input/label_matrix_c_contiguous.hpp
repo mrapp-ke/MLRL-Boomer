@@ -13,13 +13,11 @@
 #include "common/data/view_vector.hpp"
 #include "common/data/functions.hpp"
 
-
 /**
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
  * are stored in a C-contiguous array.
  */
 class MLRLCOMMON_API ICContiguousLabelMatrix : virtual public IRowWiseLabelMatrix {
-
     public:
 
         virtual ~ICContiguousLabelMatrix() override { };
@@ -31,21 +29,18 @@ class MLRLCOMMON_API ICContiguousLabelMatrix : virtual public IRowWiseLabelMatri
  * C-contiguous array.
  */
 class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>, virtual public ICContiguousLabelMatrix {
-
     public:
 
         /**
          * Provides access to the values that are stored in a single row of a `CContiguousLabelMatrix`.
          */
         class View final : public VectorConstView<const uint8> {
-
             public:
 
                 /**
                  * Allows to compute hash values for objects of type `CContiguousLabelMatrix::View`.
                  */
                 struct Hash final {
-
                     /**
                      * Computes and returns a hash value for an object of type `CContiguousLabelMatrix::View`.
                      *
@@ -65,14 +60,12 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>, v
 
                         return hashValue;
                     }
-
                 };
 
                 /**
                  * Allows to check whether two objects of type `CContiguousLabelMatrix::View` are equal or not.
                  */
                 struct Pred final {
-
                     /**
                      * Returns whether two objects of type `CContiguousLabelMatrix::View` are equal or not.
                      *
@@ -83,7 +76,6 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>, v
                     inline bool operator()(const View& lhs, const View& rhs) const {
                         return compareArrays(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
                     }
-
                 };
 
                 /**
@@ -92,7 +84,6 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>, v
                  * @param row           The row, the view provides access to
                  */
                 View(const CContiguousLabelMatrix& labelMatrix, uint32 row);
-
         };
 
         /**
@@ -134,7 +125,6 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>, v
         std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
                                                                   BiPartition& partition,
                                                                   IStatistics& statistics) const override;
-
 };
 
 /**

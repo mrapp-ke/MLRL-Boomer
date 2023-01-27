@@ -6,7 +6,6 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_partial_fixed.hpp"
 
-
 namespace boosting {
 
     NoLabelBinningConfig::NoLabelBinningConfig(const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,

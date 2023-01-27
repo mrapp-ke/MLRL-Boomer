@@ -8,12 +8,10 @@
 #include "common/sampling/random.hpp"
 #include <memory>
 
-
 /**
  * Defines an interface for all classes that implement a method for sampling labels.
  */
 class ILabelSampling {
-
     public:
 
         virtual ~ILabelSampling() { };
@@ -26,14 +24,12 @@ class ILabelSampling {
          *              labels that are contained in the sample
          */
         virtual const IIndexVector& sample(RNG& rng) = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create objects of type `ILabelSampling`.
  */
 class ILabelSamplingFactory {
-
     public:
 
         virtual ~ILabelSamplingFactory() { };
@@ -44,14 +40,12 @@ class ILabelSamplingFactory {
          * @return An unique pointer to an object of type `ILabelSampling` that has been created
          */
         virtual std::unique_ptr<ILabelSampling> create() const = 0;
-
 };
 
 /**
  * Defines an interface for all classes that allow to configure a method for sampling labels.
  */
 class ILabelSamplingConfig {
-
     public:
 
         virtual ~ILabelSamplingConfig() { };
@@ -65,5 +59,4 @@ class ILabelSamplingConfig {
          */
         virtual std::unique_ptr<ILabelSamplingFactory> createLabelSamplingFactory(
             const ILabelMatrix& labelMatrix) const = 0;
-
 };

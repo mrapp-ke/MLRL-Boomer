@@ -4,7 +4,6 @@
 #include "boosting/statistics/statistics_provider_label_wise_sparse.hpp"
 #include "common/util/validation.hpp"
 
-
 namespace boosting {
 
     DynamicPartialHeadConfig::DynamicPartialHeadConfig(

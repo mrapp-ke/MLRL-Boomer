@@ -6,7 +6,6 @@
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -19,7 +18,6 @@ namespace boosting {
      */
     template<typename StatisticVector, typename IndexVector>
     class LabelWiseCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
-
         private:
 
             DenseScoreVector<IndexVector> scoreVector_;
@@ -63,7 +61,6 @@ namespace boosting {
                 scoreVector_.quality = quality;
                 return scoreVector_;
             }
-
     };
 
 }

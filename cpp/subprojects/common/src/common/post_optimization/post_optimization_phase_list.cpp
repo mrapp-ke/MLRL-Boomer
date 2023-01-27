@@ -1,11 +1,9 @@
 #include "common/post_optimization/post_optimization_phase_list.hpp"
 
-
 /**
  * An implementation of the class `IPostOptimization` that carries out several post-optimization phases.
  */
 class PostOptimizationPhaseList final : public IPostOptimization {
-
     private:
 
         std::unique_ptr<IntermediateModelBuilder> intermediateModelBuilderPtr_;
@@ -49,7 +47,6 @@ class PostOptimizationPhaseList final : public IPostOptimization {
                                                         rng);
             }
         }
-
 };
 
 /**
@@ -57,7 +54,6 @@ class PostOptimizationPhaseList final : public IPostOptimization {
  * learned rule-based model.
  */
 class NoPostOptimization final : public IPostOptimization {
-
     private:
 
         std::unique_ptr<IModelBuilder> modelBuilderPtr_;
@@ -83,7 +79,6 @@ class NoPostOptimization final : public IPostOptimization {
                            const IPostProcessor& postProcessor, RNG& rng) const override {
             return;
         }
-
 };
 
 void PostOptimizationPhaseListFactory::addPostOptimizationPhaseFactory(

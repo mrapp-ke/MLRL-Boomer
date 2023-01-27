@@ -7,12 +7,10 @@
 #include "common/rule_refinement/score_processor.hpp"
 #include "common/indices/index_vector_complete.hpp"
 
-
 /**
  * An abstract base class for all classes that implement an algorithm for the induction of individual rules.
  */
 class AbstractRuleInduction : public IRuleInduction {
-
     private:
 
         bool recalculatePredictions_;
@@ -127,5 +125,4 @@ class AbstractRuleInduction : public IRuleInduction {
                 return false;
             }
         }
-
 };

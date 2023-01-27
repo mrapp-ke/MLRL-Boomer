@@ -8,7 +8,6 @@
 #include "boosting/rule_evaluation/head_type.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
 
-
 namespace boosting {
 
     /**
@@ -16,7 +15,6 @@ namespace boosting {
      * the training examples.
      */
     class AutomaticStatisticsConfig final : public IStatisticsConfig {
-
         private:
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
@@ -46,7 +44,6 @@ namespace boosting {
             bool isDense() const override;
 
             bool isSparse() const override;
-
     };
 
 };

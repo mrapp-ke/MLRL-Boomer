@@ -17,13 +17,11 @@ class IThresholdsSubset;
 class ICoverageState;
 class AbstractPrediction;
 
-
 /**
  * Defines an interface for all classes that provide access to the indices of training examples that have been split
  * into a training set and a holdout set.
  */
 class IPartition {
-
     public:
 
         virtual ~IPartition() { };
@@ -82,5 +80,4 @@ class IPartition {
          */
         virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset,
                                            const ICoverageState& coverageState, AbstractPrediction& head) = 0;
-
 };

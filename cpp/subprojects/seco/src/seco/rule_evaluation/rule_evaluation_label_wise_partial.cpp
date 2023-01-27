@@ -7,7 +7,6 @@
 #include "rule_evaluation_label_wise_common.hpp"
 #include <algorithm>
 
-
 namespace seco {
 
     static inline float64 calculateLiftedQuality(float64 quality, uint32 numPredictions,
@@ -21,7 +20,6 @@ namespace seco {
      * quality of rules, depending on how many labels they predict, into account.
      */
     class LabelWiseCompleteRuleEvaluation final : public IRuleEvaluation {
-
         private:
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
@@ -74,7 +72,6 @@ namespace seco {
                 scoreVector_.quality = calculateLiftedQuality(sumOfQualities, numElements, *liftFunctionPtr_);
                 return scoreVector_;
             }
-
     };
 
     /**
@@ -86,7 +83,6 @@ namespace seco {
      */
     template<typename T>
     class LabelWisePartialRuleEvaluation final : public IRuleEvaluation {
-
         private:
 
             const T& labelIndices_;
@@ -186,7 +182,6 @@ namespace seco {
 
                 return scoreVector_;
             }
-
     };
 
     LabelWisePartialRuleEvaluationFactory::LabelWisePartialRuleEvaluationFactory(

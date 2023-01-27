@@ -6,14 +6,12 @@
 #include "boosting/binning/label_binning.hpp"
 #include "boosting/rule_evaluation/regularization.hpp"
 
-
 namespace boosting {
 
     /**
      * Allows to configure a method that does not assign labels to bins.
      */
     class NoLabelBinningConfig final : public ILabelBinningConfig {
-
         private:
 
             const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr_;
@@ -48,7 +46,6 @@ namespace boosting {
 
             std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseDynamicPartialRuleEvaluationFactory(
                 float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const override;
-
     };
 
 }

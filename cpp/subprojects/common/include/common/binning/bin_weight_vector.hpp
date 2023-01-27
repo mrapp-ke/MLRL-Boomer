@@ -5,12 +5,10 @@
 
 #include "common/data/vector_dense.hpp"
 
-
 /**
  * A vector that stores the weights of individual bins, i.e., how many examples have been assigned to them.
  */
 class BinWeightVector final {
-
     private:
 
         DenseVector<uint32> vector_;
@@ -48,5 +46,4 @@ class BinWeightVector final {
          * @return The number of elements
          */
         uint32 getNumElements() const;
-
 };

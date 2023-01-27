@@ -11,16 +11,13 @@
 #include "statistics_label_wise_common.hpp"
 #include <cstdlib>
 
-
 namespace boosting {
-
 
     /**
      * A matrix that stores gradients and Hessians that have been calculated using a label-wise decomposable loss
      * function using C-contiguous arrays.
      */
     class DenseLabelWiseStatisticMatrix final : public DenseLabelWiseStatisticView {
-
         public:
 
             /**
@@ -36,7 +33,6 @@ namespace boosting {
             ~DenseLabelWiseStatisticMatrix() {
                 free(statistics_);
             }
-
     };
 
     /**
@@ -53,7 +49,6 @@ namespace boosting {
                                                                               NumericDenseMatrix<float64>,
                                                                               ILabelWiseLoss, IEvaluationMeasure,
                                                                               ILabelWiseRuleEvaluationFactory> {
-
         public:
 
             /**
@@ -85,7 +80,6 @@ namespace boosting {
                       std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {
 
             }
-
     };
 
 }

@@ -4,7 +4,6 @@
 #include "boosting/statistics/statistics_provider_label_wise_sparse.hpp"
 #include "common/util/validation.hpp"
 
-
 namespace boosting {
 
     static inline float32 calculateLabelRatio(float32 labelRatio, const IRowWiseLabelMatrix& labelMatrix) {

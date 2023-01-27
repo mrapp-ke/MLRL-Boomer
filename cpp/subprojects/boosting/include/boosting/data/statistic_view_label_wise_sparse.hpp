@@ -6,7 +6,6 @@
 #include "common/data/tuple.hpp"
 #include "common/data/matrix_sparse_set.hpp"
 
-
 namespace boosting {
 
     /**
@@ -14,7 +13,6 @@ namespace boosting {
      * decomposable loss function and are stored in a pre-allocated matrix in the list of lists (LIL) format.
      */
     class SparseLabelWiseStatisticConstView {
-
         protected:
 
             /**
@@ -83,7 +81,6 @@ namespace boosting {
              * @return The number of columns
              */
             uint32 getNumCols() const;
-
     };
 
     /**
@@ -91,7 +88,6 @@ namespace boosting {
      * label-wise decomposable loss function and are stored in a pre-allocated matrix in the list of lists (LIL) format.
      */
     class SparseLabelWiseStatisticView : public SparseLabelWiseStatisticConstView {
-
         public:
 
             /**
@@ -118,7 +114,6 @@ namespace boosting {
              * Sets all gradients and Hessians in the matrix to zero.
              */
             void clear();
-
     };
 
 }

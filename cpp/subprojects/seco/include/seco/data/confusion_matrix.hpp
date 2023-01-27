@@ -5,12 +5,10 @@
 
 #include "common/data/types.hpp"
 
-
 /**
  * A confusion matrix.
  */
 struct ConfusionMatrix final {
-
     ConfusionMatrix()
         : in(0), ip(0), rn(0), rp(0) {
 
@@ -199,5 +197,4 @@ struct ConfusionMatrix final {
             return majorityLabel ? in : ip;
         }
     }
-
 };

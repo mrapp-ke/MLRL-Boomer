@@ -7,14 +7,12 @@
 #include "common/sampling/instance_sampling.hpp"
 #include "common/macros.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to configure a method for selecting a subset of the available
  * training examples using stratification, such that for each label the proportion of relevant and irrelevant examples
  * is maintained.
  */
 class MLRLCOMMON_API ILabelWiseStratifiedInstanceSamplingConfig {
-
     public:
 
         virtual ~ILabelWiseStratifiedInstanceSamplingConfig() { };
@@ -35,7 +33,6 @@ class MLRLCOMMON_API ILabelWiseStratifiedInstanceSamplingConfig {
          *                      allows further configuration of the method for sampling instances
          */
         virtual ILabelWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize) = 0;
-
 };
 
 /**
@@ -44,7 +41,6 @@ class MLRLCOMMON_API ILabelWiseStratifiedInstanceSamplingConfig {
  */
 class LabelWiseStratifiedInstanceSamplingConfig final : public IInstanceSamplingConfig,
                                                         public ILabelWiseStratifiedInstanceSamplingConfig {
-
     private:
 
         float32 sampleSize_;
@@ -58,5 +54,4 @@ class LabelWiseStratifiedInstanceSamplingConfig final : public IInstanceSampling
         ILabelWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize) override;
 
         std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const override;
-
 };

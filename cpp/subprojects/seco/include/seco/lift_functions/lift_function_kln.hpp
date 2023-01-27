@@ -6,7 +6,6 @@
 #include "seco/lift_functions/lift_function.hpp"
 #include "seco/macros.hpp"
 
-
 namespace seco {
 
     /**
@@ -14,7 +13,6 @@ namespace seco {
      * according to the natural logarithm of the number of labels for which a rule predicts.
      */
     class MLRLSECO_API IKlnLiftFunctionConfig {
-
         public:
 
             virtual ~IKlnLiftFunctionConfig() { };
@@ -35,7 +33,6 @@ namespace seco {
              *          the lift function
              */
             virtual IKlnLiftFunctionConfig& setK(float64 k) = 0;
-
     };
 
     /**
@@ -43,7 +40,6 @@ namespace seco {
      * of labels for which a rule predicts.
      */
     class KlnLiftFunctionConfig final : public ILiftFunctionConfig, public IKlnLiftFunctionConfig {
-
         private:
 
             float64 k_;
@@ -58,7 +54,6 @@ namespace seco {
 
             std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory(
                 const IRowWiseLabelMatrix& labelMatrix) const override;
-
     };
 
 }

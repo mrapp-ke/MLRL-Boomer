@@ -6,7 +6,6 @@
 #include "common/statistics/statistics_provider.hpp"
 #include "boosting/statistics/statistics_label_wise.hpp"
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
      */
     template<typename RuleEvaluationFactory>
     class LabelWiseStatisticsProvider final : public IStatisticsProvider {
-
         private:
 
             const RuleEvaluationFactory& regularRuleEvaluationFactory_;
@@ -65,7 +63,6 @@ namespace boosting {
             void switchToPruningRuleEvaluation() override {
                 statisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);
             }
-
     };
 
 }

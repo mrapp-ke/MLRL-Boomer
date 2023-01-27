@@ -3,7 +3,6 @@
 #include "common/iterator/index_iterator.hpp"
 #include "common/util/validation.hpp"
 
-
 /**
  * Allows to use stratified sampling to split the training examples into two mutually exclusive sets that may be used as
  * a training set and a holdout set, such that for each label the proportion of relevant and irrelevant examples is
@@ -14,7 +13,6 @@
  */
 template<typename LabelMatrix>
 class LabelWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
-
     private:
 
         BiPartition partition_;
@@ -40,7 +38,6 @@ class LabelWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
             stratification_.sampleBiPartition(partition_, rng);
             return partition_;
         }
-
 };
 
 /**
@@ -49,7 +46,6 @@ class LabelWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
  * proportion of relevant and irrelevant examples is maintained.
  */
 class LabelWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
-
     private:
 
         float32 holdoutSetSize_;
@@ -81,7 +77,6 @@ class LabelWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSam
             return std::make_unique<LabelWiseStratifiedBiPartitionSampling<CsrLabelMatrix>>(labelMatrix, numTraining,
                                                                                             numHoldout);
         }
-
 };
 
 

@@ -8,7 +8,6 @@
 #include "boosting/statistics/statistics_label_wise.hpp"
 #include "boosting/losses/loss_label_wise.hpp"
 
-
 namespace boosting {
 
     /**
@@ -16,7 +15,6 @@ namespace boosting {
      * `ILabelWiseStatistics`, which uses dense data structures to store the statistics.
      */
     class DenseLabelWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
-
         private:
 
             std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr_;
@@ -73,7 +71,6 @@ namespace boosting {
              * @see `IStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrConstView& labelMatrix) const override;
-
     };
 
 }

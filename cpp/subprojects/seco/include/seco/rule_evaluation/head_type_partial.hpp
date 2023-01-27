@@ -7,14 +7,12 @@
 #include "seco/heuristics/heuristic.hpp"
 #include "seco/lift_functions/lift_function.hpp"
 
-
 namespace seco {
 
     /**
      * Allows to configure partial rule heads that predict for a subset of the available labels.
      */
     class PartialHeadConfig final : public IHeadConfig {
-
         private:
 
             const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr_;
@@ -40,7 +38,6 @@ namespace seco {
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
                 const IRowWiseLabelMatrix& labelMatrix) const override;
-
     };
 
 }

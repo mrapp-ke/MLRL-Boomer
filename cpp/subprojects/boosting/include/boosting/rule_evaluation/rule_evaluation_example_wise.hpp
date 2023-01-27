@@ -9,7 +9,6 @@
 #include "boosting/rule_evaluation/rule_evaluation.hpp"
 #include <memory>
 
-
 namespace boosting {
 
     /**
@@ -18,7 +17,6 @@ namespace boosting {
      * loss function that is applied example-wise.
      */
     class IExampleWiseRuleEvaluationFactory {
-
         public:
 
             virtual ~IExampleWiseRuleEvaluationFactory() { };
@@ -54,7 +52,6 @@ namespace boosting {
             virtual std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
                 const DenseExampleWiseStatisticVector& statisticVector,
                 const PartialIndexVector& indexVector) const = 0;
-
     };
 
 }

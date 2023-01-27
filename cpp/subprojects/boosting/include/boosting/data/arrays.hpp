@@ -5,7 +5,6 @@
 
 #include <algorithm>
 
-
 namespace boosting {
 
     /**

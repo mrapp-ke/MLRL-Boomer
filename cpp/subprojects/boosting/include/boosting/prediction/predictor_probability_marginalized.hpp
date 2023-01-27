@@ -7,7 +7,6 @@
 #include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
 
-
 namespace boosting {
 
     /**
@@ -19,7 +18,6 @@ namespace boosting {
      * total sum of all distances.
      */
     class MarginalizedProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
-
         private:
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
@@ -49,7 +47,6 @@ namespace boosting {
              * @see `IPredictorConfig::isLabelVectorSetNeeded`
              */
             bool isLabelVectorSetNeeded() const override;
-
     };
 
 }

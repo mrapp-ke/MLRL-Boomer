@@ -1,7 +1,6 @@
 #include "seco/model/decision_list_builder.hpp"
 #include "common/model/rule_list.hpp"
 
-
 namespace seco {
 
     /**
@@ -9,7 +8,6 @@ namespace seco {
      * which is always located at the end.
      */
     class DecisionListBuilder final : public IModelBuilder {
-
         private:
 
             std::unique_ptr<IHead> defaultHeadPtr_;
@@ -55,7 +53,6 @@ namespace seco {
 
                 return std::move(modelPtr_);
             }
-
     };
 
     std::unique_ptr<IModelBuilder> DecisionListBuilderFactory::create() const {

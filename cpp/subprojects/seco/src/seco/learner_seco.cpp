@@ -1,6 +1,5 @@
 #include "seco/learner_seco.hpp"
 
-
 namespace seco {
 
     MultiLabelSeCoRuleLearner::Config::Config() {

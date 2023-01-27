@@ -1,6 +1,5 @@
 #include "common/rule_refinement/refinement_comparator_single.hpp"
 
-
 SingleRefinementComparator::SingleRefinementComparator(RuleCompareFunction ruleCompareFunction)
     : ruleCompareFunction_(ruleCompareFunction), bestQuality_(ruleCompareFunction.minQuality),
       scoreProcessor_(ScoreProcessor(bestRefinement_.headPtr)) {

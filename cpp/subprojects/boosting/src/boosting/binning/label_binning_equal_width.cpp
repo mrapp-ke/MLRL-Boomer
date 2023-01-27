@@ -9,7 +9,6 @@
 #include "common/util/validation.hpp"
 #include <limits>
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
      * labels for which the predicted score is expected to belong to the same value range.
      */
     class EqualWidthLabelBinning final : public ILabelBinning {
-
         private:
 
             float32 binRatio_;
@@ -132,7 +130,6 @@ namespace boosting {
                     }
                 }
             }
-
     };
 
     /**
@@ -140,7 +137,6 @@ namespace boosting {
      * each bin contains labels for which the predicted score is expected to belong to the same value range.
      */
     class EqualWidthLabelBinningFactory final : public ILabelBinningFactory {
-
         private:
 
             float32 binRatio_;
@@ -167,7 +163,6 @@ namespace boosting {
             std::unique_ptr<ILabelBinning> create() const override {
                 return std::make_unique<EqualWidthLabelBinning>(binRatio_, minBins_, maxBins_);
             }
-
     };
 
     EqualWidthLabelBinningConfig::EqualWidthLabelBinningConfig(

@@ -5,12 +5,10 @@
 
 #include "common/data/view_two_dimensional.hpp"
 
-
 /**
  * Defines an interface for all label matrices.
  */
 class MLRLCOMMON_API ILabelMatrix : virtual public ITwoDimensionalView {
-
     public:
 
         virtual ~ILabelMatrix() override { };
@@ -21,5 +19,4 @@ class MLRLCOMMON_API ILabelMatrix : virtual public ITwoDimensionalView {
          * @return True, if the label matrix is sparse, false otherwise
          */
         virtual bool isSparse() const = 0;
-
 };

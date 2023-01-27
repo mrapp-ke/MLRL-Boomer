@@ -5,7 +5,6 @@
 #include "common/data/arrays.hpp"
 #include "common/util/validation.hpp"
 
-
 static inline void sampleInternally(const SinglePartition& partition, float32 sampleSize,
                                     DenseWeightVector<uint32>& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
@@ -65,7 +64,6 @@ static inline void sampleInternally(BiPartition& partition, float32 sampleSize, 
  */
 template<typename Partition>
 class InstanceSamplingWithReplacement final : public IInstanceSampling {
-
     private:
 
         Partition& partition_;
@@ -92,7 +90,6 @@ class InstanceSamplingWithReplacement final : public IInstanceSampling {
             sampleInternally(partition_, sampleSize_, weightVector_, rng);
             return weightVector_;
         }
-
 };
 
 /**
@@ -100,7 +97,6 @@ class InstanceSamplingWithReplacement final : public IInstanceSampling {
  * examples with replacement.
  */
 class InstanceSamplingWithReplacementFactory final : public IInstanceSamplingFactory {
-
     private:
 
         float32 sampleSize_;
@@ -136,7 +132,6 @@ class InstanceSamplingWithReplacementFactory final : public IInstanceSamplingFac
                                                   IStatistics& statistics) const override {
             return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(partition, sampleSize_);
         }
-
 };
 
 InstanceSamplingWithReplacementConfig::InstanceSamplingWithReplacementConfig()

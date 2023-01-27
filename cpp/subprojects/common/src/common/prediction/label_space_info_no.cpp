@@ -6,12 +6,10 @@
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 
-
 /**
  * An implementation of the type `INoLabelSpaceInfo` that does not provide any information about the label space.
  */
 class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
-
     public:
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
@@ -65,7 +63,6 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
                                                                           uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, numLabels);
         }
-
 };
 
 std::unique_ptr<INoLabelSpaceInfo> createNoLabelSpaceInfo() {

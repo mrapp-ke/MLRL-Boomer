@@ -6,7 +6,6 @@
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
 
-
 namespace boosting {
 
     static inline void applyCompleteHead(const CompleteHead& head, CContiguousView<float64>::value_iterator iterator) {

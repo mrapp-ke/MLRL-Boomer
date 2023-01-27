@@ -2,7 +2,6 @@
 #include "common/thresholds/thresholds.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
-
 EqualWeightVector::EqualWeightVector(uint32 numElements)
     : numElements_(numElements) {
 

@@ -12,12 +12,10 @@ class SinglePartition;
 class BiPartition;
 class AbstractPrediction;
 
-
 /**
  * Defines an interface for all classes that allow to keep track of the examples that are covered by a rule.
  */
 class ICoverageState {
-
     public:
 
         virtual ~ICoverageState() { };
@@ -84,5 +82,4 @@ class ICoverageState {
          */
         virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                            AbstractPrediction& head) const = 0;
-
 };

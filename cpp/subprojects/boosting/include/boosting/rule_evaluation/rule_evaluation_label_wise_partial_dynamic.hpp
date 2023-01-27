@@ -5,7 +5,6 @@
 
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
 
-
 namespace boosting {
 
     /**
@@ -13,7 +12,6 @@ namespace boosting {
      * predictions of partial rules, which predict for a subset of the available labels that is determined dynamically.
      */
     class LabelWiseDynamicPartialRuleEvaluationFactory final : public ISparseLabelWiseRuleEvaluationFactory {
-
         private:
 
             float32 threshold_;
@@ -62,7 +60,6 @@ namespace boosting {
             std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
                 const SparseLabelWiseStatisticVector& statisticVector,
                 const PartialIndexVector& indexVector) const override;
-
     };
 
 }

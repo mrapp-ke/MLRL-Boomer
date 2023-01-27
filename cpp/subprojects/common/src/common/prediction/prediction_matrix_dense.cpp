@@ -1,7 +1,6 @@
 #include "common/prediction/prediction_matrix_dense.hpp"
 #include <cstdlib>
 
-
 template<typename T>
 DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols)
     : DensePredictionMatrix<T>(numRows, numCols, false) {

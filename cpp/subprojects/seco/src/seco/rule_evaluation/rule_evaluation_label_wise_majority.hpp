@@ -8,7 +8,6 @@
 #include "common/iterator/binary_forward_iterator.hpp"
 #include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
 
-
 namespace seco {
 
     /**
@@ -19,7 +18,6 @@ namespace seco {
      */
     template<typename T>
     class LabelWiseMajorityRuleEvaluation final : public IRuleEvaluation {
-
         private:
 
             DenseScoreVector<T> scoreVector_;
@@ -54,14 +52,12 @@ namespace seco {
 
                 return scoreVector_;
             }
-
     };
 
     /**
      * Allows to create instances of the class `LabelWiseMajorityRuleEvaluation`.
      */
     class LabelWiseMajorityRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
-
         public:
 
             std::unique_ptr<IRuleEvaluation> create(const CompleteIndexVector& indexVector) const override {
@@ -71,7 +67,6 @@ namespace seco {
             std::unique_ptr<IRuleEvaluation> create(const PartialIndexVector& indexVector) const override {
                 return std::make_unique<LabelWiseMajorityRuleEvaluation<PartialIndexVector>>(indexVector);
             }
-
     };
 
 }

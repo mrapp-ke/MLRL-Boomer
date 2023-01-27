@@ -5,7 +5,6 @@
 
 #include "common/data/types.hpp"
 
-
 /**
  * An enum that specifies all possible types of operators used by a condition of a rule.
  */
@@ -23,7 +22,6 @@ enum Comparator : uint8 {
  * `covered == false`) by the condition, as well as the sum of the weights of all covered elements.
  */
 struct Condition {
-
     Condition() {
 
     }
@@ -88,5 +86,4 @@ struct Condition {
      * The number of elements that are covered by the condition.
      */
     uint32 numCovered;
-
 };

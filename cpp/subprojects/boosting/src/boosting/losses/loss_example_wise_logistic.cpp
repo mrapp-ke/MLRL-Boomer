@@ -3,7 +3,6 @@
 #include "common/math/math.hpp"
 #include "logistic_function.hpp"
 
-
 namespace boosting {
 
     static inline void updateGradientAndHessian(float64 invertedExpectedScore, float64 x, float64 max, float64 sumExp,
@@ -199,7 +198,6 @@ namespace boosting {
      * is applied example-wise.
      */
     class ExampleWiseLogisticLoss final : public IExampleWiseLoss {
-
         public:
 
             virtual void updateLabelWiseStatistics(uint32 exampleIndex,
@@ -333,7 +331,6 @@ namespace boosting {
 
                 return max + std::log(sumExp);
             }
-
     };
 
     /**
@@ -341,13 +338,11 @@ namespace boosting {
      * loss that is applied example-wise.
      */
     class ExampleWiseLogisticLossFactory final : public IExampleWiseLossFactory {
-
         public:
 
             std::unique_ptr<IExampleWiseLoss> createExampleWiseLoss() const override {
                 return std::make_unique<ExampleWiseLogisticLoss>();
             }
-
     };
 
     ExampleWiseLogisticLossConfig::ExampleWiseLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)

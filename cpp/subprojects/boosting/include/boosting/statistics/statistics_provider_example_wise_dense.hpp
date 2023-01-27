@@ -8,7 +8,6 @@
 #include "boosting/statistics/statistics_example_wise.hpp"
 #include "boosting/losses/loss_example_wise.hpp"
 
-
 namespace boosting {
 
     /**
@@ -16,7 +15,6 @@ namespace boosting {
      * `IExampleWiseStatistics`, which uses dense data structures to store the statistics.
      */
     class DenseExampleWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
-
         private:
 
             std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr_;
@@ -73,7 +71,6 @@ namespace boosting {
              * @see `IStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrConstView& labelMatrix) const override;
-
     };
 
     /**
@@ -82,7 +79,6 @@ namespace boosting {
      * object of type `ILabelWiseStatistics`.
      */
     class DenseConvertibleExampleWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
-
         private:
 
             std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr_;
@@ -139,7 +135,6 @@ namespace boosting {
              * @see `IStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrConstView& labelMatrix) const override;
-
     };
 
 }

@@ -4,7 +4,6 @@
 #include "common/sampling/stratified_sampling_example_wise.hpp"
 #include "common/util/validation.hpp"
 
-
 /**
  * Implements stratified sampling, where distinct label vectors are treated as individual classes.
  *
@@ -15,7 +14,6 @@
  */
 template<typename LabelMatrix, typename IndexIterator>
 class ExampleWiseStratifiedSampling final : public IInstanceSampling {
-
     private:
 
         float32 sampleSize_;
@@ -49,7 +47,6 @@ class ExampleWiseStratifiedSampling final : public IInstanceSampling {
             stratification_.sampleWeights(weightVector_, sampleSize_, rng);
             return weightVector_;
         }
-
 };
 
 /**
@@ -57,7 +54,6 @@ class ExampleWiseStratifiedSampling final : public IInstanceSampling {
  * vectors are treated as individual classes.
  */
 class ExampleWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplingFactory {
-
     private:
 
         float32 sampleSize_;
@@ -97,7 +93,6 @@ class ExampleWiseStratifiedInstanceSamplingFactory final : public IInstanceSampl
             return std::make_unique<ExampleWiseStratifiedSampling<CsrLabelMatrix, BiPartition::const_iterator>>(
                 labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
         }
-
 };
 
 ExampleWiseStratifiedInstanceSamplingConfig::ExampleWiseStratifiedInstanceSamplingConfig()

@@ -9,7 +9,6 @@
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
-
 /**
  * Implements column-wise read-only access to the labels of individual training examples that are stored in a matrix in
  * the compressed sparse column (CSC) format.
@@ -19,7 +18,6 @@
  * expect the indices of the examples to be considered when copying the existing label matrix to be provided.
  */
 class CscLabelMatrix final : public BinaryCscConstView {
-
     public:
 
         /**
@@ -64,5 +62,4 @@ class CscLabelMatrix final : public BinaryCscConstView {
                        PartialIndexVector::const_iterator indicesEnd);
 
         ~CscLabelMatrix();
-
 };

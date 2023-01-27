@@ -9,7 +9,6 @@
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 
-
 namespace boosting {
 
     /**
@@ -31,7 +30,6 @@ namespace boosting {
      * about the labels of the training examples.
      */
     class IStatisticsConfig {
-
         public:
 
             virtual ~IStatisticsConfig() { };
@@ -68,7 +66,6 @@ namespace boosting {
              * @return True, if a sparse format is used, false otherwise
              */
             virtual bool isSparse() const = 0;
-
     };
 
 };

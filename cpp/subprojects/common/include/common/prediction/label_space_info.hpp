@@ -19,13 +19,11 @@ class IScorePredictorFactory;
 class IProbabilityPredictor;
 class IProbabilityPredictorFactory;
 
-
 /**
  * Defines an interface for all classes that provide information about the label space that may be used as a basis for
  * making predictions.
  */
 class MLRLCOMMON_API ILabelSpaceInfo {
-
     public:
 
         virtual ~ILabelSpaceInfo() { };
@@ -161,5 +159,4 @@ class MLRLCOMMON_API ILabelSpaceInfo {
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
             const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
             uint32 numLabels) const = 0;
-
 };

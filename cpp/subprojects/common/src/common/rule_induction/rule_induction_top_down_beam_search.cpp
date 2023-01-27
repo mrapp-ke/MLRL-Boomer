@@ -5,7 +5,6 @@
 #include "rule_induction_top_down_common.hpp"
 #include <algorithm>
 
-
 /**
  * A single entry of a beam, corresponding to a rule that may be further refined. It stores the conditions and the head
  * of the current rule, as well as an object of type `IThresholdsSubset` that is required to search for potential
@@ -13,7 +12,6 @@
  * refinements may predict.
  */
 struct BeamEntry final {
-
     /**
      * An unique pointer to an object of type `ConditionList` that stores the conditions of the rule.
      */
@@ -36,7 +34,6 @@ struct BeamEntry final {
      * potential refinements of the rule may predict.
      */
     const IIndexVector* labelIndices;
-
 };
 
 static inline void initializeEntry(BeamEntry& entry, Refinement& refinement,
@@ -64,7 +61,6 @@ static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry, Refinemen
     } else {
         newEntry.labelIndices =  keepHead ? newEntry.headPtr.get() : oldEntry.labelIndices;
     }
-
 }
 
 static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry) {
@@ -87,7 +83,6 @@ static inline const Quality& updateOrder(RuleCompareFunction ruleCompareFunction
  * A beam that keeps track of several rules that may be further refined.
  */
 class Beam final {
-
     private:
 
         uint32 numEntries_;
@@ -262,7 +257,6 @@ class Beam final {
         BeamEntry& getBestEntry() {
             return order_.front();
         }
-
 };
 
 /**
@@ -270,7 +264,6 @@ class Beam final {
  * search.
  */
 class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -364,7 +357,6 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
             return thresholdsSubsetPtr;
         }
-
 };
 
 /**
@@ -373,7 +365,6 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
  * that improves the rule the most is chosen. The search stops if no refinement results in an improvement.
  */
 class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -426,9 +417,7 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
                                                                     minCoverage_, maxConditions_, maxHeadRefinements_,
                                                                     recalculatePredictions_, numThreads_);
         }
-
 };
-
 
 BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
         RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)

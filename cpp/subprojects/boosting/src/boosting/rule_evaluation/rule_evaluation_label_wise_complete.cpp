@@ -1,7 +1,6 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_complete.hpp"
 #include "rule_evaluation_label_wise_complete_common.hpp"
 
-
 namespace boosting {
 
     LabelWiseCompleteRuleEvaluationFactory::LabelWiseCompleteRuleEvaluationFactory(float64 l1RegularizationWeight,

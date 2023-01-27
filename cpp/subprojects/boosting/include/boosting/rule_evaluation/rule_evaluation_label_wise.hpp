@@ -9,7 +9,6 @@
 #include "boosting/rule_evaluation/rule_evaluation.hpp"
 #include <memory>
 
-
 namespace boosting {
 
     /**
@@ -18,7 +17,6 @@ namespace boosting {
      * loss function that is applied label-wise.
      */
     class ILabelWiseRuleEvaluationFactory {
-
         public:
 
             virtual ~ILabelWiseRuleEvaluationFactory() { };
@@ -52,7 +50,6 @@ namespace boosting {
              */
             virtual std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
                 const DenseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const = 0;
-
     };
 
 }

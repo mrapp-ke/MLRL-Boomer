@@ -1,14 +1,12 @@
 #include "boosting/post_processing/shrinkage_constant.hpp"
 #include "common/util/validation.hpp"
 
-
 namespace boosting {
 
     /**
      * Post-processes the predictions of rules by shrinking their weights by a constant shrinkage parameter.
      */
     class ConstantShrinkage final : public IPostProcessor {
-
         private:
 
             float64 shrinkage_;
@@ -34,7 +32,6 @@ namespace boosting {
                     iterator[i] *= shrinkage_;
                 }
             }
-
     };
 
     /**
@@ -42,7 +39,6 @@ namespace boosting {
      * their weights by a constant "shrinkage" parameter.
      */
     class ConstantShrinkageFactory final : public IPostProcessorFactory {
-
         private:
 
             float64 shrinkage_;
@@ -63,7 +59,6 @@ namespace boosting {
             std::unique_ptr<IPostProcessor> create() const override {
                 return std::make_unique<ConstantShrinkage>(shrinkage_);
             }
-
     };
 
     ConstantShrinkageConfig::ConstantShrinkageConfig()

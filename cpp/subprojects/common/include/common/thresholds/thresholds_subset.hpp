@@ -14,14 +14,12 @@
 #include "common/sampling/partition_single.hpp"
 #include <memory>
 
-
 /**
  * Defines an interface for all classes that provide access a subset of thresholds that may be used by the conditions of
  * a rule with arbitrary body. The thresholds may include only those that correspond to the subspace of the instance
  * space that is covered by the rule.
  */
 class IThresholdsSubset {
-
     public:
 
         virtual ~IThresholdsSubset() { };
@@ -99,7 +97,6 @@ class IThresholdsSubset {
         virtual Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
-
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
          * that do not belong to the current sub-sample and are marked as covered according to a given object of type
@@ -137,7 +134,6 @@ class IThresholdsSubset {
          */
         virtual Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const = 0;
-
 
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
@@ -237,5 +233,4 @@ class IThresholdsSubset {
          *                   rule
          */
         virtual void revertPrediction(const AbstractPrediction& prediction) = 0;
-
 };

@@ -1,7 +1,6 @@
 #include "common/data/matrix_dense.hpp"
 #include <cstdlib>
 
-
 template<typename T>
 DenseMatrix<T>::DenseMatrix(uint32 numRows, uint32 numCols)
     : DenseMatrix<T>(numRows, numCols, false) {

@@ -3,7 +3,6 @@
 #include "thresholds_common.hpp"
 #include <unordered_map>
 
-
 /**
  * Updates a given `CoverageSet` after a new condition has been added, such that only the examples that are covered by
  * the new rule are marked es covered.
@@ -94,7 +93,6 @@ static inline void rebuildHistogram(const ThresholdVector& thresholdVector, IHis
  * examples.
  */
 class ApproximateThresholds final : public AbstractThresholds {
-
     private:
 
         /**
@@ -106,7 +104,6 @@ class ApproximateThresholds final : public AbstractThresholds {
          */
         template<typename WeightVector>
         class ThresholdsSubset final : public IThresholdsSubset {
-
             private:
 
                 /**
@@ -115,7 +112,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                  * from the feature matrix and applying a binning method.
                  */
                 class Callback final : public IRuleRefinementCallback<IHistogram, ThresholdVector> {
-
                     private:
 
                         ThresholdsSubset& thresholdsSubset_;
@@ -178,7 +174,6 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                             return Result(histogram, *thresholdVector);
                         }
-
                 };
 
                 ApproximateThresholds& thresholds_;
@@ -354,7 +349,6 @@ class ApproximateThresholds final : public AbstractThresholds {
                         predictionPtr->revert(*statisticsPtr, exampleIndex);
                     }
                 }
-
         };
 
         std::unique_ptr<IFeatureBinning> numericalFeatureBinningPtr_;
@@ -411,7 +405,6 @@ class ApproximateThresholds final : public AbstractThresholds {
             return std::make_unique<ApproximateThresholds::ThresholdsSubset<DenseWeightVector<uint32>>>(
                 *this, std::move(weightedStatisticsPtr), weights);
         }
-
 };
 
 ApproximateThresholdsFactory::ApproximateThresholdsFactory(

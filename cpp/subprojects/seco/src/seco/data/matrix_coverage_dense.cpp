@@ -1,7 +1,6 @@
 #include "seco/data/matrix_coverage_dense.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
 
-
 namespace seco {
 
     DenseCoverageMatrix::DenseCoverageMatrix(uint32 numRows, uint32 numCols, float64 sumOfUncoveredWeights)

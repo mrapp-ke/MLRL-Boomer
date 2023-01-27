@@ -6,8 +6,6 @@
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 
-
-
 LabelVectorSet::const_iterator LabelVectorSet::cbegin() const {
     return labelVectors_.cbegin();
 }
@@ -23,7 +21,6 @@ uint32 LabelVectorSet::getNumLabelVectors() const {
 void LabelVectorSet::addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr) {
     ++labelVectors_[std::move(labelVectorPtr)];
 }
-
 
 void LabelVectorSet::visit(LabelVectorVisitor visitor) const {
     for (auto it = labelVectors_.cbegin(); it != labelVectors_.cend(); it++) {

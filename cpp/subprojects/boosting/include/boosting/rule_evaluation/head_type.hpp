@@ -10,7 +10,6 @@
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 
-
 namespace boosting {
 
     /**
@@ -18,7 +17,6 @@ namespace boosting {
      * rule learner.
      */
     class IHeadConfig {
-
         public:
 
             virtual ~IHeadConfig() { };
@@ -90,7 +88,6 @@ namespace boosting {
              * @return True, if the rule heads predict for a single label, false otherwise
              */
             virtual bool isSingleLabel() const = 0;
-
     };
 
 }

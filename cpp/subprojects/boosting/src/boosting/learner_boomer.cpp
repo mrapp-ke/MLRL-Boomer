@@ -10,7 +10,6 @@
 #include "boosting/sampling/partition_sampling_auto.hpp"
 #include "boosting/statistics/statistic_format_auto.hpp"
 
-
 namespace boosting {
 
     Boomer::Config::Config() {

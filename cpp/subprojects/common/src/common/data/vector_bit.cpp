@@ -2,7 +2,6 @@
 #include "common/data/arrays.hpp"
 #include <climits>
 
-
 constexpr std::size_t UINT32_SIZE = CHAR_BIT * sizeof(uint32);
 
 static inline constexpr std::size_t size(uint32 numElements) {

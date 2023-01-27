@@ -10,12 +10,10 @@
 class IRuleRefinement;
 class IThresholdsSubset;
 
-
 /**
  * Defines an interface for all classes that provide random access to indices.
  */
 class IIndexVector {
-
     public:
 
         virtual ~IIndexVector() { };
@@ -54,5 +52,4 @@ class IIndexVector {
          */
         virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                                       uint32 featureIndex) const = 0;
-
 };

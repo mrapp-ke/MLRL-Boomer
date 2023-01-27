@@ -8,7 +8,6 @@
 #include "common/statistics/statistics_weighted.hpp"
 #include "common/input/feature_vector.hpp"
 
-
 /**
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
  * certain feature. The thresholds that may be used by the new condition result from the feature values of all training
@@ -19,7 +18,6 @@
  */
 template<typename IndexVector>
 class ExactRuleRefinement final : public IRuleRefinement {
-
     private:
 
         const IndexVector& labelIndices_;
@@ -55,5 +53,4 @@ class ExactRuleRefinement final : public IRuleRefinement {
         void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) override;
 
         void findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) override;
-
 };

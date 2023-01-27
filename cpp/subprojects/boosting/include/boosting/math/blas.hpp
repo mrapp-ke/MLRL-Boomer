@@ -5,14 +5,12 @@
 
 #include "common/data/types.hpp"
 
-
 namespace boosting {
 
     /**
      * Allows to execute BLAS routines.
      */
     class Blas final {
-
         public:
 
             /**
@@ -67,7 +65,6 @@ namespace boosting {
              * @param n         The number of elements in the arrays `a` and `x`
              */
             void dspmv(float64* a, float64* x, float64* output, int n) const;
-
     };
 
 }

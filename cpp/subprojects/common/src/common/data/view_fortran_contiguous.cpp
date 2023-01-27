@@ -1,6 +1,5 @@
 #include "common/data/view_fortran_contiguous.hpp"
 
-
 template<typename T>
 FortranContiguousConstView<T>::FortranContiguousConstView(uint32 numRows, uint32 numCols, T* array)
     : numRows_(numRows), numCols_(numCols), array_(array) {

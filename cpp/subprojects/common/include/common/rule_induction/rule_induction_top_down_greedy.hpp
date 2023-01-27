@@ -7,13 +7,11 @@
 #include "common/multi_threading/multi_threading.hpp"
 #include "common/macros.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules that
  * uses a greedy top-down search.
  */
 class MLRLCOMMON_API IGreedyTopDownRuleInductionConfig {
-
     public:
 
         virtual ~IGreedyTopDownRuleInductionConfig() { };
@@ -110,14 +108,12 @@ class MLRLCOMMON_API IGreedyTopDownRuleInductionConfig {
          *                                  individual rules
          */
         virtual IGreedyTopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) = 0;
-
 };
 
 /**
  * Allows to configure an algorithm for the induction of individual rules that uses a greedy top-down search.
  */
 class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig, public IGreedyTopDownRuleInductionConfig {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -168,5 +164,4 @@ class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig, publ
 
         std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(
             const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
-
 };

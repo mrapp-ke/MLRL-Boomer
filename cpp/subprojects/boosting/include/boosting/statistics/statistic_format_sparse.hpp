@@ -6,14 +6,12 @@
 #include "boosting/statistics/statistic_format.hpp"
 #include "boosting/losses/loss.hpp"
 
-
 namespace boosting {
 
     /**
      * Allows to configure a sparse format for storing statistics about the labels of the training examples.
      */
     class SparseStatisticsConfig final : public IStatisticsConfig {
-
         private:
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
@@ -32,7 +30,6 @@ namespace boosting {
             bool isDense() const override;
 
             bool isSparse() const override;
-
     };
 
 };

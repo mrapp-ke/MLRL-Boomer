@@ -5,7 +5,6 @@
 
 #include "common/data/types.hpp"
 
-
 /**
  * A triple that consists of three values of the same type.
  *
@@ -13,7 +12,6 @@
  */
 template<typename T>
 struct Triple final {
-
     Triple() {
 
     }
@@ -187,5 +185,4 @@ struct Triple final {
         lhs *= rhs;
         return lhs;
     }
-
 };

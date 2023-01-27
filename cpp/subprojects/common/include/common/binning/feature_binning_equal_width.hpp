@@ -8,13 +8,11 @@
 #include "common/multi_threading/multi_threading.hpp"
 #include "common/macros.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to configure a method that assigns numerical feature values to bins,
  * such that each bin contains values from equally sized value ranges.
  */
 class MLRLCOMMON_API IEqualWidthFeatureBinningConfig {
-
     public:
 
         virtual ~IEqualWidthFeatureBinningConfig() { };
@@ -69,7 +67,6 @@ class MLRLCOMMON_API IEqualWidthFeatureBinningConfig {
          *                  configuration of the method that assigns numerical feature values to bins
          */
         virtual IEqualWidthFeatureBinningConfig& setMaxBins(uint32 maxBins) = 0;
-
 };
 
 /**
@@ -77,7 +74,6 @@ class MLRLCOMMON_API IEqualWidthFeatureBinningConfig {
  * equally sized value ranges.
  */
 class EqualWidthFeatureBinningConfig final : public IFeatureBinningConfig, public IEqualWidthFeatureBinningConfig {
-
     private:
 
         float32 binRatio_;
@@ -111,5 +107,4 @@ class EqualWidthFeatureBinningConfig final : public IFeatureBinningConfig, publi
 
         std::unique_ptr<IThresholdsFactory> createThresholdsFactory(const IFeatureMatrix& featureMatrix,
                                                                     const ILabelMatrix& labelMatrix) const override;
-
 };

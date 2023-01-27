@@ -6,7 +6,6 @@
 #include "common/post_processing/post_processor.hpp"
 #include "boosting/macros.hpp"
 
-
 namespace boosting {
 
     /**
@@ -14,7 +13,6 @@ namespace boosting {
      * by a constant "shrinkage" parameter.
      */
     class MLRLBOOSTING_API IConstantShrinkageConfig {
-
         public:
 
             virtual ~IConstantShrinkageConfig() { };
@@ -34,14 +32,12 @@ namespace boosting {
              *                  configuration of the post-processor
              */
             virtual IConstantShrinkageConfig& setShrinkage(float64 shrinkage) = 0;
-
     };
 
     /**
      * Allows to configure a post-processor that shrinks the weights of rules by a constant "shrinkage" parameter.
      */
     class ConstantShrinkageConfig final : public IPostProcessorConfig, public IConstantShrinkageConfig {
-
         private:
 
             float64 shrinkage_;
@@ -58,7 +54,6 @@ namespace boosting {
              * @see `IPostProcessorConfig::createPostProcessorFactory`
              */
             std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const override;
-
     };
 
 }

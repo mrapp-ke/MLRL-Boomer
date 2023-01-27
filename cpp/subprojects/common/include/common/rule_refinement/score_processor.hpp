@@ -9,13 +9,11 @@
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
-
 /**
  * Allows to process the scores that are stored by an `IScoreVector` in order to convert them into the head of a rule,
  * represented by an `AbstractEvaluatedPrediction`.
  */
 class ScoreProcessor {
-
     private:
 
         std::unique_ptr<AbstractEvaluatedPrediction>& headPtr_;
@@ -70,5 +68,4 @@ class ScoreProcessor {
          * @param scoreVector A reference to an object of type `IScoreVector` that stores the scores to be processed
          */
         void processScores(const IScoreVector& scoreVector);
-
 };
