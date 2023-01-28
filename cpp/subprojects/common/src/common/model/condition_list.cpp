@@ -3,10 +3,10 @@
 ConditionList::ConditionList() : numConditionsPerComparator_({0, 0, 0, 0}) {}
 
 ConditionList::ConditionList(const ConditionList& conditionList)
-    : vector_(conditionList.vector_),numConditionsPerComparator_({conditionList.numConditionsPerComparator_[0],
-                                                                  conditionList.numConditionsPerComparator_[1],
-                                                                  conditionList.numConditionsPerComparator_[2],
-                                                                  conditionList.numConditionsPerComparator_[3]}) {}
+    : vector_(conditionList.vector_),
+      numConditionsPerComparator_(
+          {conditionList.numConditionsPerComparator_[0], conditionList.numConditionsPerComparator_[1],
+           conditionList.numConditionsPerComparator_[2], conditionList.numConditionsPerComparator_[3]}) {}
 
 ConditionList::const_iterator ConditionList::cbegin() const {
     return vector_.cbegin();

@@ -1,12 +1,10 @@
 #include "common/model/body_conjunctive.hpp"
 
 ConjunctiveBody::ConjunctiveBody(uint32 numLeq, uint32 numGr, uint32 numEq, uint32 numNeq)
-    : numLeq_(numLeq), leqFeatureIndices_(new uint32[numLeq_]), leqThresholds_(new float32[numLeq_]),
-      numGr_(numGr), grFeatureIndices_(new uint32[numGr_]), grThresholds_(new float32[numGr_]),
-      numEq_(numEq), eqFeatureIndices_(new uint32[numEq_]), eqThresholds_(new float32[numEq_]),
-      numNeq_(numNeq), neqFeatureIndices_(new uint32[numNeq_]), neqThresholds_(new float32[numNeq_]) {
-
-}
+    : numLeq_(numLeq), leqFeatureIndices_(new uint32[numLeq_]), leqThresholds_(new float32[numLeq_]), numGr_(numGr),
+      grFeatureIndices_(new uint32[numGr_]), grThresholds_(new float32[numGr_]), numEq_(numEq),
+      eqFeatureIndices_(new uint32[numEq_]), eqThresholds_(new float32[numEq_]), numNeq_(numNeq),
+      neqFeatureIndices_(new uint32[numNeq_]), neqThresholds_(new float32[numNeq_]) {}
 
 ConjunctiveBody::~ConjunctiveBody() {
     delete[] leqFeatureIndices_;

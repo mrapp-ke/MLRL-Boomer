@@ -97,8 +97,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
               rulePruningFactoryPtr_(std::move(rulePruningFactoryPtr)),
               postProcessorFactoryPtr_(std::move(postProcessorFactoryPtr)),
               postOptimizationFactoryPtr_(std::move(postOptimizationFactoryPtr)),
-              stoppingCriterionFactoryPtr_(std::move(stoppingCriterionFactoryPtr)),
-              useDefaultRule_(useDefaultRule) {}
+              stoppingCriterionFactoryPtr_(std::move(stoppingCriterionFactoryPtr)), useDefaultRule_(useDefaultRule) {}
 
         std::unique_ptr<IRuleModel> induceRules(const IFeatureInfo& featureInfo,
                                                 const IColumnWiseFeatureMatrix& featureMatrix,

@@ -13,10 +13,10 @@ namespace boosting {
 
     DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients, bool init)
         : numGradients_(numGradients), numHessians_(triangularNumber(numGradients)),
-          gradients_((float64*) (init ? calloc(numGradients, sizeof(float64))
-                                      : malloc(numGradients * sizeof(float64)))),
-          hessians_((float64*) (init ? calloc(numHessians_, sizeof(float64))
-                                     : malloc(numHessians_ * sizeof(float64)))) {}
+          gradients_(
+              (float64*) (init ? calloc(numGradients, sizeof(float64)) : malloc(numGradients * sizeof(float64)))),
+          hessians_(
+              (float64*) (init ? calloc(numHessians_, sizeof(float64)) : malloc(numHessians_ * sizeof(float64)))) {}
 
     DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(const DenseExampleWiseStatisticVector& vector)
         : DenseExampleWiseStatisticVector(vector.numGradients_) {
