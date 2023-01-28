@@ -144,8 +144,8 @@ namespace seco {
         CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-        firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
+    firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BitVector mask(numLabels, true);
 
@@ -173,8 +173,8 @@ namespace seco {
         CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
+    firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
         num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BitVector mask(numLabels, true);
@@ -289,8 +289,8 @@ namespace seco {
         const RuleList* modelPtr = &model;
         uint32 numNonZeroElements = 0;
 
-        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
+    firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
         num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
@@ -319,9 +319,9 @@ namespace seco {
         const RuleList* modelPtr = &model;
         uint32 numNonZeroElements = 0;
 
-        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
-        firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-        firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
+    firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+        schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
             float32* tmpArray1 = new float32[numFeatures];

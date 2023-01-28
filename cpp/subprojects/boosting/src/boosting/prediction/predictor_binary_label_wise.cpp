@@ -42,8 +42,8 @@ namespace boosting {
         CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(threshold) \
-        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(threshold) \
+    firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
         num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
@@ -67,9 +67,9 @@ namespace boosting {
         CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-        firstprivate(threshold) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-        firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
+    firstprivate(threshold) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
+        schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
             applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
@@ -188,9 +188,9 @@ namespace boosting {
         const RuleList* modelPtr = &model;
         uint32 numNonZeroElements = 0;
 
-        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-        firstprivate(threshold) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-        firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
+    firstprivate(threshold) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+        schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
             applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
@@ -213,8 +213,8 @@ namespace boosting {
         const RuleList* modelPtr = &model;
         uint32 numNonZeroElements = 0;
 
-        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
-        firstprivate(numLabels) firstprivate(threshold) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
+    firstprivate(numLabels) firstprivate(threshold) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
         firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};

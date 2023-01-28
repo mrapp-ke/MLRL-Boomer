@@ -171,9 +171,9 @@ namespace boosting {
             const IProbabilityFunction* probabilityFunctionPtr = &probabilityFunction;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-            firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
-            firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) \
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
+    firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
+        firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) \
             schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
@@ -205,9 +205,9 @@ namespace boosting {
             const IProbabilityFunction* probabilityFunctionPtr = &probabilityFunction;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-            firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-            firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
+    firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
+        firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
             firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
@@ -358,9 +358,9 @@ namespace boosting {
             const IProbabilityFunction* probabilityFunctionPtr = &probabilityFunction;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-            firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-            firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
+    firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+        firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
             firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
@@ -393,10 +393,10 @@ namespace boosting {
             const IProbabilityFunction* probabilityFunctionPtr = &probabilityFunction;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
-            firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-            firstprivate(predictionMatrixPtr) firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) \
-            firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
+    firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+        firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
+            firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
