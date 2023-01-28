@@ -10,6 +10,7 @@ python/**/cython/*.dll
 python/**/cython/*.lib
 python/**/cython/*.pyd
 python/**/tests/res/tmp/
+.cpp_files.tmp
 
 # Documentation files
 doc/_build/
