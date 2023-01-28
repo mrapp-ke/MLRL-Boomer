@@ -8,8 +8,8 @@ DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols)
 
 template<typename T>
 DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols, bool init)
-    : CContiguousView<T>(numRows, numCols, (T*) (init ? calloc(numRows * numCols, sizeof(T))
-                                                      : malloc(numRows * numCols * sizeof(T)))),
+    : CContiguousView<T>(numRows, numCols,
+                         (T*) (init ? calloc(numRows * numCols, sizeof(T)) : malloc(numRows * numCols * sizeof(T)))),
       array_(CContiguousView<T>::array_) {}
 
 template<typename T>

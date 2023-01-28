@@ -41,9 +41,9 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
          */
         GreedyTopDownRuleInduction(RuleCompareFunction ruleCompareFunction, uint32 minCoverage, uint32 maxConditions,
                                    uint32 maxHeadRefinements, bool recalculatePredictions, uint32 numThreads)
-            : AbstractRuleInduction(recalculatePredictions),
-              ruleCompareFunction_(ruleCompareFunction), minCoverage_(minCoverage), maxConditions_(maxConditions),
-              maxHeadRefinements_(maxHeadRefinements), numThreads_(numThreads) {}
+            : AbstractRuleInduction(recalculatePredictions), ruleCompareFunction_(ruleCompareFunction),
+              minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
+              numThreads_(numThreads) {}
 
     protected:
 
