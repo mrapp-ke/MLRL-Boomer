@@ -38,15 +38,15 @@ namespace boosting {
                 const RuleList::Rule& rule = *it;
                 applyRule(rule, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                           &scoreVector[0]);
-                }
-
-                applyTransformationFunction(&scoreVector[0], predictionMatrixRawPtr->row_values_begin(i), numLabels,
-                                            *probabilityFunctionPtr);
-                delete[] scoreVector;
             }
 
-            return predictionMatrixPtr;
+            applyTransformationFunction(&scoreVector[0], predictionMatrixRawPtr->row_values_begin(i), numLabels,
+                                        *probabilityFunctionPtr);
+            delete[] scoreVector;
         }
+
+        return predictionMatrixPtr;
+    }
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
         const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
