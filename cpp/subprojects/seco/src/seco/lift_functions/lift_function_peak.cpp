@@ -17,8 +17,8 @@ namespace seco {
             if (numLabels < peakLabel) {
                 normalization = ((float64) numLabels - 1) / ((float64) peakLabel - 1);
             } else {
-                normalization = ((float64) numLabels - (float64) totalLabels)
-                                / ((float64) totalLabels - (float64) peakLabel);
+                normalization =
+                    ((float64) numLabels - (float64) totalLabels) / ((float64) totalLabels - (float64) peakLabel);
             }
 
             return 1 + pow(normalization, exponent) * (maxLift - 1);
