@@ -123,7 +123,7 @@ namespace boosting {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<IExampleWiseLoss> lossPtr = lossFactory.createExampleWiseLoss();
-        std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr =evaluationMeasureFactory.createEvaluationMeasure();
+        std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr = evaluationMeasureFactory.createEvaluationMeasure();
         std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr =
             std::make_unique<DenseExampleWiseStatisticMatrix>(numExamples, numLabels);
         std::unique_ptr<NumericDenseMatrix<float64>> scoreMatrixPtr =

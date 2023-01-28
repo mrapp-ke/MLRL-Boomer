@@ -43,7 +43,7 @@ namespace boosting {
     std::unique_ptr<IExampleWiseRuleEvaluationFactory>
         AutomaticLabelBinningConfig::createExampleWiseFixedPartialRuleEvaluationFactory(
             float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas, const Lapack& lapack) const {
-        return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_,l2RegularizationConfigPtr_)
+        return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
             .createExampleWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels, maxLabels, blas, lapack);
     }
 
