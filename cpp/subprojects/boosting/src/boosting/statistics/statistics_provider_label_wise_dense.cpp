@@ -29,8 +29,8 @@ namespace boosting {
         const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
         DenseLabelWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
-        firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
+    firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             lossRawPtr->updateLabelWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, IndexIterator(),
                                                   IndexIterator(labelMatrixPtr->getNumCols()), *statisticMatrixRawPtr);

@@ -83,9 +83,9 @@ namespace boosting {
             const IDistanceMeasure* distanceMeasurePtr = &distanceMeasure;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-            firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(distanceMeasurePtr) \
-            firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
+    firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(distanceMeasurePtr) \
+        firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
@@ -115,9 +115,9 @@ namespace boosting {
             const IDistanceMeasure* distanceMeasurePtr = &distanceMeasure;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-            firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-            firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
+    firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
+        firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
@@ -268,9 +268,9 @@ namespace boosting {
             const IDistanceMeasure* distanceMeasurePtr = &distanceMeasure;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-            firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-            firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
+    firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+        firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
@@ -300,10 +300,9 @@ namespace boosting {
             const IDistanceMeasure* distanceMeasurePtr = &distanceMeasure;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
-            firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-            firstprivate(predictionMatrixPtr) firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) \
-            schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
+    firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+        firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),

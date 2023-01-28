@@ -321,8 +321,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                     IStatistics* statisticsPtr = &thresholds_.statisticsProvider_.get();
                     uint32 numThreads = thresholds_.numThreads_;
 
-                    #pragma omp parallel for firstprivate(numCovered) firstprivate(iterator) \
-                    firstprivate(predictionPtr) firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numCovered) firstprivate(iterator) firstprivate(predictionPtr) \
+    firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
                     for (int64 i = 0; i < numCovered; i++) {
                         uint32 exampleIndex = iterator[i];
                         predictionPtr->apply(*statisticsPtr, exampleIndex);
@@ -336,8 +336,8 @@ class ApproximateThresholds final : public AbstractThresholds {
                     IStatistics* statisticsPtr = &thresholds_.statisticsProvider_.get();
                     uint32 numThreads = thresholds_.numThreads_;
 
-                    #pragma omp parallel for firstprivate(numCovered) firstprivate(iterator) \
-                    firstprivate(predictionPtr) firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numCovered) firstprivate(iterator) firstprivate(predictionPtr) \
+    firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
                     for (int64 i = 0; i < numCovered; i++) {
                         uint32 exampleIndex = iterator[i];
                         predictionPtr->revert(*statisticsPtr, exampleIndex);

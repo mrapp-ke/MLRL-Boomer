@@ -91,9 +91,8 @@ namespace boosting {
                 DenseLabelWiseStatisticView* labelWiseStatisticMatrixRawPtr = labelWiseStatisticMatrixPtr.get();
                 DenseExampleWiseStatisticView* exampleWiseStatisticViewRawPtr = this->statisticViewPtr_.get();
 
-                #pragma omp parallel for firstprivate(numRows) firstprivate(numCols) \
-                firstprivate(labelWiseStatisticMatrixRawPtr) firstprivate(exampleWiseStatisticViewRawPtr) \
-                schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numRows) firstprivate(numCols) firstprivate(labelWiseStatisticMatrixRawPtr) \
+    firstprivate(exampleWiseStatisticViewRawPtr) schedule(dynamic) num_threads(numThreads)
                 for (int64 i = 0; i < numRows; i++) {
                     DenseLabelWiseStatisticView::iterator iterator = labelWiseStatisticMatrixRawPtr->row_begin(i);
                     DenseExampleWiseStatisticView::gradient_const_iterator gradientIterator =
@@ -134,8 +133,8 @@ namespace boosting {
         const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
         DenseExampleWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
-        firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
+    firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             lossRawPtr->updateExampleWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, *statisticMatrixRawPtr);
         }
