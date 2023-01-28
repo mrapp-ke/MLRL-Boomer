@@ -67,9 +67,9 @@ endef
 
 define clang_format_recursively
 	$(if ${IS_WIN},\
-	(${PS} "Get-ChildItem -Path ${1} -Recurse | Where Name -Match '\.hpp|\.cpp' | Select-Object -ExpandProperty FullName | Out-File files.tmp -Encoding utf8";\
-	    ${CLANG_FORMAT} --files=files.tmp;\
-	    ${PS} "rm files.tmp -Force"),\
+	(${PS} "Get-ChildItem -Path ${1} -Recurse | Where Name -Match '\.hpp|\.cpp' | Select-Object -ExpandProperty FullName | Out-File .cpp_files.tmp -Encoding utf8";\
+	    ${CLANG_FORMAT} --files=.cpp_files.tmp;\
+	    ${PS} "rm .cpp_files.tmp -Force"),\
 	find ${1} -type f \( -iname "*.hpp" -o -iname "*.cpp" \) -exec ${CLANG_FORMAT} {} +)
 endef
 
