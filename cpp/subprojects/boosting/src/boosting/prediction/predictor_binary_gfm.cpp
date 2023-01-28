@@ -284,9 +284,10 @@ namespace boosting {
         const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
         uint32 numLabels, const IProbabilityFunctionFactory& probabilityFunctionFactory, uint32 numThreads) {
         if (!labelVectorSet) {
-            throw std::runtime_error("Information about the label vectors that have been encountered in the training "
-                "data is required for predicting binary labels, but no such information is provided by the model. Most "
-                "probably, the model was intended to use a different prediction method when it has been trained.");
+            throw std::runtime_error(
+                "Information about the label vectors that have been encountered in the training data is required for "
+                "predicting binary labels, but no such information is provided by the model. Most probably, the model "
+                "was intended to use a different prediction method when it has been trained.");
         }
 
         std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactory.create();
@@ -473,9 +474,10 @@ namespace boosting {
         const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
         uint32 numLabels, const IProbabilityFunctionFactory& probabilityFunctionFactory, uint32 numThreads) {
         if (!labelVectorSet) {
-            throw std::runtime_error("Information about the label vectors that have been encountered in the training "
-                "data is required for predicting binary labels, but no such information is provided by the model. Most "
-                "probably, the model was intended to use a different prediction method when it has been trained.");
+            throw std::runtime_error(
+                "Information about the label vectors that have been encountered in the training data is required for "
+                "predicting binary labels, but no such information is provided by the model. Most probably, the model "
+                "was intended to use a different prediction method when it has been trained.");
         }
 
         std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactory.create();
