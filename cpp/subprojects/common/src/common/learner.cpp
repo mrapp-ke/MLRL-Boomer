@@ -361,7 +361,7 @@ std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo(
     if ((binaryPredictorConfig && binaryPredictorConfig->isLabelVectorSetNeeded())
         || (scorePredictorConfig && scorePredictorConfig->isLabelVectorSetNeeded())
         || (probabilityPredictorConfig && probabilityPredictorConfig->isLabelVectorSetNeeded())) {
-            return createLabelVectorSet(labelMatrix);
+        return createLabelVectorSet(labelMatrix);
     } else {
         return createNoLabelSpaceInfo();
     }
