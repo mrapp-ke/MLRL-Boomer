@@ -72,20 +72,19 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
          *                                      additional rules should be induced or not
          * @param useDefaultRule                True, if a default rule should be used, False otherwise
          */
-        SequentialRuleModelAssemblage(
-            std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
-            std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
-            std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-            std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
-            std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
-            std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
-            std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
-            std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-            std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
-            std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-            std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
-            std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr,
-            bool useDefaultRule)
+        SequentialRuleModelAssemblage(std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
+                                      std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
+                                      std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
+                                      std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
+                                      std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
+                                      std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
+                                      std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
+                                      std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
+                                      std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
+                                      std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
+                                      std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
+                                      std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr,
+                                      bool useDefaultRule)
             : modelBuilderFactoryPtr_(std::move(modelBuilderFactoryPtr)),
               statisticsProviderFactoryPtr_(std::move(statisticsProviderFactoryPtr)),
               thresholdsFactoryPtr_(std::move(thresholdsFactoryPtr)),
