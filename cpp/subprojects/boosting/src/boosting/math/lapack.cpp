@@ -25,7 +25,7 @@ namespace boosting {
         if (info != 0) {
             throw std::runtime_error(
                 std::string("DSYSV terminated with non-zero info code when querying the optimal lwork parameter: "
-                + std::to_string(info)));
+                            + std::to_string(info)));
         }
 
         return (int) worksize;
