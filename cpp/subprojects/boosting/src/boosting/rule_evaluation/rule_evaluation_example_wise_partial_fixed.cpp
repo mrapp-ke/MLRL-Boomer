@@ -121,8 +121,8 @@ namespace boosting {
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
         ExampleWiseFixedPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
                                                              const CompleteIndexVector& indexVector) const {
-        uint32 numPredictions = calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_,
-                                                         maxLabels_);
+        uint32 numPredictions =
+            calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_);
         return std::make_unique<DenseExampleWiseFixedPartialRuleEvaluation<CompleteIndexVector>>(
             indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
