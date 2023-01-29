@@ -139,7 +139,7 @@ namespace boosting {
         ExampleWiseDynamicPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
                                                                const PartialIndexVector& indexVector) const {
         return std::make_unique<DenseExampleWiseCompleteRuleEvaluation<PartialIndexVector>>(
-            indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);;
+            indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
 }
