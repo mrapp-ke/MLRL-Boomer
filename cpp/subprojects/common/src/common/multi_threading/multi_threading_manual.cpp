@@ -10,7 +10,7 @@ uint32 ManualMultiThreadingConfig::getNumThreads() const {
 }
 
 IManualMultiThreadingConfig& ManualMultiThreadingConfig::setNumThreads(uint32 numThreads) {
-    if (numThreads != 0) { assertGreaterOrEqual<uint32>("numThreads", numThreads, 1); }
+    if (numThreads != 0) assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
     numThreads_ = numThreads;
     return *this;
 }

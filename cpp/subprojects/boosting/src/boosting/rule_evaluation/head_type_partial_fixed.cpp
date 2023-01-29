@@ -49,7 +49,7 @@ namespace boosting {
     }
 
     IFixedPartialHeadConfig& FixedPartialHeadConfig::setMaxLabels(uint32 maxLabels) {
-        if (maxLabels != 0) { assertGreaterOrEqual<uint32>("maxLabels", maxLabels, minLabels_); }
+        if (maxLabels != 0) assertGreaterOrEqual<uint32>("maxLabels", maxLabels, minLabels_);
         maxLabels_ = maxLabels;
         return *this;
     }
