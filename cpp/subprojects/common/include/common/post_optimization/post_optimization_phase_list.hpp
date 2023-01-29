@@ -25,7 +25,7 @@ class PostOptimizationPhaseListFactory final : public IPostOptimizationFactory {
          *                                        that should be added
          */
         void addPostOptimizationPhaseFactory(
-            std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactoryPtr);
+          std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactoryPtr);
 
         std::unique_ptr<IPostOptimization> create(const IModelBuilderFactory& modelBuilderFactory) const override;
 };

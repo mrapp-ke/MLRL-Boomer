@@ -43,6 +43,6 @@ class NoLabelSamplingFactory final : public ILabelSamplingFactory {
 };
 
 std::unique_ptr<ILabelSamplingFactory> NoLabelSamplingConfig::createLabelSamplingFactory(
-    const ILabelMatrix& labelMatrix) const {
+  const ILabelMatrix& labelMatrix) const {
     return std::make_unique<NoLabelSamplingFactory>(labelMatrix.getNumCols());
 }

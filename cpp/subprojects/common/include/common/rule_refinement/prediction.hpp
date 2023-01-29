@@ -153,7 +153,7 @@ class AbstractPrediction : public IIndexVector {
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const = 0;
+          const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
@@ -165,7 +165,7 @@ class AbstractPrediction : public IIndexVector {
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
+          const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
@@ -177,7 +177,7 @@ class AbstractPrediction : public IIndexVector {
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
+          const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
@@ -189,7 +189,7 @@ class AbstractPrediction : public IIndexVector {
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
+          const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
 
         uint32 getNumElements() const override;
 };

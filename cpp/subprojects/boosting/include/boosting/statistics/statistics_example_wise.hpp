@@ -45,7 +45,7 @@ namespace boosting {
              *                              created
              */
             virtual std::unique_ptr<ILabelWiseStatistics<LabelWiseRuleEvaluationFactory>> toLabelWiseStatistics(
-                const LabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) = 0;
+              const LabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) = 0;
     };
 
 }

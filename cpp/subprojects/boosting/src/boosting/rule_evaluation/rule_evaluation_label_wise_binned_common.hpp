@@ -127,8 +127,8 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
                 uint32 numCriteria =
-                    this->calculateLabelWiseCriteria(statisticVector, criteria_, scoreVector_.getNumElements(),
-                                                     l1RegularizationWeight_, l2RegularizationWeight_);
+                  this->calculateLabelWiseCriteria(statisticVector, criteria_, scoreVector_.getNumElements(),
+                                                   l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
                 LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numCriteria);
@@ -137,14 +137,14 @@ namespace boosting {
 
                 // Reset arrays to zero...
                 DenseLabelWiseStatisticVector::iterator aggregatedStatisticIterator =
-                    aggregatedStatisticVector_.begin();
+                  aggregatedStatisticVector_.begin();
                 setArrayToZeros(aggregatedStatisticIterator, numBins);
                 setArrayToZeros(numElementsPerBin_, numBins);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename DenseBinnedScoreVector<IndexVector>::index_binned_iterator binIndexIterator =
-                    scoreVector_.indices_binned_begin();
+                  scoreVector_.indices_binned_begin();
                 auto callback = [=](uint32 binIndex, uint32 labelIndex) {
                     aggregatedStatisticIterator[binIndex] += statisticIterator[labelIndex];
                     numElementsPerBin_[binIndex] += 1;
@@ -157,10 +157,10 @@ namespace boosting {
 
                 // Compute predictions, as well as their overall quality...
                 typename DenseBinnedScoreVector<IndexVector>::score_binned_iterator scoreIterator =
-                    scoreVector_.scores_binned_begin();
+                  scoreVector_.scores_binned_begin();
                 scoreVector_.quality =
-                    calculateBinnedScores(aggregatedStatisticIterator, scoreIterator, numElementsPerBin_, numBins,
-                                          l1RegularizationWeight_, l2RegularizationWeight_);
+                  calculateBinnedScores(aggregatedStatisticIterator, scoreIterator, numElementsPerBin_, numBins,
+                                        l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }
     };
@@ -209,7 +209,7 @@ namespace boosting {
                                                   float64 l2RegularizationWeight,
                                                   std::unique_ptr<ILabelBinning> binningPtr)
                 : AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, IndexVector>(
-                    labelIndices, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)) {}
+                  labelIndices, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)) {}
     };
 
 }

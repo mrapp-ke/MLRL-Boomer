@@ -69,7 +69,7 @@ namespace seco {
              * @return              An unique pointer to an object of type `ILiftFunctionFactory` that has been created
              */
             virtual std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory(
-                const IRowWiseLabelMatrix& labelMatrix) const = 0;
+              const IRowWiseLabelMatrix& labelMatrix) const = 0;
     };
 
 }

@@ -49,7 +49,7 @@ static inline std::tuple<uint32, float32, float32> preprocess(const FeatureVecto
         }
 
         std::get<0>(result) =
-            numDistinctValues > 1 ? calculateBoundedFraction(numDistinctValues, binRatio, minBins, maxBins) : 0;
+          numDistinctValues > 1 ? calculateBoundedFraction(numDistinctValues, binRatio, minBins, maxBins) : 0;
         std::get<1>(result) = minValue;
         std::get<2>(result) = maxValue;
     } else {
@@ -94,7 +94,7 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
             uint32 numElements = featureVector.getNumElements();
             bool sparse = numElements < numExamples;
             std::tuple<uint32, float32, float32> tuple =
-                preprocess(featureVector, sparse, binRatio_, minBins_, maxBins_);
+              preprocess(featureVector, sparse, binRatio_, minBins_, maxBins_);
             uint32 numBins = std::get<0>(tuple);
             result.thresholdVectorPtr = std::make_unique<ThresholdVector>(featureVector, numBins, true);
 
@@ -205,7 +205,7 @@ class EqualWidthFeatureBinningFactory final : public IFeatureBinningFactory {
 };
 
 EqualWidthFeatureBinningConfig::EqualWidthFeatureBinningConfig(
-    const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+  const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
     : binRatio_(0.33f), minBins_(2), maxBins_(0), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
 float32 EqualWidthFeatureBinningConfig::getBinRatio() const {
@@ -240,11 +240,11 @@ IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint
 }
 
 std::unique_ptr<IThresholdsFactory> EqualWidthFeatureBinningConfig::createThresholdsFactory(
-    const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+  const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
     std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr =
-        std::make_unique<EqualWidthFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
+      std::make_unique<EqualWidthFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
     std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr =
-        std::make_unique<NominalFeatureBinningFactory>();
+      std::make_unique<NominalFeatureBinningFactory>();
     uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
     return std::make_unique<ApproximateThresholdsFactory>(std::move(numericalFeatureBinningFactoryPtr),
                                                           std::move(nominalFeatureBinningFactoryPtr), numThreads);

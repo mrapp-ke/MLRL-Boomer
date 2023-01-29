@@ -37,7 +37,7 @@ namespace seco {
                               const std::unique_ptr<ILiftFunctionConfig>& liftFunctionConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
+              const IRowWiseLabelMatrix& labelMatrix) const override;
     };
 
 }

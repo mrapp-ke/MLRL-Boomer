@@ -50,8 +50,8 @@ class CsrFeatureMatrix final : public CsrConstView<const float32>,
                                                                 uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-            const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
+          const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
+          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const IRuleModel& ruleModel,

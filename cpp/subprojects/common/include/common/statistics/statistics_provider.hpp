@@ -52,7 +52,7 @@ class IStatisticsProviderFactory {
          * @return              An unique pointer to an object of type `IStatisticsProvider` that has been created
          */
         virtual std::unique_ptr<IStatisticsProvider> create(
-            const CContiguousConstView<const uint8>& labelMatrix) const = 0;
+          const CContiguousConstView<const uint8>& labelMatrix) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IStatisticsProvider`, based on a sparse label matrix that

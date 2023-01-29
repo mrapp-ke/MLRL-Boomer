@@ -54,7 +54,7 @@ namespace seco {
             IKlnLiftFunctionConfig& setK(float64 k) override;
 
             std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
+              const IRowWiseLabelMatrix& labelMatrix) const override;
     };
 
 }

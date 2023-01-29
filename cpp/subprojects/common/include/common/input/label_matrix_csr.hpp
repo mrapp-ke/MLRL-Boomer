@@ -111,10 +111,10 @@ class CsrLabelMatrix final : public BinaryCsrConstView,
         std::unique_ptr<LabelVector> createLabelVector(uint32 row) const override;
 
         std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
-            const IStatisticsProviderFactory& factory) const override;
+          const IStatisticsProviderFactory& factory) const override;
 
         std::unique_ptr<IPartitionSampling> createPartitionSampling(
-            const IPartitionSamplingFactory& factory) const override;
+          const IPartitionSamplingFactory& factory) const override;
 
         std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
                                                                   const SinglePartition& partition,

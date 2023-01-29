@@ -29,7 +29,7 @@ namespace seco {
     };
 
     std::unique_ptr<ILiftFunctionFactory> NoLiftFunctionConfig::createLiftFunctionFactory(
-        const IRowWiseLabelMatrix& labelMatrix) const {
+      const IRowWiseLabelMatrix& labelMatrix) const {
         return std::make_unique<NoLiftFunctionFactory>();
     }
 

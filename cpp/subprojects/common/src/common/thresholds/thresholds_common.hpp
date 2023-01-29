@@ -15,7 +15,7 @@ static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator,
                                                     const AbstractPrediction& prediction) {
     OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
-        prediction.createStatisticsSubset(statistics, outOfSampleWeights);
+      prediction.createStatisticsSubset(statistics, outOfSampleWeights);
 
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indexIterator[i];
@@ -34,7 +34,7 @@ static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights,
                                                     const AbstractPrediction& prediction) {
     OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
-        prediction.createStatisticsSubset(statistics, outOfSampleWeights);
+      prediction.createStatisticsSubset(statistics, outOfSampleWeights);
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
 
@@ -55,7 +55,7 @@ static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights,
                                                     const AbstractPrediction& prediction) {
     OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
-        prediction.createStatisticsSubset(statistics, outOfSampleWeights);
+      prediction.createStatisticsSubset(statistics, outOfSampleWeights);
     const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();

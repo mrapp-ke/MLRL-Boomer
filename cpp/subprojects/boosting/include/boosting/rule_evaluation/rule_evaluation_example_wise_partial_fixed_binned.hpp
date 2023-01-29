@@ -58,17 +58,17 @@ namespace boosting {
              *                                  routines
              */
             ExampleWiseFixedPartialBinnedRuleEvaluationFactory(
-                float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
-                float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
-                const Blas& blas, const Lapack& lapack);
+              float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
+              float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
+              const Blas& blas, const Lapack& lapack);
 
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-                const DenseExampleWiseStatisticVector& statisticVector,
-                const CompleteIndexVector& indexVector) const override;
+              const DenseExampleWiseStatisticVector& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
 
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-                const DenseExampleWiseStatisticVector& statisticVector,
-                const PartialIndexVector& indexVector) const override;
+              const DenseExampleWiseStatisticVector& statisticVector,
+              const PartialIndexVector& indexVector) const override;
     };
 
 }

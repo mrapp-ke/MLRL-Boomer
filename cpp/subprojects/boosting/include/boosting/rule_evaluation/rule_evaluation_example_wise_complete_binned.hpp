@@ -47,12 +47,12 @@ namespace boosting {
                                                            const Blas& blas, const Lapack& lapack);
 
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-                const DenseExampleWiseStatisticVector& statisticVector,
-                const CompleteIndexVector& indexVector) const override;
+              const DenseExampleWiseStatisticVector& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
 
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-                const DenseExampleWiseStatisticVector& statisticVector,
-                const PartialIndexVector& indexVector) const override;
+              const DenseExampleWiseStatisticVector& statisticVector,
+              const PartialIndexVector& indexVector) const override;
     };
 
 }

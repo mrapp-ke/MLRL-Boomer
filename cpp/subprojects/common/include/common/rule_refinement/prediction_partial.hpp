@@ -91,17 +91,17 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
                                                                   const BitWeightVector& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const override;
+          const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const override;
+          const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const override;
+          const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics,
-            const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override;
+          const IStatistics& statistics,
+          const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;

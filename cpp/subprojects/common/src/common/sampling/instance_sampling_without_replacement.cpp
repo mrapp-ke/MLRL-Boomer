@@ -109,6 +109,6 @@ IInstanceSamplingWithoutReplacementConfig& InstanceSamplingWithoutReplacementCon
 }
 
 std::unique_ptr<IInstanceSamplingFactory> InstanceSamplingWithoutReplacementConfig::createInstanceSamplingFactory()
-    const {
+  const {
     return std::make_unique<InstanceSamplingWithoutReplacementFactory>(sampleSize_);
 }

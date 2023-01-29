@@ -32,7 +32,7 @@ namespace seco {
                                                                             uint32 numLabels) const override;
 
             std::unique_ptr<ISparseBinaryPredictorFactory> createSparsePredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             bool isLabelVectorSetNeeded() const override;
     };

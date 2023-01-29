@@ -44,7 +44,7 @@ namespace boosting {
              * @see `IBinaryPredictorFactory::createSparsePredictorFactory`
              */
             std::unique_ptr<ISparseBinaryPredictorFactory> createSparsePredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`

@@ -101,8 +101,8 @@ class MLRLCOMMON_API IRuleModel {
          *                          created
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-            const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
+          const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `ISparseBinaryPredictor`, based on the type of this
@@ -119,8 +119,8 @@ class MLRLCOMMON_API IRuleModel {
          *                          created
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-            const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
+          const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IScorePredictor`, based on the type of this rule-based
@@ -172,8 +172,8 @@ class MLRLCOMMON_API IRuleModel {
          * @return                  An unique pointer to an object of type `IProbabilityPredictor` that has been created
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-            const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
+          const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this rule-based
@@ -189,6 +189,6 @@ class MLRLCOMMON_API IRuleModel {
          * @return                  An unique pointer to an object of type `IProbabilityPredictor` that has been created
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-            const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
+          const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 };

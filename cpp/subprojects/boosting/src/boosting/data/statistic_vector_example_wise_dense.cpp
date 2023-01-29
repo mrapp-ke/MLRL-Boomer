@@ -14,9 +14,9 @@ namespace boosting {
     DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients, bool init)
         : numGradients_(numGradients), numHessians_(triangularNumber(numGradients)),
           gradients_(
-              (float64*) (init ? calloc(numGradients, sizeof(float64)) : malloc(numGradients * sizeof(float64)))),
+            (float64*) (init ? calloc(numGradients, sizeof(float64)) : malloc(numGradients * sizeof(float64)))),
           hessians_(
-              (float64*) (init ? calloc(numHessians_, sizeof(float64)) : malloc(numHessians_ * sizeof(float64)))) {}
+            (float64*) (init ? calloc(numHessians_, sizeof(float64)) : malloc(numHessians_ * sizeof(float64)))) {}
 
     DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(const DenseExampleWiseStatisticVector& vector)
         : DenseExampleWiseStatisticVector(vector.numGradients_) {
@@ -62,12 +62,12 @@ namespace boosting {
     }
 
     DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator
-        DenseExampleWiseStatisticVector::hessians_diagonal_cbegin() const {
+      DenseExampleWiseStatisticVector::hessians_diagonal_cbegin() const {
         return DiagonalConstIterator<float64>(hessians_, 0);
     }
 
     DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator
-        DenseExampleWiseStatisticVector::hessians_diagonal_cend() const {
+      DenseExampleWiseStatisticVector::hessians_diagonal_cend() const {
         return DiagonalConstIterator<float64>(hessians_, numGradients_);
     }
 
@@ -160,21 +160,21 @@ namespace boosting {
     }
 
     void DenseExampleWiseStatisticVector::difference(
-        gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
-        hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
-        const CompleteIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
-        gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
-        hessian_const_iterator secondHessiansEnd) {
+      gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
+      hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
+      const CompleteIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
+      gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
+      hessian_const_iterator secondHessiansEnd) {
         setArrayToDifference(gradients_, firstGradientsBegin, secondGradientsBegin, numGradients_);
         setArrayToDifference(hessians_, firstHessiansBegin, secondHessiansBegin, numHessians_);
     }
 
     void DenseExampleWiseStatisticVector::difference(
-        gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
-        hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
-        const PartialIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
-        gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
-        hessian_const_iterator secondHessiansEnd) {
+      gradient_const_iterator firstGradientsBegin, gradient_const_iterator firstGradientsEnd,
+      hessian_const_iterator firstHessiansBegin, hessian_const_iterator firstHessiansEnd,
+      const PartialIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
+      gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
+      hessian_const_iterator secondHessiansEnd) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
         setArrayToDifference(gradients_, firstGradientsBegin, secondGradientsBegin, indexIterator, numGradients_);
 

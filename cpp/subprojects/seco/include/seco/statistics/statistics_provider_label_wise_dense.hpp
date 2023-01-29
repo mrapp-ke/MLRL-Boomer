@@ -39,15 +39,15 @@ namespace seco {
              *                                          scores, when pruning rules
              */
             DenseLabelWiseStatisticsProviderFactory(
-                std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-                std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-                std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr);
+              std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+              std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+              std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr);
 
             /**
              * @see `IStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(
-                const CContiguousConstView<const uint8>& labelMatrix) const override;
+              const CContiguousConstView<const uint8>& labelMatrix) const override;
 
             /**
              * @see `IStatisticsProviderFactory::create`

@@ -12,7 +12,7 @@ namespace boosting {
         : iterator_(iterator), sumOfWeights_(sumOfWeights) {}
 
     SparseLabelWiseStatisticVector::ConstIterator::value_type SparseLabelWiseStatisticVector::ConstIterator::operator[](
-        uint32 index) const {
+      uint32 index) const {
         const Triple<float64>& triple = iterator_[index];
         float64 gradient = triple.first;
         float64 hessian = triple.second + (sumOfWeights_ - triple.third);
@@ -20,7 +20,7 @@ namespace boosting {
     }
 
     SparseLabelWiseStatisticVector::ConstIterator::value_type SparseLabelWiseStatisticVector::ConstIterator::operator*()
-        const {
+      const {
         const Triple<float64>& triple = *iterator_;
         float64 gradient = triple.first;
         float64 hessian = triple.second + (sumOfWeights_ - triple.third);
@@ -56,7 +56,7 @@ namespace boosting {
     }
 
     SparseLabelWiseStatisticVector::ConstIterator::difference_type
-        SparseLabelWiseStatisticVector::ConstIterator::operator-(const ConstIterator& rhs) const {
+      SparseLabelWiseStatisticVector::ConstIterator::operator-(const ConstIterator& rhs) const {
         return iterator_ - rhs.iterator_;
     }
 

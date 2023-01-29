@@ -50,8 +50,8 @@ namespace boosting {
              *                                  has been created
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-                const Lapack& lapack, bool preferSparseStatistics) const = 0;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+              const Lapack& lapack, bool preferSparseStatistics) const = 0;
 
             /**
              * Creates and returns a new object of type `IEvaluationMeasureFactory` according to the specified

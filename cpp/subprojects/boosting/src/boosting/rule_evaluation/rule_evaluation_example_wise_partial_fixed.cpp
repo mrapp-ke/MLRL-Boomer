@@ -67,9 +67,9 @@ namespace boosting {
                 uint32 numLabels = statisticVector.getNumElements();
                 uint32 numPredictions = indexVector_.getNumElements();
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
-                    statisticVector.gradients_cbegin();
+                  statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                    statisticVector.hessians_diagonal_cbegin();
+                  statisticVector.hessians_diagonal_cbegin();
                 SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
                 sortLabelWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numLabels, numPredictions,
                                       l1RegularizationWeight_, l2RegularizationWeight_);
@@ -112,26 +112,26 @@ namespace boosting {
     };
 
     ExampleWiseFixedPartialRuleEvaluationFactory::ExampleWiseFixedPartialRuleEvaluationFactory(
-        float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
-        float64 l2RegularizationWeight, const Blas& blas, const Lapack& lapack)
+      float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
+      float64 l2RegularizationWeight, const Blas& blas, const Lapack& lapack)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight), blas_(blas),
           lapack_(lapack) {}
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
-        ExampleWiseFixedPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
-                                                             const CompleteIndexVector& indexVector) const {
+      ExampleWiseFixedPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+                                                           const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-            calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_);
+          calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_);
         return std::make_unique<DenseExampleWiseFixedPartialRuleEvaluation<CompleteIndexVector>>(
-            indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
+          indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
-        ExampleWiseFixedPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
-                                                             const PartialIndexVector& indexVector) const {
+      ExampleWiseFixedPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+                                                           const PartialIndexVector& indexVector) const {
         return std::make_unique<DenseExampleWiseCompleteRuleEvaluation<PartialIndexVector>>(
-            indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
 }

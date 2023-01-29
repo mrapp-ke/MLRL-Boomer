@@ -34,8 +34,7 @@ namespace boosting {
              * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
             virtual std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
-                const SparseLabelWiseStatisticVector& statisticVector,
-                const CompleteIndexVector& indexVector) const = 0;
+              const SparseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const = 0;
 
             /**
              * Creates a new instance of the class `IRuleEvaluation` that allows to calculate the predictions of rules
@@ -50,7 +49,7 @@ namespace boosting {
              * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
             virtual std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
-                const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const = 0;
+              const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const = 0;
     };
 
 }

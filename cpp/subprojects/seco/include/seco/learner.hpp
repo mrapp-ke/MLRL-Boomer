@@ -48,7 +48,7 @@ namespace seco {
                      *         or a null pointer, if no such stopping criterion should be used
                      */
                     virtual std::unique_ptr<CoverageStoppingCriterionConfig>&
-                        getCoverageStoppingCriterionConfigPtr() = 0;
+                      getCoverageStoppingCriterionConfigPtr() = 0;
 
                     /**
                      * Returns an unique pointer to the configuration of the rule heads that should be induced by the
@@ -147,9 +147,9 @@ namespace seco {
                      */
                     virtual ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() {
                         std::unique_ptr<CoverageStoppingCriterionConfig>& coverageStoppingCriterionConfigPtr =
-                            this->getCoverageStoppingCriterionConfigPtr();
+                          this->getCoverageStoppingCriterionConfigPtr();
                         std::unique_ptr<CoverageStoppingCriterionConfig> ptr =
-                            std::make_unique<CoverageStoppingCriterionConfig>();
+                          std::make_unique<CoverageStoppingCriterionConfig>();
                         ICoverageStoppingCriterionConfig& ref = *ptr;
                         coverageStoppingCriterionConfigPtr = std::move(ptr);
                         return ref;
@@ -229,7 +229,7 @@ namespace seco {
                      */
                     virtual void useAccuracyPruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
-                            this->getPruningHeuristicConfigPtr();
+                          this->getPruningHeuristicConfigPtr();
                         pruningHeuristicConfigPtr = std::make_unique<AccuracyConfig>();
                     }
             };
@@ -265,7 +265,7 @@ namespace seco {
                      */
                     virtual IFMeasureConfig& useFMeasurePruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
-                            this->getPruningHeuristicConfigPtr();
+                          this->getPruningHeuristicConfigPtr();
                         std::unique_ptr<FMeasureConfig> ptr = std::make_unique<FMeasureConfig>();
                         IFMeasureConfig& ref = *ptr;
                         pruningHeuristicConfigPtr = std::move(ptr);
@@ -304,7 +304,7 @@ namespace seco {
                      */
                     virtual IMEstimateConfig& useMEstimatePruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
-                            this->getPruningHeuristicConfigPtr();
+                          this->getPruningHeuristicConfigPtr();
                         std::unique_ptr<MEstimateConfig> ptr = std::make_unique<MEstimateConfig>();
                         IMEstimateConfig& ref = *ptr;
                         pruningHeuristicConfigPtr = std::move(ptr);
@@ -334,7 +334,7 @@ namespace seco {
                      */
                     virtual void useLaplacePruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
-                            this->getPruningHeuristicConfigPtr();
+                          this->getPruningHeuristicConfigPtr();
                         pruningHeuristicConfigPtr = std::make_unique<LaplaceConfig>();
                     }
             };
@@ -361,7 +361,7 @@ namespace seco {
                      */
                     virtual void useRecallPruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
-                            this->getPruningHeuristicConfigPtr();
+                          this->getPruningHeuristicConfigPtr();
                         pruningHeuristicConfigPtr = std::make_unique<RecallConfig>();
                     }
             };
@@ -388,7 +388,7 @@ namespace seco {
                      */
                     virtual void useWraPruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
-                            this->getPruningHeuristicConfigPtr();
+                          this->getPruningHeuristicConfigPtr();
                         pruningHeuristicConfigPtr = std::make_unique<WraConfig>();
                     }
             };
@@ -439,7 +439,7 @@ namespace seco {
                 private:
 
                     std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr()
-                        override final;
+                      override final;
 
                     std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final;
 
@@ -488,7 +488,7 @@ namespace seco {
              * @see `AbstractRuleLearner::createStatisticsProviderFactory`
              */
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
 
             /**
              * @see `AbstractRuleLearner::createModelBuilderFactory`
@@ -499,7 +499,7 @@ namespace seco {
              * @see `AbstractRuleLearner::createSparseBinaryPredictorFactory`
              */
             std::unique_ptr<ISparseBinaryPredictorFactory> createSparseBinaryPredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         public:
 

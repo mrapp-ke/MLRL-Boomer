@@ -34,14 +34,14 @@ namespace boosting {
              *                                  query examples in parallel
              */
             MarginalizedProbabilityPredictorConfig(
-                const std::unique_ptr<ILossConfig>& lossConfigPtr,
-                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+              const std::unique_ptr<ILossConfig>& lossConfigPtr,
+              const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
             /**
              * @see `IProbabilityPredictorConfig::createPredictorFactory`
              */
             std::unique_ptr<IProbabilityPredictorFactory> createPredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`

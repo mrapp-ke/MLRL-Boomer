@@ -59,5 +59,5 @@ class ILabelSamplingConfig {
          * @return              An unique pointer to an object of type `ILabelSamplingFactory` that has been created
          */
         virtual std::unique_ptr<ILabelSamplingFactory> createLabelSamplingFactory(
-            const ILabelMatrix& labelMatrix) const = 0;
+          const ILabelMatrix& labelMatrix) const = 0;
 };

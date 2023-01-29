@@ -35,8 +35,7 @@ namespace boosting {
              * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
             virtual std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-                const DenseExampleWiseStatisticVector& statisticVector,
-                const CompleteIndexVector& indexVector) const = 0;
+              const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const = 0;
 
             /**
              * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of
@@ -51,8 +50,7 @@ namespace boosting {
              * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
             virtual std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-                const DenseExampleWiseStatisticVector& statisticVector,
-                const PartialIndexVector& indexVector) const = 0;
+              const DenseExampleWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const = 0;
     };
 
 }

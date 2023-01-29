@@ -174,7 +174,7 @@ namespace boosting {
                      */
                     virtual IConstantShrinkageConfig& useConstantShrinkagePostProcessor() {
                         std::unique_ptr<IPostProcessorConfig>& postProcessorConfigPtr =
-                            this->getPostProcessorConfigPtr();
+                          this->getPostProcessorConfigPtr();
                         std::unique_ptr<ConstantShrinkageConfig> ptr = std::make_unique<ConstantShrinkageConfig>();
                         IConstantShrinkageConfig& ref = *ptr;
                         postProcessorConfigPtr = std::move(ptr);
@@ -198,9 +198,9 @@ namespace boosting {
                      */
                     virtual IManualRegularizationConfig& useL1Regularization() {
                         std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr =
-                            this->getL1RegularizationConfigPtr();
+                          this->getL1RegularizationConfigPtr();
                         std::unique_ptr<ManualRegularizationConfig> ptr =
-                            std::make_unique<ManualRegularizationConfig>();
+                          std::make_unique<ManualRegularizationConfig>();
                         IManualRegularizationConfig& ref = *ptr;
                         l1RegularizationConfigPtr = std::move(ptr);
                         return ref;
@@ -214,9 +214,9 @@ namespace boosting {
                      */
                     virtual IManualRegularizationConfig& useL2Regularization() {
                         std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr =
-                            this->getL2RegularizationConfigPtr();
+                          this->getL2RegularizationConfigPtr();
                         std::unique_ptr<ManualRegularizationConfig> ptr =
-                            std::make_unique<ManualRegularizationConfig>();
+                          std::make_unique<ManualRegularizationConfig>();
                         IManualRegularizationConfig& ref = *ptr;
                         l2RegularizationConfigPtr = std::move(ptr);
                         return ref;
@@ -259,7 +259,7 @@ namespace boosting {
                     virtual IFixedPartialHeadConfig& useFixedPartialHeads() {
                         std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
                         std::unique_ptr<FixedPartialHeadConfig> ptr = std::make_unique<FixedPartialHeadConfig>(
-                            this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr());
+                          this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr());
                         IFixedPartialHeadConfig& ref = *ptr;
                         headConfigPtr = std::move(ptr);
                         return ref;
@@ -276,7 +276,7 @@ namespace boosting {
                     virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() {
                         std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
                         std::unique_ptr<DynamicPartialHeadConfig> ptr = std::make_unique<DynamicPartialHeadConfig>(
-                            this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr());
+                          this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr());
                         IDynamicPartialHeadConfig& ref = *ptr;
                         headConfigPtr = std::move(ptr);
                         return ref;
@@ -289,8 +289,8 @@ namespace boosting {
                     virtual void useSingleLabelHeads() {
                         std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
                         headConfigPtr = std::make_unique<SingleLabelHeadConfig>(
-                            this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
-                            this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
+                          this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
+                          this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
                     }
             };
 
@@ -428,8 +428,8 @@ namespace boosting {
                     virtual IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() {
                         std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr = this->getLabelBinningConfigPtr();
                         std::unique_ptr<EqualWidthLabelBinningConfig> ptr =
-                            std::make_unique<EqualWidthLabelBinningConfig>(this->getL1RegularizationConfigPtr(),
-                                                                           this->getL2RegularizationConfigPtr());
+                          std::make_unique<EqualWidthLabelBinningConfig>(this->getL1RegularizationConfigPtr(),
+                                                                         this->getL2RegularizationConfigPtr());
                         IEqualWidthLabelBinningConfig& ref = *ptr;
                         labelBinningConfigPtr = std::move(ptr);
                         return ref;
@@ -456,9 +456,9 @@ namespace boosting {
                      */
                     virtual void useExampleWiseBinaryPredictor() {
                         std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
-                            this->getBinaryPredictorConfigPtr();
+                          this->getBinaryPredictorConfigPtr();
                         binaryPredictorConfigPtr = std::make_unique<ExampleWiseBinaryPredictorConfig>(
-                            this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
             };
 
@@ -481,9 +481,9 @@ namespace boosting {
                      */
                     virtual void useGfmBinaryPredictor() {
                         std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
-                            this->getBinaryPredictorConfigPtr();
+                          this->getBinaryPredictorConfigPtr();
                         binaryPredictorConfigPtr = std::make_unique<GfmBinaryPredictorConfig>(
-                            this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
             };
 
@@ -508,9 +508,9 @@ namespace boosting {
                      */
                     virtual void useMarginalizedProbabilityPredictor() {
                         std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
-                            this->getProbabilityPredictorConfigPtr();
+                          this->getProbabilityPredictorConfigPtr();
                         probabilityPredictorConfigPtr = std::make_unique<MarginalizedProbabilityPredictorConfig>(
-                            this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
             };
 
@@ -613,7 +613,7 @@ namespace boosting {
              * @see `AbstractRuleLearner::createStatisticsProviderFactory`
              */
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
 
             /**
              * @see `AbstractRuleLearner::createModelBuilderFactory`

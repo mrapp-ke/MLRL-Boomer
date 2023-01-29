@@ -82,12 +82,12 @@ namespace boosting {
 
                     if (labelInfo.numNegativeBins > 0) {
                         labelInfo.numNegativeBins =
-                            calculateBoundedFraction(labelInfo.numNegativeBins, binRatio_, minBins_, maxBins_);
+                          calculateBoundedFraction(labelInfo.numNegativeBins, binRatio_, minBins_, maxBins_);
                     }
 
                     if (labelInfo.numPositiveBins > 0) {
                         labelInfo.numPositiveBins =
-                            calculateBoundedFraction(labelInfo.numPositiveBins, binRatio_, minBins_, maxBins_);
+                          calculateBoundedFraction(labelInfo.numPositiveBins, binRatio_, minBins_, maxBins_);
                     }
                 }
 
@@ -164,8 +164,8 @@ namespace boosting {
     };
 
     EqualWidthLabelBinningConfig::EqualWidthLabelBinningConfig(
-        const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-        const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
+      const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
+      const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
         : binRatio_(0.04f), minBins_(1), maxBins_(0), l1RegularizationConfigPtr_(l1RegularizationConfigPtr),
           l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {}
 
@@ -201,74 +201,74 @@ namespace boosting {
     }
 
     std::unique_ptr<ILabelWiseRuleEvaluationFactory>
-        EqualWidthLabelBinningConfig::createLabelWiseCompleteRuleEvaluationFactory() const {
+      EqualWidthLabelBinningConfig::createLabelWiseCompleteRuleEvaluationFactory() const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
-            std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
+          std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
         return std::make_unique<LabelWiseCompleteBinnedRuleEvaluationFactory>(
-            l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
+          l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
     }
 
     std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory>
-        EqualWidthLabelBinningConfig::createLabelWiseFixedPartialRuleEvaluationFactory(float32 labelRatio,
-                                                                                       uint32 minLabels,
-                                                                                       uint32 maxLabels) const {
+      EqualWidthLabelBinningConfig::createLabelWiseFixedPartialRuleEvaluationFactory(float32 labelRatio,
+                                                                                     uint32 minLabels,
+                                                                                     uint32 maxLabels) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
-            std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
+          std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
         return std::make_unique<LabelWiseFixedPartialBinnedRuleEvaluationFactory>(
-            labelRatio, minLabels, maxLabels, l1RegularizationWeight, l2RegularizationWeight,
-            std::move(labelBinningFactoryPtr));
+          labelRatio, minLabels, maxLabels, l1RegularizationWeight, l2RegularizationWeight,
+          std::move(labelBinningFactoryPtr));
     }
 
     std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory>
-        EqualWidthLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(float32 threshold,
-                                                                                         float32 exponent) const {
+      EqualWidthLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(float32 threshold,
+                                                                                       float32 exponent) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
-            std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
+          std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
         return std::make_unique<LabelWiseDynamicPartialBinnedRuleEvaluationFactory>(
-            threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
+          threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr));
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-        EqualWidthLabelBinningConfig::createExampleWiseCompleteRuleEvaluationFactory(const Blas& blas,
-                                                                                     const Lapack& lapack) const {
+      EqualWidthLabelBinningConfig::createExampleWiseCompleteRuleEvaluationFactory(const Blas& blas,
+                                                                                   const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
-            std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
+          std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
         return std::make_unique<ExampleWiseCompleteBinnedRuleEvaluationFactory>(
-            l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr), blas, lapack);
+          l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr), blas, lapack);
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-        EqualWidthLabelBinningConfig::createExampleWiseFixedPartialRuleEvaluationFactory(
-            float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas, const Lapack& lapack) const {
+      EqualWidthLabelBinningConfig::createExampleWiseFixedPartialRuleEvaluationFactory(
+        float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas, const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
-            std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
+          std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
         return std::make_unique<ExampleWiseFixedPartialBinnedRuleEvaluationFactory>(
-            labelRatio, minLabels, maxLabels, l1RegularizationWeight, l2RegularizationWeight,
-            std::move(labelBinningFactoryPtr), blas, lapack);
+          labelRatio, minLabels, maxLabels, l1RegularizationWeight, l2RegularizationWeight,
+          std::move(labelBinningFactoryPtr), blas, lapack);
     }
 
     std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-        EqualWidthLabelBinningConfig::createExampleWiseDynamicPartialRuleEvaluationFactory(float32 threshold,
-                                                                                           float32 exponent,
-                                                                                           const Blas& blas,
-                                                                                           const Lapack& lapack) const {
+      EqualWidthLabelBinningConfig::createExampleWiseDynamicPartialRuleEvaluationFactory(float32 threshold,
+                                                                                         float32 exponent,
+                                                                                         const Blas& blas,
+                                                                                         const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
-            std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
+          std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
         return std::make_unique<ExampleWiseDynamicPartialBinnedRuleEvaluationFactory>(
-            threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr),
-            blas, lapack);
+          threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr), blas,
+          lapack);
     }
 
 }

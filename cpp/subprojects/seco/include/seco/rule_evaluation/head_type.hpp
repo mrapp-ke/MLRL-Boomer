@@ -27,7 +27,7 @@ namespace seco {
              *                      created
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IRowWiseLabelMatrix& labelMatrix) const = 0;
+              const IRowWiseLabelMatrix& labelMatrix) const = 0;
     };
 
 }

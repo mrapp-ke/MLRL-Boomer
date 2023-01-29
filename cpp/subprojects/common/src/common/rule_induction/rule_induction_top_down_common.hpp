@@ -66,7 +66,7 @@ static inline bool findRefinement(RefinementComparator& refinementComparator, IT
 
     // Search for the best condition among all available features to be added to the current rule...
 #pragma omp parallel for firstprivate(numFeatures) firstprivate(ruleRefinements) firstprivate(minCoverage) \
-    schedule(dynamic) num_threads(numThreads)
+  schedule(dynamic) num_threads(numThreads)
     for (int64 i = 0; i < numFeatures; i++) {
         RuleRefinement<RefinementComparator>& ruleRefinement = ruleRefinements[i];
         ruleRefinement.ruleRefinementPtr->findRefinement(*ruleRefinement.comparatorPtr, minCoverage);

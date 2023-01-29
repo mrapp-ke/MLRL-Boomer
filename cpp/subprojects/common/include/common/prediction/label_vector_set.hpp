@@ -116,12 +116,12 @@ class LabelVectorSet final : public ILabelVectorSet {
                                                                 uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-            const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-            const RuleList& ruleList, uint32 numLabels) const override;
+          const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const RuleList& ruleList, uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-            const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
-            const RuleList& ruleList, uint32 numLabels) const override;
+          const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& ruleList,
+          uint32 numLabels) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CContiguousFeatureMatrix& featureMatrix,

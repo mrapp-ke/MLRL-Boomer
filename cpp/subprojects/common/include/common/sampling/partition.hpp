@@ -35,7 +35,7 @@ class IPartition {
          * @return          An unique pointer to an object of type `IStoppingCriterion` that has been created
          */
         virtual std::unique_ptr<IStoppingCriterion> createStoppingCriterion(
-            const IStoppingCriterionFactory& factory) = 0;
+          const IStoppingCriterionFactory& factory) = 0;
 
         /**
          * Creates and returns a new instance of the class `IInstanceSampling`, based on the type of this partition.

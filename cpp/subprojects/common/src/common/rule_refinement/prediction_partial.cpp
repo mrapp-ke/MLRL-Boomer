@@ -53,22 +53,22 @@ std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(con
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
-    const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const {
+  const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
-    const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
+  const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
-    const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const {
+  const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
-    const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const {
+  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 

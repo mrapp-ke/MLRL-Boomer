@@ -114,7 +114,7 @@ namespace seco {
      * @return          An unique pointer to an object of type `IMultiLabelSeCoRuleLearner` that has been created
      */
     MLRLSECO_API std::unique_ptr<IMultiLabelSeCoRuleLearner> createMultiLabelSeCoRuleLearner(
-        std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr);
+      std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr);
 
 }
 

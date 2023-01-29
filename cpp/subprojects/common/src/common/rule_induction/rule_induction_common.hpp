@@ -41,10 +41,10 @@ class AbstractRuleInduction : public IRuleInduction {
          *                          grow the rule
          */
         virtual std::unique_ptr<IThresholdsSubset> growRule(
-            IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
-            IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
-            std::unique_ptr<ConditionList>& conditionListPtr,
-            std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const = 0;
+          IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
+          IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
+          std::unique_ptr<ConditionList>& conditionListPtr,
+          std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const = 0;
 
     public:
 
@@ -86,7 +86,7 @@ class AbstractRuleInduction : public IRuleInduction {
             std::unique_ptr<ConditionList> conditionListPtr;
             std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
             std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = this->growRule(
-                thresholds, labelIndices, weights, partition, featureSampling, rng, conditionListPtr, headPtr);
+              thresholds, labelIndices, weights, partition, featureSampling, rng, conditionListPtr, headPtr);
 
             if (headPtr) {
                 if (weights.hasZeroWeights()) {
@@ -94,13 +94,13 @@ class AbstractRuleInduction : public IRuleInduction {
                     IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
                     statisticsProvider.switchToPruningRuleEvaluation();
                     std::unique_ptr<ICoverageState> coverageStatePtr =
-                        rulePruning.prune(*thresholdsSubsetPtr, partition, *conditionListPtr, *headPtr);
+                      rulePruning.prune(*thresholdsSubsetPtr, partition, *conditionListPtr, *headPtr);
                     statisticsProvider.switchToRegularRuleEvaluation();
 
                     // Re-calculate the scores in the head based on the entire training data...
                     if (recalculatePredictions_) {
                         const ICoverageState& coverageState =
-                            coverageStatePtr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
+                          coverageStatePtr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
                         partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *headPtr);
                     }
                 }

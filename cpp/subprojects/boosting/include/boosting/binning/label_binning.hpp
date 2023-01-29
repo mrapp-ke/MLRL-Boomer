@@ -143,7 +143,7 @@ namespace boosting {
              * @return An unique pointer to an object of type `ILabelWiseRuleEvaluationFactory` that has been created
              */
             virtual std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory()
-                const = 0;
+              const = 0;
 
             /**
              * Creates and returns a new object of type `ISparseLabelWiseRuleEvaluationFactory` that allows to calculate
@@ -157,8 +157,8 @@ namespace boosting {
              *                      has been created
              */
             virtual std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory>
-                createLabelWiseFixedPartialRuleEvaluationFactory(float32 labelRatio, uint32 minLabels,
-                                                                 uint32 maxLabels) const = 0;
+              createLabelWiseFixedPartialRuleEvaluationFactory(float32 labelRatio, uint32 minLabels,
+                                                               uint32 maxLabels) const = 0;
 
             /**
              * Creates and returns a new object of type `ISparseLabelWiseRuleEvaluationFactory` that allows to calculate
@@ -171,7 +171,7 @@ namespace boosting {
              *                  been created
              */
             virtual std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory>
-                createLabelWiseDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent) const = 0;
+              createLabelWiseDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent) const = 0;
 
             /**
              * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
@@ -183,7 +183,7 @@ namespace boosting {
              *                  created
              */
             virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseCompleteRuleEvaluationFactory(
-                const Blas& blas, const Lapack& lapack) const = 0;
+              const Blas& blas, const Lapack& lapack) const = 0;
 
             /**
              * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
@@ -199,9 +199,8 @@ namespace boosting {
              *                      been created
              */
             virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-                createExampleWiseFixedPartialRuleEvaluationFactory(float32 labelRatio, uint32 minLabels,
-                                                                   uint32 maxLabels, const Blas& blas,
-                                                                   const Lapack& lapack) const = 0;
+              createExampleWiseFixedPartialRuleEvaluationFactory(float32 labelRatio, uint32 minLabels, uint32 maxLabels,
+                                                                 const Blas& blas, const Lapack& lapack) const = 0;
 
             /**
              * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
@@ -216,8 +215,8 @@ namespace boosting {
              *                  created
              */
             virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-                createExampleWiseDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent,
-                                                                     const Blas& blas, const Lapack& lapack) const = 0;
+              createExampleWiseDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent,
+                                                                   const Blas& blas, const Lapack& lapack) const = 0;
     };
 
 }
