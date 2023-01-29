@@ -204,19 +204,13 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
             std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
             std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const override {
-            return std::make_unique<SequentialRuleModelAssemblage>(std::move(modelBuilderFactoryPtr),
-                                                                   std::move(statisticsProviderFactoryPtr),
-                                                                   std::move(thresholdsFactoryPtr),
-                                                                   std::move(ruleInductionFactoryPtr),
-                                                                   std::move(labelSamplingFactoryPtr),
-                                                                   std::move(instanceSamplingFactoryPtr),
-                                                                   std::move(featureSamplingFactoryPtr),
-                                                                   std::move(partitionSamplingFactoryPtr),
-                                                                   std::move(rulePruningFactoryPtr),
-                                                                   std::move(postProcessorFactoryPtr),
-                                                                   std::move(postOptimizationFactoryPtr),
-                                                                   std::move(stoppingCriterionFactoryPtr),
-                                                                   useDefaultRule_);
+            return std::make_unique<SequentialRuleModelAssemblage>(
+                std::move(modelBuilderFactoryPtr), std::move(statisticsProviderFactoryPtr),
+                std::move(thresholdsFactoryPtr), std::move(ruleInductionFactoryPtr), std::move(labelSamplingFactoryPtr),
+                std::move(instanceSamplingFactoryPtr), std::move(featureSamplingFactoryPtr),
+                std::move(partitionSamplingFactoryPtr), std::move(rulePruningFactoryPtr),
+                std::move(postProcessorFactoryPtr), std::move(postOptimizationFactoryPtr),
+                std::move(stoppingCriterionFactoryPtr), useDefaultRule_);
         }
 };
 
