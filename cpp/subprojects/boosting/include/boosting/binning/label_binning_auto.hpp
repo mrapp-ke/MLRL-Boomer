@@ -30,23 +30,23 @@ namespace boosting {
                                         const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
 
             std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory()
-                const override;
+              const override;
 
             std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseFixedPartialRuleEvaluationFactory(
-                float32 labelRatio, uint32 minLabels, uint32 maxLabels) const override;
+              float32 labelRatio, uint32 minLabels, uint32 maxLabels) const override;
 
             std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseDynamicPartialRuleEvaluationFactory(
-                float32 threshold, float32 exponent) const override;
+              float32 threshold, float32 exponent) const override;
 
             std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseCompleteRuleEvaluationFactory(
-                const Blas& blas, const Lapack& lapack) const override;
+              const Blas& blas, const Lapack& lapack) const override;
 
             std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseFixedPartialRuleEvaluationFactory(
-                float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas,
-                const Lapack& lapack) const override;
+              float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas,
+              const Lapack& lapack) const override;
 
             std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseDynamicPartialRuleEvaluationFactory(
-                float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const override;
+              float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const override;
     };
 
 }

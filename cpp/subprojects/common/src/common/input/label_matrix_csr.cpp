@@ -46,12 +46,12 @@ std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const
 }
 
 std::unique_ptr<IStatisticsProvider> CsrLabelMatrix::createStatisticsProvider(
-    const IStatisticsProviderFactory& factory) const {
+  const IStatisticsProviderFactory& factory) const {
     return factory.create(*this);
 }
 
 std::unique_ptr<IPartitionSampling> CsrLabelMatrix::createPartitionSampling(
-    const IPartitionSamplingFactory& factory) const {
+  const IPartitionSamplingFactory& factory) const {
     return factory.create(*this);
 }
 

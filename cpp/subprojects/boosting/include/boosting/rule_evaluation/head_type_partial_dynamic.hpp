@@ -99,16 +99,16 @@ namespace boosting {
             IDynamicPartialHeadConfig& setExponent(float32 exponent) override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-                const ILabelWiseLossConfig& lossConfig) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const ILabelWiseLossConfig& lossConfig) const override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-                const ISparseLabelWiseLossConfig& lossConfig) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const ISparseLabelWiseLossConfig& lossConfig) const override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-                const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const override;
 
             bool isPartial() const override;
 

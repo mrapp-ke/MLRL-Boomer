@@ -30,7 +30,7 @@ namespace seco {
                                   const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
+              const IRowWiseLabelMatrix& labelMatrix) const override;
     };
 
 }

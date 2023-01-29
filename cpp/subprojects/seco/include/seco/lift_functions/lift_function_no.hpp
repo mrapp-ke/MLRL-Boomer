@@ -15,7 +15,7 @@ namespace seco {
         public:
 
             std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
+              const IRowWiseLabelMatrix& labelMatrix) const override;
     };
 
 }

@@ -24,4 +24,4 @@ class MLRLCOMMON_API IFortranContiguousFeatureMatrix : virtual public IColumnWis
  * @return          An unique pointer to an object of type `IFortranContiguousFeatureMatrix` that has been created
  */
 MLRLCOMMON_API std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureMatrix(
-    uint32 numRows, uint32 numCols, const float32* array);
+  uint32 numRows, uint32 numCols, const float32* array);

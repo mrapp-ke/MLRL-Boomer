@@ -188,8 +188,8 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeigh
         uint32 numDesiredSamples = numTotalSamples - numNonZeroWeights;
         uint32 numDesiredOutOfSamples = numTotalOutOfSamples - numZeroWeights;
         uint32 numSamples =
-            (uint32) (tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ? std::ceil(numSamplesDecimal)
-                                                                               : std::floor(numSamplesDecimal));
+          (uint32) (tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ? std::ceil(numSamplesDecimal)
+                                                                             : std::floor(numSamplesDecimal));
         numNonZeroWeights += numSamples;
         numZeroWeights += (numExamples - numSamples);
         uint32 j;
@@ -228,8 +228,8 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPa
 
         float32 sampleSize = (float32) numFirst / (float32) (numFirst + numSecond);
         float32 numSamplesDecimal = sampleSize * numExamples;
-        uint32 numSamples = (uint32) (tiebreak(numFirst, numSecond, rng) ? std::ceil(numSamplesDecimal)
-                                                                         : std::floor(numSamplesDecimal));
+        uint32 numSamples =
+          (uint32) (tiebreak(numFirst, numSecond, rng) ? std::ceil(numSamplesDecimal) : std::floor(numSamplesDecimal));
 
         // Ensure that we do not add too many examples to the first or second partition...
         if (numSamples > numFirst) {

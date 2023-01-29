@@ -429,8 +429,8 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() {
                     std::unique_ptr<IRuleInductionConfig>& ruleInductionConfigPtr = this->getRuleInductionConfigPtr();
                     std::unique_ptr<BeamSearchTopDownRuleInductionConfig> ptr =
-                        std::make_unique<BeamSearchTopDownRuleInductionConfig>(
-                            this->getRuleCompareFunction(), this->getParallelRuleRefinementConfigPtr());
+                      std::make_unique<BeamSearchTopDownRuleInductionConfig>(
+                        this->getRuleCompareFunction(), this->getParallelRuleRefinementConfigPtr());
                     IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
                     ruleInductionConfigPtr = std::move(ptr);
                     return ref;
@@ -454,9 +454,9 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() {
                     std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
-                        this->getFeatureBinningConfigPtr();
+                      this->getFeatureBinningConfigPtr();
                     std::unique_ptr<EqualWidthFeatureBinningConfig> ptr =
-                        std::make_unique<EqualWidthFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
+                      std::make_unique<EqualWidthFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
                     IEqualWidthFeatureBinningConfig& ref = *ptr;
                     featureBinningConfigPtr = std::move(ptr);
                     return ref;
@@ -471,10 +471,9 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() {
                     std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
-                        this->getFeatureBinningConfigPtr();
+                      this->getFeatureBinningConfigPtr();
                     std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr =
-                        std::make_unique<EqualFrequencyFeatureBinningConfig>(
-                            this->getParallelStatisticUpdateConfigPtr());
+                      std::make_unique<EqualFrequencyFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
                     IEqualFrequencyFeatureBinningConfig& ref = *ptr;
                     featureBinningConfigPtr = std::move(ptr);
                     return ref;
@@ -499,7 +498,7 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() {
                     std::unique_ptr<ILabelSamplingConfig>& labelSamplingConfigPtr = this->getLabelSamplingConfigPtr();
                     std::unique_ptr<LabelSamplingWithoutReplacementConfig> ptr =
-                        std::make_unique<LabelSamplingWithoutReplacementConfig>();
+                      std::make_unique<LabelSamplingWithoutReplacementConfig>();
                     ILabelSamplingWithoutReplacementConfig& ref = *ptr;
                     labelSamplingConfigPtr = std::move(ptr);
                     return ref;
@@ -523,9 +522,9 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() {
                     std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr =
-                        this->getInstanceSamplingConfigPtr();
+                      this->getInstanceSamplingConfigPtr();
                     std::unique_ptr<InstanceSamplingWithReplacementConfig> ptr =
-                        std::make_unique<InstanceSamplingWithReplacementConfig>();
+                      std::make_unique<InstanceSamplingWithReplacementConfig>();
                     IInstanceSamplingWithReplacementConfig& ref = *ptr;
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
@@ -540,9 +539,9 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() {
                     std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr =
-                        this->getInstanceSamplingConfigPtr();
+                      this->getInstanceSamplingConfigPtr();
                     std::unique_ptr<InstanceSamplingWithoutReplacementConfig> ptr =
-                        std::make_unique<InstanceSamplingWithoutReplacementConfig>();
+                      std::make_unique<InstanceSamplingWithoutReplacementConfig>();
                     IInstanceSamplingWithoutReplacementConfig& ref = *ptr;
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
@@ -558,9 +557,9 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling() {
                     std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr =
-                        this->getInstanceSamplingConfigPtr();
+                      this->getInstanceSamplingConfigPtr();
                     std::unique_ptr<LabelWiseStratifiedInstanceSamplingConfig> ptr =
-                        std::make_unique<LabelWiseStratifiedInstanceSamplingConfig>();
+                      std::make_unique<LabelWiseStratifiedInstanceSamplingConfig>();
                     ILabelWiseStratifiedInstanceSamplingConfig& ref = *ptr;
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
@@ -576,9 +575,9 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() {
                     std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr =
-                        this->getInstanceSamplingConfigPtr();
+                      this->getInstanceSamplingConfigPtr();
                     std::unique_ptr<ExampleWiseStratifiedInstanceSamplingConfig> ptr =
-                        std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
+                      std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
                     IExampleWiseStratifiedInstanceSamplingConfig& ref = *ptr;
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
@@ -602,9 +601,9 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() {
                     std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr =
-                        this->getFeatureSamplingConfigPtr();
+                      this->getFeatureSamplingConfigPtr();
                     std::unique_ptr<FeatureSamplingWithoutReplacementConfig> ptr =
-                        std::make_unique<FeatureSamplingWithoutReplacementConfig>();
+                      std::make_unique<FeatureSamplingWithoutReplacementConfig>();
                     IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
                     featureSamplingConfigPtr = std::move(ptr);
                     return ref;
@@ -629,9 +628,9 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() {
                     std::unique_ptr<IPartitionSamplingConfig>& partitionSamplingConfigPtr =
-                        this->getPartitionSamplingConfigPtr();
+                      this->getPartitionSamplingConfigPtr();
                     std::unique_ptr<RandomBiPartitionSamplingConfig> ptr =
-                        std::make_unique<RandomBiPartitionSamplingConfig>();
+                      std::make_unique<RandomBiPartitionSamplingConfig>();
                     IRandomBiPartitionSamplingConfig& ref = *ptr;
                     partitionSamplingConfigPtr = std::move(ptr);
                     return ref;
@@ -648,9 +647,9 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() {
                     std::unique_ptr<IPartitionSamplingConfig>& partitionSamplingConfigPtr =
-                        this->getPartitionSamplingConfigPtr();
+                      this->getPartitionSamplingConfigPtr();
                     std::unique_ptr<LabelWiseStratifiedBiPartitionSamplingConfig> ptr =
-                        std::make_unique<LabelWiseStratifiedBiPartitionSamplingConfig>();
+                      std::make_unique<LabelWiseStratifiedBiPartitionSamplingConfig>();
                     ILabelWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
                     partitionSamplingConfigPtr = std::move(ptr);
                     return ref;
@@ -666,9 +665,9 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() {
                     std::unique_ptr<IPartitionSamplingConfig>& partitionSamplingConfigPtr =
-                        this->getPartitionSamplingConfigPtr();
+                      this->getPartitionSamplingConfigPtr();
                     std::unique_ptr<ExampleWiseStratifiedBiPartitionSamplingConfig> ptr =
-                        std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
+                      std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
                     IExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
                     partitionSamplingConfigPtr = std::move(ptr);
                     return ref;
@@ -709,7 +708,7 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IManualMultiThreadingConfig& useParallelRuleRefinement() {
                     std::unique_ptr<IMultiThreadingConfig>& parallelRuleRefinementConfigPtr =
-                        this->getParallelRuleRefinementConfigPtr();
+                      this->getParallelRuleRefinementConfigPtr();
                     std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
                     IManualMultiThreadingConfig& ref = *ptr;
                     parallelRuleRefinementConfigPtr = std::move(ptr);
@@ -724,7 +723,7 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IManualMultiThreadingConfig& useParallelStatisticUpdate() {
                     std::unique_ptr<IMultiThreadingConfig>& parallelStatisticUpdateConfigPtr =
-                        this->getParallelStatisticUpdateConfigPtr();
+                      this->getParallelStatisticUpdateConfigPtr();
                     std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
                     IManualMultiThreadingConfig& ref = *ptr;
                     parallelStatisticUpdateConfigPtr = std::move(ptr);
@@ -739,7 +738,7 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual IManualMultiThreadingConfig& useParallelPrediction() {
                     std::unique_ptr<IMultiThreadingConfig>& parallelPredictionConfigPtr =
-                        this->getParallelPredictionConfigPtr();
+                      this->getParallelPredictionConfigPtr();
                     std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
                     IManualMultiThreadingConfig& ref = *ptr;
                     parallelPredictionConfigPtr = std::move(ptr);
@@ -765,7 +764,7 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual ISizeStoppingCriterionConfig& useSizeStoppingCriterion() {
                     std::unique_ptr<SizeStoppingCriterionConfig>& sizeStoppingCriterionConfigPtr =
-                        this->getSizeStoppingCriterionConfigPtr();
+                      this->getSizeStoppingCriterionConfigPtr();
                     std::unique_ptr<SizeStoppingCriterionConfig> ptr = std::make_unique<SizeStoppingCriterionConfig>();
                     ISizeStoppingCriterionConfig& ref = *ptr;
                     sizeStoppingCriterionConfigPtr = std::move(ptr);
@@ -791,7 +790,7 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual ITimeStoppingCriterionConfig& useTimeStoppingCriterion() {
                     std::unique_ptr<TimeStoppingCriterionConfig>& timeStoppingCriterionConfigPtr =
-                        this->getTimeStoppingCriterionConfigPtr();
+                      this->getTimeStoppingCriterionConfigPtr();
                     std::unique_ptr<TimeStoppingCriterionConfig> ptr = std::make_unique<TimeStoppingCriterionConfig>();
                     ITimeStoppingCriterionConfig& ref = *ptr;
                     timeStoppingCriterionConfigPtr = std::move(ptr);
@@ -868,9 +867,9 @@ class MLRLCOMMON_API IRuleLearner {
                  */
                 virtual ISequentialPostOptimizationConfig& useSequentialPostOptimization() {
                     std::unique_ptr<SequentialPostOptimizationConfig>& sequentialPostOptimizationConfigPtr =
-                        this->getSequentialPostOptimizationConfigPtr();
+                      this->getSequentialPostOptimizationConfigPtr();
                     std::unique_ptr<SequentialPostOptimizationConfig> ptr =
-                        std::make_unique<SequentialPostOptimizationConfig>();
+                      std::make_unique<SequentialPostOptimizationConfig>();
                     ISequentialPostOptimizationConfig& ref = *ptr;
                     sequentialPostOptimizationConfigPtr = std::move(ptr);
                     return ref;
@@ -934,7 +933,7 @@ class MLRLCOMMON_API IRuleLearner {
          *                                  to predict binary labels for the given query examples
          */
         virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
+          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
 
         /**
          * Creates and returns a predictor that may be used to predict binary labels for given query examples. If the
@@ -973,7 +972,7 @@ class MLRLCOMMON_API IRuleLearner {
          *                                  used to predict sparse binary labels for the given query examples
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
+          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
 
         /**
          * Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
@@ -993,8 +992,8 @@ class MLRLCOMMON_API IRuleLearner {
          *                                  used to predict sparse binary labels for the given query examples
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
+          const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 
         /**
          * Returns whether the rule learner is able to predict regression scores or not.
@@ -1094,7 +1093,7 @@ class MLRLCOMMON_API IRuleLearner {
          *                                  used to predict probability estimates for the given query examples
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
+          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
 
         /**
          * Creates and returns a predictor that may be used to predict probability estimates for given query examples.
@@ -1114,8 +1113,8 @@ class MLRLCOMMON_API IRuleLearner {
          *                                  used to predict probability estimates for the given query examples
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
+          const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 };
 
 /**
@@ -1291,7 +1290,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<IGlobalPruningConfig>& getGlobalPruningConfigPtr() override final;
 
                 std::unique_ptr<SequentialPostOptimizationConfig>& getSequentialPostOptimizationConfigPtr()
-                    override final;
+                  override final;
 
                 std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() override final;
 
@@ -1349,7 +1348,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         IRuleLearner::IConfig& config_;
 
         std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
-            const IRowWiseLabelMatrix& labelMatrix) const;
+          const IRowWiseLabelMatrix& labelMatrix) const;
 
         std::unique_ptr<IThresholdsFactory> createThresholdsFactory(const IFeatureMatrix& featureMatrix,
                                                                     const ILabelMatrix& labelMatrix) const;
@@ -1362,7 +1361,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const;
 
         std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory(
-            const IFeatureMatrix& featureMatrix) const;
+          const IFeatureMatrix& featureMatrix) const;
 
         std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const;
 
@@ -1411,7 +1410,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          *                      created
          */
         virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const = 0;
+          const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const = 0;
 
         /**
          * Must be implemented by subclasses in order to create the `IModelBuilderFactory` to be used by the rule
@@ -1442,7 +1441,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          *                      or a null pointer, if the rule learner does not support to predict binary labels
          */
         virtual std::unique_ptr<IBinaryPredictorFactory> createBinaryPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
+          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
 
         /**
          * May be overridden by subclasses in order to create the `ISparseBinaryPredictorFactory` to be used by the rule
@@ -1456,7 +1455,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          *                      labels
          */
         virtual std::unique_ptr<ISparseBinaryPredictorFactory> createSparseBinaryPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
+          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
 
         /**
          * May be overridden by subclasses in order to create the `IScorePredictorFactory` to be used by the rule
@@ -1469,7 +1468,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          *                      a null pointer, if the rule learner does not support to predict regression scores
          */
         virtual std::unique_ptr<IScorePredictorFactory> createScorePredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
+          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
 
         /**
          * May be overridden by subclasses in order to create the `IProbabilityPredictorFactory` to be used by the rule
@@ -1483,7 +1482,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          *                      estimates
          */
         virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
+          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
 
     public:
 
@@ -1511,7 +1510,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                                                                 uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
+          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                             const IRuleModel& ruleModel,
@@ -1537,7 +1536,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
+          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                           const IRuleModel& ruleModel,

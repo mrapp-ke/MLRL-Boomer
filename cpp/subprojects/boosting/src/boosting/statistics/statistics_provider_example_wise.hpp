@@ -22,7 +22,7 @@ namespace boosting {
         private:
 
             typedef IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory>
-                ExampleWiseStatistics;
+              ExampleWiseStatistics;
 
             const ExampleWiseRuleEvaluationFactory& regularRuleEvaluationFactory_;
 
@@ -85,7 +85,7 @@ namespace boosting {
         private:
 
             typedef IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory>
-                ExampleWiseStatistics;
+              ExampleWiseStatistics;
 
             const LabelWiseRuleEvaluationFactory& regularRuleEvaluationFactory_;
 
@@ -140,7 +140,7 @@ namespace boosting {
 
                 if (exampleWiseStatistics) {
                     labelWiseStatisticsPtr_ =
-                        exampleWiseStatistics->toLabelWiseStatistics(regularRuleEvaluationFactory_, numThreads_);
+                      exampleWiseStatistics->toLabelWiseStatistics(regularRuleEvaluationFactory_, numThreads_);
                     exampleWiseStatisticsPtr_.reset();
                 } else {
                     labelWiseStatisticsPtr_->setRuleEvaluationFactory(regularRuleEvaluationFactory_);
@@ -155,7 +155,7 @@ namespace boosting {
 
                 if (exampleWiseStatistics) {
                     labelWiseStatisticsPtr_ =
-                        exampleWiseStatistics->toLabelWiseStatistics(pruningRuleEvaluationFactory_, numThreads_);
+                      exampleWiseStatistics->toLabelWiseStatistics(pruningRuleEvaluationFactory_, numThreads_);
                     exampleWiseStatisticsPtr_.reset();
                 } else {
                     labelWiseStatisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);

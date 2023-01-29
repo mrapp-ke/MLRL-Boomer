@@ -5,8 +5,8 @@ ConditionList::ConditionList() : numConditionsPerComparator_({0, 0, 0, 0}) {}
 ConditionList::ConditionList(const ConditionList& conditionList)
     : vector_(conditionList.vector_),
       numConditionsPerComparator_(
-          {conditionList.numConditionsPerComparator_[0], conditionList.numConditionsPerComparator_[1],
-           conditionList.numConditionsPerComparator_[2], conditionList.numConditionsPerComparator_[3]}) {}
+        {conditionList.numConditionsPerComparator_[0], conditionList.numConditionsPerComparator_[1],
+         conditionList.numConditionsPerComparator_[2], conditionList.numConditionsPerComparator_[3]}) {}
 
 ConditionList::const_iterator ConditionList::cbegin() const {
     return vector_.cbegin();
@@ -33,8 +33,8 @@ void ConditionList::removeLastCondition() {
 
 std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
     std::unique_ptr<ConjunctiveBody> bodyPtr =
-        std::make_unique<ConjunctiveBody>(numConditionsPerComparator_[LEQ], numConditionsPerComparator_[GR],
-                                          numConditionsPerComparator_[EQ], numConditionsPerComparator_[NEQ]);
+      std::make_unique<ConjunctiveBody>(numConditionsPerComparator_[LEQ], numConditionsPerComparator_[GR],
+                                        numConditionsPerComparator_[EQ], numConditionsPerComparator_[NEQ]);
     uint32 leqIndex = 0;
     uint32 grIndex = 0;
     uint32 eqIndex = 0;

@@ -32,9 +32,9 @@ static inline void adjustRefinement(Refinement& refinement, FeatureVector::const
 
 template<typename IndexIterator, typename RefinementComparator>
 static inline void findRefinementInternally(
-    const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal, uint32 minCoverage,
-    bool hasZeroWeights, IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>& callback,
-    RefinementComparator& comparator) {
+  const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal, uint32 minCoverage,
+  bool hasZeroWeights, IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>& callback,
+  RefinementComparator& comparator) {
     Refinement refinement;
     refinement.featureIndex = featureIndex;
 
@@ -395,7 +395,7 @@ static inline void findRefinementInternally(
         if (coverage >= minCoverage) {
             // Determine the best prediction for the covered examples...
             const IScoreVector& scoreVector =
-                nominal ? statisticsSubsetPtr->calculateScoresAccumulated() : statisticsSubsetPtr->calculateScores();
+              nominal ? statisticsSubsetPtr->calculateScoresAccumulated() : statisticsSubsetPtr->calculateScores();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {

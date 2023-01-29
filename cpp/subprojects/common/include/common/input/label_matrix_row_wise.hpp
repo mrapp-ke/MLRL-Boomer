@@ -51,7 +51,7 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          * @return          An unique pointer to an object of type `IStatisticsProvider` that has been created
          */
         virtual std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
-            const IStatisticsProviderFactory& factory) const = 0;
+          const IStatisticsProviderFactory& factory) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IPartitionSampling`, based on the type of this label matrix.
@@ -61,7 +61,7 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          * @return          An unique pointer to an object of type `IPartitionSampling` that has been created
          */
         virtual std::unique_ptr<IPartitionSampling> createPartitionSampling(
-            const IPartitionSamplingFactory& factory) const = 0;
+          const IPartitionSamplingFactory& factory) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IInstanceSampling`, based on the type of this label matrix.

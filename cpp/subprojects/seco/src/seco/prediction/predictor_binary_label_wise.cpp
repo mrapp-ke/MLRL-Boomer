@@ -120,32 +120,32 @@ namespace seco {
         uint32 numNonZeroElements;
         auto completeHeadVisitor = [&](const CompleteHead& head) mutable {
             numNonZeroElements =
-                applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
-                          make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()),
-                          IndexIterator(0), row, numLabels);
+              applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
+                        make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0),
+                        row, numLabels);
         };
         auto partialHeadVisitor = [&](const PartialHead& head) mutable {
             numNonZeroElements =
-                applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
-                          make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()),
-                          head.indices_cbegin(), row, numLabels);
+              applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
+                        make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()),
+                        head.indices_cbegin(), row, numLabels);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
         return numNonZeroElements;
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-        const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-        uint32 numThreads) {
+      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+      uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, !model.containsDefaultRule());
+          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, !model.containsDefaultRule());
         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
         CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-    firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BitVector mask(numLabels, true);
 
@@ -164,18 +164,18 @@ namespace seco {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-        const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, !model.containsDefaultRule());
+          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, !model.containsDefaultRule());
         const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
         CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-    firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
-        num_threads(numThreads)
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
+    num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BitVector mask(numLabels, true);
             float32* tmpArray1 = new float32[numFeatures];
@@ -268,20 +268,20 @@ namespace seco {
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                      uint32 numLabels) const override {
                 return std::make_unique<LabelWiseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, numThreads_);
             }
 
             std::unique_ptr<IBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                      uint32 numLabels) const override {
                 return std::make_unique<LabelWiseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, numThreads_);
             }
     };
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-        const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-        uint32 numThreads) {
+      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+      uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         BinaryLilMatrix lilMatrix(numExamples);
         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
@@ -290,8 +290,8 @@ namespace seco {
         uint32 numNonZeroElements = 0;
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-    firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
-        num_threads(numThreads)
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
+     num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
 
@@ -310,7 +310,7 @@ namespace seco {
     }
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-        const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         BinaryLilMatrix lilMatrix(numExamples);
@@ -320,8 +320,8 @@ namespace seco {
         uint32 numNonZeroElements = 0;
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
-    firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-        schedule(dynamic) num_threads(numThreads)
+  firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+    schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
             float32* tmpArray1 = new float32[numFeatures];
@@ -415,29 +415,29 @@ namespace seco {
                                                            const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                            uint32 numLabels) const override {
                 return std::make_unique<LabelWiseSparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, numThreads_);
             }
 
             std::unique_ptr<ISparseBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
                                                            const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                            uint32 numLabels) const override {
                 return std::make_unique<LabelWiseSparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, numThreads_);
             }
     };
 
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
-        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createPredictorFactory(
-        const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseBinaryPredictorFactory>(numThreads);
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createSparsePredictorFactory(
-        const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseSparseBinaryPredictorFactory>(numThreads);
     }

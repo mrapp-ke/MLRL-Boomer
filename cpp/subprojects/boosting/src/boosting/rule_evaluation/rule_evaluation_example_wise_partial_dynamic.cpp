@@ -60,7 +60,7 @@ namespace boosting {
                                                          float64 l2RegularizationWeight, const Blas& blas,
                                                          const Lapack& lapack)
                 : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(
-                    labelIndices.getNumElements(), lapack),
+                  labelIndices.getNumElements(), lapack),
                   labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, true)), threshold_(1.0 - threshold),
                   exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
@@ -72,13 +72,13 @@ namespace boosting {
             const IScoreVector& calculateScores(DenseExampleWiseStatisticVector& statisticVector) override {
                 uint32 numLabels = statisticVector.getNumElements();
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
-                    statisticVector.gradients_cbegin();
+                  statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                    statisticVector.hessians_diagonal_cbegin();
+                  statisticVector.hessians_diagonal_cbegin();
                 typename DenseScoreVector<IndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 const std::pair<float64, float64> pair =
-                    getMinAndMaxScore(scoreIterator, gradientIterator, hessianIterator, numLabels,
-                                      l1RegularizationWeight_, l2RegularizationWeight_);
+                  getMinAndMaxScore(scoreIterator, gradientIterator, hessianIterator, numLabels,
+                                    l1RegularizationWeight_, l2RegularizationWeight_);
                 float64 minAbsScore = pair.first;
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
@@ -110,12 +110,12 @@ namespace boosting {
 
                 // Calculate the overall quality...
                 float64 quality =
-                    calculateOverallQuality(scoreIterator, statisticVector.gradients_begin(),
-                                            statisticVector.hessians_begin(), this->dspmvTmpArray_, n, blas_);
+                  calculateOverallQuality(scoreIterator, statisticVector.gradients_begin(),
+                                          statisticVector.hessians_begin(), this->dspmvTmpArray_, n, blas_);
 
                 // Evaluate regularization term...
                 quality +=
-                    calculateRegularizationTerm(scoreIterator, n, l1RegularizationWeight_, l2RegularizationWeight_);
+                  calculateRegularizationTerm(scoreIterator, n, l1RegularizationWeight_, l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;
                 return scoreVector_;
@@ -123,23 +123,23 @@ namespace boosting {
     };
 
     ExampleWiseDynamicPartialRuleEvaluationFactory::ExampleWiseDynamicPartialRuleEvaluationFactory(
-        float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
-        const Blas& blas, const Lapack& lapack)
+      float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+      const Blas& blas, const Lapack& lapack)
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), blas_(blas), lapack_(lapack) {}
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
-        ExampleWiseDynamicPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
-                                                               const CompleteIndexVector& indexVector) const {
+      ExampleWiseDynamicPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+                                                             const CompleteIndexVector& indexVector) const {
         return std::make_unique<DenseExampleWiseDynamicPartialRuleEvaluation<CompleteIndexVector>>(
-            indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
+          indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
-        ExampleWiseDynamicPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
-                                                               const PartialIndexVector& indexVector) const {
+      ExampleWiseDynamicPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+                                                             const PartialIndexVector& indexVector) const {
         return std::make_unique<DenseExampleWiseCompleteRuleEvaluation<PartialIndexVector>>(
-            indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
 }

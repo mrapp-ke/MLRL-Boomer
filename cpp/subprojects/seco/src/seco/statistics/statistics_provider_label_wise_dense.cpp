@@ -38,17 +38,17 @@ namespace seco {
                                      const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractLabelWiseStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector,
                                               ILabelWiseRuleEvaluationFactory>(
-                    labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr),
-                    ruleEvaluationFactory) {}
+                  labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr), ruleEvaluationFactory) {
+            }
     };
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
-        const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
-        const CContiguousConstView<const uint8>& labelMatrix) {
+      const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
+      const CContiguousConstView<const uint8>& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr =
-            std::make_unique<BinarySparseArrayVector>(numLabels);
+          std::make_unique<BinarySparseArrayVector>(numLabels);
         BinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
         float64 threshold = numExamples / 2.0;
         float64 sumOfUncoveredWeights = 0;
@@ -73,17 +73,17 @@ namespace seco {
 
         majorityLabelVectorPtr->setNumElements(n, true);
         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr =
-            std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
+          std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
         return std::make_unique<DenseLabelWiseStatistics<CContiguousConstView<const uint8>>>(
-            labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr), ruleEvaluationFactory);
+          labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr), ruleEvaluationFactory);
     }
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
-        const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrConstView& labelMatrix) {
+      const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrConstView& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr =
-            std::make_unique<BinarySparseArrayVector>(numLabels, true);
+          std::make_unique<BinarySparseArrayVector>(numLabels, true);
         BinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
 
         for (uint32 i = 0; i < numExamples; i++) {
@@ -114,33 +114,33 @@ namespace seco {
 
         majorityLabelVectorPtr->setNumElements(n, true);
         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr =
-            std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
+          std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
         return std::make_unique<DenseLabelWiseStatistics<BinaryCsrConstView>>(
-            labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr), ruleEvaluationFactory);
+          labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr), ruleEvaluationFactory);
     }
 
     DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(
-        std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-        std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-        std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr)
+      std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+      std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+      std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr)
         : defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)) {}
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
-        const CContiguousConstView<const uint8>& labelMatrix) const {
+      const CContiguousConstView<const uint8>& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr =
-            createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix);
+          createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(
-            *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
+          *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
-        const BinaryCsrConstView& labelMatrix) const {
+      const BinaryCsrConstView& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr =
-            createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix);
+          createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(
-            *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
+          *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
 }

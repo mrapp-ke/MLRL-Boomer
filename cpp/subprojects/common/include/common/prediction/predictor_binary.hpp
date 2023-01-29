@@ -62,5 +62,5 @@ class IBinaryPredictorConfig : public IPredictorConfig<IBinaryPredictorFactory> 
          *                      created
          */
         virtual std::unique_ptr<ISparseBinaryPredictorFactory> createSparsePredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
+          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 };

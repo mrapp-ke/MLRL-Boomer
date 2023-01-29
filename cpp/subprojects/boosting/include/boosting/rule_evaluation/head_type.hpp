@@ -35,8 +35,8 @@ namespace boosting {
              *                      created
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-                const ILabelWiseLossConfig& lossConfig) const = 0;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const ILabelWiseLossConfig& lossConfig) const = 0;
 
             /**
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
@@ -52,8 +52,8 @@ namespace boosting {
              *                      created
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-                const ISparseLabelWiseLossConfig& lossConfig) const = 0;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const ISparseLabelWiseLossConfig& lossConfig) const = 0;
 
             /**
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
@@ -71,8 +71,8 @@ namespace boosting {
              *                      created
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-                const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const = 0;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const = 0;
 
             /**
              * Returns, whether the heads of rules are partial, i.e., they predict for a subset of the available labels,

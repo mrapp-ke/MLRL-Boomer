@@ -7,8 +7,8 @@ namespace boosting {
 
     template<typename LabelIterator>
     static inline void updateLabelWiseStatisticsInternally(
-        CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
-        DenseLabelWiseStatisticView::iterator statisticIterator, uint32 numLabels) {
+      CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
+      DenseLabelWiseStatisticView::iterator statisticIterator, uint32 numLabels) {
         LabelIterator labelIterator2 = labelIterator;
 
         // For each label `i`, calculate `x_i = predictedScore_i^2 - 2 * predictedScore_i + 1` if trueLabel_i = 1 and
@@ -81,9 +81,9 @@ namespace boosting {
 
     template<typename LabelIterator>
     static inline void updateExampleWiseStatisticsInternally(
-        CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
-        DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
-        DenseExampleWiseStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
+      CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
+      DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
+      DenseExampleWiseStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
         LabelIterator labelIterator2 = labelIterator;
         LabelIterator labelIterator3 = labelIterator;
 
@@ -278,9 +278,9 @@ namespace boosting {
                                              const CContiguousConstView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticView& statisticView) const override {
                 updateExampleWiseStatisticsInternally(
-                    scoreMatrix.row_values_cbegin(exampleIndex), labelMatrix.row_values_cbegin(exampleIndex),
-                    statisticView.gradients_row_begin(exampleIndex), statisticView.hessians_row_begin(exampleIndex),
-                    labelMatrix.getNumCols());
+                  scoreMatrix.row_values_cbegin(exampleIndex), labelMatrix.row_values_cbegin(exampleIndex),
+                  statisticView.gradients_row_begin(exampleIndex), statisticView.hessians_row_begin(exampleIndex),
+                  labelMatrix.getNumCols());
             }
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
@@ -322,7 +322,7 @@ namespace boosting {
                                     CContiguousView<float64>::value_const_iterator scoresEnd) const override {
                 uint32 numLabels = scoresEnd - scoresBegin;
                 auto labelIterator =
-                    make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
+                  make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
                 return evaluateInternally(scoresBegin, labelIterator, numLabels);
             }
     };
@@ -340,17 +340,17 @@ namespace boosting {
     };
 
     ExampleWiseSquaredHingeLossConfig::ExampleWiseSquaredHingeLossConfig(
-        const std::unique_ptr<IHeadConfig>& headConfigPtr)
+      const std::unique_ptr<IHeadConfig>& headConfigPtr)
         : headConfigPtr_(headConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> ExampleWiseSquaredHingeLossConfig::createStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-        const Lapack& lapack, bool preferSparseStatistics) const {
+      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+      const Lapack& lapack, bool preferSparseStatistics) const {
         return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
     }
 
     std::unique_ptr<IProbabilityFunctionFactory> ExampleWiseSquaredHingeLossConfig::createProbabilityFunctionFactory()
-        const {
+      const {
         return nullptr;
     }
 

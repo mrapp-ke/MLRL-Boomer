@@ -96,11 +96,11 @@ class PrePruning final : public IStoppingCriterion {
 
                     if (numRules % stopInterval_ == 0) {
                         float64 aggregatedScorePast =
-                            aggregationFunctionPtr_->aggregate(pastBuffer_.cbegin(), pastBuffer_.cend());
+                          aggregationFunctionPtr_->aggregate(pastBuffer_.cbegin(), pastBuffer_.cend());
                         float64 aggregatedScoreRecent =
-                            aggregationFunctionPtr_->aggregate(recentBuffer_.cbegin(), recentBuffer_.cend());
+                          aggregationFunctionPtr_->aggregate(recentBuffer_.cbegin(), recentBuffer_.cend());
                         float64 percentageImprovement =
-                            (aggregatedScorePast - aggregatedScoreRecent) / aggregatedScoreRecent;
+                          (aggregatedScorePast - aggregatedScoreRecent) / aggregatedScoreRecent;
 
                         if (percentageImprovement <= minImprovement_) {
                             result.stop = removeUnusedRules_;
@@ -182,15 +182,15 @@ class PrePruningFactory final : public IStoppingCriterionFactory {
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
             return std::make_unique<PrePruning<const SinglePartition>>(
-                partition, std::move(aggregationFunctionPtr), useHoldoutSet_, removeUnusedRules_, minRules_,
-                updateInterval_, stopInterval_, numPast_, numCurrent_, minImprovement_);
+              partition, std::move(aggregationFunctionPtr), useHoldoutSet_, removeUnusedRules_, minRules_,
+              updateInterval_, stopInterval_, numPast_, numCurrent_, minImprovement_);
         }
 
         std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override {
             std::unique_ptr<IAggregationFunction> aggregationFunctionPtr = aggregationFunctionFactoryPtr_->create();
             return std::make_unique<PrePruning<BiPartition>>(
-                partition, std::move(aggregationFunctionPtr), useHoldoutSet_, removeUnusedRules_, minRules_,
-                updateInterval_, stopInterval_, numPast_, numCurrent_, minImprovement_);
+              partition, std::move(aggregationFunctionPtr), useHoldoutSet_, removeUnusedRules_, minRules_,
+              updateInterval_, stopInterval_, numPast_, numCurrent_, minImprovement_);
         }
 };
 
@@ -288,7 +288,7 @@ IPrePruningConfig& PrePruningConfig::setMinImprovement(float64 minImprovement) {
 
 std::unique_ptr<IStoppingCriterionFactory> PrePruningConfig::createStoppingCriterionFactory() const {
     std::unique_ptr<IAggregationFunctionFactory> aggregationFunctionFactoryPtr =
-        createAggregationFunctionFactory(aggregationFunction_);
+      createAggregationFunctionFactory(aggregationFunction_);
     return std::make_unique<PrePruningFactory>(std::move(aggregationFunctionFactoryPtr), useHoldoutSet_,
                                                removeUnusedRules_, minRules_, updateInterval_, stopInterval_, numPast_,
                                                numCurrent_, minImprovement_);

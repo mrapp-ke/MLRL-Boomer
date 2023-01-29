@@ -32,9 +32,9 @@ namespace boosting {
                 uint32 numLabels = statisticVector.getNumElements();
                 uint32 numPredictions = indexVectorPtr_->getNumElements();
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
-                    statisticVector.gradients_cbegin();
+                  statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                    statisticVector.hessians_diagonal_cbegin();
+                  statisticVector.hessians_diagonal_cbegin();
                 SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
                 sortLabelWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numLabels, numPredictions,
                                       l1RegularizationWeight, l2RegularizationWeight);
@@ -76,41 +76,41 @@ namespace boosting {
                                                              std::unique_ptr<ILabelBinning> binningPtr,
                                                              const Blas& blas, const Lapack& lapack)
                 : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector>(
-                    *indexVectorPtr, false, maxBins, l1RegularizationWeight, l2RegularizationWeight,
-                    std::move(binningPtr), blas, lapack),
+                  *indexVectorPtr, false, maxBins, l1RegularizationWeight, l2RegularizationWeight,
+                  std::move(binningPtr), blas, lapack),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)),
                   tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {}
     };
 
     ExampleWiseFixedPartialBinnedRuleEvaluationFactory::ExampleWiseFixedPartialBinnedRuleEvaluationFactory(
-        float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
-        float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas,
-        const Lapack& lapack)
+      float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
+      float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas,
+      const Lapack& lapack)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)), blas_(blas), lapack_(lapack) {}
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
-        ExampleWiseFixedPartialBinnedRuleEvaluationFactory::create(
-            const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+      ExampleWiseFixedPartialBinnedRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+                                                                 const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-            calculateBoundedFraction(statisticVector.getNumElements(), labelRatio_, minLabels_, maxLabels_);
+          calculateBoundedFraction(statisticVector.getNumElements(), labelRatio_, minLabels_, maxLabels_);
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(numPredictions);
         return std::make_unique<DenseExampleWiseFixedPartialBinnedRuleEvaluation<CompleteIndexVector>>(
-            indexVector, maxBins, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
-            std::move(labelBinningPtr), blas_, lapack_);
+          indexVector, maxBins, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
+          std::move(labelBinningPtr), blas_, lapack_);
     }
 
     std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
-        ExampleWiseFixedPartialBinnedRuleEvaluationFactory::create(
-            const DenseExampleWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+      ExampleWiseFixedPartialBinnedRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+                                                                 const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseExampleWiseCompleteBinnedRuleEvaluation<PartialIndexVector>>(
-            indexVector, maxBins, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr), blas_,
-            lapack_);
+          indexVector, maxBins, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr), blas_,
+          lapack_);
     }
 
 }

@@ -23,8 +23,8 @@ namespace boosting {
 
     template<typename LabelIterator>
     static inline void updateLabelWiseStatisticsInternally(
-        CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
-        DenseLabelWiseStatisticView::iterator statisticIterator, uint32 numLabels) {
+      CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
+      DenseLabelWiseStatisticView::iterator statisticIterator, uint32 numLabels) {
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
         // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
         // of the form `exp(x_1) / (exp(x_1) + exp(x_2) + ...)` as
@@ -72,9 +72,9 @@ namespace boosting {
 
     template<typename LabelIterator>
     static inline void updateExampleWiseStatisticsInternally(
-        CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
-        DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
-        DenseExampleWiseStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
+      CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
+      DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
+      DenseExampleWiseStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
         // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
         // of the form `exp(x_1) / (exp(x_1) + exp(x_2) + ...)` as
@@ -249,9 +249,9 @@ namespace boosting {
                                              const CContiguousConstView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticView& statisticView) const override {
                 updateExampleWiseStatisticsInternally(
-                    scoreMatrix.row_values_cbegin(exampleIndex), labelMatrix.row_values_cbegin(exampleIndex),
-                    statisticView.gradients_row_begin(exampleIndex), statisticView.hessians_row_begin(exampleIndex),
-                    labelMatrix.getNumCols());
+                  scoreMatrix.row_values_cbegin(exampleIndex), labelMatrix.row_values_cbegin(exampleIndex),
+                  statisticView.gradients_row_begin(exampleIndex), statisticView.hessians_row_begin(exampleIndex),
+                  labelMatrix.getNumCols());
             }
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
@@ -299,7 +299,7 @@ namespace boosting {
                 // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
                 uint32 numLabels = scoresEnd - scoresBegin;
                 auto labelIterator =
-                    make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
+                  make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
                 float64 max = 0;
 
                 // For each label `i`, calculate `x = -expectedScore_i * predictedScore_i` and find the largest value
@@ -319,7 +319,7 @@ namespace boosting {
                 // Calculate the example-wise loss as `max + log(exp(0 - max) + exp(x_1 - max) + ...)`...
                 float64 sumExp = std::exp(0 - max);
                 labelIterator =
-                    make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
+                  make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
 
                 for (uint32 i = 0; i < numLabels; i++) {
                     float64 predictedScore = scoresBegin[i];
@@ -349,13 +349,13 @@ namespace boosting {
         : headConfigPtr_(headConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> ExampleWiseLogisticLossConfig::createStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-        const Lapack& lapack, bool preferSparseStatistics) const {
+      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+      const Lapack& lapack, bool preferSparseStatistics) const {
         return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
     }
 
     std::unique_ptr<IProbabilityFunctionFactory> ExampleWiseLogisticLossConfig::createProbabilityFunctionFactory()
-        const {
+      const {
         return std::make_unique<LogisticFunctionFactory>();
     }
 

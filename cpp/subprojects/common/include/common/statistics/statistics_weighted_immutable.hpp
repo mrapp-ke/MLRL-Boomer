@@ -41,7 +41,7 @@ class IImmutableWeightedStatistics {
          * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-            const CompleteIndexVector& labelIndices) const = 0;
+          const CompleteIndexVector& labelIndices) const = 0;
 
         /**
          * Creates and returns a new object of type `IWeightedStatisticsSubset` that includes only those labels, whose
@@ -52,5 +52,5 @@ class IImmutableWeightedStatistics {
          * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-            const PartialIndexVector& labelIndices) const = 0;
+          const PartialIndexVector& labelIndices) const = 0;
 };

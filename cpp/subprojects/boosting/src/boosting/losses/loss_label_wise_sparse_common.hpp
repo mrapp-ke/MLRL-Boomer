@@ -71,8 +71,8 @@ namespace boosting {
         uint32 index;
 
         while (
-            (index = fetchNextNonZeroStatistic(indicesBegin, indicesEnd, scoresBegin, scoresEnd, tuple, updateFunction))
-            < LIMIT) {
+          (index = fetchNextNonZeroStatistic(indicesBegin, indicesEnd, scoresBegin, scoresEnd, tuple, updateFunction))
+          < LIMIT) {
             IndexedValue<Tuple<float64>>& entry = row.emplace(index);
             entry.value = tuple;
         }
@@ -110,7 +110,7 @@ namespace boosting {
                                                     SparseSetMatrix<float64>::const_iterator scoresEnd, float64& score,
                                                     LabelWiseLoss::EvaluateFunction evaluateFunction) {
         uint32 index =
-            fetchNextEvaluation(indexIterator, indicesEnd, scoreIterator, scoresEnd, score, evaluateFunction);
+          fetchNextEvaluation(indexIterator, indicesEnd, scoreIterator, scoresEnd, score, evaluateFunction);
 
         while (score == 0 && index < LIMIT) {
             index = fetchNextEvaluation(indexIterator, indicesEnd, scoreIterator, scoresEnd, score, evaluateFunction);
@@ -177,7 +177,7 @@ namespace boosting {
                                            SparseLabelWiseStatisticView& statisticView) const override {
                 const SparseSetMatrix<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 CContiguousConstView<const uint8>::value_const_iterator labelIterator =
-                    labelMatrix.row_values_cbegin(exampleIndex);
+                  labelMatrix.row_values_cbegin(exampleIndex);
                 SparseLabelWiseStatisticView::row statisticViewRow = statisticView[exampleIndex];
                 uint32 numElements = labelIndicesEnd - labelIndicesBegin;
                 Tuple<float64> tuple;
@@ -204,9 +204,9 @@ namespace boosting {
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
                 updateLabelWiseStatisticsInternally(
-                    labelMatrix.row_indices_cbegin(exampleIndex), labelMatrix.row_indices_cend(exampleIndex),
-                    scoreMatrix.row_cbegin(exampleIndex), scoreMatrix.row_cend(exampleIndex),
-                    statisticView[exampleIndex], LabelWiseLoss::updateFunction_);
+                  labelMatrix.row_indices_cbegin(exampleIndex), labelMatrix.row_indices_cend(exampleIndex),
+                  scoreMatrix.row_cbegin(exampleIndex), scoreMatrix.row_cend(exampleIndex), statisticView[exampleIndex],
+                  LabelWiseLoss::updateFunction_);
             }
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,

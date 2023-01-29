@@ -178,8 +178,7 @@ class IStatistics {
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(
-            const CompleteIndexVector& labelIndices,
-            const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
+          const CompleteIndexVector& labelIndices, const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
 
         /**
          * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
@@ -192,8 +191,7 @@ class IStatistics {
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(
-            const PartialIndexVector& labelIndices,
-            const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
+          const PartialIndexVector& labelIndices, const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
 
         /**
          * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
@@ -206,7 +204,7 @@ class IStatistics {
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(
-            const CompleteIndexVector& labelIndices, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
+          const CompleteIndexVector& labelIndices, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
 
         /**
          * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
@@ -219,7 +217,7 @@ class IStatistics {
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(
-            const PartialIndexVector& labelIndices, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
+          const PartialIndexVector& labelIndices, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
 
         /**
          * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
@@ -232,8 +230,8 @@ class IStatistics {
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(
-            const CompleteIndexVector& labelIndices,
-            const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
+          const CompleteIndexVector& labelIndices,
+          const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
 
         /**
          * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
@@ -246,8 +244,8 @@ class IStatistics {
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(
-            const PartialIndexVector& labelIndices,
-            const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
+          const PartialIndexVector& labelIndices,
+          const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
 
         /**
          * Creates and returns a new object of type `IWeightedStatistics`.
@@ -257,7 +255,7 @@ class IStatistics {
          * @return          An unique pointer to an object of type `IWeightedStatistics` that has been created
          */
         virtual std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-            const EqualWeightVector& weights) const = 0;
+          const EqualWeightVector& weights) const = 0;
 
         /**
          * Creates and returns a new object of type `IWeightedStatistics`.
@@ -276,5 +274,5 @@ class IStatistics {
          * @return          An unique pointer to an object of type `IWeightedStatistics` that has been created
          */
         virtual std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-            const DenseWeightVector<uint32>& weights) const = 0;
+          const DenseWeightVector<uint32>& weights) const = 0;
 };

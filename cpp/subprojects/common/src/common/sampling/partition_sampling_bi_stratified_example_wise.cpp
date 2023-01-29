@@ -30,7 +30,7 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
         ExampleWiseStratifiedBiPartitionSampling(const LabelMatrix& labelMatrix, uint32 numTraining, uint32 numHoldout)
             : partition_(BiPartition(numTraining, numHoldout)),
               stratification_(ExampleWiseStratification<LabelMatrix, IndexIterator>(
-                  labelMatrix, IndexIterator(), IndexIterator(labelMatrix.getNumRows()))) {}
+                labelMatrix, IndexIterator(), IndexIterator(labelMatrix.getNumRows()))) {}
 
         IPartition& partition(RNG& rng) override {
             stratification_.sampleBiPartition(partition_, rng);
@@ -61,7 +61,7 @@ class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IPartitionS
             uint32 numHoldout = (uint32) (holdoutSetSize_ * numExamples);
             uint32 numTraining = numExamples - numHoldout;
             return std::make_unique<ExampleWiseStratifiedBiPartitionSampling<CContiguousLabelMatrix>>(
-                labelMatrix, numTraining, numHoldout);
+              labelMatrix, numTraining, numHoldout);
         }
 
         std::unique_ptr<IPartitionSampling> create(const CsrLabelMatrix& labelMatrix) const override {
@@ -81,7 +81,7 @@ float32 ExampleWiseStratifiedBiPartitionSamplingConfig::getHoldoutSetSize() cons
 }
 
 IExampleWiseStratifiedBiPartitionSamplingConfig& ExampleWiseStratifiedBiPartitionSamplingConfig::setHoldoutSetSize(
-    float32 holdoutSetSize) {
+  float32 holdoutSetSize) {
     assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
     assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);
     holdoutSetSize_ = holdoutSetSize;
@@ -89,6 +89,6 @@ IExampleWiseStratifiedBiPartitionSamplingConfig& ExampleWiseStratifiedBiPartitio
 }
 
 std::unique_ptr<IPartitionSamplingFactory>
-    ExampleWiseStratifiedBiPartitionSamplingConfig::createPartitionSamplingFactory() const {
+  ExampleWiseStratifiedBiPartitionSamplingConfig::createPartitionSamplingFactory() const {
     return std::make_unique<ExampleWiseStratifiedBiPartitionSamplingFactory>(holdoutSetSize_);
 }

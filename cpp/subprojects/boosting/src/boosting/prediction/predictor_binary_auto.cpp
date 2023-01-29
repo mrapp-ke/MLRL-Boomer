@@ -6,29 +6,29 @@
 namespace boosting {
 
     AutomaticBinaryPredictorConfig::AutomaticBinaryPredictorConfig(
-        const std::unique_ptr<ILossConfig>& lossConfigPtr,
-        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+      const std::unique_ptr<ILossConfig>& lossConfigPtr,
+      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> AutomaticBinaryPredictorConfig::createPredictorFactory(
-        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         if (lossConfigPtr_->isDecomposable()) {
             return LabelWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-                .createPredictorFactory(featureMatrix, numLabels);
+              .createPredictorFactory(featureMatrix, numLabels);
         } else {
             return ExampleWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-                .createPredictorFactory(featureMatrix, numLabels);
+              .createPredictorFactory(featureMatrix, numLabels);
         }
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> AutomaticBinaryPredictorConfig::createSparsePredictorFactory(
-        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         if (lossConfigPtr_->isDecomposable()) {
             return LabelWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-                .createSparsePredictorFactory(featureMatrix, numLabels);
+              .createSparsePredictorFactory(featureMatrix, numLabels);
         } else {
             return ExampleWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-                .createSparsePredictorFactory(featureMatrix, numLabels);
+              .createSparsePredictorFactory(featureMatrix, numLabels);
         }
     }
 

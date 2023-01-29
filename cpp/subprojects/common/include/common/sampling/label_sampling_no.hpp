@@ -12,5 +12,5 @@ class NoLabelSamplingConfig final : public ILabelSamplingConfig {
     public:
 
         std::unique_ptr<ILabelSamplingFactory> createLabelSamplingFactory(
-            const ILabelMatrix& labelMatrix) const override;
+          const ILabelMatrix& labelMatrix) const override;
 };

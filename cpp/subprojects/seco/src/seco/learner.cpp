@@ -19,7 +19,7 @@ namespace seco {
     }
 
     std::unique_ptr<CoverageStoppingCriterionConfig>&
-        AbstractSeCoRuleLearner::Config::getCoverageStoppingCriterionConfigPtr() {
+      AbstractSeCoRuleLearner::Config::getCoverageStoppingCriterionConfigPtr() {
         return coverageStoppingCriterionConfigPtr_;
     }
 
@@ -80,7 +80,7 @@ namespace seco {
     void AbstractSeCoRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
         AbstractRuleLearner::createStoppingCriterionFactories(factory);
         std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory =
-            this->createCoverageStoppingCriterionFactory();
+          this->createCoverageStoppingCriterionFactory();
 
         if (stoppingCriterionFactory) {
             factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
@@ -88,7 +88,7 @@ namespace seco {
     }
 
     std::unique_ptr<IStatisticsProviderFactory> AbstractSeCoRuleLearner::createStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
+      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
         return config_.getHeadConfigPtr()->createStatisticsProviderFactory(labelMatrix);
     }
 
@@ -97,7 +97,7 @@ namespace seco {
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> AbstractSeCoRuleLearner::createSparseBinaryPredictorFactory(
-        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         return config_.getBinaryPredictorConfigPtr()->createSparsePredictorFactory(featureMatrix, numLabels);
     }
 

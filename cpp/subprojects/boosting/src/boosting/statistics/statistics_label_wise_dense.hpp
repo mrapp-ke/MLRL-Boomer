@@ -72,8 +72,8 @@ namespace boosting {
                 : AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticView,
                                               DenseLabelWiseStatisticMatrix, NumericDenseMatrix<float64>,
                                               ILabelWiseLoss, IEvaluationMeasure, ILabelWiseRuleEvaluationFactory>(
-                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
-                    std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
+                  std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+                  std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
     };
 
 }

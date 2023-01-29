@@ -48,7 +48,7 @@ class NoFeatureSamplingFactory final : public IFeatureSamplingFactory {
 };
 
 std::unique_ptr<IFeatureSamplingFactory> NoFeatureSamplingConfig::createFeatureSamplingFactory(
-    const IFeatureMatrix& featureMatrix) const {
+  const IFeatureMatrix& featureMatrix) const {
     return std::make_unique<NoFeatureSamplingFactory>(featureMatrix.getNumCols());
 }
 

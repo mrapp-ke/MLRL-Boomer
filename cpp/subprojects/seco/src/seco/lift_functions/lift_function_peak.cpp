@@ -18,7 +18,7 @@ namespace seco {
                 normalization = ((float64) numLabels - 1) / ((float64) peakLabel - 1);
             } else {
                 normalization =
-                    ((float64) numLabels - (float64) totalLabels) / ((float64) totalLabels - (float64) peakLabel);
+                  ((float64) numLabels - (float64) totalLabels) / ((float64) totalLabels - (float64) peakLabel);
             }
 
             return 1 + pow(normalization, exponent) * (maxLift - 1);
@@ -103,7 +103,7 @@ namespace seco {
                   maxLiftsAfterPeak_(new float64[numLabels - peakLabel]) {
                 for (uint32 i = 0; i < numLabels - peakLabel; i++) {
                     maxLiftsAfterPeak_[i] =
-                        calculateLiftInternally(i + peakLabel, numLabels, peakLabel, maxLift, curvature);
+                      calculateLiftInternally(i + peakLabel, numLabels, peakLabel, maxLift, curvature);
                 }
             }
 
@@ -150,7 +150,7 @@ namespace seco {
     }
 
     std::unique_ptr<ILiftFunctionFactory> PeakLiftFunctionConfig::createLiftFunctionFactory(
-        const IRowWiseLabelMatrix& labelMatrix) const {
+      const IRowWiseLabelMatrix& labelMatrix) const {
         uint32 numLabels = labelMatrix.getNumRows();
         uint32 peakLabel = peakLabel_;
 

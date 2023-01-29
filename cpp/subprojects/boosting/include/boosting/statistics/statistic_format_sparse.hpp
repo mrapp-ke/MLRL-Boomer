@@ -24,8 +24,8 @@ namespace boosting {
             SparseStatisticsConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-                const Lapack& lapack) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+              const Lapack& lapack) const override;
 
             bool isDense() const override;
 

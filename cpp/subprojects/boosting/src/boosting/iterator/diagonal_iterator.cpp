@@ -53,7 +53,7 @@ namespace boosting {
 
     template<typename T>
     typename DiagonalConstIterator<T>::difference_type DiagonalConstIterator<T>::operator-(
-        const DiagonalConstIterator<T>& rhs) const {
+      const DiagonalConstIterator<T>& rhs) const {
         return (difference_type) index_ - (difference_type) rhs.index_;
     }
 

@@ -48,8 +48,8 @@ namespace boosting {
              *                      created
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-                const Lapack& lapack) const = 0;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+              const Lapack& lapack) const = 0;
 
             /**
              * Returns whether a dense format is used for storing statistics about the labels of the training examples

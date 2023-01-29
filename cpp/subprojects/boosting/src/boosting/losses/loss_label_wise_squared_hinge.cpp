@@ -55,8 +55,8 @@ namespace boosting {
         : headConfigPtr_(headConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> LabelWiseSquaredHingeLossConfig::createStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-        const Lapack& lapack, bool preferSparseStatistics) const {
+      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+      const Lapack& lapack, bool preferSparseStatistics) const {
         if (preferSparseStatistics) {
             return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
         } else {
@@ -66,7 +66,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IProbabilityFunctionFactory> LabelWiseSquaredHingeLossConfig::createProbabilityFunctionFactory()
-        const {
+      const {
         return nullptr;
     }
 
@@ -75,7 +75,7 @@ namespace boosting {
     }
 
     std::unique_ptr<ISparseLabelWiseLossFactory> LabelWiseSquaredHingeLossConfig::createSparseLabelWiseLossFactory()
-        const {
+      const {
         return std::make_unique<LabelWiseSquaredHingeLossFactory>();
     }
 

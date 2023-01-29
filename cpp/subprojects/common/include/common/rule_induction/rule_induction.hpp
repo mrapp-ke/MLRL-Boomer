@@ -94,5 +94,5 @@ class IRuleInductionConfig {
          * @return              An unique pointer to an object of type `IRuleInductionFactory` that has been created
          */
         virtual std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(
-            const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const = 0;
+          const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const = 0;
 };

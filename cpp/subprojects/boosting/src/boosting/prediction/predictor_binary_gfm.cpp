@@ -125,8 +125,8 @@ namespace boosting {
                                     const LabelVectorSet& labelVectorSet, uint32 numLabelVectors,
                                     uint32 maxLabelCardinality) {
         float64* jointProbabilities = new float64[numLabelVectors];
-        float64 sumOfJointProbabilities = calculateJointProbabilities(scoresBegin, scoresEnd, jointProbabilities,
-                                                                      probabilityFunction, labelVectorSet);
+        float64 sumOfJointProbabilities =
+          calculateJointProbabilities(scoresBegin, scoresEnd, jointProbabilities, probabilityFunction, labelVectorSet);
         SparseSetMatrix<float64> marginalProbabilities(numLabels, maxLabelCardinality);
         float64 bestQuality = calculateMarginalizedProbabilities(marginalProbabilities, numLabels, jointProbabilities,
                                                                  sumOfJointProbabilities, labelVectorSet);
@@ -155,12 +155,12 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-        const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
-        const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
-        uint32 numThreads) {
+      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+      const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
+      uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
+          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
 
         if (numLabelVectors > 0) {
@@ -172,9 +172,9 @@ namespace boosting {
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-    firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
-        firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) \
-            schedule(dynamic) num_threads(numThreads)
+  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
+    firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) schedule(dynamic) \
+      num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
@@ -189,12 +189,12 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-        const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
-        uint32 numLabels, const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
+      uint32 numLabels, const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
+          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
 
         if (numLabelVectors > 0) {
@@ -206,9 +206,9 @@ namespace boosting {
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-    firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-        firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
-            firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
+    firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
+      firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
@@ -281,18 +281,18 @@ namespace boosting {
 
     template<typename FeatureMatrix>
     static inline std::unique_ptr<IBinaryPredictor> createGfmBinaryPredictor(
-        const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
-        uint32 numLabels, const IProbabilityFunctionFactory& probabilityFunctionFactory, uint32 numThreads) {
+      const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet, uint32 numLabels,
+      const IProbabilityFunctionFactory& probabilityFunctionFactory, uint32 numThreads) {
         if (!labelVectorSet) {
             throw std::runtime_error(
-                "Information about the label vectors that have been encountered in the training data is required for "
-                "predicting binary labels, but no such information is provided by the model. Most probably, the model "
-                "was intended to use a different prediction method when it has been trained.");
+              "Information about the label vectors that have been encountered in the training data is required for "
+              "predicting binary labels, but no such information is provided by the model. Most probably, the model "
+              "was intended to use a different prediction method when it has been trained.");
         }
 
         std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactory.create();
         return std::make_unique<GfmBinaryPredictor<FeatureMatrix, RuleList>>(
-            featureMatrix, model, *labelVectorSet, numLabels, std::move(probabilityFunctionPtr), numThreads);
+          featureMatrix, model, *labelVectorSet, numLabels, std::move(probabilityFunctionPtr), numThreads);
     }
 
     /**
@@ -343,9 +343,9 @@ namespace boosting {
     };
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-        const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
-        const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
-        uint32 numThreads) {
+      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+      const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
+      uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         BinaryLilMatrix lilMatrix(numExamples);
         uint32 numNonZeroElements = 0;
@@ -360,16 +360,16 @@ namespace boosting {
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-    firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-        firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+    firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
             firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                            &scoreVector[0]);
                 numNonZeroElements += predictGfm<BinaryLilMatrix::row>(
-                    scoreVector, &scoreVector[numLabels], (*predictionMatrixPtr)[i], numLabels, *probabilityFunctionPtr,
-                    *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
+                  scoreVector, &scoreVector[numLabels], (*predictionMatrixPtr)[i], numLabels, *probabilityFunctionPtr,
+                  *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
                 delete[] scoreVector;
             }
         }
@@ -378,8 +378,8 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-        const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
-        uint32 numLabels, const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
+      uint32 numLabels, const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         BinaryLilMatrix lilMatrix(numExamples);
@@ -395,8 +395,8 @@ namespace boosting {
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
-    firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-        firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
+  firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+    firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
             firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
@@ -404,8 +404,8 @@ namespace boosting {
                               featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                               featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 numNonZeroElements += predictGfm<BinaryLilMatrix::row>(
-                    scoreVector, &scoreVector[numLabels], (*predictionMatrixPtr)[i], numLabels, *probabilityFunctionPtr,
-                    *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
+                  scoreVector, &scoreVector[numLabels], (*predictionMatrixPtr)[i], numLabels, *probabilityFunctionPtr,
+                  *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
                 delete[] scoreVector;
             }
         }
@@ -471,18 +471,18 @@ namespace boosting {
 
     template<typename FeatureMatrix>
     static inline std::unique_ptr<ISparseBinaryPredictor> createGfmSparseBinaryPredictor(
-        const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
-        uint32 numLabels, const IProbabilityFunctionFactory& probabilityFunctionFactory, uint32 numThreads) {
+      const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet, uint32 numLabels,
+      const IProbabilityFunctionFactory& probabilityFunctionFactory, uint32 numThreads) {
         if (!labelVectorSet) {
             throw std::runtime_error(
-                "Information about the label vectors that have been encountered in the training data is required for "
-                "predicting binary labels, but no such information is provided by the model. Most probably, the model "
-                "was intended to use a different prediction method when it has been trained.");
+              "Information about the label vectors that have been encountered in the training data is required for "
+              "predicting binary labels, but no such information is provided by the model. Most probably, the model "
+              "was intended to use a different prediction method when it has been trained.");
         }
 
         std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactory.create();
         return std::make_unique<GfmSparseBinaryPredictor<FeatureMatrix, RuleList>>(
-            featureMatrix, model, *labelVectorSet, numLabels, std::move(probabilityFunctionPtr), numThreads);
+          featureMatrix, model, *labelVectorSet, numLabels, std::move(probabilityFunctionPtr), numThreads);
     }
 
     /**
@@ -533,14 +533,14 @@ namespace boosting {
     };
 
     GfmBinaryPredictorConfig::GfmBinaryPredictorConfig(
-        const std::unique_ptr<ILossConfig>& lossConfigPtr,
-        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+      const std::unique_ptr<ILossConfig>& lossConfigPtr,
+      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : lossConfigPtr_(std::move(lossConfigPtr)), multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {}
 
     std::unique_ptr<IBinaryPredictorFactory> GfmBinaryPredictorConfig::createPredictorFactory(
-        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
-            lossConfigPtr_->createProbabilityFunctionFactory();
+          lossConfigPtr_->createProbabilityFunctionFactory();
 
         if (probabilityFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
@@ -551,9 +551,9 @@ namespace boosting {
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> GfmBinaryPredictorConfig::createSparsePredictorFactory(
-        const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
-            lossConfigPtr_->createProbabilityFunctionFactory();
+          lossConfigPtr_->createProbabilityFunctionFactory();
 
         if (probabilityFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);

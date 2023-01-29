@@ -39,7 +39,7 @@ namespace seco {
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 typename DenseScoreVector<T>::index_const_iterator indexIterator = scoreVector_.indices_cbegin();
                 auto labelIterator =
-                    make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
+                  make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
                 uint32 numElements = scoreVector_.getNumElements();
                 uint32 previousIndex = 0;
 

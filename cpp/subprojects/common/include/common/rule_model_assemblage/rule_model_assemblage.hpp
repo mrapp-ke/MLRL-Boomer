@@ -92,18 +92,18 @@ class IRuleModelAssemblageFactory {
          *                                      additional rules should be induced or not
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
-            std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
-            std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
-            std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-            std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
-            std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
-            std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
-            std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
-            std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-            std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
-            std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-            std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
-            std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const = 0;
+          std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
+          std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
+          std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
+          std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
+          std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
+          std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
+          std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
+          std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
+          std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
+          std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
+          std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
+          std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const = 0;
 };
 
 /**
@@ -124,5 +124,5 @@ class IRuleModelAssemblageConfig {
          *                      created
          */
         virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
-            const IRowWiseLabelMatrix& labelMatrix) const = 0;
+          const IRowWiseLabelMatrix& labelMatrix) const = 0;
 };

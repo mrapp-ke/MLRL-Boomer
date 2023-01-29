@@ -69,7 +69,7 @@ class IFeatureSamplingConfig {
          * @return              An unique pointer to an object of type `IFeatureSamplingFactory` that has been created
          */
         virtual std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory(
-            const IFeatureMatrix& featureMatrix) const = 0;
+          const IFeatureMatrix& featureMatrix) const = 0;
 
         /**
          * Returns whether feature sampling is used or not.
