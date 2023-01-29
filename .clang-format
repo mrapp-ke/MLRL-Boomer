@@ -127,7 +127,7 @@ IndentExternBlock: Indent
 IndentRequiresClause: true
 IndentWidth:     4
 IndentWrappedFunctionNames: true
-InsertBraces:    true
+InsertBraces:    false
 InsertTrailingCommas: None
 KeepEmptyLinesAtTheStartOfBlocks: false
 LambdaBodyIndentation: OuterScope

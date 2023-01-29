@@ -195,7 +195,7 @@ namespace boosting {
     }
 
     IEqualWidthLabelBinningConfig& EqualWidthLabelBinningConfig::setMaxBins(uint32 maxBins) {
-        if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_); }
+        if (maxBins != 0) assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_);
         maxBins_ = maxBins;
         return *this;
     }

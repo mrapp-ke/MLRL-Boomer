@@ -234,7 +234,7 @@ uint32 EqualWidthFeatureBinningConfig::getMaxBins() const {
 }
 
 IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint32 maxBins) {
-    if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_); }
+    if (maxBins != 0) assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_);
     maxBins_ = maxBins;
     return *this;
 }

@@ -175,8 +175,8 @@ float32 GreedyTopDownRuleInductionConfig::getMinSupport() const {
 }
 
 IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMinSupport(float32 minSupport) {
-    if (minSupport != 0) { assertGreater<float32>("minSupport", minSupport, 0); }
-    if (minSupport != 0) { assertLess<float32>("minSupport", minSupport, 1); }
+    if (minSupport != 0) assertGreater<float32>("minSupport", minSupport, 0);
+    if (minSupport != 0) assertLess<float32>("minSupport", minSupport, 1);
     minSupport_ = minSupport;
     return *this;
 }
@@ -186,7 +186,7 @@ uint32 GreedyTopDownRuleInductionConfig::getMaxConditions() const {
 }
 
 IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMaxConditions(uint32 maxConditions) {
-    if (maxConditions != 0) { assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 1); }
+    if (maxConditions != 0) assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 1);
     maxConditions_ = maxConditions;
     return *this;
 }
@@ -196,7 +196,7 @@ uint32 GreedyTopDownRuleInductionConfig::getMaxHeadRefinements() const {
 }
 
 IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMaxHeadRefinements(uint32 maxHeadRefinements) {
-    if (maxHeadRefinements != 0) { assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1); }
+    if (maxHeadRefinements != 0) assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1);
     maxHeadRefinements_ = maxHeadRefinements;
     return *this;
 }
