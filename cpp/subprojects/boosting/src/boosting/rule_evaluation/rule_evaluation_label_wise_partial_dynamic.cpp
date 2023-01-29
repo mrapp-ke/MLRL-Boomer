@@ -94,7 +94,8 @@ namespace boosting {
     std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>>
         LabelWiseDynamicPartialRuleEvaluationFactory::create(const DenseLabelWiseStatisticVector& statisticVector,
                                                              const CompleteIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseDynamicPartialRuleEvaluation<DenseLabelWiseStatisticVector, CompleteIndexVector>>(
+        return std::make_unique<
+            LabelWiseDynamicPartialRuleEvaluation<DenseLabelWiseStatisticVector, CompleteIndexVector>>(
             indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
@@ -108,7 +109,8 @@ namespace boosting {
     std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>>
         LabelWiseDynamicPartialRuleEvaluationFactory::create(const SparseLabelWiseStatisticVector& statisticVector,
                                                              const CompleteIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseDynamicPartialRuleEvaluation<SparseLabelWiseStatisticVector, CompleteIndexVector>>(
+        return std::make_unique<
+            LabelWiseDynamicPartialRuleEvaluation<SparseLabelWiseStatisticVector, CompleteIndexVector>>(
             indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
