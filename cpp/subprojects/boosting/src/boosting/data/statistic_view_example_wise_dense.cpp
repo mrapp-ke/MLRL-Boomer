@@ -37,7 +37,7 @@ namespace boosting {
     }
 
     DenseExampleWiseStatisticConstView::hessian_diagonal_const_iterator
-       DenseExampleWiseStatisticConstView::hessians_diagonal_row_cend(uint32 row) const {
+      DenseExampleWiseStatisticConstView::hessians_diagonal_row_cend(uint32 row) const {
         return DiagonalConstIterator<float64>(&hessians_[row * numHessians_], numGradients_);
     }
 
