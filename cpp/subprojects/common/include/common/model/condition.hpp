@@ -5,7 +5,6 @@
 
 #include "common/data/types.hpp"
 
-
 /**
  * An enum that specifies all possible types of operators used by a condition of a rule.
  */
@@ -23,70 +22,67 @@ enum Comparator : uint8 {
  * `covered == false`) by the condition, as well as the sum of the weights of all covered elements.
  */
 struct Condition {
+    public:
 
-    Condition() {
+        Condition() {}
 
-    }
+        /**
+         * @param condition A reference to an existing condition to be copied
+         */
+        Condition(const Condition& condition)
+            : featureIndex(condition.featureIndex), comparator(condition.comparator), threshold(condition.threshold),
+              start(condition.start), end(condition.end), covered(condition.covered), numCovered(condition.numCovered) {
+        }
 
-    /**
-     * @param condition A reference to an existing condition to be copied
-     */
-    Condition(const Condition& condition)
-        : featureIndex(condition.featureIndex), comparator(condition.comparator), threshold(condition.threshold),
-          start(condition.start), end(condition.end), covered(condition.covered), numCovered(condition.numCovered) {
+        /**
+         * Assigns the properties of an existing condition to this condition.
+         *
+         * @param condition A reference to the existing condition
+         * @return          A reference to the modified condition
+         */
+        Condition& operator=(const Condition& condition) {
+            featureIndex = condition.featureIndex;
+            comparator = condition.comparator;
+            threshold = condition.threshold;
+            start = condition.start;
+            end = condition.end;
+            covered = condition.covered;
+            numCovered = condition.numCovered;
+            return *this;
+        }
 
-    }
+        /**
+         * The index of the feature, the condition corresponds to.
+         */
+        uint32 featureIndex;
 
-    /**
-     * Assigns the properties of an existing condition to this condition.
-     *
-     * @param condition A reference to the existing condition
-     * @return          A reference to the modified condition
-     */
-    Condition& operator=(const Condition& condition) {
-        featureIndex = condition.featureIndex;
-        comparator = condition.comparator;
-        threshold = condition.threshold;
-        start = condition.start;
-        end = condition.end;
-        covered = condition.covered;
-        numCovered = condition.numCovered;
-        return *this;
-    }
+        /**
+         * The type of the operator that is used by the condition.
+         */
+        Comparator comparator;
 
-    /**
-     * The index of the feature, the condition corresponds to.
-     */
-    uint32 featureIndex;
+        /**
+         * The threshold that is used by the condition.
+         */
+        float32 threshold;
 
-    /**
-     * The type of the operator that is used by the condition.
-     */
-    Comparator comparator;
+        /**
+         * The index of the first element (inclusive) that is covered (or uncovered) by the condition.
+         */
+        int64 start;
 
-    /**
-     * The threshold that is used by the condition.
-     */
-    float32 threshold;
+        /**
+         * The index of the last element (exclusive) that is covered (or uncovered) by the condition.
+         */
+        int64 end;
 
-    /**
-     * The index of the first element (inclusive) that is covered (or uncovered) by the condition.
-     */
-    int64 start;
+        /**
+         * True, if the elements in [start, end) are covered by the condition, false otherwise.
+         */
+        bool covered;
 
-    /**
-     * The index of the last element (exclusive) that is covered (or uncovered) by the condition.
-     */
-    int64 end;
-
-    /**
-     * True, if the elements in [start, end) are covered by the condition, false otherwise.
-     */
-    bool covered;
-
-    /**
-     * The number of elements that are covered by the condition.
-     */
-    uint32 numCovered;
-
+        /**
+         * The number of elements that are covered by the condition.
+         */
+        uint32 numCovered;
 };

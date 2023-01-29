@@ -4,8 +4,8 @@
 #pragma once
 
 #include "boosting/prediction/probability_function.hpp"
-#include <cmath>
 
+#include <cmath>
 
 namespace boosting {
 
@@ -34,13 +34,11 @@ namespace boosting {
      * logistic sigmoid function.
      */
     class LogisticFunction final : public IProbabilityFunction {
-
         public:
 
             float64 transform(float64 predictedScore) const override {
                 return logisticFunction(predictedScore);
             }
-
     };
 
     /**
@@ -48,13 +46,11 @@ namespace boosting {
      * individual label into a probability by applying the logistic sigmoid function.
      */
     class LogisticFunctionFactory final : public IProbabilityFunctionFactory {
-
         public:
 
             std::unique_ptr<IProbabilityFunction> create() const override {
                 return std::make_unique<LogisticFunction>();
             }
-
     };
 
 }

@@ -1,16 +1,14 @@
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
-#include "common/util/threads.hpp"
 
+#include "common/util/threads.hpp"
 
 namespace boosting {
 
     AutoParallelRuleRefinementConfig::AutoParallelRuleRefinementConfig(
-            const std::unique_ptr<ILossConfig>& lossConfigPtr, const std::unique_ptr<IHeadConfig>& headConfigPtr,
-            const std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr)
+      const std::unique_ptr<ILossConfig>& lossConfigPtr, const std::unique_ptr<IHeadConfig>& headConfigPtr,
+      const std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr)
         : lossConfigPtr_(lossConfigPtr), headConfigPtr_(headConfigPtr),
-          featureSamplingConfigPtr_(featureSamplingConfigPtr) {
-
-    }
+          featureSamplingConfigPtr_(featureSamplingConfigPtr) {}
 
     uint32 AutoParallelRuleRefinementConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
                                                            uint32 numLabels) const {

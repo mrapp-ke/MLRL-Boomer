@@ -1,19 +1,15 @@
 #include "common/input/label_matrix_c_contiguous.hpp"
-#include "common/statistics/statistics_provider.hpp"
-#include "common/sampling/partition_sampling.hpp"
-#include "common/sampling/instance_sampling.hpp"
-#include "common/math/math.hpp"
 
+#include "common/math/math.hpp"
+#include "common/sampling/instance_sampling.hpp"
+#include "common/sampling/partition_sampling.hpp"
+#include "common/statistics/statistics_provider.hpp"
 
 CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)
-    : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.row_values_cbegin(row)) {
-
-}
+    : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.row_values_cbegin(row)) {}
 
 CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
-    : CContiguousConstView<const uint8>(numRows, numCols, array) {
-
-}
+    : CContiguousConstView<const uint8>(numRows, numCols, array) {}
 
 bool CContiguousLabelMatrix::isSparse() const {
     return false;
@@ -63,22 +59,22 @@ std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 ro
 }
 
 std::unique_ptr<IStatisticsProvider> CContiguousLabelMatrix::createStatisticsProvider(
-        const IStatisticsProviderFactory& factory) const {
+  const IStatisticsProviderFactory& factory) const {
     return factory.create(*this);
 }
 
 std::unique_ptr<IPartitionSampling> CContiguousLabelMatrix::createPartitionSampling(
-        const IPartitionSamplingFactory& factory) const {
+  const IPartitionSamplingFactory& factory) const {
     return factory.create(*this);
 }
 
 std::unique_ptr<IInstanceSampling> CContiguousLabelMatrix::createInstanceSampling(
-        const IInstanceSamplingFactory& factory, const SinglePartition& partition, IStatistics& statistics) const {
+  const IInstanceSamplingFactory& factory, const SinglePartition& partition, IStatistics& statistics) const {
     return factory.create(*this, partition, statistics);
 }
 
 std::unique_ptr<IInstanceSampling> CContiguousLabelMatrix::createInstanceSampling(
-        const IInstanceSamplingFactory& factory, BiPartition& partition, IStatistics& statistics) const {
+  const IInstanceSamplingFactory& factory, BiPartition& partition, IStatistics& statistics) const {
     return factory.create(*this, partition, statistics);
 }
 

@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "common/post_optimization/post_optimization.hpp"
 #include "common/macros.hpp"
-
+#include "common/post_optimization/post_optimization.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a method that optimizes each rule in a model by
@@ -13,10 +12,9 @@
  * order of their induction, may be carried out.
  */
 class MLRLCOMMON_API ISequentialPostOptimizationConfig {
-
     public:
 
-        virtual ~ISequentialPostOptimizationConfig() { };
+        virtual ~ISequentialPostOptimizationConfig() {};
 
         /**
          * Returns the number of iterations that are performed for optimizing a model.
@@ -68,7 +66,6 @@ class MLRLCOMMON_API ISequentialPostOptimizationConfig {
          *                          further configuration of the optimization method
          */
         virtual ISequentialPostOptimizationConfig& setResampleFeatures(bool resampleFeatures) = 0;
-
 };
 
 /**
@@ -76,7 +73,6 @@ class MLRLCOMMON_API ISequentialPostOptimizationConfig {
  */
 class SequentialPostOptimizationConfig final : public ISequentialPostOptimizationConfig,
                                                public IPostOptimizationPhaseConfig {
-
     private:
 
         uint32 numIterations_;
@@ -102,5 +98,4 @@ class SequentialPostOptimizationConfig final : public ISequentialPostOptimizatio
         ISequentialPostOptimizationConfig& setResampleFeatures(bool resampleFeatures) override;
 
         std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory() const override;
-
 };

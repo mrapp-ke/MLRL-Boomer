@@ -1,14 +1,11 @@
 #include "common/sampling/weight_vector_out_of_sample.hpp"
-#include "common/sampling/weight_vector_equal.hpp"
+
 #include "common/sampling/weight_vector_bit.hpp"
 #include "common/sampling/weight_vector_dense.hpp"
-
+#include "common/sampling/weight_vector_equal.hpp"
 
 template<typename WeightVector>
-OutOfSampleWeightVector<WeightVector>::OutOfSampleWeightVector(const WeightVector& vector)
-    : vector_(vector) {
-
-}
+OutOfSampleWeightVector<WeightVector>::OutOfSampleWeightVector(const WeightVector& vector) : vector_(vector) {}
 
 template<typename WeightVector>
 uint32 OutOfSampleWeightVector<WeightVector>::getNumElements() const {

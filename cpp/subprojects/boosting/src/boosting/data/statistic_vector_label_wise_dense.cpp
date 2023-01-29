@@ -1,22 +1,19 @@
 #include "boosting/data/statistic_vector_label_wise_dense.hpp"
+
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
-#include <cstdlib>
 
+#include <cstdlib>
 
 namespace boosting {
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements)
-        : DenseLabelWiseStatisticVector(numElements, false) {
-
-    }
+        : DenseLabelWiseStatisticVector(numElements, false) {}
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements, bool init)
         : numElements_(numElements),
           statistics_((Tuple<float64>*) (init ? calloc(numElements, sizeof(Tuple<float64>))
-                                              : malloc(numElements * sizeof(Tuple<float64>)))) {
-
-    }
+                                              : malloc(numElements * sizeof(Tuple<float64>)))) {}
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& vector)
         : DenseLabelWiseStatisticVector(vector.numElements_) {
@@ -50,7 +47,6 @@ namespace boosting {
     void DenseLabelWiseStatisticVector::clear() {
         setArrayToZeros(statistics_, numElements_);
     }
-
 
     void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticVector& vector) {
         addToArray(statistics_, vector.statistics_, numElements_);

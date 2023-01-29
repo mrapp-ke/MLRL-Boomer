@@ -1,9 +1,9 @@
 #include "common/sampling/partition_bi.hpp"
+
+#include "common/rule_refinement/prediction.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/stopping/stopping_criterion.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
-#include "common/rule_refinement/prediction.hpp"
-
 
 static inline BitVector* createBitVector(BiPartition::const_iterator iterator, uint32 numElements) {
     BitVector* vector = new BitVector(numElements, true);

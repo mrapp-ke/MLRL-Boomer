@@ -1,7 +1,7 @@
 #include "boosting/losses/loss_label_wise_logistic.hpp"
+
 #include "logistic_function.hpp"
 #include "loss_label_wise_common.hpp"
-
 
 namespace boosting {
 
@@ -57,7 +57,7 @@ namespace boosting {
     }
 
     static inline float64 evaluatePrediction(bool trueLabel, float64 predictedScore) {
-       // The logistic loss calculates as `log(1 + exp(-expectedScore * predictedScore))`...
+        // The logistic loss calculates as `log(1 + exp(-expectedScore * predictedScore))`...
         float64 x = trueLabel ? -predictedScore : predictedScore;
         return logSumExp(x);
     }
@@ -67,23 +67,19 @@ namespace boosting {
      * that is applied label-wise.
      */
     class LabelWiseLogisticLossFactory final : public ILabelWiseLossFactory {
-
         public:
 
             std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override {
                 return std::make_unique<LabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
             }
-
     };
 
     LabelWiseLogisticLossConfig::LabelWiseLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)
-        : headConfigPtr_(headConfigPtr) {
-
-    }
+        : headConfigPtr_(headConfigPtr) {}
 
     std::unique_ptr<IStatisticsProviderFactory> LabelWiseLogisticLossConfig::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-            const Lapack& lapack, bool preferSparseStatistics) const {
+      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+      const Lapack& lapack, bool preferSparseStatistics) const {
         return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
     }
 

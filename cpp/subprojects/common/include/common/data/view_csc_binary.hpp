@@ -5,13 +5,11 @@
 
 #include "common/data/view_two_dimensional.hpp"
 
-
 /**
  * Implements column-wise read-only access to binary values that are stored in a pre-allocated matrix in the compressed
  * sparse column (CSC) format.
  */
 class BinaryCscConstView : virtual public ITwoDimensionalView {
-
     protected:
 
         /**
@@ -79,7 +77,6 @@ class BinaryCscConstView : virtual public ITwoDimensionalView {
         uint32 getNumRows() const override final;
 
         uint32 getNumCols() const override final;
-
 };
 
 /**
@@ -87,7 +84,6 @@ class BinaryCscConstView : virtual public ITwoDimensionalView {
  * compressed sparse column (CSC) format.
  */
 class BinaryCscView : public BinaryCscConstView {
-
     public:
 
         /**
@@ -121,5 +117,4 @@ class BinaryCscView : public BinaryCscConstView {
          * @return      An `index_iterator` to the end of the indices
          */
         index_iterator column_indices_end(uint32 col);
-
 };

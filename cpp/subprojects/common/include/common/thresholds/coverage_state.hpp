@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/util/quality.hpp"
+
 #include <memory>
 
 // Forward declarations
@@ -12,15 +13,13 @@ class SinglePartition;
 class BiPartition;
 class AbstractPrediction;
 
-
 /**
  * Defines an interface for all classes that allow to keep track of the examples that are covered by a rule.
  */
 class ICoverageState {
-
     public:
 
-        virtual ~ICoverageState() { };
+        virtual ~ICoverageState() {};
 
         /**
          * Creates and returns a deep copy of the coverage state.
@@ -84,5 +83,4 @@ class ICoverageState {
          */
         virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
                                            AbstractPrediction& head) const = 0;
-
 };

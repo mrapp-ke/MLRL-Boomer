@@ -6,21 +6,20 @@
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_csr.hpp"
 #include "common/macros.hpp"
+
 #include <functional>
 
 // Forward declarations
 class EmptyBody;
 class ConjunctiveBody;
 
-
 /**
  * Defines an interface for all classes that represent the body of a rule.
  */
 class MLRLCOMMON_API IBody {
-
     public:
 
-        virtual ~IBody() { };
+        virtual ~IBody() {};
 
         /**
          * A visitor function for handling objects of the type `EmptyBody`.
@@ -74,5 +73,4 @@ class MLRLCOMMON_API IBody {
          * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
          */
         virtual void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const = 0;
-
 };

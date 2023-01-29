@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "common/prediction/predictor_binary.hpp"
 #include "common/multi_threading/multi_threading.hpp"
-
+#include "common/prediction/predictor_binary.hpp"
 
 namespace seco {
 
@@ -16,7 +15,6 @@ namespace seco {
      * individually, if none of the previous rules has already predicted for a particular example and label.
      */
     class LabelWiseBinaryPredictorConfig final : public IBinaryPredictorConfig {
-
         private:
 
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
@@ -34,10 +32,9 @@ namespace seco {
                                                                             uint32 numLabels) const override;
 
             std::unique_ptr<ISparseBinaryPredictorFactory> createSparsePredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             bool isLabelVectorSetNeeded() const override;
-
     };
 
 }

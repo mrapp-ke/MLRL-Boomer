@@ -3,10 +3,9 @@
  */
 #pragma once
 
-#include "common/prediction/predictor_binary.hpp"
-#include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
-
+#include "common/multi_threading/multi_threading.hpp"
+#include "common/prediction/predictor_binary.hpp"
 
 namespace boosting {
 
@@ -17,7 +16,6 @@ namespace boosting {
      * (1 if a score exceeds the threshold, i.e., the label is relevant, 0 otherwise).
      */
     class LabelWiseBinaryPredictorConfig final : public IBinaryPredictorConfig {
-
         private:
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
@@ -46,13 +44,12 @@ namespace boosting {
              * @see `IBinaryPredictorFactory::createSparsePredictorFactory`
              */
             std::unique_ptr<ISparseBinaryPredictorFactory> createSparsePredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`
              */
             bool isLabelVectorSetNeeded() const override;
-
     };
 
 }

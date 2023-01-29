@@ -5,7 +5,6 @@
 
 #include "common/data/view_vector.hpp"
 
-
 /**
  * An one-dimensional vector that provides random access to a fixed number of elements stored in a C-contiguous array.
  *
@@ -13,7 +12,6 @@
  */
 template<typename T>
 class MLRLCOMMON_API DenseVector : public VectorView<T> {
-
     private:
 
         uint32 maxCapacity_;
@@ -40,5 +38,4 @@ class MLRLCOMMON_API DenseVector : public VectorView<T> {
          * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
          */
         void setNumElements(uint32 numElements, bool freeMemory);
-
 };

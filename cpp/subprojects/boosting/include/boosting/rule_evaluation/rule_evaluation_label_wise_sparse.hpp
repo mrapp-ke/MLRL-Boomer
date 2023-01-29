@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 #include "boosting/data/statistic_vector_label_wise_sparse.hpp"
-
+#include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 
 namespace boosting {
 
@@ -15,10 +14,9 @@ namespace boosting {
      * loss function that is applied label-wise and are stored using a sparse data structure.
      */
     class ISparseLabelWiseRuleEvaluationFactory : public ILabelWiseRuleEvaluationFactory {
-
         public:
 
-            virtual ~ISparseLabelWiseRuleEvaluationFactory() override { };
+            virtual ~ISparseLabelWiseRuleEvaluationFactory() override {};
 
             // Keep "create" functions from the parent class rather than hiding them
             using ILabelWiseRuleEvaluationFactory::create;
@@ -36,8 +34,7 @@ namespace boosting {
              * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
             virtual std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
-                const SparseLabelWiseStatisticVector& statisticVector,
-                const CompleteIndexVector& indexVector) const = 0;
+              const SparseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const = 0;
 
             /**
              * Creates a new instance of the class `IRuleEvaluation` that allows to calculate the predictions of rules
@@ -52,8 +49,7 @@ namespace boosting {
              * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
             virtual std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
-                const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const = 0;
-
+              const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const = 0;
     };
 
 }

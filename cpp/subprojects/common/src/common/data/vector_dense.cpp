@@ -1,21 +1,17 @@
 #include "common/data/vector_dense.hpp"
+
 #include "common/data/indexed_value.hpp"
 #include "common/data/tuple.hpp"
+
 #include <cstdlib>
 
-
 template<typename T>
-DenseVector<T>::DenseVector(uint32 numElements)
-    : DenseVector<T>(numElements, false) {
-
-}
+DenseVector<T>::DenseVector(uint32 numElements) : DenseVector<T>(numElements, false) {}
 
 template<typename T>
 DenseVector<T>::DenseVector(uint32 numElements, bool init)
     : VectorView<T>(numElements, (T*) (init ? calloc(numElements, sizeof(T)) : malloc(numElements * sizeof(T)))),
-      maxCapacity_(numElements) {
-
-}
+      maxCapacity_(numElements) {}
 
 template<typename T>
 DenseVector<T>::~DenseVector() {

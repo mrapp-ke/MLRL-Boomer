@@ -7,7 +7,6 @@
 #include "seco/heuristics/heuristic.hpp"
 #include "seco/macros.hpp"
 
-
 namespace seco {
 
     /**
@@ -17,10 +16,9 @@ namespace seco {
      * equivalent to those of "WRA".
      */
     class MLRLSECO_API IMEstimateConfig {
-
         public:
 
-            virtual ~IMEstimateConfig() { };
+            virtual ~IMEstimateConfig() {};
 
             /**
              * Returns the value of the "m" parameter.
@@ -37,7 +35,6 @@ namespace seco {
              *          heuristic
              */
             virtual IMEstimateConfig& setM(float64 m) = 0;
-
     };
 
     /**
@@ -45,8 +42,8 @@ namespace seco {
      * parameter controls the trade-off between both heuristics. If m = 0, this heuristic is equivalent to "Precision".
      * As m approaches infinity, the isometrics of this heuristic become equivalent to those of "WRA".
      */
-    class MEstimateConfig final : public IHeuristicConfig, public IMEstimateConfig {
-
+    class MEstimateConfig final : public IHeuristicConfig,
+                                  public IMEstimateConfig {
         private:
 
             float64 m_;
@@ -60,7 +57,6 @@ namespace seco {
             IMEstimateConfig& setM(float64 m) override;
 
             std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const override;
-
     };
 
 }

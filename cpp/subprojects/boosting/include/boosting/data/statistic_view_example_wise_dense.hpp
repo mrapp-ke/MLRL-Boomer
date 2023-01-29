@@ -5,7 +5,6 @@
 
 #include "boosting/iterator/diagonal_iterator.hpp"
 
-
 namespace boosting {
 
     /**
@@ -13,7 +12,6 @@ namespace boosting {
      * non-decomposable loss function and are stored in pre-allocated C-contiguous arrays.
      */
     class DenseExampleWiseStatisticConstView {
-
         protected:
 
             /**
@@ -133,7 +131,6 @@ namespace boosting {
              * @return The number of columns
              */
             uint32 getNumCols() const;
-
     };
 
     /**
@@ -141,7 +138,6 @@ namespace boosting {
      * non-decomposable loss function and are stored in pre-allocated C-contiguous arrays.
      */
     class DenseExampleWiseStatisticView : public DenseExampleWiseStatisticConstView {
-
         public:
 
             /**
@@ -216,7 +212,6 @@ namespace boosting {
              */
             void addToRow(uint32 row, gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
                           hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight);
-
     };
 
 }

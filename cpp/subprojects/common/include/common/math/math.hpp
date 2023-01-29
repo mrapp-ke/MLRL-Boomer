@@ -4,8 +4,8 @@
 #pragma once
 
 #include "common/data/types.hpp"
-#include <cmath>
 
+#include <cmath>
 
 /**
  * Returns the result of the floating point division `numerator / denominator` or 0, if a division by zero occurs.

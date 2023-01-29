@@ -1,13 +1,10 @@
 #include "boosting/data/statistic_view_label_wise_sparse.hpp"
 
-
 namespace boosting {
 
     SparseLabelWiseStatisticConstView::SparseLabelWiseStatisticConstView(uint32 numCols,
                                                                          SparseSetMatrix<Tuple<float64>>* statistics)
-        : numCols_(numCols), statistics_(statistics) {
-
-    }
+        : numCols_(numCols), statistics_(statistics) {}
 
     SparseLabelWiseStatisticConstView::const_iterator SparseLabelWiseStatisticConstView::row_cbegin(uint32 row) const {
         return statistics_->row_cbegin(row);
@@ -31,9 +28,7 @@ namespace boosting {
 
     SparseLabelWiseStatisticView::SparseLabelWiseStatisticView(uint32 numCols,
                                                                SparseSetMatrix<Tuple<float64>>* statistics)
-        : SparseLabelWiseStatisticConstView(numCols, statistics) {
-
-    }
+        : SparseLabelWiseStatisticConstView(numCols, statistics) {}
 
     SparseLabelWiseStatisticView::row SparseLabelWiseStatisticView::operator[](uint32 row) {
         return (*statistics_)[row];

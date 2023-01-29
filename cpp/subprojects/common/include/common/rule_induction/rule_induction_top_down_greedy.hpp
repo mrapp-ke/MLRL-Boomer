@@ -3,20 +3,18 @@
  */
 #pragma once
 
-#include "common/rule_induction/rule_induction.hpp"
-#include "common/multi_threading/multi_threading.hpp"
 #include "common/macros.hpp"
-
+#include "common/multi_threading/multi_threading.hpp"
+#include "common/rule_induction/rule_induction.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules that
  * uses a greedy top-down search.
  */
 class MLRLCOMMON_API IGreedyTopDownRuleInductionConfig {
-
     public:
 
-        virtual ~IGreedyTopDownRuleInductionConfig() { };
+        virtual ~IGreedyTopDownRuleInductionConfig() {};
 
         /**
          * Returns the minimum number of training examples that must be covered by a rule.
@@ -110,14 +108,13 @@ class MLRLCOMMON_API IGreedyTopDownRuleInductionConfig {
          *                                  individual rules
          */
         virtual IGreedyTopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) = 0;
-
 };
 
 /**
  * Allows to configure an algorithm for the induction of individual rules that uses a greedy top-down search.
  */
-class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig, public IGreedyTopDownRuleInductionConfig {
-
+class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig,
+                                               public IGreedyTopDownRuleInductionConfig {
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -167,6 +164,5 @@ class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig, publ
         IGreedyTopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) override;
 
         std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(
-            const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
-
+          const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
 };

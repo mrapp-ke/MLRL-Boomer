@@ -1,11 +1,11 @@
 #include "common/binning/feature_binning_equal_frequency.hpp"
+
 #include "common/binning/bin_index_vector_dense.hpp"
 #include "common/binning/bin_index_vector_dok.hpp"
 #include "common/math/math.hpp"
 #include "common/thresholds/thresholds_approximate.hpp"
 #include "common/util/validation.hpp"
 #include "feature_binning_nominal.hpp"
-
 
 static inline uint32 getNumBins(FeatureVector& featureVector, bool sparse, float32 binRatio, uint32 minBins,
                                 uint32 maxBins) {
@@ -46,7 +46,6 @@ static inline uint32 getNumBins(FeatureVector& featureVector, bool sparse, float
  * contains approximately the same number of values.
  */
 class EqualFrequencyFeatureBinning final : public IFeatureBinning {
-
     private:
 
         float32 binRatio_;
@@ -65,9 +64,7 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
          *                  number of bins should not be restricted
          */
         EqualFrequencyFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
-            : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-
-        }
+            : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {}
 
         Result createBins(FeatureVector& featureVector, uint32 numExamples) const override {
             Result result;
@@ -155,7 +152,6 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 
             return result;
         }
-
 };
 
 /**
@@ -163,7 +159,6 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
  * bin contains approximately the same number of values.
  */
 class EqualFrequencyFeatureBinningFactory final : public IFeatureBinningFactory {
-
     private:
 
         float32 binRatio_;
@@ -182,21 +177,16 @@ class EqualFrequencyFeatureBinningFactory final : public IFeatureBinningFactory 
          *                  number of bins should not be restricted
          */
         EqualFrequencyFeatureBinningFactory(float32 binRatio, uint32 minBins, uint32 maxBins)
-            : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {
-
-        }
+            : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {}
 
         std::unique_ptr<IFeatureBinning> create() const override {
             return std::make_unique<EqualFrequencyFeatureBinning>(binRatio_, minBins_, maxBins_);
         }
-
 };
 
 EqualFrequencyFeatureBinningConfig::EqualFrequencyFeatureBinningConfig(
-        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : binRatio_(0.33f), minBins_(2), maxBins_(0), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-}
+  const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+    : binRatio_(0.33f), minBins_(2), maxBins_(0), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
 float32 EqualFrequencyFeatureBinningConfig::getBinRatio() const {
     return binRatio_;
@@ -224,17 +214,17 @@ uint32 EqualFrequencyFeatureBinningConfig::getMaxBins() const {
 }
 
 IEqualFrequencyFeatureBinningConfig& EqualFrequencyFeatureBinningConfig::setMaxBins(uint32 maxBins) {
-    if (maxBins != 0) { assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_); }
+    if (maxBins != 0) assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_);
     maxBins_ = maxBins;
     return *this;
 }
 
 std::unique_ptr<IThresholdsFactory> EqualFrequencyFeatureBinningConfig::createThresholdsFactory(
-        const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+  const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
     std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr =
-        std::make_unique<EqualFrequencyFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
+      std::make_unique<EqualFrequencyFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
     std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr =
-        std::make_unique<NominalFeatureBinningFactory>();
+      std::make_unique<NominalFeatureBinningFactory>();
     uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
     return std::make_unique<ApproximateThresholdsFactory>(std::move(numericalFeatureBinningFactoryPtr),
                                                           std::move(nominalFeatureBinningFactoryPtr), numThreads);

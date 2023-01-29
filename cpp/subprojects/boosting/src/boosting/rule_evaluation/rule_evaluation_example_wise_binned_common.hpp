@@ -8,7 +8,6 @@
 #include "common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "rule_evaluation_example_wise_complete_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -57,10 +56,10 @@ namespace boosting {
      */
     template<typename BinIndexIterator>
     static inline void aggregateGradientsAndHessians(
-            DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
-            DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator, uint32 numElements,
-            BinIndexIterator binIndexIterator, const uint32* binIndices, float64* gradients, float64* hessians,
-            uint32 maxBins) {
+      DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
+      DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator, uint32 numElements,
+      BinIndexIterator binIndexIterator, const uint32* binIndices, float64* gradients, float64* hessians,
+      uint32 maxBins) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 originalBinIndex = binIndexIterator[i];
 
@@ -72,8 +71,8 @@ namespace boosting {
                 // corresponding element of the aggregated gradient vector...
                 gradients[binIndex] += gradientIterator[i];
 
-                // Add the Hessian that corresponds to the `i`-th element on the diagonal of the original Hessian matrix to
-                // the corresponding element of the aggregated Hessian matrix...
+                // Add the Hessian that corresponds to the `i`-th element on the diagonal of the original Hessian matrix
+                // to the corresponding element of the aggregated Hessian matrix...
                 hessians[triangularNumber(binIndex + 1) - 1] += hessianIterator[triangularNumber(i + 1) - 1];
             }
         }
@@ -86,8 +85,8 @@ namespace boosting {
                     uint32 binIndex2 = binIndexIterator[j];
 
                     // Add the hessian at the `i`-th row and `j`-th column of the original Hessian matrix to the
-                    // corresponding element of the aggregated Hessian matrix, if the labels at indices `i` and `j` do not
-                    // belong to the same bin...
+                    // corresponding element of the aggregated Hessian matrix, if the labels at indices `i` and `j` do
+                    // not belong to the same bin...
                     if (binIndex2 != maxBins && binIndex != binIndex2) {
                         uint32 r, c;
 
@@ -183,9 +182,8 @@ namespace boosting {
      *                          be calculated
      */
     template<typename StatisticVector, typename IndexVector>
-    class AbstractExampleWiseBinnedRuleEvaluation :
-            public AbstractExampleWiseRuleEvaluation<StatisticVector, IndexVector> {
-
+    class AbstractExampleWiseBinnedRuleEvaluation
+        : public AbstractExampleWiseRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
             uint32 maxBins_;
@@ -279,9 +277,9 @@ namespace boosting {
              */
             const IScoreVector& calculateScores(DenseExampleWiseStatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
-                uint32 numCriteria = this->calculateLabelWiseCriteria(statisticVector, criteria_,
-                                                                      scoreVector_.getNumElements(),
-                                                                      l1RegularizationWeight_, l2RegularizationWeight_);
+                uint32 numCriteria =
+                  this->calculateLabelWiseCriteria(statisticVector, criteria_, scoreVector_.getNumElements(),
+                                                   l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
                 LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numCriteria);
@@ -294,7 +292,7 @@ namespace boosting {
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
                     typename DenseBinnedScoreVector<IndexVector>::index_binned_iterator binIndexIterator =
-                        scoreVector_.indices_binned_begin();
+                      scoreVector_.indices_binned_begin();
                     auto callback = [=](uint32 binIndex, uint32 labelIndex) {
                         numElementsPerBin_[binIndex] += 1;
                         binIndexIterator[labelIndex] = binIndex;
@@ -322,7 +320,7 @@ namespace boosting {
 
                     // Copy gradients to the vector of ordinates...
                     typename DenseBinnedScoreVector<IndexVector>::score_binned_iterator scoreIterator =
-                        scoreVector_.scores_binned_begin();
+                      scoreVector_.scores_binned_begin();
                     copyOrdinates(aggregatedGradients_, scoreIterator, numBins);
                     addL1RegularizationWeight(scoreIterator, numBins, numElementsPerBin_, l1RegularizationWeight_);
 
@@ -347,7 +345,6 @@ namespace boosting {
 
                 return scoreVector_;
             }
-
     };
 
     /**
@@ -359,18 +356,17 @@ namespace boosting {
      *                     calculated
      */
     template<typename IndexVector>
-    class DenseExampleWiseCompleteBinnedRuleEvaluation final :
-            public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
-
+    class DenseExampleWiseCompleteBinnedRuleEvaluation final
+        : public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
         protected:
 
             uint32 calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
                                               uint32 numCriteria, float64 l1RegularizationWeight,
                                               float64 l2RegularizationWeight) override {
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
-                    statisticVector.gradients_cbegin();
+                  statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
-                    statisticVector.hessians_diagonal_cbegin();
+                  statisticVector.hessians_diagonal_cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
                     criteria[i] = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i],
@@ -402,11 +398,8 @@ namespace boosting {
                                                          std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                          const Lapack& lapack)
                 : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(
-                      labelIndices, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
-                      std::move(binningPtr), blas, lapack) {
-
-            }
-
+                  labelIndices, true, maxBins, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr),
+                  blas, lapack) {}
     };
 
 }

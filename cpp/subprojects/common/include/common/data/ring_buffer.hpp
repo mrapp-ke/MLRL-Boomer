@@ -4,8 +4,8 @@
 #pragma once
 
 #include "common/data/types.hpp"
-#include <utility>
 
+#include <utility>
 
 /**
  * A ring buffer with fixed capacity.
@@ -14,7 +14,6 @@
  */
 template<typename T>
 class RingBuffer final {
-
     private:
 
         T* array_;
@@ -84,5 +83,4 @@ class RingBuffer final {
          *              it is undefined
          */
         std::pair<bool, T> push(T value);
-
 };

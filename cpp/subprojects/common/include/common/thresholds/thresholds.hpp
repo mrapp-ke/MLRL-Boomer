@@ -11,16 +11,14 @@
 #include "common/statistics/statistics_provider.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
-
 /**
  * Defines an interface for all classes that provide access to thresholds that may be used by the first condition of a
  * rule that currently has an empty body and therefore covers the entire instance space.
  */
 class IThresholds {
-
     public:
 
-        virtual ~IThresholds() { };
+        virtual ~IThresholds() {};
 
         /**
          * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
@@ -56,17 +54,15 @@ class IThresholds {
          * @return A reference to an object of type `IStatisticsProvider`
          */
         virtual IStatisticsProvider& getStatisticsProvider() const = 0;
-
 };
 
 /**
  * Defines an interface for all classes that allow to create instances of the type `IThresholds`.
  */
 class IThresholdsFactory {
-
     public:
 
-        virtual ~IThresholdsFactory() { };
+        virtual ~IThresholdsFactory() {};
 
         /**
          * Creates and returns a new object of type `IThresholds`.
@@ -82,5 +78,4 @@ class IThresholdsFactory {
         virtual std::unique_ptr<IThresholds> create(const IColumnWiseFeatureMatrix& featureMatrix,
                                                     const IFeatureInfo& featureInfo,
                                                     IStatisticsProvider& statisticsProvider) const = 0;
-
 };

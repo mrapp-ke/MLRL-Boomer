@@ -1,4 +1,5 @@
 #include "boosting/learner.hpp"
+
 #include "boosting/binning/label_binning_no.hpp"
 #include "boosting/losses/loss_label_wise_logistic.hpp"
 #include "boosting/model/rule_list_builder.hpp"
@@ -10,11 +11,9 @@
 #include "boosting/rule_evaluation/rule_compare_function.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
 
-
 namespace boosting {
 
-    AbstractBoostingRuleLearner::Config::Config()
-        : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION) {
+    AbstractBoostingRuleLearner::Config::Config() : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION) {
         this->useCompleteHeads();
         this->useDenseStatistics();
         this->useNoL1Regularization();
@@ -51,9 +50,8 @@ namespace boosting {
     }
 
     void AbstractBoostingRuleLearner::Config::useCompleteHeads() {
-        headConfigPtr_ = std::make_unique<CompleteHeadConfig>(
-            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
-            l2RegularizationConfigPtr_);
+        headConfigPtr_ = std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_,
+                                                              l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
     void AbstractBoostingRuleLearner::Config::useDenseStatistics() {
@@ -74,12 +72,12 @@ namespace boosting {
 
     void AbstractBoostingRuleLearner::Config::useNoLabelBinning() {
         labelBinningConfigPtr_ =
-            std::make_unique<NoLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
+          std::make_unique<NoLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseBinaryPredictor() {
         binaryPredictorConfigPtr_ =
-            std::make_unique<LabelWiseBinaryPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+          std::make_unique<LabelWiseBinaryPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseScorePredictor() {
@@ -88,7 +86,7 @@ namespace boosting {
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseProbabilityPredictor() {
         probabilityPredictorConfigPtr_ =
-            std::make_unique<LabelWiseProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+          std::make_unique<LabelWiseProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     AbstractBoostingRuleLearner::AbstractBoostingRuleLearner(IBoostingRuleLearner::IConfig& config,
@@ -96,12 +94,10 @@ namespace boosting {
                                                              Blas::DspmvFunction dspmvFunction,
                                                              Lapack::DsysvFunction dsysvFunction)
         : AbstractRuleLearner(config), config_(config), blas_(Blas(ddotFunction, dspmvFunction)),
-          lapack_(Lapack(dsysvFunction)) {
-
-    }
+          lapack_(Lapack(dsysvFunction)) {}
 
     std::unique_ptr<IStatisticsProviderFactory> AbstractBoostingRuleLearner::createStatisticsProviderFactory(
-            const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
+      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
         return config_.getStatisticsConfigPtr()->createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_,
                                                                                  lapack_);
     }

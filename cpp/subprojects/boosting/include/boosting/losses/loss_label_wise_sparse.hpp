@@ -3,10 +3,9 @@
  */
 #pragma once
 
-#include "boosting/losses/loss_label_wise.hpp"
 #include "boosting/data/statistic_view_label_wise_sparse.hpp"
+#include "boosting/losses/loss_label_wise.hpp"
 #include "common/measures/measure_evaluation_sparse.hpp"
-
 
 namespace boosting {
 
@@ -15,11 +14,11 @@ namespace boosting {
      * of sparse data structures. To meet this requirement, the gradients and Hessians that are computed by the loss
      * function should be zero, if the prediction for a label is correct.
      */
-    class ISparseLabelWiseLoss : virtual public ILabelWiseLoss, public ISparseEvaluationMeasure {
-
+    class ISparseLabelWiseLoss : virtual public ILabelWiseLoss,
+                                 public ISparseEvaluationMeasure {
         public:
 
-            virtual ~ISparseLabelWiseLoss() override { };
+            virtual ~ISparseLabelWiseLoss() override {};
 
             // Keep "updateLabelWiseStatistics" functions from the parent class rather than hiding them
             using ILabelWiseLoss::updateLabelWiseStatistics;
@@ -101,17 +100,16 @@ namespace boosting {
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    SparseLabelWiseStatisticView& statisticView) const = 0;
-
     };
 
     /**
      * Defines an interface for all factories that allow to create instances of the type `ISparseLabelWiseLoss`.
      */
-    class ISparseLabelWiseLossFactory : public ILabelWiseLossFactory, public ISparseEvaluationMeasureFactory {
-
+    class ISparseLabelWiseLossFactory : public ILabelWiseLossFactory,
+                                        public ISparseEvaluationMeasureFactory {
         public:
 
-            virtual ~ISparseLabelWiseLossFactory() override { };
+            virtual ~ISparseLabelWiseLossFactory() override {};
 
             /**
              * Creates and returns a new object of type `ISparseLabelWiseLoss`.
@@ -133,7 +131,6 @@ namespace boosting {
             std::unique_ptr<ISparseEvaluationMeasure> createSparseEvaluationMeasure() const override final {
                 return this->createSparseLabelWiseLoss();
             }
-
     };
 
     /**
@@ -141,10 +138,9 @@ namespace boosting {
      * label-wise and is suited for the use of sparse data structures.
      */
     class ISparseLabelWiseLossConfig : public ILabelWiseLossConfig {
-
         public:
 
-            virtual ~ISparseLabelWiseLossConfig() override { };
+            virtual ~ISparseLabelWiseLossConfig() override {};
 
             /**
              * Creates and returns a new object of type `ISparseLabelWiseLossFactory` according to the specified
@@ -171,7 +167,6 @@ namespace boosting {
             bool isSparse() const override final {
                 return true;
             }
-
     };
 
 }

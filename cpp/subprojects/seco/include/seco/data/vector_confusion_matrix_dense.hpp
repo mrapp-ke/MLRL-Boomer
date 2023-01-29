@@ -8,14 +8,12 @@
 #include "seco/data/confusion_matrix.hpp"
 #include "seco/data/matrix_coverage_dense.hpp"
 
-
 namespace seco {
 
     /**
      * An one-dimensional vector that stores a fixed number of confusion matrices in a C-contiguous array.
      */
     class DenseConfusionMatrixVector final {
-
         private:
 
             ConfusionMatrix* array_;
@@ -277,7 +275,6 @@ namespace seco {
              */
             void difference(const_iterator firstBegin, const_iterator firstEnd, const PartialIndexVector& firstIndices,
                             const_iterator secondBegin, const_iterator secondEnd);
-
     };
 
 }

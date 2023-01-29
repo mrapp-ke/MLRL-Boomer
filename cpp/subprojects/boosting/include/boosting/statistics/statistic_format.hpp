@@ -3,12 +3,11 @@
  */
 #pragma once
 
+#include "boosting/math/blas.hpp"
+#include "boosting/math/lapack.hpp"
 #include "common/input/feature_matrix.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/statistics/statistics_provider.hpp"
-#include "boosting/math/blas.hpp"
-#include "boosting/math/lapack.hpp"
-
 
 namespace boosting {
 
@@ -31,10 +30,9 @@ namespace boosting {
      * about the labels of the training examples.
      */
     class IStatisticsConfig {
-
         public:
 
-            virtual ~IStatisticsConfig() { };
+            virtual ~IStatisticsConfig() {};
 
             /**
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
@@ -50,8 +48,8 @@ namespace boosting {
              *                      created
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-                const Lapack& lapack) const = 0;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+              const Lapack& lapack) const = 0;
 
             /**
              * Returns whether a dense format is used for storing statistics about the labels of the training examples
@@ -68,7 +66,6 @@ namespace boosting {
              * @return True, if a sparse format is used, false otherwise
              */
             virtual bool isSparse() const = 0;
-
     };
 
 };

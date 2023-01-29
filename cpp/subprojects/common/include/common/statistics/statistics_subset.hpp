@@ -5,16 +5,14 @@
 
 #include "common/rule_evaluation/score_vector.hpp"
 
-
 /**
  * Defines an interface for all classes that provide access to a subset of the statistics that are stored by an instance
  * of the class `IStatistics` and allows to calculate the scores to be predicted by rules that cover such a subset.
  */
 class IStatisticsSubset {
-
     public:
 
-        virtual ~IStatisticsSubset() { };
+        virtual ~IStatisticsSubset() {};
 
         /**
          * Returns whether the statistics at a specific index have a non-zero weight or not.
@@ -51,5 +49,4 @@ class IStatisticsSubset {
          *         for each considered label, as well as a numerical score that assesses their overall quality
          */
         virtual const IScoreVector& calculateScores() = 0;
-
 };

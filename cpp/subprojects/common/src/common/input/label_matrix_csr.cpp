@@ -1,21 +1,17 @@
 #include "common/input/label_matrix_csr.hpp"
-#include "common/statistics/statistics_provider.hpp"
-#include "common/sampling/partition_sampling.hpp"
-#include "common/sampling/instance_sampling.hpp"
+
 #include "common/data/arrays.hpp"
 #include "common/math/math.hpp"
-
+#include "common/sampling/instance_sampling.hpp"
+#include "common/sampling/partition_sampling.hpp"
+#include "common/statistics/statistics_provider.hpp"
 
 CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
     : VectorConstView<const uint32>(labelMatrix.row_indices_cend(row) - labelMatrix.row_indices_cbegin(row),
-                                    labelMatrix.row_indices_cbegin(row)) {
-
-}
+                                    labelMatrix.row_indices_cbegin(row)) {}
 
 CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
-    : BinaryCsrConstView(numRows, numCols, rowIndices, colIndices) {
-
-}
+    : BinaryCsrConstView(numRows, numCols, rowIndices, colIndices) {}
 
 bool CsrLabelMatrix::isSparse() const {
     return true;
@@ -50,12 +46,12 @@ std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const
 }
 
 std::unique_ptr<IStatisticsProvider> CsrLabelMatrix::createStatisticsProvider(
-        const IStatisticsProviderFactory& factory) const {
+  const IStatisticsProviderFactory& factory) const {
     return factory.create(*this);
 }
 
 std::unique_ptr<IPartitionSampling> CsrLabelMatrix::createPartitionSampling(
-        const IPartitionSamplingFactory& factory) const {
+  const IPartitionSamplingFactory& factory) const {
     return factory.create(*this);
 }
 

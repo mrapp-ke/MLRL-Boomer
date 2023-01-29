@@ -4,9 +4,8 @@
  */
 #pragma once
 
-#include "seco/statistics/statistics.hpp"
 #include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
-
+#include "seco/statistics/statistics.hpp"
 
 namespace seco {
 
@@ -19,10 +18,9 @@ namespace seco {
      */
     template<typename RuleEvaluationFactory>
     class ILabelWiseStatistics : public ICoverageStatistics {
-
         public:
 
-            virtual ~ILabelWiseStatistics() override { };
+            virtual ~ILabelWiseStatistics() override {};
 
             /**
              * Sets the factory that allows to create instances of the class that is used for calculating the
@@ -31,7 +29,6 @@ namespace seco {
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` to be set
              */
             virtual void setRuleEvaluationFactory(const RuleEvaluationFactory& ruleEvaluationFactory) = 0;
-
     };
 
 }

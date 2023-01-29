@@ -1,14 +1,12 @@
 #include "common/rule_refinement/prediction_complete.hpp"
+
+#include "common/data/arrays.hpp"
+#include "common/model/head_complete.hpp"
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/statistics/statistics.hpp"
-#include "common/model/head_complete.hpp"
-#include "common/data/arrays.hpp"
-
 
 CompletePrediction::CompletePrediction(uint32 numElements)
-    : AbstractEvaluatedPrediction(numElements), indexVector_(CompleteIndexVector(numElements)) {
-
-}
+    : AbstractEvaluatedPrediction(numElements), indexVector_(CompleteIndexVector(numElements)) {}
 
 CompletePrediction::index_const_iterator CompletePrediction::indices_cbegin() const {
     return indexVector_.cbegin();
@@ -37,22 +35,22 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(co
 }
 
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
-        const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const {
+  const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
-        const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
+  const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
-        const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const {
+  const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
-        const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const {
+  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
@@ -69,9 +67,7 @@ void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) 
     statistics.revertPrediction(statisticIndex, *this);
 }
 
-void CompletePrediction::sort() {
-
-}
+void CompletePrediction::sort() {}
 
 std::unique_ptr<IHead> CompletePrediction::createHead() const {
     uint32 numElements = this->getNumElements();

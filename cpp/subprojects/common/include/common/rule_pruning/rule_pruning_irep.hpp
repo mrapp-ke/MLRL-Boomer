@@ -5,13 +5,11 @@
 
 #include "common/rule_pruning/rule_pruning.hpp"
 
-
 /**
  * Allows to configure a strategy for pruning individual rules that prunes rules by following the principles of
  * "incremental reduced error pruning" (IREP).
  */
 class IrepConfig final : public IRulePruningConfig {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -25,5 +23,4 @@ class IrepConfig final : public IRulePruningConfig {
         IrepConfig(RuleCompareFunction compareFunction);
 
         std::unique_ptr<IRulePruningFactory> createRulePruningFactory() const override;
-
 };

@@ -3,10 +3,9 @@
  */
 #pragma once
 
-#include "common/prediction/predictor_probability.hpp"
-#include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
-
+#include "common/multi_threading/multi_threading.hpp"
+#include "common/prediction/predictor_probability.hpp"
 
 namespace boosting {
 
@@ -19,7 +18,6 @@ namespace boosting {
      * total sum of all distances.
      */
     class MarginalizedProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
-
         private:
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
@@ -36,20 +34,19 @@ namespace boosting {
              *                                  query examples in parallel
              */
             MarginalizedProbabilityPredictorConfig(
-                const std::unique_ptr<ILossConfig>& lossConfigPtr,
-                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+              const std::unique_ptr<ILossConfig>& lossConfigPtr,
+              const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
             /**
              * @see `IProbabilityPredictorConfig::createPredictorFactory`
              */
             std::unique_ptr<IProbabilityPredictorFactory> createPredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`
              */
             bool isLabelVectorSetNeeded() const override;
-
     };
 
 }

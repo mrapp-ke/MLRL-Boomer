@@ -1,13 +1,11 @@
 #include "seco/data/matrix_coverage_dense.hpp"
-#include "common/iterator/binary_forward_iterator.hpp"
 
+#include "common/iterator/binary_forward_iterator.hpp"
 
 namespace seco {
 
     DenseCoverageMatrix::DenseCoverageMatrix(uint32 numRows, uint32 numCols, float64 sumOfUncoveredWeights)
-        : DenseMatrix<uint32>(numRows, numCols, true), sumOfUncoveredWeights_(sumOfUncoveredWeights) {
-
-    }
+        : DenseMatrix<uint32>(numRows, numCols, true), sumOfUncoveredWeights_(sumOfUncoveredWeights) {}
 
     float64 DenseCoverageMatrix::getSumOfUncoveredWeights() const {
         return sumOfUncoveredWeights_;
@@ -20,8 +18,8 @@ namespace seco {
                                                CompleteIndexVector::const_iterator indicesEnd) {
         uint32 numCols = this->getNumCols();
         value_iterator coverageIterator = this->row_values_begin(row);
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                             majorityLabelIndices.cend());
+        auto majorityIterator =
+          make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
 
         for (uint32 i = 0; i < numCols; i++) {
             bool predictedLabel = predictionBegin[i];
@@ -48,8 +46,8 @@ namespace seco {
                                                PartialIndexVector::const_iterator indicesEnd) {
         uint32 numPredictions = indicesEnd - indicesBegin;
         value_iterator coverageIterator = this->row_values_begin(row);
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                             majorityLabelIndices.cend());
+        auto majorityIterator =
+          make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
         uint32 previousIndex = 0;
 
         for (uint32 i = 0; i < numPredictions; i++) {
@@ -79,8 +77,8 @@ namespace seco {
                                                CompleteIndexVector::const_iterator indicesEnd) {
         uint32 numCols = this->getNumCols();
         value_iterator coverageIterator = this->row_values_begin(row);
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                             majorityLabelIndices.cend());
+        auto majorityIterator =
+          make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
 
         for (uint32 i = 0; i < numCols; i++) {
             bool predictedLabel = predictionBegin[i];
@@ -107,8 +105,8 @@ namespace seco {
                                                PartialIndexVector::const_iterator indicesEnd) {
         uint32 numPredictions = indicesEnd - indicesBegin;
         value_iterator coverageIterator = this->row_values_begin(row);
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                             majorityLabelIndices.cend());
+        auto majorityIterator =
+          make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
         uint32 previousIndex = 0;
 
         for (uint32 i = 0; i < numPredictions; i++) {

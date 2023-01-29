@@ -1,11 +1,9 @@
 #include "common/post_optimization/post_optimization_phase_list.hpp"
 
-
 /**
  * An implementation of the class `IPostOptimization` that carries out several post-optimization phases.
  */
 class PostOptimizationPhaseList final : public IPostOptimization {
-
     private:
 
         std::unique_ptr<IntermediateModelBuilder> intermediateModelBuilderPtr_;
@@ -21,15 +19,15 @@ class PostOptimizationPhaseList final : public IPostOptimization {
          *                                          create instances of the optimization phases to be carried out
          */
         PostOptimizationPhaseList(
-                std::unique_ptr<IModelBuilder> modelBuilderPtr,
-                const std::vector<std::unique_ptr<IPostOptimizationPhaseFactory>>& postOptimizationPhaseFactories)
+          std::unique_ptr<IModelBuilder> modelBuilderPtr,
+          const std::vector<std::unique_ptr<IPostOptimizationPhaseFactory>>& postOptimizationPhaseFactories)
             : intermediateModelBuilderPtr_(std::make_unique<IntermediateModelBuilder>(std::move(modelBuilderPtr))) {
             postOptimizationPhases_.reserve(postOptimizationPhaseFactories.size());
 
             for (auto it = postOptimizationPhaseFactories.cbegin(); it != postOptimizationPhaseFactories.cend(); it++) {
                 const std::unique_ptr<IPostOptimizationPhaseFactory>& postOptimizationPhaseFactoryPtr = *it;
                 std::unique_ptr<IPostOptimizationPhase> postOptimizationPhasePtr =
-                    postOptimizationPhaseFactoryPtr->create(*intermediateModelBuilderPtr_);
+                  postOptimizationPhaseFactoryPtr->create(*intermediateModelBuilderPtr_);
                 postOptimizationPhases_.push_back(std::move(postOptimizationPhasePtr));
             }
         }
@@ -49,7 +47,6 @@ class PostOptimizationPhaseList final : public IPostOptimization {
                                                         rng);
             }
         }
-
 };
 
 /**
@@ -57,7 +54,6 @@ class PostOptimizationPhaseList final : public IPostOptimization {
  * learned rule-based model.
  */
 class NoPostOptimization final : public IPostOptimization {
-
     private:
 
         std::unique_ptr<IModelBuilder> modelBuilderPtr_;
@@ -69,9 +65,7 @@ class NoPostOptimization final : public IPostOptimization {
          *                        the model
          */
         NoPostOptimization(std::unique_ptr<IModelBuilder> modelBuilderPtr)
-            : modelBuilderPtr_(std::move(modelBuilderPtr)) {
-
-        }
+            : modelBuilderPtr_(std::move(modelBuilderPtr)) {}
 
         IModelBuilder& getModelBuilder() const override {
             return *modelBuilderPtr_;
@@ -83,16 +77,15 @@ class NoPostOptimization final : public IPostOptimization {
                            const IPostProcessor& postProcessor, RNG& rng) const override {
             return;
         }
-
 };
 
 void PostOptimizationPhaseListFactory::addPostOptimizationPhaseFactory(
-        std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactoryPtr) {
+  std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactoryPtr) {
     postOptimizationPhaseFactories_.push_back(std::move(postOptimizationPhaseFactoryPtr));
 }
 
 std::unique_ptr<IPostOptimization> PostOptimizationPhaseListFactory::create(
-        const IModelBuilderFactory& modelBuilderFactory) const {
+  const IModelBuilderFactory& modelBuilderFactory) const {
     std::unique_ptr<IModelBuilder> modelBuilderPtr = modelBuilderFactory.create();
 
     if (postOptimizationPhaseFactories_.empty()) {

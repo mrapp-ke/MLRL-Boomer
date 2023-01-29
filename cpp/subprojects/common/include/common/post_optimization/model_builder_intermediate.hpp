@@ -4,8 +4,8 @@
 #pragma once
 
 #include "common/model/model_builder.hpp"
-#include <vector>
 
+#include <vector>
 
 /**
  * An implementation of the class `IModelBuilder` that stores intermediate representations of rules, which can still be
@@ -13,13 +13,13 @@
  * final model using another `IModelBuilder`.
  */
 class IntermediateModelBuilder final : public IModelBuilder {
-
     public:
 
         /**
          * The type of a rule, which can still be modified.
          */
-        typedef std::pair<std::unique_ptr<ConditionList>, std::unique_ptr<AbstractEvaluatedPrediction>> IntermediateRule;
+        typedef std::pair<std::unique_ptr<ConditionList>, std::unique_ptr<AbstractEvaluatedPrediction>>
+          IntermediateRule;
 
     private:
 
@@ -85,5 +85,4 @@ class IntermediateModelBuilder final : public IModelBuilder {
                      std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override;
 
         std::unique_ptr<IRuleModel> buildModel() override;
-
 };

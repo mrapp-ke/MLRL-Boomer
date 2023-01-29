@@ -6,7 +6,6 @@
 
 #include "common/statistics/statistics.hpp"
 
-
 namespace seco {
 
     // Forward declarations
@@ -17,10 +16,9 @@ namespace seco {
      * computed based on a weight matrix and the ground truth labels of the training examples.
      */
     class ICoverageStatistics : public IStatistics {
-
         public:
 
-            virtual ~ICoverageStatistics() override { };
+            virtual ~ICoverageStatistics() override {};
 
             /**
              * Returns the sum of the weights of all labels that remain to be covered.
@@ -28,7 +26,6 @@ namespace seco {
              * @return The sum of the weights
              */
             virtual float64 getSumOfUncoveredWeights() const = 0;
-
     };
 
 }

@@ -8,8 +8,8 @@
 #include "common/input/feature_matrix_row_wise.hpp"
 #include "common/model/rule_list.hpp"
 #include "common/prediction/label_vector_set.hpp"
-#include <memory>
 
+#include <memory>
 
 /**
  * Defines an interface for all classes that allow to make prediction for given query examples.
@@ -18,10 +18,9 @@
  */
 template<typename PredictionMatrix>
 class IPredictor {
-
     public:
 
-        virtual ~IPredictor() { };
+        virtual ~IPredictor() {};
 
         /**
          * Obtains and returns predictions for all query examples.
@@ -29,7 +28,6 @@ class IPredictor {
          * @return An unique pointer to an object of template type `PredictionMatrix` that stores the predictions
          */
         virtual std::unique_ptr<PredictionMatrix> predict() const = 0;
-
 };
 
 /**
@@ -39,10 +37,9 @@ class IPredictor {
  */
 template<typename Predictor>
 class IPredictorFactory {
-
     public:
 
-        virtual ~IPredictorFactory() { };
+        virtual ~IPredictorFactory() {};
 
         /**
          * Creates and returns a new object of the template type `Predictor`.
@@ -75,7 +72,6 @@ class IPredictorFactory {
         virtual std::unique_ptr<Predictor> create(const CsrConstView<const float32>& featureMatrix,
                                                   const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                   uint32 numLabels) const = 0;
-
 };
 
 /**
@@ -85,10 +81,9 @@ class IPredictorFactory {
  */
 template<typename PredictorFactory>
 class IPredictorConfig {
-
     public:
 
-        virtual ~IPredictorConfig() { };
+        virtual ~IPredictorConfig() {};
 
         /**
          * Creates and returns a new object of type `IPredictorFactory` according to the specified configuration.
@@ -109,5 +104,4 @@ class IPredictorConfig {
          *         false otherwise
          */
         virtual bool isLabelVectorSetNeeded() const = 0;
-
 };

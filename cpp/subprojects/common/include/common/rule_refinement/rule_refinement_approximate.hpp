@@ -4,11 +4,10 @@
  */
 #pragma once
 
+#include "common/binning/threshold_vector.hpp"
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/rule_refinement/rule_refinement_callback.hpp"
-#include "common/binning/threshold_vector.hpp"
 #include "common/statistics/histogram.hpp"
-
 
 /**
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
@@ -20,7 +19,6 @@
  */
 template<typename IndexVector>
 class ApproximateRuleRefinement final : public IRuleRefinement {
-
     private:
 
         const IndexVector& labelIndices_;
@@ -53,5 +51,4 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
         void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) override;
 
         void findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) override;
-
 };

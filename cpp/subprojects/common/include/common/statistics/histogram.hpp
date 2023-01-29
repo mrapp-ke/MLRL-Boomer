@@ -5,16 +5,14 @@
 
 #include "common/statistics/statistics_weighted_immutable.hpp"
 
-
 /**
  * Defines an interface for all classes that provide access to statistics that are organized as a histogram, i.e., where
  * the statistics of multiple training examples are aggregated into the same bin.
  */
 class IHistogram : virtual public IImmutableWeightedStatistics {
-
     public:
 
-        virtual ~IHistogram() override { };
+        virtual ~IHistogram() override {};
 
         /**
          * Sets all statistics in the histogram to zero.
@@ -36,5 +34,4 @@ class IHistogram : virtual public IImmutableWeightedStatistics {
          * @param statisticIndex The index of the statistic
          */
         virtual void addToBin(uint32 statisticIndex) = 0;
-
 };

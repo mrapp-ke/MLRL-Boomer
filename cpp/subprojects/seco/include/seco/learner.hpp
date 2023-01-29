@@ -4,8 +4,8 @@
 #pragma once
 
 #ifdef _WIN32
-    #pragma warning( push )
-    #pragma warning( disable : 4250 )
+    #pragma warning(push)
+    #pragma warning(disable : 4250)
 #endif
 
 #include "common/learner.hpp"
@@ -20,14 +20,12 @@
 #include "seco/rule_evaluation/head_type_partial.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
 
-
 namespace seco {
 
     /**
      * Defines an interface for all rule learners that make use of the separate-and-conquer (SeCo) paradigm.
      */
     class MLRLSECO_API ISeCoRuleLearner : virtual public IRuleLearner {
-
         public:
 
             /**
@@ -35,8 +33,7 @@ namespace seco {
              * separate-and-conquer (SeCo) paradigm.
              */
             class IConfig : virtual public IRuleLearner::IConfig {
-
-                friend class AbstractSeCoRuleLearner;
+                    friend class AbstractSeCoRuleLearner;
 
                 protected:
 
@@ -50,7 +47,8 @@ namespace seco {
                      *         the sum of the weights of the uncovered labels is smaller or equal to a certain threshold
                      *         or a null pointer, if no such stopping criterion should be used
                      */
-                    virtual std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() = 0;
+                    virtual std::unique_ptr<CoverageStoppingCriterionConfig>&
+                      getCoverageStoppingCriterionConfigPtr() = 0;
 
                     /**
                      * Returns an unique pointer to the configuration of the rule heads that should be induced by the
@@ -89,7 +87,7 @@ namespace seco {
 
                 public:
 
-                    virtual ~IConfig() override { };
+                    virtual ~IConfig() override {};
 
                     /**
                      * Configures the rule learner to not use any stopping criterion that stops the induction of rules
@@ -126,10 +124,9 @@ namespace seco {
                      * label individually.
                      */
                     virtual void useLabelWiseBinaryPredictor() = 0;
-
             };
 
-            virtual ~ISeCoRuleLearner() override { };
+            virtual ~ISeCoRuleLearner() override {};
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion
@@ -137,10 +134,9 @@ namespace seco {
              * equal to a certain threshold.
              */
             class ICoverageStoppingCriterionMixin : virtual public ISeCoRuleLearner::IConfig {
-
                 public:
 
-                    virtual ~ICoverageStoppingCriterionMixin() { };
+                    virtual ~ICoverageStoppingCriterionMixin() {};
 
                     /**
                      * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon
@@ -151,14 +147,13 @@ namespace seco {
                      */
                     virtual ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion() {
                         std::unique_ptr<CoverageStoppingCriterionConfig>& coverageStoppingCriterionConfigPtr =
-                            this->getCoverageStoppingCriterionConfigPtr();
+                          this->getCoverageStoppingCriterionConfigPtr();
                         std::unique_ptr<CoverageStoppingCriterionConfig> ptr =
-                            std::make_unique<CoverageStoppingCriterionConfig>();
+                          std::make_unique<CoverageStoppingCriterionConfig>();
                         ICoverageStoppingCriterionConfig& ref = *ptr;
                         coverageStoppingCriterionConfigPtr = std::move(ptr);
                         return ref;
                     }
-
             };
 
             /**
@@ -166,10 +161,9 @@ namespace seco {
              * heads.
              */
             class IPartialHeadMixin : virtual public ISeCoRuleLearner::IConfig {
-
                 public:
 
-                    virtual ~IPartialHeadMixin() { };
+                    virtual ~IPartialHeadMixin() {};
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a subset of the
@@ -177,9 +171,9 @@ namespace seco {
                      */
                     virtual void usePartialHeads() {
                         std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                        headConfigPtr = std::make_unique<PartialHeadConfig>(
-                            this->getHeuristicConfigPtr(), this->getPruningHeuristicConfigPtr(),
-                            this->getLiftFunctionConfigPtr());
+                        headConfigPtr = std::make_unique<PartialHeadConfig>(this->getHeuristicConfigPtr(),
+                                                                            this->getPruningHeuristicConfigPtr(),
+                                                                            this->getLiftFunctionConfigPtr());
                     }
 
                     /**
@@ -211,7 +205,6 @@ namespace seco {
                         liftFunctionConfigPtr = std::move(ptr);
                         return ref;
                     }
-
             };
 
             /**
@@ -219,10 +212,9 @@ namespace seco {
              * heuristic for learning or pruning rules.
              */
             class IAccuracyMixin : virtual public ISeCoRuleLearner::IConfig {
-
                 public:
 
-                    virtual ~IAccuracyMixin() { };
+                    virtual ~IAccuracyMixin() {};
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
@@ -237,10 +229,9 @@ namespace seco {
                      */
                     virtual void useAccuracyPruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
-                            this->getPruningHeuristicConfigPtr();
+                          this->getPruningHeuristicConfigPtr();
                         pruningHeuristicConfigPtr = std::make_unique<AccuracyConfig>();
                     }
-
             };
 
             /**
@@ -248,10 +239,9 @@ namespace seco {
              * heuristic for learning or pruning rules.
              */
             class IFMeasureMixin : virtual public ISeCoRuleLearner::IConfig {
-
                 public:
 
-                    virtual ~IFMeasureMixin() { };
+                    virtual ~IFMeasureMixin() {};
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for learning rules.
@@ -275,13 +265,12 @@ namespace seco {
                      */
                     virtual IFMeasureConfig& useFMeasurePruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
-                            this->getPruningHeuristicConfigPtr();
+                          this->getPruningHeuristicConfigPtr();
                         std::unique_ptr<FMeasureConfig> ptr = std::make_unique<FMeasureConfig>();
                         IFMeasureConfig& ref = *ptr;
                         pruningHeuristicConfigPtr = std::move(ptr);
                         return ref;
                     }
-
             };
 
             /**
@@ -289,10 +278,9 @@ namespace seco {
              * heuristic for learning or pruning rules.
              */
             class IMEstimateMixin : virtual public ISeCoRuleLearner::IConfig {
-
                 public:
 
-                    virtual ~IMEstimateMixin() { };
+                    virtual ~IMEstimateMixin() {};
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
@@ -316,13 +304,12 @@ namespace seco {
                      */
                     virtual IMEstimateConfig& useMEstimatePruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
-                            this->getPruningHeuristicConfigPtr();
+                          this->getPruningHeuristicConfigPtr();
                         std::unique_ptr<MEstimateConfig> ptr = std::make_unique<MEstimateConfig>();
                         IMEstimateConfig& ref = *ptr;
                         pruningHeuristicConfigPtr = std::move(ptr);
                         return ref;
                     }
-
             };
 
             /**
@@ -330,10 +317,9 @@ namespace seco {
              * heuristic for learning or pruning rules.
              */
             class ILaplaceMixin : virtual public ISeCoRuleLearner::IConfig {
-
                 public:
 
-                    virtual ~ILaplaceMixin() { };
+                    virtual ~ILaplaceMixin() {};
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for learning rules.
@@ -348,10 +334,9 @@ namespace seco {
                      */
                     virtual void useLaplacePruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
-                            this->getPruningHeuristicConfigPtr();
+                          this->getPruningHeuristicConfigPtr();
                         pruningHeuristicConfigPtr = std::make_unique<LaplaceConfig>();
                     }
-
             };
 
             /**
@@ -359,10 +344,9 @@ namespace seco {
              * for learning or pruning rules.
              */
             class IRecallMixin : virtual public ISeCoRuleLearner::IConfig {
-
                 public:
 
-                    virtual ~IRecallMixin() { };
+                    virtual ~IRecallMixin() {};
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for learning rules.
@@ -377,10 +361,9 @@ namespace seco {
                      */
                     virtual void useRecallPruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
-                            this->getPruningHeuristicConfigPtr();
+                          this->getPruningHeuristicConfigPtr();
                         pruningHeuristicConfigPtr = std::make_unique<RecallConfig>();
                     }
-
             };
 
             /**
@@ -388,10 +371,9 @@ namespace seco {
              * Accuracy" heuristic for learning or pruning rules.
              */
             class IWraMixin : virtual public ISeCoRuleLearner::IConfig {
-
                 public:
 
-                    virtual ~IWraMixin() { };
+                    virtual ~IWraMixin() {};
 
                     /**
                      * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
@@ -406,26 +388,24 @@ namespace seco {
                      */
                     virtual void useWraPruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
-                            this->getPruningHeuristicConfigPtr();
+                          this->getPruningHeuristicConfigPtr();
                         pruningHeuristicConfigPtr = std::make_unique<WraConfig>();
                     }
-
             };
-
     };
 
     /**
      * An abstract base class for all rule learners that make use of the separate-and-conquer (SeCo) paradigm.
      */
-    class AbstractSeCoRuleLearner : public AbstractRuleLearner, virtual public ISeCoRuleLearner {
-
+    class AbstractSeCoRuleLearner : public AbstractRuleLearner,
+                                    virtual public ISeCoRuleLearner {
         public:
 
             /**
              * Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
              */
-            class Config : public AbstractRuleLearner::Config, virtual public ISeCoRuleLearner::IConfig {
-
+            class Config : public AbstractRuleLearner::Config,
+                           virtual public ISeCoRuleLearner::IConfig {
                 protected:
 
                     /**
@@ -458,7 +438,8 @@ namespace seco {
 
                 private:
 
-                    std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() override final;
+                    std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr()
+                      override final;
 
                     std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final;
 
@@ -488,7 +469,6 @@ namespace seco {
                     void usePrecisionPruningHeuristic() override;
 
                     void useLabelWiseBinaryPredictor() override;
-
             };
 
         private:
@@ -508,7 +488,7 @@ namespace seco {
              * @see `AbstractRuleLearner::createStatisticsProviderFactory`
              */
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
 
             /**
              * @see `AbstractRuleLearner::createModelBuilderFactory`
@@ -519,7 +499,7 @@ namespace seco {
              * @see `AbstractRuleLearner::createSparseBinaryPredictorFactory`
              */
             std::unique_ptr<ISparseBinaryPredictorFactory> createSparseBinaryPredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
         public:
 
@@ -528,11 +508,10 @@ namespace seco {
              *               configuration that should be used by the rule learner
              */
             AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config);
-
     };
 
 }
 
 #ifdef _WIN32
-    #pragma warning ( pop )
+    #pragma warning(pop)
 #endif

@@ -1,18 +1,18 @@
 #ifdef _WIN32
-    #pragma warning( push )
-    #pragma warning( disable : 4250 )
+    #pragma warning(push)
+    #pragma warning(disable : 4250)
 #endif
 
 #include "common/input/feature_matrix_csc.hpp"
-#include "common/data/view_csc.hpp"
 
+#include "common/data/view_csc.hpp"
 
 /**
  * An implementation of the type `ICscFeatureMatrix` that provides column-wise read-only access to the feature values of
  * examples that are stored in a pre-allocated sparse matrix in the compressed sparse column (CSC) format.
  */
-class CscFeatureMatrix final : public CscConstView<const float32>, virtual public ICscFeatureMatrix {
-
+class CscFeatureMatrix final : public CscConstView<const float32>,
+                               virtual public ICscFeatureMatrix {
     public:
 
         /**
@@ -27,9 +27,7 @@ class CscFeatureMatrix final : public CscConstView<const float32>, virtual publi
          *                      The index at the last position is equal to `num_non_zero_values`
          */
         CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32* colIndices)
-            : CscConstView<const float32>(numRows, numCols, data, rowIndices, colIndices) {
-
-        }
+            : CscConstView<const float32>(numRows, numCols, data, rowIndices, colIndices) {}
 
         bool isSparse() const override {
             return true;
@@ -60,7 +58,6 @@ class CscFeatureMatrix final : public CscConstView<const float32>, virtual publi
 
             featureVectorPtr->setNumElements(i, true);
         }
-
 };
 
 std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
@@ -69,5 +66,5 @@ std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(uint32 numRows, uint32
 }
 
 #ifdef _WIN32
-    #pragma warning ( pop )
+    #pragma warning(pop)
 #endif

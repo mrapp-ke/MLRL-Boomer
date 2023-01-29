@@ -10,16 +10,14 @@ class ScoreProcessor;
 class AbstractPrediction;
 class AbstractEvaluatedPrediction;
 
-
 /**
  * Defines an interface for all one-dimensional vectors that store the scores that may be predicted by a rule, as well
  * as a numerical score that assess the overall quality of the rule.
  */
 class IScoreVector : public Quality {
-
     public:
 
-        virtual ~IScoreVector() { };
+        virtual ~IScoreVector() {};
 
         /**
          * Sets the scores of a specific prediction to the scores that are stored in this vector.
@@ -34,5 +32,4 @@ class IScoreVector : public Quality {
          * @param scoreProcessor A reference to an object of type `ScoreProcessor`, the scores should be passed to
          */
         virtual void processScores(ScoreProcessor& scoreProcessor) const = 0;
-
 };

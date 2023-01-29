@@ -6,7 +6,6 @@
 #include "common/thresholds/thresholds_subset.hpp"
 #include "omp.h"
 
-
 /**
  * Stores an unique pointer to an object of type `IRuleRefinement` that may be used to search for potential refinements
  * of a rule, as well as to an object of template type `RefinementComparator` that allows comparing different
@@ -16,19 +15,19 @@
  */
 template<typename RefinementComparator>
 struct RuleRefinement final {
+    public:
 
-    /**
-     * An unique pointer to an object of type `IRuleRefinement` that may be used to search for potential refinements of
-     * a rule.
-     */
-    std::unique_ptr<IRuleRefinement> ruleRefinementPtr;
+        /**
+         * An unique pointer to an object of type `IRuleRefinement` that may be used to search for potential refinements
+         * of a rule.
+         */
+        std::unique_ptr<IRuleRefinement> ruleRefinementPtr;
 
-    /**
-     * An unique pointer to an object of template type `RefinementComparator` that allows comparing different
-     * refinements and keeping track of the best one(s).
-     */
-    std::unique_ptr<RefinementComparator> comparatorPtr;
-
+        /**
+         * An unique pointer to an object of template type `RefinementComparator` that allows comparing different
+         * refinements and keeping track of the best one(s).
+         */
+        std::unique_ptr<RefinementComparator> comparatorPtr;
 };
 
 /**
@@ -66,8 +65,8 @@ static inline bool findRefinement(RefinementComparator& refinementComparator, IT
     }
 
     // Search for the best condition among all available features to be added to the current rule...
-    #pragma omp parallel for firstprivate(numFeatures) firstprivate(ruleRefinements) firstprivate(minCoverage) \
-    schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numFeatures) firstprivate(ruleRefinements) firstprivate(minCoverage) \
+  schedule(dynamic) num_threads(numThreads)
     for (int64 i = 0; i < numFeatures; i++) {
         RuleRefinement<RefinementComparator>& ruleRefinement = ruleRefinements[i];
         ruleRefinement.ruleRefinementPtr->findRefinement(*ruleRefinement.comparatorPtr, minCoverage);

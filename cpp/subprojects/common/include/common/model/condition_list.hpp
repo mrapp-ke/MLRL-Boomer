@@ -3,18 +3,17 @@
  */
 #pragma once
 
-#include "common/model/condition.hpp"
 #include "common/model/body_conjunctive.hpp"
+#include "common/model/condition.hpp"
+
 #include <array>
 #include <memory>
 #include <vector>
-
 
 /**
  * A list that stores conditions in the order they have been learned.
  */
 class ConditionList final {
-
     private:
 
         std::vector<Condition> vector_;
@@ -74,5 +73,4 @@ class ConditionList final {
          * @return An unique pointer to an object of type `ConjunctiveBody` that has been created
          */
         std::unique_ptr<ConjunctiveBody> createConjunctiveBody() const;
-
 };

@@ -8,7 +8,6 @@
 #include "rule_evaluation_example_wise_common.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -140,9 +139,8 @@ namespace boosting {
      *                     calculated
      */
     template<typename IndexVector>
-    class DenseExampleWiseCompleteRuleEvaluation final :
-            public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
-
+    class DenseExampleWiseCompleteRuleEvaluation final
+        : public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
         private:
 
             DenseScoreVector<IndexVector> scoreVector_;
@@ -173,12 +171,10 @@ namespace boosting {
                                                    float64 l2RegularizationWeight, const Blas& blas,
                                                    const Lapack& lapack)
                 : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(
-                      labelIndices.getNumElements(), lapack),
+                  labelIndices.getNumElements(), lapack),
                   scoreVector_(DenseScoreVector<IndexVector>(labelIndices, true)),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  blas_(blas), lapack_(lapack) {
-
-            }
+                  blas_(blas), lapack_(lapack) {}
 
             /**
              * @see `IRuleEvaluation::evaluate`
@@ -211,7 +207,6 @@ namespace boosting {
                 scoreVector_.quality = quality;
                 return scoreVector_;
             }
-
     };
 
 }

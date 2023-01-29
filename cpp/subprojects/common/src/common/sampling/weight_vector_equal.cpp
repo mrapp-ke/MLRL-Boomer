@@ -1,12 +1,9 @@
 #include "common/sampling/weight_vector_equal.hpp"
+
 #include "common/thresholds/thresholds.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
-
-EqualWeightVector::EqualWeightVector(uint32 numElements)
-    : numElements_(numElements) {
-
-}
+EqualWeightVector::EqualWeightVector(uint32 numElements) : numElements_(numElements) {}
 
 uint32 EqualWeightVector::getNumElements() const {
     return numElements_;

@@ -5,8 +5,8 @@
 
 #include "boosting/data/statistic_vector_label_wise_dense.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
-#include <utility>
 
+#include <utility>
 
 namespace boosting {
 
@@ -25,14 +25,14 @@ namespace boosting {
                                                                 float64 l1RegularizationWeight,
                                                                 float64 l2RegularizationWeight) {
         const Tuple<float64>& firstTuple = statisticIterator[0];
-        float64 maxAbsScore = std::abs(calculateLabelWiseScore(firstTuple.first, firstTuple.second,
-                                                               l1RegularizationWeight, l2RegularizationWeight));
+        float64 maxAbsScore = std::abs(
+          calculateLabelWiseScore(firstTuple.first, firstTuple.second, l1RegularizationWeight, l2RegularizationWeight));
         float64 minAbsScore = maxAbsScore;
 
         for (uint32 i = 1; i < numLabels; i++) {
             const Tuple<float64>& tuple = statisticIterator[i];
-            float64 absScore = std::abs(calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
-                                                                l2RegularizationWeight));
+            float64 absScore = std::abs(
+              calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight, l2RegularizationWeight));
 
             if (absScore > maxAbsScore) {
                 maxAbsScore = absScore;

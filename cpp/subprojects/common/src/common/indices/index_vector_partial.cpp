@@ -1,16 +1,11 @@
 #include "common/indices/index_vector_partial.hpp"
+
 #include "common/thresholds/thresholds_subset.hpp"
 
-
-PartialIndexVector::PartialIndexVector(uint32 numElements)
-    : PartialIndexVector(numElements, false) {
-
-}
+PartialIndexVector::PartialIndexVector(uint32 numElements) : PartialIndexVector(numElements, false) {}
 
 PartialIndexVector::PartialIndexVector(uint32 numElements, bool init)
-    : vector_(DenseVector<uint32>(numElements, init)) {
-
-}
+    : vector_(DenseVector<uint32>(numElements, init)) {}
 
 bool PartialIndexVector::isPartial() const {
     return true;

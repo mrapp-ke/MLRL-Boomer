@@ -1,15 +1,13 @@
 #include "common/rule_refinement/prediction_partial.hpp"
-#include "common/rule_refinement/rule_refinement.hpp"
-#include "common/statistics/statistics.hpp"
-#include "common/model/head_partial.hpp"
+
 #include "common/data/arrays.hpp"
 #include "common/data/vector_sparse_array.hpp"
-
+#include "common/model/head_partial.hpp"
+#include "common/rule_refinement/rule_refinement.hpp"
+#include "common/statistics/statistics.hpp"
 
 PartialPrediction::PartialPrediction(uint32 numElements, bool sorted)
-    : AbstractEvaluatedPrediction(numElements), indexVector_(PartialIndexVector(numElements)), sorted_(sorted) {
-
-}
+    : AbstractEvaluatedPrediction(numElements), indexVector_(PartialIndexVector(numElements)), sorted_(sorted) {}
 
 PartialPrediction::index_iterator PartialPrediction::indices_begin() {
     return indexVector_.begin();
@@ -55,22 +53,22 @@ std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(con
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
-        const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const {
+  const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
-        const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
+  const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
-        const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const {
+  const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
-        const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const {
+  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
@@ -103,8 +101,8 @@ void PartialPrediction::sort() {
                 entry.value = scoreIterator[i];
             }
 
-            std::sort(sortedIterator, sortedVector.end(), [=](const IndexedValue<float64>& a,
-                                                              const IndexedValue<float64>& b) {
+            std::sort(sortedIterator, sortedVector.end(),
+                      [=](const IndexedValue<float64>& a, const IndexedValue<float64>& b) {
                 return a.index < b.index;
             });
 

@@ -5,7 +5,6 @@
 
 #include "common/model/model_builder.hpp"
 
-
 namespace seco {
 
     /**
@@ -13,14 +12,12 @@ namespace seco {
      * they have been added, except for the default rule, which is always located at the end.
      */
     class DecisionListBuilderFactory : public IModelBuilderFactory {
-
         public:
 
             /**
              * @see `IModelBuilderFactory::create`
              */
             std::unique_ptr<IModelBuilder> create() const override;
-
     };
 
 }

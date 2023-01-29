@@ -6,7 +6,6 @@
 #include "common/data/vector_dense.hpp"
 #include "common/sampling/weight_vector.hpp"
 
-
 /**
  * An one-dimensional vector that provides random access to a fixed number of weights stored in a C-contiguous array.
  *
@@ -14,7 +13,6 @@
  */
 template<typename T>
 class DenseWeightVector final : public IWeightVector {
-
     private:
 
         DenseVector<T> vector_;
@@ -112,5 +110,4 @@ class DenseWeightVector final : public IWeightVector {
         bool hasZeroWeights() const override;
 
         std::unique_ptr<IThresholdsSubset> createThresholdsSubset(IThresholds& thresholds) const override;
-
 };

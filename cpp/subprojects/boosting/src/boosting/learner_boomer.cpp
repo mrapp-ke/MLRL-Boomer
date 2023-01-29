@@ -1,4 +1,5 @@
 #include "boosting/learner_boomer.hpp"
+
 #include "boosting/binning/feature_binning_auto.hpp"
 #include "boosting/binning/label_binning_auto.hpp"
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
@@ -9,7 +10,6 @@
 #include "boosting/rule_model_assemblage/default_rule_auto.hpp"
 #include "boosting/sampling/partition_sampling_auto.hpp"
 #include "boosting/statistics/statistic_format_auto.hpp"
-
 
 namespace boosting {
 
@@ -38,13 +38,13 @@ namespace boosting {
     }
 
     void Boomer::Config::useAutomaticDefaultRule() {
-        defaultRuleConfigPtr_ = std::make_unique<AutomaticDefaultRuleConfig>(statisticsConfigPtr_, lossConfigPtr_,
-                                                                             headConfigPtr_);
+        defaultRuleConfigPtr_ =
+          std::make_unique<AutomaticDefaultRuleConfig>(statisticsConfigPtr_, lossConfigPtr_, headConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticPartitionSampling() {
-        partitionSamplingConfigPtr_ = std::make_unique<AutomaticPartitionSamplingConfig>(globalPruningConfigPtr_,
-                                                                                         lossConfigPtr_);
+        partitionSamplingConfigPtr_ =
+          std::make_unique<AutomaticPartitionSamplingConfig>(globalPruningConfigPtr_, lossConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticFeatureBinning() {
@@ -52,8 +52,8 @@ namespace boosting {
     }
 
     void Boomer::Config::useAutomaticParallelRuleRefinement() {
-        parallelRuleRefinementConfigPtr_ = std::make_unique<AutoParallelRuleRefinementConfig>(
-            lossConfigPtr_, headConfigPtr_, featureSamplingConfigPtr_);
+        parallelRuleRefinementConfigPtr_ =
+          std::make_unique<AutoParallelRuleRefinementConfig>(lossConfigPtr_, headConfigPtr_, featureSamplingConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticParallelStatisticUpdate() {
@@ -61,37 +61,35 @@ namespace boosting {
     }
 
     void Boomer::Config::useAutomaticHeads() {
-        headConfigPtr_ = std::make_unique<AutomaticHeadConfig>(
-            lossConfigPtr_, labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
-            l2RegularizationConfigPtr_);
+        headConfigPtr_ = std::make_unique<AutomaticHeadConfig>(lossConfigPtr_, labelBinningConfigPtr_,
+                                                               parallelStatisticUpdateConfigPtr_,
+                                                               l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticStatistics() {
         statisticsConfigPtr_ =
-            std::make_unique<AutomaticStatisticsConfig>(lossConfigPtr_, headConfigPtr_, defaultRuleConfigPtr_);
+          std::make_unique<AutomaticStatisticsConfig>(lossConfigPtr_, headConfigPtr_, defaultRuleConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticLabelBinning() {
         labelBinningConfigPtr_ =
-            std::make_unique<AutomaticLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
+          std::make_unique<AutomaticLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticBinaryPredictor() {
         binaryPredictorConfigPtr_ =
-            std::make_unique<AutomaticBinaryPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+          std::make_unique<AutomaticBinaryPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticProbabilityPredictor() {
         probabilityPredictorConfigPtr_ =
-            std::make_unique<AutomaticProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+          std::make_unique<AutomaticProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     Boomer::Boomer(std::unique_ptr<IBoomer::IConfig> configPtr, Blas::DdotFunction ddotFunction,
                    Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction)
         : AbstractBoostingRuleLearner(*configPtr, ddotFunction, dspmvFunction, dsysvFunction),
-          configPtr_(std::move(configPtr)) {
-
-    }
+          configPtr_(std::move(configPtr)) {}
 
     std::unique_ptr<IBoomer::IConfig> createBoomerConfig() {
         return std::make_unique<Boomer::Config>();

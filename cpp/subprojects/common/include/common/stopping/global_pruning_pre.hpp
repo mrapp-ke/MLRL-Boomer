@@ -3,10 +3,9 @@
  */
 #pragma once
 
+#include "common/macros.hpp"
 #include "common/stopping/aggregation_function.hpp"
 #include "common/stopping/global_pruning.hpp"
-#include "common/macros.hpp"
-
 
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that stops the induction of rules
@@ -23,10 +22,9 @@
  * induction is continued, otherwise it is stopped.
  */
 class MLRLCOMMON_API IPrePruningConfig {
-
     public:
 
-        virtual ~IPrePruningConfig() { };
+        virtual ~IPrePruningConfig() {};
 
         /**
          * Returns the type of the aggregation function that is used to aggregate the values that are stored in a
@@ -189,15 +187,14 @@ class MLRLCOMMON_API IPrePruningConfig {
          *                          configuration of the stopping criterion
          */
         virtual IPrePruningConfig& setMinImprovement(float64 minImprovement) = 0;
-
 };
 
 /**
  * Allows to configure a stopping criterion that stops the induction of rules as soon as the quality of a model's
  * predictions for the examples in the training or holdout set do not improve according to a certain measure.
  */
-class PrePruningConfig final : public IGlobalPruningConfig, public IPrePruningConfig {
-
+class PrePruningConfig final : public IGlobalPruningConfig,
+                               public IPrePruningConfig {
     private:
 
         AggregationFunction aggregationFunction_;
@@ -269,5 +266,4 @@ class PrePruningConfig final : public IGlobalPruningConfig, public IPrePruningCo
          * @see `IGlobalPruningConfig::shouldRemoveUnusedRules`
          */
         bool shouldRemoveUnusedRules() const override;
-
 };

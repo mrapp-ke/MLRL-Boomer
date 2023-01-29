@@ -1,12 +1,11 @@
 #include "common/prediction/label_vector_set.hpp"
+
 #include "common/input/feature_matrix_c_contiguous.hpp"
 #include "common/input/feature_matrix_csr.hpp"
 #include "common/model/rule_list.hpp"
 #include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
-
-
 
 LabelVectorSet::const_iterator LabelVectorSet::cbegin() const {
     return labelVectors_.cbegin();
@@ -23,7 +22,6 @@ uint32 LabelVectorSet::getNumLabelVectors() const {
 void LabelVectorSet::addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr) {
     ++labelVectors_[std::move(labelVectorPtr)];
 }
-
 
 void LabelVectorSet::visit(LabelVectorVisitor visitor) const {
     for (auto it = labelVectors_.cbegin(); it != labelVectors_.cend(); it++) {
@@ -46,14 +44,14 @@ std::unique_ptr<IBinaryPredictor> LabelVectorSet::createBinaryPredictor(const IB
 }
 
 std::unique_ptr<ISparseBinaryPredictor> LabelVectorSet::createSparseBinaryPredictor(
-        const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-        const RuleList& model, uint32 numLabels) const {
+  const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix, const RuleList& model,
+  uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, numLabels);
 }
 
 std::unique_ptr<ISparseBinaryPredictor> LabelVectorSet::createSparseBinaryPredictor(
-        const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
-        uint32 numLabels) const {
+  const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
+  uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, numLabels);
 }
 
@@ -70,14 +68,14 @@ std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(const ISco
 }
 
 std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(
-        const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-        const RuleList& model, uint32 numLabels) const {
+  const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix, const RuleList& model,
+  uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, numLabels);
 }
 
 std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(
-        const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
-        uint32 numLabels) const {
+  const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
+  uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, numLabels);
 }
 

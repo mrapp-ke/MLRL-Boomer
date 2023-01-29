@@ -4,8 +4,8 @@
 #pragma once
 
 #include "common/data/types.hpp"
-#include <iterator>
 
+#include <iterator>
 
 /**
  * An iterator adaptor that adapts an iterator, which provides access to a fixed number of indices in increasing order,
@@ -16,7 +16,6 @@
  */
 template<typename Iterator>
 class BinaryForwardIterator final {
-
     private:
 
         Iterator iterator_;
@@ -35,9 +34,7 @@ class BinaryForwardIterator final {
          * @param index The index to start at
          */
         BinaryForwardIterator(Iterator begin, Iterator end, uint32 index)
-            : iterator_(begin), end_(end), index_(index), iteratorIndex_(iterator_ != end_ ? *iterator_ : 0) {
-
-        }
+            : iterator_(begin), end_(end), index_(index), iteratorIndex_(iterator_ != end_ ? *iterator_ : 0) {}
 
         /**
          * The type that is used to represent the difference between two iterators.
@@ -124,7 +121,6 @@ class BinaryForwardIterator final {
         bool operator==(const BinaryForwardIterator<Iterator>& rhs) const {
             return index_ == rhs.index_;
         }
-
 };
 
 /**

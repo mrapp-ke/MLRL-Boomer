@@ -1,8 +1,8 @@
 #include "common/thresholds/coverage_set.hpp"
-#include "common/thresholds/thresholds_subset.hpp"
-#include "common/rule_refinement/prediction.hpp"
-#include "common/data/arrays.hpp"
 
+#include "common/data/arrays.hpp"
+#include "common/rule_refinement/prediction.hpp"
+#include "common/thresholds/thresholds_subset.hpp"
 
 CoverageSet::CoverageSet(uint32 numElements)
     : array_(new uint32[numElements]), numElements_(numElements), numCovered_(numElements) {

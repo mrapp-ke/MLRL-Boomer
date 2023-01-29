@@ -5,17 +5,15 @@
 
 #include "common/statistics/statistics_subset.hpp"
 
-
 /**
  * Defines an interface for all classes that provide access to a subset of the weighted statistics that are stored by an
  * instance of the class `IWeightedStatistics` and allows to calculate the scores to be predicted by rules that cover
  * such a subset.
  */
 class IWeightedStatisticsSubset : virtual public IStatisticsSubset {
-
     public:
 
-        virtual ~IWeightedStatisticsSubset() override { };
+        virtual ~IWeightedStatisticsSubset() override {};
 
         /**
          * Marks the statistics at a specific index as missing, i.e., no condition that will be considered in the
@@ -78,5 +76,4 @@ class IWeightedStatisticsSubset : virtual public IStatisticsSubset {
          *         for each considered label, as well as a numerical score that assesses their overall quality
          */
         virtual const IScoreVector& calculateScoresUncoveredAccumulated() = 0;
-
 };

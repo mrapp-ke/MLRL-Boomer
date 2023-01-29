@@ -1,12 +1,10 @@
 #include "common/rule_pruning/rule_pruning_irep.hpp"
 
-
 /**
  * An implementation of the class `IRulePruning` that prunes rules by following the ideas of "incremental reduced error
  * pruning" (IREP).
  */
 class Irep final : public IRulePruning {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -17,10 +15,7 @@ class Irep final : public IRulePruning {
          * @param ruleCompareFunction An object of type `RuleCompareFunction` that defines the function that should be
          *                            used for comparing the quality of different rules
          */
-        Irep(RuleCompareFunction ruleCompareFunction)
-            : ruleCompareFunction_(ruleCompareFunction) {
-
-        }
+        Irep(RuleCompareFunction ruleCompareFunction) : ruleCompareFunction_(ruleCompareFunction) {}
 
         std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
                                               ConditionList& conditions,
@@ -76,7 +71,6 @@ class Irep final : public IRulePruning {
 
             return bestCoverageStatePtr;
         }
-
 };
 
 /**
@@ -86,7 +80,6 @@ class Irep final : public IRulePruning {
  * measured on the prune set.
  */
 class IrepFactory final : public IRulePruningFactory {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -97,21 +90,14 @@ class IrepFactory final : public IRulePruningFactory {
          * @param ruleCompareFunction An object of type `RuleCompareFunction` that defines the function that should be
          *                            used for comparing the quality of different rules
          */
-        IrepFactory(RuleCompareFunction ruleCompareFunction)
-            : ruleCompareFunction_(ruleCompareFunction) {
-
-        }
+        IrepFactory(RuleCompareFunction ruleCompareFunction) : ruleCompareFunction_(ruleCompareFunction) {}
 
         std::unique_ptr<IRulePruning> create() const override {
             return std::make_unique<Irep>(ruleCompareFunction_);
         }
-
 };
 
-IrepConfig::IrepConfig(RuleCompareFunction ruleCompareFunction)
-    : ruleCompareFunction_(ruleCompareFunction) {
-
-}
+IrepConfig::IrepConfig(RuleCompareFunction ruleCompareFunction) : ruleCompareFunction_(ruleCompareFunction) {}
 
 std::unique_ptr<IRulePruningFactory> IrepConfig::createRulePruningFactory() const {
     return std::make_unique<IrepFactory>(ruleCompareFunction_);

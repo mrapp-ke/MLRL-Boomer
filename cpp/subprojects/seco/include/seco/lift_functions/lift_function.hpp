@@ -5,8 +5,8 @@
 #pragma once
 
 #include "common/input/label_matrix_row_wise.hpp"
-#include <memory>
 
+#include <memory>
 
 namespace seco {
 
@@ -15,10 +15,9 @@ namespace seco {
      * for which they predict.
      */
     class ILiftFunction {
-
         public:
 
-            virtual ~ILiftFunction() { };
+            virtual ~ILiftFunction() {};
 
             /**
              * Calculates and returns the lift for a specific number of labels.
@@ -36,17 +35,15 @@ namespace seco {
              *                  size
              */
             virtual float64 getMaxLift(uint32 numLabels) const = 0;
-
     };
 
     /**
      * Defines an interface for all factories that allow to create instances of the type `ILiftFunction`.
      */
     class ILiftFunctionFactory {
-
         public:
 
-            virtual ~ILiftFunctionFactory() { };
+            virtual ~ILiftFunctionFactory() {};
 
             /**
              * Creates and returns a new object of type `ILiftFunction`.
@@ -54,17 +51,15 @@ namespace seco {
              * @return An unique pointer to an object of type `ILiftFunction` that has been created
              */
             virtual std::unique_ptr<ILiftFunction> create() const = 0;
-
     };
 
     /**
      * Defines an interface for all classes that allow to configure a lift function.
      */
     class ILiftFunctionConfig {
-
         public:
 
-            virtual ~ILiftFunctionConfig() { };
+            virtual ~ILiftFunctionConfig() {};
 
             /**
              * Creates and returns a new object of type `ILiftFunctionFactory` according to the specified configuration.
@@ -74,8 +69,7 @@ namespace seco {
              * @return              An unique pointer to an object of type `ILiftFunctionFactory` that has been created
              */
             virtual std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory(
-                const IRowWiseLabelMatrix& labelMatrix) const = 0;
-
+              const IRowWiseLabelMatrix& labelMatrix) const = 0;
     };
 
 }

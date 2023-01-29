@@ -1,10 +1,11 @@
 #include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
-#include "common/util/validation.hpp"
+
 #include "common/math/math.hpp"
+#include "common/util/validation.hpp"
 #include "rule_induction_common.hpp"
 #include "rule_induction_top_down_common.hpp"
-#include <algorithm>
 
+#include <algorithm>
 
 /**
  * A single entry of a beam, corresponding to a rule that may be further refined. It stores the conditions and the head
@@ -13,30 +14,30 @@
  * refinements may predict.
  */
 struct BeamEntry final {
+    public:
 
-    /**
-     * An unique pointer to an object of type `ConditionList` that stores the conditions of the rule.
-     */
-    std::unique_ptr<ConditionList> conditionListPtr;
+        /**
+         * An unique pointer to an object of type `ConditionList` that stores the conditions of the rule.
+         */
+        std::unique_ptr<ConditionList> conditionListPtr;
 
-    /**
-     * An unique pointer to an object of type `AbstractEvaluatedPrediction` that stores the prediction of the rule, as
-     * well as its quality.
-     */
-    std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
+        /**
+         * An unique pointer to an object of type `AbstractEvaluatedPrediction` that stores the prediction of the rule,
+         * as well as its quality.
+         */
+        std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
 
-    /**
-     * An unique pointer to an object of type `IThresholdsSubset` that may be used to search for potential refinements
-     * of the rule.
-     */
-    std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr;
+        /**
+         * An unique pointer to an object of type `IThresholdsSubset` that may be used to search for potential
+         * refinements of the rule.
+         */
+        std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr;
 
-    /**
-     * A pointer to an object of type `IIndexVector` that provides access to the indices of the labels  for which
-     * potential refinements of the rule may predict.
-     */
-    const IIndexVector* labelIndices;
-
+        /**
+         * A pointer to an object of type `IIndexVector` that provides access to the indices of the labels  for which
+         * potential refinements of the rule may predict.
+         */
+        const IIndexVector* labelIndices;
 };
 
 static inline void initializeEntry(BeamEntry& entry, Refinement& refinement,
@@ -62,9 +63,8 @@ static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry, Refinemen
     if (refinement.numCovered <= minCoverage) {
         newEntry.labelIndices = nullptr;
     } else {
-        newEntry.labelIndices =  keepHead ? newEntry.headPtr.get() : oldEntry.labelIndices;
+        newEntry.labelIndices = keepHead ? newEntry.headPtr.get() : oldEntry.labelIndices;
     }
-
 }
 
 static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry) {
@@ -87,7 +87,6 @@ static inline const Quality& updateOrder(RuleCompareFunction ruleCompareFunction
  * A beam that keeps track of several rules that may be further refined.
  */
 class Beam final {
-
     private:
 
         uint32 numEntries_;
@@ -101,8 +100,7 @@ class Beam final {
         /**
          * @param beamWidth The maximum number of rules to keep track of
          */
-        Beam(uint32 beamWidth)
-            : numEntries_(beamWidth), entries_(new BeamEntry[numEntries_]) {
+        Beam(uint32 beamWidth) : numEntries_(beamWidth), entries_(new BeamEntry[numEntries_]) {
             order_.reserve(numEntries_);
         }
 
@@ -262,7 +260,6 @@ class Beam final {
         BeamEntry& getBestEntry() {
             return order_.front();
         }
-
 };
 
 /**
@@ -270,7 +267,6 @@ class Beam final {
  * search.
  */
 class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -310,20 +306,17 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
         BeamSearchTopDownRuleInduction(RuleCompareFunction ruleCompareFunction, uint32 beamWidth, bool resampleFeatures,
                                        uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
                                        bool recalculatePredictions, uint32 numThreads)
-            : AbstractRuleInduction(recalculatePredictions),
-              ruleCompareFunction_(ruleCompareFunction), beamWidth_(beamWidth), resampleFeatures_(resampleFeatures),
-              minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
-              numThreads_(numThreads) {
-
-        }
+            : AbstractRuleInduction(recalculatePredictions), ruleCompareFunction_(ruleCompareFunction),
+              beamWidth_(beamWidth), resampleFeatures_(resampleFeatures), minCoverage_(minCoverage),
+              maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements), numThreads_(numThreads) {}
 
     protected:
 
         std::unique_ptr<IThresholdsSubset> growRule(
-                IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
-                IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
-                std::unique_ptr<ConditionList>& conditionListPtr,
-                std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const override {
+          IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
+          IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
+          std::unique_ptr<ConditionList>& conditionListPtr,
+          std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const override {
             // Create a new subset of the given thresholds...
             std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(thresholds);
 
@@ -337,9 +330,8 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
             if (foundRefinement) {
                 bool keepHeads = maxHeadRefinements_ == 1;
-                std::unique_ptr<Beam> beamPtr = std::make_unique<Beam>(refinementComparator,
-                                                                       std::move(thresholdsSubsetPtr), labelIndices,
-                                                                       keepHeads);
+                std::unique_ptr<Beam> beamPtr =
+                  std::make_unique<Beam>(refinementComparator, std::move(thresholdsSubsetPtr), labelIndices, keepHeads);
                 uint32 searchDepth = 1;
 
                 while (foundRefinement && (maxConditions_ == 0 || searchDepth < maxConditions_)) {
@@ -348,12 +340,12 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
                     // Create a `IFeatureSampling` to be used for refining the current beam...
                     std::unique_ptr<IFeatureSampling> beamSearchFeatureSamplingPtr =
-                        featureSampling.createBeamSearchFeatureSampling(rng, resampleFeatures_);
+                      featureSampling.createBeamSearchFeatureSampling(rng, resampleFeatures_);
 
                     // Search for the best refinements within the current beam...
-                    foundRefinement = beamPtr->refine(ruleCompareFunction_, beamPtr, beamWidth_,
-                                                      *beamSearchFeatureSamplingPtr, keepHeads, minCoverage_,
-                                                      numThreads_, rng);
+                    foundRefinement =
+                      beamPtr->refine(ruleCompareFunction_, beamPtr, beamWidth_, *beamSearchFeatureSamplingPtr,
+                                      keepHeads, minCoverage_, numThreads_, rng);
                 }
 
                 BeamEntry& entry = beamPtr->getBestEntry();
@@ -364,7 +356,6 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
             return thresholdsSubsetPtr;
         }
-
 };
 
 /**
@@ -373,7 +364,6 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
  * that improves the rule the most is chosen. The search stops if no refinement results in an improvement.
  */
 class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -417,26 +407,20 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
                                               uint32 maxHeadRefinements, bool recalculatePredictions, uint32 numThreads)
             : ruleCompareFunction_(ruleCompareFunction), beamWidth_(beamWidth), resampleFeatures_(resampleFeatures),
               minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
-              recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {
-
-        }
+              recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {}
 
         std::unique_ptr<IRuleInduction> create() const override {
             return std::make_unique<BeamSearchTopDownRuleInduction>(ruleCompareFunction_, beamWidth_, resampleFeatures_,
                                                                     minCoverage_, maxConditions_, maxHeadRefinements_,
                                                                     recalculatePredictions_, numThreads_);
         }
-
 };
 
-
 BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
-        RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+  RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
     : ruleCompareFunction_(ruleCompareFunction), beamWidth_(4), resampleFeatures_(false), minCoverage_(1),
       minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
-      multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-}
+      multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
 uint32 BeamSearchTopDownRuleInductionConfig::getBeamWidth() const {
     return beamWidth_;
@@ -453,7 +437,7 @@ bool BeamSearchTopDownRuleInductionConfig::areFeaturesResampled() const {
 }
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setResampleFeatures(
-        bool resampleFeatures) {
+  bool resampleFeatures) {
     resampleFeatures_ = resampleFeatures;
     return *this;
 }
@@ -473,8 +457,8 @@ float32 BeamSearchTopDownRuleInductionConfig::getMinSupport() const {
 }
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setMinSupport(float32 minSupport) {
-    if (minSupport != 0) { assertGreater<float32>("minSupport", minSupport, 0); }
-    if (minSupport != 0) { assertLess<float32>("minSupport", minSupport, 1); }
+    if (minSupport != 0) assertGreater<float32>("minSupport", minSupport, 0);
+    if (minSupport != 0) assertLess<float32>("minSupport", minSupport, 1);
     minSupport_ = minSupport;
     return *this;
 }
@@ -484,7 +468,7 @@ uint32 BeamSearchTopDownRuleInductionConfig::getMaxConditions() const {
 }
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setMaxConditions(uint32 maxConditions) {
-    if (maxConditions != 0) { assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 2); }
+    if (maxConditions != 0) assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 2);
     maxConditions_ = maxConditions;
     return *this;
 }
@@ -494,8 +478,8 @@ uint32 BeamSearchTopDownRuleInductionConfig::getMaxHeadRefinements() const {
 }
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setMaxHeadRefinements(
-        uint32 maxHeadRefinements) {
-    if (maxHeadRefinements != 0) { assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1); }
+  uint32 maxHeadRefinements) {
+    if (maxHeadRefinements != 0) assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1);
     maxHeadRefinements_ = maxHeadRefinements;
     return *this;
 }
@@ -505,13 +489,13 @@ bool BeamSearchTopDownRuleInductionConfig::arePredictionsRecalculated() const {
 }
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setRecalculatePredictions(
-        bool recalculatePredictions) {
+  bool recalculatePredictions) {
     recalculatePredictions_ = recalculatePredictions;
     return *this;
 }
 
 std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::createRuleInductionFactory(
-        const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+  const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
     uint32 numExamples = featureMatrix.getNumRows();
     uint32 minCoverage;
 

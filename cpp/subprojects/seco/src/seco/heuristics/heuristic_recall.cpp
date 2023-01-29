@@ -1,6 +1,6 @@
 #include "seco/heuristics/heuristic_recall.hpp"
-#include "heuristic_common.hpp"
 
+#include "heuristic_common.hpp"
 
 namespace seco {
 
@@ -9,14 +9,12 @@ namespace seco {
      * which the rule's prediction is (or would be) correct.
      */
     class Recall final : public IHeuristic {
-
         public:
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) const override {
                 return recall(cin, crp, uin, urp);
             }
-
     };
 
     /**
@@ -25,13 +23,11 @@ namespace seco {
      * rule's prediction.
      */
     class RecallFactory final : public IHeuristicFactory {
-
         public:
 
             std::unique_ptr<IHeuristic> create() const override {
                 return std::make_unique<Recall>();
             }
-
     };
 
     std::unique_ptr<IHeuristicFactory> RecallConfig::createHeuristicFactory() const {

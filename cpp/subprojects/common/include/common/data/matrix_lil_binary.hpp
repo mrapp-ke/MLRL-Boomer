@@ -4,15 +4,14 @@
 #pragma once
 
 #include "common/data/types.hpp"
-#include <vector>
 
+#include <vector>
 
 /**
  * A two-dimensional matrix that provides row-wise access to binary values that are stored in the list of lists (LIL)
  * format.
  */
 class BinaryLilMatrix final {
-
     private:
 
         uint32 numRows_;
@@ -107,5 +106,4 @@ class BinaryLilMatrix final {
          * Sets the values of all elements to zero.
          */
         void clear();
-
 };

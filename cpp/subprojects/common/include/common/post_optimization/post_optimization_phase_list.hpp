@@ -4,15 +4,14 @@
 #pragma once
 
 #include "common/post_optimization/post_optimization.hpp"
-#include <vector>
 
+#include <vector>
 
 /**
  * A factory that allows to create instances of the type `IPostOptimization` that carries out multiple optimization
  * phases.
  */
 class PostOptimizationPhaseListFactory final : public IPostOptimizationFactory {
-
     private:
 
         std::vector<std::unique_ptr<IPostOptimizationPhaseFactory>> postOptimizationPhaseFactories_;
@@ -26,8 +25,7 @@ class PostOptimizationPhaseListFactory final : public IPostOptimizationFactory {
          *                                        that should be added
          */
         void addPostOptimizationPhaseFactory(
-            std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactoryPtr);
+          std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactoryPtr);
 
         std::unique_ptr<IPostOptimization> create(const IModelBuilderFactory& modelBuilderFactory) const override;
-
 };

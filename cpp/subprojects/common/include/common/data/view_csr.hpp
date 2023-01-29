@@ -5,7 +5,6 @@
 
 #include "common/data/view_two_dimensional.hpp"
 
-
 /**
  * Implements row-wise read-only access to the values that are stored in a pre-allocated matrix in the compressed sparse
  * row (CSR) format.
@@ -14,7 +13,6 @@
  */
 template<typename T>
 class CsrConstView : virtual public ITwoDimensionalView {
-
     protected:
 
         /**
@@ -116,7 +114,6 @@ class CsrConstView : virtual public ITwoDimensionalView {
          * @see `ITwoDimensionalView::getNumCols`
          */
         uint32 getNumCols() const override final;
-
 };
 
 /**
@@ -127,7 +124,6 @@ class CsrConstView : virtual public ITwoDimensionalView {
  */
 template<typename T>
 class CsrView : public CsrConstView<T> {
-
     public:
 
         /**
@@ -184,5 +180,4 @@ class CsrView : public CsrConstView<T> {
          * @return      An `index_iterator` to the end of the indices
          */
         index_iterator row_indices_end(uint32 row);
-
 };

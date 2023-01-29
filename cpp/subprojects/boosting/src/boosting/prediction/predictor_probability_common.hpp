@@ -5,7 +5,6 @@
 
 #include "common/iterator/binary_forward_iterator.hpp"
 
-
 namespace boosting {
 
     static inline float64 calculateJointProbability(LabelVectorSet::const_iterator iterator, const float64* scoresBegin,

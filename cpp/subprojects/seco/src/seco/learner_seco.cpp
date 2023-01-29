@@ -1,6 +1,5 @@
 #include "seco/learner_seco.hpp"
 
-
 namespace seco {
 
     MultiLabelSeCoRuleLearner::Config::Config() {
@@ -35,16 +34,14 @@ namespace seco {
     }
 
     MultiLabelSeCoRuleLearner::MultiLabelSeCoRuleLearner(std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr)
-        : AbstractSeCoRuleLearner(*configPtr), configPtr_(std::move(configPtr)) {
-
-    }
+        : AbstractSeCoRuleLearner(*configPtr), configPtr_(std::move(configPtr)) {}
 
     std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> createMultiLabelSeCoRuleLearnerConfig() {
         return std::make_unique<MultiLabelSeCoRuleLearner::Config>();
     }
 
     std::unique_ptr<IMultiLabelSeCoRuleLearner> createMultiLabelSeCoRuleLearner(
-            std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr) {
+      std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr) {
         return std::make_unique<MultiLabelSeCoRuleLearner>(std::move(configPtr));
     }
 

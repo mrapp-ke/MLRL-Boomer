@@ -1,6 +1,6 @@
 #include "boosting/model/rule_list_builder.hpp"
-#include "common/model/rule_list.hpp"
 
+#include "common/model/rule_list.hpp"
 
 namespace boosting {
 
@@ -8,17 +8,13 @@ namespace boosting {
      * Allows to build models that store several rules in the order they have been added.
      */
     class RuleListBuilder final : public IModelBuilder {
-
         private:
 
             std::unique_ptr<RuleList> modelPtr_;
 
         public:
 
-            RuleListBuilder()
-                : modelPtr_(std::make_unique<RuleList>(true)) {
-
-            }
+            RuleListBuilder() : modelPtr_(std::make_unique<RuleList>(true)) {}
 
             /**
              * @see `IModelBuilder::setDefaultRule`
@@ -48,7 +44,6 @@ namespace boosting {
             std::unique_ptr<IRuleModel> buildModel() override {
                 return std::move(modelPtr_);
             }
-
     };
 
     std::unique_ptr<IModelBuilder> RuleListBuilderFactory::create() const {

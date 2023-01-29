@@ -1,14 +1,14 @@
 #include "common/post_optimization/post_optimization_sequential.hpp"
+
 #include "common/sampling/feature_sampling_predefined.hpp"
 #include "common/util/validation.hpp"
-#include <unordered_set>
 
+#include <unordered_set>
 
 /**
  * An implementation of the class `IModelBuilder` that allows to replace a single rule of an `IntermediateModelBuilder`.
  */
 class RuleReplacementBuilder final : public IModelBuilder {
-
     private:
 
         IntermediateModelBuilder::IntermediateRule& intermediateRule_;
@@ -20,13 +20,9 @@ class RuleReplacementBuilder final : public IModelBuilder {
          *                         should be replaced
          */
         RuleReplacementBuilder(IntermediateModelBuilder::IntermediateRule& intermediateRule)
-            : intermediateRule_(intermediateRule) {
+            : intermediateRule_(intermediateRule) {}
 
-        }
-
-        void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
-
-        }
+        void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {}
 
         void addRule(std::unique_ptr<ConditionList>& conditionListPtr,
                      std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
@@ -34,14 +30,11 @@ class RuleReplacementBuilder final : public IModelBuilder {
             intermediateRule_.second = std::move(predictionPtr);
         }
 
-        void setNumUsedRules(uint32 numUsedRules) override {
-
-        }
+        void setNumUsedRules(uint32 numUsedRules) override {}
 
         std::unique_ptr<IRuleModel> buildModel() override {
             return nullptr;
         }
-
 };
 
 /**
@@ -49,7 +42,6 @@ class RuleReplacementBuilder final : public IModelBuilder {
  * context of the other rules.
  */
 class SequentialPostOptimization final : public IPostOptimizationPhase {
-
     private:
 
         IntermediateModelBuilder& modelBuilder_;
@@ -73,9 +65,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
         SequentialPostOptimization(IntermediateModelBuilder& modelBuilder, uint32 numIterations, bool refineHeads,
                                    bool resampleFeatures)
             : modelBuilder_(modelBuilder), numIterations_(numIterations), refineHeads_(refineHeads),
-              resampleFeatures_(resampleFeatures) {
-
-        }
+              resampleFeatures_(resampleFeatures) {}
 
         void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
                            ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
@@ -131,7 +121,6 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                 }
             }
         }
-
 };
 
 /**
@@ -139,7 +128,6 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
  * in the context of the other rules.
  */
 class SequentialPostOptimizationFactory final : public IPostOptimizationPhaseFactory {
-
     private:
 
         uint32 numIterations_;
@@ -157,21 +145,16 @@ class SequentialPostOptimizationFactory final : public IPostOptimizationPhaseFac
          *                          new rule, false otherwise
          */
         SequentialPostOptimizationFactory(uint32 numIterations, bool refineHeads, bool resampleFeatures)
-            : numIterations_(numIterations), refineHeads_(refineHeads), resampleFeatures_(resampleFeatures) {
-
-        }
+            : numIterations_(numIterations), refineHeads_(refineHeads), resampleFeatures_(resampleFeatures) {}
 
         std::unique_ptr<IPostOptimizationPhase> create(IntermediateModelBuilder& modelBuilder) const override {
             return std::make_unique<SequentialPostOptimization>(modelBuilder, numIterations_, refineHeads_,
                                                                 resampleFeatures_);
         }
-
 };
 
 SequentialPostOptimizationConfig::SequentialPostOptimizationConfig()
-    : numIterations_(2), refineHeads_(false), resampleFeatures_(true) {
-
-}
+    : numIterations_(2), refineHeads_(false), resampleFeatures_(true) {}
 
 uint32 SequentialPostOptimizationConfig::getNumIterations() const {
     return numIterations_;
@@ -201,6 +184,7 @@ ISequentialPostOptimizationConfig& SequentialPostOptimizationConfig::setResample
     return *this;
 }
 
-std::unique_ptr<IPostOptimizationPhaseFactory> SequentialPostOptimizationConfig::createPostOptimizationPhaseFactory() const {
+std::unique_ptr<IPostOptimizationPhaseFactory> SequentialPostOptimizationConfig::createPostOptimizationPhaseFactory()
+  const {
     return std::make_unique<SequentialPostOptimizationFactory>(numIterations_, refineHeads_, resampleFeatures_);
 }

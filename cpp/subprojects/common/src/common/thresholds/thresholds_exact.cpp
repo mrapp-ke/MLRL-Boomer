@@ -1,9 +1,10 @@
 #include "common/thresholds/thresholds_exact.hpp"
+
 #include "common/rule_refinement/rule_refinement_exact.hpp"
 #include "thresholds_common.hpp"
-#include <unordered_map>
-#include <cmath>
 
+#include <cmath>
+#include <unordered_map>
 
 /**
  * An entry that is stored in a cache and contains an unique pointer to a feature vector. The field `numConditions`
@@ -11,19 +12,19 @@
  * check if the vector is still valid or must be updated.
  */
 struct FilteredCacheEntry final {
+    public:
 
-    FilteredCacheEntry() : numConditions(0) { };
+        FilteredCacheEntry() : numConditions(0) {};
 
-    /**
-     * An unique pointer to an object of type `FeatureVector` that stores feature values.
-     */
-    std::unique_ptr<FeatureVector> vectorPtr;
+        /**
+         * An unique pointer to an object of type `FeatureVector` that stores feature values.
+         */
+        std::unique_ptr<FeatureVector> vectorPtr;
 
-    /**
-     * The number of conditions that were contained by the rule when the cache was updated for the last time.
-     */
-    uint32 numConditions;
-
+        /**
+         * The number of conditions that were contained by the rule when the cache was updated for the last time.
+         */
+        uint32 numConditions;
 };
 
 /**
@@ -220,7 +221,6 @@ static inline void filterAnyVector(const FeatureVector& vector, FilteredCacheEnt
  * Provides access to all thresholds that result from the feature values of the training examples.
  */
 class ExactThresholds final : public AbstractThresholds {
-
     private:
 
         /**
@@ -231,7 +231,6 @@ class ExactThresholds final : public AbstractThresholds {
          */
         template<typename WeightVector>
         class ThresholdsSubset final : public IThresholdsSubset {
-
             private:
 
                 /**
@@ -239,7 +238,6 @@ class ExactThresholds final : public AbstractThresholds {
                  * from the cache. Otherwise, they are fetched from the feature matrix.
                  */
                 class Callback final : public IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector> {
-
                     private:
 
                         ThresholdsSubset& thresholdsSubset_;
@@ -255,9 +253,7 @@ class ExactThresholds final : public AbstractThresholds {
                          *                          retrieved
                          */
                         Callback(ThresholdsSubset& thresholdsSubset, uint32 featureIndex)
-                            : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {
-
-                        }
+                            : thresholdsSubset_(thresholdsSubset), featureIndex_(featureIndex) {}
 
                         Result get() override {
                             auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
@@ -270,7 +266,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                                 if (!featureVector) {
                                     thresholdsSubset_.thresholds_.featureMatrix_.fetchFeatureVector(
-                                        featureIndex_, cacheIterator->second);
+                                      featureIndex_, cacheIterator->second);
                                     cacheIterator->second->sortByValues();
                                     featureVector = cacheIterator->second.get();
                                 }
@@ -288,7 +284,6 @@ class ExactThresholds final : public AbstractThresholds {
 
                             return Result(*thresholdsSubset_.weightedStatisticsPtr_, *featureVector);
                         }
-
                 };
 
                 ExactThresholds& thresholds_;
@@ -320,13 +315,12 @@ class ExactThresholds final : public AbstractThresholds {
                     }
 
                     std::unique_ptr<IFeatureType> featureTypePtr =
-                        thresholds_.featureInfo_.createFeatureType(featureIndex);
+                      thresholds_.featureInfo_.createFeatureType(featureIndex);
                     bool nominal = !featureTypePtr->isNumerical();
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
-                    return std::make_unique<ExactRuleRefinement<IndexVector>>(labelIndices, numCoveredExamples_,
-                                                                              featureIndex, nominal,
-                                                                              weights_.hasZeroWeights(),
-                                                                              std::move(callbackPtr));
+                    return std::make_unique<ExactRuleRefinement<IndexVector>>(
+                      labelIndices, numCoveredExamples_, featureIndex, nominal, weights_.hasZeroWeights(),
+                      std::move(callbackPtr));
                 }
 
             public:
@@ -344,9 +338,7 @@ class ExactThresholds final : public AbstractThresholds {
                                  const WeightVector& weights)
                     : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
                       weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
-                      coverageMask_(CoverageMask(thresholds.featureMatrix_.getNumRows())), numModifications_(0) {
-
-                }
+                      coverageMask_(CoverageMask(thresholds.featureMatrix_.getNumRows())), numModifications_(0) {}
 
                 /**
                  * @param thresholdsSubset A reference to an object of type `ThresholdsSubset` to be copied
@@ -356,9 +348,7 @@ class ExactThresholds final : public AbstractThresholds {
                       weightedStatisticsPtr_(thresholdsSubset.weightedStatisticsPtr_->copy()),
                       weights_(thresholdsSubset.weights_), numCoveredExamples_(thresholdsSubset.numCoveredExamples_),
                       coverageMask_(CoverageMask(thresholdsSubset.coverageMask_)),
-                      numModifications_(thresholdsSubset.numModifications_) {
-
-                }
+                      numModifications_(thresholdsSubset.numModifications_) {}
 
                 std::unique_ptr<IThresholdsSubset> copy() const override {
                     return std::make_unique<ThresholdsSubset<WeightVector>>(*this);
@@ -384,8 +374,8 @@ class ExactThresholds final : public AbstractThresholds {
                     FeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
                     if (!featureVector) {
-                        auto cacheIterator = thresholds_.cache_.emplace(featureIndex,
-                                                                        std::unique_ptr<FeatureVector>()).first;
+                        auto cacheIterator =
+                          thresholds_.cache_.emplace(featureIndex, std::unique_ptr<FeatureVector>()).first;
                         featureVector = cacheIterator->second.get();
                     }
 
@@ -414,15 +404,15 @@ class ExactThresholds final : public AbstractThresholds {
                 Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
-                        partition.cbegin(), partition.getNumElements(), weights_, coverageState,
-                        thresholds_.statisticsProvider_.get(), head);
+                      partition.cbegin(), partition.getNumElements(), weights_, coverageState,
+                      thresholds_.statisticsProvider_.get(), head);
                 }
 
                 Quality evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const override {
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
-                        partition.first_cbegin(), partition.getNumFirst(), weights_, coverageState,
-                        thresholds_.statisticsProvider_.get(), head);
+                      partition.first_cbegin(), partition.getNumFirst(), weights_, coverageState,
+                      thresholds_.statisticsProvider_.get(), head);
                 }
 
                 Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
@@ -440,15 +430,15 @@ class ExactThresholds final : public AbstractThresholds {
                 void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
                                            AbstractPrediction& head) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
-                        partition.cbegin(), partition.getNumElements(), coverageState,
-                        thresholds_.statisticsProvider_.get(), head);
+                      partition.cbegin(), partition.getNumElements(), coverageState,
+                      thresholds_.statisticsProvider_.get(), head);
                 }
 
                 void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
                                            AbstractPrediction& head) const override {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
-                        partition.first_cbegin(), partition.getNumFirst(), coverageState,
-                        thresholds_.statisticsProvider_.get(), head);
+                      partition.first_cbegin(), partition.getNumFirst(), coverageState,
+                      thresholds_.statisticsProvider_.get(), head);
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
@@ -470,8 +460,8 @@ class ExactThresholds final : public AbstractThresholds {
                     IStatistics* statisticsPtr = &statistics;
                     uint32 numThreads = thresholds_.numThreads_;
 
-                    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) \
-                    firstprivate(predictionPtr) firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
+  firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
                     for (int64 i = 0; i < numStatistics; i++) {
                         if (coverageMaskPtr->isCovered(i)) {
                             predictionPtr->apply(*statisticsPtr, i);
@@ -487,15 +477,14 @@ class ExactThresholds final : public AbstractThresholds {
                     IStatistics* statisticsPtr = &statistics;
                     uint32 numThreads = thresholds_.numThreads_;
 
-                    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) \
-                    firstprivate(predictionPtr) firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
+  firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
                     for (int64 i = 0; i < numStatistics; i++) {
                         if (coverageMaskPtr->isCovered(i)) {
                             predictionPtr->revert(*statisticsPtr, i);
                         }
                     }
                 }
-
         };
 
         uint32 numThreads_;
@@ -515,37 +504,31 @@ class ExactThresholds final : public AbstractThresholds {
          */
         ExactThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
                         IStatisticsProvider& statisticsProvider, uint32 numThreads)
-            : AbstractThresholds(featureMatrix, featureInfo, statisticsProvider), numThreads_(numThreads) {
-
-        }
+            : AbstractThresholds(featureMatrix, featureInfo, statisticsProvider), numThreads_(numThreads) {}
 
         std::unique_ptr<IThresholdsSubset> createSubset(const EqualWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
             return std::make_unique<ExactThresholds::ThresholdsSubset<EqualWeightVector>>(
-                *this, std::move(weightedStatisticsPtr), weights);
+              *this, std::move(weightedStatisticsPtr), weights);
         }
 
         std::unique_ptr<IThresholdsSubset> createSubset(const BitWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
             return std::make_unique<ExactThresholds::ThresholdsSubset<BitWeightVector>>(
-                *this, std::move(weightedStatisticsPtr), weights);
+              *this, std::move(weightedStatisticsPtr), weights);
         }
 
         std::unique_ptr<IThresholdsSubset> createSubset(const DenseWeightVector<uint32>& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
             return std::make_unique<ExactThresholds::ThresholdsSubset<DenseWeightVector<uint32>>>(
-                *this, std::move(weightedStatisticsPtr), weights);
+              *this, std::move(weightedStatisticsPtr), weights);
         }
-
 };
 
-ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads)
-    : numThreads_(numThreads) {
-
-}
+ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
 std::unique_ptr<IThresholds> ExactThresholdsFactory::create(const IColumnWiseFeatureMatrix& featureMatrix,
                                                             const IFeatureInfo& featureInfo,

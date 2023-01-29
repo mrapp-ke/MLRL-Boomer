@@ -1,7 +1,8 @@
 #include "common/rule_refinement/refinement_comparator_fixed.hpp"
-#include "common/rule_refinement/score_processor.hpp"
-#include <algorithm>
 
+#include "common/rule_refinement/score_processor.hpp"
+
+#include <algorithm>
 
 FixedRefinementComparator::FixedRefinementComparator(RuleCompareFunction ruleCompareFunction, uint32 maxRefinements,
                                                      const Quality& minQuality)
@@ -11,14 +12,10 @@ FixedRefinementComparator::FixedRefinementComparator(RuleCompareFunction ruleCom
 }
 
 FixedRefinementComparator::FixedRefinementComparator(RuleCompareFunction ruleCompareFunction, uint32 maxRefinements)
-    : FixedRefinementComparator(ruleCompareFunction, maxRefinements, ruleCompareFunction.minQuality) {
-
-}
+    : FixedRefinementComparator(ruleCompareFunction, maxRefinements, ruleCompareFunction.minQuality) {}
 
 FixedRefinementComparator::FixedRefinementComparator(const FixedRefinementComparator& comparator)
-    : FixedRefinementComparator(comparator.ruleCompareFunction_, comparator.maxRefinements_, comparator.minQuality_) {
-
-}
+    : FixedRefinementComparator(comparator.ruleCompareFunction_, comparator.maxRefinements_, comparator.minQuality_) {}
 
 FixedRefinementComparator::~FixedRefinementComparator() {
     delete[] refinements_;

@@ -7,7 +7,6 @@
 #include "seco/lift_functions/lift_function.hpp"
 #include "seco/macros.hpp"
 
-
 namespace seco {
 
     /**
@@ -15,10 +14,9 @@ namespace seco {
      * certain number of labels, where the maximum lift is reached, and monotonously decreases afterwards.
      */
     class MLRLSECO_API IPeakLiftFunctionConfig {
-
         public:
 
-            virtual ~IPeakLiftFunctionConfig() { };
+            virtual ~IPeakLiftFunctionConfig() {};
 
             /**
              * Returns the number of labels for which the lift is maximal.
@@ -69,15 +67,14 @@ namespace seco {
              *                  configuration of the lift function
              */
             virtual IPeakLiftFunctionConfig& setCurvature(float64 curvature) = 0;
-
     };
 
     /**
      * Allows to configure a lift function that monotonously increases until a certain number of labels, where the
      * maximum lift is reached, and monotonously decreases afterwards.
      */
-    class PeakLiftFunctionConfig final : public ILiftFunctionConfig, public IPeakLiftFunctionConfig {
-
+    class PeakLiftFunctionConfig final : public ILiftFunctionConfig,
+                                         public IPeakLiftFunctionConfig {
         private:
 
             uint32 peakLabel_;
@@ -103,8 +100,7 @@ namespace seco {
             IPeakLiftFunctionConfig& setCurvature(float64 curvature) override;
 
             std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
-
+              const IRowWiseLabelMatrix& labelMatrix) const override;
     };
 
 }

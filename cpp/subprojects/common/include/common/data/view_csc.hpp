@@ -5,7 +5,6 @@
 
 #include "common/data/view_two_dimensional.hpp"
 
-
 /**
  * Implements column-wise read-only access to the values that are stored in a pre-allocated matrix in the compressed
  * sparse column (CSC) format.
@@ -14,7 +13,6 @@
  */
 template<typename T>
 class CscConstView : virtual public ITwoDimensionalView {
-
     protected:
 
         /**
@@ -116,9 +114,7 @@ class CscConstView : virtual public ITwoDimensionalView {
          * @see `ITwoDimensionalView::getNumCols`
          */
         uint32 getNumCols() const override final;
-
 };
-
 
 /**
  * Implements column-wise read and write access to the values that are stored in a pre-allocated matrix in the
@@ -128,7 +124,6 @@ class CscConstView : virtual public ITwoDimensionalView {
  */
 template<typename T>
 class CscView : public CscConstView<T> {
-
     public:
 
         /**
@@ -185,5 +180,4 @@ class CscView : public CscConstView<T> {
          * @return      An `index_iterator` to the end of the indices
          */
         index_iterator column_indices_end(uint32 col);
-
 };

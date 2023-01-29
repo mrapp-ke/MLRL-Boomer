@@ -3,12 +3,11 @@
  */
 #pragma once
 
+#include "boosting/binning/label_binning.hpp"
+#include "boosting/macros.hpp"
 #include "boosting/rule_evaluation/head_type.hpp"
 #include "boosting/rule_evaluation/regularization.hpp"
-#include "boosting/binning/label_binning.hpp"
 #include "common/multi_threading/multi_threading.hpp"
-#include "boosting/macros.hpp"
-
 
 namespace boosting {
 
@@ -17,10 +16,9 @@ namespace boosting {
      * number of labels.
      */
     class MLRLBOOSTING_API IFixedPartialHeadConfig {
-
         public:
 
-            virtual ~IFixedPartialHeadConfig() { };
+            virtual ~IFixedPartialHeadConfig() {};
 
             /**
              * Returns the percentage that specifies for how many labels the rule heads predict.
@@ -75,14 +73,13 @@ namespace boosting {
              *                  configuration of the rule heads
              */
             virtual IFixedPartialHeadConfig& setMaxLabels(uint32 maxLabels) = 0;
-
     };
 
     /**
      * Allows to configure partial rule heads that predict for a predefined number of labels.
      */
-    class FixedPartialHeadConfig final : public IHeadConfig, public IFixedPartialHeadConfig {
-
+    class FixedPartialHeadConfig final : public IHeadConfig,
+                                         public IFixedPartialHeadConfig {
         private:
 
             float32 labelRatio_;
@@ -120,21 +117,20 @@ namespace boosting {
             IFixedPartialHeadConfig& setMaxLabels(uint32 maxLabels) override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-                const ILabelWiseLossConfig& lossConfig) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const ILabelWiseLossConfig& lossConfig) const override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-                const ISparseLabelWiseLossConfig& lossConfig) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const ISparseLabelWiseLossConfig& lossConfig) const override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-                const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const override;
 
             bool isPartial() const override;
 
             bool isSingleLabel() const override;
-
     };
 
 }

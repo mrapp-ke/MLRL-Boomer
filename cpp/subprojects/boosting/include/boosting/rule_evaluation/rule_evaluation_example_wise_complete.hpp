@@ -3,10 +3,9 @@
  */
 #pragma once
 
-#include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
-
+#include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 
 namespace boosting {
 
@@ -15,7 +14,6 @@ namespace boosting {
      * predictions of complete rules, which predict for all available labels.
      */
     class ExampleWiseCompleteRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
-
         private:
 
             float64 l1RegularizationWeight_;
@@ -42,13 +40,12 @@ namespace boosting {
                                                      const Blas& blas, const Lapack& lapack);
 
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-                const DenseExampleWiseStatisticVector& statisticVector,
-                const CompleteIndexVector& indexVector) const override;
+              const DenseExampleWiseStatisticVector& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
 
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-                const DenseExampleWiseStatisticVector& statisticVector,
-                const PartialIndexVector& indexVector) const override;
-
+              const DenseExampleWiseStatisticVector& statisticVector,
+              const PartialIndexVector& indexVector) const override;
     };
 
 }

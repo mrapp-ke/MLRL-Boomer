@@ -4,8 +4,8 @@
 #pragma once
 
 #include "common/data/indexed_value.hpp"
-#include <vector>
 
+#include <vector>
 
 /**
  * A two-dimensional matrix that provides row-wise access to data that is stored in the list of lists (LIL) format.
@@ -14,7 +14,6 @@
  */
 template<typename T>
 class LilMatrix final {
-
     private:
 
         uint32 numRows_;
@@ -109,5 +108,4 @@ class LilMatrix final {
          * Sets the values of all elements to zero.
          */
         void clear();
-
 };

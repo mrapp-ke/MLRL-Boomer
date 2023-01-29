@@ -6,7 +6,6 @@
 #include "boosting/losses/loss_label_wise.hpp"
 #include "boosting/rule_evaluation/head_type.hpp"
 
-
 namespace boosting {
 
     /**
@@ -14,7 +13,6 @@ namespace boosting {
      * applied label-wise.
      */
     class LabelWiseSquaredErrorLossConfig final : public ILabelWiseLossConfig {
-
         private:
 
             const std::unique_ptr<IHeadConfig>& headConfigPtr_;
@@ -27,15 +25,14 @@ namespace boosting {
             LabelWiseSquaredErrorLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-                const Lapack& lapack, bool preferSparseStatistics) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+              const Lapack& lapack, bool preferSparseStatistics) const override;
 
             std::unique_ptr<IProbabilityFunctionFactory> createProbabilityFunctionFactory() const override;
 
             float64 getDefaultPrediction() const override;
 
             std::unique_ptr<ILabelWiseLossFactory> createLabelWiseLossFactory() const override;
-
     };
 
 }

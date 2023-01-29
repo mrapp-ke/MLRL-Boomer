@@ -1,19 +1,13 @@
 #include "boosting/data/matrix_dense_numeric.hpp"
 
-
 namespace boosting {
 
     template<typename T>
-    NumericDenseMatrix<T>::NumericDenseMatrix(uint32 numRows, uint32 numCols)
-        : DenseMatrix<T>(numRows, numCols) {
-
-    }
+    NumericDenseMatrix<T>::NumericDenseMatrix(uint32 numRows, uint32 numCols) : DenseMatrix<T>(numRows, numCols) {}
 
     template<typename T>
     NumericDenseMatrix<T>::NumericDenseMatrix(uint32 numRows, uint32 numCols, bool init)
-        : DenseMatrix<T>(numRows, numCols, init) {
-
-    }
+        : DenseMatrix<T>(numRows, numCols, init) {}
 
     template<typename T>
     void NumericDenseMatrix<T>::addToRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,

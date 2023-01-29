@@ -7,8 +7,8 @@
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "seco/rule_evaluation/rule_evaluation.hpp"
-#include <memory>
 
+#include <memory>
 
 namespace seco {
 
@@ -17,10 +17,9 @@ namespace seco {
      * calculate the predictions of rules, as well as their overall quality, based on label-wise confusion matrices.
      */
     class ILabelWiseRuleEvaluationFactory {
-
         public:
 
-            virtual ~ILabelWiseRuleEvaluationFactory() { };
+            virtual ~ILabelWiseRuleEvaluationFactory() {};
 
             /**
              * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of
@@ -41,7 +40,6 @@ namespace seco {
              * @return              An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
             virtual std::unique_ptr<IRuleEvaluation> create(const PartialIndexVector& indexVector) const = 0;
-
     };
 
 }

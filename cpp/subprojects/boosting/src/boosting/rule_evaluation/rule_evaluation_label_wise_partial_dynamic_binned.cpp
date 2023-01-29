@@ -1,7 +1,7 @@
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_partial_dynamic_binned.hpp"
+
 #include "rule_evaluation_label_wise_binned_common.hpp"
 #include "rule_evaluation_label_wise_partial_dynamic_common.hpp"
-
 
 namespace boosting {
 
@@ -15,9 +15,8 @@ namespace boosting {
      *                          be calculated
      */
     template<typename StatisticVector, typename IndexVector>
-    class LabelWiseDynamicPartialBinnedRuleEvaluation final :
-            public AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
-
+    class LabelWiseDynamicPartialBinnedRuleEvaluation final
+        : public AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
         private:
 
             const IndexVector& labelIndices_;
@@ -35,9 +34,8 @@ namespace boosting {
                                               float64 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                const std::pair<float64, float64> pair = getMinAndMaxScore(statisticIterator, numElements,
-                                                                           l1RegularizationWeight,
-                                                                           l2RegularizationWeight);
+                const std::pair<float64, float64> pair =
+                  getMinAndMaxScore(statisticIterator, numElements, l1RegularizationWeight, l2RegularizationWeight);
                 float64 minAbsScore = pair.first;
                 float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
@@ -83,57 +81,58 @@ namespace boosting {
                                                         float32 threshold, float32 exponent,
                                                         float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                                                         std::unique_ptr<ILabelBinning> binningPtr)
-                : AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(*indexVectorPtr, true,
-                                                                                             l1RegularizationWeight,
-                                                                                             l2RegularizationWeight,
-                                                                                             std::move(binningPtr)),
+                : AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
+                  *indexVectorPtr, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)), threshold_(1.0 - threshold),
-                  exponent_(exponent) {
-
-            }
-
+                  exponent_(exponent) {}
     };
 
     LabelWiseDynamicPartialBinnedRuleEvaluationFactory::LabelWiseDynamicPartialBinnedRuleEvaluationFactory(
-            float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
-            std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
+      float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+      std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
-          l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)) {
+          l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)) {}
 
-    }
-
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseDynamicPartialBinnedRuleEvaluationFactory::create(
-            const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>>
+      LabelWiseDynamicPartialBinnedRuleEvaluationFactory::create(const DenseLabelWiseStatisticVector& statisticVector,
+                                                                 const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr =
-            std::make_unique<PartialIndexVector>(indexVector.getNumElements());
+          std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
-        return std::make_unique<LabelWiseDynamicPartialBinnedRuleEvaluation<DenseLabelWiseStatisticVector, CompleteIndexVector>>(
-            indexVector, std::move(indexVectorPtr), threshold_, exponent_, l1RegularizationWeight_,
-            l2RegularizationWeight_, std::move(labelBinningPtr));
+        return std::make_unique<
+          LabelWiseDynamicPartialBinnedRuleEvaluation<DenseLabelWiseStatisticVector, CompleteIndexVector>>(
+          indexVector, std::move(indexVectorPtr), threshold_, exponent_, l1RegularizationWeight_,
+          l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseDynamicPartialBinnedRuleEvaluationFactory::create(
-            const DenseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>>
+      LabelWiseDynamicPartialBinnedRuleEvaluationFactory::create(const DenseLabelWiseStatisticVector& statisticVector,
+                                                                 const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
-        return std::make_unique<LabelWiseCompleteBinnedRuleEvaluation<DenseLabelWiseStatisticVector, PartialIndexVector>>(
-            indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
+        return std::make_unique<
+          LabelWiseCompleteBinnedRuleEvaluation<DenseLabelWiseStatisticVector, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseDynamicPartialBinnedRuleEvaluationFactory::create(
-            const SparseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>>
+      LabelWiseDynamicPartialBinnedRuleEvaluationFactory::create(const SparseLabelWiseStatisticVector& statisticVector,
+                                                                 const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr =
-            std::make_unique<PartialIndexVector>(indexVector.getNumElements());
+          std::make_unique<PartialIndexVector>(indexVector.getNumElements());
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
-        return std::make_unique<LabelWiseDynamicPartialBinnedRuleEvaluation<SparseLabelWiseStatisticVector, CompleteIndexVector>>(
-            indexVector, std::move(indexVectorPtr), threshold_, exponent_, l1RegularizationWeight_,
-            l2RegularizationWeight_, std::move(labelBinningPtr));
+        return std::make_unique<
+          LabelWiseDynamicPartialBinnedRuleEvaluation<SparseLabelWiseStatisticVector, CompleteIndexVector>>(
+          indexVector, std::move(indexVectorPtr), threshold_, exponent_, l1RegularizationWeight_,
+          l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseDynamicPartialBinnedRuleEvaluationFactory::create(
-            const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>>
+      LabelWiseDynamicPartialBinnedRuleEvaluationFactory::create(const SparseLabelWiseStatisticVector& statisticVector,
+                                                                 const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
-        return std::make_unique<LabelWiseCompleteBinnedRuleEvaluation<SparseLabelWiseStatisticVector, PartialIndexVector>>(
-            indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
+        return std::make_unique<
+          LabelWiseCompleteBinnedRuleEvaluation<SparseLabelWiseStatisticVector, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
 }

@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "common/data/triple.hpp"
 #include "boosting/data/statistic_view_label_wise_sparse.hpp"
-
+#include "common/data/triple.hpp"
 
 namespace boosting {
 
@@ -14,7 +13,6 @@ namespace boosting {
      * decomposable loss function and are stored in a pre-allocated histogram in the list of lists (LIL) format.
      */
     class SparseLabelWiseHistogramConstView {
-
         protected:
 
             /**
@@ -101,7 +99,6 @@ namespace boosting {
              * @return The number of columns
              */
             uint32 getNumCols() const;
-
     };
 
     /**
@@ -110,7 +107,6 @@ namespace boosting {
      * format.
      */
     class SparseLabelWiseHistogramView : public SparseLabelWiseHistogramConstView {
-
         public:
 
             /**
@@ -137,7 +133,6 @@ namespace boosting {
              */
             void addToRow(uint32 row, SparseLabelWiseStatisticConstView::const_iterator begin,
                           SparseLabelWiseStatisticConstView::const_iterator end, float64 weight);
-
     };
 
 }

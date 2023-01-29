@@ -3,11 +3,10 @@
  */
 #pragma once
 
-#include "common/thresholds/thresholds.hpp"
 #include "common/input/feature_info.hpp"
 #include "common/input/feature_matrix.hpp"
+#include "common/thresholds/thresholds.hpp"
 #include "omp.h"
-
 
 template<typename IndexIterator, typename WeightVector>
 static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator, uint32 numExamples,
@@ -16,7 +15,7 @@ static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator,
                                                     const AbstractPrediction& prediction) {
     OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
-        prediction.createStatisticsSubset(statistics, outOfSampleWeights);
+      prediction.createStatisticsSubset(statistics, outOfSampleWeights);
 
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indexIterator[i];
@@ -35,7 +34,7 @@ static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights,
                                                     const AbstractPrediction& prediction) {
     OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
-        prediction.createStatisticsSubset(statistics, outOfSampleWeights);
+      prediction.createStatisticsSubset(statistics, outOfSampleWeights);
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
 
@@ -56,7 +55,7 @@ static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights,
                                                     const AbstractPrediction& prediction) {
     OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
-        prediction.createStatisticsSubset(statistics, outOfSampleWeights);
+      prediction.createStatisticsSubset(statistics, outOfSampleWeights);
     const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
     CoverageSet::const_iterator iterator = coverageSet.cbegin();
@@ -134,7 +133,6 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
  * rule that currently has an empty body and therefore covers the entire instance space.
  */
 class AbstractThresholds : public IThresholds {
-
     protected:
 
         /**
@@ -167,14 +165,11 @@ class AbstractThresholds : public IThresholds {
          */
         AbstractThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
                            IStatisticsProvider& statisticsProvider)
-            : featureMatrix_(featureMatrix), featureInfo_(featureInfo), statisticsProvider_(statisticsProvider) {
+            : featureMatrix_(featureMatrix), featureInfo_(featureInfo), statisticsProvider_(statisticsProvider) {}
 
-        }
-
-        virtual ~AbstractThresholds() override { };
+        virtual ~AbstractThresholds() override {};
 
         IStatisticsProvider& getStatisticsProvider() const override final {
             return statisticsProvider_;
         }
-
 };

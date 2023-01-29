@@ -7,9 +7,9 @@
 #include "boosting/math/lapack.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
+
 #include <functional>
 #include <memory>
-
 
 namespace boosting {
 
@@ -19,47 +19,46 @@ namespace boosting {
      * statistic in the vector.
      */
     struct LabelInfo final {
+        public:
 
-        /**
-         * The number of positive bins.
-         */
-        uint32 numPositiveBins;
+            /**
+             * The number of positive bins.
+             */
+            uint32 numPositiveBins;
 
-        /**
-         * The minimum among all statistics that belong to the positive bins.
-         */
-        float64 minPositive;
+            /**
+             * The minimum among all statistics that belong to the positive bins.
+             */
+            float64 minPositive;
 
-        /**
-         * The maximum among all statistics that belong to the positive bins.
-         */
-        float64 maxPositive;
+            /**
+             * The maximum among all statistics that belong to the positive bins.
+             */
+            float64 maxPositive;
 
-        /**
-         * The number of negative bins.
-         */
-        uint32 numNegativeBins;
+            /**
+             * The number of negative bins.
+             */
+            uint32 numNegativeBins;
 
-        /**
-         * The minimum among all statistics that belong to the negative bins.
-         */
-        float64 minNegative;
+            /**
+             * The minimum among all statistics that belong to the negative bins.
+             */
+            float64 minNegative;
 
-        /**
-         * The maximum among all statistics that belong to the negative bins.
-         */
-        float64 maxNegative;
-
+            /**
+             * The maximum among all statistics that belong to the negative bins.
+             */
+            float64 maxNegative;
     };
 
     /**
      * Defines an interface for methods that assign labels to bins, based on the corresponding gradients and Hessians.
      */
     class ILabelBinning {
-
         public:
 
-            virtual ~ILabelBinning() { };
+            virtual ~ILabelBinning() {};
 
             /**
              * A callback function that is invoked when a label is assigned to a bin. It takes the index of the bin and
@@ -111,17 +110,15 @@ namespace boosting {
              */
             virtual void createBins(LabelInfo labelInfo, const float64* criteria, uint32 numElements, Callback callback,
                                     ZeroCallback zeroCallback) const = 0;
-
     };
 
     /**
      * Defines an interface for all factories that allows to create instances of the type `ILabelBinning`.
      */
     class ILabelBinningFactory {
-
         public:
 
-            virtual ~ILabelBinningFactory() { };
+            virtual ~ILabelBinningFactory() {};
 
             /**
              * Creates and returns a new object of type `ILabelBinning`.
@@ -129,17 +126,15 @@ namespace boosting {
              * @return An unique pointer to an object of type `ILabelBinning` that has been created
              */
             virtual std::unique_ptr<ILabelBinning> create() const = 0;
-
     };
 
     /**
      * Defines an interface for all classes that allow to configure a method that assigns labels to bins.
      */
     class ILabelBinningConfig {
-
         public:
 
-            virtual ~ILabelBinningConfig() { };
+            virtual ~ILabelBinningConfig() {};
 
             /**
              * Creates and returns a new object of type `ILabelWiseRuleEvaluationFactory` that allows to calculate the
@@ -147,7 +142,8 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `ILabelWiseRuleEvaluationFactory` that has been created
              */
-            virtual std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory() const = 0;
+            virtual std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory()
+              const = 0;
 
             /**
              * Creates and returns a new object of type `ISparseLabelWiseRuleEvaluationFactory` that allows to calculate
@@ -160,8 +156,9 @@ namespace boosting {
              * @return              An unique pointer to an object of type `ISparseLabelWiseRuleEvaluationFactory` that
              *                      has been created
              */
-            virtual std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseFixedPartialRuleEvaluationFactory(
-                float32 labelRatio, uint32 minLabels, uint32 maxLabels) const = 0;
+            virtual std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory>
+              createLabelWiseFixedPartialRuleEvaluationFactory(float32 labelRatio, uint32 minLabels,
+                                                               uint32 maxLabels) const = 0;
 
             /**
              * Creates and returns a new object of type `ISparseLabelWiseRuleEvaluationFactory` that allows to calculate
@@ -173,8 +170,8 @@ namespace boosting {
              * @return          An unique pointer to an object of type `ISparseLabelWiseRuleEvaluationFactory` that has
              *                  been created
              */
-            virtual std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseDynamicPartialRuleEvaluationFactory(
-                float32 threshold, float32 exponent) const = 0;
+            virtual std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory>
+              createLabelWiseDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent) const = 0;
 
             /**
              * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
@@ -186,7 +183,7 @@ namespace boosting {
              *                  created
              */
             virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseCompleteRuleEvaluationFactory(
-                const Blas& blas, const Lapack& lapack) const = 0;
+              const Blas& blas, const Lapack& lapack) const = 0;
 
             /**
              * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
@@ -201,9 +198,9 @@ namespace boosting {
              * @return              An unique pointer to an object of type `IExampleWiseRuleEvaluationFactory` that has
              *                      been created
              */
-            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseFixedPartialRuleEvaluationFactory(
-                float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas,
-                const Lapack& lapack) const = 0;
+            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory>
+              createExampleWiseFixedPartialRuleEvaluationFactory(float32 labelRatio, uint32 minLabels, uint32 maxLabels,
+                                                                 const Blas& blas, const Lapack& lapack) const = 0;
 
             /**
              * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
@@ -217,9 +214,9 @@ namespace boosting {
              * @return          An unique pointer to an object of type `IExampleWiseRuleEvaluationFactory` that has been
              *                  created
              */
-            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseDynamicPartialRuleEvaluationFactory(
-                float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const = 0;
-
+            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory>
+              createExampleWiseDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent,
+                                                                   const Blas& blas, const Lapack& lapack) const = 0;
     };
 
 }

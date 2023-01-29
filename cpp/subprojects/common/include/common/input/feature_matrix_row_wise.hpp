@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/input/feature_matrix.hpp"
+
 #include <memory>
 
 // Forward declarations
@@ -18,15 +19,13 @@ class IScorePredictorFactory;
 class IProbabilityPredictor;
 class IProbabilityPredictorFactory;
 
-
 /**
  * Defines an interface for all feature matrices that provide row-wise access to the feature values of examples.
  */
 class MLRLCOMMON_API IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
-
     public:
 
-        virtual ~IRowWiseFeatureMatrix() override { };
+        virtual ~IRowWiseFeatureMatrix() override {};
 
         /**
          * Creates and returns a new instance of the class `IBinaryPredictor`, based on the type of this feature matrix.
@@ -60,8 +59,8 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
          *                          created
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-            const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
+          const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
+          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IScorePredictor`, based on the type of this feature matrix.
@@ -94,7 +93,6 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
          * @return                  An unique pointer to an object of type `IProbabilityPredictor` that has been created
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-            const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
-
+          const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel,
+          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 };

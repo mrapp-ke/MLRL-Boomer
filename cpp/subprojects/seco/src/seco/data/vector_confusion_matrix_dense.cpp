@@ -1,9 +1,10 @@
 #include "seco/data/vector_confusion_matrix_dense.hpp"
+
 #include "common/data/arrays.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
+
 #include <algorithm>
 #include <cstdlib>
-
 
 namespace seco {
 
@@ -11,8 +12,8 @@ namespace seco {
     static inline void addInternally(LabelIterator labelIterator, const VectorConstView<uint32>& majorityLabelIndices,
                                      DenseCoverageMatrix::value_const_iterator coverageIterator, float64 weight,
                                      ConfusionMatrix* confusionMatrices, uint32 numLabels) {
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                             majorityLabelIndices.cend());
+        auto majorityIterator =
+          make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
 
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 coverage = coverageIterator[i];
@@ -31,16 +32,12 @@ namespace seco {
     }
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements)
-        : DenseConfusionMatrixVector(numElements, false) {
-
-    }
+        : DenseConfusionMatrixVector(numElements, false) {}
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements, bool init)
         : array_(init ? (ConfusionMatrix*) calloc(numElements, sizeof(ConfusionMatrix))
                       : (ConfusionMatrix*) malloc(numElements * sizeof(ConfusionMatrix))),
-          numElements_(numElements) {
-
-    }
+          numElements_(numElements) {}
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
         : DenseConfusionMatrixVector(other.numElements_) {
@@ -137,12 +134,12 @@ namespace seco {
                                                  const VectorConstView<uint32>& majorityLabelIndices,
                                                  const DenseCoverageMatrix& coverageMatrix,
                                                  const PartialIndexVector& indices, float64 weight) {
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                             majorityLabelIndices.cend());
+        auto majorityIterator =
+          make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
         typename DenseCoverageMatrix::value_const_iterator coverageIterator =
-            coverageMatrix.row_values_cbegin(exampleIndex);
+          coverageMatrix.row_values_cbegin(exampleIndex);
         CContiguousConstView<const uint8>::value_const_iterator labelIterator =
-            labelMatrix.row_values_cbegin(exampleIndex);
+          labelMatrix.row_values_cbegin(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
         uint32 previousIndex = 0;
@@ -167,10 +164,10 @@ namespace seco {
                                                  const VectorConstView<uint32>& majorityLabelIndices,
                                                  const DenseCoverageMatrix& coverageMatrix,
                                                  const PartialIndexVector& indices, float64 weight) {
-        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                             majorityLabelIndices.cend());
+        auto majorityIterator =
+          make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
         typename DenseCoverageMatrix::value_const_iterator coverageIterator =
-            coverageMatrix.row_values_cbegin(exampleIndex);
+          coverageMatrix.row_values_cbegin(exampleIndex);
         BinaryCsrConstView::index_const_iterator labelIndexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
         BinaryCsrConstView::index_const_iterator labelIndicesEnd = labelMatrix.row_indices_cend(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();

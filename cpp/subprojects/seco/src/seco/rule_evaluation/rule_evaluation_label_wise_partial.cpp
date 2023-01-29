@@ -1,12 +1,13 @@
 #include "seco/rule_evaluation/rule_evaluation_label_wise_partial.hpp"
+
 #include "common/data/tuple.hpp"
 #include "common/data/vector_sparse_array.hpp"
 #include "common/indices/index_vector_partial.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
-#include <algorithm>
 
+#include <algorithm>
 
 namespace seco {
 
@@ -21,7 +22,6 @@ namespace seco {
      * quality of rules, depending on how many labels they predict, into account.
      */
     class LabelWiseCompleteRuleEvaluation final : public IRuleEvaluation {
-
         private:
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
@@ -44,20 +44,18 @@ namespace seco {
                                             std::unique_ptr<IHeuristic> heuristicPtr,
                                             std::unique_ptr<ILiftFunction> liftFunctionPtr)
                 : scoreVector_(DenseScoreVector<PartialIndexVector>(labelIndices, true)),
-                  heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {
-
-            }
+                  heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {}
 
             const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = scoreVector_.getNumElements();
                 DenseScoreVector<PartialIndexVector>::index_const_iterator indexIterator =
-                    scoreVector_.indices_cbegin();
+                  scoreVector_.indices_cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                                  majorityLabelIndices.cend());
+                auto labelIterator =
+                  make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
                 DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 float64 sumOfQualities = 0;
                 uint32 previousIndex = 0;
@@ -66,15 +64,14 @@ namespace seco {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
                     scoreIterator[i] = (float64) !(*labelIterator);
-                    sumOfQualities += calculateLabelWiseQuality(totalIterator[index], coveredIterator[i],
-                                                                *heuristicPtr_);
+                    sumOfQualities +=
+                      calculateLabelWiseQuality(totalIterator[index], coveredIterator[i], *heuristicPtr_);
                     previousIndex = index;
                 }
 
                 scoreVector_.quality = calculateLiftedQuality(sumOfQualities, numElements, *liftFunctionPtr_);
                 return scoreVector_;
             }
-
     };
 
     /**
@@ -86,7 +83,6 @@ namespace seco {
      */
     template<typename T>
     class LabelWisePartialRuleEvaluation final : public IRuleEvaluation {
-
         private:
 
             const T& labelIndices_;
@@ -116,9 +112,7 @@ namespace seco {
                 : labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
                   scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
                   sortedVector_(SparseArrayVector<Tuple<float64>>(labelIndices.getNumElements())),
-                  heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {
-
-            }
+                  heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {}
 
             const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
@@ -127,8 +121,8 @@ namespace seco {
                 typename T::const_iterator indexIterator = labelIndices_.cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                                  majorityLabelIndices.cend());
+                auto labelIterator =
+                  make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
                 SparseArrayVector<Tuple<float64>>::iterator sortedIterator = sortedVector_.begin();
                 uint32 previousIndex = 0;
 
@@ -143,8 +137,8 @@ namespace seco {
                     previousIndex = index;
                 }
 
-                std::sort(sortedIterator, sortedVector_.end(), [=](const IndexedValue<Tuple<float64>>& a,
-                                                                   const IndexedValue<Tuple<float64>>& b) {
+                std::sort(sortedIterator, sortedVector_.end(),
+                          [=](const IndexedValue<Tuple<float64>>& a, const IndexedValue<Tuple<float64>>& b) {
                     return a.value.first > b.value.first;
                 });
 
@@ -186,28 +180,24 @@ namespace seco {
 
                 return scoreVector_;
             }
-
     };
 
     LabelWisePartialRuleEvaluationFactory::LabelWisePartialRuleEvaluationFactory(
-            std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr,
-            std::unique_ptr<ILiftFunctionFactory> liftFunctionFactoryPtr)
+      std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr,
+      std::unique_ptr<ILiftFunctionFactory> liftFunctionFactoryPtr)
         : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)),
-          liftFunctionFactoryPtr_(std::move(liftFunctionFactoryPtr)) {
-
-    }
+          liftFunctionFactoryPtr_(std::move(liftFunctionFactoryPtr)) {}
 
     std::unique_ptr<IRuleEvaluation> LabelWisePartialRuleEvaluationFactory::create(
-            const CompleteIndexVector& indexVector) const {
+      const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
-        return std::make_unique<LabelWisePartialRuleEvaluation<CompleteIndexVector>>(indexVector,
-                                                                                     std::move(heuristicPtr),
-                                                                                     std::move(liftFunctionPtr));
+        return std::make_unique<LabelWisePartialRuleEvaluation<CompleteIndexVector>>(
+          indexVector, std::move(heuristicPtr), std::move(liftFunctionPtr));
     }
 
     std::unique_ptr<IRuleEvaluation> LabelWisePartialRuleEvaluationFactory::create(
-            const PartialIndexVector& indexVector) const {
+      const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
         std::unique_ptr<ILiftFunction> liftFunctionPtr = liftFunctionFactoryPtr_->create();
         return std::make_unique<LabelWiseCompleteRuleEvaluation>(indexVector, std::move(heuristicPtr),

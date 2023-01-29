@@ -3,10 +3,9 @@
  */
 #pragma once
 
-#include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
-
+#include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 
 namespace boosting {
 
@@ -15,7 +14,6 @@ namespace boosting {
      * predictions of partial rules, which predict for a subset of the available that is determined dynamically.
      */
     class ExampleWiseDynamicPartialRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
-
         private:
 
             float32 threshold_;
@@ -59,13 +57,12 @@ namespace boosting {
                                                            const Lapack& lapack);
 
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-                const DenseExampleWiseStatisticVector& statisticVector,
-                const CompleteIndexVector& indexVector) const override;
+              const DenseExampleWiseStatisticVector& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
 
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-                const DenseExampleWiseStatisticVector& statisticVector,
-                const PartialIndexVector& indexVector) const override;
-
+              const DenseExampleWiseStatisticVector& statisticVector,
+              const PartialIndexVector& indexVector) const override;
     };
 
 }
