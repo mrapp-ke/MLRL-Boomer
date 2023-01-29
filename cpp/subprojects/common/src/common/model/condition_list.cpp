@@ -70,7 +70,9 @@ std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
                 neqIndex++;
                 break;
             }
-            default: { }
+            default: {
+                break;
+            }
         }
     }
 
