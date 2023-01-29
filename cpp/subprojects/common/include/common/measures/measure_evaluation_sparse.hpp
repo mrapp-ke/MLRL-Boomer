@@ -3,21 +3,20 @@
  */
 #pragma once
 
+#include "common/data/matrix_sparse_set.hpp"
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_csr_binary.hpp"
-#include "common/data/matrix_sparse_set.hpp"
-#include <memory>
 
+#include <memory>
 
 /**
  * Defines an interface for all measures that may be used to assess the quality of predictions for certain examples,
  * which are stored using sparse data structures, by comparing them to the corresponding ground truth labels.
  */
 class ISparseEvaluationMeasure {
-
     public:
 
-        virtual ~ISparseEvaluationMeasure() { };
+        virtual ~ISparseEvaluationMeasure() {};
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -48,17 +47,15 @@ class ISparseEvaluationMeasure {
          */
         virtual float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
                                  const SparseSetMatrix<float64>& scoreMatrix) const = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `ISparseEvaluationMeasure`.
  */
 class ISparseEvaluationMeasureFactory {
-
     public:
 
-        virtual ~ISparseEvaluationMeasureFactory() { };
+        virtual ~ISparseEvaluationMeasureFactory() {};
 
         /**
          * Creates and returns a new object of type `ISparseEvaluationMeasure`.
@@ -66,5 +63,4 @@ class ISparseEvaluationMeasureFactory {
          * @return An unique pointer to an object of type `ISparseEvaluationMeasure` that has been created
          */
         virtual std::unique_ptr<ISparseEvaluationMeasure> createSparseEvaluationMeasure() const = 0;
-
 };

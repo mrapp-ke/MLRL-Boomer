@@ -7,7 +7,6 @@
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
-
 namespace boosting {
 
     /**
@@ -18,7 +17,6 @@ namespace boosting {
      */
     template<typename T>
     class NumericSparseSetMatrix final : public SparseSetMatrix<T> {
-
         public:
 
             /**
@@ -86,7 +84,6 @@ namespace boosting {
                                          typename VectorConstView<T>::const_iterator end,
                                          PartialIndexVector::const_iterator indicesBegin,
                                          PartialIndexVector::const_iterator indicesEnd);
-
     };
 
 }

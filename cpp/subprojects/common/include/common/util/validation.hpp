@@ -6,7 +6,6 @@
 #include <stdexcept>
 #include <string>
 
-
 /**
  * Throws a `std::invalid_argument` exception if a given value is not greater than a specific threshold.
  *

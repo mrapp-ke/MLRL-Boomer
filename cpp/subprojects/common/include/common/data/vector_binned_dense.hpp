@@ -4,8 +4,8 @@
 #pragma once
 
 #include "common/data/vector_dense.hpp"
-#include <iterator>
 
+#include <iterator>
 
 /**
  * An one-dimensional vector that provides random access to a fixed number of elements, corresponding to bins, stored in
@@ -15,7 +15,6 @@
  */
 template<typename T>
 class DenseBinnedVector {
-
     private:
 
         DenseVector<uint32> binIndices_;
@@ -28,7 +27,6 @@ class DenseBinnedVector {
          * An iterator that provides read-only access to the values of all elements in a `DenseBinnedVector`.
          */
         class ValueConstIterator final {
-
             private:
 
                 DenseVector<uint32>::const_iterator binIndexIterator_;
@@ -135,7 +133,6 @@ class DenseBinnedVector {
                  * @return      The difference between the iterators
                  */
                 difference_type operator-(const ValueConstIterator& rhs) const;
-
         };
 
         /**
@@ -261,5 +258,4 @@ class DenseBinnedVector {
          * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
          */
         void setNumBins(uint32 numBins, bool freeMemory);
-
 };

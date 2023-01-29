@@ -6,7 +6,6 @@
 #include "boosting/data/statistic_vector_example_wise_dense.hpp"
 #include "rule_evaluation_label_wise_partial_fixed_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -23,17 +22,15 @@ namespace boosting {
      * @param l2RegularizationWeight    The L1 regularization weight
      */
     static inline void sortLabelWiseCriteria(
-            SparseArrayVector<float64>::iterator tmpIterator,
-            DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
-            DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator,
-            uint32 numLabels, uint32 numPredictions, float64 l1RegularizationWeight,
-            float64 l2RegularizationWeight) {
+      SparseArrayVector<float64>::iterator tmpIterator,
+      DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
+      DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator, uint32 numLabels,
+      uint32 numPredictions, float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numLabels; i++) {
             IndexedValue<float64>& entry = tmpIterator[i];
             entry.index = i;
             entry.value = calculateLabelWiseScore(gradientIterator[i], hessianIterator[i], l1RegularizationWeight,
                                                   l2RegularizationWeight);
-
         }
 
         std::partial_sort(tmpIterator, &tmpIterator[numPredictions], &tmpIterator[numLabels],

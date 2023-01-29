@@ -1,6 +1,6 @@
 #include "common/rule_refinement/rule_refinement_exact.hpp"
-#include "common/math/math.hpp"
 
+#include "common/math/math.hpp"
 
 static inline uint32 upperBound(FeatureVector::const_iterator iterator, uint32 start, uint32 end, float32 threshold) {
     while (start < end) {
@@ -32,9 +32,9 @@ static inline void adjustRefinement(Refinement& refinement, FeatureVector::const
 
 template<typename IndexIterator, typename RefinementComparator>
 static inline void findRefinementInternally(
-        const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal, uint32 minCoverage,
-        bool hasZeroWeights, IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>& callback,
-        RefinementComparator& comparator) {
+  const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal, uint32 minCoverage,
+  bool hasZeroWeights, IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>& callback,
+  RefinementComparator& comparator) {
     Refinement refinement;
     refinement.featureIndex = featureIndex;
 
@@ -126,7 +126,6 @@ static inline void findRefinementInternally(
                             comparator.pushRefinement(refinement, scoreVector);
                         }
                     }
-
 
                     // Check if a condition that uses the > operator (or the != operator in case of a nominal feature)
                     // covers at least `minCoverage` examples...
@@ -395,8 +394,8 @@ static inline void findRefinementInternally(
 
         if (coverage >= minCoverage) {
             // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = nominal ? statisticsSubsetPtr->calculateScoresAccumulated()
-                                                      : statisticsSubsetPtr->calculateScores();
+            const IScoreVector& scoreVector =
+              nominal ? statisticsSubsetPtr->calculateScoresAccumulated() : statisticsSubsetPtr->calculateScores();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {
@@ -534,9 +533,7 @@ ExactRuleRefinement<IndexVector>::ExactRuleRefinement(const IndexVector& labelIn
                                                       uint32 featureIndex, bool nominal, bool hasZeroWeights,
                                                       std::unique_ptr<Callback> callbackPtr)
     : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
-      hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {
-
-}
+      hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {}
 
 template<typename IndexVector>
 void ExactRuleRefinement<IndexVector>::findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) {

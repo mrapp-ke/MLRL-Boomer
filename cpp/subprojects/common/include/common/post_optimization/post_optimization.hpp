@@ -11,15 +11,13 @@
 #include "common/sampling/label_sampling.hpp"
 #include "common/thresholds/thresholds.hpp"
 
-
 /**
  * Defines an interface for all classes that allow to optimize a rule-based model globally once it has been learned.
  */
 class IPostOptimizationPhase {
-
     public:
 
-        virtual ~IPostOptimizationPhase() { };
+        virtual ~IPostOptimizationPhase() {};
 
         /**
          * Optimizes a rule-based model globally once it has been learned.
@@ -48,17 +46,15 @@ class IPostOptimizationPhase {
                                    ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
                                    IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
                                    const IPostProcessor& postProcessor, RNG& rng) const = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IPostOptimizationPhase`.
  */
 class IPostOptimizationPhaseFactory {
-
     public:
 
-        virtual ~IPostOptimizationPhaseFactory() { };
+        virtual ~IPostOptimizationPhaseFactory() {};
 
         /**
          * Creates and returns a new object of type `IPostOptimizationPhase`.
@@ -68,7 +64,6 @@ class IPostOptimizationPhaseFactory {
          * @return              An unique pointer to an object of type `IPostOptimizationPhase` that has been created
          */
         virtual std::unique_ptr<IPostOptimizationPhase> create(IntermediateModelBuilder& modelBuilder) const = 0;
-
 };
 
 /**
@@ -76,10 +71,9 @@ class IPostOptimizationPhaseFactory {
  * it has been learned.
  */
 class IPostOptimizationPhaseConfig {
-
     public:
 
-        virtual ~IPostOptimizationPhaseConfig() { };
+        virtual ~IPostOptimizationPhaseConfig() {};
 
         /**
          * Creates and returns a new object of type `IPostOptimizationPhaseFactory` according to the specified
@@ -88,7 +82,6 @@ class IPostOptimizationPhaseConfig {
          * @return An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been created
          */
         virtual std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory() const = 0;
-
 };
 
 /**
@@ -96,10 +89,9 @@ class IPostOptimizationPhaseConfig {
  * carrying out several optimization phases.
  */
 class IPostOptimization : public IPostOptimizationPhase {
-
     public:
 
-        virtual ~IPostOptimization() override { };
+        virtual ~IPostOptimization() override {};
 
         /**
          * Returns an `IModelBuilder` that is suited for post-optimization via this object. Rules that are induced
@@ -108,17 +100,15 @@ class IPostOptimization : public IPostOptimizationPhase {
          * @return A reference to an object of type `IModelBuilder` that is suited for post-optimization
          */
         virtual IModelBuilder& getModelBuilder() const = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IPostOptimization`.
  */
 class IPostOptimizationFactory {
-
     public:
 
-        virtual ~IPostOptimizationFactory() { };
+        virtual ~IPostOptimizationFactory() {};
 
         /**
          * Creates and returns a new object of type `IPostOptimization`.
@@ -128,5 +118,4 @@ class IPostOptimizationFactory {
          * @return                      An unique pointer to an object of type `IPostOptimization` that has been created
          */
         virtual std::unique_ptr<IPostOptimization> create(const IModelBuilderFactory& modelBuilderFactory) const = 0;
-
 };

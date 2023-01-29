@@ -3,16 +3,14 @@
  */
 #pragma once
 
+#include "common/indices/index_vector_complete.hpp"
 #include "common/rule_induction/rule_induction.hpp"
 #include "common/rule_refinement/score_processor.hpp"
-#include "common/indices/index_vector_complete.hpp"
-
 
 /**
  * An abstract base class for all classes that implement an algorithm for the induction of individual rules.
  */
 class AbstractRuleInduction : public IRuleInduction {
-
     private:
 
         bool recalculatePredictions_;
@@ -43,10 +41,10 @@ class AbstractRuleInduction : public IRuleInduction {
          *                          grow the rule
          */
         virtual std::unique_ptr<IThresholdsSubset> growRule(
-            IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
-            IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
-            std::unique_ptr<ConditionList>& conditionListPtr,
-            std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const = 0;
+          IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
+          IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
+          std::unique_ptr<ConditionList>& conditionListPtr,
+          std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const = 0;
 
     public:
 
@@ -54,12 +52,9 @@ class AbstractRuleInduction : public IRuleInduction {
          * @param recalculatePredictions True, if the predictions of rules should be recalculated on all training
          *                               examples, if some of the examples have zero weights, false otherwise
          */
-        AbstractRuleInduction(bool recalculatePredictions)
-            : recalculatePredictions_(recalculatePredictions) {
+        AbstractRuleInduction(bool recalculatePredictions) : recalculatePredictions_(recalculatePredictions) {}
 
-        }
-
-        virtual ~AbstractRuleInduction() override { };
+        virtual ~AbstractRuleInduction() override {};
 
         void induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const override final {
             uint32 numStatistics = statistics.getNumStatistics();
@@ -90,24 +85,22 @@ class AbstractRuleInduction : public IRuleInduction {
                         IModelBuilder& modelBuilder) const override final {
             std::unique_ptr<ConditionList> conditionListPtr;
             std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
-            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = this->growRule(thresholds, labelIndices, weights,
-                                                                                    partition, featureSampling, rng,
-                                                                                    conditionListPtr, headPtr);
+            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = this->growRule(
+              thresholds, labelIndices, weights, partition, featureSampling, rng, conditionListPtr, headPtr);
 
             if (headPtr) {
                 if (weights.hasZeroWeights()) {
                     // Prune rule...
                     IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
                     statisticsProvider.switchToPruningRuleEvaluation();
-                    std::unique_ptr<ICoverageState> coverageStatePtr = rulePruning.prune(*thresholdsSubsetPtr,
-                                                                                         partition, *conditionListPtr,
-                                                                                         *headPtr);
+                    std::unique_ptr<ICoverageState> coverageStatePtr =
+                      rulePruning.prune(*thresholdsSubsetPtr, partition, *conditionListPtr, *headPtr);
                     statisticsProvider.switchToRegularRuleEvaluation();
 
                     // Re-calculate the scores in the head based on the entire training data...
                     if (recalculatePredictions_) {
                         const ICoverageState& coverageState =
-                            coverageStatePtr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
+                          coverageStatePtr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
                         partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *headPtr);
                     }
                 }
@@ -127,5 +120,4 @@ class AbstractRuleInduction : public IRuleInduction {
                 return false;
             }
         }
-
 };

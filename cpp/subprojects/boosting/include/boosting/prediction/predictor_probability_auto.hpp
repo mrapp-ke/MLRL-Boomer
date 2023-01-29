@@ -3,10 +3,9 @@
  */
 #pragma once
 
-#include "common/prediction/predictor_probability.hpp"
-#include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
-
+#include "common/multi_threading/multi_threading.hpp"
+#include "common/prediction/predictor_probability.hpp"
 
 namespace boosting {
 
@@ -15,7 +14,6 @@ namespace boosting {
      * given query examples, which estimate the chance of individual labels to be relevant.
      */
     class AutomaticProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
-
         private:
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
@@ -38,13 +36,12 @@ namespace boosting {
              * @see `IProbabilityPredictorConfig::createPredictorFactory`
              */
             std::unique_ptr<IProbabilityPredictorFactory> createPredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`
              */
             bool isLabelVectorSetNeeded() const override;
-
     };
 
 }

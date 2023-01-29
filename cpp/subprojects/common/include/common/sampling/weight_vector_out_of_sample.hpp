@@ -13,7 +13,6 @@
  */
 template<typename WeightVector>
 class OutOfSampleWeightVector final {
-
     private:
 
         const WeightVector& vector_;
@@ -40,5 +39,4 @@ class OutOfSampleWeightVector final {
          * @return      The weight at the specified position
          */
         bool operator[](uint32 pos) const;
-
 };

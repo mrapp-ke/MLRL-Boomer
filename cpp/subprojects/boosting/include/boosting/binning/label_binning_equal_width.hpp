@@ -4,9 +4,8 @@
 #pragma once
 
 #include "boosting/binning/label_binning.hpp"
-#include "boosting/rule_evaluation/regularization.hpp"
 #include "boosting/macros.hpp"
-
+#include "boosting/rule_evaluation/regularization.hpp"
 
 namespace boosting {
 
@@ -15,10 +14,9 @@ namespace boosting {
      * that each bin contains labels for which the predicted score is expected to belong to the same value range.
      */
     class MLRLBOOSTING_API IEqualWidthLabelBinningConfig {
-
         public:
 
-            virtual ~IEqualWidthLabelBinningConfig() { };
+            virtual ~IEqualWidthLabelBinningConfig() {};
 
             /**
              * Returns the percentage that specifies how many bins are used.
@@ -70,15 +68,14 @@ namespace boosting {
              *                  configuration of the method that assigns labels to bins
              */
             virtual IEqualWidthLabelBinningConfig& setMaxBins(uint32 maxBins) = 0;
-
     };
 
     /**
      * Allows to configure a method that assigns labels to bins in a way such that each bin contains labels for which
      * the predicted score is expected to belong to the same value range.
      */
-    class EqualWidthLabelBinningConfig final : public ILabelBinningConfig, public IEqualWidthLabelBinningConfig {
-
+    class EqualWidthLabelBinningConfig final : public ILabelBinningConfig,
+                                               public IEqualWidthLabelBinningConfig {
         private:
 
             float32 binRatio_;
@@ -114,24 +111,24 @@ namespace boosting {
 
             IEqualWidthLabelBinningConfig& setMaxBins(uint32 maxBins) override;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory() const override;
+            std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory()
+              const override;
 
             std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseFixedPartialRuleEvaluationFactory(
-                float32 labelRatio, uint32 minLabels, uint32 maxLabels) const override;
+              float32 labelRatio, uint32 minLabels, uint32 maxLabels) const override;
 
             std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseDynamicPartialRuleEvaluationFactory(
-                float32 threshold, float32 exponent) const override;
+              float32 threshold, float32 exponent) const override;
 
             std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseCompleteRuleEvaluationFactory(
-                const Blas& blas, const Lapack& lapack) const override;
+              const Blas& blas, const Lapack& lapack) const override;
 
             std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseFixedPartialRuleEvaluationFactory(
-                float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas,
-                const Lapack& lapack) const override;
+              float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas,
+              const Lapack& lapack) const override;
 
             std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseDynamicPartialRuleEvaluationFactory(
-                float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const override;
-
+              float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const override;
     };
 
 }

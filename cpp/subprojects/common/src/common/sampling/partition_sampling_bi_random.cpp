@@ -1,15 +1,14 @@
 #include "common/sampling/partition_sampling_bi_random.hpp"
+
 #include "common/sampling/partition_bi.hpp"
 #include "common/util/validation.hpp"
 #include "index_sampling.hpp"
-
 
 /**
  * Allows to randomly split the training examples into two mutually exclusive sets that may be used as a training set
  * and a holdout set.
  */
 class RandomBiPartitionSampling final : public IPartitionSampling {
-
     private:
 
         BiPartition partition_;
@@ -21,9 +20,7 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
          * @param numHoldout    The number of examples to be included in the holdout set
          */
         RandomBiPartitionSampling(uint32 numTraining, uint32 numHoldout)
-            : partition_(BiPartition(numTraining, numHoldout)) {
-
-        }
+            : partition_(BiPartition(numTraining, numHoldout)) {}
 
         IPartition& partition(RNG& rng) override {
             uint32 numTraining = partition_.getNumFirst();
@@ -44,7 +41,6 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
                                                                             numTraining, numTotal, numTraining, rng);
             return partition_;
         }
-
 };
 
 /**
@@ -52,7 +48,6 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
  * exclusive sets that may be used as a training set and a holdout set.
  */
 class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
-
     private:
 
         float32 holdoutSetSize_;
@@ -63,10 +58,7 @@ class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory 
          * @param holdoutSetSize The fraction of examples to be included in the holdout set (e.g. a value of 0.6
          *                       corresponds to 60 % of the available examples). Must be in (0, 1)
          */
-        RandomBiPartitionSamplingFactory(float32 holdoutSetSize)
-            : holdoutSetSize_(holdoutSetSize) {
-
-        }
+        RandomBiPartitionSamplingFactory(float32 holdoutSetSize) : holdoutSetSize_(holdoutSetSize) {}
 
         std::unique_ptr<IPartitionSampling> create(const CContiguousLabelMatrix& labelMatrix) const override {
             uint32 numExamples = labelMatrix.getNumRows();
@@ -81,14 +73,9 @@ class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory 
             uint32 numTraining = numExamples - numHoldout;
             return std::make_unique<RandomBiPartitionSampling>(numTraining, numHoldout);
         }
-
 };
 
-
-RandomBiPartitionSamplingConfig::RandomBiPartitionSamplingConfig()
-    : holdoutSetSize_(0.33f) {
-
-}
+RandomBiPartitionSamplingConfig::RandomBiPartitionSamplingConfig() : holdoutSetSize_(0.33f) {}
 
 float32 RandomBiPartitionSamplingConfig::getHoldoutSetSize() const {
     return holdoutSetSize_;

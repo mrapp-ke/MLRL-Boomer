@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_provider.hpp"
 #include "boosting/statistics/statistics_label_wise.hpp"
-
+#include "common/statistics/statistics_provider.hpp"
 
 namespace boosting {
 
@@ -17,7 +16,6 @@ namespace boosting {
      */
     template<typename RuleEvaluationFactory>
     class LabelWiseStatisticsProvider final : public IStatisticsProvider {
-
         private:
 
             const RuleEvaluationFactory& regularRuleEvaluationFactory_;
@@ -41,9 +39,7 @@ namespace boosting {
                                         std::unique_ptr<ILabelWiseStatistics<RuleEvaluationFactory>> statisticsPtr)
                 : regularRuleEvaluationFactory_(regularRuleEvaluationFactory),
                   pruningRuleEvaluationFactory_(pruningRuleEvaluationFactory),
-                  statisticsPtr_(std::move(statisticsPtr)) {
-
-            }
+                  statisticsPtr_(std::move(statisticsPtr)) {}
 
             /**
              * @see `IStatisticsProvider::get`
@@ -65,7 +61,6 @@ namespace boosting {
             void switchToPruningRuleEvaluation() override {
                 statisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);
             }
-
     };
 
 }

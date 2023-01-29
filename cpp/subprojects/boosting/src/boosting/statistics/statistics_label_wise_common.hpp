@@ -6,7 +6,6 @@
 #include "boosting/statistics/statistics_label_wise.hpp"
 #include "common/binning/bin_weight_vector.hpp"
 
-
 namespace boosting {
 
     static inline bool hasNonZeroWeightLabelWise(const EqualWeightVector& weights, uint32 statisticIndex) {
@@ -50,7 +49,6 @@ namespace boosting {
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector,
              typename IndexVector>
     class LabelWiseStatisticsSubset : virtual public IStatisticsSubset {
-
         protected:
 
             /**
@@ -100,9 +98,7 @@ namespace boosting {
                                       const IndexVector& labelIndices)
                 : sumVector_(StatisticVector(labelIndices.getNumElements(), true)), statisticView_(statisticView),
                   weights_(weights), labelIndices_(labelIndices),
-                  ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)) {
-
-            }
+                  ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)) {}
 
             /**
              * @see `IStatisticsSubset::hasNonZeroWeight`
@@ -124,7 +120,6 @@ namespace boosting {
             const IScoreVector& calculateScores() override final {
                 return ruleEvaluationPtr_->calculateScores(sumVector_);
             }
-
     };
 
     /**
@@ -141,7 +136,6 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector>
     class AbstractLabelWiseImmutableWeightedStatistics : virtual public IImmutableWeightedStatistics {
-
         protected:
 
             /**
@@ -152,11 +146,10 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class AbstractWeightedStatisticsSubset : public LabelWiseStatisticsSubset<StatisticVector, StatisticView,
-                                                                                      RuleEvaluationFactory,
-                                                                                      WeightVector, IndexVector>,
-                                                     virtual public IWeightedStatisticsSubset {
-
+            class AbstractWeightedStatisticsSubset
+                : public LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector,
+                                                   IndexVector>,
+                  virtual public IWeightedStatisticsSubset {
                 private:
 
                     StatisticVector tmpVector_;
@@ -190,7 +183,6 @@ namespace boosting {
                                                                  statistics.ruleEvaluationFactory_, statistics.weights_,
                                                                  labelIndices),
                           tmpVector_(StatisticVector(labelIndices.getNumElements())), totalSumVector_(&totalSumVector) {
-
                     }
 
                     /**
@@ -233,7 +225,6 @@ namespace boosting {
                         tmpVector_.difference(*totalSumVector_, this->labelIndices_, *accumulatedSumVectorPtr_);
                         return this->ruleEvaluationPtr_->calculateScores(tmpVector_);
                     }
-
             };
 
         protected:
@@ -269,9 +260,7 @@ namespace boosting {
             AbstractLabelWiseImmutableWeightedStatistics(const StatisticView& statisticView,
                                                          const RuleEvaluationFactory& ruleEvaluationFactory,
                                                          const WeightVector& weights)
-                : statisticView_(statisticView), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {
-
-            }
+                : statisticView_(statisticView), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {}
 
             /**
              * @see `IImmutableWeightedStatistics::getNumStatistics`
@@ -286,7 +275,6 @@ namespace boosting {
             uint32 getNumLabels() const override final {
                 return statisticView_.getNumCols();
             }
-
     };
 
     /**
@@ -306,11 +294,10 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
              typename BinIndexVector, typename WeightVector>
-    class LabelWiseHistogram final : virtual public IHistogram,
-                                     public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
-                                                                                         RuleEvaluationFactory,
-                                                                                         BinWeightVector> {
-
+    class LabelWiseHistogram final
+        : virtual public IHistogram,
+          public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram, RuleEvaluationFactory,
+                                                              BinWeightVector> {
         private:
 
             /**
@@ -321,10 +308,10 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class WeightedStatisticsSubset final :
-                    public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
-                                                                        RuleEvaluationFactory, BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
-
+            class WeightedStatisticsSubset final
+                : public AbstractLabelWiseImmutableWeightedStatistics<
+                    StatisticVector, Histogram, RuleEvaluationFactory,
+                    BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
                 private:
 
                     const LabelWiseHistogram& histogram_;
@@ -343,12 +330,12 @@ namespace boosting {
                      */
                     WeightedStatisticsSubset(const LabelWiseHistogram& histogram, const StatisticVector& totalSumVector,
                                              const IndexVector& labelIndices)
-                        : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, Histogram,
-                                                                       RuleEvaluationFactory, BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(
-                              histogram, totalSumVector, labelIndices),
-                          histogram_(histogram) {
-
-                    }
+                        : AbstractLabelWiseImmutableWeightedStatistics<
+                          StatisticVector, Histogram, RuleEvaluationFactory,
+                          BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(histogram,
+                                                                                                   totalSumVector,
+                                                                                                   labelIndices),
+                          histogram_(histogram) {}
 
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
@@ -365,7 +352,6 @@ namespace boosting {
                         removeLabelWiseStatistic(histogram_.originalWeights_, histogram_.originalStatisticView_,
                                                  *totalCoverableSumVectorPtr_, statisticIndex);
                     }
-
             };
 
             std::unique_ptr<Histogram> histogramPtr_;
@@ -411,9 +397,7 @@ namespace boosting {
                                                                                 *binWeightVectorPtr),
                   histogramPtr_(std::move(histogramPtr)), binWeightVectorPtr_(std::move(binWeightVectorPtr)),
                   binIndexVector_(binIndexVector), originalStatisticView_(originalStatisticView),
-                  originalWeights_(originalWeights), totalSumVector_(totalSumVector) {
-
-            }
+                  originalWeights_(originalWeights), totalSumVector_(totalSumVector) {}
 
             /**
              * @see `IHistogram::clear`
@@ -451,7 +435,7 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices) const override {
+              const CompleteIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, totalSumVector_,
                                                                                        labelIndices);
             }
@@ -460,11 +444,10 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices) const override {
+              const PartialIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, totalSumVector_,
                                                                                       labelIndices);
             }
-
     };
 
     template<typename StatisticView, typename StatisticVector>
@@ -496,18 +479,16 @@ namespace boosting {
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
              typename BinIndexVector, typename WeightVector>
     static inline std::unique_ptr<IHistogram> createLabelWiseHistogramInternally(
-            const BinIndexVector& binIndexVector, const StatisticView& originalStatisticView,
-            const WeightVector& originalWeights, const StatisticVector& totalSumVector,
-            const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins) {
+      const BinIndexVector& binIndexVector, const StatisticView& originalStatisticView,
+      const WeightVector& originalWeights, const StatisticVector& totalSumVector,
+      const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins) {
         std::unique_ptr<Histogram> histogramPtr =
-            std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
+          std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
         std::unique_ptr<BinWeightVector> binWeightVectorPtr = std::make_unique<BinWeightVector>(numBins);
         return std::make_unique<LabelWiseHistogram<StatisticVector, StatisticView, Histogram, RuleEvaluationFactory,
-                                                   BinIndexVector, WeightVector>>(std::move(histogramPtr),
-                                                                                  std::move(binWeightVectorPtr),
-                                                                                  binIndexVector, originalStatisticView,
-                                                                                  originalWeights, totalSumVector,
-                                                                                  ruleEvaluationFactory);
+                                                   BinIndexVector, WeightVector>>(
+          std::move(histogramPtr), std::move(binWeightVectorPtr), binIndexVector, originalStatisticView,
+          originalWeights, totalSumVector, ruleEvaluationFactory);
     }
 
     /**
@@ -526,12 +507,10 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
              typename WeightVector>
-    class LabelWiseWeightedStatistics final : virtual public IWeightedStatistics,
-                                              public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector,
-                                                                                                  StatisticView,
-                                                                                                  RuleEvaluationFactory,
-                                                                                                  WeightVector> {
-
+    class LabelWiseWeightedStatistics final
+        : virtual public IWeightedStatistics,
+          public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                              WeightVector> {
         private:
 
             /**
@@ -542,10 +521,10 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class WeightedStatisticsSubset final :
-                    public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
-                                                                        RuleEvaluationFactory, WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
-
+            class WeightedStatisticsSubset final
+                : public AbstractLabelWiseImmutableWeightedStatistics<
+                    StatisticVector, StatisticView, RuleEvaluationFactory,
+                    WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
                 private:
 
                     std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
@@ -561,13 +540,12 @@ namespace boosting {
                      *                          access to the indices of the labels that are included in the subset
                      */
                     WeightedStatisticsSubset(const LabelWiseWeightedStatistics& statistics,
-                                             const StatisticVector& totalSumVector,
-                                             const IndexVector& labelIndices)
-                        : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView,
-                                                                       RuleEvaluationFactory, WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(
-                              statistics, totalSumVector, labelIndices) {
-
-                    }
+                                             const StatisticVector& totalSumVector, const IndexVector& labelIndices)
+                        : AbstractLabelWiseImmutableWeightedStatistics<
+                          StatisticVector, StatisticView, RuleEvaluationFactory,
+                          WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(statistics,
+                                                                                                totalSumVector,
+                                                                                                labelIndices) {}
 
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
@@ -584,7 +562,6 @@ namespace boosting {
                         removeLabelWiseStatistic(this->weights_, this->statisticView_, *totalCoverableSumVectorPtr_,
                                                  statisticIndex);
                     }
-
             };
 
             std::unique_ptr<StatisticVector> totalSumVectorPtr_;
@@ -601,8 +578,7 @@ namespace boosting {
              *                              access to the weights of individual statistics
              */
             LabelWiseWeightedStatistics(const StatisticView& statisticView,
-                                        const RuleEvaluationFactory& ruleEvaluationFactory,
-                                        const WeightVector& weights)
+                                        const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights)
                 : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
                                                                WeightVector>(statisticView, ruleEvaluationFactory,
                                                                              weights),
@@ -619,12 +595,9 @@ namespace boosting {
              */
             LabelWiseWeightedStatistics(const LabelWiseWeightedStatistics& statistics)
                 : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                               WeightVector>(statistics.statisticView_,
-                                                                             statistics.ruleEvaluationFactory_,
-                                                                             statistics.weights_),
-                  totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {
-
-            }
+                                                               WeightVector>(
+                  statistics.statisticView_, statistics.ruleEvaluationFactory_, statistics.weights_),
+                  totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {}
 
             /**
              * @see `IWeightedStatistics::copy`
@@ -662,8 +635,8 @@ namespace boosting {
                                                         uint32 numBins) const override {
                 return createLabelWiseHistogramInternally<StatisticVector, StatisticView, Histogram,
                                                           RuleEvaluationFactory, DenseBinIndexVector, WeightVector>(
-                    binIndexVector, this->statisticView_, this->weights_, *totalSumVectorPtr_,
-                    this->ruleEvaluationFactory_, numBins);
+                  binIndexVector, this->statisticView_, this->weights_, *totalSumVectorPtr_,
+                  this->ruleEvaluationFactory_, numBins);
             }
 
             /**
@@ -673,15 +646,15 @@ namespace boosting {
                                                         uint32 numBins) const override {
                 return createLabelWiseHistogramInternally<StatisticVector, StatisticView, Histogram,
                                                           RuleEvaluationFactory, DokBinIndexVector, WeightVector>(
-                    binIndexVector, this->statisticView_, this->weights_, *totalSumVectorPtr_,
-                    this->ruleEvaluationFactory_, numBins);
+                  binIndexVector, this->statisticView_, this->weights_, *totalSumVectorPtr_,
+                  this->ruleEvaluationFactory_, numBins);
             }
 
             /**
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices) const override {
+              const CompleteIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, *totalSumVectorPtr_,
                                                                                        labelIndices);
             }
@@ -690,11 +663,10 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices) const override {
+              const PartialIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, *totalSumVectorPtr_,
                                                                                       labelIndices);
             }
-
     };
 
     template<typename Prediction, typename ScoreMatrix>
@@ -740,7 +712,6 @@ namespace boosting {
     template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename Histogram,
              typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
     class AbstractLabelWiseStatistics : virtual public ILabelWiseStatistics<RuleEvaluationFactory> {
-
         private:
 
             const std::unique_ptr<LossFunction> lossPtr_;
@@ -781,9 +752,7 @@ namespace boosting {
                                         std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
                 : lossPtr_(std::move(lossPtr)), evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
                   ruleEvaluationFactory_(&ruleEvaluationFactory), labelMatrix_(labelMatrix),
-                  statisticViewPtr_(std::move(statisticViewPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {
-
-            }
+                  statisticViewPtr_(std::move(statisticViewPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `ILabelWiseStatistics::setRuleEvaluationFactory`
@@ -855,10 +824,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
                                                             const EqualWeightVector& weights) const override final {
                 return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                  EqualWeightVector,
-                                                                  CompleteIndexVector>>(*statisticViewPtr_,
-                                                                                        *ruleEvaluationFactory_,
-                                                                                        weights, labelIndices);
+                                                                  EqualWeightVector, CompleteIndexVector>>(
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -867,10 +834,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
                                                             const EqualWeightVector& weights) const override final {
                 return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                  EqualWeightVector,
-                                                                  PartialIndexVector>>(*statisticViewPtr_,
-                                                                                       *ruleEvaluationFactory_, weights,
-                                                                                       labelIndices);
+                                                                  EqualWeightVector, PartialIndexVector>>(
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -879,10 +844,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
                                                             const BitWeightVector& weights) const override final {
                 return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                  BitWeightVector,
-                                                                  CompleteIndexVector>>(*statisticViewPtr_,
-                                                                                        *ruleEvaluationFactory_,
-                                                                                        weights, labelIndices);
+                                                                  BitWeightVector, CompleteIndexVector>>(
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -891,146 +854,131 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
                                                             const BitWeightVector& weights) const override final {
                 return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                  BitWeightVector,
-                                                                  PartialIndexVector>>(*statisticViewPtr_,
-                                                                                       *ruleEvaluationFactory_, weights,
-                                                                                       labelIndices);
+                                                                  BitWeightVector, PartialIndexVector>>(
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices,
-                    const DenseWeightVector<uint32>& weights) const override final {
+              const CompleteIndexVector& labelIndices, const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                  DenseWeightVector<uint32>,
-                                                                  CompleteIndexVector>>(*statisticViewPtr_,
-                                                                                        *ruleEvaluationFactory_,
-                                                                                        weights, labelIndices);
+                                                                  DenseWeightVector<uint32>, CompleteIndexVector>>(
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices,
-                    const DenseWeightVector<uint32>& weights) const override final {
+              const PartialIndexVector& labelIndices, const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                  DenseWeightVector<uint32>,
-                                                                  PartialIndexVector>>(*statisticViewPtr_,
-                                                                                       *ruleEvaluationFactory_, weights,
-                                                                                       labelIndices);
+                                                                  DenseWeightVector<uint32>, PartialIndexVector>>(
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices,
-                    const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
-                return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                  OutOfSampleWeightVector<EqualWeightVector>,
-                                                                  CompleteIndexVector>>(*statisticViewPtr_,
-                                                                                        *ruleEvaluationFactory_,
-                                                                                        weights, labelIndices);
+              const CompleteIndexVector& labelIndices,
+              const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
+                return std::make_unique<
+                  LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                            OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>>(
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices,
-                    const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
-                return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                  OutOfSampleWeightVector<EqualWeightVector>,
-                                                                  PartialIndexVector>>(*statisticViewPtr_,
-                                                                                       *ruleEvaluationFactory_, weights,
-                                                                                       labelIndices);
+              const PartialIndexVector& labelIndices,
+              const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
+                return std::make_unique<
+                  LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                            OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>>(
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices,
-                    const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
-                return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                  OutOfSampleWeightVector<BitWeightVector>,
-                                                                  CompleteIndexVector>>(*statisticViewPtr_,
-                                                                                        *ruleEvaluationFactory_,
-                                                                                        weights, labelIndices);
+              const CompleteIndexVector& labelIndices,
+              const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
+                return std::make_unique<
+                  LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                            OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>>(
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices,
-                    const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
-                return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                  OutOfSampleWeightVector<BitWeightVector>,
-                                                                  PartialIndexVector>>(*statisticViewPtr_,
-                                                                                       *ruleEvaluationFactory_, weights,
-                                                                                       labelIndices);
+              const PartialIndexVector& labelIndices,
+              const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
+                return std::make_unique<
+                  LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                            OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>>(
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const CompleteIndexVector& labelIndices,
-                    const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
-                return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                  OutOfSampleWeightVector<DenseWeightVector<uint32>>,
-                                                                  CompleteIndexVector>>(*statisticViewPtr_,
-                                                                                        *ruleEvaluationFactory_,
-                                                                                        weights, labelIndices);
+              const CompleteIndexVector& labelIndices,
+              const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
+                return std::make_unique<
+                  LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                            OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector>>(
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-                    const PartialIndexVector& labelIndices,
-                    const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
-                return std::make_unique<LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                  OutOfSampleWeightVector<DenseWeightVector<uint32>>,
-                                                                  PartialIndexVector>>(*statisticViewPtr_,
-                                                                                       *ruleEvaluationFactory_, weights,
-                                                                                       labelIndices);
+              const PartialIndexVector& labelIndices,
+              const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
+                return std::make_unique<
+                  LabelWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                            OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector>>(
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
              * @see `IStatistics::createWeightedStatistics`
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-                    const EqualWeightVector& weights) const override final {
+              const EqualWeightVector& weights) const override final {
                 return std::make_unique<LabelWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
                                                                     RuleEvaluationFactory, EqualWeightVector>>(
-                    *statisticViewPtr_, *ruleEvaluationFactory_, weights);
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights);
             }
 
             /**
              * @see `IStatistics::createWeightedStatistics`
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-                    const BitWeightVector& weights) const override final {
+              const BitWeightVector& weights) const override final {
                 return std::make_unique<LabelWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
                                                                     RuleEvaluationFactory, BitWeightVector>>(
-                    *statisticViewPtr_, *ruleEvaluationFactory_, weights);
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights);
             }
 
             /**
              * @see `IStatistics::createWeightedStatistics`
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-                    const DenseWeightVector<uint32>& weights) const override final {
+              const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<LabelWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
                                                                     RuleEvaluationFactory, DenseWeightVector<uint32>>>(
-                    *statisticViewPtr_, *ruleEvaluationFactory_, weights);
+                  *statisticViewPtr_, *ruleEvaluationFactory_, weights);
             }
-
     };
 
 }

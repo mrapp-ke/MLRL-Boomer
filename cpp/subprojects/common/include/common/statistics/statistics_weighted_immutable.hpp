@@ -3,21 +3,20 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_subset_weighted.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include <memory>
+#include "common/statistics/statistics_subset_weighted.hpp"
 
+#include <memory>
 
 /**
  * Defines an interface for all classes that provide access to weighted statistics about the labels of the training
  * examples, which serve as the basis for learning a new rule or refining an existing one.
  */
 class IImmutableWeightedStatistics {
-
     public:
 
-        virtual ~IImmutableWeightedStatistics() { };
+        virtual ~IImmutableWeightedStatistics() {};
 
         /**
          * Returns the number of available statistics.
@@ -42,7 +41,7 @@ class IImmutableWeightedStatistics {
          * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-            const CompleteIndexVector& labelIndices) const = 0;
+          const CompleteIndexVector& labelIndices) const = 0;
 
         /**
          * Creates and returns a new object of type `IWeightedStatisticsSubset` that includes only those labels, whose
@@ -53,6 +52,5 @@ class IImmutableWeightedStatistics {
          * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-            const PartialIndexVector& labelIndices) const = 0;
-
+          const PartialIndexVector& labelIndices) const = 0;
 };

@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "boosting/statistics/statistic_format.hpp"
 #include "boosting/losses/loss.hpp"
-
+#include "boosting/statistics/statistic_format.hpp"
 
 namespace boosting {
 
@@ -13,7 +12,6 @@ namespace boosting {
      * Allows to configure a dense format for storing statistics about the labels of the training examples.
      */
     class DenseStatisticsConfig final : public IStatisticsConfig {
-
         private:
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
@@ -26,13 +24,12 @@ namespace boosting {
             DenseStatisticsConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-                const Lapack& lapack) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+              const Lapack& lapack) const override;
 
             bool isDense() const override;
 
             bool isSparse() const override;
-
     };
 
 };

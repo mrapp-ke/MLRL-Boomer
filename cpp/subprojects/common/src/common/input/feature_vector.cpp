@@ -1,11 +1,8 @@
 #include "common/input/feature_vector.hpp"
+
 #include <algorithm>
 
-
-FeatureVector::FeatureVector(uint32 numElements)
-    : vector_(SparseArrayVector<float32>(numElements)) {
-
-}
+FeatureVector::FeatureVector(uint32 numElements) : vector_(SparseArrayVector<float32>(numElements)) {}
 
 FeatureVector::iterator FeatureVector::begin() {
     return vector_.begin();

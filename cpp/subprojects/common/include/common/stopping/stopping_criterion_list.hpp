@@ -4,15 +4,14 @@
 #pragma once
 
 #include "common/stopping/stopping_criterion.hpp"
-#include <vector>
 
+#include <vector>
 
 /**
  * A factory that allows to create instances of the type `IStoppingCriterion` that allow to test multiple stopping
  * criteria. If at least one of these stopping criteria is met, the induction of additional rules is stopped.
  */
 class StoppingCriterionListFactory final : public IStoppingCriterionFactory {
-
     private:
 
         std::vector<std::unique_ptr<IStoppingCriterionFactory>> stoppingCriterionFactories_;
@@ -30,5 +29,4 @@ class StoppingCriterionListFactory final : public IStoppingCriterionFactory {
         std::unique_ptr<IStoppingCriterion> create(const SinglePartition& partition) const override;
 
         std::unique_ptr<IStoppingCriterion> create(BiPartition& partition) const override;
-
 };

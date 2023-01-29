@@ -1,8 +1,8 @@
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
-#include "common/iterator/index_iterator.hpp"
-#include "predictor_common.hpp"
-#include "omp.h"
 
+#include "common/iterator/index_iterator.hpp"
+#include "omp.h"
+#include "predictor_common.hpp"
 
 namespace boosting {
 
@@ -33,18 +33,18 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            float64 threshold, uint32 numThreads) {
+      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+      float64 threshold, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
+          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
         CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(threshold) \
-        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
-        num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(threshold) \
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
+    num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
             applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
@@ -57,19 +57,19 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            float64 threshold, uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, float64 threshold,
+      uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
+          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels);
         const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
         CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-        firstprivate(threshold) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-        firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
+  firstprivate(threshold) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
+    schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
             applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
@@ -95,7 +95,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class LabelWiseBinaryPredictor final : public IBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -123,9 +122,7 @@ namespace boosting {
             LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                      float64 threshold, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), threshold_(threshold),
-                  numThreads_(numThreads) {
-
-            }
+                  numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -133,7 +130,6 @@ namespace boosting {
             std::unique_ptr<DensePredictionMatrix<uint8>> predict() const override {
                 return predictInternally(featureMatrix_, model_, numLabels_, threshold_, numThreads_);
             }
-
     };
 
     /**
@@ -144,7 +140,6 @@ namespace boosting {
      * otherwise).
      */
     class LabelWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
-
         private:
 
             float64 threshold_;
@@ -160,9 +155,7 @@ namespace boosting {
              *                      examples in parallel. Must be at least 1
              */
             LabelWiseBinaryPredictorFactory(float64 threshold, uint32 numThreads)
-                : threshold_(threshold), numThreads_(numThreads) {
-
-            }
+                : threshold_(threshold), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -171,7 +164,7 @@ namespace boosting {
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                      uint32 numLabels) const override {
                 return std::make_unique<LabelWiseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, threshold_, numThreads_);
+                  featureMatrix, model, numLabels, threshold_, numThreads_);
             }
 
             /**
@@ -181,14 +174,13 @@ namespace boosting {
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                      uint32 numLabels) const override {
                 return std::make_unique<LabelWiseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, threshold_, numThreads_);
+                  featureMatrix, model, numLabels, threshold_, numThreads_);
             }
-
     };
 
     std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            float64 threshold, uint32 numThreads) {
+      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+      float64 threshold, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         BinaryLilMatrix lilMatrix(numExamples);
         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
@@ -196,9 +188,9 @@ namespace boosting {
         const RuleList* modelPtr = &model;
         uint32 numNonZeroElements = 0;
 
-        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-        firstprivate(threshold) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-        firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
+  firstprivate(threshold) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+     schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
             applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
@@ -211,8 +203,8 @@ namespace boosting {
     }
 
     std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            float64 threshold, uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, float64 threshold,
+      uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         BinaryLilMatrix lilMatrix(numExamples);
@@ -221,9 +213,9 @@ namespace boosting {
         const RuleList* modelPtr = &model;
         uint32 numNonZeroElements = 0;
 
-        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
-        firstprivate(numLabels) firstprivate(threshold) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-        firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
+  firstprivate(numLabels) firstprivate(threshold) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+    firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
             applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
@@ -249,7 +241,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class LabelWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -277,9 +268,7 @@ namespace boosting {
             LabelWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                            float64 threshold, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), threshold_(threshold),
-                  numThreads_(numThreads) {
-
-            }
+                  numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -287,18 +276,16 @@ namespace boosting {
             std::unique_ptr<BinarySparsePredictionMatrix> predict() const override {
                 return predictSparseInternally(featureMatrix_, model_, numLabels_, threshold_, numThreads_);
             }
-
     };
 
     /**
-     * Allows to create instances of the type `ISparseBinaryPredictor` that allow to predict whether individual labels of
-     * given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
+     * Allows to create instances of the type `ISparseBinaryPredictor` that allow to predict whether individual labels
+     * of given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
      * rules of an existing rule-based model and transforming them into binary values according to a certain threshold
      * that is applied to each label individually (1 if a score exceeds the threshold, i.e., the label is relevant, 0
      * otherwise).
      */
     class LabelWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
-
         private:
 
             float64 threshold_;
@@ -314,9 +301,7 @@ namespace boosting {
              *                      examples in parallel. Must be at least 1
              */
             LabelWiseSparseBinaryPredictorFactory(float64 threshold, uint32 numThreads)
-                : threshold_(threshold), numThreads_(numThreads) {
-
-            }
+                : threshold_(threshold), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -325,7 +310,7 @@ namespace boosting {
                                                            const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                            uint32 numLabels) const override {
                 return std::make_unique<LabelWiseSparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, threshold_, numThreads_);
+                  featureMatrix, model, numLabels, threshold_, numThreads_);
             }
 
             /**
@@ -335,27 +320,24 @@ namespace boosting {
                                                            const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                            uint32 numLabels) const override {
                 return std::make_unique<LabelWiseSparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, threshold_, numThreads_);
+                  featureMatrix, model, numLabels, threshold_, numThreads_);
             }
-
     };
 
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
-            const std::unique_ptr<ILossConfig>& lossConfigPtr,
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-    }
+      const std::unique_ptr<ILossConfig>& lossConfigPtr,
+      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         float64 threshold = lossConfigPtr_->getDefaultPrediction();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseBinaryPredictorFactory>(threshold, numThreads);
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createSparsePredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         float64 threshold = lossConfigPtr_->getDefaultPrediction();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseSparseBinaryPredictorFactory>(threshold, numThreads);

@@ -1,7 +1,8 @@
 #include "common/input/label_matrix_csc.hpp"
-#include "common/data/arrays.hpp"
-#include <cstdlib>
 
+#include "common/data/arrays.hpp"
+
+#include <cstdlib>
 
 template<typename IndexIterator>
 static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices,

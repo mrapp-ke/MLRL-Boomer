@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 #include "boosting/binning/label_binning.hpp"
-
+#include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 
 namespace boosting {
 
@@ -14,7 +13,6 @@ namespace boosting {
      * of complete rules, which predict for all available labels, using gradient-based label binning.
      */
     class LabelWiseCompleteBinnedRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
-
         private:
 
             float64 l1RegularizationWeight_;
@@ -37,13 +35,12 @@ namespace boosting {
                                                          std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
 
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
-                const DenseLabelWiseStatisticVector& statisticVector,
-                const CompleteIndexVector& indexVector) const override;
+              const DenseLabelWiseStatisticVector& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
 
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
-                const DenseLabelWiseStatisticVector& statisticVector,
-                const PartialIndexVector& indexVector) const override;
-
+              const DenseLabelWiseStatisticVector& statisticVector,
+              const PartialIndexVector& indexVector) const override;
     };
 
 }

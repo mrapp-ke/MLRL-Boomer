@@ -1,11 +1,11 @@
 #include "seco/prediction/predictor_binary_label_wise.hpp"
+
 #include "common/data/vector_bit.hpp"
 #include "common/iterator/index_iterator.hpp"
 #include "common/iterator/non_zero_index_forward_iterator.hpp"
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
 #include "omp.h"
-
 
 namespace seco {
 
@@ -119,33 +119,33 @@ namespace seco {
     static inline uint32 applyHead(const IHead& head, BinaryLilMatrix::row row, uint32 numLabels) {
         uint32 numNonZeroElements;
         auto completeHeadVisitor = [&](const CompleteHead& head) mutable {
-            numNonZeroElements = applyHead(
-                make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
-                make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0), row,
-                numLabels);
+            numNonZeroElements =
+              applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
+                        make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0),
+                        row, numLabels);
         };
         auto partialHeadVisitor = [&](const PartialHead& head) mutable {
-            numNonZeroElements = applyHead(
-                make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
-                make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), head.indices_cbegin(),
-                row, numLabels);
+            numNonZeroElements =
+              applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
+                        make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()),
+                        head.indices_cbegin(), row, numLabels);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
         return numNonZeroElements;
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            uint32 numThreads) {
+      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+      uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, !model.containsDefaultRule());
+          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, !model.containsDefaultRule());
         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
         CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-        firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
+  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BitVector mask(numLabels, true);
 
@@ -164,19 +164,18 @@ namespace seco {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, !model.containsDefaultRule());
+          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, !model.containsDefaultRule());
         const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
         CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
-        num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
+    num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BitVector mask(numLabels, true);
             float32* tmpArray1 = new float32[numFeatures];
@@ -216,7 +215,6 @@ namespace seco {
      */
     template<typename FeatureMatrix, typename Model>
     class LabelWiseBinaryPredictor final : public IBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -239,14 +237,11 @@ namespace seco {
              */
             LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                      uint32 numThreads)
-                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {
-
-            }
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
             std::unique_ptr<DensePredictionMatrix<uint8>> predict() const override {
                 return predictInternally(featureMatrix_, model_, numLabels_, numThreads_);
             }
-
     };
 
     /**
@@ -257,7 +252,6 @@ namespace seco {
      * and label.
      */
     class LabelWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
-
         private:
 
             uint32 numThreads_;
@@ -268,31 +262,26 @@ namespace seco {
              * @param numThreads The number of CPU threads to be used to make predictions for different query examples
              *                   in parallel. Must be at least 1
              */
-            LabelWiseBinaryPredictorFactory(uint32 numThreads)
-                : numThreads_(numThreads) {
-
-            }
+            LabelWiseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             std::unique_ptr<IBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                      uint32 numLabels) const override {
                 return std::make_unique<LabelWiseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, numThreads_);
             }
 
             std::unique_ptr<IBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                    const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                    uint32 numLabels) const override {
+                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                     uint32 numLabels) const override {
                 return std::make_unique<LabelWiseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, numThreads_);
             }
-
     };
 
-
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            uint32 numThreads) {
+      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+      uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         BinaryLilMatrix lilMatrix(numExamples);
         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
@@ -300,9 +289,9 @@ namespace seco {
         const RuleList* modelPtr = &model;
         uint32 numNonZeroElements = 0;
 
-        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-        firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
-        num_threads(numThreads)
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
+     num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
 
@@ -321,8 +310,7 @@ namespace seco {
     }
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         BinaryLilMatrix lilMatrix(numExamples);
@@ -331,9 +319,9 @@ namespace seco {
         const RuleList* modelPtr = &model;
         uint32 numNonZeroElements = 0;
 
-        #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
-        firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-        firstprivate(predictionMatrixPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
+  firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+    schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
             float32* tmpArray1 = new float32[numFeatures];
@@ -374,7 +362,6 @@ namespace seco {
      */
     template<typename FeatureMatrix, typename Model>
     class LabelWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -397,14 +384,11 @@ namespace seco {
              */
             LabelWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                            uint32 numThreads)
-                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {
-
-            }
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
             std::unique_ptr<BinarySparsePredictionMatrix> predict() const override {
                 return predictSparseInternally(featureMatrix_, model_, numLabels_, numThreads_);
             }
-
     };
 
     /**
@@ -415,7 +399,6 @@ namespace seco {
      * particular example and label.
      */
     class LabelWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
-
         private:
 
             uint32 numThreads_;
@@ -426,41 +409,35 @@ namespace seco {
              * @param numThreads The number of CPU threads to be used to make predictions for different query examples
              *                   in parallel. Must be at least 1
              */
-            LabelWiseSparseBinaryPredictorFactory(uint32 numThreads)
-                : numThreads_(numThreads) {
-
-            }
+            LabelWiseSparseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             std::unique_ptr<ISparseBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
                                                            const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                            uint32 numLabels) const override {
                 return std::make_unique<LabelWiseSparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, numThreads_);
             }
 
             std::unique_ptr<ISparseBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
                                                            const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                            uint32 numLabels) const override {
                 return std::make_unique<LabelWiseSparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, numThreads_);
             }
-
     };
 
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-    }
+      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseBinaryPredictorFactory>(numThreads);
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createSparsePredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseSparseBinaryPredictorFactory>(numThreads);
     }

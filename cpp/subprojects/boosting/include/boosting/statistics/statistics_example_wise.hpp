@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "boosting/statistics/statistics_label_wise.hpp"
 #include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
-
+#include "boosting/statistics/statistics_label_wise.hpp"
 
 namespace boosting {
 
@@ -20,10 +19,9 @@ namespace boosting {
      */
     template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
     class IExampleWiseStatistics : virtual public IStatistics {
-
         public:
 
-            virtual ~IExampleWiseStatistics() override { };
+            virtual ~IExampleWiseStatistics() override {};
 
             /**
              * Sets the factory that allows to create instances of the class that is used for calculating the
@@ -47,8 +45,7 @@ namespace boosting {
              *                              created
              */
             virtual std::unique_ptr<ILabelWiseStatistics<LabelWiseRuleEvaluationFactory>> toLabelWiseStatistics(
-                const LabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) = 0;
-
+              const LabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) = 0;
     };
 
 }

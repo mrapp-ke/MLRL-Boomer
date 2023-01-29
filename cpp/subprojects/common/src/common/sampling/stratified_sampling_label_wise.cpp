@@ -1,14 +1,15 @@
 #include "common/sampling/stratified_sampling_label_wise.hpp"
+
 #include "common/data/indexed_value.hpp"
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csc.hpp"
 #include "common/input/label_matrix_csr.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "stratified_sampling_common.hpp"
-#include <unordered_map>
-#include <set>
-#include <cmath>
 
+#include <cmath>
+#include <set>
+#include <unordered_map>
 
 static inline void updateNumExamplesPerLabel(const CContiguousLabelMatrix& labelMatrix, uint32 exampleIndex,
                                              uint32* numExamplesPerLabel,
@@ -186,8 +187,9 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeigh
         float32 numSamplesDecimal = sampleSize * numExamples;
         uint32 numDesiredSamples = numTotalSamples - numNonZeroWeights;
         uint32 numDesiredOutOfSamples = numTotalOutOfSamples - numZeroWeights;
-        uint32 numSamples = (uint32) (tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ?
-                                      std::ceil(numSamplesDecimal) : std::floor(numSamplesDecimal));
+        uint32 numSamples =
+          (uint32) (tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ? std::ceil(numSamplesDecimal)
+                                                                             : std::floor(numSamplesDecimal));
         numNonZeroWeights += numSamples;
         numZeroWeights += (numExamples - numSamples);
         uint32 j;
@@ -226,8 +228,8 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPa
 
         float32 sampleSize = (float32) numFirst / (float32) (numFirst + numSecond);
         float32 numSamplesDecimal = sampleSize * numExamples;
-        uint32 numSamples = (uint32) (tiebreak(numFirst, numSecond, rng) ? std::ceil(numSamplesDecimal)
-                                                                         : std::floor(numSamplesDecimal));
+        uint32 numSamples =
+          (uint32) (tiebreak(numFirst, numSecond, rng) ? std::ceil(numSamplesDecimal) : std::floor(numSamplesDecimal));
 
         // Ensure that we do not add too many examples to the first or second partition...
         if (numSamples > numFirst) {

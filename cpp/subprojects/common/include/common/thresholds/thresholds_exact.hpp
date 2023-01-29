@@ -5,12 +5,10 @@
 
 #include "common/thresholds/thresholds.hpp"
 
-
 /**
  * A factory that allows to create instances of the type `ExactThresholds`.
  */
 class ExactThresholdsFactory final : public IThresholdsFactory {
-
     private:
 
         uint32 numThreads_;
@@ -25,5 +23,4 @@ class ExactThresholdsFactory final : public IThresholdsFactory {
         std::unique_ptr<IThresholds> create(const IColumnWiseFeatureMatrix& featureMatrix,
                                             const IFeatureInfo& featureInfo,
                                             IStatisticsProvider& statisticsProvider) const override;
-
 };

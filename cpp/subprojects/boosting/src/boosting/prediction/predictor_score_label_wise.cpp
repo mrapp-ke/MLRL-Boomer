@@ -1,22 +1,22 @@
 #include "boosting/prediction/predictor_score_label_wise.hpp"
-#include "predictor_common.hpp"
-#include "omp.h"
 
+#include "omp.h"
+#include "predictor_common.hpp"
 
 namespace boosting {
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            uint32 numThreads) {
+      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
+      uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
+          std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
         CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-        firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+  firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const RuleList::Rule& rule = *it;
@@ -29,18 +29,17 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-            uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
+          std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
         const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
         CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
-        #pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-        firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
+  firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float32* tmpArray1 = new float32[numFeatures];
             uint32* tmpArray2 = new uint32[numFeatures] {};
@@ -72,7 +71,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class LabelWiseScorePredictor final : public IScorePredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -96,9 +94,7 @@ namespace boosting {
              */
             LabelWiseScorePredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                     uint32 numThreads)
-                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {
-
-            }
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -106,7 +102,6 @@ namespace boosting {
             std::unique_ptr<DensePredictionMatrix<float64>> predict() const override {
                 return predictInternally(featureMatrix_, model_, numLabels_, numThreads_);
             }
-
     };
 
     /**
@@ -115,7 +110,6 @@ namespace boosting {
      * model for each label individually.
      */
     class LabelWiseScorePredictorFactory final : public IScorePredictorFactory {
-
         private:
 
             uint32 numThreads_;
@@ -126,43 +120,35 @@ namespace boosting {
              * @param numThreads The number of CPU threads to be used to make predictions for different query examples
              *                   in parallel. Must be at least 1
              */
-            LabelWiseScorePredictorFactory(uint32 numThreads)
-                : numThreads_(numThreads) {
-
-            }
+            LabelWiseScorePredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<IScorePredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                    const RuleList& model,
-                                                    const LabelVectorSet* labelVectorSet,
+                                                    const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                     uint32 numLabels) const override {
                 return std::make_unique<LabelWiseScorePredictor<CContiguousConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, numThreads_);
             }
 
             /**
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<IScorePredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                    const RuleList& model,
-                                                    const LabelVectorSet* labelVectorSet,
+                                                    const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                     uint32 numLabels) const override {
                 return std::make_unique<LabelWiseScorePredictor<CsrConstView<const float32>, RuleList>>(
-                    featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, numThreads_);
             }
-
     };
 
     LabelWiseScorePredictorConfig::LabelWiseScorePredictorConfig(
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-    }
+      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IScorePredictorFactory> LabelWiseScorePredictorConfig::createPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseScorePredictorFactory>(numThreads);
     }

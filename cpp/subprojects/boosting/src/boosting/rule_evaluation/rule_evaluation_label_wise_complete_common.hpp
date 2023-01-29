@@ -6,7 +6,6 @@
 #include "common/rule_evaluation/score_vector_dense.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
-
 namespace boosting {
 
     /**
@@ -19,7 +18,6 @@ namespace boosting {
      */
     template<typename StatisticVector, typename IndexVector>
     class LabelWiseCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
-
         private:
 
             DenseScoreVector<IndexVector> scoreVector_;
@@ -41,9 +39,7 @@ namespace boosting {
             LabelWiseCompleteRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
                                             float64 l2RegularizationWeight)
                 : scoreVector_(DenseScoreVector<IndexVector>(labelIndices, true)),
-                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {
-
-            }
+                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
@@ -54,7 +50,7 @@ namespace boosting {
                 for (uint32 i = 0; i < numElements; i++) {
                     const Tuple<float64>& tuple = statisticIterator[i];
                     float64 predictedScore = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
-                                                                    l2RegularizationWeight_);
+                                                                     l2RegularizationWeight_);
                     scoreIterator[i] = predictedScore;
                     quality += calculateLabelWiseQuality(predictedScore, tuple.first, tuple.second,
                                                          l1RegularizationWeight_, l2RegularizationWeight_);
@@ -63,7 +59,6 @@ namespace boosting {
                 scoreVector_.quality = quality;
                 return scoreVector_;
             }
-
     };
 
 }

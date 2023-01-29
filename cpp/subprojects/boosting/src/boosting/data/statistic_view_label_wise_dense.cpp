@@ -1,15 +1,13 @@
 #include "boosting/data/statistic_view_label_wise_dense.hpp"
+
 #include "boosting/data/arrays.hpp"
 #include "common/data/arrays.hpp"
-
 
 namespace boosting {
 
     DenseLabelWiseStatisticConstView::DenseLabelWiseStatisticConstView(uint32 numRows, uint32 numCols,
                                                                        Tuple<float64>* statistics)
-        : numRows_(numRows), numCols_(numCols), statistics_(statistics) {
-
-    }
+        : numRows_(numRows), numCols_(numCols), statistics_(statistics) {}
 
     DenseLabelWiseStatisticConstView::const_iterator DenseLabelWiseStatisticConstView::row_cbegin(uint32 row) const {
         return &statistics_[row * numCols_];
@@ -28,9 +26,7 @@ namespace boosting {
     }
 
     DenseLabelWiseStatisticView::DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics)
-        : DenseLabelWiseStatisticConstView(numRows, numCols, statistics) {
-
-    }
+        : DenseLabelWiseStatisticConstView(numRows, numCols, statistics) {}
 
     DenseLabelWiseStatisticView::iterator DenseLabelWiseStatisticView::row_begin(uint32 row) {
         return &statistics_[row * numCols_];

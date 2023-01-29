@@ -7,7 +7,6 @@
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
-
 namespace boosting {
 
     /**
@@ -17,7 +16,6 @@ namespace boosting {
      */
     template<typename T>
     class NumericDenseMatrix final : public DenseMatrix<T> {
-
         public:
 
             /**
@@ -92,7 +90,6 @@ namespace boosting {
                                          typename VectorConstView<T>::const_iterator end,
                                          PartialIndexVector::const_iterator indicesBegin,
                                          PartialIndexVector::const_iterator indicesEnd);
-
     };
 
 }

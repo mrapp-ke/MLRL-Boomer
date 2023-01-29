@@ -5,7 +5,6 @@
 
 #include "common/data/view_c_contiguous.hpp"
 
-
 /**
  * A dense matrix that provides read-only access to predictions that are stored in a C-contiguous array.
  *
@@ -13,7 +12,6 @@
  */
 template<typename T>
 class MLRLCOMMON_API DensePredictionMatrix final : public CContiguousView<T> {
-
     private:
 
         T* array_;
@@ -42,5 +40,4 @@ class MLRLCOMMON_API DensePredictionMatrix final : public CContiguousView<T> {
          * @return A pointer to the array that stores the predictions
          */
         T* release();
-
 };

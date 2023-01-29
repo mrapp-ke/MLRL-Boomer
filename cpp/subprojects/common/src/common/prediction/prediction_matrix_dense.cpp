@@ -1,20 +1,16 @@
 #include "common/prediction/prediction_matrix_dense.hpp"
-#include <cstdlib>
 
+#include <cstdlib>
 
 template<typename T>
 DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols)
-    : DensePredictionMatrix<T>(numRows, numCols, false) {
-
-}
+    : DensePredictionMatrix<T>(numRows, numCols, false) {}
 
 template<typename T>
 DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols, bool init)
-    : CContiguousView<T>(numRows, numCols, (T*) (init ? calloc(numRows * numCols, sizeof(T))
-                                                      : malloc(numRows * numCols * sizeof(T)))),
-      array_(CContiguousView<T>::array_) {
-
-}
+    : CContiguousView<T>(numRows, numCols,
+                         (T*) (init ? calloc(numRows * numCols, sizeof(T)) : malloc(numRows * numCols * sizeof(T)))),
+      array_(CContiguousView<T>::array_) {}
 
 template<typename T>
 DensePredictionMatrix<T>::~DensePredictionMatrix() {

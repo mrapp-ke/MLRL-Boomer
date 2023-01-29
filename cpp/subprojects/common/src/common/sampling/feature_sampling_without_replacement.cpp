@@ -1,17 +1,17 @@
 #include "common/sampling/feature_sampling_without_replacement.hpp"
-#include "common/sampling/feature_sampling_predefined.hpp"
+
 #include "common/indices/index_vector_partial.hpp"
 #include "common/iterator/index_iterator.hpp"
+#include "common/sampling/feature_sampling_predefined.hpp"
 #include "common/util/validation.hpp"
 #include "index_sampling.hpp"
-#include <cmath>
 
+#include <cmath>
 
 /**
  * Allows to select a subset of the available features without replacement.
  */
 class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
-
     private:
 
         uint32 numFeatures_;
@@ -25,9 +25,7 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
          * @param numSamples    The number of features to be included in the sample
          */
         FeatureSamplingWithoutReplacement(uint32 numFeatures, uint32 numSamples)
-            : numFeatures_(numFeatures), indexVector_(PartialIndexVector(numSamples)) {
-
-        }
+            : numFeatures_(numFeatures), indexVector_(PartialIndexVector(numSamples)) {}
 
         const IIndexVector& sample(RNG& rng) override {
             sampleIndicesWithoutReplacement<IndexIterator>(indexVector_, IndexIterator(numFeatures_), numFeatures_,
@@ -42,7 +40,6 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
                 return std::make_unique<PredefinedFeatureSampling>(this->sample(rng));
             }
         }
-
 };
 
 /**
@@ -50,7 +47,6 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
  * without replacement.
  */
 class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFactory {
-
     private:
 
         uint32 numFeatures_;
@@ -64,20 +60,14 @@ class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFa
          * @param numSamples    The number of features to be included in the sample
          */
         FeatureSamplingWithoutReplacementFactory(uint32 numFeatures, uint32 numSamples)
-            : numFeatures_(numFeatures), numSamples_(numSamples) {
-
-        }
+            : numFeatures_(numFeatures), numSamples_(numSamples) {}
 
         std::unique_ptr<IFeatureSampling> create() const override {
             return std::make_unique<FeatureSamplingWithoutReplacement>(numFeatures_, numSamples_);
         }
-
 };
 
-FeatureSamplingWithoutReplacementConfig::FeatureSamplingWithoutReplacementConfig()
-    : sampleSize_(0) {
-
-}
+FeatureSamplingWithoutReplacementConfig::FeatureSamplingWithoutReplacementConfig() : sampleSize_(0) {}
 
 float32 FeatureSamplingWithoutReplacementConfig::getSampleSize() const {
     return sampleSize_;
@@ -91,7 +81,7 @@ IFeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfi
 }
 
 std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig::createFeatureSamplingFactory(
-        const IFeatureMatrix& featureMatrix) const {
+  const IFeatureMatrix& featureMatrix) const {
     uint32 numFeatures = featureMatrix.getNumCols();
     uint32 numSamples = (uint32) (sampleSize_ > 0 ? sampleSize_ * numFeatures : log2(numFeatures - 1) + 1);
     return std::make_unique<FeatureSamplingWithoutReplacementFactory>(numFeatures, numSamples);

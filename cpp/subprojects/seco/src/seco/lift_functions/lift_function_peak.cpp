@@ -1,8 +1,9 @@
 #include "seco/lift_functions/lift_function_peak.hpp"
+
 #include "common/util/validation.hpp"
+
 #include <algorithm>
 #include <cmath>
-
 
 namespace seco {
 
@@ -16,8 +17,8 @@ namespace seco {
             if (numLabels < peakLabel) {
                 normalization = ((float64) numLabels - 1) / ((float64) peakLabel - 1);
             } else {
-                normalization = ((float64) numLabels - (float64) totalLabels)
-                                / ((float64) totalLabels - (float64) peakLabel);
+                normalization =
+                  ((float64) numLabels - (float64) totalLabels) / ((float64) totalLabels - (float64) peakLabel);
             }
 
             return 1 + pow(normalization, exponent) * (maxLift - 1);
@@ -29,7 +30,6 @@ namespace seco {
      * and monotonously decreases afterwards.
      */
     class PeakLiftFunction final : public ILiftFunction {
-
         private:
 
             uint32 numLabels_;
@@ -57,9 +57,7 @@ namespace seco {
             PeakLiftFunction(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature,
                              const float64* maxLiftsAfterPeak)
                 : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), exponent_(1.0 / curvature),
-                  maxLiftsAfterPeak_(maxLiftsAfterPeak) {
-
-            }
+                  maxLiftsAfterPeak_(maxLiftsAfterPeak) {}
 
             float64 calculateLift(uint32 numLabels) const override {
                 return calculateLiftInternally(numLabels, numLabels_, peakLabel_, maxLift_, exponent_);
@@ -72,7 +70,6 @@ namespace seco {
                     return maxLiftsAfterPeak_[numLabels - peakLabel_];
                 }
             }
-
     };
 
     /**
@@ -80,7 +77,6 @@ namespace seco {
      * labels, where the maximum lift is reached, and monotonously decrease afterwards.
      */
     class PeakLiftFunctionFactory final : public ILiftFunctionFactory {
-
         private:
 
             uint32 numLabels_;
@@ -106,8 +102,8 @@ namespace seco {
                 : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), curvature_(curvature),
                   maxLiftsAfterPeak_(new float64[numLabels - peakLabel]) {
                 for (uint32 i = 0; i < numLabels - peakLabel; i++) {
-                    maxLiftsAfterPeak_[i] = calculateLiftInternally(i + peakLabel, numLabels, peakLabel, maxLift,
-                                                                    curvature);
+                    maxLiftsAfterPeak_[i] =
+                      calculateLiftInternally(i + peakLabel, numLabels, peakLabel, maxLift, curvature);
                 }
             }
 
@@ -119,20 +115,16 @@ namespace seco {
                 return std::make_unique<PeakLiftFunction>(numLabels_, peakLabel_, maxLift_, curvature_,
                                                           maxLiftsAfterPeak_);
             }
-
     };
 
-    PeakLiftFunctionConfig::PeakLiftFunctionConfig()
-        : peakLabel_(2), maxLift_(1.08), curvature_(1.0) {
-
-    }
+    PeakLiftFunctionConfig::PeakLiftFunctionConfig() : peakLabel_(2), maxLift_(1.08), curvature_(1.0) {}
 
     uint32 PeakLiftFunctionConfig::getPeakLabel() const {
         return peakLabel_;
     }
 
     IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setPeakLabel(uint32 peakLabel) {
-        if (peakLabel != 0) { assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 1); }
+        if (peakLabel != 0) assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 1);
         peakLabel_ = peakLabel;
         return *this;
     }
@@ -158,7 +150,7 @@ namespace seco {
     }
 
     std::unique_ptr<ILiftFunctionFactory> PeakLiftFunctionConfig::createLiftFunctionFactory(
-            const IRowWiseLabelMatrix& labelMatrix) const {
+      const IRowWiseLabelMatrix& labelMatrix) const {
         uint32 numLabels = labelMatrix.getNumRows();
         uint32 peakLabel = peakLabel_;
 

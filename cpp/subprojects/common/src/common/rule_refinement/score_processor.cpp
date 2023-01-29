@@ -1,8 +1,8 @@
 #include "common/rule_refinement/score_processor.hpp"
+
+#include "common/data/arrays.hpp"
 #include "common/rule_refinement/prediction_complete.hpp"
 #include "common/rule_refinement/prediction_partial.hpp"
-#include "common/data/arrays.hpp"
-
 
 template<typename T>
 static inline void processCompleteScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,
@@ -42,10 +42,7 @@ static inline void processPartialScores(std::unique_ptr<AbstractEvaluatedPredict
     existingHead->quality = scoreVector.quality;
 }
 
-ScoreProcessor::ScoreProcessor(std::unique_ptr<AbstractEvaluatedPrediction>& headPtr)
-    : headPtr_(headPtr) {
-
-}
+ScoreProcessor::ScoreProcessor(std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) : headPtr_(headPtr) {}
 
 void ScoreProcessor::processScores(const DenseScoreVector<CompleteIndexVector>& scoreVector) {
     processCompleteScores(headPtr_, scoreVector);

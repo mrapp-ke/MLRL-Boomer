@@ -1,15 +1,13 @@
 #include "common/model/rule_list.hpp"
+
 #include "common/model/body_empty.hpp"
 #include "common/prediction/label_space_info.hpp"
 #include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 
-
 RuleList::Rule::Rule(std::unique_ptr<IBody> bodyPtr, std::unique_ptr<IHead> headPtr)
-    : bodyPtr_(std::move(bodyPtr)), headPtr_(std::move(headPtr)) {
-
-}
+    : bodyPtr_(std::move(bodyPtr)), headPtr_(std::move(headPtr)) {}
 
 const IBody& RuleList::Rule::getBody() const {
     return *bodyPtr_;
@@ -31,9 +29,7 @@ RuleList::ConstIterator::ConstIterator(bool defaultRuleTakesPrecedence, const Ru
                                        std::vector<Rule>::const_iterator iterator, uint32 start, uint32 end)
     : defaultRule_(defaultRule), iterator_(iterator),
       offset_(defaultRuleTakesPrecedence && defaultRule != nullptr ? 1 : 0),
-      defaultRuleIndex_(offset_ > 0 ? 0 : end - (defaultRule != nullptr ? 1 : 0)), index_(start) {
-
-}
+      defaultRuleIndex_(offset_ > 0 ? 0 : end - (defaultRule != nullptr ? 1 : 0)), index_(start) {}
 
 RuleList::ConstIterator::reference RuleList::ConstIterator::operator*() const {
     uint32 index = index_;
@@ -64,9 +60,7 @@ bool RuleList::ConstIterator::operator==(const ConstIterator& rhs) const {
 }
 
 RuleList::RuleList(bool defaultRuleTakesPrecedence)
-    : numUsedRules_(0), defaultRuleTakesPrecedence_(defaultRuleTakesPrecedence) {
-
-}
+    : numUsedRules_(0), defaultRuleTakesPrecedence_(defaultRuleTakesPrecedence) {}
 
 RuleList::const_iterator RuleList::cbegin() const {
     return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), 0,
@@ -124,18 +118,17 @@ bool RuleList::isDefaultRuleTakingPrecedence() const {
 }
 
 void RuleList::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                      IHead::CompleteHeadVisitor completeHeadVisitor,
-                      IHead::PartialHeadVisitor partialHeadVisitor) const {
+                     IHead::CompleteHeadVisitor completeHeadVisitor,
+                     IHead::PartialHeadVisitor partialHeadVisitor) const {
     for (auto it = this->cbegin(); it != this->cend(); it++) {
         const Rule& rule = *it;
         rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, completeHeadVisitor, partialHeadVisitor);
     }
 }
 
-void RuleList::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                          IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                          IHead::CompleteHeadVisitor completeHeadVisitor,
-                          IHead::PartialHeadVisitor partialHeadVisitor) const {
+void RuleList::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                         IHead::CompleteHeadVisitor completeHeadVisitor,
+                         IHead::PartialHeadVisitor partialHeadVisitor) const {
     for (auto it = this->used_cbegin(); it != this->used_cend(); it++) {
         const Rule& rule = *it;
         rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, completeHeadVisitor, partialHeadVisitor);
@@ -157,14 +150,14 @@ std::unique_ptr<IBinaryPredictor> RuleList::createBinaryPredictor(const IBinaryP
 }
 
 std::unique_ptr<ISparseBinaryPredictor> RuleList::createSparseBinaryPredictor(
-        const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-        const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
+  const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+  const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
     return labelSpaceInfo.createSparseBinaryPredictor(factory, featureMatrix, *this, numLabels);
 }
 
 std::unique_ptr<ISparseBinaryPredictor> RuleList::createSparseBinaryPredictor(
-        const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
-        const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
+  const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+  const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
     return labelSpaceInfo.createSparseBinaryPredictor(factory, featureMatrix, *this, numLabels);
 }
 
@@ -183,8 +176,8 @@ std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePred
 }
 
 std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
-        const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-        const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
+  const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+  const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
     return labelSpaceInfo.createProbabilityPredictor(factory, featureMatrix, *this, numLabels);
 }
 

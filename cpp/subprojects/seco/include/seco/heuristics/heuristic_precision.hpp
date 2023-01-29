@@ -6,7 +6,6 @@
 
 #include "seco/heuristics/heuristic.hpp"
 
-
 namespace seco {
 
     /**
@@ -19,11 +18,9 @@ namespace seco {
      * Flach 2005 (see https://link.springer.com/content/pdf/10.1007/s10994-005-5011-x.pdf).
      */
     class PrecisionConfig final : public IHeuristicConfig {
-
         public:
 
             std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const override;
-
     };
 
 }

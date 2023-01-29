@@ -5,16 +5,13 @@
 
 #include "common/prediction/label_space_info.hpp"
 
-
 /**
  * Defines an interface for all classes that do not provide any information about the label space.
  */
 class MLRLCOMMON_API INoLabelSpaceInfo : public ILabelSpaceInfo {
-
     public:
 
-        virtual ~INoLabelSpaceInfo() override { };
-
+        virtual ~INoLabelSpaceInfo() override {};
 };
 
 /**

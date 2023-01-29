@@ -5,6 +5,7 @@
 
 #include "common/input/label_matrix.hpp"
 #include "common/input/label_vector.hpp"
+
 #include <memory>
 
 // Forward declarations
@@ -18,15 +19,13 @@ class IStatistics;
 class SinglePartition;
 class BiPartition;
 
-
 /**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
  */
 class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
-
     public:
 
-        virtual ~IRowWiseLabelMatrix() override { };
+        virtual ~IRowWiseLabelMatrix() override {};
 
         /**
          * Calculates and returns the label cardinality, i.e., the average number of relevant labels per example.
@@ -52,7 +51,7 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          * @return          An unique pointer to an object of type `IStatisticsProvider` that has been created
          */
         virtual std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
-            const IStatisticsProviderFactory& factory) const = 0;
+          const IStatisticsProviderFactory& factory) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IPartitionSampling`, based on the type of this label matrix.
@@ -62,7 +61,7 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          * @return          An unique pointer to an object of type `IPartitionSampling` that has been created
          */
         virtual std::unique_ptr<IPartitionSampling> createPartitionSampling(
-            const IPartitionSamplingFactory& factory) const = 0;
+          const IPartitionSamplingFactory& factory) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IInstanceSampling`, based on the type of this label matrix.
@@ -94,5 +93,4 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
         virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
                                                                           BiPartition& partition,
                                                                           IStatistics& statistics) const = 0;
-
 };

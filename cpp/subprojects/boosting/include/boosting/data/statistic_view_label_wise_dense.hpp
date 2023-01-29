@@ -5,7 +5,6 @@
 
 #include "common/data/tuple.hpp"
 
-
 namespace boosting {
 
     /**
@@ -13,7 +12,6 @@ namespace boosting {
      * decomposable loss function and are stored in pre-allocated C-contiguous arrays.
      */
     class DenseLabelWiseStatisticConstView {
-
         protected:
 
             /**
@@ -75,7 +73,6 @@ namespace boosting {
              * @return The number of columns
              */
             uint32 getNumCols() const;
-
     };
 
     /**
@@ -83,7 +80,6 @@ namespace boosting {
      * label-wise decomposable loss function and are stored in pre-allocated C-contiguous arrays.
      */
     class DenseLabelWiseStatisticView : public DenseLabelWiseStatisticConstView {
-
         public:
 
             /**
@@ -130,7 +126,6 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToRow(uint32 row, const_iterator begin, const_iterator end, float64 weight);
-
     };
 
 }

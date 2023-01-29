@@ -4,10 +4,9 @@
  */
 #pragma once
 
-#include "common/rule_evaluation/score_vector_dense.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
+#include "common/rule_evaluation/score_vector_dense.hpp"
 #include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
-
 
 namespace seco {
 
@@ -19,7 +18,6 @@ namespace seco {
      */
     template<typename T>
     class LabelWiseMajorityRuleEvaluation final : public IRuleEvaluation {
-
         private:
 
             DenseScoreVector<T> scoreVector_;
@@ -40,8 +38,8 @@ namespace seco {
                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
                 typename DenseScoreVector<T>::index_const_iterator indexIterator = scoreVector_.indices_cbegin();
-                auto labelIterator = make_binary_forward_iterator(majorityLabelIndices.cbegin(),
-                                                                  majorityLabelIndices.cend());
+                auto labelIterator =
+                  make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
                 uint32 numElements = scoreVector_.getNumElements();
                 uint32 previousIndex = 0;
 
@@ -54,14 +52,12 @@ namespace seco {
 
                 return scoreVector_;
             }
-
     };
 
     /**
      * Allows to create instances of the class `LabelWiseMajorityRuleEvaluation`.
      */
     class LabelWiseMajorityRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
-
         public:
 
             std::unique_ptr<IRuleEvaluation> create(const CompleteIndexVector& indexVector) const override {
@@ -71,7 +67,6 @@ namespace seco {
             std::unique_ptr<IRuleEvaluation> create(const PartialIndexVector& indexVector) const override {
                 return std::make_unique<LabelWiseMajorityRuleEvaluation<PartialIndexVector>>(indexVector);
             }
-
     };
 
 }

@@ -6,7 +6,6 @@
 #include "seco/lift_functions/lift_function.hpp"
 #include "seco/macros.hpp"
 
-
 namespace seco {
 
     /**
@@ -14,10 +13,9 @@ namespace seco {
      * according to the natural logarithm of the number of labels for which a rule predicts.
      */
     class MLRLSECO_API IKlnLiftFunctionConfig {
-
         public:
 
-            virtual ~IKlnLiftFunctionConfig() { };
+            virtual ~IKlnLiftFunctionConfig() {};
 
             /**
              * Returns the value of the parameter "k", which affects the steepness of the lift function.
@@ -35,15 +33,14 @@ namespace seco {
              *          the lift function
              */
             virtual IKlnLiftFunctionConfig& setK(float64 k) = 0;
-
     };
 
     /**
      * Allows to configure a lift function that monotonously increases according to the natural logarithm of the number
      * of labels for which a rule predicts.
      */
-    class KlnLiftFunctionConfig final : public ILiftFunctionConfig, public IKlnLiftFunctionConfig {
-
+    class KlnLiftFunctionConfig final : public ILiftFunctionConfig,
+                                        public IKlnLiftFunctionConfig {
         private:
 
             float64 k_;
@@ -57,8 +54,7 @@ namespace seco {
             IKlnLiftFunctionConfig& setK(float64 k) override;
 
             std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory(
-                const IRowWiseLabelMatrix& labelMatrix) const override;
-
+              const IRowWiseLabelMatrix& labelMatrix) const override;
     };
 
 }

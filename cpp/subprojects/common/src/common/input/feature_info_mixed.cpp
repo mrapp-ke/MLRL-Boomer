@@ -1,16 +1,15 @@
 #include "common/input/feature_info_mixed.hpp"
+
+#include "common/data/vector_bit.hpp"
 #include "common/input/feature_type_binary.hpp"
 #include "common/input/feature_type_nominal.hpp"
 #include "common/input/feature_type_numerical.hpp"
-#include "common/data/vector_bit.hpp"
-
 
 /**
  * An implementation of the type `IMixedFeatureInfo` that uses `BitVector`s to store whether individual features are
  * binary, nominal or numerical/ordinal.
  */
 class BitFeatureInfo final : public IMixedFeatureInfo {
-
     private:
 
         BitVector binaryBitVector_;
@@ -23,9 +22,7 @@ class BitFeatureInfo final : public IMixedFeatureInfo {
          * @param numFeatures The total number of available features
          */
         BitFeatureInfo(uint32 numFeatures)
-            : binaryBitVector_(BitVector(numFeatures, true)), nominalBitVector_(BitVector(numFeatures, true)) {
-
-        }
+            : binaryBitVector_(BitVector(numFeatures, true)), nominalBitVector_(BitVector(numFeatures, true)) {}
 
         std::unique_ptr<IFeatureType> createFeatureType(uint32 featureIndex) const override {
             if (binaryBitVector_[featureIndex]) {
@@ -51,7 +48,6 @@ class BitFeatureInfo final : public IMixedFeatureInfo {
             binaryBitVector_.set(featureIndex, false);
             nominalBitVector_.set(featureIndex, true);
         }
-
 };
 
 std::unique_ptr<IMixedFeatureInfo> createMixedFeatureInfo(uint32 numFeatures) {

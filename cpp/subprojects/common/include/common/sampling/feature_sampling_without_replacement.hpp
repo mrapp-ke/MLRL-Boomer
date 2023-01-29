@@ -3,18 +3,16 @@
  */
 #pragma once
 
-#include "common/sampling/feature_sampling.hpp"
 #include "common/macros.hpp"
-
+#include "common/sampling/feature_sampling.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a method for sampling features without replacement.
  */
 class MLRLCOMMON_API IFeatureSamplingWithoutReplacementConfig {
-
     public:
 
-        virtual ~IFeatureSamplingWithoutReplacementConfig() { };
+        virtual ~IFeatureSamplingWithoutReplacementConfig() {};
 
         /**
          * Returns the fraction of features that are included in a sample.
@@ -33,7 +31,6 @@ class MLRLCOMMON_API IFeatureSamplingWithoutReplacementConfig {
          *                      further configuration of the method for sampling features
          */
         virtual IFeatureSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize) = 0;
-
 };
 
 /**
@@ -41,7 +38,6 @@ class MLRLCOMMON_API IFeatureSamplingWithoutReplacementConfig {
  */
 class FeatureSamplingWithoutReplacementConfig final : public IFeatureSamplingConfig,
                                                       public IFeatureSamplingWithoutReplacementConfig {
-
     private:
 
         float32 sampleSize_;
@@ -55,8 +51,7 @@ class FeatureSamplingWithoutReplacementConfig final : public IFeatureSamplingCon
         IFeatureSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize) override;
 
         std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory(
-            const IFeatureMatrix& featureMatrix) const override;
+          const IFeatureMatrix& featureMatrix) const override;
 
         bool isSamplingUsed() const override;
-
 };

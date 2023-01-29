@@ -1,9 +1,10 @@
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
-#include "predictor_common.hpp"
+
 #include "omp.h"
+#include "predictor_common.hpp"
+
 #include <algorithm>
 #include <stdexcept>
-
 
 namespace boosting {
 
@@ -24,8 +25,8 @@ namespace boosting {
         float64 minDistance;
         uint32 maxCount;
         LabelVectorSet::const_iterator it = labelVectorSet.cbegin();
-        const LabelVector* closestLabelVector = measureDistance(it, scoresBegin, scoresEnd, measure, minDistance,
-                                                                maxCount);
+        const LabelVector* closestLabelVector =
+          measureDistance(it, scoresBegin, scoresEnd, measure, minDistance, maxCount);
         it++;
 
         for (; it != labelVectorSet.cend(); it++) {
@@ -68,12 +69,12 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
-            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
-            uint32 numThreads) {
+      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+      const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
+      uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
+          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
 
         if (labelVectorSet.getNumLabelVectors() > 0) {
             const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
@@ -82,9 +83,9 @@ namespace boosting {
             const IDistanceMeasure* distanceMeasurePtr = &distanceMeasure;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-            firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(distanceMeasurePtr) \
-            firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
+  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(distanceMeasurePtr) \
+    firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
@@ -100,13 +101,12 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
-            uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
+      uint32 numLabels, const IDistanceMeasure& distanceMeasure, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
+          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
 
         if (labelVectorSet.getNumLabelVectors() > 0) {
             const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
@@ -115,9 +115,9 @@ namespace boosting {
             const IDistanceMeasure* distanceMeasurePtr = &distanceMeasure;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-            firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-            firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
+    firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
@@ -145,7 +145,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class ExampleWiseBinaryPredictor final : public IBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -180,9 +179,7 @@ namespace boosting {
                                        const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                        std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), labelVectorSet_(labelVectorSet), numLabels_(numLabels),
-                  distanceMeasurePtr_(std::move(distanceMeasurePtr)), numThreads_(numThreads) {
-
-            }
+                  distanceMeasurePtr_(std::move(distanceMeasurePtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -191,24 +188,22 @@ namespace boosting {
                 return predictInternally(featureMatrix_, model_, labelVectorSet_, numLabels_, *distanceMeasurePtr_,
                                          numThreads_);
             }
-
     };
 
     template<typename FeatureMatrix>
     static inline std::unique_ptr<IBinaryPredictor> createExampleWiseBinaryPredictor(
-            const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
-            uint32 numLabels, const IDistanceMeasureFactory& distanceMeasureFactory, uint32 numThreads) {
+      const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet, uint32 numLabels,
+      const IDistanceMeasureFactory& distanceMeasureFactory, uint32 numThreads) {
         if (!labelVectorSet) {
-            throw std::runtime_error("Information about the label vectors that have been encountered in the training "
-                "data is required for predicting binary labels, but no such information is provided by the model. Most "
-                "probably, the model was intended to use a different prediction method when it has been trained.");
+            throw std::runtime_error(
+              "Information about the label vectors that have been encountered in the training data is required for "
+              "predicting binary labels, but no such information is provided by the model. Most probably, the model "
+              "was intended to use a different prediction method when it has been trained.");
         }
 
         std::unique_ptr<IDistanceMeasure> distanceMeasurePtr = distanceMeasureFactory.createDistanceMeasure();
-        return std::make_unique<ExampleWiseBinaryPredictor<FeatureMatrix, RuleList>>(featureMatrix, model,
-                                                                                     *labelVectorSet, numLabels,
-                                                                                     std::move(distanceMeasurePtr),
-                                                                                     numThreads);
+        return std::make_unique<ExampleWiseBinaryPredictor<FeatureMatrix, RuleList>>(
+          featureMatrix, model, *labelVectorSet, numLabels, std::move(distanceMeasurePtr), numThreads);
     }
 
     /**
@@ -218,7 +213,6 @@ namespace boosting {
      * is closest to the aggregated score vector is finally predicted.
      */
     class ExampleWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
-
         private:
 
             std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr_;
@@ -237,9 +231,7 @@ namespace boosting {
              */
             ExampleWiseBinaryPredictorFactory(std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr,
                                               uint32 numThreads)
-                : distanceMeasureFactoryPtr_(std::move(distanceMeasureFactoryPtr)), numThreads_(numThreads) {
-
-            }
+                : distanceMeasureFactoryPtr_(std::move(distanceMeasureFactoryPtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -260,13 +252,12 @@ namespace boosting {
                 return createExampleWiseBinaryPredictor(featureMatrix, model, labelVectorSet, numLabels,
                                                         *distanceMeasureFactoryPtr_, numThreads_);
             }
-
     };
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
-            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
-            uint32 numThreads) {
+      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+      const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
+      uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         BinaryLilMatrix lilMatrix(numExamples);
         uint32 numNonZeroElements = 0;
@@ -278,9 +269,9 @@ namespace boosting {
             const IDistanceMeasure* distanceMeasurePtr = &distanceMeasure;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-            firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-            firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+    firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
@@ -296,9 +287,8 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
-            uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
+      uint32 numLabels, const IDistanceMeasure& distanceMeasure, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         BinaryLilMatrix lilMatrix(numExamples);
@@ -311,10 +301,9 @@ namespace boosting {
             const IDistanceMeasure* distanceMeasurePtr = &distanceMeasure;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) \
-            firstprivate(numFeatures) firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-            firstprivate(predictionMatrixPtr) firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) \
-            schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
+  firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
+     firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
@@ -342,7 +331,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class ExampleWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -377,9 +365,7 @@ namespace boosting {
                                              const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                              std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), labelVectorSet_(labelVectorSet), numLabels_(numLabels),
-                  distanceMeasurePtr_(std::move(distanceMeasurePtr)), numThreads_(numThreads) {
-
-            }
+                  distanceMeasurePtr_(std::move(distanceMeasurePtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -388,22 +374,22 @@ namespace boosting {
                 return predictSparseInternally(featureMatrix_, model_, labelVectorSet_, numLabels_,
                                                *distanceMeasurePtr_, numThreads_);
             }
-
     };
 
     template<typename FeatureMatrix>
     static inline std::unique_ptr<ISparseBinaryPredictor> createExampleWiseSparseBinaryPredictor(
-            const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
-            uint32 numLabels, const IDistanceMeasureFactory& distanceMeasureFactory, uint32 numThreads) {
+      const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet, uint32 numLabels,
+      const IDistanceMeasureFactory& distanceMeasureFactory, uint32 numThreads) {
         if (!labelVectorSet) {
-            throw std::runtime_error("Information about the label vectors that have been encountered in the training "
-                "data is required for predicting binary labels, but no such information is provided by the model. Most "
-                "probably, the model was intended to use a different prediction method when it has been trained.");
+            throw std::runtime_error(
+              "Information about the label vectors that have been encountered in the training data is required for "
+              "predicting binary labels, but no such information is provided by the model. Most probably, the model "
+              "was intended to use a different prediction method when it has been trained.");
         }
 
         std::unique_ptr<IDistanceMeasure> distanceMeasurePtr = distanceMeasureFactory.createDistanceMeasure();
         return std::make_unique<ExampleWiseSparseBinaryPredictor<FeatureMatrix, RuleList>>(
-            featureMatrix, model, *labelVectorSet, numLabels, std::move(distanceMeasurePtr), numThreads);
+          featureMatrix, model, *labelVectorSet, numLabels, std::move(distanceMeasurePtr), numThreads);
     }
 
     /**
@@ -413,7 +399,6 @@ namespace boosting {
      * is closest to the aggregated score vector is finally predicted.
      */
     class ExampleWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
-
         private:
 
             std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr_;
@@ -432,9 +417,7 @@ namespace boosting {
              */
             ExampleWiseSparseBinaryPredictorFactory(std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr,
                                                     uint32 numThreads)
-                : distanceMeasureFactoryPtr_(std::move(distanceMeasureFactoryPtr)), numThreads_(numThreads) {
-
-            }
+                : distanceMeasureFactoryPtr_(std::move(distanceMeasureFactoryPtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -455,28 +438,25 @@ namespace boosting {
                 return createExampleWiseSparseBinaryPredictor(featureMatrix, model, labelVectorSet, numLabels,
                                                               *distanceMeasureFactoryPtr_, numThreads_);
             }
-
     };
 
     ExampleWiseBinaryPredictorConfig::ExampleWiseBinaryPredictorConfig(
-            const std::unique_ptr<ILossConfig>& lossConfigPtr,
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
-
-    }
+      const std::unique_ptr<ILossConfig>& lossConfigPtr,
+      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
-            lossConfigPtr_->createDistanceMeasureFactory();
+          lossConfigPtr_->createDistanceMeasureFactory();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<ExampleWiseBinaryPredictorFactory>(std::move(distanceMeasureFactoryPtr), numThreads);
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createSparsePredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
-            lossConfigPtr_->createDistanceMeasureFactory();
+          lossConfigPtr_->createDistanceMeasureFactory();
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<ExampleWiseSparseBinaryPredictorFactory>(std::move(distanceMeasureFactoryPtr),
                                                                          numThreads);

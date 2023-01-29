@@ -5,13 +5,11 @@
 
 #include "common/data/view_two_dimensional.hpp"
 
-
 /**
  * Implements row-wise read-only access to binary values that are stored in a pre-allocated matrix in the compressed
  * sparse row (CSR) format.
  */
 class MLRLCOMMON_API BinaryCsrConstView : virtual public ITwoDimensionalView {
-
     protected:
 
         /**
@@ -79,7 +77,6 @@ class MLRLCOMMON_API BinaryCsrConstView : virtual public ITwoDimensionalView {
         uint32 getNumRows() const override final;
 
         uint32 getNumCols() const override final;
-
 };
 
 /**
@@ -87,7 +84,6 @@ class MLRLCOMMON_API BinaryCsrConstView : virtual public ITwoDimensionalView {
  * compressed sparse row (CSR) format.
  */
 class BinaryCsrView : public BinaryCsrConstView {
-
     public:
 
         /**
@@ -121,5 +117,4 @@ class BinaryCsrView : public BinaryCsrConstView {
          * @return      An `index_iterator` to the end of the indices
          */
         index_iterator row_indices_end(uint32 row);
-
 };

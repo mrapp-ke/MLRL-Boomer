@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/util/quality.hpp"
+
 #include <memory>
 
 // Forward declarations
@@ -17,16 +18,14 @@ class IThresholdsSubset;
 class ICoverageState;
 class AbstractPrediction;
 
-
 /**
  * Defines an interface for all classes that provide access to the indices of training examples that have been split
  * into a training set and a holdout set.
  */
 class IPartition {
-
     public:
 
-        virtual ~IPartition() { };
+        virtual ~IPartition() {};
 
         /**
          * Creates and returns a new instance of the class `IStoppingCriterion`, based on the type of this partition.
@@ -36,7 +35,7 @@ class IPartition {
          * @return          An unique pointer to an object of type `IStoppingCriterion` that has been created
          */
         virtual std::unique_ptr<IStoppingCriterion> createStoppingCriterion(
-            const IStoppingCriterionFactory& factory) = 0;
+          const IStoppingCriterionFactory& factory) = 0;
 
         /**
          * Creates and returns a new instance of the class `IInstanceSampling`, based on the type of this partition.
@@ -67,8 +66,7 @@ class IPartition {
          * @return                  An object of type `Quality` that stores the calculated quality
          */
         virtual Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
-                                            const ICoverageState& coverageState,
-                                            const AbstractPrediction& head) = 0;
+                                            const ICoverageState& coverageState, const AbstractPrediction& head) = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
@@ -82,5 +80,4 @@ class IPartition {
          */
         virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset,
                                            const ICoverageState& coverageState, AbstractPrediction& head) = 0;
-
 };

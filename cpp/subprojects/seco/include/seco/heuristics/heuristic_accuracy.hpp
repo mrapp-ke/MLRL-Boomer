@@ -5,7 +5,6 @@
 
 #include "seco/heuristics/heuristic.hpp"
 
-
 namespace seco {
 
     /**
@@ -16,11 +15,9 @@ namespace seco {
      * see https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.43.7813&rep=rep1&type=pdf).
      */
     class AccuracyConfig : public IHeuristicConfig {
-
         public:
 
             std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const override;
-
     };
 
 }

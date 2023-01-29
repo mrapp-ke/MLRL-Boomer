@@ -3,21 +3,20 @@
  */
 #pragma once
 
-#include "common/model/rule_model.hpp"
 #include "common/model/body.hpp"
 #include "common/model/head.hpp"
-#include <vector>
+#include "common/model/rule_model.hpp"
 
+#include <vector>
 
 /**
  * Defines an interface for all rule-based models that store several rules in an ordered list. Optionally, the model may
  * also contain a default rule that either takes precedence over the remaining rules or not.
  */
 class MLRLCOMMON_API IRuleList : public IRuleModel {
-
     public:
 
-        virtual ~IRuleList() override { };
+        virtual ~IRuleList() override {};
 
         /**
          * Creates a new default rule from a given head and adds it to the model.
@@ -62,7 +61,6 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
                            IHead::CompleteHeadVisitor completeHeadVisitor,
                            IHead::PartialHeadVisitor partialHeadVisitor) const = 0;
 
-
         /**
          * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
          * of all used rules that are contained in this model, including the default rule, if available.
@@ -76,7 +74,6 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
                                IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                                IHead::CompleteHeadVisitor completeHeadVisitor,
                                IHead::PartialHeadVisitor partialHeadVisitor) const = 0;
-
 };
 
 /**
@@ -84,14 +81,12 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
  * model may also contain a default rule that either takes precedence over the remaining rules or not.
  */
 class RuleList final : public IRuleList {
-
     public:
 
         /**
          * An implementation of the type `IRule` that stores unique pointers to the body and head of a rule.
          */
         class Rule final {
-
             private:
 
                 std::unique_ptr<IBody> bodyPtr_;
@@ -133,7 +128,6 @@ class RuleList final : public IRuleList {
                            IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                            IHead::CompleteHeadVisitor completeHeadVisitor,
                            IHead::PartialHeadVisitor partialHeadVisitor) const;
-
         };
 
     private:
@@ -142,7 +136,6 @@ class RuleList final : public IRuleList {
          * A forward iterator that provides access to the rules in a model, including the default rule, if available.
          */
         class ConstIterator final {
-
             private:
 
                 const Rule* defaultRule_;
@@ -230,7 +223,6 @@ class RuleList final : public IRuleList {
                  * @return      True, if the iterators refer to the same element, false otherwise
                  */
                 bool operator==(const ConstIterator& rhs) const;
-
         };
 
         std::unique_ptr<Rule> defaultRulePtr_;
@@ -296,14 +288,11 @@ class RuleList final : public IRuleList {
 
         bool isDefaultRuleTakingPrecedence() const override;
 
-        void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                   IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+        void visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                    IHead::CompleteHeadVisitor completeHeadVisitor,
                    IHead::PartialHeadVisitor partialHeadVisitor) const override;
 
-
-        void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                       IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+        void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                        IHead::CompleteHeadVisitor completeHeadVisitor,
                        IHead::PartialHeadVisitor partialHeadVisitor) const override;
 
@@ -318,12 +307,12 @@ class RuleList final : public IRuleList {
                                                                 uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-            const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
+          const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-            const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
+          const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CContiguousFeatureMatrix& featureMatrix,
@@ -344,7 +333,6 @@ class RuleList final : public IRuleList {
                                                                           const CsrFeatureMatrix& featureMatrix,
                                                                           const ILabelSpaceInfo& labelSpaceInfo,
                                                                           uint32 numLabels) const override;
-
 };
 
 /**

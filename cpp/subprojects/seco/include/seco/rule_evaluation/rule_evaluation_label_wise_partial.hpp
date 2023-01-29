@@ -4,10 +4,9 @@
  */
 #pragma once
 
-#include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
 #include "seco/heuristics/heuristic.hpp"
 #include "seco/lift_functions/lift_function.hpp"
-
+#include "seco/rule_evaluation/rule_evaluation_label_wise.hpp"
 
 namespace seco {
 
@@ -16,7 +15,6 @@ namespace seco {
      * of partial rules, which predict for a subset of the available labels.
      */
     class LabelWisePartialRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
-
         private:
 
             std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr_;
@@ -37,7 +35,6 @@ namespace seco {
             std::unique_ptr<IRuleEvaluation> create(const CompleteIndexVector& indexVector) const override;
 
             std::unique_ptr<IRuleEvaluation> create(const PartialIndexVector& indexVector) const override;
-
     };
 
 }

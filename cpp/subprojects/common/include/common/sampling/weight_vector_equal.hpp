@@ -5,12 +5,10 @@
 
 #include "common/sampling/weight_vector.hpp"
 
-
 /**
  * An one-dimensional vector that provides random access to a fixed number of equal weights.
  */
 class EqualWeightVector final : public IWeightVector {
-
     private:
 
         uint32 numElements_;
@@ -47,5 +45,4 @@ class EqualWeightVector final : public IWeightVector {
         bool hasZeroWeights() const override;
 
         std::unique_ptr<IThresholdsSubset> createThresholdsSubset(IThresholds& thresholds) const override;
-
 };

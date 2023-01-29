@@ -4,9 +4,9 @@
 #pragma once
 
 #include "common/data/types.hpp"
+
 #include <iterator>
 #include <type_traits>
-
 
 /**
  * An iterator adaptor that adapts an iterator, which provides access to a fixed number of values, such that it acts as
@@ -16,7 +16,6 @@
  */
 template<typename Iterator>
 class NonZeroIndexForwardIterator {
-
     private:
 
         Iterator iterator_;
@@ -31,8 +30,7 @@ class NonZeroIndexForwardIterator {
          * @param begin An iterator to the beginning of the values
          * @param end   An iterator to the end of the values
          */
-        NonZeroIndexForwardIterator(Iterator begin, Iterator end)
-            : iterator_(begin), end_(end), index_(0) {
+        NonZeroIndexForwardIterator(Iterator begin, Iterator end) : iterator_(begin), end_(end), index_(0) {
             for (; iterator_ != end_; iterator_++) {
                 auto value = *iterator_;
 
@@ -141,7 +139,6 @@ class NonZeroIndexForwardIterator {
         bool operator==(const NonZeroIndexForwardIterator<Iterator>& rhs) const {
             return iterator_ == rhs.iterator_;
         }
-
 };
 
 /**

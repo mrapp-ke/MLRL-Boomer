@@ -3,10 +3,9 @@
  */
 #pragma once
 
-#include "common/prediction/predictor_binary.hpp"
-#include "common/multi_threading/multi_threading.hpp"
 #include "boosting/losses/loss.hpp"
-
+#include "common/multi_threading/multi_threading.hpp"
+#include "common/prediction/predictor_binary.hpp"
 
 namespace boosting {
 
@@ -18,7 +17,6 @@ namespace boosting {
      * (see https://proceedings.neurips.cc/paper/2011/file/71ad16ad2c4d81f348082ff6c4b20768-Paper.pdf).
      */
     class GfmBinaryPredictorConfig final : public IBinaryPredictorConfig {
-
         private:
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
@@ -47,13 +45,12 @@ namespace boosting {
              * @see `IBinaryPredictorFactory::createSparsePredictorFactory`
              */
             std::unique_ptr<ISparseBinaryPredictorFactory> createSparsePredictorFactory(
-                const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
             /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`
              */
             bool isLabelVectorSetNeeded() const override;
-
     };
 
 }

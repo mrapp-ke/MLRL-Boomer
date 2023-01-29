@@ -3,11 +3,10 @@
  */
 #pragma once
 
-#include "boosting/losses/loss.hpp"
 #include "boosting/data/statistic_view_label_wise_dense.hpp"
+#include "boosting/losses/loss.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-
 
 namespace boosting {
 
@@ -15,10 +14,9 @@ namespace boosting {
      * Defines an interface for all (decomposable) loss functions that are applied label-wise.
      */
     class ILabelWiseLoss : public ILoss {
-
         public:
 
-            virtual ~ILabelWiseLoss() override { };
+            virtual ~ILabelWiseLoss() override {};
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -97,17 +95,16 @@ namespace boosting {
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const = 0;
-
     };
 
     /**
      * Defines an interface for all factories that allow to create instances of the type `ILabelWiseLoss`.
      */
-    class ILabelWiseLossFactory : public IEvaluationMeasureFactory, public IDistanceMeasureFactory {
-
+    class ILabelWiseLossFactory : public IEvaluationMeasureFactory,
+                                  public IDistanceMeasureFactory {
         public:
 
-            virtual ~ILabelWiseLossFactory() override { };
+            virtual ~ILabelWiseLossFactory() override {};
 
             /**
              * Creates and returns a new object of type `ILabelWiseLoss`.
@@ -129,7 +126,6 @@ namespace boosting {
             std::unique_ptr<IDistanceMeasure> createDistanceMeasure() const override final {
                 return this->createLabelWiseLoss();
             }
-
     };
 
     /**
@@ -137,10 +133,9 @@ namespace boosting {
      * label-wise.
      */
     class ILabelWiseLossConfig : public ILossConfig {
-
         public:
 
-            virtual ~ILabelWiseLossConfig() override { };
+            virtual ~ILabelWiseLossConfig() override {};
 
             /**
              * Creates and returns a new object of type `ILabelWiseLossFactory` according to the specified
@@ -165,7 +160,6 @@ namespace boosting {
             bool isSparse() const override {
                 return false;
             }
-
     };
 
 }

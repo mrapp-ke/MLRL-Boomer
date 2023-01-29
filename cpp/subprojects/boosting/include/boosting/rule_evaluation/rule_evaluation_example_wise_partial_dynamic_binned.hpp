@@ -3,11 +3,10 @@
  */
 #pragma once
 
-#include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 #include "boosting/binning/label_binning.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
-
+#include "boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 
 namespace boosting {
 
@@ -17,7 +16,6 @@ namespace boosting {
      * using gradient-based label binning.
      */
     class ExampleWiseDynamicPartialBinnedRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
-
         private:
 
             float32 threshold_;
@@ -60,17 +58,16 @@ namespace boosting {
              *                                  routines
              */
             ExampleWiseDynamicPartialBinnedRuleEvaluationFactory(
-                float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
-                std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas, const Lapack& lapack);
+              float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+              std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas, const Lapack& lapack);
 
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-                const DenseExampleWiseStatisticVector& statisticVector,
-                const CompleteIndexVector& indexVector) const override;
+              const DenseExampleWiseStatisticVector& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
 
             std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-                const DenseExampleWiseStatisticVector& statisticVector,
-                const PartialIndexVector& indexVector) const override;
-
+              const DenseExampleWiseStatisticVector& statisticVector,
+              const PartialIndexVector& indexVector) const override;
     };
 
 }

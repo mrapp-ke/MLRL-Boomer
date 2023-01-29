@@ -3,11 +3,11 @@
  */
 #pragma once
 
-#include "common/data/vector_sparse_array.hpp"
 #include "boosting/data/statistic_vector_label_wise_dense.hpp"
+#include "common/data/vector_sparse_array.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
-#include <algorithm>
 
+#include <algorithm>
 
 namespace boosting {
 
@@ -17,19 +17,19 @@ namespace boosting {
      * it goes before the second one.
      */
     struct CompareLabelWiseCriteria final {
+        public:
 
-        /**
-         * Returns whether the a given object of type `IndexedValue` that stores the optimal prediction for a label, as
-         * well as its index, should go before a second one.
-         *
-         * @param lhs   A reference to a first object of type `IndexedValue`
-         * @param rhs   A reference to a second object of type `IndexedValue`
-         * @return      True, if the first object should go before the second one, false otherwise
-         */
-        inline bool operator()(const IndexedValue<float64>& lhs, const IndexedValue<float64>& rhs) const {
-            return std::abs(lhs.value) > std::abs(rhs.value);
-        }
-
+            /**
+             * Returns whether the a given object of type `IndexedValue` that stores the optimal prediction for a label,
+             * as well as its index, should go before a second one.
+             *
+             * @param lhs   A reference to a first object of type `IndexedValue`
+             * @param rhs   A reference to a second object of type `IndexedValue`
+             * @return      True, if the first object should go before the second one, false otherwise
+             */
+            inline bool operator()(const IndexedValue<float64>& lhs, const IndexedValue<float64>& rhs) const {
+                return std::abs(lhs.value) > std::abs(rhs.value);
+            }
     };
 
     /**
@@ -54,8 +54,8 @@ namespace boosting {
             const Tuple<float64>& tuple = statisticIterator[i];
             IndexedValue<float64>& entry = tmpIterator[i];
             entry.index = i;
-            entry.value = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
-                                                  l2RegularizationWeight);
+            entry.value =
+              calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight, l2RegularizationWeight);
         }
 
         std::partial_sort(tmpIterator, &tmpIterator[numPredictions], &tmpIterator[numLabels],

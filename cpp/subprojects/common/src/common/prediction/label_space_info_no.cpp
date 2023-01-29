@@ -1,4 +1,5 @@
 #include "common/prediction/label_space_info_no.hpp"
+
 #include "common/input/feature_matrix_c_contiguous.hpp"
 #include "common/input/feature_matrix_csr.hpp"
 #include "common/model/rule_list.hpp"
@@ -6,12 +7,10 @@
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 
-
 /**
  * An implementation of the type `INoLabelSpaceInfo` that does not provide any information about the label space.
  */
 class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
-
     public:
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
@@ -29,14 +28,14 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
         }
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-                const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-                const RuleList& model, uint32 numLabels) const override {
+          const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const RuleList& model, uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, numLabels);
         }
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-                const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
-                const RuleList& model, uint32 numLabels) const override {
+          const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
+          uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, numLabels);
         }
 
@@ -65,7 +64,6 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
                                                                           uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, numLabels);
         }
-
 };
 
 std::unique_ptr<INoLabelSpaceInfo> createNoLabelSpaceInfo() {

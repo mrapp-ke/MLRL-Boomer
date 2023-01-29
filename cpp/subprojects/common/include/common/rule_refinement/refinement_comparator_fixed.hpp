@@ -3,18 +3,17 @@
  */
 #pragma once
 
-#include "common/rule_refinement/refinement.hpp"
 #include "common/rule_evaluation/rule_compare_function.hpp"
 #include "common/rule_evaluation/score_vector.hpp"
+#include "common/rule_refinement/refinement.hpp"
+
 #include <functional>
 #include <vector>
-
 
 /**
  * Allows comparing potential refinements of a rule and keeping track of the best ones.
  */
 class FixedRefinementComparator final {
-
     private:
 
         RuleCompareFunction ruleCompareFunction_;
@@ -109,5 +108,4 @@ class FixedRefinementComparator final {
          *                      comparator
          */
         bool merge(FixedRefinementComparator& comparator);
-
 };

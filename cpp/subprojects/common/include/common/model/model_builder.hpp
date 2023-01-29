@@ -3,19 +3,17 @@
  */
 #pragma once
 
-#include "common/rule_refinement/prediction_evaluated.hpp"
-#include "common/model/rule_model.hpp"
 #include "common/model/condition_list.hpp"
-
+#include "common/model/rule_model.hpp"
+#include "common/rule_refinement/prediction_evaluated.hpp"
 
 /**
  * Defines an interface for all classes that allow to incrementally build rule-based models.
  */
 class IModelBuilder {
-
     public:
 
-        virtual ~IModelBuilder() { };
+        virtual ~IModelBuilder() {};
 
         /**
          * Sets the default rule of the model.
@@ -49,17 +47,15 @@ class IModelBuilder {
          * @return An unique pointer to an object of type `IRuleModel` that has been built
          */
         virtual std::unique_ptr<IRuleModel> buildModel() = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IModelBuilder`.
  */
 class IModelBuilderFactory {
-
     public:
 
-        virtual ~IModelBuilderFactory() { };
+        virtual ~IModelBuilderFactory() {};
 
         /**
          * Creates and returns a new instance of type `IModelBuilder`.
@@ -67,5 +63,4 @@ class IModelBuilderFactory {
          * @return An unique pointer to an object of type `IModelBuilder` that has been created
          */
         virtual std::unique_ptr<IModelBuilder> create() const = 0;
-
 };

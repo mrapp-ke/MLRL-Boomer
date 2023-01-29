@@ -4,18 +4,17 @@
 #pragma once
 
 #ifdef _WIN32
-    #pragma warning( push )
-    #pragma warning( disable : 4250 )
+    #pragma warning(push)
+    #pragma warning(disable : 4250)
 #endif
 
-#include "seco/learner.hpp"
 #include "seco/heuristics/heuristic_f_measure.hpp"
 #include "seco/heuristics/heuristic_m_estimate.hpp"
+#include "seco/learner.hpp"
 #include "seco/lift_functions/lift_function_kln.hpp"
 #include "seco/lift_functions/lift_function_peak.hpp"
 #include "seco/rule_evaluation/head_type.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
-
 
 namespace seco {
 
@@ -23,7 +22,6 @@ namespace seco {
      * Defines the interface of the multi-label SeCo algorithm.
      */
     class MLRLSECO_API IMultiLabelSeCoRuleLearner : virtual public ISeCoRuleLearner {
-
         public:
 
             /**
@@ -48,22 +46,19 @@ namespace seco {
                             virtual public IRuleLearner::ISizeStoppingCriterionMixin,
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
                             virtual public IRuleLearner::ISequentialPostOptimizationMixin {
-
                 public:
 
-                    virtual ~IConfig() override { };
-
+                    virtual ~IConfig() override {};
             };
 
-            virtual ~IMultiLabelSeCoRuleLearner() override { };
-
+            virtual ~IMultiLabelSeCoRuleLearner() override {};
     };
 
     /**
      * The multi-label SeCo algorithm.
      */
-    class MultiLabelSeCoRuleLearner final : public AbstractSeCoRuleLearner, virtual public IMultiLabelSeCoRuleLearner {
-
+    class MultiLabelSeCoRuleLearner final : public AbstractSeCoRuleLearner,
+                                            virtual public IMultiLabelSeCoRuleLearner {
         public:
 
             /**
@@ -71,7 +66,6 @@ namespace seco {
              */
             class Config final : public AbstractSeCoRuleLearner::Config,
                                  virtual public IMultiLabelSeCoRuleLearner::IConfig {
-
                 public:
 
                     Config();
@@ -90,7 +84,6 @@ namespace seco {
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
             };
 
         private:
@@ -104,7 +97,6 @@ namespace seco {
              *                  specifies the configuration that should be used by the rule learner
              */
             MultiLabelSeCoRuleLearner(std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr);
-
     };
 
     /**
@@ -122,10 +114,10 @@ namespace seco {
      * @return          An unique pointer to an object of type `IMultiLabelSeCoRuleLearner` that has been created
      */
     MLRLSECO_API std::unique_ptr<IMultiLabelSeCoRuleLearner> createMultiLabelSeCoRuleLearner(
-        std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr);
+      std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr);
 
 }
 
 #ifdef _WIN32
-    #pragma warning ( pop )
+    #pragma warning(pop)
 #endif

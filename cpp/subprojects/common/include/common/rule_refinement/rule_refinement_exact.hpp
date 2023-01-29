@@ -3,11 +3,10 @@
  */
 #pragma once
 
+#include "common/input/feature_vector.hpp"
 #include "common/rule_refinement/rule_refinement.hpp"
 #include "common/rule_refinement/rule_refinement_callback.hpp"
 #include "common/statistics/statistics_weighted.hpp"
-#include "common/input/feature_vector.hpp"
-
 
 /**
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
@@ -19,7 +18,6 @@
  */
 template<typename IndexVector>
 class ExactRuleRefinement final : public IRuleRefinement {
-
     private:
 
         const IndexVector& labelIndices_;
@@ -55,5 +53,4 @@ class ExactRuleRefinement final : public IRuleRefinement {
         void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) override;
 
         void findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) override;
-
 };

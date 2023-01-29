@@ -3,15 +3,13 @@
  */
 #pragma once
 
-#include "common/rule_refinement/prediction_evaluated.hpp"
 #include "common/indices/index_vector_partial.hpp"
-
+#include "common/rule_refinement/prediction_evaluated.hpp"
 
 /**
  * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
  */
 class PartialPrediction final : public AbstractEvaluatedPrediction {
-
     private:
 
         PartialIndexVector indexVector_;
@@ -93,17 +91,17 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
                                                                   const BitWeightVector& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const override;
+          const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const override;
+          const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const override;
+          const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-            const IStatistics& statistics,
-            const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override;
+          const IStatistics& statistics,
+          const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override;
 
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                               uint32 featureIndex) const override;
@@ -115,5 +113,4 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
         void sort() override;
 
         std::unique_ptr<IHead> createHead() const override;
-
 };

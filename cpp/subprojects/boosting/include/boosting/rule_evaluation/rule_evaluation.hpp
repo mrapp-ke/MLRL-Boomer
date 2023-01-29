@@ -4,8 +4,8 @@
 #pragma once
 
 #include "common/rule_evaluation/score_vector.hpp"
-#include <memory>
 
+#include <memory>
 
 namespace boosting {
 
@@ -17,10 +17,9 @@ namespace boosting {
      */
     template<typename StatisticVector>
     class IRuleEvaluation {
-
         public:
 
-            virtual ~IRuleEvaluation() { };
+            virtual ~IRuleEvaluation() {};
 
             /**
              * Calculates the scores to be predicted by a rule, as well as its overall quality, based on the sums of
@@ -32,7 +31,6 @@ namespace boosting {
              *                          scores of a rule, as well as its overall quality
              */
             virtual const IScoreVector& calculateScores(StatisticVector& statisticVector) = 0;
-
     };
 
 }

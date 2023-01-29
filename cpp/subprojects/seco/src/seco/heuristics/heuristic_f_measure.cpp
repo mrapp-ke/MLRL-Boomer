@@ -1,8 +1,9 @@
 #include "seco/heuristics/heuristic_f_measure.hpp"
+
 #include "common/util/validation.hpp"
 #include "heuristic_common.hpp"
-#include <cmath>
 
+#include <cmath>
 
 namespace seco {
 
@@ -11,7 +12,6 @@ namespace seco {
      * "Precision" and "Recall", where the parameter "beta" allows to trade off between both heuristics.
      */
     class FMeasure final : public IHeuristic {
-
         private:
 
             float64 beta_;
@@ -21,10 +21,7 @@ namespace seco {
             /**
              * @param beta The value of the "beta" parameter. Must be at least 0
              */
-            FMeasure(float64 beta)
-                : beta_(beta) {
-
-            }
+            FMeasure(float64 beta) : beta_(beta) {}
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) const override {
@@ -45,7 +42,6 @@ namespace seco {
                     return precision(cin, cip, crn, crp);
                 }
             }
-
     };
 
     /**
@@ -55,7 +51,6 @@ namespace seco {
      * approaches infinity, this heuristic becomes equivalent to "Recall".
      */
     class FMeasureFactory final : public IHeuristicFactory {
-
         private:
 
             float64 beta_;
@@ -65,21 +60,14 @@ namespace seco {
             /**
              * @param beta The value of the "beta" parameter. Must be at least 0
              */
-            FMeasureFactory(float64 beta)
-                : beta_(beta) {
-
-            }
+            FMeasureFactory(float64 beta) : beta_(beta) {}
 
             std::unique_ptr<IHeuristic> create() const override {
                 return std::make_unique<FMeasure>(beta_);
             }
-
     };
 
-    FMeasureConfig::FMeasureConfig()
-        : beta_(0.25) {
-
-    }
+    FMeasureConfig::FMeasureConfig() : beta_(0.25) {}
 
     float64 FMeasureConfig::getBeta() const {
         return beta_;

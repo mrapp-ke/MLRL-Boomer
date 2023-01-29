@@ -1,6 +1,6 @@
 #include "seco/heuristics/heuristic_precision.hpp"
-#include "heuristic_common.hpp"
 
+#include "heuristic_common.hpp"
 
 namespace seco {
 
@@ -9,14 +9,12 @@ namespace seco {
      * labels that are covered by a rule.
      */
     class Precision final : public IHeuristic {
-
         public:
 
             float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
                                             float64 uip, float64 urn, float64 urp) const override {
                 return precision(cin, cip, crn, crp);
             }
-
     };
 
     /**
@@ -24,13 +22,11 @@ namespace seco {
      * all labels that are covered by a rule.
      */
     class PrecisionFactory final : public IHeuristicFactory {
-
         public:
 
             std::unique_ptr<IHeuristic> create() const override {
                 return std::make_unique<Precision>();
             }
-
     };
 
     std::unique_ptr<IHeuristicFactory> PrecisionConfig::createHeuristicFactory() const {

@@ -3,10 +3,9 @@
  */
 #pragma once
 
+#include "boosting/losses/loss.hpp"
 #include "common/sampling/partition_sampling.hpp"
 #include "common/stopping/global_pruning.hpp"
-#include "boosting/losses/loss.hpp"
-
 
 namespace boosting {
 
@@ -16,7 +15,6 @@ namespace boosting {
      * loss function.
      */
     class AutomaticPartitionSamplingConfig final : public IPartitionSamplingConfig {
-
         private:
 
             const std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr_;
@@ -35,7 +33,6 @@ namespace boosting {
                                              const std::unique_ptr<ILossConfig>& lossConfigPtr);
 
             std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const override;
-
     };
 
 }

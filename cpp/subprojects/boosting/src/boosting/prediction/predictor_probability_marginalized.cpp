@@ -1,10 +1,11 @@
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
+
 #include "common/math/math.hpp"
+#include "omp.h"
 #include "predictor_common.hpp"
 #include "predictor_probability_common.hpp"
-#include "omp.h"
-#include <stdexcept>
 
+#include <stdexcept>
 
 namespace boosting {
 
@@ -35,20 +36,20 @@ namespace boosting {
                                                         const IProbabilityFunction& probabilityFunction,
                                                         const LabelVectorSet& labelVectorSet, uint32 numLabelVectors) {
         float64* jointProbabilities = new float64[numLabelVectors];
-        float64 sumOfJointProbabilities = calculateJointProbabilities(scoresBegin, scoresEnd, jointProbabilities,
-                                                                      probabilityFunction, labelVectorSet);
+        float64 sumOfJointProbabilities =
+          calculateJointProbabilities(scoresBegin, scoresEnd, jointProbabilities, probabilityFunction, labelVectorSet);
         calculateMarginalizedProbabilities(predictionIterator, jointProbabilities, sumOfJointProbabilities,
                                            labelVectorSet);
         delete[] jointProbabilities;
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
-            const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
-            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
-            uint32 numThreads) {
+      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+      const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
+      uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
+          std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
 
         if (numLabelVectors > 0) {
@@ -58,9 +59,9 @@ namespace boosting {
             const IProbabilityFunction* probabilityFunctionPtr = &probabilityFunction;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-            firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
-            firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
+  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
+    firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
@@ -76,13 +77,12 @@ namespace boosting {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
-            const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-            const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
-            uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
+      uint32 numLabels, const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
-            std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
+          std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
 
         if (numLabelVectors > 0) {
@@ -92,10 +92,10 @@ namespace boosting {
             const IProbabilityFunction* probabilityFunctionPtr = &probabilityFunction;
             const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
 
-            #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-            firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-            firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
-            schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
+    firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
+      schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
@@ -125,7 +125,6 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class MarginalizedProbabilityPredictor final : public IProbabilityPredictor {
-
         private:
 
             const FeatureMatrix& featureMatrix_;
@@ -160,9 +159,7 @@ namespace boosting {
                                              std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
                                              uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), labelVectorSet_(labelVectorSet), numLabels_(numLabels),
-                  probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {
-
-            }
+                  probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
@@ -171,22 +168,22 @@ namespace boosting {
                 return predictInternally(featureMatrix_, model_, labelVectorSet_, numLabels_, *probabilityFunctionPtr_,
                                          numThreads_);
             }
-
     };
 
     template<typename FeatureMatrix>
     static inline std::unique_ptr<IProbabilityPredictor> createMarginalizedProbabilityPredictor(
-            const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
-            uint32 numLabels, const IProbabilityFunctionFactory& probabilityFunctionFactory, uint32 numThreads) {
+      const FeatureMatrix& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet, uint32 numLabels,
+      const IProbabilityFunctionFactory& probabilityFunctionFactory, uint32 numThreads) {
         if (!labelVectorSet) {
-            throw std::runtime_error("Information about the label vectors that have been encountered in the training "
-                "data is required for predicting binary labels, but no such information is provided by the model. Most "
-                "probably, the model was intended to use a different prediction method when it has been trained.");
+            throw std::runtime_error(
+              "Information about the label vectors that have been encountered in the training data is required for "
+              "predicting binary labels, but no such information is provided by the model. Most probably, the model "
+              "was intended to use a different prediction method when it has been trained.");
         }
 
         std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactory.create();
         return std::make_unique<MarginalizedProbabilityPredictor<FeatureMatrix, RuleList>>(
-            featureMatrix, model, *labelVectorSet, numLabels, std::move(probabilityFunctionPtr), numThreads);
+          featureMatrix, model, *labelVectorSet, numLabels, std::move(probabilityFunctionPtr), numThreads);
     }
 
     /**
@@ -198,7 +195,6 @@ namespace boosting {
      * is specified to be relevant, divided by the total sum of all distances.
      */
     class MarginalizedProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
-
         private:
 
             std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
@@ -215,10 +211,8 @@ namespace boosting {
              *                                      different query examples in parallel. Must be at least 1
              */
             MarginalizedProbabilityPredictorFactory(
-                    std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
-                : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {
-
-            }
+              std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr, uint32 numThreads)
+                : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -239,20 +233,17 @@ namespace boosting {
                 return createMarginalizedProbabilityPredictor(featureMatrix, model, labelVectorSet, numLabels,
                                                               *probabilityFunctionFactoryPtr_, numThreads_);
             }
-
     };
 
     MarginalizedProbabilityPredictorConfig::MarginalizedProbabilityPredictorConfig(
-            const std::unique_ptr<ILossConfig>& lossConfigPtr,
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(std::move(lossConfigPtr)), multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {
-
-    }
+      const std::unique_ptr<ILossConfig>& lossConfigPtr,
+      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+        : lossConfigPtr_(std::move(lossConfigPtr)), multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {}
 
     std::unique_ptr<IProbabilityPredictorFactory> MarginalizedProbabilityPredictorConfig::createPredictorFactory(
-            const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
-            lossConfigPtr_->createProbabilityFunctionFactory();
+          lossConfigPtr_->createProbabilityFunctionFactory();
 
         if (probabilityFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);

@@ -3,11 +3,10 @@
  */
 #pragma once
 
+#include "common/math/math.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/statistics/statistics.hpp"
-#include "common/math/math.hpp"
-
 
 /**
  * Calculates and returns a numerical score that assesses the quality of a model's predictions for the examples in a

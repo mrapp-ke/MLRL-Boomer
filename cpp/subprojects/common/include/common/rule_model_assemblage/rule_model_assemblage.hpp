@@ -7,26 +7,24 @@
 #include "common/input/feature_matrix_column_wise.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/model/model_builder.hpp"
-#include "common/rule_induction/rule_induction.hpp"
 #include "common/post_optimization/post_optimization.hpp"
-#include "common/sampling/label_sampling.hpp"
-#include "common/sampling/instance_sampling.hpp"
+#include "common/rule_induction/rule_induction.hpp"
 #include "common/sampling/feature_sampling.hpp"
+#include "common/sampling/instance_sampling.hpp"
+#include "common/sampling/label_sampling.hpp"
 #include "common/sampling/partition_sampling.hpp"
 #include "common/statistics/statistics_provider.hpp"
 #include "common/stopping/stopping_criterion.hpp"
 #include "common/thresholds/thresholds.hpp"
-
 
 /**
  * Defines an interface for all classes that implement an algorithm for the induction of several rules that will be
  * added to a rule-based model.
  */
 class IRuleModelAssemblage {
-
     public:
 
-        virtual ~IRuleModelAssemblage() { };
+        virtual ~IRuleModelAssemblage() {};
 
         /**
          * Assembles and returns a rule-based model that consists of several rules.
@@ -45,17 +43,15 @@ class IRuleModelAssemblage {
                                                         const IColumnWiseFeatureMatrix& featureMatrix,
                                                         const IRowWiseLabelMatrix& labelMatrix,
                                                         uint32 randomState) const = 0;
-
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IRuleModelAssemblage`.
  */
 class IRuleModelAssemblageFactory {
-
     public:
 
-        virtual ~IRuleModelAssemblageFactory() { };
+        virtual ~IRuleModelAssemblageFactory() {};
 
         /**
          * Creates and returns a new object of the type `IRuleModelAssemblage`.
@@ -96,19 +92,18 @@ class IRuleModelAssemblageFactory {
          *                                      additional rules should be induced or not
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
-            std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
-            std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
-            std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-            std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
-            std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
-            std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
-            std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
-            std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-            std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
-            std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-            std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
-            std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const = 0;
-
+          std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
+          std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
+          std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
+          std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
+          std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
+          std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
+          std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
+          std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
+          std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
+          std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
+          std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
+          std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const = 0;
 };
 
 /**
@@ -116,10 +111,9 @@ class IRuleModelAssemblageFactory {
  * will be added to a rule-based model.
  */
 class IRuleModelAssemblageConfig {
-
     public:
 
-        virtual ~IRuleModelAssemblageConfig() { };
+        virtual ~IRuleModelAssemblageConfig() {};
 
         /**
          * Creates and returns a new object of type `IRuleModelAssemblageFactory` according to specified configuration.
@@ -130,6 +124,5 @@ class IRuleModelAssemblageConfig {
          *                      created
          */
         virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
-            const IRowWiseLabelMatrix& labelMatrix) const = 0;
-
+          const IRowWiseLabelMatrix& labelMatrix) const = 0;
 };

@@ -4,21 +4,20 @@
 #pragma once
 
 #include "common/data/types.hpp"
+
 #include <memory>
 
 // Forward declarations
 class IThresholds;
 class IThresholdsSubset;
 
-
 /**
  * Defines an interface for one-dimensional vectors that provide access to weights.
  */
 class IWeightVector {
-
     public:
 
-        virtual ~IWeightVector() { };
+        virtual ~IWeightVector() {};
 
         /**
          * Returns whether the vector contains any zero weights or not.
@@ -36,5 +35,4 @@ class IWeightVector {
          * @return              An unique pointer to an object of type `IThresholdsSubset` that has been created
          */
         virtual std::unique_ptr<IThresholdsSubset> createThresholdsSubset(IThresholds& thresholds) const = 0;
-
 };

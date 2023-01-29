@@ -3,24 +3,22 @@
  */
 #pragma once
 
+#include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/data/statistic_vector_label_wise_dense.hpp"
 #include "boosting/data/statistic_view_label_wise_dense.hpp"
-#include "boosting/data/matrix_dense_numeric.hpp"
 #include "boosting/losses/loss_label_wise.hpp"
 #include "common/measures/measure_evaluation.hpp"
 #include "statistics_label_wise_common.hpp"
+
 #include <cstdlib>
 
-
 namespace boosting {
-
 
     /**
      * A matrix that stores gradients and Hessians that have been calculated using a label-wise decomposable loss
      * function using C-contiguous arrays.
      */
     class DenseLabelWiseStatisticMatrix final : public DenseLabelWiseStatisticView {
-
         public:
 
             /**
@@ -29,14 +27,11 @@ namespace boosting {
              */
             DenseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
                 : DenseLabelWiseStatisticView(numRows, numCols,
-                                              (Tuple<float64>*) malloc(numRows * numCols * sizeof(Tuple<float64>))) {
-
-            }
+                                              (Tuple<float64>*) malloc(numRows * numCols * sizeof(Tuple<float64>))) {}
 
             ~DenseLabelWiseStatisticMatrix() {
                 free(statistics_);
             }
-
     };
 
     /**
@@ -46,14 +41,10 @@ namespace boosting {
      * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
      */
     template<typename LabelMatrix>
-    class DenseLabelWiseStatistics final : public AbstractLabelWiseStatistics<LabelMatrix,
-                                                                              DenseLabelWiseStatisticVector,
-                                                                              DenseLabelWiseStatisticView,
-                                                                              DenseLabelWiseStatisticMatrix,
-                                                                              NumericDenseMatrix<float64>,
-                                                                              ILabelWiseLoss, IEvaluationMeasure,
-                                                                              ILabelWiseRuleEvaluationFactory> {
-
+    class DenseLabelWiseStatistics final
+        : public AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticView,
+                                             DenseLabelWiseStatisticMatrix, NumericDenseMatrix<float64>, ILabelWiseLoss,
+                                             IEvaluationMeasure, ILabelWiseRuleEvaluationFactory> {
         public:
 
             /**
@@ -81,11 +72,8 @@ namespace boosting {
                 : AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticView,
                                               DenseLabelWiseStatisticMatrix, NumericDenseMatrix<float64>,
                                               ILabelWiseLoss, IEvaluationMeasure, ILabelWiseRuleEvaluationFactory>(
-                      std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
-                      std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {
-
-            }
-
+                  std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+                  std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
     };
 
 }

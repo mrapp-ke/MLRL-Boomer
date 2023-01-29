@@ -4,12 +4,11 @@
 #pragma once
 
 #ifdef _WIN32
-    #pragma warning( push )
-    #pragma warning( disable : 4250 )
+    #pragma warning(push)
+    #pragma warning(disable : 4250)
 #endif
 
 #include "boosting/learner.hpp"
-
 
 namespace boosting {
 
@@ -17,7 +16,6 @@ namespace boosting {
      * Defines the interface of the BOOMER algorithm.
      */
     class MLRLBOOSTING_API IBoomer : virtual public IBoostingRuleLearner {
-
         public:
 
             /**
@@ -51,10 +49,9 @@ namespace boosting {
                             virtual public IRuleLearner::IPrePruningMixin,
                             virtual public IRuleLearner::IPostPruningMixin,
                             virtual public IRuleLearner::ISequentialPostOptimizationMixin {
-
                 public:
 
-                    virtual ~IConfig() override { };
+                    virtual ~IConfig() override {};
 
                     /**
                      * Configures the rule learner to automatically decide whether a default rule should be induced or
@@ -114,25 +111,23 @@ namespace boosting {
                      * estimates.
                      */
                     virtual void useAutomaticProbabilityPredictor() = 0;
-
             };
 
-            virtual ~IBoomer() override { };
-
+            virtual ~IBoomer() override {};
     };
 
     /**
      * The BOOMER algorithm.
      */
-    class Boomer final : public AbstractBoostingRuleLearner, virtual public IBoomer {
-
+    class Boomer final : public AbstractBoostingRuleLearner,
+                         virtual public IBoomer {
         public:
 
             /**
              * Allows to configure the BOOMER algorithm.
              */
-            class Config final : public AbstractBoostingRuleLearner::Config, virtual public IBoomer::IConfig {
-
+            class Config final : public AbstractBoostingRuleLearner::Config,
+                                 virtual public IBoomer::IConfig {
                 public:
 
                     Config();
@@ -161,7 +156,6 @@ namespace boosting {
                     void useAutomaticBinaryPredictor() override;
 
                     void useAutomaticProbabilityPredictor() override;
-
             };
 
         private:
@@ -179,7 +173,6 @@ namespace boosting {
              */
             Boomer(std::unique_ptr<IBoomer::IConfig> configPtr, Blas::DdotFunction ddotFunction,
                    Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
-
     };
 
     /**
@@ -207,5 +200,5 @@ namespace boosting {
 }
 
 #ifdef _WIN32
-    #pragma warning ( pop )
+    #pragma warning(pop)
 #endif

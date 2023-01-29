@@ -4,21 +4,20 @@
 #pragma once
 
 #include "common/data/types.hpp"
+
 #include <memory>
 
 // Forward declarations
 class IRuleRefinement;
 class IThresholdsSubset;
 
-
 /**
  * Defines an interface for all classes that provide random access to indices.
  */
 class IIndexVector {
-
     public:
 
-        virtual ~IIndexVector() { };
+        virtual ~IIndexVector() {};
 
         /**
          * Returns the number of indices.
@@ -54,5 +53,4 @@ class IIndexVector {
          */
         virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
                                                                       uint32 featureIndex) const = 0;
-
 };

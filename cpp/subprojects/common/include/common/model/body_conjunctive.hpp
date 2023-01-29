@@ -5,13 +5,11 @@
 
 #include "common/model/body.hpp"
 
-
 /**
  * A body that consists of a conjunction of conditions using the operators <= or > for numerical conditions, and = or !=
  * for nominal conditions, respectively.
  */
 class MLRLCOMMON_API ConjunctiveBody final : public IBody {
-
     private:
 
         uint32 numLeq_;
@@ -113,8 +111,8 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         threshold_const_iterator leq_thresholds_cend() const;
 
         /**
-         * Returns an `index_iterator` to the beginning of the feature indices that correspond to conditions that use the
-         * <= operator.
+         * Returns an `index_iterator` to the beginning of the feature indices that correspond to conditions that use
+         * the <= operator.
          *
          * @return An `index_iterator` to the beginning
          */
@@ -373,5 +371,4 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
                     uint32 n) const override;
 
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const override;
-
 };

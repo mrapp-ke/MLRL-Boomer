@@ -1,11 +1,8 @@
 #include "common/binning/bin_index_vector_dok.hpp"
+
 #include "common/statistics/statistics_weighted.hpp"
 
-
-DokBinIndexVector::DokBinIndexVector()
-    : vector_(DokVector<uint32>(BIN_INDEX_SPARSE)) {
-
-}
+DokBinIndexVector::DokBinIndexVector() : vector_(DokVector<uint32>(BIN_INDEX_SPARSE)) {}
 
 DokBinIndexVector::iterator DokBinIndexVector::begin() {
     return vector_.begin();

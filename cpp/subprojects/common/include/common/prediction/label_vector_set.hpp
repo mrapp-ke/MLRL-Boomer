@@ -3,21 +3,21 @@
  */
 #pragma once
 
-#include "common/input/label_matrix_row_wise.hpp"
 #include "common/data/functions.hpp"
+#include "common/input/label_matrix_row_wise.hpp"
 #include "common/prediction/label_space_info.hpp"
-#include <unordered_map>
+
 #include <functional>
 #include <memory>
+#include <unordered_map>
 
 /**
  * Defines an interface for all classes that provide access to a set of unique label vectors.
  */
 class MLRLCOMMON_API ILabelVectorSet : public ILabelSpaceInfo {
-
     public:
 
-        virtual ~ILabelVectorSet() override { };
+        virtual ~ILabelVectorSet() override {};
 
         /**
          * A visitor function for handling objects of the type `LabelVector`.
@@ -37,7 +37,6 @@ class MLRLCOMMON_API ILabelVectorSet : public ILabelSpaceInfo {
          * @param visitor The visitor function for handling objects of the type `LabelVector`
          */
         virtual void visit(LabelVectorVisitor visitor) const = 0;
-
 };
 
 /**
@@ -45,30 +44,29 @@ class MLRLCOMMON_API ILabelVectorSet : public ILabelSpaceInfo {
  * frequency.
  */
 class LabelVectorSet final : public ILabelVectorSet {
-
     private:
 
         /**
          * Allows to compute hashes for objects of type `LabelVector`.
          */
         struct Hash final {
+            public:
 
-            inline std::size_t operator()(const std::unique_ptr<LabelVector>& v) const {
-                return hashArray(v->cbegin(), v->getNumElements());
-            }
-
+                inline std::size_t operator()(const std::unique_ptr<LabelVector>& v) const {
+                    return hashArray(v->cbegin(), v->getNumElements());
+                }
         };
 
         /**
          * Allows to check whether two objects of type `LabelVector` are equal or not.
          */
         struct Pred final {
+            public:
 
-            inline bool operator()(const std::unique_ptr<LabelVector>& lhs,
-                                   const std::unique_ptr<LabelVector>& rhs) const {
-                return compareArrays(lhs->cbegin(), lhs->getNumElements(), rhs->cbegin(), rhs->getNumElements());
-            }
-
+                inline bool operator()(const std::unique_ptr<LabelVector>& lhs,
+                                       const std::unique_ptr<LabelVector>& rhs) const {
+                    return compareArrays(lhs->cbegin(), lhs->getNumElements(), rhs->cbegin(), rhs->getNumElements());
+                }
         };
 
         typedef std::unordered_map<std::unique_ptr<LabelVector>, uint32, Hash, Pred> Map;
@@ -117,14 +115,13 @@ class LabelVectorSet final : public ILabelVectorSet {
                                                                 const RuleList& ruleList,
                                                                 uint32 numLabels) const override;
 
-        std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(const ISparseBinaryPredictorFactory& factory,
-                                                                            const CContiguousFeatureMatrix& featureMatrix,
-                                                                            const RuleList& ruleList,
-                                                                            uint32 numLabels) const override;
+        std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
+          const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const RuleList& ruleList, uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-            const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
-            const RuleList& ruleList, uint32 numLabels) const override;
+          const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& ruleList,
+          uint32 numLabels) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CContiguousFeatureMatrix& featureMatrix,
@@ -145,7 +142,6 @@ class LabelVectorSet final : public ILabelVectorSet {
                                                                           const CsrFeatureMatrix& featureMatrix,
                                                                           const RuleList& ruleList,
                                                                           uint32 numLabels) const override;
-
 };
 
 /**

@@ -1,7 +1,8 @@
 #include "seco/lift_functions/lift_function_kln.hpp"
-#include "common/util/validation.hpp"
-#include <cmath>
 
+#include "common/util/validation.hpp"
+
+#include <cmath>
 
 namespace seco {
 
@@ -14,7 +15,6 @@ namespace seco {
      * a rule predicts.
      */
     class KlnLiftFunction final : public ILiftFunction {
-
         private:
 
             float64 k_;
@@ -28,10 +28,7 @@ namespace seco {
              *                  values for "k". Must be at least 0
              * @param maxLift   The maximum possible lift
              */
-            KlnLiftFunction(float64 k, float64 maxLift)
-                : k_(k), maxLift_(maxLift) {
-
-            }
+            KlnLiftFunction(float64 k, float64 maxLift) : k_(k), maxLift_(maxLift) {}
 
             float64 calculateLift(uint32 numLabels) const override {
                 return calculateLiftInternally(numLabels, k_);
@@ -40,7 +37,6 @@ namespace seco {
             float64 getMaxLift(uint32 numLabels) const override {
                 return maxLift_;
             }
-
     };
 
     /**
@@ -48,7 +44,6 @@ namespace seco {
      * logarithm of the number of labels for which a rule predicts.
      */
     class KlnLiftFunctionFactory final : public ILiftFunctionFactory {
-
         private:
 
             float64 k_;
@@ -63,20 +58,14 @@ namespace seco {
              *                  values for "k". Must be at least 0
              */
             KlnLiftFunctionFactory(uint32 numLabels, float64 k)
-                : k_(k), maxLift_(calculateLiftInternally(numLabels, k)) {
-
-            }
+                : k_(k), maxLift_(calculateLiftInternally(numLabels, k)) {}
 
             std::unique_ptr<ILiftFunction> create() const override {
                 return std::make_unique<KlnLiftFunction>(k_, maxLift_);
             }
-
     };
 
-    KlnLiftFunctionConfig::KlnLiftFunctionConfig()
-        : k_(0.2) {
-
-    }
+    KlnLiftFunctionConfig::KlnLiftFunctionConfig() : k_(0.2) {}
 
     float64 KlnLiftFunctionConfig::getK() const {
         return k_;
@@ -89,7 +78,7 @@ namespace seco {
     }
 
     std::unique_ptr<ILiftFunctionFactory> KlnLiftFunctionConfig::createLiftFunctionFactory(
-            const IRowWiseLabelMatrix& labelMatrix) const {
+      const IRowWiseLabelMatrix& labelMatrix) const {
         uint32 numLabels = labelMatrix.getNumRows();
         return std::make_unique<KlnLiftFunctionFactory>(numLabels, k_);
     }

@@ -6,7 +6,6 @@
 #include "seco/data/confusion_matrix.hpp"
 #include "seco/heuristics/heuristic.hpp"
 
-
 namespace seco {
 
     /**

@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
 #include "boosting/binning/label_binning.hpp"
-
+#include "boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
 
 namespace boosting {
 
@@ -15,7 +14,6 @@ namespace boosting {
      * using gradient-based label binning.
      */
     class LabelWiseDynamicPartialBinnedRuleEvaluationFactory final : public ISparseLabelWiseRuleEvaluationFactory {
-
         private:
 
             float32 threshold_;
@@ -50,25 +48,24 @@ namespace boosting {
              *                                  allows to create the implementation to be used to assign labels to bins
              */
             LabelWiseDynamicPartialBinnedRuleEvaluationFactory(
-                float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
-                std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
+              float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+              std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
 
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
-                const DenseLabelWiseStatisticVector& statisticVector,
-                const CompleteIndexVector& indexVector) const override;
+              const DenseLabelWiseStatisticVector& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
 
             std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
-                const DenseLabelWiseStatisticVector& statisticVector,
-                const PartialIndexVector& indexVector) const override;
+              const DenseLabelWiseStatisticVector& statisticVector,
+              const PartialIndexVector& indexVector) const override;
 
             std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
-                const SparseLabelWiseStatisticVector& statisticVector,
-                const CompleteIndexVector& indexVector) const override;
+              const SparseLabelWiseStatisticVector& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
 
             std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
-                const SparseLabelWiseStatisticVector& statisticVector,
-                const PartialIndexVector& indexVector) const override;
-
+              const SparseLabelWiseStatisticVector& statisticVector,
+              const PartialIndexVector& indexVector) const override;
     };
 
 }

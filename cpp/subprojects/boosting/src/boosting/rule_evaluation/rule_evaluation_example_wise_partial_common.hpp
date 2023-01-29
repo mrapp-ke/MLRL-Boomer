@@ -5,7 +5,6 @@
 
 #include "boosting/math/math.hpp"
 
-
 namespace boosting {
 
     /**

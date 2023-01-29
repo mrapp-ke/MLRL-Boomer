@@ -5,17 +5,14 @@
 
 #include "common/input/feature_info.hpp"
 
-
 /**
  * Defines an interface for all classes that provide information about the types of individual features in cases where
  * all features are of the same type, i.e., where all features are either binary, nominal or numerical/ordinal.
  */
 class MLRLCOMMON_API IEqualFeatureInfo : public IFeatureInfo {
-
     public:
 
-        virtual ~IEqualFeatureInfo() override { };
-
+        virtual ~IEqualFeatureInfo() override {};
 };
 
 /**

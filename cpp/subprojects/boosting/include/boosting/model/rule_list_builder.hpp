@@ -5,7 +5,6 @@
 
 #include "common/model/model_builder.hpp"
 
-
 namespace boosting {
 
     /**
@@ -13,14 +12,12 @@ namespace boosting {
      * they have been added.
      */
     class RuleListBuilderFactory final : public IModelBuilderFactory {
-
         public:
 
             /**
              * @see `IModelBuilderFactory::create`
              */
             std::unique_ptr<IModelBuilder> create() const override;
-
     };
 
 }

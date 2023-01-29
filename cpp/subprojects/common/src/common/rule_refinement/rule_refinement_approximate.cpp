@@ -1,6 +1,6 @@
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
-#include <iostream>
 
+#include <iostream>
 
 template<typename IndexVector, typename RefinementComparator>
 static inline void findRefinementInternally(const IndexVector& labelIndices, uint32 numExamples, uint32 featureIndex,
@@ -274,7 +274,6 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 }
             }
 
-
             // Check if a condition that uses the <= operator (or the != operator in case of a nominal feature) covers
             // at least `minCoverage` examples...
             uint32 coverage = numExamples - numCovered;
@@ -358,9 +357,7 @@ ApproximateRuleRefinement<IndexVector>::ApproximateRuleRefinement(const IndexVec
                                                                   uint32 featureIndex, bool nominal,
                                                                   std::unique_ptr<Callback> callbackPtr)
     : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
-      callbackPtr_(std::move(callbackPtr)) {
-
-}
+      callbackPtr_(std::move(callbackPtr)) {}
 
 template<typename IndexVector>
 void ApproximateRuleRefinement<IndexVector>::findRefinement(SingleRefinementComparator& comparator,

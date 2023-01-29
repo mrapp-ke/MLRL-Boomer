@@ -1,6 +1,5 @@
 #include "common/stopping/stopping_criterion_list.hpp"
 
-
 /**
  * An implementation of the type `IStoppingCriterion` that tests multiple stopping criteria.
  *
@@ -10,7 +9,6 @@
  */
 template<typename Partition>
 class StoppingCriterionList final : public IStoppingCriterion {
-
     private:
 
         std::vector<std::unique_ptr<IStoppingCriterion>> stoppingCriteria_;
@@ -25,8 +23,8 @@ class StoppingCriterionList final : public IStoppingCriterion {
          *                                      instances of the stopping criteria to be tested
          */
         StoppingCriterionList(
-                Partition& partition,
-                const std::vector<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) {
+          Partition& partition,
+          const std::vector<std::unique_ptr<IStoppingCriterionFactory>>& stoppingCriterionFactories) {
             stoppingCriteria_.reserve(stoppingCriterionFactories.size());
 
             for (auto it = stoppingCriterionFactories.cbegin(); it != stoppingCriterionFactories.cend(); it++) {
@@ -51,25 +49,22 @@ class StoppingCriterionList final : public IStoppingCriterion {
 
             return result;
         }
-
 };
 
 /**
  * An implementation of the type `IStoppingCriterion` that does not test for any stopping criteria.
  */
 class NoStoppingCriterion final : public IStoppingCriterion {
-
     public:
 
         Result test(const IStatistics& statistics, uint32 numRules) override {
             Result result;
             return result;
         }
-
 };
 
 void StoppingCriterionListFactory::addStoppingCriterionFactory(
-        std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) {
+  std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) {
     stoppingCriterionFactories_.push_back(std::move(stoppingCriterionFactoryPtr));
 }
 

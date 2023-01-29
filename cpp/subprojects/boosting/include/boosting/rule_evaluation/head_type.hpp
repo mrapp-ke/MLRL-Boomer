@@ -3,13 +3,12 @@
  */
 #pragma once
 
-#include "common/input/feature_matrix.hpp"
-#include "common/input/label_matrix_row_wise.hpp"
 #include "boosting/losses/loss_example_wise.hpp"
 #include "boosting/losses/loss_label_wise_sparse.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
-
+#include "common/input/feature_matrix.hpp"
+#include "common/input/label_matrix_row_wise.hpp"
 
 namespace boosting {
 
@@ -18,10 +17,9 @@ namespace boosting {
      * rule learner.
      */
     class IHeadConfig {
-
         public:
 
-            virtual ~IHeadConfig() { };
+            virtual ~IHeadConfig() {};
 
             /**
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
@@ -37,8 +35,8 @@ namespace boosting {
              *                      created
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-                const ILabelWiseLossConfig& lossConfig) const = 0;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const ILabelWiseLossConfig& lossConfig) const = 0;
 
             /**
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
@@ -54,8 +52,8 @@ namespace boosting {
              *                      created
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-                const ISparseLabelWiseLossConfig& lossConfig) const = 0;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const ISparseLabelWiseLossConfig& lossConfig) const = 0;
 
             /**
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
@@ -73,8 +71,8 @@ namespace boosting {
              *                      created
              */
             virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-                const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const = 0;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const = 0;
 
             /**
              * Returns, whether the heads of rules are partial, i.e., they predict for a subset of the available labels,
@@ -90,7 +88,6 @@ namespace boosting {
              * @return True, if the rule heads predict for a single label, false otherwise
              */
             virtual bool isSingleLabel() const = 0;
-
     };
 
 }

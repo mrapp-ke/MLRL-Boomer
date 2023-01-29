@@ -3,17 +3,17 @@
  */
 #pragma once
 
-#include "common/thresholds/coverage_mask.hpp"
-#include "common/thresholds/coverage_set.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
-#include "common/rule_refinement/rule_refinement.hpp"
-#include "common/rule_refinement/prediction.hpp"
 #include "common/model/condition.hpp"
+#include "common/rule_refinement/prediction.hpp"
+#include "common/rule_refinement/rule_refinement.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
-#include <memory>
+#include "common/thresholds/coverage_mask.hpp"
+#include "common/thresholds/coverage_set.hpp"
 
+#include <memory>
 
 /**
  * Defines an interface for all classes that provide access a subset of thresholds that may be used by the conditions of
@@ -21,10 +21,9 @@
  * space that is covered by the rule.
  */
 class IThresholdsSubset {
-
     public:
 
-        virtual ~IThresholdsSubset() { };
+        virtual ~IThresholdsSubset() {};
 
         /**
          * Creates and returns a copy of this object.
@@ -99,7 +98,6 @@ class IThresholdsSubset {
         virtual Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
                                             const AbstractPrediction& head) const = 0;
 
-
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
          * that do not belong to the current sub-sample and are marked as covered according to a given object of type
@@ -137,7 +135,6 @@ class IThresholdsSubset {
          */
         virtual Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
                                             const AbstractPrediction& head) const = 0;
-
 
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
@@ -237,5 +234,4 @@ class IThresholdsSubset {
          *                   rule
          */
         virtual void revertPrediction(const AbstractPrediction& prediction) = 0;
-
 };
