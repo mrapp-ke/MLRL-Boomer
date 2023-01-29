@@ -25,6 +25,7 @@ VENV_CREATE = ${PYTHON} -m venv ${VENV_DIR}
 VENV_ACTIVATE = $(if ${IS_WIN},${PS} ${VENV_DIR}/Scripts/activate.bat,. ${VENV_DIR}/bin/activate)
 VENV_DEACTIVATE = $(if ${IS_WIN},${PS} ${VENV_DIR}/Scripts/deactivate.bat,deactivate)
 PIP_INSTALL = python -m pip install --prefer-binary
+YAPF = yapf -i -r --style=.style.yapf --verbose
 CLANG_FORMAT = clang-format -i --style=file --verbose
 MESON_SETUP = meson setup
 MESON_COMPILE = meson compile
@@ -116,13 +117,19 @@ venv:
 	    && ${PIP_INSTALL} -r ${PYTHON_SRC_DIR}/requirements.txt \
 	    && ${VENV_DEACTIVATE}
 
+format_python: venv
+	@echo Formatting Python code...
+	${VENV_ACTIVATE} \
+	    && ${YAPF} ${PYTHON_PACKAGE_DIR} \
+	    && ${VENV_DEACTIVATE}
+
 format_cpp: venv
 	@echo Formatting C++ code...
 	${VENV_ACTIVATE} \
 	    && $(call clang_format_recursively,${CPP_PACKAGE_DIR}) \
 	    && ${VENV_DEACTIVATE}
 
-format: format_cpp
+format: format_python format_cpp
 
 compile_cpp: venv
 	@echo Compiling C++ code...
