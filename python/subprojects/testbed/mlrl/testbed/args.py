@@ -247,203 +247,266 @@ def boolean_string(s):
 
 
 def add_log_level_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_LOG_LEVEL, type=log_level, default=LogLevel.INFO.value,
+    parser.add_argument(PARAM_LOG_LEVEL,
+                        type=log_level,
+                        default=LogLevel.INFO.value,
                         help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
 
 
 def add_learner_arguments(parser: ArgumentParser):
-    parser.add_argument(PARAM_RANDOM_STATE, type=int, default=1,
+    parser.add_argument(PARAM_RANDOM_STATE,
+                        type=int,
+                        default=1,
                         help='The seed to be used by random number generators. Must be at least 1.')
-    parser.add_argument(PARAM_DATA_DIR, type=str, required=True,
+    parser.add_argument(PARAM_DATA_DIR,
+                        type=str,
+                        required=True,
                         help='The path of the directory where the data set files are located.')
-    parser.add_argument(PARAM_DATASET, type=str, required=True,
-                        help='The name of the data set files without suffix.')
-    parser.add_argument(PARAM_DATA_SPLIT, type=str, default=DATA_SPLIT_TRAIN_TEST,
+    parser.add_argument(PARAM_DATASET, type=str, required=True, help='The name of the data set files without suffix.')
+    parser.add_argument(PARAM_DATA_SPLIT,
+                        type=str,
+                        default=DATA_SPLIT_TRAIN_TEST,
                         help='The strategy to be used for splitting the available data into training and test sets. '
-                             + 'Must be one of ' + format_dict_keys(DATA_SPLIT_VALUES) + '. For additional options '
-                             + 'refer to the documentation.')
-    parser.add_argument(PARAM_PRINT_EVALUATION, type=str, default=BooleanOption.TRUE.value,
+                        + 'Must be one of ' + format_dict_keys(DATA_SPLIT_VALUES) + '. For additional options refer to '
+                        + 'the documentation.')
+    parser.add_argument(PARAM_PRINT_EVALUATION,
+                        type=str,
+                        default=BooleanOption.TRUE.value,
                         help='Whether the evaluation results should be printed on the console or not. Must be one of '
-                             + format_dict_keys(PRINT_EVALUATION_VALUES) + '. For additional options refer to the '
-                             + 'documentation.')
-    parser.add_argument(PARAM_STORE_EVALUATION, type=str, default=BooleanOption.TRUE.value,
+                        + format_dict_keys(PRINT_EVALUATION_VALUES) + '. For additional options refer to the '
+                        + 'documentation.')
+    parser.add_argument(PARAM_STORE_EVALUATION,
+                        type=str,
+                        default=BooleanOption.TRUE.value,
                         help='Whether the evaluation results should be written into output files or not. Must be one '
-                             + 'of ' + format_dict_keys(STORE_EVALUATION_VALUES) + '. Does only have an effect if the '
-                             + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
-                             + 'documentation.')
-    parser.add_argument(PARAM_EVALUATE_TRAINING_DATA, type=boolean_string, default=False,
+                        + 'of ' + format_dict_keys(STORE_EVALUATION_VALUES) + '. Does only have an effect if the '
+                        + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
+                        + 'documentation.')
+    parser.add_argument(PARAM_EVALUATE_TRAINING_DATA,
+                        type=boolean_string,
+                        default=False,
                         help='Whether the models should not only be evaluated on the test data, but also on the '
-                             + 'training data. Must be one of ' + format_enum_values(BooleanOption) + '.')
-    parser.add_argument(PARAM_PRINT_PREDICTION_CHARACTERISTICS, type=str, default=BooleanOption.FALSE.value,
+                        + 'training data. Must be one of ' + format_enum_values(BooleanOption) + '.')
+    parser.add_argument(PARAM_PRINT_PREDICTION_CHARACTERISTICS,
+                        type=str,
+                        default=BooleanOption.FALSE.value,
                         help='Whether the characteristics of binary predictions should be printed on the console or '
-                             + 'not. Must be one of ' + format_dict_keys(PRINT_PREDICTION_CHARACTERISTICS_VALUES) + '. '
-                             + 'Does only have an effect if the parameter ' + PARAM_PREDICTION_TYPE + ' is set to '
-                             + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
-    parser.add_argument(PARAM_STORE_PREDICTION_CHARACTERISTICS, type=str, default=BooleanOption.FALSE.value,
+                        + 'not. Must be one of ' + format_dict_keys(PRINT_PREDICTION_CHARACTERISTICS_VALUES) + '. Does '
+                        + 'only have an effect if the parameter ' + PARAM_PREDICTION_TYPE + ' is set to '
+                        + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
+    parser.add_argument(PARAM_STORE_PREDICTION_CHARACTERISTICS,
+                        type=str,
+                        default=BooleanOption.FALSE.value,
                         help='Whether the characteristics of binary predictions should be written into output files or '
-                             + 'not. Must be one of ' + format_dict_keys(STORE_PREDICTION_CHARACTERISTICS_VALUES) + '. '
-                             + 'Does only have an effect if the parameter ' + PARAM_PREDICTION_TYPE + ' is set to '
-                             + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
-    parser.add_argument(PARAM_PRINT_DATA_CHARACTERISTICS, type=str, default=BooleanOption.FALSE.value,
+                        + 'not. Must be one of ' + format_dict_keys(STORE_PREDICTION_CHARACTERISTICS_VALUES) + '. Does '
+                        + 'only have an effect if the parameter ' + PARAM_PREDICTION_TYPE + ' is set to '
+                        + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
+    parser.add_argument(PARAM_PRINT_DATA_CHARACTERISTICS,
+                        type=str,
+                        default=BooleanOption.FALSE.value,
                         help='Whether the characteristics of the training data should be printed on the console or '
-                             + 'not. Must be one of ' + format_dict_keys(PRINT_DATA_CHARACTERISTICS_VALUES) + '. For '
-                             + 'additional options refer to the documentation.')
-    parser.add_argument(PARAM_STORE_DATA_CHARACTERISTICS, type=str, default=BooleanOption.FALSE.value,
+                        + 'not. Must be one of ' + format_dict_keys(PRINT_DATA_CHARACTERISTICS_VALUES) + '. For '
+                        + 'additional options refer to the documentation.')
+    parser.add_argument(PARAM_STORE_DATA_CHARACTERISTICS,
+                        type=str,
+                        default=BooleanOption.FALSE.value,
                         help='Whether the characteristics of the training data should be written into output files or '
-                             + 'not. Must be one of ' + format_dict_keys(STORE_DATA_CHARACTERISTICS_VALUES) + '. Does '
-                             + 'only have an effect if the parameter ' + PARAM_OUTPUT_DIR + ' is specified. For '
-                             + 'additional options refer to the documentation')
-    parser.add_argument(PARAM_ONE_HOT_ENCODING, type=boolean_string, default=False,
+                        + 'not. Must be one of ' + format_dict_keys(STORE_DATA_CHARACTERISTICS_VALUES) + '. Does only '
+                        + 'have an effect if the parameter ' + PARAM_OUTPUT_DIR + ' is specified. For additional '
+                        + 'options refer to the documentation')
+    parser.add_argument(PARAM_ONE_HOT_ENCODING,
+                        type=boolean_string,
+                        default=False,
                         help='Whether one-hot-encoding should be used to encode nominal attributes or not. Must be one '
-                             + 'of ' + format_enum_values(BooleanOption) + '.')
-    parser.add_argument(PARAM_MODEL_DIR, type=str,
-                        help='The path of the directory where models should be stored.')
-    parser.add_argument(PARAM_PARAMETER_DIR, type=str,
+                        + 'of ' + format_enum_values(BooleanOption) + '.')
+    parser.add_argument(PARAM_MODEL_DIR, type=str, help='The path of the directory where models should be stored.')
+    parser.add_argument(PARAM_PARAMETER_DIR,
+                        type=str,
                         help='The path of the directory where configuration files, which specify the parameters to be '
-                             + 'used by the algorithm, are located.')
-    parser.add_argument(PARAM_OUTPUT_DIR, type=str,
+                        + 'used by the algorithm, are located.')
+    parser.add_argument(PARAM_OUTPUT_DIR,
+                        type=str,
                         help='The path of the directory where experimental results should be saved.')
-    parser.add_argument(PARAM_PRINT_PARAMETERS, type=boolean_string, default=False,
+    parser.add_argument(PARAM_PRINT_PARAMETERS,
+                        type=boolean_string,
+                        default=False,
                         help='Whether the parameter setting should be printed on the console or not. Must be one of '
-                             + format_enum_values(BooleanOption) + '.')
-    parser.add_argument(PARAM_STORE_PARAMETERS, type=boolean_string, default=False,
+                        + format_enum_values(BooleanOption) + '.')
+    parser.add_argument(PARAM_STORE_PARAMETERS,
+                        type=boolean_string,
+                        default=False,
                         help='Whether the parameter setting should be written into output files or not. Must be one of '
-                             + format_enum_values(BooleanOption) + '. Does only have an effect, if the parameter '
-                             + PARAM_OUTPUT_DIR + ' is specified.')
-    parser.add_argument(PARAM_PRINT_PREDICTIONS, type=boolean_string, default=False,
-                        help='Whether the predictions for individual examples and labels should be printed on the ' +
-                             'console or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
-    parser.add_argument(PARAM_STORE_PREDICTIONS, type=boolean_string, default=False,
+                        + format_enum_values(BooleanOption) + '. Does only have an effect, if the parameter '
+                        + PARAM_OUTPUT_DIR + ' is specified.')
+    parser.add_argument(PARAM_PRINT_PREDICTIONS,
+                        type=boolean_string,
+                        default=False,
+                        help='Whether the predictions for individual examples and labels should be printed on the '
+                        + 'console or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
+    parser.add_argument(PARAM_STORE_PREDICTIONS,
+                        type=boolean_string,
+                        default=False,
                         help='Whether the predictions for individual examples and labels should be written into output '
-                             + 'files or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have '
-                             + 'an effect, if the parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
-    parser.add_argument(PARAM_PREDICTION_TYPE, type=str, default=PredictionType.BINARY.value,
+                        + 'files or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an '
+                        + 'effect, if the parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
+    parser.add_argument(PARAM_PREDICTION_TYPE,
+                        type=str,
+                        default=PredictionType.BINARY.value,
                         help='The type of predictions that should be obtained from the learner. Must be one of '
-                             + format_enum_values(PredictionType) + '.')
+                        + format_enum_values(PredictionType) + '.')
 
 
 def add_rule_learner_arguments(parser: ArgumentParser):
-    parser.add_argument(PARAM_INCREMENTAL_EVALUATION, type=str, default=BooleanOption.FALSE.value,
+    parser.add_argument(PARAM_INCREMENTAL_EVALUATION,
+                        type=str,
+                        default=BooleanOption.FALSE.value,
                         help='Whether models should be evaluated repeatedly, using only a subset of the induced rules '
-                             + 'with increasing size, or not. Must be one of ' + format_enum_values(BooleanOption)
-                             + '. For additional options refer to the documentation.')
-    parser.add_argument(PARAM_PRINT_MODEL_CHARACTERISTICS, type=boolean_string, default=False,
+                        + 'with increasing size, or not. Must be one of ' + format_enum_values(BooleanOption) + '. For '
+                        + 'additional options refer to the documentation.')
+    parser.add_argument(PARAM_PRINT_MODEL_CHARACTERISTICS,
+                        type=boolean_string,
+                        default=False,
                         help='Whether the characteristics of models should be printed on the console or not. Must be '
-                             + 'one of ' + format_enum_values(BooleanOption) + '.')
-    parser.add_argument(PARAM_STORE_MODEL_CHARACTERISTICS, type=boolean_string, default=False,
+                        + 'one of ' + format_enum_values(BooleanOption) + '.')
+    parser.add_argument(PARAM_STORE_MODEL_CHARACTERISTICS,
+                        type=boolean_string,
+                        default=False,
                         help='Whether the characteristics of models should be written into output files or not. Must '
-                             + 'be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if the '
-                             + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
-    parser.add_argument(PARAM_PRINT_RULES, type=str, default=BooleanOption.FALSE.value,
+                        + 'be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if the '
+                        + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified.')
+    parser.add_argument(PARAM_PRINT_RULES,
+                        type=str,
+                        default=BooleanOption.FALSE.value,
                         help='Whether the induced rules should be printed on the console or not. Must be one of '
-                             + format_dict_keys(PRINT_RULES_VALUES) + '. For additional options refer to the '
-                             + 'documentation.')
-    parser.add_argument(PARAM_STORE_RULES, type=str, default=BooleanOption.FALSE.value,
+                        + format_dict_keys(PRINT_RULES_VALUES) + '. For additional options refer to the documentation.')
+    parser.add_argument(PARAM_STORE_RULES,
+                        type=str,
+                        default=BooleanOption.FALSE.value,
                         help='Whether the induced rules should be written into a text file or not. Must be one of '
-                             + format_dict_keys(STORE_RULES_VALUES) + '. Does only have an effect if the parameter '
-                             + PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
-    parser.add_argument(PARAM_FEATURE_FORMAT, type=str, default=SparsePolicy.AUTO.value,
+                        + format_dict_keys(STORE_RULES_VALUES) + '. Does only have an effect if the parameter '
+                        + PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
+    parser.add_argument(PARAM_FEATURE_FORMAT,
+                        type=str,
+                        default=SparsePolicy.AUTO.value,
                         help='The format to be used for the representation of the feature matrix. Must be one of '
-                             + format_enum_values(SparsePolicy) + '.')
-    parser.add_argument(PARAM_LABEL_FORMAT, type=str, default=SparsePolicy.AUTO.value,
+                        + format_enum_values(SparsePolicy) + '.')
+    parser.add_argument(PARAM_LABEL_FORMAT,
+                        type=str,
+                        default=SparsePolicy.AUTO.value,
                         help='The format to be used for the representation of the label matrix. Must be one of '
-                             + format_enum_values(SparsePolicy) + '.')
-    parser.add_argument(PARAM_PREDICTION_FORMAT, type=str, default=SparsePolicy.AUTO.value,
+                        + format_enum_values(SparsePolicy) + '.')
+    parser.add_argument(PARAM_PREDICTION_FORMAT,
+                        type=str,
+                        default=SparsePolicy.AUTO.value,
                         help='The format to be used for the representation of predictions. Must be one of '
-                             + format_enum_values(SparsePolicy) + '.')
+                        + format_enum_values(SparsePolicy) + '.')
 
 
 def add_max_rules_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_MAX_RULES, type=int,
+    parser.add_argument(PARAM_MAX_RULES,
+                        type=int,
                         help='The maximum number of rules to be induced. Must be at least 1 or 0, if the number of '
-                             + 'rules should not be restricted.')
+                        + 'rules should not be restricted.')
 
 
 def add_time_limit_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_TIME_LIMIT, type=int,
+    parser.add_argument(PARAM_TIME_LIMIT,
+                        type=int,
                         help='The duration in seconds after which the induction of rules should be canceled. Must be '
-                             + 'at least 1 or 0, if no time limit should be set.')
+                        + 'at least 1 or 0, if no time limit should be set.')
 
 
 def add_sequential_post_optimization_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_SEQUENTIAL_POST_OPTIMIZATION, type=str,
+    parser.add_argument(PARAM_SEQUENTIAL_POST_OPTIMIZATION,
+                        type=str,
                         help='Whether each rule in a previously learned model should be optimized by being relearned '
-                             + 'in the context of the other rules. Must be one of ' + format_enum_values(BooleanOption)
-                             + '. For additional options refer to the documentation.')
+                        + 'in the context of the other rules. Must be one of ' + format_enum_values(BooleanOption)
+                        + '. For additional options refer to the documentation.')
 
 
 def add_label_sampling_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_LABEL_SAMPLING, type=str,
+    parser.add_argument(PARAM_LABEL_SAMPLING,
+                        type=str,
                         help='The name of the strategy to be used for label sampling. Must be one of '
-                             + format_dict_keys(LABEL_SAMPLING_VALUES) + '. For additional options refer to the '
-                             + 'documentation.')
+                        + format_dict_keys(LABEL_SAMPLING_VALUES) + '. For additional options refer to the '
+                        + 'documentation.')
 
 
 def add_instance_sampling_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_INSTANCE_SAMPLING, type=str,
+    parser.add_argument(PARAM_INSTANCE_SAMPLING,
+                        type=str,
                         help='The name of the strategy to be used for instance sampling. Must be one of'
-                             + format_dict_keys(INSTANCE_SAMPLING_VALUES) + '. For additional options refer to the '
-                             + 'documentation.')
+                        + format_dict_keys(INSTANCE_SAMPLING_VALUES) + '. For additional options refer to the '
+                        + 'documentation.')
 
 
 def add_feature_sampling_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_FEATURE_SAMPLING, type=str,
+    parser.add_argument(PARAM_FEATURE_SAMPLING,
+                        type=str,
                         help='The name of the strategy to be used for feature sampling. Must be one of '
-                             + format_dict_keys(FEATURE_SAMPLING_VALUES) + '. For additional options refer to the '
-                             + 'documentation.')
+                        + format_dict_keys(FEATURE_SAMPLING_VALUES) + '. For additional options refer to the '
+                        + 'documentation.')
 
 
 def add_partition_sampling_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_PARTITION_SAMPLING, type=str,
+    parser.add_argument(PARAM_PARTITION_SAMPLING,
+                        type=str,
                         help='The name of the strategy to be used for creating a holdout set. Must be one of '
-                             + format_dict_keys(PARTITION_SAMPLING_VALUES) + '. For additional options refer to the '
-                             + 'documentation.')
+                        + format_dict_keys(PARTITION_SAMPLING_VALUES) + '. For additional options refer to the '
+                        + 'documentation.')
 
 
 def add_feature_binning_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_FEATURE_BINNING, type=str,
+    parser.add_argument(PARAM_FEATURE_BINNING,
+                        type=str,
                         help='The name of the strategy to be used for feature binning. Must be one of '
-                             + format_dict_keys(FEATURE_BINNING_VALUES) + '. For additional options refer to the '
-                             + 'documentation.')
+                        + format_dict_keys(FEATURE_BINNING_VALUES) + '. For additional options refer to the '
+                        + 'documentation.')
 
 
 def add_global_pruning_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_GLOBAL_PRUNING, type=str,
+    parser.add_argument(PARAM_GLOBAL_PRUNING,
+                        type=str,
                         help='The name of the strategy to be used for pruning entire rules. Must be one of '
-                             + format_dict_keys(GLOBAL_PRUNING_VALUES) + '. For additional options refer to the '
-                             + 'documentation.')
+                        + format_dict_keys(GLOBAL_PRUNING_VALUES) + '. For additional options refer to the '
+                        + 'documentation.')
 
 
 def add_rule_pruning_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_RULE_PRUNING, type=str,
+    parser.add_argument(PARAM_RULE_PRUNING,
+                        type=str,
                         help='The name of the strategy to be used for pruning individual rules. Must be one of '
-                             + format_string_set(RULE_PRUNING_VALUES) + '. Does only have an effect if the parameter '
-                             + PARAM_INSTANCE_SAMPLING + ' is not set to "none".')
+                        + format_string_set(RULE_PRUNING_VALUES) + '. Does only have an effect if the parameter '
+                        + PARAM_INSTANCE_SAMPLING + ' is not set to "none".')
 
 
 def add_rule_induction_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_RULE_INDUCTION, type=str,
+    parser.add_argument(PARAM_RULE_INDUCTION,
+                        type=str,
                         help='The name of the algorithm to be used for the induction of individual rules. Must be one '
-                             + 'of ' + format_string_set(RULE_INDUCTION_VALUES) + '. For additional options refer to '
-                             + 'the documentation')
+                        + 'of ' + format_string_set(RULE_INDUCTION_VALUES) + '. For additional options refer to the '
+                        + 'documentation')
 
 
 def add_parallel_prediction_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_PARALLEL_PREDICTION, type=str,
+    parser.add_argument(PARAM_PARALLEL_PREDICTION,
+                        type=str,
                         help='Whether predictions for different examples should be obtained in parallel or not. Must '
-                             + 'be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options refer to '
-                             + 'the documentation.')
+                        + 'be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options refer to the '
+                        + 'documentation.')
 
 
 def add_parallel_rule_refinement_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_PARALLEL_RULE_REFINEMENT, type=str,
+    parser.add_argument(PARAM_PARALLEL_RULE_REFINEMENT,
+                        type=str,
                         help='Whether potential refinements of rules should be searched for in parallel or not. Must '
-                             + 'be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options refer to '
-                             + 'the documentation.')
+                        + 'be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options refer to the '
+                        + 'documentation.')
 
 
 def add_parallel_statistic_update_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_PARALLEL_STATISTIC_UPDATE, type=str,
+    parser.add_argument(PARAM_PARALLEL_STATISTIC_UPDATE,
+                        type=str,
                         help='Whether the confusion matrices for different examples should be calculated in parallel '
-                             + 'or not. Must be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional '
-                             + 'options refer to the documentation')
+                        + 'or not. Must be one of ' + format_dict_keys(PARALLEL_VALUES) + '. For additional options '
+                        + 'refer to the documentation')

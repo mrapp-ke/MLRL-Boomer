@@ -25,12 +25,15 @@ PARAM_PROBABILITY_PREDICTOR = '--probability-predictor'
 
 
 def add_shrinkage_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_SHRINKAGE, type=float,
+    parser.add_argument(PARAM_SHRINKAGE,
+                        type=float,
                         help='The shrinkage parameter, a.k.a. the learning rate, to be used. Must be in (0, 1].')
 
 
 def add_regularization_arguments(parser: ArgumentParser):
-    parser.add_argument(PARAM_L1_REGULARIZATION_WEIGHT, type=float,
+    parser.add_argument(PARAM_L1_REGULARIZATION_WEIGHT,
+                        type=float,
                         help='The weight of the L1 regularization. Must be at least 0.')
-    parser.add_argument(PARAM_L2_REGULARIZATION_WEIGHT, type=float,
+    parser.add_argument(PARAM_L2_REGULARIZATION_WEIGHT,
+                        type=float,
                         help='The weight of the L2 regularization. Must be at least 0.')
