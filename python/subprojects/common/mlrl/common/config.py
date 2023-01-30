@@ -108,10 +108,9 @@ LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {
     SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}
 }
 
-FEATURE_SAMPLING_VALUES: Dict[str, Set[str]] = {
-    NONE: {},
-    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE}
-}
+LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {NONE: {}, SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}}
+
+FEATURE_SAMPLING_VALUES: Dict[str, Set[str]] = {NONE: {}, SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE}}
 
 INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
@@ -148,10 +147,7 @@ GLOBAL_PRUNING_VALUES: Dict[str, Set[str]] = {
                          ARGUMENT_NUM_RECENT, ARGUMENT_MIN_IMPROVEMENT}
 }
 
-RULE_PRUNING_VALUES: Set[str] = {
-    NONE,
-    RULE_PRUNING_IREP
-}
+RULE_PRUNING_VALUES: Set[str] = {NONE, RULE_PRUNING_IREP}
 
 PARALLEL_VALUES: Dict[str, Set[str]] = {
     str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
@@ -348,9 +344,8 @@ def configure_time_stopping_criterion(config: RuleLearnerConfig, time_limit: Opt
 
 
 def __create_aggregation_function(aggregation_function: str) -> AggregationFunction:
-    value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function, {AGGREGATION_FUNCTION_MIN,
-                                                                              AGGREGATION_FUNCTION_MAX,
-                                                                              AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
+    value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function,
+                        {AGGREGATION_FUNCTION_MIN, AGGREGATION_FUNCTION_MAX, AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
 
     if value == AGGREGATION_FUNCTION_MIN:
         return AggregationFunction.MIN
