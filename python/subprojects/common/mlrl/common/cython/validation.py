@@ -12,8 +12,8 @@ def assert_greater(name: str, value, threshold):
     :param threshold:   The threshold
     """
     if value <= threshold:
-        raise ValueError('Invalid value given for parameter "' + name + '": Must be greater than ' + str(
-            threshold) + ', but is ' + str(value))
+        raise ValueError('Invalid value given for parameter "' + name + '": Must be greater than ' + str(threshold)
+                         + ', but is ' + str(value))
 
 
 def assert_greater_or_equal(name: str, value, threshold):
@@ -25,8 +25,8 @@ def assert_greater_or_equal(name: str, value, threshold):
     :param threshold:   The threshold
     """
     if value < threshold:
-        raise ValueError('Invalid value given for parameter "' + name + '": Must be greater or equal to ' + str(
-            threshold) + ', but is ' + str(value))
+        raise ValueError('Invalid value given for parameter "' + name + '": Must be greater or equal to '
+                         + str(threshold) + ', but is ' + str(value))
 
 
 def assert_less(name: str, value, threshold):
@@ -38,9 +38,8 @@ def assert_less(name: str, value, threshold):
     :param threshold:   The threshold
     """
     if value >= threshold:
-        raise ValueError(
-            'Invalid value given for parameter "' + name + '": Must be less than ' + str(threshold) + ', but is ' + str(
-                value))
+        raise ValueError('Invalid value given for parameter "' + name + '": Must be less than ' + str(threshold)
+                         + ', but is ' + str(value))
 
 
 def assert_less_or_equal(name: str, value, threshold):
@@ -52,8 +51,8 @@ def assert_less_or_equal(name: str, value, threshold):
     :param threshold:   The threshold
     """
     if value > threshold:
-        raise ValueError('Invalid value given for parameter "' + name + '": Must be less or equal to ' + str(
-            threshold) + ', but is ' + str(value))
+        raise ValueError('Invalid value given for parameter "' + name + '": Must be less or equal to ' + str(threshold)
+                         + ', but is ' + str(value))
 
 
 def assert_multiple(name: str, value, other):
@@ -65,9 +64,8 @@ def assert_multiple(name: str, value, other):
     :param other:   The other value
     """
     if value % other != 0:
-        raise ValueError(
-            'Invalid value given for parameter "' + name + '": Must be a multiple of ' + str(other) + ', but is ' + str(
-                value))
+        raise ValueError('Invalid value given for parameter "' + name + '": Must be a multiple of ' + str(other)
+                         + ', but is ' + str(value))
 
 
 def assert_not_none(name: str, value):

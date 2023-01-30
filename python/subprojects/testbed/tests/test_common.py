@@ -551,9 +551,9 @@ class IntegrationTests(ABC, TestCase):
         :param file_name:   The name of the file
         """
         file = path.join(directory, file_name)
-        self.assertTrue(path.isfile(file),
-                        'Command "' + self.__format_cmd(args) + '" is expected to create file ' + str(
-                            file) + ', but it does not exist')
+        self.assertTrue(
+            path.isfile(file), 'Command "' + self.__format_cmd(args) + '" is expected to create file ' + str(file)
+            + ', but it does not exist')
 
     def __assert_files_exist(self, builder: CmdBuilder, directory: str, file_name: str, suffix: str):
         """
@@ -711,9 +711,9 @@ class IntegrationTests(ABC, TestCase):
         :return:        The output of the command
         """
         out = subprocess.run(args, capture_output=True, text=True)
-        self.assertEqual(out.returncode, 0,
-                         'Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code\n\n' + str(
-                             out.stderr))
+        self.assertEqual(
+            out.returncode, 0,
+            'Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code\n\n' + str(out.stderr))
         return out
 
     def run_cmd(self, builder: CmdBuilder, expected_output_file_name: str = None):
@@ -749,8 +749,9 @@ class IntegrationTests(ABC, TestCase):
                                 and not line.endswith('hours') and not line.endswith('hour') \
                                 and not line.endswith('minutes') and not line.endswith('minute') \
                                 and not line.endswith('seconds') and not line.endswith('second'):
-                            self.assertEqual(stdout[i], line, 'Output of command "' + self.__format_cmd(args)
-                                             + '" differs at line ' + str(i + 1))
+                            self.assertEqual(
+                                stdout[i], line,
+                                'Output of command "' + self.__format_cmd(args) + '" differs at line ' + str(i + 1))
 
         if not OVERWRITE_EXPECTED_OUTPUT_FILES:
             self.__assert_model_files_exist(builder)
@@ -770,10 +771,16 @@ class CommonIntegrationTests(IntegrationTests, ABC):
     Defines a series of integration tests for any type of rule learning algorithm.
     """
 
-    def __init__(self, cmd: str, dataset_default: str = DATASET_EMOTIONS, dataset_numerical: str = DATASET_LANGLOG,
-                 dataset_binary: str = DATASET_ENRON, dataset_nominal: str = DATASET_WEATHER,
-                 dataset_one_hot_encoding: str = DATASET_ENRON, dataset_single_label: str = DATASET_BREAST_CANCER,
-                 expected_output_dir=DIR_OUT, methodName='runTest'):
+    def __init__(self,
+                 cmd: str,
+                 dataset_default: str = DATASET_EMOTIONS,
+                 dataset_numerical: str = DATASET_LANGLOG,
+                 dataset_binary: str = DATASET_ENRON,
+                 dataset_nominal: str = DATASET_WEATHER,
+                 dataset_one_hot_encoding: str = DATASET_ENRON,
+                 dataset_single_label: str = DATASET_BREAST_CANCER,
+                 expected_output_dir=DIR_OUT,
+                 methodName='runTest'):
         """
         :param cmd:                         The command to be run by the integration tests
         :param dataset_default:             The name of the dataset that should be used by default

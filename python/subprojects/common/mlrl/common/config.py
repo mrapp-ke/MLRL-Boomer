@@ -3,11 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility function for configuring rule learning algorithms.
 """
-from typing import Dict, Set, Optional
-
 from mlrl.common.cython.learner import RuleLearnerConfig
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption, parse_param, parse_param_and_options
+from typing import Dict, Set, Optional
 
 AUTOMATIC = 'auto'
 
@@ -96,22 +95,21 @@ RULE_PRUNING_IREP = 'irep'
 ARGUMENT_NUM_THREADS = 'num_threads'
 
 RULE_INDUCTION_VALUES: Dict[str, Set[str]] = {
-    RULE_INDUCTION_TOP_DOWN_GREEDY: {ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT, ARGUMENT_MAX_CONDITIONS,
-                                     ARGUMENT_MAX_HEAD_REFINEMENTS, ARGUMENT_RECALCULATE_PREDICTIONS},
-    RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH: {ARGUMENT_BEAM_WIDTH, ARGUMENT_RESAMPLE_FEATURES, ARGUMENT_MIN_COVERAGE,
-                                          ARGUMENT_MIN_SUPPORT, ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
-                                          ARGUMENT_RECALCULATE_PREDICTIONS}
+    RULE_INDUCTION_TOP_DOWN_GREEDY: {
+        ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT, ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
+        ARGUMENT_RECALCULATE_PREDICTIONS
+    },
+    RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH: {
+        ARGUMENT_BEAM_WIDTH, ARGUMENT_RESAMPLE_FEATURES, ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT,
+        ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS, ARGUMENT_RECALCULATE_PREDICTIONS
+    }
 }
 
-LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {
-    NONE: {},
-    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}
-}
+LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {NONE: {}, SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}}
 
-FEATURE_SAMPLING_VALUES: Dict[str, Set[str]] = {
-    NONE: {},
-    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE}
-}
+LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {NONE: {}, SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}}
+
+FEATURE_SAMPLING_VALUES: Dict[str, Set[str]] = {NONE: {}, SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE}}
 
 INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
@@ -141,17 +139,17 @@ FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
 
 GLOBAL_PRUNING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
-    GLOBAL_PRUNING_POST: {ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES,
-                          ARGUMENT_MIN_RULES, ARGUMENT_INTERVAL},
-    GLOBAL_PRUNING_PRE: {ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES,
-                         ARGUMENT_MIN_RULES, ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST,
-                         ARGUMENT_NUM_RECENT, ARGUMENT_MIN_IMPROVEMENT}
+    GLOBAL_PRUNING_POST: {
+        ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES, ARGUMENT_MIN_RULES, ARGUMENT_INTERVAL
+    },
+    GLOBAL_PRUNING_PRE: {
+        ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES, ARGUMENT_MIN_RULES,
+        ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT,
+        ARGUMENT_MIN_IMPROVEMENT
+    }
 }
 
-RULE_PRUNING_VALUES: Set[str] = {
-    NONE,
-    RULE_PRUNING_IREP
-}
+RULE_PRUNING_VALUES: Set[str] = {NONE, RULE_PRUNING_IREP}
 
 PARALLEL_VALUES: Dict[str, Set[str]] = {
     str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
@@ -169,8 +167,8 @@ def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional
             c.set_min_support(options.get_float(ARGUMENT_MIN_SUPPORT, c.get_min_support()))
             c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
             c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
-            c.set_recalculate_predictions(options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS,
-                                                           c.are_predictions_recalculated()))
+            c.set_recalculate_predictions(
+                options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS, c.are_predictions_recalculated()))
         elif value == RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH:
             c = config.use_beam_search_top_down_rule_induction()
             c.set_beam_width(options.get_int(ARGUMENT_BEAM_WIDTH, c.get_beam_width()))
@@ -179,8 +177,8 @@ def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional
             c.set_min_support(options.get_float(ARGUMENT_MIN_SUPPORT, c.get_min_support()))
             c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
             c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
-            c.set_recalculate_predictions(options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS,
-                                                           c.are_predictions_recalculated()))
+            c.set_recalculate_predictions(
+                options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS, c.are_predictions_recalculated()))
 
 
 def configure_feature_binning(config: RuleLearnerConfig, feature_binning: Optional[str]):
@@ -275,8 +273,9 @@ def configure_global_pruning(config: RuleLearnerConfig, global_pruning: Optional
         elif value == GLOBAL_PRUNING_PRE:
             c = config.use_global_pre_pruning()
             aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
-            c.set_aggregation_function(__create_aggregation_function(
-                aggregation_function) if aggregation_function is not None else c.get_aggregation_function())
+            c.set_aggregation_function(
+                __create_aggregation_function(aggregation_function) if aggregation_function is not None else c
+                .get_aggregation_function())
             c.set_use_holdout_set(options.get_bool(ARGUMENT_USE_HOLDOUT_SET, c.is_holdout_set_used()))
             c.set_remove_unused_rules(options.get_bool(ARGUMENT_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
             c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
@@ -348,9 +347,8 @@ def configure_time_stopping_criterion(config: RuleLearnerConfig, time_limit: Opt
 
 
 def __create_aggregation_function(aggregation_function: str) -> AggregationFunction:
-    value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function, {AGGREGATION_FUNCTION_MIN,
-                                                                              AGGREGATION_FUNCTION_MAX,
-                                                                              AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
+    value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function,
+                        {AGGREGATION_FUNCTION_MIN, AGGREGATION_FUNCTION_MAX, AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
 
     if value == AGGREGATION_FUNCTION_MIN:
         return AggregationFunction.MIN

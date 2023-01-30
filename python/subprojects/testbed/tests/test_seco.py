@@ -96,7 +96,8 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         :param methodName: The name of the test method to be executed
         """
-        super(SeCoIntegrationTests, self).__init__(cmd=CMD_SECO, dataset_one_hot_encoding=DATASET_WEATHER,
+        super(SeCoIntegrationTests, self).__init__(cmd=CMD_SECO,
+                                                   dataset_one_hot_encoding=DATASET_WEATHER,
                                                    expected_output_dir=path.join(DIR_OUT, CMD_SECO),
                                                    methodName=methodName)
 

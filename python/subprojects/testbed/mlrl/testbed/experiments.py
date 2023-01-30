@@ -120,8 +120,13 @@ class Evaluation(ABC):
             evaluation_printer = self.evaluation_printer
 
             if evaluation_printer is not None:
-                evaluation_printer.evaluate(data_split, data_type, prediction_scope, predictions, y,
-                                            train_time=train_time, predict_time=predict_time)
+                evaluation_printer.evaluate(data_split,
+                                            data_type,
+                                            prediction_scope,
+                                            train_time=train_time,
+                                            predict_time=predict_time,
+                                            predictions=predictions,
+                                            y=y)
 
             prediction_printer = self.prediction_printer
 
@@ -178,8 +183,14 @@ class GlobalEvaluation(Evaluation):
             log.info('Successfully predicted in %s', format_duration(predict_time))
 
         prediction_scope = GlobalPrediction()
-        self._evaluate_predictions(meta_data, data_split, data_type, prediction_scope, train_time=train_time,
-                                   predict_time=predict_time, predictions=predictions, y=y)
+        self._evaluate_predictions(meta_data,
+                                   data_split,
+                                   data_type,
+                                   prediction_scope,
+                                   train_time=train_time,
+                                   predict_time=predict_time,
+                                   predictions=predictions,
+                                   y=y)
 
 
 class IncrementalEvaluation(Evaluation):
@@ -232,8 +243,14 @@ class IncrementalEvaluation(Evaluation):
                 predict_time = end_time - start_time
                 log.info('Successfully predicted in %s', format_duration(predict_time))
                 prediction_scope = IncrementalPrediction(current_size)
-                self._evaluate_predictions(meta_data, data_split, data_type, prediction_scope, train_time=train_time,
-                                           predict_time=predict_time, predictions=predictions, y=y)
+                self._evaluate_predictions(meta_data,
+                                           data_split,
+                                           data_type,
+                                           prediction_scope,
+                                           train_time=train_time,
+                                           predict_time=predict_time,
+                                           predictions=predictions,
+                                           y=y)
                 next_step_size = step_size
                 current_size = min(current_size + next_step_size, total_size)
 
@@ -450,5 +467,6 @@ class Experiment(DataSplitter.Callback):
             log.warning(
                 'The loaded model\'s values for the following parameters differ from the expected configuration: %s',
                 reduce(
-                    lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b[0] + '" is "' + b[2] + '" instead of "' + b[
-                        1] + '"', changes, ''))
+                    lambda a, b: a +
+                    (', ' if len(a) > 0 else '') + '"' + b[0] + '" is "' + b[2] + '" instead of "' + b[1] + '"',
+                    changes, ''))
