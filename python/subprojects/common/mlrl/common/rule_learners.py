@@ -314,8 +314,8 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         y_sparse_format = SparseFormat.CSR
         prediction_sparse_policy = create_sparse_policy('prediction_format', self.prediction_format)
         self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
-                prediction_sparse_policy == SparsePolicy.FORCE_SPARSE or
-                is_sparse(y, sparse_format=y_sparse_format, dtype=DTYPE_UINT8, sparse_values=False))
+            prediction_sparse_policy == SparsePolicy.FORCE_SPARSE
+            or is_sparse(y, sparse_format=y_sparse_format, dtype=DTYPE_UINT8, sparse_values=False))
 
         y_sparse_policy = create_sparse_policy('label_format', self.label_format)
         y_enforce_sparse = should_enforce_sparse(y,
