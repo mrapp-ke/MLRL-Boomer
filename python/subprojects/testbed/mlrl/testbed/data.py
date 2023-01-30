@@ -77,8 +77,10 @@ class MetaData:
                                 None, if all indices should be returned
         :return:                A list that contains the indices of all attributes of the given types
         """
-        return [i for i, attribute in enumerate(self.attributes) if
-                attribute_types is None or attribute.attribute_type in attribute_types]
+        return [
+            i for i, attribute in enumerate(self.attributes)
+            if attribute_types is None or attribute.attribute_type in attribute_types
+        ]
 
 
 def load_data_set_and_meta_data(data_dir: str,
@@ -210,15 +212,17 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     y_prefix = 0
 
     attributes = meta_data.attributes
-    x_attributes = [(u'{}'.format(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i)),
-                     u'NUMERIC' if len(attributes) <= i or attributes[i].nominal_values is None or attributes[
-                         i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else attributes[i].nominal_values)
-                    for i in range(x.shape[1])]
+    x_attributes = [
+        (u'{}'.format(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i)),
+         u'NUMERIC' if len(attributes) <= i or attributes[i].nominal_values is None
+         or attributes[i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else attributes[i].nominal_values)
+        for i in range(x.shape[1])
+    ]
 
     labels = meta_data.labels
     y_attributes = [(u'{}'.format(labels[i].attribute_name if len(labels) > i else 'y' + str(i)),
-                     u'NUMERIC' if len(labels) <= i or labels[i].nominal_values is None or labels[
-                         i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else labels[i].nominal_values)
+                     u'NUMERIC' if len(labels) <= i or labels[i].nominal_values is None
+                     or labels[i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else labels[i].nominal_values)
                     for i in range(y.shape[1])]
 
     if meta_data.labels_at_start:

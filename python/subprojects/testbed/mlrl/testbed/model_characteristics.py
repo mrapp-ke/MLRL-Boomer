@@ -182,11 +182,23 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
         rows = []
 
         if default_rule_index is not None:
-            rows.append(['Default rule', str(0), format_percentage(0), format_percentage(0), format_percentage(0),
-                         format_percentage(0)])
+            rows.append([
+                'Default rule',
+                str(0),
+                format_percentage(0),
+                format_percentage(0),
+                format_percentage(0),
+                format_percentage(0)
+            ])
 
-        rows.append([str(num_rules) + ' local rules', str(num_total_conditions), format_percentage(frac_leq),
-                     format_percentage(frac_gr), format_percentage(frac_eq), format_percentage(frac_neq)])
+        rows.append([
+            str(num_rules) + ' local rules',
+            str(num_total_conditions),
+            format_percentage(frac_leq),
+            format_percentage(frac_gr),
+            format_percentage(frac_eq),
+            format_percentage(frac_neq)
+        ])
         msg += format_table(rows, header=header, alignment=alignment) + '\n\n'
 
         header = ['Statistics about predictions', 'Total', 'Positive', 'Negative']
@@ -198,19 +210,35 @@ class RuleModelCharacteristicsLogOutput(RuleModelCharacteristicsOutput):
                                            + characteristics.default_rule_neg_predictions
             default_rule_frac_pos = characteristics.default_rule_pos_predictions / default_rule_num_predictions * 100
             default_rule_frac_neg = characteristics.default_rule_neg_predictions / default_rule_num_predictions * 100
-            rows.append(
-                ['Default rule', str(default_rule_num_predictions), format_percentage(default_rule_frac_pos),
-                 format_percentage(default_rule_frac_neg)])
+            rows.append([
+                'Default rule',
+                str(default_rule_num_predictions),
+                format_percentage(default_rule_frac_pos),
+                format_percentage(default_rule_frac_neg)
+            ])
 
-        rows.append([str(num_rules) + ' local rules', str(num_total_predictions), format_percentage(frac_pos),
-                     format_percentage(frac_neg)])
+        rows.append([
+            str(num_rules) + ' local rules',
+            str(num_total_predictions),
+            format_percentage(frac_pos),
+            format_percentage(frac_neg)
+        ])
         msg += format_table(rows, header=header, alignment=alignment) + '\n\n'
 
         header = ['Statistics per local rule', 'Minimum', 'Average', 'Maximum']
-        rows = [['Conditions', format_float(num_conditions_min), format_float(num_conditions_mean),
-                 format_float(num_conditions_max)],
-                ['Predictions', format_float(num_predictions_min), format_float(num_predictions_mean),
-                 format_float(num_predictions_max)]]
+        rows = []
+        rows.append([
+            'Conditions',
+            format_float(num_conditions_min),
+            format_float(num_conditions_mean),
+            format_float(num_conditions_max)
+        ])
+        rows.append([
+            'Predictions',
+            format_float(num_predictions_min),
+            format_float(num_predictions_mean),
+            format_float(num_predictions_max)
+        ])
         msg += format_table(rows, header=header) + '\n\n'
         log.info(msg)
 
@@ -260,7 +288,7 @@ class RuleModelCharacteristicsCsvOutput(RuleModelCharacteristicsOutput):
             RuleModelCharacteristicsCsvOutput.COL_NEQ_CONDITIONS,
             RuleModelCharacteristicsCsvOutput.COL_PREDICTIONS,
             RuleModelCharacteristicsCsvOutput.COL_POS_PREDICTIONS,
-            RuleModelCharacteristicsCsvOutput.COL_NEG_PREDICTIONS
+            RuleModelCharacteristicsCsvOutput.COL_NEG_PREDICTIONS,
         ]
         default_rule_index = characteristics.default_rule_index
         num_rules = len(characteristics.num_pos_predictions)

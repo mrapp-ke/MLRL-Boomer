@@ -142,7 +142,7 @@ MULTI_LABEL_EVALUATION_MEASURES: List[Formattable] = [
     EvaluationFunction(ARGUMENT_EXAMPLE_WISE_JACCARD, 'Example-wise Jaccard', metrics.jaccard_score,
                        **ARGS_EXAMPLE_WISE),
     EVALUATION_MEASURE_TRAINING_TIME,
-    EVALUATION_MEASURE_PREDICTION_TIME
+    EVALUATION_MEASURE_PREDICTION_TIME,
 ]
 
 SINGLE_LABEL_EVALUATION_MEASURES: List[Formattable] = [
@@ -153,7 +153,7 @@ SINGLE_LABEL_EVALUATION_MEASURES: List[Formattable] = [
     EvaluationFunction(ARGUMENT_F1, 'F1', metrics.f1_score, **ARGS_SINGLE_LABEL),
     EvaluationFunction(ARGUMENT_JACCARD, 'Jaccard', metrics.jaccard_score, **ARGS_SINGLE_LABEL),
     EVALUATION_MEASURE_TRAINING_TIME,
-    EVALUATION_MEASURE_PREDICTION_TIME
+    EVALUATION_MEASURE_PREDICTION_TIME,
 ]
 
 REGRESSION_EVALUATION_MEASURES: List[Formattable] = [
@@ -171,7 +171,7 @@ REGRESSION_EVALUATION_MEASURES: List[Formattable] = [
                        metrics.mean_absolute_percentage_error,
                        percentage=False),
     EVALUATION_MEASURE_TRAINING_TIME,
-    EVALUATION_MEASURE_PREDICTION_TIME
+    EVALUATION_MEASURE_PREDICTION_TIME,
 ]
 
 RANKING_EVALUATION_MEASURES: List[Formattable] = [
@@ -187,7 +187,7 @@ RANKING_EVALUATION_MEASURES: List[Formattable] = [
                        percentage=False),
     EvaluationFunction(ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, 'NDCG', metrics.ndcg_score),
     EVALUATION_MEASURE_TRAINING_TIME,
-    EVALUATION_MEASURE_PREDICTION_TIME
+    EVALUATION_MEASURE_PREDICTION_TIME,
 ]
 
 
