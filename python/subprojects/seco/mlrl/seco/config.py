@@ -3,11 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for configuring separate-and-conquer (SeCo) algorithms.
 """
-from typing import Dict, Set, Optional
-
 from mlrl.common.config import NONE
 from mlrl.common.options import Options, parse_param, parse_param_and_options
 from mlrl.seco.cython.learner import SeCoRuleLearnerConfig
+from typing import Dict, Set, Optional
 
 HEAD_TYPE_SINGLE = 'single-label'
 
@@ -43,10 +42,7 @@ ARGUMENT_BETA = 'beta'
 
 ARGUMENT_M = 'm'
 
-HEAD_TYPE_VALUES: Set[str] = {
-    HEAD_TYPE_SINGLE,
-    HEAD_TYPE_PARTIAL
-}
+HEAD_TYPE_VALUES: Set[str] = {HEAD_TYPE_SINGLE, HEAD_TYPE_PARTIAL}
 
 LIFT_FUNCTION_VALUES: Dict[str, Set[str]] = {
     NONE: {},

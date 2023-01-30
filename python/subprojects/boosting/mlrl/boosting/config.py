@@ -52,15 +52,9 @@ PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
 
 PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
 
-STATISTIC_FORMAT_VALUES: Set[str] = {
-    STATISTIC_FORMAT_DENSE,
-    STATISTIC_FORMAT_SPARSE
-}
+STATISTIC_FORMAT_VALUES: Set[str] = {STATISTIC_FORMAT_DENSE, STATISTIC_FORMAT_SPARSE}
 
-DEFAULT_RULE_VALUES: Set[str] = {
-    BooleanOption.TRUE.value,
-    BooleanOption.FALSE.value
-}
+DEFAULT_RULE_VALUES: Set[str] = {BooleanOption.TRUE.value, BooleanOption.FALSE.value}
 
 HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
     HEAD_TYPE_SINGLE: {},
