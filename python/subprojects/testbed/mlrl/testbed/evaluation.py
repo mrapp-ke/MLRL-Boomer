@@ -110,24 +110,13 @@ class EvaluationFunction(Formattable):
         return self.evaluation_function(ground_truth, predictions, **self.kwargs)
 
 
-ARGS_SINGLE_LABEL = {
-    'zero_division': 1
-}
+ARGS_SINGLE_LABEL = {'zero_division': 1}
 
-ARGS_MICRO = {
-    'average': 'micro',
-    'zero_division': 1
-}
+ARGS_MICRO = {'average': 'micro', 'zero_division': 1}
 
-ARGS_MACRO = {
-    'average': 'macro',
-    'zero_division': 1
-}
+ARGS_MACRO = {'average': 'macro', 'zero_division': 1}
 
-ARGS_EXAMPLE_WISE = {
-    'average': 'samples',
-    'zero_division': 1
-}
+ARGS_EXAMPLE_WISE = {'average': 'samples', 'zero_division': 1}
 
 EVALUATION_MEASURE_TRAINING_TIME = Formattable(ARGUMENT_TRAINING_TIME, 'Training Time')
 
