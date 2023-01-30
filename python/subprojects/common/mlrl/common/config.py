@@ -3,11 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility function for configuring rule learning algorithms.
 """
-from typing import Dict, Set, Optional
-
 from mlrl.common.cython.learner import RuleLearnerConfig
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption, parse_param, parse_param_and_options
+from typing import Dict, Set, Optional
 
 AUTOMATIC = 'auto'
 
