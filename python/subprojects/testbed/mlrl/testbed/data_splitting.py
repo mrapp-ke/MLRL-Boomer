@@ -319,8 +319,11 @@ class TrainTestSplitter(DataSplitter):
                 test_x, _, _ = one_hot_encode(test_x, test_y, meta_data, encoder=encoder)
         else:
             # Split data set into training and test data...
-            train_x, test_x, train_y, test_y = train_test_split(train_x, train_y, test_size=self.test_size,
-                                                                random_state=self.random_state, shuffle=True)
+            train_x, test_x, train_y, test_y = train_test_split(train_x,
+                                                                train_y,
+                                                                test_size=self.test_size,
+                                                                random_state=self.random_state,
+                                                                shuffle=True)
 
         # Train and evaluate classifier...
         data_split = TrainingTestSplit()
@@ -363,14 +366,22 @@ class CrossValidationSplitter(DataSplitter):
         predefined_split = check_if_files_exist(data_dir, arff_file_names)
 
         if predefined_split:
-            self.__predefined_cross_validation(callback, data_dir=data_dir, arff_file_names=arff_file_names,
-                                               xml_file_name=xml_file_name, use_one_hot_encoding=use_one_hot_encoding,
-                                               num_folds=num_folds, current_fold=current_fold)
+            self.__predefined_cross_validation(callback,
+                                               data_dir=data_dir,
+                                               arff_file_names=arff_file_names,
+                                               xml_file_name=xml_file_name,
+                                               use_one_hot_encoding=use_one_hot_encoding,
+                                               num_folds=num_folds,
+                                               current_fold=current_fold)
         else:
             arff_file_name = get_file_name(data_set_name, SUFFIX_ARFF)
-            self.__cross_validation(callback, data_dir=data_dir, arff_file_name=arff_file_name,
-                                    xml_file_name=xml_file_name, use_one_hot_encoding=use_one_hot_encoding,
-                                    num_folds=num_folds, current_fold=current_fold)
+            self.__cross_validation(callback,
+                                    data_dir=data_dir,
+                                    arff_file_name=arff_file_name,
+                                    xml_file_name=xml_file_name,
+                                    use_one_hot_encoding=use_one_hot_encoding,
+                                    num_folds=num_folds,
+                                    current_fold=current_fold)
 
     @staticmethod
     def __predefined_cross_validation(callback: DataSplitter.Callback, data_dir: str, arff_file_names: List[str],
@@ -399,8 +410,7 @@ class CrossValidationSplitter(DataSplitter):
             data.append((x, y))
 
         # Perform cross-validation...
-        for fold in range(0 if current_fold < 0 else current_fold,
-                          num_folds if current_fold < 0 else current_fold + 1):
+        for fold in range(0 if current_fold < 0 else current_fold, num_folds if current_fold < 0 else current_fold + 1):
             log.info('Fold %s / %s:', (fold + 1), num_folds)
 
             # Create training set for current fold...

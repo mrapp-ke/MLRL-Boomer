@@ -711,9 +711,9 @@ class IntegrationTests(ABC, TestCase):
         :return:        The output of the command
         """
         out = subprocess.run(args, capture_output=True, text=True)
-        self.assertEqual(out.returncode, 0,
-                         'Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code\n\n' + str(
-                             out.stderr))
+        self.assertEqual(
+            out.returncode, 0,
+            'Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code\n\n' + str(out.stderr))
         return out
 
     def run_cmd(self, builder: CmdBuilder, expected_output_file_name: str = None):
@@ -749,8 +749,9 @@ class IntegrationTests(ABC, TestCase):
                                 and not line.endswith('hours') and not line.endswith('hour') \
                                 and not line.endswith('minutes') and not line.endswith('minute') \
                                 and not line.endswith('seconds') and not line.endswith('second'):
-                            self.assertEqual(stdout[i], line, 'Output of command "' + self.__format_cmd(args)
-                                             + '" differs at line ' + str(i + 1))
+                            self.assertEqual(
+                                stdout[i], line,
+                                'Output of command "' + self.__format_cmd(args) + '" differs at line ' + str(i + 1))
 
         if not OVERWRITE_EXPECTED_OUTPUT_FILES:
             self.__assert_model_files_exist(builder)

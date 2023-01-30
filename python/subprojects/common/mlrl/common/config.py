@@ -168,8 +168,8 @@ def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional
             c.set_min_support(options.get_float(ARGUMENT_MIN_SUPPORT, c.get_min_support()))
             c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
             c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
-            c.set_recalculate_predictions(options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS,
-                                                           c.are_predictions_recalculated()))
+            c.set_recalculate_predictions(
+                options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS, c.are_predictions_recalculated()))
         elif value == RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH:
             c = config.use_beam_search_top_down_rule_induction()
             c.set_beam_width(options.get_int(ARGUMENT_BEAM_WIDTH, c.get_beam_width()))
@@ -178,8 +178,8 @@ def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional
             c.set_min_support(options.get_float(ARGUMENT_MIN_SUPPORT, c.get_min_support()))
             c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
             c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
-            c.set_recalculate_predictions(options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS,
-                                                           c.are_predictions_recalculated()))
+            c.set_recalculate_predictions(
+                options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS, c.are_predictions_recalculated()))
 
 
 def configure_feature_binning(config: RuleLearnerConfig, feature_binning: Optional[str]):
@@ -274,8 +274,9 @@ def configure_global_pruning(config: RuleLearnerConfig, global_pruning: Optional
         elif value == GLOBAL_PRUNING_PRE:
             c = config.use_global_pre_pruning()
             aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
-            c.set_aggregation_function(__create_aggregation_function(
-                aggregation_function) if aggregation_function is not None else c.get_aggregation_function())
+            c.set_aggregation_function(
+                __create_aggregation_function(aggregation_function) if aggregation_function is not None else c
+                .get_aggregation_function())
             c.set_use_holdout_set(options.get_bool(ARGUMENT_USE_HOLDOUT_SET, c.is_holdout_set_used()))
             c.set_remove_unused_rules(options.get_bool(ARGUMENT_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
             c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))

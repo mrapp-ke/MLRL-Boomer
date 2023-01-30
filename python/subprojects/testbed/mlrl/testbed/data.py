@@ -104,8 +104,9 @@ def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_nam
         log.debug('Parsing meta data from file \"%s\"...', xml_file)
         labels = __parse_labels_from_xml_file(xml_file)
     else:
-        log.debug('Mulan XML file \"%s\" does not exist. If possible, information about the class labels is parsed '
-                  + 'from the ARFF file\'s @relation declaration as intended by the MEKA data set format...', xml_file)
+        log.debug(
+            'Mulan XML file \"%s\" does not exist. If possible, information about the class labels is parsed from the '
+            + 'ARFF file\'s @relation declaration as intended by the MEKA data set format...', xml_file)
 
     arff_file = path.join(data_dir, arff_file_name)
     log.debug('Loading data set from file \"%s\"...', arff_file)
@@ -236,12 +237,13 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
         data[keys[0]][y_prefix + keys[1]] = value
 
     with open(arff_file, 'w') as file:
-        file.write(arff.dumps({
-            u'description': u'traindata',
-            u'relation': u'traindata: -C {}'.format(y.shape[1] * relation_sign),
-            u'attributes': attributes,
-            u'data': data
-        }))
+        file.write(
+            arff.dumps({
+                u'description': u'traindata',
+                u'relation': u'traindata: -C {}'.format(y.shape[1] * relation_sign),
+                u'attributes': attributes,
+                u'data': data
+            }))
     log.info('Successfully saved data set to file \'' + str(arff_file) + '\'.')
 
 

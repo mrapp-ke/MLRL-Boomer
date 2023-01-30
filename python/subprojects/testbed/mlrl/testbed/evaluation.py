@@ -157,13 +157,19 @@ SINGLE_LABEL_EVALUATION_MEASURES: List[Formattable] = [
 ]
 
 REGRESSION_EVALUATION_MEASURES: List[Formattable] = [
-    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_ERROR, 'Mean Absolute Error', metrics.mean_absolute_error,
+    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_ERROR,
+                       'Mean Absolute Error',
+                       metrics.mean_absolute_error,
                        percentage=False),
     EvaluationFunction(ARGUMENT_MEAN_SQUARED_ERROR, 'Mean Squared Error', metrics.mean_squared_error, percentage=False),
-    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_ERROR, 'Median Absolute Error', metrics.median_absolute_error,
+    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_ERROR,
+                       'Median Absolute Error',
+                       metrics.median_absolute_error,
                        percentage=False),
-    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR, 'Mean Absolute Percentage Error',
-                       metrics.mean_absolute_percentage_error, percentage=False),
+    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR,
+                       'Mean Absolute Percentage Error',
+                       metrics.mean_absolute_percentage_error,
+                       percentage=False),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME
 ]
@@ -171,9 +177,13 @@ REGRESSION_EVALUATION_MEASURES: List[Formattable] = [
 RANKING_EVALUATION_MEASURES: List[Formattable] = [
     EvaluationFunction(ARGUMENT_RANK_LOSS, 'Ranking Loss', metrics.label_ranking_loss, percentage=False),
     EvaluationFunction(ARGUMENT_COVERAGE_ERROR, 'Coverage Error', metrics.coverage_error, percentage=False),
-    EvaluationFunction(ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION, 'Label Ranking Average Precision',
-                       metrics.label_ranking_average_precision_score, percentage=False),
-    EvaluationFunction(ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN, 'Discounted Cumulative Gain', metrics.dcg_score,
+    EvaluationFunction(ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION,
+                       'Label Ranking Average Precision',
+                       metrics.label_ranking_average_precision_score,
+                       percentage=False),
+    EvaluationFunction(ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN,
+                       'Discounted Cumulative Gain',
+                       metrics.dcg_score,
                        percentage=False),
     EvaluationFunction(ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, 'NDCG', metrics.ndcg_score),
     EVALUATION_MEASURE_TRAINING_TIME,
@@ -397,7 +407,9 @@ class EvaluationCsvOutput(EvaluationOutput):
             columns[EvaluationCsvOutput.COLUMN_MODEL_SIZE] = prediction_scope.get_model_size()
             header = [EvaluationCsvOutput.COLUMN_MODEL_SIZE] + header
 
-        with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation'), fold,
+        with open_writable_csv_file(self.output_dir,
+                                    data_type.get_file_name('evaluation'),
+                                    fold,
                                     append=incremental_prediction) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
@@ -420,7 +432,8 @@ class EvaluationCsvOutput(EvaluationOutput):
             columns[EvaluationCsvOutput.COLUMN_MODEL_SIZE] = prediction_scope.get_model_size()
             header = [EvaluationCsvOutput.COLUMN_MODEL_SIZE] + header
 
-        with open_writable_csv_file(self.output_dir, data_type.get_file_name('evaluation'),
+        with open_writable_csv_file(self.output_dir,
+                                    data_type.get_file_name('evaluation'),
                                     append=incremental_prediction) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
