@@ -117,7 +117,8 @@ class LearnerRunnable(Runnable, ABC):
 
     @staticmethod
     def __create_data_splitter(args) -> DataSplitter:
-        data_set = DataSet(data_dir=args.data_dir, data_set_name=args.dataset,
+        data_set = DataSet(data_dir=args.data_dir,
+                           data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
         value, options = parse_param_and_options(PARAM_DATA_SPLIT, args.data_split, DATA_SPLIT_VALUES)
 
@@ -128,7 +129,9 @@ class LearnerRunnable(Runnable, ABC):
             if current_fold != 0:
                 assert_greater_or_equal(ARGUMENT_CURRENT_FOLD, current_fold, 1)
                 assert_less_or_equal(ARGUMENT_CURRENT_FOLD, current_fold, num_folds)
-            return CrossValidationSplitter(data_set, num_folds=num_folds, current_fold=current_fold - 1,
+            return CrossValidationSplitter(data_set,
+                                           num_folds=num_folds,
+                                           current_fold=current_fold - 1,
                                            random_state=args.random_state)
         elif value == DATA_SPLIT_TRAIN_TEST:
             test_size = options.get_float(ARGUMENT_TEST_SIZE, 0.33)
@@ -373,8 +376,12 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
 
             if evaluation_printer is not None or prediction_printer is not None \
                     or prediction_characteristics_printer is not None:
-                return IncrementalEvaluation(prediction_type, evaluation_printer, prediction_printer,
-                                             prediction_characteristics_printer, min_size=min_size, max_size=max_size,
+                return IncrementalEvaluation(prediction_type,
+                                             evaluation_printer,
+                                             prediction_printer,
+                                             prediction_characteristics_printer,
+                                             min_size=min_size,
+                                             max_size=max_size,
                                              step_size=step_size)
             else:
                 return None

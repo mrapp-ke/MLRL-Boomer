@@ -40,7 +40,8 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
     rules.
     """
 
-    def __init__(self, random_state: int = 1,
+    def __init__(self,
+                 random_state: int = 1,
                  feature_format: str = SparsePolicy.AUTO.value,
                  label_format: str = SparsePolicy.AUTO.value,
                  prediction_format: str = SparsePolicy.AUTO.value,

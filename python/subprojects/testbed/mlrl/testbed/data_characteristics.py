@@ -124,12 +124,16 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
         rows = []
 
         for characteristic in self.feature_characteristic_formattables:
-            rows.append([characteristic.name, characteristic.format(feature_characteristics, percentage=self.percentage,
-                                                                    decimals=self.decimals)])
+            rows.append([
+                characteristic.name,
+                characteristic.format(feature_characteristics, percentage=self.percentage, decimals=self.decimals)
+            ])
 
         for characteristic in self.label_characteristic_formattables:
-            rows.append([characteristic.name, characteristic.format(label_characteristics, percentage=self.percentage,
-                                                                    decimals=self.decimals)])
+            rows.append([
+                characteristic.name,
+                characteristic.format(label_characteristics, percentage=self.percentage, decimals=self.decimals)
+            ])
 
         log.info(msg, format_table(rows))
 
@@ -155,11 +159,13 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
         columns = {}
 
         for formattable in self.feature_characteristic_formattables:
-            columns[formattable] = formattable.format(feature_characteristics, percentage=self.percentage,
+            columns[formattable] = formattable.format(feature_characteristics,
+                                                      percentage=self.percentage,
                                                       decimals=self.decimals)
 
         for formattable in self.label_characteristic_formattables:
-            columns[formattable] = formattable.format(label_characteristics, percentage=self.percentage,
+            columns[formattable] = formattable.format(label_characteristics,
+                                                      percentage=self.percentage,
                                                       decimals=self.decimals)
 
         header = sorted(columns.keys())

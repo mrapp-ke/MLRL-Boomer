@@ -36,14 +36,16 @@ class SeCoRunnable(RuleLearnerRunnable):
         add_parallel_statistic_update_argument(parser)
         add_head_type_argument(parser)
         add_lift_function_argument(parser)
-        parser.add_argument(PARAM_HEURISTIC, type=str,
+        parser.add_argument(PARAM_HEURISTIC,
+                            type=str,
                             help='The name of the heuristic to be used for learning rules. Must be one of '
-                                 + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
-                                 + 'documentation.')
-        parser.add_argument(PARAM_PRUNING_HEURISTIC, type=str,
+                            + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
+                            + 'documentation.')
+        parser.add_argument(PARAM_PRUNING_HEURISTIC,
+                            type=str,
                             help='The name of the heuristic to be used for pruning individual rules. Must be one of '
-                                 + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
-                                 + 'documentation.')
+                            + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
+                            + 'documentation.')
 
     def _create_learner(self, args):
         return MultiLabelSeCoRuleLearner(random_state=args.random_state,

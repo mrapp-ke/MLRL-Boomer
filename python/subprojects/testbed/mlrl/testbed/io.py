@@ -119,7 +119,10 @@ def create_csv_dict_writer(csv_file, header) -> DictWriter:
                         directory that should be written to the file
     :return:            The `DictWriter` that has been created
     """
-    csv_writer = DictWriter(csv_file, delimiter=CSV_DELIMITER, quotechar=CSV_QUOTE_CHAR, quoting=QUOTE_MINIMAL,
+    csv_writer = DictWriter(csv_file,
+                            delimiter=CSV_DELIMITER,
+                            quotechar=CSV_QUOTE_CHAR,
+                            quoting=QUOTE_MINIMAL,
                             fieldnames=header)
 
     if csv_file.mode == 'w':

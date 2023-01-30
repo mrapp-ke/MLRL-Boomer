@@ -77,11 +77,15 @@ class MetaData:
                                 None, if all indices should be returned
         :return:                A list that contains the indices of all attributes of the given types
         """
-        return [i for i, attribute in enumerate(self.attributes) if
-                attribute_types is None or attribute.attribute_type in attribute_types]
+        return [
+            i for i, attribute in enumerate(self.attributes)
+            if attribute_types is None or attribute.attribute_type in attribute_types
+        ]
 
 
-def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_name: str,
+def load_data_set_and_meta_data(data_dir: str,
+                                arff_file_name: str,
+                                xml_file_name: str,
                                 feature_dtype=DTYPE_FLOAT32,
                                 label_dtype=DTYPE_UINT8) -> (lil_matrix, lil_matrix, MetaData):
     """
@@ -104,8 +108,9 @@ def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_nam
         log.debug('Parsing meta data from file \"%s\"...', xml_file)
         labels = __parse_labels_from_xml_file(xml_file)
     else:
-        log.debug('Mulan XML file \"%s\" does not exist. If possible, information about the class labels is parsed '
-                  + 'from the ARFF file\'s @relation declaration as intended by the MEKA data set format...', xml_file)
+        log.debug(
+            'Mulan XML file \"%s\" does not exist. If possible, information about the class labels is parsed from the '
+            + 'ARFF file\'s @relation declaration as intended by the MEKA data set format...', xml_file)
 
     arff_file = path.join(data_dir, arff_file_name)
     log.debug('Loading data set from file \"%s\"...', arff_file)
@@ -119,7 +124,10 @@ def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_nam
     return x, y, meta_data
 
 
-def load_data_set(data_dir: str, arff_file_name: str, meta_data: MetaData, feature_dtype=DTYPE_FLOAT32,
+def load_data_set(data_dir: str,
+                  arff_file_name: str,
+                  meta_data: MetaData,
+                  feature_dtype=DTYPE_FLOAT32,
                   label_dtype=DTYPE_UINT8) -> (lil_matrix, lil_matrix):
     """
     Loads a multi-label data set from an ARFF file given its meta-data.
@@ -204,15 +212,17 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     y_prefix = 0
 
     attributes = meta_data.attributes
-    x_attributes = [(u'{}'.format(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i)),
-                     u'NUMERIC' if len(attributes) <= i or attributes[i].nominal_values is None or attributes[
-                         i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else attributes[i].nominal_values)
-                    for i in range(x.shape[1])]
+    x_attributes = [
+        (u'{}'.format(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i)),
+         u'NUMERIC' if len(attributes) <= i or attributes[i].nominal_values is None
+         or attributes[i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else attributes[i].nominal_values)
+        for i in range(x.shape[1])
+    ]
 
     labels = meta_data.labels
     y_attributes = [(u'{}'.format(labels[i].attribute_name if len(labels) > i else 'y' + str(i)),
-                     u'NUMERIC' if len(labels) <= i or labels[i].nominal_values is None or labels[
-                         i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else labels[i].nominal_values)
+                     u'NUMERIC' if len(labels) <= i or labels[i].nominal_values is None
+                     or labels[i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else labels[i].nominal_values)
                     for i in range(y.shape[1])]
 
     if meta_data.labels_at_start:
@@ -236,12 +246,13 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
         data[keys[0]][y_prefix + keys[1]] = value
 
     with open(arff_file, 'w') as file:
-        file.write(arff.dumps({
-            u'description': u'traindata',
-            u'relation': u'traindata: -C {}'.format(y.shape[1] * relation_sign),
-            u'attributes': attributes,
-            u'data': data
-        }))
+        file.write(
+            arff.dumps({
+                u'description': u'traindata',
+                u'relation': u'traindata: -C {}'.format(y.shape[1] * relation_sign),
+                u'attributes': attributes,
+                u'data': data
+            }))
     log.info('Successfully saved data set to file \'' + str(arff_file) + '\'.')
 
 
