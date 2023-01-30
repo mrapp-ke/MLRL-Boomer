@@ -771,10 +771,16 @@ class CommonIntegrationTests(IntegrationTests, ABC):
     Defines a series of integration tests for any type of rule learning algorithm.
     """
 
-    def __init__(self, cmd: str, dataset_default: str = DATASET_EMOTIONS, dataset_numerical: str = DATASET_LANGLOG,
-                 dataset_binary: str = DATASET_ENRON, dataset_nominal: str = DATASET_WEATHER,
-                 dataset_one_hot_encoding: str = DATASET_ENRON, dataset_single_label: str = DATASET_BREAST_CANCER,
-                 expected_output_dir=DIR_OUT, methodName='runTest'):
+    def __init__(self,
+                 cmd: str,
+                 dataset_default: str = DATASET_EMOTIONS,
+                 dataset_numerical: str = DATASET_LANGLOG,
+                 dataset_binary: str = DATASET_ENRON,
+                 dataset_nominal: str = DATASET_WEATHER,
+                 dataset_one_hot_encoding: str = DATASET_ENRON,
+                 dataset_single_label: str = DATASET_BREAST_CANCER,
+                 expected_output_dir=DIR_OUT,
+                 methodName='runTest'):
         """
         :param cmd:                         The command to be run by the integration tests
         :param dataset_default:             The name of the dataset that should be used by default
