@@ -63,8 +63,10 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
         rows = []
 
         for formattable in self.formattables:
-            rows.append([formattable.name, formattable.format(characteristics, percentage=self.percentage,
-                                                              decimals=self.decimals)])
+            rows.append([
+                formattable.name,
+                formattable.format(characteristics, percentage=self.percentage, decimals=self.decimals)
+            ])
 
         log.info(msg, format_table(rows))
 

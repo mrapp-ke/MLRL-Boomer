@@ -124,12 +124,16 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
         rows = []
 
         for characteristic in self.feature_characteristic_formattables:
-            rows.append([characteristic.name, characteristic.format(feature_characteristics, percentage=self.percentage,
-                                                                    decimals=self.decimals)])
+            rows.append([
+                characteristic.name,
+                characteristic.format(feature_characteristics, percentage=self.percentage, decimals=self.decimals)
+            ])
 
         for characteristic in self.label_characteristic_formattables:
-            rows.append([characteristic.name, characteristic.format(label_characteristics, percentage=self.percentage,
-                                                                    decimals=self.decimals)])
+            rows.append([
+                characteristic.name,
+                characteristic.format(label_characteristics, percentage=self.percentage, decimals=self.decimals)
+            ])
 
         log.info(msg, format_table(rows))
 
