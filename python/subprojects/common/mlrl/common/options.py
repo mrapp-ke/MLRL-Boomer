@@ -4,9 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
 from enum import Enum
-from typing import Set, Dict
 
 from mlrl.common.format import format_string_set, format_enum_values, format_dict_keys
+from typing import Set, Dict
 
 
 class BooleanOption(Enum):
@@ -19,9 +19,8 @@ class BooleanOption(Enum):
             return True
         elif s == BooleanOption.FALSE.value:
             return False
-        raise ValueError(
-            'Invalid boolean value given. Must be one of ' + format_enum_values(BooleanOption) + ', but is "' + str(
-                s) + '".')
+        raise ValueError('Invalid boolean value given. Must be one of ' + format_enum_values(BooleanOption)
+                         + ', but is "' + str(s) + '".')
 
 
 class Options:
@@ -51,8 +50,8 @@ class Options:
 
         if string is not None and len(string) > 0:
             if not string.startswith('{'):
-                raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must start with "{", but is "'
-                                 + string + '"')
+                raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must start with "{", but is "' + string
+                                 + '"')
             if not string.endswith('}'):
                 raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must end with "}", but is "' + string + '"')
 

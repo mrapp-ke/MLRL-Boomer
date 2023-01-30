@@ -236,9 +236,8 @@ def log_level(s):
         return log.CRITICAL
     elif s == LogLevel.NOTSET.value:
         return log.NOTSET
-    raise ValueError(
-        'Invalid value given for parameter "' + PARAM_LOG_LEVEL + '". Must be one of ' + format_enum_values(
-            LogLevel) + ', but is "' + str(s) + '".')
+    raise ValueError('Invalid value given for parameter "' + PARAM_LOG_LEVEL + '". Must be one of '
+                     + format_enum_values(LogLevel) + ', but is "' + str(s) + '".')
 
 
 def boolean_string(s):

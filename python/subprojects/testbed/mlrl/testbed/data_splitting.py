@@ -230,9 +230,8 @@ def check_if_files_exist(directory: str, file_names: List[str]) -> bool:
     elif num_missing_files == len(file_names):
         return False
     else:
-        raise IOError(
-            'The following files do not exist: ' + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b + '"',
-                                                          missing_files, ''))
+        raise IOError('The following files do not exist: '
+                      + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b + '"', missing_files, ''))
 
 
 class NoSplitter(DataSplitter):
@@ -350,9 +349,9 @@ class CrossValidationSplitter(DataSplitter):
     def _split_data(self, callback: DataSplitter.Callback):
         num_folds = self.num_folds
         current_fold = self.current_fold
-        log.info('Performing ' + (
-            'full' if current_fold < 0 else ('fold ' + str(current_fold + 1) + ' of')) + ' %s-fold cross validation...',
-                 num_folds)
+        log.info(
+            'Performing ' + ('full' if current_fold < 0 else
+                             ('fold ' + str(current_fold + 1) + ' of')) + ' %s-fold cross validation...', num_folds)
         data_set = self.data_set
         data_dir = data_set.data_dir
         data_set_name = data_set.data_set_name
