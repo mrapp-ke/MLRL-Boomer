@@ -78,7 +78,10 @@ def is_sparse(m, sparse_format: SparseFormat, dtype, sparse_values: bool = True)
     return False
 
 
-def should_enforce_sparse(m, sparse_format: SparseFormat, policy: SparsePolicy, dtype,
+def should_enforce_sparse(m,
+                          sparse_format: SparseFormat,
+                          policy: SparsePolicy,
+                          dtype,
                           sparse_values: bool = True) -> bool:
     """
     Returns whether it is preferable to convert a given matrix into a `scipy.sparse.csr_matrix` or

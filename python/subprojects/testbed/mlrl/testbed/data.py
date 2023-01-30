@@ -81,7 +81,9 @@ class MetaData:
                 attribute_types is None or attribute.attribute_type in attribute_types]
 
 
-def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_name: str,
+def load_data_set_and_meta_data(data_dir: str,
+                                arff_file_name: str,
+                                xml_file_name: str,
                                 feature_dtype=DTYPE_FLOAT32,
                                 label_dtype=DTYPE_UINT8) -> (lil_matrix, lil_matrix, MetaData):
     """
@@ -120,7 +122,10 @@ def load_data_set_and_meta_data(data_dir: str, arff_file_name: str, xml_file_nam
     return x, y, meta_data
 
 
-def load_data_set(data_dir: str, arff_file_name: str, meta_data: MetaData, feature_dtype=DTYPE_FLOAT32,
+def load_data_set(data_dir: str,
+                  arff_file_name: str,
+                  meta_data: MetaData,
+                  feature_dtype=DTYPE_FLOAT32,
                   label_dtype=DTYPE_UINT8) -> (lil_matrix, lil_matrix):
     """
     Loads a multi-label data set from an ARFF file given its meta-data.
