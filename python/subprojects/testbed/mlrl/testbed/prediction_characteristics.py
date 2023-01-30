@@ -91,7 +91,8 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
         columns = {}
 
         for formattable in self.formattables:
-            columns[formattable] = formattable.format(characteristics, percentage=self.percentage,
+            columns[formattable] = formattable.format(characteristics,
+                                                      percentage=self.percentage,
                                                       decimals=self.decimals)
 
         header = sorted(columns.keys())
@@ -101,8 +102,10 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
             columns[PredictionCharacteristicsCsvOutput.COLUMN_MODEL_SIZE] = prediction_scope.get_model_size()
             header = [PredictionCharacteristicsCsvOutput.COLUMN_MODEL_SIZE] + header
 
-        with open_writable_csv_file(self.output_dir, data_type.get_file_name('prediction_characteristics'),
-                                    data_split.get_fold(), append=incremental_prediction) as csv_file:
+        with open_writable_csv_file(self.output_dir,
+                                    data_type.get_file_name('prediction_characteristics'),
+                                    data_split.get_fold(),
+                                    append=incremental_prediction) as csv_file:
             csv_writer = create_csv_dict_writer(csv_file, header)
             csv_writer.writerow(columns)
 

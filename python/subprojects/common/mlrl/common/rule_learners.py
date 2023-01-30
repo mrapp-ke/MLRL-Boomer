@@ -287,12 +287,15 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         # Validate feature matrix and convert it to the preferred format...
         x_sparse_format = SparseFormat.CSC
         x_sparse_policy = create_sparse_policy('feature_format', self.feature_format)
-        x_enforce_sparse = should_enforce_sparse(x, sparse_format=x_sparse_format, policy=x_sparse_policy,
+        x_enforce_sparse = should_enforce_sparse(x,
+                                                 sparse_format=x_sparse_format,
+                                                 policy=x_sparse_policy,
                                                  dtype=DTYPE_FLOAT32)
         x = self._validate_data(
             (x if x_enforce_sparse else enforce_2d(enforce_dense(x, order='F', dtype=DTYPE_FLOAT32))),
             accept_sparse=(x_sparse_format.value if x_enforce_sparse else False),
-            dtype=DTYPE_FLOAT32, force_all_finite='allow-nan')
+            dtype=DTYPE_FLOAT32,
+            force_all_finite='allow-nan')
 
         if issparse(x):
             log.debug('A sparse matrix is used to store the feature values of the training examples')
@@ -312,10 +315,14 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
                 is_sparse(y, sparse_format=y_sparse_format, dtype=DTYPE_UINT8, sparse_values=False))
 
         y_sparse_policy = create_sparse_policy('label_format', self.label_format)
-        y_enforce_sparse = should_enforce_sparse(y, sparse_format=y_sparse_format, policy=y_sparse_policy,
-                                                 dtype=DTYPE_UINT8, sparse_values=False)
+        y_enforce_sparse = should_enforce_sparse(y,
+                                                 sparse_format=y_sparse_format,
+                                                 policy=y_sparse_policy,
+                                                 dtype=DTYPE_UINT8,
+                                                 sparse_values=False)
         y = check_array((y if y_enforce_sparse else enforce_2d(enforce_dense(y, order='C', dtype=DTYPE_UINT8))),
-                        accept_sparse=(y_sparse_format.value if y_enforce_sparse else False), dtype=DTYPE_UINT8)
+                        accept_sparse=(y_sparse_format.value if y_enforce_sparse else False),
+                        dtype=DTYPE_UINT8)
 
         if issparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
@@ -435,11 +442,15 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
     def __create_row_wise_feature_matrix(self, x) -> RowWiseFeatureMatrix:
         sparse_format = SparseFormat.CSR
         sparse_policy = create_sparse_policy('feature_format', self.feature_format)
-        enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy,
+        enforce_sparse = should_enforce_sparse(x,
+                                               sparse_format=sparse_format,
+                                               policy=sparse_policy,
                                                dtype=DTYPE_FLOAT32)
         x = self._validate_data(x if enforce_sparse else enforce_2d(enforce_dense(x, order='C', dtype=DTYPE_FLOAT32)),
-                                reset=False, accept_sparse=(sparse_format.value if enforce_sparse else False),
-                                dtype=DTYPE_FLOAT32, force_all_finite='allow-nan')
+                                reset=False,
+                                accept_sparse=(sparse_format.value if enforce_sparse else False),
+                                dtype=DTYPE_FLOAT32,
+                                force_all_finite='allow-nan')
 
         if issparse(x):
             log.debug('A sparse matrix is used to store the feature values of the query examples')
