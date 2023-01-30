@@ -551,9 +551,9 @@ class IntegrationTests(ABC, TestCase):
         :param file_name:   The name of the file
         """
         file = path.join(directory, file_name)
-        self.assertTrue(path.isfile(file),
-                        'Command "' + self.__format_cmd(args) + '" is expected to create file ' + str(
-                            file) + ', but it does not exist')
+        self.assertTrue(
+            path.isfile(file), 'Command "' + self.__format_cmd(args) + '" is expected to create file ' + str(file)
+            + ', but it does not exist')
 
     def __assert_files_exist(self, builder: CmdBuilder, directory: str, file_name: str, suffix: str):
         """
