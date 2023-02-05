@@ -10,6 +10,7 @@ on:
       - '**/*.build'
       - 'Makefile'
       - 'python/requirements.txt'
+      - '.github/workflows/test_build.yml'
 jobs:
   linux_tests:
     name: Run tests on Linux
