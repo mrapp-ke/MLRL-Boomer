@@ -22,8 +22,8 @@ DOC_BUILD_DIR = ${DOC_DIR}/_build
 PS = powershell -Command
 PYTHON = $(if ${IS_WIN},python,python3)
 VENV_CREATE = ${PYTHON} -m venv ${VENV_DIR}
-VENV_ACTIVATE = $(if ${IS_WIN},${PS} ${VENV_DIR}/Scripts/activate.bat,. ${VENV_DIR}/bin/activate)
-VENV_DEACTIVATE = $(if ${IS_WIN},${PS} ${VENV_DIR}/Scripts/deactivate.bat,deactivate)
+VENV_ACTIVATE = $(if ${IS_WIN},${PS} "${VENV_DIR}/Scripts/activate.bat;",. ${VENV_DIR}/bin/activate)
+VENV_DEACTIVATE = $(if ${IS_WIN},${PS} "${VENV_DIR}/Scripts/deactivate.bat;",deactivate)
 PIP_INSTALL = python -m pip install --prefer-binary
 YAPF = yapf -i -r --style=.style.yapf --verbose
 CLANG_FORMAT = clang-format -i --style=file --verbose
