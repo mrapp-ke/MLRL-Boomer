@@ -125,8 +125,8 @@ class Evaluation(ABC):
                                             prediction_scope,
                                             train_time=train_time,
                                             predict_time=predict_time,
-                                            predictions=predictions,
-                                            y=y)
+                                            ground_truth=y,
+                                            predictions=predictions)
 
             prediction_printer = self.prediction_printer
 
