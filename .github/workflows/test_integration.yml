@@ -23,6 +23,4 @@ jobs:
           make install
       - name: Run Tests
         run: |
-          source venv/bin/activate
-          python -m unittest discover -s python/subprojects/testbed/tests -v
-          deactivate
+          make tests
