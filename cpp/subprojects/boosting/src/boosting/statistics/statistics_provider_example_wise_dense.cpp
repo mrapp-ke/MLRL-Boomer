@@ -34,6 +34,11 @@ namespace boosting {
                   numRows, numGradients, triangularNumber(numGradients),
                   (float64*) malloc(numRows * numGradients * sizeof(float64)),
                   (float64*) malloc(numRows * triangularNumber(numGradients) * sizeof(float64))) {}
+
+            ~DenseExampleWiseStatisticMatrix() {
+                free(gradients_);
+                free(hessians_);
+            }
     };
 
     /**

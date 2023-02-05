@@ -52,7 +52,7 @@ jobs:
       - name: Build package mlrl-common
         uses: pypa/cibuildwheel@v2.3.0
         env:
-          CIBW_BEFORE_ALL_MACOS: brew install libomp
+          CIBW_BEFORE_ALL_MACOS: brew install libomp && brew link libomp --force
           CIBW_BEFORE_BUILD: make clean install_cpp install_cython
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
@@ -62,7 +62,7 @@ jobs:
       - name: Build package mlrl-boosting
         uses: pypa/cibuildwheel@v2.3.0
         env:
-          CIBW_BEFORE_ALL_MACOS: brew install libomp
+          CIBW_BEFORE_ALL_MACOS: brew install libomp && brew link libomp --force
           CIBW_BEFORE_BUILD: make clean install_cpp install_cython
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
