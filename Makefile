@@ -32,6 +32,7 @@ MESON_COMPILE = meson compile
 MESON_INSTALL = meson install
 WHEEL_BUILD = python -m build --wheel
 WHEEL_INSTALL = python -m pip install --force-reinstall --no-deps
+PYTHON_UNITTEST = python -m unittest discover -v -f -s
 DOXYGEN = $(if ${IS_WIN},for /f %%i in (./../VERSION) do set PROJECT_NUMBER=%%i && doxygen,PROJECT_NUMBER=${file < VERSION} doxygen)
 SPHINX_APIDOC = sphinx-apidoc --tocfile index -f
 SPHINX_BUILD = sphinx-build -M html
@@ -175,6 +176,12 @@ install: wheel
 	    && $(call install_wheels,${PYTHON_PACKAGE_DIR}/boosting/${DIST_DIR}) \
 	    && $(call install_wheels,${PYTHON_PACKAGE_DIR}/seco/${DIST_DIR}) \
 	    && $(call install_wheels,${PYTHON_PACKAGE_DIR}/testbed/${DIST_DIR}) \
+	    && ${VENV_DEACTIVATE}
+
+tests: install
+	@echo Running integration tests...
+	${VENV_ACTIVATE} \
+	    && ${PYTHON_UNITTEST} ${PYTHON_PACKAGE_DIR}/testbed/tests \
 	    && ${VENV_DEACTIVATE}
 
 doc: install
