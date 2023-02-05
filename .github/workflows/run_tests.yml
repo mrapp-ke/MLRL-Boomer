@@ -27,10 +27,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Run Tests
+      - name: Install OpenMP
         run: |
           brew install libomp
           brew link libomp --force
+      - name: Run Tests
+        run: |
           make tests
   windows_tests:
     name: Run tests on Windows
