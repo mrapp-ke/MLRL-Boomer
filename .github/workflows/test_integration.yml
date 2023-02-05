@@ -15,12 +15,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Compile
-        run: |
-          make compile
-      - name: Install
-        run: |
-          make install
       - name: Run Tests
         run: |
           make tests
