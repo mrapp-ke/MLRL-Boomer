@@ -27,7 +27,7 @@ VENV_DEACTIVATE = $(if ${IS_WIN},${PS} ${VENV_DIR}/Scripts/deactivate.bat,deacti
 PIP_INSTALL = python -m pip install --prefer-binary
 YAPF = yapf -i -r --style=.style.yapf --verbose
 CLANG_FORMAT = clang-format -i --style=file --verbose
-MESON_SETUP = meson setup
+MESON_SETUP = meson setup --werror
 MESON_COMPILE = meson compile
 MESON_INSTALL = meson install
 WHEEL_BUILD = python -m build --wheel
