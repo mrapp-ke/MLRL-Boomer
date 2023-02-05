@@ -56,7 +56,7 @@ endef
 
 define install_wheels
 	$(if ${IS_WIN},\
-	${PS} "foreach ($$wheel in ls -Path ${1}/* -Include *.whl) {${WHEEL_INSTALL} $$wheel}",\
+	${PS} "${WHEEL_INSTALL} (Get-ChildItem -Path ${1} | Where Name -Match '\.whl' | Select-Object -ExpandProperty FullName);",\
 	${WHEEL_INSTALL} ${1}/*.whl)
 endef
 
