@@ -250,8 +250,8 @@ namespace boosting {
 
             /**
              * @param statisticView         A reference to an object of template type `StatisticView` that provides
-             *                              access to the the gradients and Hessians
-             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory`, that
+             *                              access to the gradients and Hessians
+             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
@@ -492,9 +492,9 @@ namespace boosting {
     }
 
     /**
-     * An abstract base class for all classes that provide access to weighted gradients and Hessians that are calculated
-     * according to a differentiable loss function that is applied label-wise and allows to update the gradients and
-     * Hessians after a new rule has been learned.
+     * Provides access to weighted gradients and Hessians that are calculated according to a differentiable loss
+     * function that is applied label-wise and allows to update the gradients and Hessians after a new rule has been
+     * learned.
      *
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
@@ -571,9 +571,9 @@ namespace boosting {
             /**
              * @param statisticView         A reference to an object of template type `StatisticView` that provides
              *                              access to the gradients and Hessians
-             * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows to
-             *                              create instances of the class that should be used for calculating the
-             *                              predictions of rules, as well as their overall quality
+             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
+             *                              allows to create instances of the class that should be used for calculating
+             *                              the predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
@@ -608,7 +608,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IWeightedStatistics::resetCoveredStatistic`
+             * @see `IWeightedStatistics::resetCoveredStatistics`
              */
             void resetCoveredStatistics() override {
                 totalSumVectorPtr_->clear();

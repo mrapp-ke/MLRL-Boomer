@@ -91,13 +91,13 @@ namespace boosting {
             /**
              * @param statisticView         A reference to an object of template type `StatisticView` that provides
              *                              access to the gradients and Hessians
-             * @param labelIndices          A reference to an object of template type `IndexVector` that provides access
-             *                              to the indices of the labels that are included in the subset
+             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
+             *                              allows to create instances of the class that is used for calculating the
+             *                              predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
-             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
-             *                              allows to create instances of the class that should be used for calculating
-             *                              the predictions of rules, as well as their overall quality
+             * @param labelIndices          A reference to an object of template type `IndexVector` that provides access
+             *                              to the indices of the labels that are included in the subset
              */
             ExampleWiseStatisticsSubset(const StatisticView& statisticView,
                                         const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights,
@@ -179,7 +179,7 @@ namespace boosting {
                      * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
                      * @param labelIndices      A reference to an object of template type `IndexVector` that provides
-                                                access to the indices of the labels that are included in the subset
+                     *                          access to the indices of the labels that are included in the subset
                      */
                     AbstractWeightedStatisticsSubset(const AbstractExampleWiseImmutableWeightedStatistics& statistics,
                                                      const StatisticVector& totalSumVector,
@@ -200,14 +200,14 @@ namespace boosting {
                             // necessary...
                             accumulatedSumVectorPtr_ = std::make_unique<StatisticVector>(this->sumVector_);
                         } else {
-                            // Add the sum of gradients and Hessians to the accumulated sums of gradients and
+                            // Add the sums of gradients and Hessians to the accumulated sums of gradients and
                             // Hessians...
                             accumulatedSumVectorPtr_->add(
                               this->sumVector_.gradients_cbegin(), this->sumVector_.gradients_cend(),
                               this->sumVector_.hessians_cbegin(), this->sumVector_.hessians_cend());
                         }
 
-                        // Reset the sum of gradients and Hessians to zero...
+                        // Reset the sums of gradients and Hessians to zero...
                         this->sumVector_.clear();
                     }
 
@@ -251,7 +251,7 @@ namespace boosting {
             const StatisticView& statisticView_;
 
             /**
-             * A reference to an object of template type `RuleEvaluationFactory` that allows to create instances of the
+             * A reference to an object of template type `RuleEvaluationFactory` that is used to create instances of the
              * class that is used for calculating the predictions of rules, as well as their overall quality.
              */
             const RuleEvaluationFactory& ruleEvaluationFactory_;
