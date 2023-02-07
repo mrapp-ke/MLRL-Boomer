@@ -153,9 +153,9 @@ namespace boosting {
              */
             template<typename IndexVector>
             class AbstractWeightedStatisticsSubset
-                : virtual public IWeightedStatisticsSubset,
-                  public ExampleWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                     WeightVector, IndexVector> {
+                : public ExampleWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                     WeightVector, IndexVector>,
+                  virtual public IWeightedStatisticsSubset {
                 private:
 
                     StatisticVector tmpVector_;
