@@ -33,6 +33,8 @@ HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
 
 HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
 
+LABEL_BINNING_NO = 'none'
+
 LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
 
 BINARY_PREDICTOR_AUTO = 'auto'
@@ -556,6 +558,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
             .head_type(HEAD_TYPE_COMPLETE) \
+            .label_binning(LABEL_BINNING_NO) \
             .print_model_characteristics(True)
         self.run_cmd(builder, 'example-wise-complete-heads')
 
@@ -579,6 +582,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
+            .label_binning(LABEL_BINNING_NO) \
             .print_model_characteristics(True)
         self.run_cmd(builder, 'example-wise-partial-fixed-heads')
 
@@ -602,6 +606,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
+            .label_binning(LABEL_BINNING_NO) \
             .print_model_characteristics(True)
         self.run_cmd(builder, 'example-wise-partial-dynamic-heads')
 
