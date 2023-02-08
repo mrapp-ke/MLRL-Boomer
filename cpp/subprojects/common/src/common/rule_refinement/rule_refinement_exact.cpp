@@ -201,10 +201,10 @@ static inline void findRefinementInternally(
 
             if (coverage >= minCoverage) {
                 // Determine the best prediction for the covered examples...
-                const IScoreVector& scoreVector2 = statisticsSubsetPtr->calculateScoresUncovered();
+                const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScoresUncovered();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
-                if (comparator.isImprovement(scoreVector2)) {
+                if (comparator.isImprovement(scoreVector)) {
                     refinement.start = firstR;
                     refinement.end = (lastNegativeR + 1);
                     refinement.previous = previousR;
@@ -212,7 +212,7 @@ static inline void findRefinementInternally(
                     refinement.covered = false;
                     refinement.comparator = NEQ;
                     refinement.threshold = previousThreshold;
-                    comparator.pushRefinement(refinement, scoreVector2);
+                    comparator.pushRefinement(refinement, scoreVector);
                 }
             }
         }
