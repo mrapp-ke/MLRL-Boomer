@@ -46,6 +46,8 @@ class MLRLCOMMON_API BinaryCsrConstView : virtual public ITwoDimensionalView {
          */
         BinaryCsrConstView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices);
 
+        virtual ~BinaryCsrConstView() override {};
+
         /**
          * An iterator that provides read-only access to the indices in the view.
          */
@@ -96,6 +98,8 @@ class BinaryCsrView : public BinaryCsrConstView {
          *                      column-indices, the non-zero elements correspond to
          */
         BinaryCsrView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices);
+
+        virtual ~BinaryCsrView() override {};
 
         /**
          * An iterator that provides access to the indices of the view and allows to modify them.

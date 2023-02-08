@@ -31,7 +31,7 @@ class MLRLCOMMON_API DensePredictionMatrix final : public CContiguousView<T> {
          */
         DensePredictionMatrix(uint32 numRows, uint32 numCols, bool init);
 
-        ~DensePredictionMatrix();
+        ~DensePredictionMatrix() override;
 
         /**
          * Releases the ownership of the array that stores the predictions. The caller is responsible for freeing the

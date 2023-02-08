@@ -37,7 +37,7 @@ class MLRLCOMMON_API BinarySparsePredictionMatrix final : public BinaryCsrConstV
          */
         BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices);
 
-        ~BinarySparsePredictionMatrix();
+        ~BinarySparsePredictionMatrix() override;
 
         /**
          * Releases the ownership of the array `rowIndices`. The caller is responsible for freeing the memory that is

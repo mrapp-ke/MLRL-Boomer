@@ -27,7 +27,7 @@ namespace boosting {
             SparseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
                 : SparseLabelWiseStatisticView(numCols, new SparseSetMatrix<Tuple<float64>>(numRows, numCols)) {}
 
-            ~SparseLabelWiseStatisticMatrix() {
+            ~SparseLabelWiseStatisticMatrix() override {
                 delete statistics_;
             }
     };
@@ -47,7 +47,7 @@ namespace boosting {
                 : SparseLabelWiseHistogramView(numBins, numCols, new Triple<float64>[numBins * numCols],
                                                new float64[numBins]) {}
 
-            ~SparseLabelWiseHistogram() {
+            ~SparseLabelWiseHistogram() override {
                 delete[] statistics_;
                 delete[] weights_;
             }

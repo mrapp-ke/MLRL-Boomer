@@ -33,6 +33,8 @@ class MLRLCOMMON_API VectorConstView : public IOneDimensionalView {
          */
         VectorConstView(uint32 numElements, T* array);
 
+        virtual ~VectorConstView() override {};
+
         /**
          * An iterator that provides read-only access to the elements in the view.
          */
@@ -81,6 +83,8 @@ class MLRLCOMMON_API VectorView : public VectorConstView<T> {
          *                      provides access to
          */
         VectorView(uint32 numElements, T* array);
+
+        virtual ~VectorView() override {};
 
         /**
          * An iterator that provides access to the elements in the view and allows to modify them.

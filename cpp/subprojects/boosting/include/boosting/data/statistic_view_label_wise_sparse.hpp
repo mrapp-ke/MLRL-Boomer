@@ -34,6 +34,8 @@ namespace boosting {
              */
             SparseLabelWiseStatisticConstView(uint32 numCols, SparseSetMatrix<Tuple<float64>>* statistics);
 
+            virtual ~SparseLabelWiseStatisticConstView() {};
+
             /**
              * Provides read-only access to a row.
              */
@@ -96,6 +98,8 @@ namespace boosting {
              *                      Hessians
              */
             SparseLabelWiseStatisticView(uint32 numCols, SparseSetMatrix<Tuple<float64>>* statistics);
+
+            virtual ~SparseLabelWiseStatisticView() override {};
 
             /**
              * Provides access to a row and allows to modify its elements.
