@@ -7,6 +7,8 @@
 
 #include "common/data/view_fortran_contiguous.hpp"
 
+#include <cmath>
+
 /**
  * An implementation of the type `IFortranContiguousFeatureMatrix` that provides column-wise read-only access to the
  * feature values of examples that are stored in a pre-allocated Fortran-contiguous array.
@@ -38,8 +40,7 @@ class FortranContiguousFeatureMatrix final : public FortranContiguousConstView<c
             for (uint32 j = 0; j < numElements; j++) {
                 float32 value = columnIterator[j];
 
-                if (value != value) {
-                    // The value is NaN (because comparisons to NaN always evaluate to false)...
+                if (std::isnan(value)) {
                     featureVectorPtr->addMissingIndex(j);
                 } else {
                     vectorIterator[i].index = j;
