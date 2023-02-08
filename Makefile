@@ -1,7 +1,7 @@
 default_target: install
 .PHONY: clean_venv clean_cpp clean_cython clean_compile clean_cpp_install clean_cython_install clean_wheel \
-        clean_install clean_doc clean format_cpp format compile_cpp compile_cython compile install_cpp install_cython \
-        wheel install doc
+        clean_install clean_doc clean test_format_cpp test_format_python test_format format_cpp format_python format \
+        compile_cpp compile_cython compile install_cpp install_cython wheel install doc
 
 UNAME = $(if $(filter Windows_NT,${OS}),Windows,$(shell uname))
 IS_WIN = $(filter Windows,${UNAME})
@@ -25,8 +25,12 @@ VENV_CREATE = ${PYTHON} -m venv ${VENV_DIR}
 VENV_ACTIVATE = $(if ${IS_WIN},${PS} "${VENV_DIR}/Scripts/activate.bat;",. ${VENV_DIR}/bin/activate)
 VENV_DEACTIVATE = $(if ${IS_WIN},${PS} "${VENV_DIR}/Scripts/deactivate.bat;",deactivate)
 PIP_INSTALL = python -m pip install --prefer-binary
-YAPF = yapf -i -r --style=.style.yapf --verbose
-CLANG_FORMAT = clang-format -i --style=file --verbose
+YAPF = yapf -r -p --style=.style.yapf --verbose
+YAPF_DRYRUN = ${YAPF} --diff
+YAPF_INPLACE = ${YAPF} -i
+CLANG_FORMAT = clang-format --style=file --verbose
+CLANG_FORMAT_DRYRUN = ${CLANG_FORMAT} -n --Werror
+CLANG_FORMAT_INPLACE = ${CLANG_FORMAT} -i
 MESON_SETUP = meson setup
 MESON_COMPILE = meson compile
 MESON_INSTALL = meson install
@@ -67,12 +71,20 @@ define create_dir
 	mkdir -p ${1})
 endef
 
-define clang_format_recursively
+define clang_format_dryrun_recursively
 	$(if ${IS_WIN},\
 	(${PS} "Get-ChildItem -Path ${1} -Recurse | Where Name -Match '\.hpp|\.cpp' | Select-Object -ExpandProperty FullName | Out-File .cpp_files.tmp -Encoding utf8";\
-	    ${CLANG_FORMAT} --files=.cpp_files.tmp;\
+	    ${CLANG_FORMAT_DRYRUN} --files=.cpp_files.tmp;\
 	    ${PS} "rm .cpp_files.tmp -Force"),\
-	find ${1} -type f \( -iname "*.hpp" -o -iname "*.cpp" \) -exec ${CLANG_FORMAT} {} +)
+	find ${1} -type f \( -iname "*.hpp" -o -iname "*.cpp" \) -exec ${CLANG_FORMAT_DRYRUN} {} +)
+endef
+
+define clang_format_inplace_recursively
+	$(if ${IS_WIN},\
+	(${PS} "Get-ChildItem -Path ${1} -Recurse | Where Name -Match '\.hpp|\.cpp' | Select-Object -ExpandProperty FullName | Out-File .cpp_files.tmp -Encoding utf8";\
+	    ${CLANG_FORMAT_INPLACE} --files=.cpp_files.tmp;\
+	    ${PS} "rm .cpp_files.tmp -Force"),\
+	find ${1} -type f \( -iname "*.hpp" -o -iname "*.cpp" \) -exec ${CLANG_FORMAT_INPLACE} {} +)
 endef
 
 clean_venv:
@@ -118,16 +130,30 @@ venv:
 	    && ${PIP_INSTALL} -r ${PYTHON_SRC_DIR}/requirements.txt \
 	    && ${VENV_DEACTIVATE}
 
+test_format_python: venv
+	@echo Checking Python code style...
+	${VENV_ACTIVATE} \
+	    && ${YAPF_DRYRUN} ${PYTHON_PACKAGE_DIR} \
+	    && ${VENV_DEACTIVATE}
+
+test_format_cpp: venv
+	@echo Checking C++ code style...
+	${VENV_ACTIVATE} \
+	    && $(call clang_format_dryrun_recursively,${CPP_PACKAGE_DIR}) \
+	    && ${VENV_DEACTIVATE}
+
+test_format: test_format_python test_format_cpp
+
 format_python: venv
 	@echo Formatting Python code...
 	${VENV_ACTIVATE} \
-	    && ${YAPF} ${PYTHON_PACKAGE_DIR} \
+	    && ${YAPF_INPLACE} ${PYTHON_PACKAGE_DIR} \
 	    && ${VENV_DEACTIVATE}
 
 format_cpp: venv
 	@echo Formatting C++ code...
 	${VENV_ACTIVATE} \
-	    && $(call clang_format_recursively,${CPP_PACKAGE_DIR}) \
+	    && $(call clang_format_inplace_recursively,${CPP_PACKAGE_DIR}) \
 	    && ${VENV_DEACTIVATE}
 
 format: format_python format_cpp
