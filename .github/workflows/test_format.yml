@@ -5,6 +5,7 @@ on:
       - '**/*.hpp'
       - '**/*.cpp'
       - '**/*.py'
+      - 'Makefile'
       - '.github/workflows/test_format.yml'
 jobs:
   test_format:
