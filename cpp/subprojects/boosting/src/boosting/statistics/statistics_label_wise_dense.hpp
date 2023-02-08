@@ -29,7 +29,7 @@ namespace boosting {
                 : DenseLabelWiseStatisticView(numRows, numCols,
                                               (Tuple<float64>*) malloc(numRows * numCols * sizeof(Tuple<float64>))) {}
 
-            ~DenseLabelWiseStatisticMatrix() {
+            ~DenseLabelWiseStatisticMatrix() override {
                 free(statistics_);
             }
     };

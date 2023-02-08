@@ -53,6 +53,8 @@ namespace boosting {
             DenseExampleWiseStatisticConstView(uint32 numRows, uint32 numGradients, uint32 numHessians,
                                                float64* gradients, float64* hessians);
 
+            virtual ~DenseExampleWiseStatisticConstView() {};
+
             /**
              * An iterator that provides read-only access to the gradients.
              */
@@ -151,6 +153,8 @@ namespace boosting {
              */
             DenseExampleWiseStatisticView(uint32 numRows, uint32 numGradients, uint32 numHessians, float64* gradients,
                                           float64* hessians);
+
+            virtual ~DenseExampleWiseStatisticView() override {};
 
             /**
              * An iterator that provides access to the gradients and allows to modify them.

@@ -29,7 +29,7 @@ class MLRLCOMMON_API DenseVector : public VectorView<T> {
          */
         DenseVector(uint32 numElements, bool init);
 
-        ~DenseVector();
+        virtual ~DenseVector() override;
 
         /**
          * Sets the number of elements in the vector.
