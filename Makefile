@@ -25,12 +25,12 @@ VENV_CREATE = ${PYTHON} -m venv ${VENV_DIR}
 VENV_ACTIVATE = $(if ${IS_WIN},${PS} "${VENV_DIR}/Scripts/activate.bat;",. ${VENV_DIR}/bin/activate)
 VENV_DEACTIVATE = $(if ${IS_WIN},${PS} "${VENV_DIR}/Scripts/deactivate.bat;",deactivate)
 PIP_INSTALL = python -m pip install --prefer-binary
-YAPF = yapf -r -p --style=.style.yapf
+YAPF = yapf -r -p --style=.style.yapf --verbose
 YAPF_DRYRUN = ${YAPF} --diff
-YAPF_INPLACE = ${YAPF} -i --verbose
-CLANG_FORMAT = clang-format --style=file
+YAPF_INPLACE = ${YAPF} -i
+CLANG_FORMAT = clang-format --style=file --verbose
 CLANG_FORMAT_DRYRUN = ${CLANG_FORMAT} -n --Werror
-CLANG_FORMAT_INPLACE = ${CLANG_FORMAT} -i --verbose
+CLANG_FORMAT_INPLACE = ${CLANG_FORMAT} -i
 MESON_SETUP = meson setup
 MESON_COMPILE = meson compile
 MESON_INSTALL = meson install
