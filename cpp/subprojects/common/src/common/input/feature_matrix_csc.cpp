@@ -7,6 +7,8 @@
 
 #include "common/data/view_csc.hpp"
 
+#include <cmath>
+
 /**
  * An implementation of the type `ICscFeatureMatrix` that provides column-wise read-only access to the feature values of
  * examples that are stored in a pre-allocated sparse matrix in the compressed sparse column (CSC) format.
@@ -46,8 +48,7 @@ class CscFeatureMatrix final : public CscConstView<const float32>,
                 uint32 index = indexIterator[j];
                 float32 value = valueIterator[j];
 
-                if (value != value) {
-                    // The value is NaN (because comparisons to NaN always evaluate to false)...
+                if (std::isnan(value)) {
                     featureVectorPtr->addMissingIndex(index);
                 } else {
                     vectorIterator[i].index = index;
