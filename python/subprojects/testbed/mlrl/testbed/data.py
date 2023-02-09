@@ -301,7 +301,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
         if encoder is None:
             log.info('Applying one-hot encoding...')
             encoder = ColumnTransformer(
-                [('one_hot_encoder', OneHotEncoder(handle_unknown='ignore', sparse=False), nominal_indices)],
+                [('one_hot_encoder', OneHotEncoder(handle_unknown='ignore', sparse_output=False), nominal_indices)],
                 remainder='passthrough')
             encoder.fit(x, y)
 
