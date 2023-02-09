@@ -3,8 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from test_common import CommonIntegrationTests, CmdBuilder, DIR_OUT, DIR_DATA, DATASET_EMOTIONS, DATASET_WEATHER, \
-    RULE_PRUNING_IREP
+from test_common import CommonIntegrationTests, CmdBuilder, DIR_OUT, DIR_DATA, DATASET_EMOTIONS, RULE_PRUNING_IREP
 
 CMD_SECO = 'seco'
 
@@ -97,7 +96,6 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         :param methodName: The name of the test method to be executed
         """
         super(SeCoIntegrationTests, self).__init__(cmd=CMD_SECO,
-                                                   dataset_one_hot_encoding=DATASET_WEATHER,
                                                    expected_output_dir=path.join(DIR_OUT, CMD_SECO),
                                                    methodName=methodName)
 

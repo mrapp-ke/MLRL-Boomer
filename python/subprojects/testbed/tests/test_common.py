@@ -370,17 +370,6 @@ class CmdBuilder:
         self.args.append(str(store_rules).lower())
         return self
 
-    def one_hot_encoding(self, one_hot_encoding: bool = True):
-        """
-        Configures whether one-hot-encoding should be used to encode nominal feature values or not.
-
-        :param one_hot_encoding:    True, if one-hot-encoding should be used, False otherwise
-        :return:                    The builder itself
-        """
-        self.args.append('--one-hot-encoding')
-        self.args.append(str(one_hot_encoding).lower())
-        return self
-
     def sparse_feature_format(self, sparse: bool = True):
         """
         Configures whether sparse data structures should be used to represent the feature values of training examples or
@@ -777,20 +766,18 @@ class CommonIntegrationTests(IntegrationTests, ABC):
                  dataset_numerical: str = DATASET_LANGLOG,
                  dataset_binary: str = DATASET_ENRON,
                  dataset_nominal: str = DATASET_WEATHER,
-                 dataset_one_hot_encoding: str = DATASET_ENRON,
                  dataset_single_label: str = DATASET_BREAST_CANCER,
                  expected_output_dir=DIR_OUT,
                  methodName='runTest'):
         """
-        :param cmd:                         The command to be run by the integration tests
-        :param dataset_default:             The name of the dataset that should be used by default
-        :param dataset_numerical:           The name of a dataset with numerical features
-        :param dataset_binary:              The name of a dataset with binary features
-        :param dataset_nominal:             The name of a dataset with nominal features
-        :param dataset_one_hot_encoding:    The name of the dataset that should be used for one-hot-encoding
-        :param dataset_single_label:        The name of the dataset that comes with a single label
-        :param expected_output_dir:         The path of the directory that contains the file with the expected output
-        :param methodName:                  The name of the test method to be executed
+        :param cmd:                     The command to be run by the integration tests
+        :param dataset_default:         The name of the dataset that should be used by default
+        :param dataset_numerical:       The name of a dataset with numerical features
+        :param dataset_binary:          The name of a dataset with binary features
+        :param dataset_nominal:         The name of a dataset with nominal features
+        :param dataset_single_label:    The name of the dataset that comes with a single label
+        :param expected_output_dir:     The path of the directory that contains the file with the expected output
+        :param methodName:              The name of the test method to be executed
         """
         super(CommonIntegrationTests, self).__init__(expected_output_dir, methodName)
         self.cmd = cmd
@@ -798,7 +785,6 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         self.dataset_numerical = dataset_numerical
         self.dataset_binary = dataset_binary
         self.dataset_nominal = dataset_nominal
-        self.dataset_one_hot_encoding = dataset_one_hot_encoding
         self.dataset_single_label = dataset_single_label
 
     @classmethod
@@ -1257,25 +1243,6 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .sparse_prediction_format(True) \
             .print_predictions(True)
         self.run_cmd(builder, 'prediction-format-sparse')
-
-    def test_one_hot_encoding_train_test(self):
-        """
-        Tests the rule learning algorithm on a dataset with one-hot-encoded nominal attributes when using a split of the
-        dataset into training and test data.
-        """
-        builder = CmdBuilder(self.cmd, dataset=self.dataset_one_hot_encoding) \
-            .one_hot_encoding()
-        self.run_cmd(builder, 'one-hot-encoding_train-test')
-
-    def test_one_hot_encoding_cross_validation(self):
-        """
-        Tests the rule learning algorithm on a dataset with one-hot-encoded nominal attributes when using a cross
-        validation.
-        """
-        builder = CmdBuilder(self.cmd, dataset=self.dataset_one_hot_encoding) \
-            .cross_validation() \
-            .one_hot_encoding()
-        self.run_cmd(builder, 'one-hot-encoding_cross-validation')
 
     def test_parameters_train_test(self):
         """
