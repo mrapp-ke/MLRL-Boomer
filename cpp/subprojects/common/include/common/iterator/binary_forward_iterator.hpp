@@ -80,7 +80,10 @@ class BinaryForwardIterator final {
 
             if (iterator_ != end_ && iteratorIndex_ < index_) {
                 iterator_++;
-                iteratorIndex_ = *iterator_;
+
+                if (iterator_ != end_) {
+                    iteratorIndex_ = *iterator_;
+                }
             }
 
             return *this;
@@ -96,7 +99,10 @@ class BinaryForwardIterator final {
 
             if (iterator_ != end_ && iteratorIndex_ < index_) {
                 iterator_++;
-                iteratorIndex_ = *iterator_;
+
+                if (iterator_ != end_) {
+                    iteratorIndex_ = *iterator_;
+                }
             }
 
             return *this;
