@@ -11,10 +11,18 @@ BinarySparsePredictionMatrix::~BinarySparsePredictionMatrix() {
     free(colIndices_);
 }
 
+uint32* BinarySparsePredictionMatrix::getRowIndices() {
+    return rowIndices_;
+}
+
 uint32* BinarySparsePredictionMatrix::releaseRowIndices() {
     uint32* ptr = rowIndices_;
     rowIndices_ = nullptr;
     return ptr;
+}
+
+uint32* BinarySparsePredictionMatrix::getColIndices() {
+    return colIndices_;
 }
 
 uint32* BinarySparsePredictionMatrix::releaseColIndices() {
