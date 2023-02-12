@@ -12,6 +12,35 @@
 #include <memory>
 
 /**
+ * Defines an interface for all classes that allow to obtain incremental predictions for given query examples.
+ *
+ * @tparam PredictionMatrix The type of the matrix that is used to store the predictions
+ */
+template<typename PredictionMatrix>
+class IIncrementalPredictor {
+    public:
+
+        virtual ~IIncrementalPredictor() {};
+
+        /**
+         * Returns the number of remaining ensemble members that have not been used yet.
+         *
+         * @return The number of remaining ensemble members
+         */
+        virtual uint32 getNumNext() const = 0;
+
+        /**
+         * Updates the current predictions by considering several of the remaining ensemble members. If not enough
+         * ensemble members are remaining, only the available ones will be used for updating the current predictions.
+         *
+         * @param stepSize  The number of additional ensemble members to be considered for prediction
+         * @return          A reference to an object of template type `PredictionMatrix` that stores the updated
+         *                  predictions
+         */
+        virtual const PredictionMatrix& applyNext(uint32 stepSize);
+};
+
+/**
  * Defines an interface for all classes that allow to make prediction for given query examples.
  *
  * @tparam PredictionMatrix The type of the matrix that is used to store the predictions
