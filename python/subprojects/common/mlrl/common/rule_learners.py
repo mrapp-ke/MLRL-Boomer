@@ -151,6 +151,36 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
     A scikit-learn implementation of a rule learning algorithm for multi-label classification or ranking.
     """
 
+    class NativeIncrementalPredictor(IncrementalLearner.IncrementalPredictor):
+        """
+        Allows to obtain predictions from a `RuleLearner` incrementally by using its native support of this
+        functionality.
+        """
+
+        def __init__(self, incremental_predictor):
+            """
+            :param incremental_predictor:   The incremental predictor to be used for obtaining predictions
+            """
+            self.incremental_predictor = incremental_predictor
+
+        def get_num_next(self) -> int:
+            return self.incremental_predictor.get_num_next()
+
+        def apply_next(self, step_size: int):
+            return self.incremental_predictor.apply_next(step_size)
+
+    class NativeIncrementalProbabilityPredictor(NativeIncrementalPredictor):
+        """
+        Allows to obtain probability estimates from a `RuleLearner` incrementally by using its native support of this
+        functionality.
+        """
+
+        def __init__(self, incremental_predictor):
+            super().__init__(incremental_predictor)
+
+        def apply_next(self, step_size: int):
+            return create_sklearn_compatible_probabilities(super().apply_next(step_size))
+
     class IncrementalPredictor(IncrementalLearner.IncrementalPredictor, ABC):
         """
         A base class for all classes that allow to obtain incremental predictions from a `RuleLearner`.
@@ -381,8 +411,16 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         if learner.can_predict_binary(feature_matrix, num_labels):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
-            return RuleLearner.IncrementalLabelPredictor(learner, self.model_, self.label_space_info_, num_labels,
-                                                         feature_matrix, sparse_predictions)
+            model = self.model_
+            label_space_info = self.label_space_info_
+            predictor = create_binary_predictor(learner, model, label_space_info, num_labels, feature_matrix,
+                                                sparse_predictions)
+
+            if predictor.can_predict_incrementally():
+                return RuleLearner.NativeIncrementalPredictor(predictor.create_incremental_predictor())
+            else:
+                return RuleLearner.IncrementalLabelPredictor(learner, model, label_space_info, num_labels,
+                                                             feature_matrix, sparse_predictions)
         else:
             return super()._predict_binary_incrementally(x, **kwargs)
 
@@ -405,8 +443,15 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         if learner.can_predict_scores(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted regression scores')
-            return RuleLearner.IncrementalScorePredictor(learner, self.model_, self.label_space_info_, num_labels,
-                                                         feature_matrix)
+            model = self.model_
+            label_space_info = self.label_space_info_
+            predictor = create_score_predictor(learner, model, label_space_info, num_labels, feature_matrix)
+
+            if predictor.can_predict_incrementally():
+                return RuleLearner.NativeIncrementalPredictor(predictor.create_incremental_predictor())
+            else:
+                return RuleLearner.IncrementalScorePredictor(learner, model, label_space_info, num_labels,
+                                                             feature_matrix)
         else:
             return super()._predict_scores_incrementally(x, **kwargs)
 
@@ -430,8 +475,15 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         if learner.can_predict_probabilities(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted probability estimates')
-            return RuleLearner.IncrementalProbabilityPredictor(learner, self.model_, self.label_space_info_, num_labels,
-                                                               feature_matrix)
+            model = self.model_
+            label_space_info = self.label_space_info_
+            predictor = create_probability_predictor(learner, model, label_space_info, num_labels, feature_matrix)
+
+            if predictor.can_predict_incrementally():
+                return RuleLearner.NativeIncrementalProbabilityPredictor(predictor.create_incremental_predictor())
+            else:
+                return RuleLearner.IncrementalProbabilityPredictor(learner, model, label_space_info, num_labels,
+                                                                   feature_matrix)
         else:
             return super().predict_proba_incrementally(x, **kwargs)
 
