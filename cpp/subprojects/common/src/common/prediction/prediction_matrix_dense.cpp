@@ -18,6 +18,11 @@ DensePredictionMatrix<T>::~DensePredictionMatrix() {
 }
 
 template<typename T>
+T* DensePredictionMatrix<T>::get() {
+    return array_;
+}
+
+template<typename T>
 T* DensePredictionMatrix<T>::release() {
     T* ptr = array_;
     array_ = nullptr;
