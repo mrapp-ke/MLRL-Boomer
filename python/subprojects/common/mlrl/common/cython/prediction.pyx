@@ -25,6 +25,14 @@ cdef class BinaryPredictor:
         cdef uint8[:, ::1] prediction_matrix = c_matrix_uint8(array, num_rows, num_cols)
         return np.asarray(prediction_matrix)
 
+    def can_predict_incrementally(self) -> bool:
+        """
+        Returns whether the predictor allows to obtain predictions incrementally or not.
+
+        :return: True, if the predictor allows to obtain predictions incrementally, False otherwise
+        """
+        return self.predictor_ptr.get().canPredictIncrementally()
+
 
 cdef class SparseBinaryPredictor:
     """
@@ -49,6 +57,14 @@ cdef class SparseBinaryPredictor:
         indptr = np.asarray(array_uint32(row_indices, num_rows + 1))
         return csr_matrix((data, indices, indptr), shape=(num_rows, num_cols))
 
+    def can_predict_incrementally(self) -> bool:
+        """
+        Returns whether the predictor allows to obtain predictions incrementally or not.
+
+        :return: True, if the predictor allows to obtain predictions incrementally, False otherwise
+        """
+        return self.predictor_ptr.get().canPredictIncrementally()
+
 
 cdef class ScorePredictor:
     """
@@ -68,6 +84,14 @@ cdef class ScorePredictor:
         cdef float64[:, ::1] prediction_matrix = c_matrix_float64(array, num_rows, num_cols)
         return np.asarray(prediction_matrix)
 
+    def can_predict_incrementally(self) -> bool:
+        """
+        Returns whether the predictor allows to obtain predictions incrementally or not.
+
+        :return: True, if the predictor allows to obtain predictions incrementally, False otherwise
+        """
+        return self.predictor_ptr.get().canPredictIncrementally()
+
 
 cdef class ProbabilityPredictor:
     """
@@ -86,3 +110,11 @@ cdef class ProbabilityPredictor:
         cdef float64* array = prediction_matrix_ptr.get().release()
         cdef float64[:, ::1] prediction_matrix = c_matrix_float64(array, num_rows, num_cols)
         return np.asarray(prediction_matrix)
+
+    def can_predict_incrementally(self) -> bool:
+        """
+        Returns whether the predictor allows to obtain predictions incrementally or not.
+
+        :return: True, if the predictor allows to obtain predictions incrementally, False otherwise
+        """
+        return self.predictor_ptr.get().canPredictIncrementally()

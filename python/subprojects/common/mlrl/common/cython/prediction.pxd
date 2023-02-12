@@ -1,6 +1,7 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
 
 from libcpp.memory cimport unique_ptr
+from libcpp cimport bool
 
 
 cdef extern from "common/prediction/prediction_matrix_dense.hpp" nogil:
@@ -41,6 +42,8 @@ cdef extern from "common/prediction/predictor.hpp" nogil:
         # Functions:
 
         unique_ptr[PredictionMatrix] predict() const
+
+        bool canPredictIncrementally() const
 
 
 cdef extern from "common/prediction/predictor_binary.hpp" nogil:
