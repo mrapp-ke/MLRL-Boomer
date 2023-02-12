@@ -54,6 +54,8 @@ cdef extern from "common/prediction/predictor.hpp" nogil:
 
         bool canPredictIncrementally() const
 
+        unique_ptr[IIncrementalPredictor[PredictionMatrix]] createIncrementalPredictor() const
+
 
 cdef extern from "common/prediction/predictor_binary.hpp" nogil:
 
