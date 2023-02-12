@@ -4,6 +4,8 @@
 #include "omp.h"
 #include "predictor_common.hpp"
 
+#include <stdexcept>
+
 namespace boosting {
 
     static inline void applyTransformationFunction(CContiguousConstView<float64>::value_const_iterator originalIterator,
@@ -136,6 +138,22 @@ namespace boosting {
              */
             std::unique_ptr<DensePredictionMatrix<float64>> predict() const override {
                 return predictInternally(featureMatrix_, model_, numLabels_, *probabilityFunctionPtr_, numThreads_);
+            }
+
+            /**
+             * @see `IPredictor::canPredictIncrementally`
+             */
+            bool canPredictIncrementally() const override {
+                return false;
+            }
+
+            /**
+             * @see `IPredictor::createIncrementalPredictor`
+             */
+            std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<float64>>> createIncrementalPredictor()
+              const override {
+                throw std::runtime_error(
+                  "The rule learner does not support to predict probability estimates incrementally");
             }
     };
 

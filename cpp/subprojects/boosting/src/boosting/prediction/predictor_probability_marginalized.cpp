@@ -168,6 +168,22 @@ namespace boosting {
                 return predictInternally(featureMatrix_, model_, labelVectorSet_, numLabels_, *probabilityFunctionPtr_,
                                          numThreads_);
             }
+
+            /**
+             * @see `IPredictor::canPredictIncrementally`
+             */
+            bool canPredictIncrementally() const override {
+                return false;
+            }
+
+            /**
+             * @see `IPredictor::createIncrementalPredictor`
+             */
+            std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<float64>>> createIncrementalPredictor()
+              const override {
+                throw std::runtime_error(
+                  "The rule learner does not support to predict probability estimates incrementally");
+            }
     };
 
     template<typename FeatureMatrix>
