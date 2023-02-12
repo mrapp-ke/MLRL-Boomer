@@ -12,7 +12,7 @@
 #include <memory>
 
 /**
- * Defines an interface for all classes that allow to obtain incremental predictions for given query examples.
+ * Defines an interface for all classes that allow to obtain predictions for given query examples incrementally.
  *
  * @tparam PredictionMatrix The type of the matrix that is used to store the predictions
  */
