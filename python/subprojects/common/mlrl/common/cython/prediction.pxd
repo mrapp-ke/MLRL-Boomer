@@ -1,6 +1,7 @@
 from mlrl.common.cython._types cimport uint8, uint32, float64
 
 from libcpp.memory cimport unique_ptr
+from libcpp cimport bool
 
 
 cdef extern from "common/prediction/prediction_matrix_dense.hpp" nogil:
@@ -12,6 +13,8 @@ cdef extern from "common/prediction/prediction_matrix_dense.hpp" nogil:
         uint32 getNumRows() const
 
         uint32 getNumCols() const
+
+        T* get() const
 
         T* release()
 
@@ -28,7 +31,11 @@ cdef extern from "common/prediction/prediction_matrix_sparse_binary.hpp" nogil:
 
         uint32 getNumNonZeroElements() const
 
+        uint32* getRowIndices()
+
         uint32* releaseRowIndices()
+
+        uint32* getColIndices()
 
         uint32* releaseColIndices()
 
@@ -36,11 +43,26 @@ cdef extern from "common/prediction/prediction_matrix_sparse_binary.hpp" nogil:
 
 cdef extern from "common/prediction/predictor.hpp" nogil:
 
+    cdef cppclass IIncrementalPredictor[PredictionMatrix]:
+
+        # Functions:
+
+        bool hasNext() const
+
+        uint32 getNumNext() const
+
+        PredictionMatrix& applyNext(uint32 stepSize)
+
+
     cdef cppclass IPredictor[PredictionMatrix]:
 
         # Functions:
 
         unique_ptr[PredictionMatrix] predict() const
+
+        bool canPredictIncrementally() const
+
+        unique_ptr[IIncrementalPredictor[PredictionMatrix]] createIncrementalPredictor() except +
 
 
 cdef extern from "common/prediction/predictor_binary.hpp" nogil:
@@ -65,11 +87,25 @@ cdef extern from "common/prediction/predictor_probability.hpp" nogil:
         pass
 
 
+cdef class IncrementalBinaryPredictor:
+
+    # Attributes:
+
+    cdef unique_ptr[IIncrementalPredictor[DensePredictionMatrix[uint8]]] predictor_ptr
+
+
 cdef class BinaryPredictor:
 
     # Attributes:
 
     cdef unique_ptr[IBinaryPredictor] predictor_ptr
+
+
+cdef class IncrementalSparseBinaryPredictor:
+
+    # Attributes:
+
+    cdef unique_ptr[IIncrementalPredictor[BinarySparsePredictionMatrix]] predictor_ptr
 
 
 cdef class SparseBinaryPredictor:
@@ -79,11 +115,25 @@ cdef class SparseBinaryPredictor:
     cdef unique_ptr[ISparseBinaryPredictor] predictor_ptr
 
 
+cdef class IncrementalScorePredictor:
+
+    # Attributes:
+
+    cdef unique_ptr[IIncrementalPredictor[DensePredictionMatrix[float64]]] predictor_ptr
+
+
 cdef class ScorePredictor:
 
     # Attributes:
 
     cdef unique_ptr[IScorePredictor] predictor_ptr
+
+
+cdef class IncrementalProbabilityPredictor:
+
+    # Attributes:
+
+    cdef unique_ptr[IIncrementalPredictor[DensePredictionMatrix[float64]]] predictor_ptr
 
 
 cdef class ProbabilityPredictor:

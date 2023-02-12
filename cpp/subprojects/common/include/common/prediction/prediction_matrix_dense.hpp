@@ -34,6 +34,13 @@ class MLRLCOMMON_API DensePredictionMatrix final : public CContiguousView<T> {
         ~DensePredictionMatrix() override;
 
         /**
+         * Returns a pointer to the array that stores the predictions.
+         *
+         * @return A pointer to the array that stores the predictions
+         */
+        T* get();
+
+        /**
          * Releases the ownership of the array that stores the predictions. The caller is responsible for freeing the
          * memory that is occupied by the array.
          *

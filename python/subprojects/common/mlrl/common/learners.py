@@ -35,14 +35,13 @@ class IncrementalLearner(ABC):
         A base class for all classes that allow to obtain incremental predictions from a `IncrementalLearner`.
         """
 
-        @abstractmethod
         def has_next(self) -> bool:
             """
             Returns whether there are any remaining ensemble members that have not been used yet or not.
 
             :return: True, if there are any remaining ensemble members, False otherwise
             """
-            pass
+            return self.get_num_next() > 0
 
         @abstractmethod
         def get_num_next(self) -> int:
