@@ -64,6 +64,16 @@ class IPredictor {
          * @return True, if the predictor allows to obtain predictions incrementally, false otherwise
          */
         virtual bool canPredictIncrementally() const = 0;
+
+        /**
+         * Creates and returns a predictor that may be used to obtain predictions incrementally. If incremental
+         * prediction is not supported, a `std::runtime_error` is thrown.
+         *
+         * @throws std::runtime_exception   The exception that is thrown if incremental prediction is not supported
+         * @return                          An unique pointer to an object of type `IIncrementalPredictor` that may be
+         *                                  used to obtain predictions incrementally
+         */
+        virtual std::unique_ptr<IIncrementalPredictor<PredictionMatrix>> createIncrementalPredictor() const = 0;
 };
 
 /**
