@@ -31,7 +31,11 @@ cdef extern from "common/prediction/prediction_matrix_sparse_binary.hpp" nogil:
 
         uint32 getNumNonZeroElements() const
 
+        uint32* getRowIndices()
+
         uint32* releaseRowIndices()
+
+        uint32* getColIndices()
 
         uint32* releaseColIndices()
 

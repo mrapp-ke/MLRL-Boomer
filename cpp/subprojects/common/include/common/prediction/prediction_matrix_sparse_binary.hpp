@@ -40,12 +40,26 @@ class MLRLCOMMON_API BinarySparsePredictionMatrix final : public BinaryCsrConstV
         ~BinarySparsePredictionMatrix() override;
 
         /**
+         * Returns a pointer to the array `rowIndices`.
+         *
+         * @return A pointer to the array `rowIndices`
+         */
+        uint32* getRowIndices();
+
+        /**
          * Releases the ownership of the array `rowIndices`. The caller is responsible for freeing the memory that is
          * occupied by the array.
          *
          * @return A pointer to the array `rowIndices`
          */
         uint32* releaseRowIndices();
+
+        /**
+         * Returns a pointer to the array `colIndices`.
+         *
+         * @return A pointer to the array `colIndices`
+         */
+        uint32* getColIndices();
 
         /**
          * Releases the ownership of the array `colIndices`. The caller is responsible for freeing the memory that is
