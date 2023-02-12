@@ -1,6 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+from mlrl.common.cython.validation import assert_greater_or_equal
 from mlrl.common.cython._arrays cimport array_uint32, view_uint32, c_matrix_uint8, c_view_uint8, c_matrix_float64, \
     c_view_float64
 
@@ -32,6 +33,7 @@ cdef class IncrementalBinaryPredictor:
         :return:            A `numpy.ndarray` of type `uint8`, shape `(num_examples, num_labels)`, that stores the
                             updated predictions
         """
+        assert_greater_or_equal('step_size', step_size, 1)
         cdef DensePredictionMatrix[uint8]* prediction_matrix_ptr = &self.predictor_ptr.get().applyNext(step_size)
         cdef uint32 num_rows = prediction_matrix_ptr.getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.getNumCols()
