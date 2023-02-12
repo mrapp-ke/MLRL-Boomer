@@ -49,7 +49,7 @@ cdef extern from "common/prediction/predictor.hpp" nogil:
 
         uint32 getNumNext() const
 
-        const PredictionMatrix& applyNext(uint32 stepSize)
+        PredictionMatrix& applyNext(uint32 stepSize)
 
 
     cdef cppclass IPredictor[PredictionMatrix]:

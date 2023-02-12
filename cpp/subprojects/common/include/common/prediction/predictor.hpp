@@ -37,7 +37,7 @@ class IIncrementalPredictor {
          * @return          A reference to an object of template type `PredictionMatrix` that stores the updated
          *                  predictions
          */
-        virtual const PredictionMatrix& applyNext(uint32 stepSize);
+        virtual PredictionMatrix& applyNext(uint32 stepSize) = 0;
 };
 
 /**
