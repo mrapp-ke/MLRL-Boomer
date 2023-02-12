@@ -368,8 +368,8 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         if learner.can_predict_binary(feature_matrix, num_labels):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
-            return create_binary_predictor(learner, self.model_, self.label_space_info_, self.num_labels_,
-                                           feature_matrix, sparse_predictions).predict()
+            return create_binary_predictor(learner, self.model_, self.label_space_info_, num_labels, feature_matrix,
+                                           sparse_predictions).predict()
         else:
             return super()._predict_binary(x, **kwargs)
 
