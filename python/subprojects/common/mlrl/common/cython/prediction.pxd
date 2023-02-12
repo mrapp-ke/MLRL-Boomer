@@ -85,11 +85,25 @@ cdef extern from "common/prediction/predictor_probability.hpp" nogil:
         pass
 
 
+cdef class IncrementalBinaryPredictor:
+
+    # Attributes:
+
+    cdef unique_ptr[IIncrementalPredictor[DensePredictionMatrix[uint8]]] predictor_ptr
+
+
 cdef class BinaryPredictor:
 
     # Attributes:
 
     cdef unique_ptr[IBinaryPredictor] predictor_ptr
+
+
+cdef class IncrementalSparseBinaryPredictor:
+
+    # Attributes:
+
+    cdef unique_ptr[IIncrementalPredictor[BinarySparsePredictionMatrix]] predictor_ptr
 
 
 cdef class SparseBinaryPredictor:
@@ -99,11 +113,25 @@ cdef class SparseBinaryPredictor:
     cdef unique_ptr[ISparseBinaryPredictor] predictor_ptr
 
 
+cdef class IncrementalScorePredictor:
+
+    # Attributes:
+
+    cdef unique_ptr[IIncrementalPredictor[DensePredictionMatrix[float64]]] predictor_ptr
+
+
 cdef class ScorePredictor:
 
     # Attributes:
 
     cdef unique_ptr[IScorePredictor] predictor_ptr
+
+
+cdef class IncrementalProbabilityPredictor:
+
+    # Attributes:
+
+    cdef unique_ptr[IIncrementalPredictor[DensePredictionMatrix[float64]]] predictor_ptr
 
 
 cdef class ProbabilityPredictor:
