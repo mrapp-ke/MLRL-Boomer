@@ -37,6 +37,15 @@ cdef extern from "common/prediction/prediction_matrix_sparse_binary.hpp" nogil:
 
 cdef extern from "common/prediction/predictor.hpp" nogil:
 
+    cdef cppclass IIncrementalPredictor[PredictionMatrix]:
+
+        # Functions:
+
+        uint32 getNumNext() const
+
+        const PredictionMatrix& applyNext(uint32 stepSize)
+
+
     cdef cppclass IPredictor[PredictionMatrix]:
 
         # Functions:
