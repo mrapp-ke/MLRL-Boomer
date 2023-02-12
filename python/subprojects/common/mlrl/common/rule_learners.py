@@ -393,7 +393,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         if learner.can_predict_scores(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted regression scores')
-            return create_score_predictor(learner, self.model_, self.label_space_info_, self.num_labels_,
+            return create_score_predictor(learner, self.model_, self.label_space_info_, num_labels,
                                           feature_matrix).predict()
         else:
             return super()._predict_scores(x, **kwargs)
