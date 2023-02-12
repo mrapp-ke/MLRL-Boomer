@@ -277,6 +277,13 @@ namespace boosting {
                 return predictInternally(featureMatrix_, model_, labelVectorSet_, numLabels_, *probabilityFunctionPtr_,
                                          numThreads_);
             }
+
+            /**
+             * @see `IPredictor::canPredictIncrementally`
+             */
+            bool canPredictIncrementally() const override {
+                return false;
+            }
     };
 
     template<typename FeatureMatrix>
@@ -466,6 +473,13 @@ namespace boosting {
             std::unique_ptr<BinarySparsePredictionMatrix> predict() const override {
                 return predictSparseInternally(featureMatrix_, model_, labelVectorSet_, numLabels_,
                                                *probabilityFunctionPtr_, numThreads_);
+            }
+
+            /**
+             * @see `IPredictor::canPredictIncrementally`
+             */
+            bool canPredictIncrementally() const override {
+                return false;
             }
     };
 

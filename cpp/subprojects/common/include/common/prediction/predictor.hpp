@@ -28,6 +28,13 @@ class IPredictor {
          * @return An unique pointer to an object of template type `PredictionMatrix` that stores the predictions
          */
         virtual std::unique_ptr<PredictionMatrix> predict() const = 0;
+
+        /**
+         * Returns whether the predictor allows to obtain predictions incrementally or not.
+         *
+         * @return True, if the predictor allows to obtain predictions incrementally, false otherwise
+         */
+        virtual bool canPredictIncrementally() const = 0;
 };
 
 /**
