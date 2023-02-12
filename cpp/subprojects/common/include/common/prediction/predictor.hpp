@@ -23,6 +23,15 @@ class IIncrementalPredictor {
         virtual ~IIncrementalPredictor() {};
 
         /**
+         * Returns whether there are any remaining ensemble members that have not been used yet or not.
+         *
+         * @return True, if there are any remaining ensemble members, false otherwise
+         */
+        virtual bool hasNext() const {
+            return this->getNumNext() > 0;
+        }
+
+        /**
          * Returns the number of remaining ensemble members that have not been used yet.
          *
          * @return The number of remaining ensemble members

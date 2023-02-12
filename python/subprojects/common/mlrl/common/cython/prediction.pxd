@@ -47,6 +47,8 @@ cdef extern from "common/prediction/predictor.hpp" nogil:
 
         # Functions:
 
+        bool hasNext() const
+
         uint32 getNumNext() const
 
         PredictionMatrix& applyNext(uint32 stepSize)

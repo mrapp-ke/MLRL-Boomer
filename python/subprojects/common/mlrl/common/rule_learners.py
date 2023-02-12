@@ -163,6 +163,9 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             """
             self.incremental_predictor = incremental_predictor
 
+        def has_next(self) -> bool:
+            return self.incremental_predictor.has_next()
+
         def get_num_next(self) -> int:
             return self.incremental_predictor.get_num_next()
 

@@ -16,6 +16,14 @@ cdef class IncrementalBinaryPredictor:
     Allows to predict binary labels for given query examples incrementally.
     """
 
+    def has_next(self) -> bool:
+        """
+        Returns whether there are any remaining ensemble members that have not been used yet or not.
+
+        :return: True, if there are any remaining ensemble members, False otherwise
+        """
+        return self.predictor_ptr.get().hasNext()
+
     def get_num_next(self) -> int:
         """
         Returns the number of remaining ensemble members that have not been used yet.
