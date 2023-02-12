@@ -167,9 +167,6 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             self.model = model
             self.num_used_rules = 0
 
-        def has_next(self) -> bool:
-            return self.num_used_rules < self.model.get_num_used_rules()
-
         def get_num_next(self) -> int:
             return self.model.get_num_used_rules() - self.num_used_rules
 
