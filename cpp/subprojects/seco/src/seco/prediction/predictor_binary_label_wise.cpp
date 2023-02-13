@@ -145,12 +145,12 @@ namespace seco {
         const RuleList* modelPtr = &model;
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(maxRules) schedule(dynamic) \
+    num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BitVector mask(numLabels, true);
 
-            // TODO Use max rules
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
+            for (auto it = modelPtr->used_cbegin(maxRules); it != modelPtr->used_cend(maxRules); it++) {
                 const RuleList::Rule& rule = *it;
                 const IBody& body = rule.getBody();
 
@@ -176,16 +176,15 @@ namespace seco {
         const RuleList* modelPtr = &model;
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
-    num_threads(numThreads)
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(maxRules) \
+    schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BitVector mask(numLabels, true);
             float32* tmpArray1 = new float32[numFeatures];
             uint32* tmpArray2 = new uint32[numFeatures] {};
             uint32 n = 1;
 
-            // TODO Use max rules
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
+            for (auto it = modelPtr->used_cbegin(maxRules); it != modelPtr->used_cend(maxRules); it++) {
                 const RuleList::Rule& rule = *it;
                 const IBody& body = rule.getBody();
 
@@ -308,13 +307,12 @@ namespace seco {
         uint32 numNonZeroElements = 0;
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
-     num_threads(numThreads)
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(maxRules) \
+    schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
 
-            // TODO Use max rules
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
+            for (auto it = modelPtr->used_cbegin(maxRules); it != modelPtr->used_cend(maxRules); it++) {
                 const RuleList::Rule& rule = *it;
                 const IBody& body = rule.getBody();
 
@@ -341,15 +339,14 @@ namespace seco {
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
   firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-    schedule(dynamic) num_threads(numThreads)
+    firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
             float32* tmpArray1 = new float32[numFeatures];
             uint32* tmpArray2 = new uint32[numFeatures] {};
             uint32 n = 1;
 
-            // TODO Use max rules
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
+            for (auto it = modelPtr->used_cbegin(maxRules); it != modelPtr->used_cend(maxRules); it++) {
                 const RuleList::Rule& rule = *it;
                 const IBody& body = rule.getBody();
 

@@ -85,12 +85,11 @@ namespace boosting {
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
   firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(distanceMeasurePtr) \
-    firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+    firstprivate(labelVectorSetPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
-                // TODO use max rules
-                applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                           &scoreVector[0]);
+                applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
+                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
                                                                                *distanceMeasurePtr, *labelVectorSetPtr);
                 predictLabelVector(predictionMatrixRawPtr->row_values_begin(i), closestLabelVector);
@@ -118,11 +117,11 @@ namespace boosting {
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
   firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-    firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+    firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) firstprivate(maxRules) schedule(dynamic) \
+      num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
-                // TODO Use max rules
-                applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                               featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                               featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
@@ -288,12 +287,12 @@ namespace boosting {
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
   firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-    firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+    firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) firstprivate(maxRules) schedule(dynamic) \
+      num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
-                // TODO Use max rules
-                applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                           &scoreVector[0]);
+                applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
+                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
                                                                                *distanceMeasurePtr, *labelVectorSetPtr);
                 numNonZeroElements += predictLabelVector((*predictionMatrixPtr)[i], closestLabelVector);
@@ -321,11 +320,11 @@ namespace boosting {
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
   firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-     firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+     firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) firstprivate(maxRules) schedule(dynamic) \
+       num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
-                // TODO Use max rules
-                applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                               featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                               featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],

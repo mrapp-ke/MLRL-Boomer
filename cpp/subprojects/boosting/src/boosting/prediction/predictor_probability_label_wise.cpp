@@ -32,17 +32,11 @@ namespace boosting {
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
   firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
-    schedule(dynamic) num_threads(numThreads)
+    firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
-
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                const RuleList::Rule& rule = *it;
-                // TODO Use max rules
-                applyRule(rule, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                          &scoreVector[0]);
-            }
-
+            applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
+                       featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
             applyTransformationFunction(&scoreVector[0], predictionMatrixRawPtr->row_values_begin(i), numLabels,
                                         *probabilityFunctionPtr);
             delete[] scoreVector;
@@ -65,27 +59,15 @@ namespace boosting {
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(numFeatures) \
   firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-    firstprivate(probabilityFunctionPtr) schedule(dynamic) num_threads(numThreads)
+    firstprivate(probabilityFunctionPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
-            float32* tmpArray1 = new float32[numFeatures];
-            uint32* tmpArray2 = new uint32[numFeatures] {};
-            uint32 n = 1;
-
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                const RuleList::Rule& rule = *it;
-                // TODO Use max rules
-                applyRuleCsr(rule, featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
-                             featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                             &scoreVector[0], &tmpArray1[0], &tmpArray2[0], n);
-                n++;
-            }
-
+            applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                          featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                          featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
             applyTransformationFunction(&scoreVector[0], predictionMatrixRawPtr->row_values_begin(i), numLabels,
                                         *probabilityFunctionPtr);
             delete[] scoreVector;
-            delete[] tmpArray1;
-            delete[] tmpArray2;
         }
 
         return predictionMatrixPtr;

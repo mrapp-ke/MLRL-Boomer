@@ -18,14 +18,10 @@ namespace boosting {
         const RuleList* modelPtr = &model;
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-  firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+  firstprivate(predictionMatrixRawPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                const RuleList::Rule& rule = *it;
-                // TODO Use max rules
-                applyRule(rule, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                          predictionMatrixRawPtr->row_values_begin(i));
-            }
+            applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
+                       featureMatrixPtr->row_values_cend(i), predictionMatrixRawPtr->row_values_begin(i));
         }
 
         return predictionMatrixPtr;
@@ -42,24 +38,13 @@ namespace boosting {
         CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
-#pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-  firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(modelPtr) \
+  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(maxRules) schedule(dynamic) \
+    num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
-            float32* tmpArray1 = new float32[numFeatures];
-            uint32* tmpArray2 = new uint32[numFeatures] {};
-            uint32 n = 1;
-
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                const RuleList::Rule& rule = *it;
-                // TODO Use max rules
-                applyRuleCsr(rule, featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
-                             featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                             predictionMatrixRawPtr->row_values_begin(i), &tmpArray1[0], &tmpArray2[0], n);
-                n++;
-            }
-
-            delete[] tmpArray1;
-            delete[] tmpArray2;
+            applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                          featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                          featureMatrixPtr->row_values_cend(i), predictionMatrixRawPtr->row_values_begin(i));
         }
 
         return predictionMatrixPtr;

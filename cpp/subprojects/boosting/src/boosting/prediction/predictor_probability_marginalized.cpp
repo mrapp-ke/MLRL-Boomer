@@ -61,12 +61,12 @@ namespace boosting {
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
   firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
-    firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) schedule(dynamic) num_threads(numThreads)
+    firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) firstprivate(maxRules) schedule(dynamic) \
+      num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
-                // TODO Use max rules
-                applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                           &scoreVector[0]);
+                applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
+                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 predictMarginalizedProbabilities(&scoreVector[0], &scoreVector[numLabels],
                                                  predictionMatrixRawPtr->row_values_begin(i), *probabilityFunctionPtr,
                                                  *labelVectorSetPtr, numLabelVectors);
@@ -96,11 +96,10 @@ namespace boosting {
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
   firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
     firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
-      schedule(dynamic) num_threads(numThreads)
+      firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
-                // TODO Use max rules
-                applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                               featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                               featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 predictMarginalizedProbabilities(&scoreVector[0], &scoreVector[numLabels],
