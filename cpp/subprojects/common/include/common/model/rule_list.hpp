@@ -249,30 +249,34 @@ class RuleList final : public IRuleList {
         /**
          * Returns a `const_iterator` to the beginning of all rules, including the default rule, if available.
          *
-         * @return A `const_iterator` to the beginning
+         * @param maxRules  The maximum number of rules to consider or 0, if all rules should be considered
+         * @return          A `const_iterator` to the beginning
          */
-        const_iterator cbegin() const;
+        const_iterator cbegin(uint32 maxRules = 0) const;
 
         /**
          * Returns a `const_iterator` to the end of all rules, including the default rule, if available.
          *
-         * @return A `const_iterator` to the end
+         * @param maxRules  The maximum number of rules to consider or 0, if all rules should be considered
+         * @return          A `const_iterator` to the end
          */
-        const_iterator cend() const;
+        const_iterator cend(uint32 maxRules = 0) const;
 
         /**
          * Returns a `const_iterator` to the beginning of all used rules, including the default rule, if available.
          *
-         * @return A `const_iterator` to the beginning
+         * @param maxRules  The maximum number of rules to consider or 0, if all rules should be considered
+         * @return          A `const_iterator` to the beginning
          */
-        const_iterator used_cbegin() const;
+        const_iterator used_cbegin(uint32 maxRules = 0) const;
 
         /**
          * Returns a `const_iterator` to the end of all used rules, including the default rule, if available.
          *
-         * @return A `const_iterator` to the end
+         * @param maxRules  The maximum number of rules to consider or 0, if all used rules should be considered
+         * @return          A `const_iterator` to the end
          */
-        const_iterator used_cend() const;
+        const_iterator used_cend(uint32 maxRules = 0) const;
 
         uint32 getNumRules() const override;
 
