@@ -58,7 +58,7 @@ cdef extern from "common/prediction/predictor.hpp" nogil:
 
         # Functions:
 
-        unique_ptr[PredictionMatrix] predict() const
+        unique_ptr[PredictionMatrix] predict(uint32 maxRules) const
 
         bool canPredictIncrementally() const
 

@@ -55,13 +55,16 @@ cdef class BinaryPredictor:
     Allows to predict binary labels for given query examples.
     """
 
-    def predict(self) -> np.ndarray:
+    def predict(self, uint32 max_rules) -> np.ndarray:
         """
         Obtains and returns predictions for all query examples.
 
-        :return: A `numpy.ndarray` of type `uint8`, shape `(num_examples, num_labels)`, that stores the predictions
+        :param max_rules    The maximum number of rules to be used for prediction or 0, if the number of rules should
+                            not be restricted
+        :return:            A `numpy.ndarray` of type `uint8`, shape `(num_examples, num_labels)`, that stores the
+                            predictions
         """
-        cdef unique_ptr[DensePredictionMatrix[uint8]] prediction_matrix_ptr = self.predictor_ptr.get().predict()
+        cdef unique_ptr[DensePredictionMatrix[uint8]] prediction_matrix_ptr = self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef uint8* array = prediction_matrix_ptr.get().release()
@@ -127,14 +130,16 @@ cdef class SparseBinaryPredictor:
     Allows to predict sparse binary labels for given query examples.
     """
 
-    def predict(self) -> csr_matrix:
+    def predict(self, uint32 max_rules) -> csr_matrix:
         """
         Obtains and returns predictions for all query examples.
 
-        :return: A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that stores the
-                 predictions
+        :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
+                            not be restricted
+        :return:            A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that stores
+                            the predictions
         """
-        cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = self.predictor_ptr.get().predict()
+        cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef uint32 num_non_zero_elements = prediction_matrix_ptr.get().getNumNonZeroElements()
@@ -199,13 +204,16 @@ cdef class ScorePredictor:
     Allows to predict regression scores for given query examples.
     """
 
-    def predict(self) -> np.ndarray:
+    def predict(self, uint32 max_rules) -> np.ndarray:
         """
         Obtains and returns predictions for all query examples.
 
-        :return: A `numpy.ndarray` of type `float64`, shape `(num_examples, num_labels)`, that stores the predictions
+        :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
+                            not be restricted
+        :return:            A `numpy.ndarray` of type `float64`, shape `(num_examples, num_labels)`, that stores the
+                            predictions
         """
-        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.predictor_ptr.get().predict()
+        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef float64* array = prediction_matrix_ptr.get().release()
@@ -267,13 +275,16 @@ cdef class ProbabilityPredictor:
     Allows to predict probability estimates for given query examples.
     """
 
-    def predict(self) -> np.ndarray:
+    def predict(self, uint32 max_rules) -> np.ndarray:
         """
         Obtains and returns predictions for all query examples.
 
-        :return: A `numpy.ndarray` of type `float64`, shape `(num_examples, num_labels)`, that stores the predictions
+        :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
+                            not be restricted
+        :return:            A `numpy.ndarray` of type `float64`, shape `(num_examples, num_labels)`, that stores the
+                            predictions
         """
-        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.predictor_ptr.get().predict()
+        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef float64* array = prediction_matrix_ptr.get().release()

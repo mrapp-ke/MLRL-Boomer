@@ -21,7 +21,7 @@ namespace boosting {
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
       const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-      const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
+      const IProbabilityFunction& probabilityFunction, uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
           std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
@@ -38,6 +38,7 @@ namespace boosting {
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const RuleList::Rule& rule = *it;
+                // TODO Use max rules
                 applyRule(rule, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                           &scoreVector[0]);
             }
@@ -52,7 +53,7 @@ namespace boosting {
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
       const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-      const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
+      const IProbabilityFunction& probabilityFunction, uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
@@ -73,6 +74,7 @@ namespace boosting {
 
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const RuleList::Rule& rule = *it;
+                // TODO Use max rules
                 applyRuleCsr(rule, featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
                              featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                              &scoreVector[0], &tmpArray1[0], &tmpArray2[0], n);
@@ -136,8 +138,9 @@ namespace boosting {
             /**
              * @see `IPredictor::predict`
              */
-            std::unique_ptr<DensePredictionMatrix<float64>> predict() const override {
-                return predictInternally(featureMatrix_, model_, numLabels_, *probabilityFunctionPtr_, numThreads_);
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(uint32 maxRules) const override {
+                return predictInternally(featureMatrix_, model_, numLabels_, *probabilityFunctionPtr_, numThreads_,
+                                         maxRules);
             }
 
             /**

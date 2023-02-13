@@ -136,7 +136,7 @@ namespace seco {
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
       const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-      uint32 numThreads) {
+      uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
           std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, !model.containsDefaultRule());
@@ -149,6 +149,7 @@ namespace seco {
         for (int64 i = 0; i < numExamples; i++) {
             BitVector mask(numLabels, true);
 
+            // TODO Use max rules
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const RuleList::Rule& rule = *it;
                 const IBody& body = rule.getBody();
@@ -164,7 +165,8 @@ namespace seco {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads,
+      uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
@@ -182,6 +184,7 @@ namespace seco {
             uint32* tmpArray2 = new uint32[numFeatures] {};
             uint32 n = 1;
 
+            // TODO Use max rules
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const RuleList::Rule& rule = *it;
                 const IBody& body = rule.getBody();
@@ -239,8 +242,8 @@ namespace seco {
                                      uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict() const override {
-                return predictInternally(featureMatrix_, model_, numLabels_, numThreads_);
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
+                return predictInternally(featureMatrix_, model_, numLabels_, numThreads_, maxRules);
             }
 
             /**
@@ -296,7 +299,7 @@ namespace seco {
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
       const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-      uint32 numThreads) {
+      uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         BinaryLilMatrix lilMatrix(numExamples);
         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
@@ -310,6 +313,7 @@ namespace seco {
         for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
 
+            // TODO Use max rules
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const RuleList::Rule& rule = *it;
                 const IBody& body = rule.getBody();
@@ -325,7 +329,8 @@ namespace seco {
     }
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads,
+      uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         BinaryLilMatrix lilMatrix(numExamples);
@@ -343,6 +348,7 @@ namespace seco {
             uint32* tmpArray2 = new uint32[numFeatures] {};
             uint32 n = 1;
 
+            // TODO Use max rules
             for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
                 const RuleList::Rule& rule = *it;
                 const IBody& body = rule.getBody();
@@ -401,8 +407,8 @@ namespace seco {
                                            uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predict() const override {
-                return predictSparseInternally(featureMatrix_, model_, numLabels_, numThreads_);
+            std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
+                return predictSparseInternally(featureMatrix_, model_, numLabels_, numThreads_, maxRules);
             }
 
             /**
