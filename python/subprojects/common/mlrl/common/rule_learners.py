@@ -24,6 +24,8 @@ from sklearn.utils import check_array
 from typing import Optional
 
 
+KWARG_MAX_RULES = 'max_rules'
+
 class SparsePolicy(Enum):
     AUTO = 'auto'
     FORCE_SPARSE = 'sparse'
@@ -245,7 +247,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         def _predict(self, model: RuleModel):
             return create_binary_predictor(self.learner, model, self.label_space_info, self.num_labels,
-                                           self.feature_matrix, self.sparse_prediction).predict()
+                                           self.feature_matrix, self.sparse_prediction).predict(0)
 
     class IncrementalScorePredictor(IncrementalPredictor):
         """
@@ -269,7 +271,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         def _predict(self, model: RuleModel):
             return create_score_predictor(self.learner, model, self.label_space_info, self.num_labels,
-                                          self.feature_matrix).predict()
+                                          self.feature_matrix).predict(0)
 
     class IncrementalProbabilityPredictor(IncrementalPredictor):
         """
@@ -294,7 +296,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         def _predict(self, model: RuleModel):
             return create_sklearn_compatible_probabilities(
                 create_probability_predictor(self.learner, model, self.label_space_info, self.num_labels,
-                                             self.feature_matrix).predict())
+                                             self.feature_matrix).predict(0))
 
     def __init__(self, random_state: int, feature_format: str, label_format: str, prediction_format: str):
         """
@@ -401,8 +403,9 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         if learner.can_predict_binary(feature_matrix, num_labels):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
             return create_binary_predictor(learner, self.model_, self.label_space_info_, num_labels, feature_matrix,
-                                           sparse_predictions).predict()
+                                           sparse_predictions).predict(max_rules)
         else:
             return super()._predict_binary(x, **kwargs)
 
@@ -434,8 +437,9 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         if learner.can_predict_scores(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted regression scores')
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
             return create_score_predictor(learner, self.model_, self.label_space_info_, num_labels,
-                                          feature_matrix).predict()
+                                          feature_matrix).predict(max_rules)
         else:
             return super()._predict_scores(x, **kwargs)
 
@@ -465,9 +469,10 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         if learner.can_predict_probabilities(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted probability estimates')
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
             return create_sklearn_compatible_probabilities(
                 create_probability_predictor(learner, self.model_, self.label_space_info_, num_labels,
-                                             feature_matrix).predict())
+                                             feature_matrix).predict(max_rules))
         else:
             return super()._predict_proba(x, **kwargs)
 

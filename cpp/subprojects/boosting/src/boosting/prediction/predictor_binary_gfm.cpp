@@ -157,7 +157,7 @@ namespace boosting {
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
       const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
       const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
-      uint32 numThreads) {
+      uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
           std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
@@ -177,6 +177,7 @@ namespace boosting {
       num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
+                // TODO Use max rules
                 applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                            &scoreVector[0]);
                 predictGfm(scoreVector, &scoreVector[numLabels], predictionMatrixRawPtr->row_values_begin(i), numLabels,
@@ -190,7 +191,7 @@ namespace boosting {
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
       const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
-      uint32 numLabels, const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
+      uint32 numLabels, const IProbabilityFunction& probabilityFunction, uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
@@ -211,6 +212,7 @@ namespace boosting {
       firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
+                // TODO Use max rules
                 applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                               featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                               featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
@@ -273,9 +275,9 @@ namespace boosting {
             /**
              * @see `IPredictor::predict`
              */
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict() const override {
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
                 return predictInternally(featureMatrix_, model_, labelVectorSet_, numLabels_, *probabilityFunctionPtr_,
-                                         numThreads_);
+                                         numThreads_, maxRules);
             }
 
             /**
@@ -360,7 +362,7 @@ namespace boosting {
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
       const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
       const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
-      uint32 numThreads) {
+      uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         BinaryLilMatrix lilMatrix(numExamples);
         uint32 numNonZeroElements = 0;
@@ -380,6 +382,7 @@ namespace boosting {
             firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
+                // TODO Use max rules
                 applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                            &scoreVector[0]);
                 numNonZeroElements += predictGfm<BinaryLilMatrix::row>(
@@ -394,7 +397,7 @@ namespace boosting {
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
       const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
-      uint32 numLabels, const IProbabilityFunction& probabilityFunction, uint32 numThreads) {
+      uint32 numLabels, const IProbabilityFunction& probabilityFunction, uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         BinaryLilMatrix lilMatrix(numExamples);
@@ -415,6 +418,7 @@ namespace boosting {
             firstprivate(maxLabelCardinality) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
+                // TODO Use max rules
                 applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                               featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                               featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
@@ -478,9 +482,9 @@ namespace boosting {
             /**
              * @see `IPredictor::predict`
              */
-            std::unique_ptr<BinarySparsePredictionMatrix> predict() const override {
+            std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
                 return predictSparseInternally(featureMatrix_, model_, labelVectorSet_, numLabels_,
-                                               *probabilityFunctionPtr_, numThreads_);
+                                               *probabilityFunctionPtr_, numThreads_, maxRules);
             }
 
             /**
