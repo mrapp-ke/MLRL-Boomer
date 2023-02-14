@@ -6,6 +6,7 @@ Provides base classes for implementing single- or multi-label rule learning algo
 import logging as log
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import Optional
 
 import numpy as np
 from mlrl.common.arrays import enforce_dense, enforce_2d
@@ -21,8 +22,6 @@ from mlrl.common.format import format_enum_values
 from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
-from typing import Optional
-
 
 KWARG_MAX_RULES = 'max_rules'
 
