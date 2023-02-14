@@ -23,6 +23,8 @@ from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLe
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
 
+KWARG_MIN_RULES = 'min_rules'
+
 KWARG_MAX_RULES = 'max_rules'
 
 
@@ -348,10 +350,12 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             label_space_info = self.label_space_info_
             predictor = create_binary_predictor(learner, model, label_space_info, num_labels, feature_matrix,
                                                 sparse_predictions)
+            min_rules = int(kwargs.get(KWARG_MIN_RULES, 1))
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
-                return RuleLearner.NativeIncrementalPredictor(predictor.create_incremental_predictor(max_rules))
+                return RuleLearner.NativeIncrementalPredictor(
+                    predictor.create_incremental_predictor(min_rules, max_rules))
             else:
                 return RuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
         else:
@@ -380,10 +384,12 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             model = self.model_
             label_space_info = self.label_space_info_
             predictor = create_score_predictor(learner, model, label_space_info, num_labels, feature_matrix)
+            min_rules = int(kwargs.get(KWARG_MIN_RULES, 1))
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
-                return RuleLearner.NativeIncrementalPredictor(predictor.create_incremental_predictor(max_rules))
+                return RuleLearner.NativeIncrementalPredictor(
+                    predictor.create_incremental_predictor(min_rules, max_rules))
             else:
                 return RuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
         else:
@@ -413,11 +419,12 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             model = self.model_
             label_space_info = self.label_space_info_
             predictor = create_probability_predictor(learner, model, label_space_info, num_labels, feature_matrix)
+            min_rules = int(kwargs.get(KWARG_MIN_RULES, 1))
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalProbabilityPredictor(
-                    predictor.create_incremental_predictor(max_rules))
+                    predictor.create_incremental_predictor(min_rules, max_rules))
             else:
                 return RuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, max_rules, predictor)
         else:
