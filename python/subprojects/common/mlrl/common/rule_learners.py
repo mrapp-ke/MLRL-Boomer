@@ -17,6 +17,7 @@ from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatr
 from mlrl.common.cython.label_space_info import LabelSpaceInfo
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.cython.rule_model import RuleModel
+from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal
 from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from mlrl.common.format import format_enum_values
 from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
@@ -203,6 +204,9 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
                                     `min_rules` or 0, if the number of rules should not be restricted
             :param predictor:       The predictor to be used for obtaining predictions
             """
+            assert_greater_or_equal('min_rules', min_rules, 1)
+            if max_rules != 0:
+                assert_greater('max_rules', max_rules, min_rules)
             self.feature_matrix = feature_matrix
             self.num_total_rules = min(model.get_num_used_rules(),
                                        max_rules) if max_rules > 0 else model.get_num_used_rules()
@@ -213,8 +217,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             return self.num_total_rules - self.n
 
         def apply_next(self, step_size: int):
-            if step_size < 1:
-                raise ValueError('step_size must be at least 1')
+            assert_greater_or_equal('min_rules', step_size, 1)
             self.n = min(self.num_total_rules, self.n + step_size)
             return self.predictor.predict(self.n)
 
