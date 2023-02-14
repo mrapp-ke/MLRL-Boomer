@@ -216,8 +216,8 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         Allows to obtain probability estimates from a `RuleLearner` incrementally.
         """
 
-        def __init__(self, model: RuleModel, predictor):
-            super().__init__(model, predictor)
+        def __init__(self, feature_matrix: RowWiseFeatureMatrix, model: RuleModel, predictor):
+            super().__init__(feature_matrix, model, predictor)
 
         def apply_next(self, step_size: int):
             return create_sklearn_compatible_probabilities(super().apply_next(step_size))
