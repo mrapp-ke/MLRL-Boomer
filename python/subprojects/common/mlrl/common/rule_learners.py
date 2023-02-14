@@ -186,117 +186,41 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         def apply_next(self, step_size: int):
             return create_sklearn_compatible_probabilities(super().apply_next(step_size))
 
-    class IncrementalPredictor(IncrementalLearner.IncrementalPredictor, ABC):
+    class IncrementalPredictor(IncrementalLearner.IncrementalPredictor):
         """
-        A base class for all classes that allow to obtain incremental predictions from a `RuleLearner`.
+        Allows to obtain predictions from a `RuleLearner` incrementally.
         """
 
-        def __init__(self, model: RuleModel):
+        def __init__(self, feature_matrix: RowWiseFeatureMatrix, model: RuleModel, predictor):
             """
-            :param model: The `RuleModel` to be used for obtaining predictions
+            :param feature_matrix:  A `RowWiseFeatureMatrix` that stores the feature values of the query examples
+            :param model:           The model to be used for obtaining predictions
+            :param predictor:       The predictor to be used for obtaining predictions
             """
-            self.model = model
-            self.num_used_rules = 0
+            self.feature_matrix = feature_matrix
+            self.num_total_rules = model.get_num_used_rules()
+            self.predictor = predictor
+            self.n = 0
 
         def get_num_next(self) -> int:
-            return self.model.get_num_used_rules() - self.num_used_rules
+            return self.num_total_rules - self.n
 
         def apply_next(self, step_size: int):
             if step_size < 1:
                 raise ValueError('step_size must be at least 1')
-            model = self.model
-            num_total_rules = model.get_num_used_rules()
-            self.num_used_rules = min(num_total_rules, self.num_used_rules + step_size)
-            model.set_num_used_rules(self.num_used_rules)
-            prediction = self._predict(model)
-            model.set_num_used_rules(num_total_rules)
-            return prediction
-
-        @abstractmethod
-        def _predict(self, model: RuleModel):
-            """
-            Must be implemented by subclasses in order to obtain predictions from a given `RuleModel`.
-
-            :param model:   The `RuleModel` to be used for obtaining the predictions
-            :return:        A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that
-                            stores the predictions for individual examples and labels
-            """
-            pass
-
-    class IncrementalLabelPredictor(IncrementalPredictor):
-        """
-        Allows to obtain binary predictions from a `RuleLearner` incrementally.
-        """
-
-        def __init__(self, learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
-                     num_labels: int, feature_matrix: RowWiseFeatureMatrix, sparse_prediction: bool):
-            """
-            :param learner:             The `RuleLearnerWrapper` to be used for obtaining predictions
-            :param model:               The `RuleModel` to be used for obtaining predictions
-            :param label_space_info:    The `LabelSpaceInfo` to be used for obtaining predictions
-            :param num_labels:          The number of labels to predict for
-            :param feature_matrix:      A `RowWiseFeatureMatrix` that stores the feature values of the query examples
-            :param sparse_prediction:   True, if sparse predictions should be obtained, False otherwise
-            """
-            super().__init__(model)
-            self.learner = learner
-            self.label_space_info = label_space_info
-            self.num_labels = num_labels
-            self.feature_matrix = feature_matrix
-            self.sparse_prediction = sparse_prediction
-
-        def _predict(self, model: RuleModel):
-            return create_binary_predictor(self.learner, model, self.label_space_info, self.num_labels,
-                                           self.feature_matrix, self.sparse_prediction).predict(0)
-
-    class IncrementalScorePredictor(IncrementalPredictor):
-        """
-        Allows to obtain regression scores from a `RuleLearner` incrementally.
-        """
-
-        def __init__(self, learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
-                     num_labels: int, feature_matrix: RowWiseFeatureMatrix):
-            """
-            :param learner:             The `RuleLearnerWrapper` to be used for obtaining predictions
-            :param model:               The `RuleModel` to be used for obtaining predictions
-            :param label_space_info:    The `LabelSpaceInfo` to be used for obtaining predictions
-            :param num_labels:          The number of labels to predict for
-            :param feature_matrix:      A `RowWiseFeatureMatrix` that stores the feature values of the query examples
-            """
-            super().__init__(model)
-            self.learner = learner
-            self.label_space_info = label_space_info
-            self.num_labels = num_labels
-            self.feature_matrix = feature_matrix
-
-        def _predict(self, model: RuleModel):
-            return create_score_predictor(self.learner, model, self.label_space_info, self.num_labels,
-                                          self.feature_matrix).predict(0)
+            self.n = min(self.num_total_rules, self.n + step_size)
+            return self.predictor.predict(self.n)
 
     class IncrementalProbabilityPredictor(IncrementalPredictor):
         """
         Allows to obtain probability estimates from a `RuleLearner` incrementally.
         """
 
-        def __init__(self, learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
-                     num_labels: int, feature_matrix: RowWiseFeatureMatrix):
-            """
-            :param learner:             The `RuleLearnerWrapper` to be used for obtaining predictions
-            :param model:               The `RuleModel` to be used for obtaining predictions
-            :param label_space_info:    The `LabelSpaceInfo` to be used for obtaining predictions
-            :param num_labels:          The number of labels to predict for
-            :param feature_matrix:      A `RowWiseFeatureMatrix` that stores the feature values of the query examples
-            """
-            super().__init__(model)
-            self.learner = learner
-            self.label_space_info = label_space_info
-            self.num_labels = num_labels
-            self.feature_matrix = feature_matrix
+        def __init__(self, model: RuleModel, predictor):
+            super().__init__(model, predictor)
 
-        def _predict(self, model: RuleModel):
-            return create_sklearn_compatible_probabilities(
-                create_probability_predictor(self.learner, model, self.label_space_info, self.num_labels,
-                                             self.feature_matrix).predict(0))
+        def apply_next(self, step_size: int):
+            return create_sklearn_compatible_probabilities(super().apply_next(step_size))
 
     def __init__(self, random_state: int, feature_format: str, label_format: str, prediction_format: str):
         """
@@ -425,8 +349,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalPredictor(predictor.create_incremental_predictor())
             else:
-                return RuleLearner.IncrementalLabelPredictor(learner, model, label_space_info, num_labels,
-                                                             feature_matrix, sparse_predictions)
+                return RuleLearner.IncrementalPredictor(feature_matrix, model, predictor)
         else:
             return super()._predict_binary_incrementally(x, **kwargs)
 
@@ -457,8 +380,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalPredictor(predictor.create_incremental_predictor())
             else:
-                return RuleLearner.IncrementalScorePredictor(learner, model, label_space_info, num_labels,
-                                                             feature_matrix)
+                return RuleLearner.IncrementalPredictor(feature_matrix, model, predictor)
         else:
             return super()._predict_scores_incrementally(x, **kwargs)
 
@@ -490,8 +412,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalProbabilityPredictor(predictor.create_incremental_predictor())
             else:
-                return RuleLearner.IncrementalProbabilityPredictor(learner, model, label_space_info, num_labels,
-                                                                   feature_matrix)
+                return RuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, predictor)
         else:
             return super().predict_proba_incrementally(x, **kwargs)
 
