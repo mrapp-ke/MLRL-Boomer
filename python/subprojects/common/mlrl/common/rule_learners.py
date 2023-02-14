@@ -25,6 +25,7 @@ from sklearn.utils import check_array
 
 KWARG_MAX_RULES = 'max_rules'
 
+
 class SparsePolicy(Enum):
     AUTO = 'auto'
     FORCE_SPARSE = 'sparse'
