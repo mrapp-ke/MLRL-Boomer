@@ -345,9 +345,10 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             label_space_info = self.label_space_info_
             predictor = create_binary_predictor(learner, model, label_space_info, num_labels, feature_matrix,
                                                 sparse_predictions)
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
-                return RuleLearner.NativeIncrementalPredictor(predictor.create_incremental_predictor())
+                return RuleLearner.NativeIncrementalPredictor(predictor.create_incremental_predictor(max_rules))
             else:
                 return RuleLearner.IncrementalPredictor(feature_matrix, model, predictor)
         else:
@@ -376,9 +377,10 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             model = self.model_
             label_space_info = self.label_space_info_
             predictor = create_score_predictor(learner, model, label_space_info, num_labels, feature_matrix)
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
-                return RuleLearner.NativeIncrementalPredictor(predictor.create_incremental_predictor())
+                return RuleLearner.NativeIncrementalPredictor(predictor.create_incremental_predictor(max_rules))
             else:
                 return RuleLearner.IncrementalPredictor(feature_matrix, model, predictor)
         else:
@@ -408,9 +410,11 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             model = self.model_
             label_space_info = self.label_space_info_
             predictor = create_probability_predictor(learner, model, label_space_info, num_labels, feature_matrix)
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
-                return RuleLearner.NativeIncrementalProbabilityPredictor(predictor.create_incremental_predictor())
+                return RuleLearner.NativeIncrementalProbabilityPredictor(
+                    predictor.create_incremental_predictor(max_rules))
             else:
                 return RuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, predictor)
         else:
