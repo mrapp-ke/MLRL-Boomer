@@ -82,10 +82,13 @@ class IPredictor {
          * prediction is not supported, a `std::runtime_error` is thrown.
          *
          * @throws std::runtime_exception   The exception that is thrown if incremental prediction is not supported
+         * @param maxRules                  The maximum number of rules to be used for prediction or 0, if the number of
+         *                                  rules should not be restricted
          * @return                          An unique pointer to an object of type `IIncrementalPredictor` that may be
          *                                  used to obtain predictions incrementally
          */
-        virtual std::unique_ptr<IIncrementalPredictor<PredictionMatrix>> createIncrementalPredictor() const = 0;
+        virtual std::unique_ptr<IIncrementalPredictor<PredictionMatrix>> createIncrementalPredictor(
+          uint32 maxRules = 0) const = 0;
 };
 
 /**

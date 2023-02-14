@@ -79,15 +79,17 @@ cdef class BinaryPredictor:
         """
         return self.predictor_ptr.get().canPredictIncrementally()
 
-    def create_incremental_predictor(self) -> IncrementalBinaryPredictor:
+    def create_incremental_predictor(self, uint32 max_rules) -> IncrementalBinaryPredictor:
         """
         Creates and returns a predictor that allows to predict binary labels incrementally. If incremental prediction is
         not supported, a `RuntimeError` is thrown.
 
-        :return: A predictor that allows to predict binary labels incrementally
+        :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
+                            not be restricted
+        :return:            A predictor that allows to predict binary labels incrementally
         """
         cdef IncrementalBinaryPredictor predictor = IncrementalBinaryPredictor.__new__(IncrementalBinaryPredictor)
-        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor())
+        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(max_rules))
         return predictor
 
 
@@ -158,15 +160,17 @@ cdef class SparseBinaryPredictor:
         """
         return self.predictor_ptr.get().canPredictIncrementally()
 
-    def create_incremental_predictor(self) -> IncrementalSparseBinaryPredictor:
+    def create_incremental_predictor(self, uint32 max_rules) -> IncrementalSparseBinaryPredictor:
         """
         Creates and returns a predictor that allows to predict sparse binary labels incrementally. If incremental
         prediction is not supported, a `RuntimeError` is thrown.
 
-        :return: A predictor that allows to predict sparse binary labels incrementally
+        :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
+                            not be restricted
+        :return:            A predictor that allows to predict sparse binary labels incrementally
         """
         cdef IncrementalSparseBinaryPredictor predictor = IncrementalSparseBinaryPredictor.__new__(IncrementalSparseBinaryPredictor)
-        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor())
+        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(max_rules))
         return predictor
 
 
@@ -228,15 +232,17 @@ cdef class ScorePredictor:
         """
         return self.predictor_ptr.get().canPredictIncrementally()
 
-    def create_incremental_predictor(self) -> IncrementalScorePredictor:
+    def create_incremental_predictor(self, uint32 max_rules) -> IncrementalScorePredictor:
         """
         Creates and returns a predictor that allows to predict regression scores incrementally. If incremental
         prediction is not supported, a `RuntimeError` is thrown.
 
-        :return: A predictor that allows to predict regression scores incrementally
+        :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
+                            not be restricted
+        :return:            A predictor that allows to predict regression scores incrementally
         """
         cdef IncrementalScorePredictor predictor = IncrementalScorePredictor.__new__(IncrementalScorePredictor)
-        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor())
+        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(max_rules))
         return predictor
 
 
@@ -299,13 +305,15 @@ cdef class ProbabilityPredictor:
         """
         return self.predictor_ptr.get().canPredictIncrementally()
 
-    def create_incremental_predictor(self) -> IncrementalProbabilityPredictor:
+    def create_incremental_predictor(self, uint32 max_rules) -> IncrementalProbabilityPredictor:
         """
         Creates and returns a predictor that allows to predict probability estimates incrementally. If incremental
         prediction is not supported, a `RuntimeError` is thrown.
 
-        :return: A predictor that allows to predict probability estimates incrementally
+        :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
+                            not be restricted
+        :return:            A predictor that allows to predict probability estimates incrementally
         """
         cdef IncrementalProbabilityPredictor predictor = IncrementalProbabilityPredictor.__new__(IncrementalProbabilityPredictor)
-        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor())
+        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(max_rules))
         return predictor

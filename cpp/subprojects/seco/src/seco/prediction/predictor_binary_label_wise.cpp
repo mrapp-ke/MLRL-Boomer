@@ -255,8 +255,8 @@ namespace seco {
             /**
              * @see `IPredictor::createIncrementalPredictor`
              */
-            std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<uint8>>> createIncrementalPredictor()
-              const override {
+            std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<uint8>>> createIncrementalPredictor(
+              uint32 maxRules) const override {
                 throw std::runtime_error("The rule learner does not support to predict binary labels incrementally");
             }
     };
@@ -418,8 +418,8 @@ namespace seco {
             /**
              * @see `IPredictor::createIncrementalPredictor`
              */
-            std::unique_ptr<IIncrementalPredictor<BinarySparsePredictionMatrix>> createIncrementalPredictor()
-              const override {
+            std::unique_ptr<IIncrementalPredictor<BinarySparsePredictionMatrix>> createIncrementalPredictor(
+              uint32 maxRules) const override {
                 throw std::runtime_error(
                   "The rule learner does not support to predict sparse binary labels incrementally");
             }
