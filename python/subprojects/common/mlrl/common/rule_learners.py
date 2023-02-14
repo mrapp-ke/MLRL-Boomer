@@ -162,10 +162,13 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         functionality.
         """
 
-        def __init__(self, incremental_predictor):
+        def __init__(self, feature_matrix: RowWiseFeatureMatrix, incremental_predictor):
             """
-            :param incremental_predictor: The incremental predictor to be used for obtaining predictions
+            :param feature_matrix:          A `RowWiseFeatureMatrix` that stores the feature values of the query
+                                            examples
+            :param incremental_predictor:   The incremental predictor to be used for obtaining predictions
             """
+            self.feature_matrix = feature_matrix
             self.incremental_predictor = incremental_predictor
 
         def has_next(self) -> bool:
@@ -183,8 +186,8 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         functionality.
         """
 
-        def __init__(self, incremental_predictor):
-            super().__init__(incremental_predictor)
+        def __init__(self, feature_matrix: RowWiseFeatureMatrix, incremental_predictor):
+            super().__init__(feature_matrix, incremental_predictor)
 
         def apply_next(self, step_size: int):
             return create_sklearn_compatible_probabilities(super().apply_next(step_size))
@@ -365,7 +368,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalPredictor(
-                    predictor.create_incremental_predictor(min_rules, max_rules))
+                    feature_matrix, predictor.create_incremental_predictor(min_rules, max_rules))
             else:
                 return RuleLearner.IncrementalPredictor(feature_matrix, model, min_rules, max_rules, predictor)
         else:
@@ -404,7 +407,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalPredictor(
-                    predictor.create_incremental_predictor(min_rules, max_rules))
+                    feature_matrix, predictor.create_incremental_predictor(min_rules, max_rules))
             else:
                 return RuleLearner.IncrementalPredictor(feature_matrix, model, min_rules, max_rules, predictor)
         else:
@@ -444,7 +447,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalProbabilityPredictor(
-                    predictor.create_incremental_predictor(min_rules, max_rules))
+                    feature_matrix, predictor.create_incremental_predictor(min_rules, max_rules))
             else:
                 return RuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, min_rules, max_rules,
                                                                    predictor)
