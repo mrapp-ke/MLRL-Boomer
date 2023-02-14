@@ -161,7 +161,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         def __init__(self, incremental_predictor):
             """
-            :param incremental_predictor:   The incremental predictor to be used for obtaining predictions
+            :param incremental_predictor: The incremental predictor to be used for obtaining predictions
             """
             self.incremental_predictor = incremental_predictor
 
