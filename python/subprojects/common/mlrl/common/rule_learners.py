@@ -344,6 +344,11 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             return super()._predict_binary(x, **kwargs)
 
     def _predict_binary_incrementally(self, x, **kwargs):
+        """
+        :keyword min_rules: The minimum number of rules to be used for prediction. Must be at least 1
+        :keyword max_rules: The maximum number of rules to be used for prediction. Must be greater than `max_rules` or
+                            0, if the number of rules should not be restricted
+        """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
@@ -380,6 +385,11 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             return super()._predict_scores(x, **kwargs)
 
     def _predict_scores_incrementally(self, x, **kwargs):
+        """
+        :keyword min_rules: The minimum number of rules to be used for prediction. Must be at least 1
+        :keyword max_rules: The maximum number of rules to be used for prediction. Must be greater than `max_rules` or
+                            0, if the number of rules should not be restricted
+        """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
@@ -415,6 +425,11 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             return super()._predict_proba(x, **kwargs)
 
     def _predict_proba_incrementally(self, x, **kwargs):
+        """
+        :keyword min_rules: The minimum number of rules to be used for prediction. Must be at least 1
+        :keyword max_rules: The maximum number of rules to be used for prediction. Must be greater than `max_rules` or
+                            0, if the number of rules should not be restricted
+        """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
