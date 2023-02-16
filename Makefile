@@ -1,7 +1,7 @@
 default_target: install
 .PHONY: clean_venv clean_cpp clean_cython clean_compile clean_cpp_install clean_cython_install clean_wheel \
         clean_install clean_doc clean test_format_cpp test_format_python test_format format_cpp format_python format \
-        compile_cpp compile_cython compile install_cpp install_cython wheel install doc
+        compile_cpp compile_cython compile install_cpp install_cython wheel install apidoc_cpp doc
 
 UNAME = $(if $(filter Windows_NT,${OS}),Windows,$(shell uname))
 IS_WIN = $(filter Windows,${UNAME})
@@ -210,14 +210,16 @@ tests: install
 	    && ${PYTHON_UNITTEST} ${PYTHON_PACKAGE_DIR}/testbed/tests \
 	    && ${VENV_DEACTIVATE}
 
-doc: install
+apidoc_cpp:
+	@echo Generating C++ API documentation via Doxygen...
+	$(call create_dir,${DOC_API_DIR}/api/cpp/common)
+	cd ${DOC_DIR} && ${DOXYGEN} Doxyfile_common
+
+doc: install apidoc_cpp
 	@echo Installing documentation dependencies into virtual environment...
 	${VENV_ACTIVATE} \
 	    && ${PIP_INSTALL} -r ${DOC_DIR}/requirements.txt \
 	    && ${VENV_DEACTIVATE}
-	@echo Generating C++ API documentation via Doxygen...
-	$(call create_dir,${DOC_API_DIR}/api/cpp/common)
-	cd ${DOC_DIR} && ${DOXYGEN} Doxyfile_common
 	$(call create_dir,${DOC_API_DIR}/api/cpp/boosting)
 	cd ${DOC_DIR} && ${DOXYGEN} Doxyfile_boosting
 	@echo Generating Sphinx documentation...
