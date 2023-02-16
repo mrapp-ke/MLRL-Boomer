@@ -1,7 +1,7 @@
 default_target: install
 .PHONY: clean_venv clean_cpp clean_cython clean_compile clean_cpp_install clean_cython_install clean_wheel \
         clean_install clean_doc clean test_format_cpp test_format_python test_format format_cpp format_python format \
-        compile_cpp compile_cython compile install_cpp install_cython wheel install apidoc_cpp doc
+        compile_cpp compile_cython compile install_cpp install_cython wheel install apidoc_cpp apidoc_python doc
 
 UNAME = $(if $(filter Windows_NT,${OS}),Windows,$(shell uname))
 IS_WIN = $(filter Windows,${UNAME})
@@ -217,12 +217,12 @@ apidoc_cpp:
 	$(call create_dir,${DOC_API_DIR}/api/cpp/boosting)
 	cd ${DOC_DIR} && ${DOXYGEN} Doxyfile_boosting
 
-doc: install apidoc_cpp
+apidoc_python: install
 	@echo Installing documentation dependencies into virtual environment...
 	${VENV_ACTIVATE} \
 	    && ${PIP_INSTALL} -r ${DOC_DIR}/requirements.txt \
 	    && ${VENV_DEACTIVATE}
-	@echo Generating Sphinx documentation...
+	@echo Generating Python API documentation via Sphinx-Apidoc...
 	${VENV_ACTIVATE} \
 	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/common ${PYTHON_PACKAGE_DIR}/common/mlrl **/cython \
 	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}/common ${DOC_API_DIR}/api/python/common \
@@ -230,5 +230,10 @@ doc: install apidoc_cpp
 	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}/boosting ${DOC_API_DIR}/api/python/boosting \
 	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/testbed ${PYTHON_PACKAGE_DIR}/testbed/mlrl \
 	    && ${SPHINX_BUILD} ${DOC_TMP_DIR}/testbed ${DOC_API_DIR}/api/python/testbed \
+	    && ${VENV_DEACTIVATE}
+
+doc: apidoc_cpp apidoc_python
+	@echo Generating Sphinx documentation...
+	${VENV_ACTIVATE} \
 	    && ${SPHINX_BUILD} ${DOC_DIR} ${DOC_BUILD_DIR} \
 	    && ${VENV_DEACTIVATE}
