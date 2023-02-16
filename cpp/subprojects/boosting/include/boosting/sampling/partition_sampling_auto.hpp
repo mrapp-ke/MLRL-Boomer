@@ -32,6 +32,9 @@ namespace boosting {
             AutomaticPartitionSamplingConfig(const std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr,
                                              const std::unique_ptr<ILossConfig>& lossConfigPtr);
 
+            /**
+             * @see `IPartitionSamplingConfig::createPartitionSamplingFactory`
+             */
             std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const override;
     };
 
