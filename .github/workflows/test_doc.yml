@@ -4,7 +4,8 @@ on:
     paths:
       - '**/*.hpp'
       - '**/*.cpp'
-      - 'doc/Doxyfile_*'
+      - '**/*.py'
+      - 'doc/**'
       - 'Makefile'
       - '.github/workflows/test_doc.yml'
 jobs:
@@ -22,3 +23,6 @@ jobs:
       - name: Invoke Doxygen
         run: |
           make apidoc_cpp
+      - name: Invoke Sphinx
+        run: |
+          make doc
