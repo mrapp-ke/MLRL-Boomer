@@ -214,14 +214,14 @@ apidoc_cpp:
 	@echo Generating C++ API documentation via Doxygen...
 	$(call create_dir,${DOC_API_DIR}/api/cpp/common)
 	cd ${DOC_DIR} && ${DOXYGEN} Doxyfile_common
+	$(call create_dir,${DOC_API_DIR}/api/cpp/boosting)
+	cd ${DOC_DIR} && ${DOXYGEN} Doxyfile_boosting
 
 doc: install apidoc_cpp
 	@echo Installing documentation dependencies into virtual environment...
 	${VENV_ACTIVATE} \
 	    && ${PIP_INSTALL} -r ${DOC_DIR}/requirements.txt \
 	    && ${VENV_DEACTIVATE}
-	$(call create_dir,${DOC_API_DIR}/api/cpp/boosting)
-	cd ${DOC_DIR} && ${DOXYGEN} Doxyfile_boosting
 	@echo Generating Sphinx documentation...
 	${VENV_ACTIVATE} \
 	    && ${SPHINX_APIDOC} -o ${DOC_TMP_DIR}/common ${PYTHON_PACKAGE_DIR}/common/mlrl **/cython \
