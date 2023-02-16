@@ -136,7 +136,7 @@ namespace seco {
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
       const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-      uint32 numThreads) {
+      uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
           std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, !model.containsDefaultRule());
@@ -145,11 +145,12 @@ namespace seco {
         const RuleList* modelPtr = &model;
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(maxRules) schedule(dynamic) \
+    num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BitVector mask(numLabels, true);
 
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
+            for (auto it = modelPtr->used_cbegin(maxRules); it != modelPtr->used_cend(maxRules); it++) {
                 const RuleList::Rule& rule = *it;
                 const IBody& body = rule.getBody();
 
@@ -164,7 +165,8 @@ namespace seco {
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads,
+      uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
@@ -174,15 +176,15 @@ namespace seco {
         const RuleList* modelPtr = &model;
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) schedule(dynamic) \
-    num_threads(numThreads)
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(maxRules) \
+    schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BitVector mask(numLabels, true);
             float32* tmpArray1 = new float32[numFeatures];
             uint32* tmpArray2 = new uint32[numFeatures] {};
             uint32 n = 1;
 
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
+            for (auto it = modelPtr->used_cbegin(maxRules); it != modelPtr->used_cend(maxRules); it++) {
                 const RuleList::Rule& rule = *it;
                 const IBody& body = rule.getBody();
 
@@ -239,8 +241,8 @@ namespace seco {
                                      uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict() const override {
-                return predictInternally(featureMatrix_, model_, numLabels_, numThreads_);
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
+                return predictInternally(featureMatrix_, model_, numLabels_, numThreads_, maxRules);
             }
 
             /**
@@ -253,8 +255,8 @@ namespace seco {
             /**
              * @see `IPredictor::createIncrementalPredictor`
              */
-            std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<uint8>>> createIncrementalPredictor()
-              const override {
+            std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<uint8>>> createIncrementalPredictor(
+              uint32 minRules, uint32 maxRules) const override {
                 throw std::runtime_error("The rule learner does not support to predict binary labels incrementally");
             }
     };
@@ -296,7 +298,7 @@ namespace seco {
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
       const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-      uint32 numThreads) {
+      uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         BinaryLilMatrix lilMatrix(numExamples);
         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
@@ -305,12 +307,12 @@ namespace seco {
         uint32 numNonZeroElements = 0;
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) schedule(dynamic) \
-     num_threads(numThreads)
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(maxRules) \
+    schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
 
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
+            for (auto it = modelPtr->used_cbegin(maxRules); it != modelPtr->used_cend(maxRules); it++) {
                 const RuleList::Rule& rule = *it;
                 const IBody& body = rule.getBody();
 
@@ -325,7 +327,8 @@ namespace seco {
     }
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads,
+      uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         BinaryLilMatrix lilMatrix(numExamples);
@@ -336,14 +339,14 @@ namespace seco {
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
   firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-    schedule(dynamic) num_threads(numThreads)
+    firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
             float32* tmpArray1 = new float32[numFeatures];
             uint32* tmpArray2 = new uint32[numFeatures] {};
             uint32 n = 1;
 
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
+            for (auto it = modelPtr->used_cbegin(maxRules); it != modelPtr->used_cend(maxRules); it++) {
                 const RuleList::Rule& rule = *it;
                 const IBody& body = rule.getBody();
 
@@ -401,8 +404,8 @@ namespace seco {
                                            uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
-            std::unique_ptr<BinarySparsePredictionMatrix> predict() const override {
-                return predictSparseInternally(featureMatrix_, model_, numLabels_, numThreads_);
+            std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
+                return predictSparseInternally(featureMatrix_, model_, numLabels_, numThreads_, maxRules);
             }
 
             /**
@@ -415,8 +418,8 @@ namespace seco {
             /**
              * @see `IPredictor::createIncrementalPredictor`
              */
-            std::unique_ptr<IIncrementalPredictor<BinarySparsePredictionMatrix>> createIncrementalPredictor()
-              const override {
+            std::unique_ptr<IIncrementalPredictor<BinarySparsePredictionMatrix>> createIncrementalPredictor(
+              uint32 minRules, uint32 maxRules) const override {
                 throw std::runtime_error(
                   "The rule learner does not support to predict sparse binary labels incrementally");
             }

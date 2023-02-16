@@ -66,13 +66,13 @@ class IncrementalLearner(ABC):
 
     def predict_incrementally(self, x, **kwargs) -> IncrementalPredictor:
         """
-        Returns an `IncrementalPredictor` that allows to obtain predictions for given query examples incrementally. If
-        the optional keyword argument `predict_scores` is set to `True`, regression scores are obtained instead of
-        binary predictions.
+        Returns an `IncrementalPredictor` that allows to obtain predictions for given query examples incrementally.
 
-        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
-                    feature values of the query examples
-        :return:    The `IncrementalPredictor` that has been created
+        :param x:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`,
+                                    that stores the feature values of the query examples
+        :keyword predict_scores:    True, if regression scores should be obtained, False, if binary predictions should
+                                    be obtained
+        :return:                    The `IncrementalPredictor` that has been created
         """
         check_is_fitted(self)
 
