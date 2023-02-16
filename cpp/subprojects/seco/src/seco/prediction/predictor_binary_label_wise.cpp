@@ -7,6 +7,8 @@
 #include "common/model/head_partial.hpp"
 #include "omp.h"
 
+#include <stdexcept>
+
 namespace seco {
 
     static inline void applyCompleteHead(const CompleteHead& head, CContiguousView<uint8>::value_iterator begin,
