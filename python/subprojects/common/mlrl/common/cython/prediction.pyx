@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython.validation import assert_greater_or_equal
+from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal
 from mlrl.common.cython._arrays cimport array_uint32, view_uint32, c_matrix_uint8, c_view_uint8, c_matrix_float64, \
     c_view_float64
 
@@ -55,13 +55,16 @@ cdef class BinaryPredictor:
     Allows to predict binary labels for given query examples.
     """
 
-    def predict(self) -> np.ndarray:
+    def predict(self, uint32 max_rules) -> np.ndarray:
         """
         Obtains and returns predictions for all query examples.
 
-        :return: A `numpy.ndarray` of type `uint8`, shape `(num_examples, num_labels)`, that stores the predictions
+        :param max_rules    The maximum number of rules to be used for prediction or 0, if the number of rules should
+                            not be restricted
+        :return:            A `numpy.ndarray` of type `uint8`, shape `(num_examples, num_labels)`, that stores the
+                            predictions
         """
-        cdef unique_ptr[DensePredictionMatrix[uint8]] prediction_matrix_ptr = self.predictor_ptr.get().predict()
+        cdef unique_ptr[DensePredictionMatrix[uint8]] prediction_matrix_ptr = self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef uint8* array = prediction_matrix_ptr.get().release()
@@ -76,15 +79,21 @@ cdef class BinaryPredictor:
         """
         return self.predictor_ptr.get().canPredictIncrementally()
 
-    def create_incremental_predictor(self) -> IncrementalBinaryPredictor:
+    def create_incremental_predictor(self, uint32 min_rules, uint32 max_rules) -> IncrementalBinaryPredictor:
         """
         Creates and returns a predictor that allows to predict binary labels incrementally. If incremental prediction is
         not supported, a `RuntimeError` is thrown.
 
-        :return: A predictor that allows to predict binary labels incrementally
+        :param min_rules:   The minimum number of rules to be used for prediction. Must be at least 1
+        :param max_rules:   The maximum number of rules to be used for prediction. Must be greater than `min_rules` or
+                            0, if the number of rules should not be restricted
+        :return:            A predictor that allows to predict binary labels incrementally
         """
+        assert_greater_or_equal('min_rules', min_rules, 1)
+        if max_rules != 0:
+            assert_greater('max_rules', max_rules, min_rules)
         cdef IncrementalBinaryPredictor predictor = IncrementalBinaryPredictor.__new__(IncrementalBinaryPredictor)
-        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor())
+        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(min_rules, max_rules))
         return predictor
 
 
@@ -127,14 +136,16 @@ cdef class SparseBinaryPredictor:
     Allows to predict sparse binary labels for given query examples.
     """
 
-    def predict(self) -> csr_matrix:
+    def predict(self, uint32 max_rules) -> csr_matrix:
         """
         Obtains and returns predictions for all query examples.
 
-        :return: A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that stores the
-                 predictions
+        :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
+                            not be restricted
+        :return:            A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that stores
+                            the predictions
         """
-        cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = self.predictor_ptr.get().predict()
+        cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef uint32 num_non_zero_elements = prediction_matrix_ptr.get().getNumNonZeroElements()
@@ -153,15 +164,21 @@ cdef class SparseBinaryPredictor:
         """
         return self.predictor_ptr.get().canPredictIncrementally()
 
-    def create_incremental_predictor(self) -> IncrementalSparseBinaryPredictor:
+    def create_incremental_predictor(self, uint32 min_rules, uint32 max_rules) -> IncrementalSparseBinaryPredictor:
         """
         Creates and returns a predictor that allows to predict sparse binary labels incrementally. If incremental
         prediction is not supported, a `RuntimeError` is thrown.
 
-        :return: A predictor that allows to predict sparse binary labels incrementally
+        :param min_rules:   The minimum number of rules to be used for prediction. Must be at least 1
+        :param max_rules:   The maximum number of rules to be used for prediction. Must be greater than `min_rules` or
+                            0, if the number of rules should not be restricted
+        :return:            A predictor that allows to predict sparse binary labels incrementally
         """
+        assert_greater_or_equal('min_rules', min_rules, 1)
+        if max_rules != 0:
+            assert_greater('max_rules', max_rules, min_rules)
         cdef IncrementalSparseBinaryPredictor predictor = IncrementalSparseBinaryPredictor.__new__(IncrementalSparseBinaryPredictor)
-        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor())
+        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(min_rules, max_rules))
         return predictor
 
 
@@ -199,13 +216,16 @@ cdef class ScorePredictor:
     Allows to predict regression scores for given query examples.
     """
 
-    def predict(self) -> np.ndarray:
+    def predict(self, uint32 max_rules) -> np.ndarray:
         """
         Obtains and returns predictions for all query examples.
 
-        :return: A `numpy.ndarray` of type `float64`, shape `(num_examples, num_labels)`, that stores the predictions
+        :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
+                            not be restricted
+        :return:            A `numpy.ndarray` of type `float64`, shape `(num_examples, num_labels)`, that stores the
+                            predictions
         """
-        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.predictor_ptr.get().predict()
+        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef float64* array = prediction_matrix_ptr.get().release()
@@ -220,15 +240,21 @@ cdef class ScorePredictor:
         """
         return self.predictor_ptr.get().canPredictIncrementally()
 
-    def create_incremental_predictor(self) -> IncrementalScorePredictor:
+    def create_incremental_predictor(self, uint32 min_rules, uint32 max_rules) -> IncrementalScorePredictor:
         """
         Creates and returns a predictor that allows to predict regression scores incrementally. If incremental
         prediction is not supported, a `RuntimeError` is thrown.
 
-        :return: A predictor that allows to predict regression scores incrementally
+        :param min_rules:   The minimum number of rules to be used for prediction. Must be at least 1
+        :param max_rules:   The maximum number of rules to be used for prediction. Must be greater than `min_rules` or
+                            0, if the number of rules should not be restricted
+        :return:            A predictor that allows to predict regression scores incrementally
         """
+        assert_greater_or_equal('min_rules', min_rules, 1)
+        if max_rules != 0:
+            assert_greater('max_rules', max_rules, min_rules)
         cdef IncrementalScorePredictor predictor = IncrementalScorePredictor.__new__(IncrementalScorePredictor)
-        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor())
+        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(min_rules, max_rules))
         return predictor
 
 
@@ -267,13 +293,16 @@ cdef class ProbabilityPredictor:
     Allows to predict probability estimates for given query examples.
     """
 
-    def predict(self) -> np.ndarray:
+    def predict(self, uint32 max_rules) -> np.ndarray:
         """
         Obtains and returns predictions for all query examples.
 
-        :return: A `numpy.ndarray` of type `float64`, shape `(num_examples, num_labels)`, that stores the predictions
+        :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
+                            not be restricted
+        :return:            A `numpy.ndarray` of type `float64`, shape `(num_examples, num_labels)`, that stores the
+                            predictions
         """
-        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.predictor_ptr.get().predict()
+        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef float64* array = prediction_matrix_ptr.get().release()
@@ -288,13 +317,19 @@ cdef class ProbabilityPredictor:
         """
         return self.predictor_ptr.get().canPredictIncrementally()
 
-    def create_incremental_predictor(self) -> IncrementalProbabilityPredictor:
+    def create_incremental_predictor(self, uint32 min_rules, uint32 max_rules) -> IncrementalProbabilityPredictor:
         """
         Creates and returns a predictor that allows to predict probability estimates incrementally. If incremental
         prediction is not supported, a `RuntimeError` is thrown.
 
-        :return: A predictor that allows to predict probability estimates incrementally
+        :param min_rules:   The minimum number of rules to be used for prediction. Must be at least 1
+        :param max_rules:   The maximum number of rules to be used for prediction. Must be greater than `min_rules` or
+                            0, if the number of rules should not be restricted
+        :return:            A predictor that allows to predict probability estimates incrementally
         """
+        assert_greater_or_equal('min_rules', min_rules, 1)
+        if max_rules != 0:
+            assert_greater('max_rules', max_rules, min_rules)
         cdef IncrementalProbabilityPredictor predictor = IncrementalProbabilityPredictor.__new__(IncrementalProbabilityPredictor)
-        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor())
+        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(min_rules, max_rules))
         return predictor

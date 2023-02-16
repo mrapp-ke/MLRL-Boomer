@@ -9,7 +9,7 @@ namespace boosting {
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
       const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-      uint32 numThreads) {
+      uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
           std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
@@ -18,20 +18,18 @@ namespace boosting {
         const RuleList* modelPtr = &model;
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-  firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+  firstprivate(predictionMatrixRawPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                const RuleList::Rule& rule = *it;
-                applyRule(rule, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                          predictionMatrixRawPtr->row_values_begin(i));
-            }
+            applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
+                       featureMatrixPtr->row_values_cend(i), predictionMatrixRawPtr->row_values_begin(i));
         }
 
         return predictionMatrixPtr;
     }
 
     static inline std::unique_ptr<DensePredictionMatrix<float64>> predictInternally(
-      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads) {
+      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads,
+      uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
@@ -40,23 +38,13 @@ namespace boosting {
         CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
 
-#pragma omp parallel for firstprivate(numExamples) firstprivate(modelPtr) firstprivate(featureMatrixPtr) \
-  firstprivate(predictionMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(modelPtr) \
+  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(maxRules) schedule(dynamic) \
+    num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
-            float32* tmpArray1 = new float32[numFeatures];
-            uint32* tmpArray2 = new uint32[numFeatures] {};
-            uint32 n = 1;
-
-            for (auto it = modelPtr->used_cbegin(); it != modelPtr->used_cend(); it++) {
-                const RuleList::Rule& rule = *it;
-                applyRuleCsr(rule, featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
-                             featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                             predictionMatrixRawPtr->row_values_begin(i), &tmpArray1[0], &tmpArray2[0], n);
-                n++;
-            }
-
-            delete[] tmpArray1;
-            delete[] tmpArray2;
+            applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                          featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                          featureMatrixPtr->row_values_cend(i), predictionMatrixRawPtr->row_values_begin(i));
         }
 
         return predictionMatrixPtr;
@@ -101,8 +89,8 @@ namespace boosting {
             /**
              * @see `IPredictor::predict`
              */
-            std::unique_ptr<DensePredictionMatrix<float64>> predict() const override {
-                return predictInternally(featureMatrix_, model_, numLabels_, numThreads_);
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(uint32 maxRules) const override {
+                return predictInternally(featureMatrix_, model_, numLabels_, numThreads_, maxRules);
             }
 
             /**
@@ -115,8 +103,8 @@ namespace boosting {
             /**
              * @see `IPredictor::createIncrementalPredictor`
              */
-            std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<float64>>> createIncrementalPredictor()
-              const override {
+            std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<float64>>> createIncrementalPredictor(
+              uint32 minRules, uint32 maxRules) const override {
                 throw std::runtime_error(
                   "The rule learner does not support to predict regression scores incrementally");
             }

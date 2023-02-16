@@ -50,11 +50,11 @@ namespace boosting {
         }
     }
 
-    static inline void applyRules(const RuleList& model,
+    static inline void applyRules(const RuleList& model, uint32 maxRules,
                                   CContiguousConstView<const float32>::value_const_iterator featureValuesBegin,
                                   CContiguousConstView<const float32>::value_const_iterator featureValuesEnd,
                                   CContiguousView<float64>::value_iterator scoreIterator) {
-        for (auto it = model.used_cbegin(); it != model.used_cend(); it++) {
+        for (auto it = model.used_cbegin(maxRules); it != model.used_cend(maxRules); it++) {
             const RuleList::Rule& rule = *it;
             applyRule(rule, featureValuesBegin, featureValuesEnd, scoreIterator);
         }
@@ -76,7 +76,7 @@ namespace boosting {
         }
     }
 
-    static inline void applyRulesCsr(const RuleList& model, uint32 numFeatures,
+    static inline void applyRulesCsr(const RuleList& model, uint32 maxRules, uint32 numFeatures,
                                      CsrConstView<const float32>::index_const_iterator featureIndicesBegin,
                                      CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
                                      CsrConstView<const float32>::value_const_iterator featureValuesBegin,
@@ -86,7 +86,7 @@ namespace boosting {
         uint32* tmpArray2 = new uint32[numFeatures] {};
         uint32 n = 1;
 
-        for (auto it = model.used_cbegin(); it != model.used_cend(); it++) {
+        for (auto it = model.used_cbegin(maxRules); it != model.used_cend(maxRules); it++) {
             const RuleList::Rule& rule = *it;
             applyRuleCsr(rule, featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd,
                          scoreIterator, &tmpArray1[0], &tmpArray2[0], n);

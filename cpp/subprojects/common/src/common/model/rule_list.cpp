@@ -62,25 +62,24 @@ bool RuleList::ConstIterator::operator==(const ConstIterator& rhs) const {
 RuleList::RuleList(bool defaultRuleTakesPrecedence)
     : numUsedRules_(0), defaultRuleTakesPrecedence_(defaultRuleTakesPrecedence) {}
 
-RuleList::const_iterator RuleList::cbegin() const {
-    return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), 0,
-                         this->getNumRules());
+RuleList::const_iterator RuleList::cbegin(uint32 maxRules) const {
+    uint32 numRules = maxRules > 0 ? std::min(this->getNumRules(), maxRules) : this->getNumRules();
+    return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), 0, numRules);
 }
 
-RuleList::const_iterator RuleList::cend() const {
-    uint32 numRules = this->getNumRules();
+RuleList::const_iterator RuleList::cend(uint32 maxRules) const {
+    uint32 numRules = maxRules > 0 ? std::min(this->getNumRules(), maxRules) : this->getNumRules();
     return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), numRules, numRules);
 }
 
-RuleList::const_iterator RuleList::used_cbegin() const {
-    return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), 0,
-                         this->getNumUsedRules());
+RuleList::const_iterator RuleList::used_cbegin(uint32 maxRules) const {
+    uint32 numRules = maxRules > 0 ? std::min(this->getNumUsedRules(), maxRules) : this->getNumUsedRules();
+    return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), 0, numRules);
 }
 
-RuleList::const_iterator RuleList::used_cend() const {
-    uint32 numUsedRules = this->getNumUsedRules();
-    return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), numUsedRules,
-                         numUsedRules);
+RuleList::const_iterator RuleList::used_cend(uint32 maxRules) const {
+    uint32 numRules = maxRules > 0 ? std::min(this->getNumUsedRules(), maxRules) : this->getNumUsedRules();
+    return ConstIterator(defaultRuleTakesPrecedence_, defaultRulePtr_.get(), ruleList_.cbegin(), numRules, numRules);
 }
 
 uint32 RuleList::getNumRules() const {

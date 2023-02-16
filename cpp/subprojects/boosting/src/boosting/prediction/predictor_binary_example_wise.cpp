@@ -71,7 +71,7 @@ namespace boosting {
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
       const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
       const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
-      uint32 numThreads) {
+      uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
           std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
@@ -85,11 +85,11 @@ namespace boosting {
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
   firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(distanceMeasurePtr) \
-    firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+    firstprivate(labelVectorSetPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
-                applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                           &scoreVector[0]);
+                applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
+                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
                                                                                *distanceMeasurePtr, *labelVectorSetPtr);
                 predictLabelVector(predictionMatrixRawPtr->row_values_begin(i), closestLabelVector);
@@ -102,7 +102,7 @@ namespace boosting {
 
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
       const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
-      uint32 numLabels, const IDistanceMeasure& distanceMeasure, uint32 numThreads) {
+      uint32 numLabels, const IDistanceMeasure& distanceMeasure, uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
@@ -117,10 +117,11 @@ namespace boosting {
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
   firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-    firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+    firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) firstprivate(maxRules) schedule(dynamic) \
+      num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
-                applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                               featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                               featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
@@ -184,9 +185,9 @@ namespace boosting {
             /**
              * @see `IPredictor::predict`
              */
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict() const override {
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
                 return predictInternally(featureMatrix_, model_, labelVectorSet_, numLabels_, *distanceMeasurePtr_,
-                                         numThreads_);
+                                         numThreads_, maxRules);
             }
 
             /**
@@ -199,8 +200,8 @@ namespace boosting {
             /**
              * @see `IPredictor::createIncrementalPredictor`
              */
-            std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<uint8>>> createIncrementalPredictor()
-              const override {
+            std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<uint8>>> createIncrementalPredictor(
+              uint32 minRules, uint32 maxRules) const override {
                 throw std::runtime_error("The rule learner does not support to predict binary labels incrementally");
             }
     };
@@ -272,7 +273,7 @@ namespace boosting {
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
       const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
       const LabelVectorSet& labelVectorSet, uint32 numLabels, const IDistanceMeasure& distanceMeasure,
-      uint32 numThreads) {
+      uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         BinaryLilMatrix lilMatrix(numExamples);
         uint32 numNonZeroElements = 0;
@@ -286,11 +287,12 @@ namespace boosting {
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
   firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-    firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+    firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) firstprivate(maxRules) schedule(dynamic) \
+      num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
-                applyRules(*modelPtr, featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                           &scoreVector[0]);
+                applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
+                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
                                                                                *distanceMeasurePtr, *labelVectorSetPtr);
                 numNonZeroElements += predictLabelVector((*predictionMatrixPtr)[i], closestLabelVector);
@@ -303,7 +305,7 @@ namespace boosting {
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
       const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
-      uint32 numLabels, const IDistanceMeasure& distanceMeasure, uint32 numThreads) {
+      uint32 numLabels, const IDistanceMeasure& distanceMeasure, uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         BinaryLilMatrix lilMatrix(numExamples);
@@ -318,10 +320,11 @@ namespace boosting {
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
   firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-     firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) schedule(dynamic) num_threads(numThreads)
+     firstprivate(distanceMeasurePtr) firstprivate(labelVectorSetPtr) firstprivate(maxRules) schedule(dynamic) \
+       num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
-                applyRulesCsr(*modelPtr, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                               featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                               featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
@@ -385,9 +388,9 @@ namespace boosting {
             /**
              * @see `IPredictor::predict`
              */
-            std::unique_ptr<BinarySparsePredictionMatrix> predict() const override {
+            std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
                 return predictSparseInternally(featureMatrix_, model_, labelVectorSet_, numLabels_,
-                                               *distanceMeasurePtr_, numThreads_);
+                                               *distanceMeasurePtr_, numThreads_, maxRules);
             }
 
             /**
@@ -400,8 +403,8 @@ namespace boosting {
             /**
              * @see `IPredictor::createIncrementalPredictor`
              */
-            std::unique_ptr<IIncrementalPredictor<BinarySparsePredictionMatrix>> createIncrementalPredictor()
-              const override {
+            std::unique_ptr<IIncrementalPredictor<BinarySparsePredictionMatrix>> createIncrementalPredictor(
+              uint32 minRules, uint32 maxRules) const override {
                 throw std::runtime_error(
                   "The rule learner does not support to predict sparse binary labels incrementally");
             }

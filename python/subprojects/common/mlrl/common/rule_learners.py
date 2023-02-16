@@ -6,6 +6,7 @@ Provides base classes for implementing single- or multi-label rule learning algo
 import logging as log
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import Optional
 
 import numpy as np
 from mlrl.common.arrays import enforce_dense, enforce_2d
@@ -16,12 +17,16 @@ from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatr
 from mlrl.common.cython.label_space_info import LabelSpaceInfo
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.cython.rule_model import RuleModel
+from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal
 from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
 from mlrl.common.format import format_enum_values
 from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
-from typing import Optional
+
+KWARG_MIN_RULES = 'min_rules'
+
+KWARG_MAX_RULES = 'max_rules'
 
 
 class SparsePolicy(Enum):
@@ -157,10 +162,13 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         functionality.
         """
 
-        def __init__(self, incremental_predictor):
+        def __init__(self, feature_matrix: RowWiseFeatureMatrix, incremental_predictor):
             """
+            :param feature_matrix:          A `RowWiseFeatureMatrix` that stores the feature values of the query
+                                            examples
             :param incremental_predictor:   The incremental predictor to be used for obtaining predictions
             """
+            self.feature_matrix = feature_matrix
             self.incremental_predictor = incremental_predictor
 
         def has_next(self) -> bool:
@@ -178,123 +186,54 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         functionality.
         """
 
-        def __init__(self, incremental_predictor):
-            super().__init__(incremental_predictor)
+        def __init__(self, feature_matrix: RowWiseFeatureMatrix, incremental_predictor):
+            super().__init__(feature_matrix, incremental_predictor)
 
         def apply_next(self, step_size: int):
             return create_sklearn_compatible_probabilities(super().apply_next(step_size))
 
-    class IncrementalPredictor(IncrementalLearner.IncrementalPredictor, ABC):
+    class IncrementalPredictor(IncrementalLearner.IncrementalPredictor):
         """
-        A base class for all classes that allow to obtain incremental predictions from a `RuleLearner`.
+        Allows to obtain predictions from a `RuleLearner` incrementally.
         """
 
-        def __init__(self, model: RuleModel):
+        def __init__(self, feature_matrix: RowWiseFeatureMatrix, model: RuleModel, min_rules: int, max_rules: int,
+                     predictor):
             """
-            :param model: The `RuleModel` to be used for obtaining predictions
+            :param feature_matrix:  A `RowWiseFeatureMatrix` that stores the feature values of the query examples
+            :param model:           The model to be used for obtaining predictions
+            :param min_rules:       The minimum number of rules to be used for prediction. Must be at least 1
+            :param max_rules:       The maximum number of rules to be used for prediction. Must be greater than
+                                    `min_rules` or 0, if the number of rules should not be restricted
+            :param predictor:       The predictor to be used for obtaining predictions
             """
-            self.model = model
-            self.num_used_rules = 0
+            assert_greater_or_equal('min_rules', min_rules, 1)
+            if max_rules != 0:
+                assert_greater('max_rules', max_rules, min_rules)
+            self.feature_matrix = feature_matrix
+            self.num_total_rules = min(model.get_num_used_rules(),
+                                       max_rules) if max_rules > 0 else model.get_num_used_rules()
+            self.predictor = predictor
+            self.n = min_rules - 1
 
         def get_num_next(self) -> int:
-            return self.model.get_num_used_rules() - self.num_used_rules
+            return self.num_total_rules - self.n
 
         def apply_next(self, step_size: int):
-            if step_size < 1:
-                raise ValueError('step_size must be at least 1')
-            model = self.model
-            num_total_rules = model.get_num_used_rules()
-            self.num_used_rules = min(num_total_rules, self.num_used_rules + step_size)
-            model.set_num_used_rules(self.num_used_rules)
-            prediction = self._predict(model)
-            model.set_num_used_rules(num_total_rules)
-            return prediction
-
-        @abstractmethod
-        def _predict(self, model: RuleModel):
-            """
-            Must be implemented by subclasses in order to obtain predictions from a given `RuleModel`.
-
-            :param model:   The `RuleModel` to be used for obtaining the predictions
-            :return:        A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that
-                            stores the predictions for individual examples and labels
-            """
-            pass
-
-    class IncrementalLabelPredictor(IncrementalPredictor):
-        """
-        Allows to obtain binary predictions from a `RuleLearner` incrementally.
-        """
-
-        def __init__(self, learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
-                     num_labels: int, feature_matrix: RowWiseFeatureMatrix, sparse_prediction: bool):
-            """
-            :param learner:             The `RuleLearnerWrapper` to be used for obtaining predictions
-            :param model:               The `RuleModel` to be used for obtaining predictions
-            :param label_space_info:    The `LabelSpaceInfo` to be used for obtaining predictions
-            :param num_labels:          The number of labels to predict for
-            :param feature_matrix:      A `RowWiseFeatureMatrix` that stores the feature values of the query examples
-            :param sparse_prediction:   True, if sparse predictions should be obtained, False otherwise
-            """
-            super().__init__(model)
-            self.learner = learner
-            self.label_space_info = label_space_info
-            self.num_labels = num_labels
-            self.feature_matrix = feature_matrix
-            self.sparse_prediction = sparse_prediction
-
-        def _predict(self, model: RuleModel):
-            return create_binary_predictor(self.learner, model, self.label_space_info, self.num_labels,
-                                           self.feature_matrix, self.sparse_prediction).predict()
-
-    class IncrementalScorePredictor(IncrementalPredictor):
-        """
-        Allows to obtain regression scores from a `RuleLearner` incrementally.
-        """
-
-        def __init__(self, learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
-                     num_labels: int, feature_matrix: RowWiseFeatureMatrix):
-            """
-            :param learner:             The `RuleLearnerWrapper` to be used for obtaining predictions
-            :param model:               The `RuleModel` to be used for obtaining predictions
-            :param label_space_info:    The `LabelSpaceInfo` to be used for obtaining predictions
-            :param num_labels:          The number of labels to predict for
-            :param feature_matrix:      A `RowWiseFeatureMatrix` that stores the feature values of the query examples
-            """
-            super().__init__(model)
-            self.learner = learner
-            self.label_space_info = label_space_info
-            self.num_labels = num_labels
-            self.feature_matrix = feature_matrix
-
-        def _predict(self, model: RuleModel):
-            return create_score_predictor(self.learner, model, self.label_space_info, self.num_labels,
-                                          self.feature_matrix).predict()
+            assert_greater_or_equal('min_rules', step_size, 1)
+            self.n = min(self.num_total_rules, self.n + step_size)
+            return self.predictor.predict(self.n)
 
     class IncrementalProbabilityPredictor(IncrementalPredictor):
         """
         Allows to obtain probability estimates from a `RuleLearner` incrementally.
         """
 
-        def __init__(self, learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
-                     num_labels: int, feature_matrix: RowWiseFeatureMatrix):
-            """
-            :param learner:             The `RuleLearnerWrapper` to be used for obtaining predictions
-            :param model:               The `RuleModel` to be used for obtaining predictions
-            :param label_space_info:    The `LabelSpaceInfo` to be used for obtaining predictions
-            :param num_labels:          The number of labels to predict for
-            :param feature_matrix:      A `RowWiseFeatureMatrix` that stores the feature values of the query examples
-            """
-            super().__init__(model)
-            self.learner = learner
-            self.label_space_info = label_space_info
-            self.num_labels = num_labels
-            self.feature_matrix = feature_matrix
+        def __init__(self, feature_matrix: RowWiseFeatureMatrix, model: RuleModel, max_rules, predictor):
+            super().__init__(feature_matrix, model, max_rules, predictor)
 
-        def _predict(self, model: RuleModel):
-            return create_sklearn_compatible_probabilities(
-                create_probability_predictor(self.learner, model, self.label_space_info, self.num_labels,
-                                             self.feature_matrix).predict())
+        def apply_next(self, step_size: int):
+            return create_sklearn_compatible_probabilities(super().apply_next(step_size))
 
     def __init__(self, random_state: int, feature_format: str, label_format: str, prediction_format: str):
         """
@@ -401,12 +340,18 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         if learner.can_predict_binary(feature_matrix, num_labels):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
             return create_binary_predictor(learner, self.model_, self.label_space_info_, num_labels, feature_matrix,
-                                           sparse_predictions).predict()
+                                           sparse_predictions).predict(max_rules)
         else:
             return super()._predict_binary(x, **kwargs)
 
     def _predict_binary_incrementally(self, x, **kwargs):
+        """
+        :keyword min_rules: The minimum number of rules to be used for prediction. Must be at least 1
+        :keyword max_rules: The maximum number of rules to be used for prediction. Must be greater than `max_rules` or
+                            0, if the number of rules should not be restricted
+        """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
@@ -418,12 +363,14 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             label_space_info = self.label_space_info_
             predictor = create_binary_predictor(learner, model, label_space_info, num_labels, feature_matrix,
                                                 sparse_predictions)
+            min_rules = int(kwargs.get(KWARG_MIN_RULES, 1))
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
-                return RuleLearner.NativeIncrementalPredictor(predictor.create_incremental_predictor())
+                return RuleLearner.NativeIncrementalPredictor(
+                    feature_matrix, predictor.create_incremental_predictor(min_rules, max_rules))
             else:
-                return RuleLearner.IncrementalLabelPredictor(learner, model, label_space_info, num_labels,
-                                                             feature_matrix, sparse_predictions)
+                return RuleLearner.IncrementalPredictor(feature_matrix, model, min_rules, max_rules, predictor)
         else:
             return super()._predict_binary_incrementally(x, **kwargs)
 
@@ -434,12 +381,18 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         if learner.can_predict_scores(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted regression scores')
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
             return create_score_predictor(learner, self.model_, self.label_space_info_, num_labels,
-                                          feature_matrix).predict()
+                                          feature_matrix).predict(max_rules)
         else:
             return super()._predict_scores(x, **kwargs)
 
     def _predict_scores_incrementally(self, x, **kwargs):
+        """
+        :keyword min_rules: The minimum number of rules to be used for prediction. Must be at least 1
+        :keyword max_rules: The maximum number of rules to be used for prediction. Must be greater than `max_rules` or
+                            0, if the number of rules should not be restricted
+        """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
@@ -449,12 +402,14 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             model = self.model_
             label_space_info = self.label_space_info_
             predictor = create_score_predictor(learner, model, label_space_info, num_labels, feature_matrix)
+            min_rules = int(kwargs.get(KWARG_MIN_RULES, 1))
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
-                return RuleLearner.NativeIncrementalPredictor(predictor.create_incremental_predictor())
+                return RuleLearner.NativeIncrementalPredictor(
+                    feature_matrix, predictor.create_incremental_predictor(min_rules, max_rules))
             else:
-                return RuleLearner.IncrementalScorePredictor(learner, model, label_space_info, num_labels,
-                                                             feature_matrix)
+                return RuleLearner.IncrementalPredictor(feature_matrix, model, min_rules, max_rules, predictor)
         else:
             return super()._predict_scores_incrementally(x, **kwargs)
 
@@ -465,13 +420,19 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
 
         if learner.can_predict_probabilities(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted probability estimates')
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
             return create_sklearn_compatible_probabilities(
                 create_probability_predictor(learner, self.model_, self.label_space_info_, num_labels,
-                                             feature_matrix).predict())
+                                             feature_matrix).predict(max_rules))
         else:
             return super()._predict_proba(x, **kwargs)
 
     def _predict_proba_incrementally(self, x, **kwargs):
+        """
+        :keyword min_rules: The minimum number of rules to be used for prediction. Must be at least 1
+        :keyword max_rules: The maximum number of rules to be used for prediction. Must be greater than `max_rules` or
+                            0, if the number of rules should not be restricted
+        """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x)
         num_labels = self.num_labels_
@@ -481,12 +442,15 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             model = self.model_
             label_space_info = self.label_space_info_
             predictor = create_probability_predictor(learner, model, label_space_info, num_labels, feature_matrix)
+            min_rules = int(kwargs.get(KWARG_MIN_RULES, 1))
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
-                return RuleLearner.NativeIncrementalProbabilityPredictor(predictor.create_incremental_predictor())
+                return RuleLearner.NativeIncrementalProbabilityPredictor(
+                    feature_matrix, predictor.create_incremental_predictor(min_rules, max_rules))
             else:
-                return RuleLearner.IncrementalProbabilityPredictor(learner, model, label_space_info, num_labels,
-                                                                   feature_matrix)
+                return RuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, min_rules, max_rules,
+                                                                   predictor)
         else:
             return super().predict_proba_incrementally(x, **kwargs)
 
