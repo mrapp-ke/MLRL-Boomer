@@ -121,9 +121,9 @@ namespace boosting {
       num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
-                applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
-                              featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                              featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                applyRules(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                           featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
                                                                                *distanceMeasurePtr, *labelVectorSetPtr);
                 predictLabelVector(predictionMatrixRawPtr->row_values_begin(i), closestLabelVector);
@@ -324,9 +324,9 @@ namespace boosting {
        num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 float64* scoreVector = new float64[numLabels] {};
-                applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
-                              featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                              featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+                applyRules(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                           featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 const LabelVector& closestLabelVector = findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels],
                                                                                *distanceMeasurePtr, *labelVectorSetPtr);
                 numNonZeroElements += predictLabelVector((*predictionMatrixPtr)[i], closestLabelVector);

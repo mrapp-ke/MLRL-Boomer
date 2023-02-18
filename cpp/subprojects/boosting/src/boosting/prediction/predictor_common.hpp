@@ -8,7 +8,7 @@
 
 namespace boosting {
 
-    static inline void applyCompleteHead(const CompleteHead& head, CContiguousView<float64>::value_iterator iterator) {
+    static inline void applyHead(const CompleteHead& head, CContiguousView<float64>::value_iterator iterator) {
         CompleteHead::score_const_iterator scoreIterator = head.scores_cbegin();
         uint32 numElements = head.getNumElements();
 
@@ -17,7 +17,7 @@ namespace boosting {
         }
     }
 
-    static inline void applyPartialHead(const PartialHead& head, CContiguousView<float64>::value_iterator iterator) {
+    static inline void applyHead(const PartialHead& head, CContiguousView<float64>::value_iterator iterator) {
         PartialHead::score_const_iterator scoreIterator = head.scores_cbegin();
         PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
@@ -30,10 +30,10 @@ namespace boosting {
 
     static inline void applyHead(const IHead& head, CContiguousView<float64>::value_iterator scoreIterator) {
         auto completeHeadVisitor = [=](const CompleteHead& head) {
-            applyCompleteHead(head, scoreIterator);
+            applyHead(head, scoreIterator);
         };
         auto partialHeadVisitor = [=](const PartialHead& head) {
-            applyPartialHead(head, scoreIterator);
+            applyHead(head, scoreIterator);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
@@ -60,13 +60,13 @@ namespace boosting {
         }
     }
 
-    static inline void applyRuleCsr(const RuleList::Rule& rule,
-                                    CsrConstView<const float32>::index_const_iterator featureIndicesBegin,
-                                    CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
-                                    CsrConstView<const float32>::value_const_iterator featureValuesBegin,
-                                    CsrConstView<const float32>::value_const_iterator featureValuesEnd,
-                                    CContiguousView<float64>::value_iterator scoreIterator, float32* tmpArray1,
-                                    uint32* tmpArray2, uint32 n) {
+    static inline void applyRule(const RuleList::Rule& rule,
+                                 CsrConstView<const float32>::index_const_iterator featureIndicesBegin,
+                                 CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
+                                 CsrConstView<const float32>::value_const_iterator featureValuesBegin,
+                                 CsrConstView<const float32>::value_const_iterator featureValuesEnd,
+                                 CContiguousView<float64>::value_iterator scoreIterator, float32* tmpArray1,
+                                 uint32* tmpArray2, uint32 n) {
         const IBody& body = rule.getBody();
 
         if (body.covers(featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd, tmpArray1,
@@ -76,20 +76,20 @@ namespace boosting {
         }
     }
 
-    static inline void applyRulesCsr(const RuleList& model, uint32 maxRules, uint32 numFeatures,
-                                     CsrConstView<const float32>::index_const_iterator featureIndicesBegin,
-                                     CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
-                                     CsrConstView<const float32>::value_const_iterator featureValuesBegin,
-                                     CsrConstView<const float32>::value_const_iterator featureValuesEnd,
-                                     CContiguousView<float64>::value_iterator scoreIterator) {
+    static inline void applyRules(const RuleList& model, uint32 maxRules, uint32 numFeatures,
+                                  CsrConstView<const float32>::index_const_iterator featureIndicesBegin,
+                                  CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
+                                  CsrConstView<const float32>::value_const_iterator featureValuesBegin,
+                                  CsrConstView<const float32>::value_const_iterator featureValuesEnd,
+                                  CContiguousView<float64>::value_iterator scoreIterator) {
         float32* tmpArray1 = new float32[numFeatures];
         uint32* tmpArray2 = new uint32[numFeatures] {};
         uint32 n = 1;
 
         for (auto it = model.used_cbegin(maxRules); it != model.used_cend(maxRules); it++) {
             const RuleList::Rule& rule = *it;
-            applyRuleCsr(rule, featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd,
-                         scoreIterator, &tmpArray1[0], &tmpArray2[0], n);
+            applyRule(rule, featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd, scoreIterator,
+                      &tmpArray1[0], &tmpArray2[0], n);
             n++;
         }
 
