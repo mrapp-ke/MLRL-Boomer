@@ -42,9 +42,9 @@ namespace boosting {
   firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(maxRules) schedule(dynamic) \
     num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
-            applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
-                          featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                          featureMatrixPtr->row_values_cend(i), predictionMatrixRawPtr->row_values_begin(i));
+            applyRules(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                       featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                       featureMatrixPtr->row_values_cend(i), predictionMatrixRawPtr->row_values_begin(i));
         }
 
         return predictionMatrixPtr;

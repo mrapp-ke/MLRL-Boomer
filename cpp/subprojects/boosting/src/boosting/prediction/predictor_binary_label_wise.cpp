@@ -74,9 +74,9 @@ namespace boosting {
     firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
-            applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
-                          featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                          featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+            applyRules(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                       featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                       featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
             applyThreshold(&scoreVector[0], predictionMatrixRawPtr->row_values_begin(i), numLabels, threshold);
             delete[] scoreVector;
         }
@@ -235,9 +235,9 @@ namespace boosting {
     firstprivate(predictionMatrixPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
             float64* scoreVector = new float64[numLabels] {};
-            applyRulesCsr(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
-                          featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                          featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
+            applyRules(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
+                       featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
+                       featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
             numNonZeroElements += applyThreshold(&scoreVector[0], (*predictionMatrixPtr)[i], numLabels, threshold);
             delete[] scoreVector;
         }
