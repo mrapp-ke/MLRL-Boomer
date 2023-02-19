@@ -11,21 +11,21 @@
 
 namespace seco {
 
-    static inline void applyHead(const CompleteHead& head, CContiguousView<uint8>::value_iterator begin,
+    static inline void applyHead(const CompleteHead& head, CContiguousView<uint8>::value_iterator iterator,
                                  BitVector& mask) {
-        CompleteHead::score_const_iterator iterator = head.scores_cbegin();
+        CompleteHead::score_const_iterator scoreIterator = head.scores_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
             if (!mask[i]) {
-                uint8 prediction = iterator[i] > 0;
-                begin[i] = prediction;
+                uint8 prediction = scoreIterator[i] > 0;
+                iterator[i] = prediction;
                 mask.set(i, true);
             }
         }
     }
 
-    static inline void applyHead(const PartialHead& head, CContiguousView<uint8>::value_iterator begin,
+    static inline void applyHead(const PartialHead& head, CContiguousView<uint8>::value_iterator iterator,
                                  BitVector& mask) {
         PartialHead::score_const_iterator scoreIterator = head.scores_cbegin();
         PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
@@ -36,7 +36,7 @@ namespace seco {
 
             if (!mask[index]) {
                 uint8 prediction = scoreIterator[i] > 0;
-                begin[index] = prediction;
+                iterator[index] = prediction;
                 mask.set(index, true);
             }
         }
