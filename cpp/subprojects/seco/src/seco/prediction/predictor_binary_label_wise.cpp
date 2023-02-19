@@ -42,13 +42,13 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const IHead& head, CContiguousView<uint8>& predictionMatrix, BitVector& mask,
-                                 uint32 row) {
-        auto completeHeadVisitor = [&, row](const CompleteHead& head) {
-            applyHead(head, predictionMatrix.row_values_begin(row), mask);
+    static inline void applyHead(const IHead& head, CContiguousView<uint8>::value_iterator scoreIterator,
+                                 BitVector& mask) {
+        auto completeHeadVisitor = [&](const CompleteHead& head) {
+            applyHead(head, scoreIterator, mask);
         };
-        auto partialHeadVisitor = [&, row](const PartialHead& head) {
-            applyHead(head, predictionMatrix.row_values_begin(row), mask);
+        auto partialHeadVisitor = [&](const PartialHead& head) {
+            applyHead(head, scoreIterator, mask);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
@@ -158,7 +158,7 @@ namespace seco {
 
                 if (body.covers(featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i))) {
                     const IHead& head = rule.getHead();
-                    applyHead(head, *predictionMatrixRawPtr, mask, i);
+                    applyHead(head, predictionMatrixRawPtr->row_values_begin(i), mask);
                 }
             }
         }
@@ -194,7 +194,7 @@ namespace seco {
                                 featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
                                 &tmpArray1[0], &tmpArray2[0], n)) {
                     const IHead& head = rule.getHead();
-                    applyHead(head, *predictionMatrixRawPtr, mask, i);
+                    applyHead(head, predictionMatrixRawPtr->row_values_begin(i), mask);
                 }
 
                 n++;
