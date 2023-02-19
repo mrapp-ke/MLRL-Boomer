@@ -53,89 +53,6 @@ namespace seco {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    template<typename ScoreIterator, typename IndexIterator>
-    static inline uint32 applyHead(ScoreIterator scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
-                                   BinaryLilMatrix::row row, uint32 numLabels) {
-        if (scoresBegin != scoresEnd) {
-            uint32 numElements = row.size();
-
-            if (numElements > 0) {
-                BinaryLilMatrix::iterator end = row.end();
-                BinaryLilMatrix::iterator start = std::lower_bound(row.begin(), end, indexIterator[*scoresBegin]);
-                uint32 bufferSize = end - start;
-                uint32* buffer = new uint32[bufferSize];
-
-                for (uint32 i = 0; i < bufferSize; i++) {
-                    buffer[i] = start[i];
-                }
-
-                uint32 i = 0;
-
-                for (uint32 n = 0; n < bufferSize; n++) {
-                    uint32 index1 = i < bufferSize ? buffer[i] : numLabels;
-                    uint32 index2 = scoresBegin != scoresEnd ? indexIterator[*scoresBegin] : numLabels;
-
-                    if (index1 < index2) {
-                        start[n] = index1;
-                        i++;
-                    } else if (index1 == index2) {
-                        start[n] = index1;
-                        i++;
-                        scoresBegin++;
-                    } else {
-                        start[n] = index2;
-                        scoresBegin++;
-                    }
-                }
-
-                while (i < bufferSize) {
-                    uint32 index1 = buffer[i];
-                    uint32 index2 = scoresBegin != scoresEnd ? indexIterator[*scoresBegin] : numLabels;
-
-                    if (index1 < index2) {
-                        row.emplace_back(index1);
-                        i++;
-                    } else if (index1 == index2) {
-                        row.emplace_back(index1);
-                        i++;
-                        scoresBegin++;
-                    } else {
-                        row.emplace_back(index2);
-                        scoresBegin++;
-                    }
-                }
-
-                delete[] buffer;
-            }
-
-            for (; scoresBegin != scoresEnd; scoresBegin++) {
-                row.emplace_back(indexIterator[*scoresBegin]);
-            }
-
-            return row.size() - numElements;
-        }
-
-        return 0;
-    }
-
-    static inline uint32 applyHead(const IHead& head, BinaryLilMatrix::row row, uint32 numLabels) {
-        uint32 numNonZeroElements;
-        auto completeHeadVisitor = [&](const CompleteHead& head) mutable {
-            numNonZeroElements =
-              applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
-                        make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0),
-                        row, numLabels);
-        };
-        auto partialHeadVisitor = [&](const PartialHead& head) mutable {
-            numNonZeroElements =
-              applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
-                        make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()),
-                        head.indices_cbegin(), row, numLabels);
-        };
-        head.visit(completeHeadVisitor, partialHeadVisitor);
-        return numNonZeroElements;
-    }
-
     static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
       const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
       uint32 numThreads, uint32 maxRules) {
@@ -297,6 +214,89 @@ namespace seco {
                   featureMatrix, model, numLabels, numThreads_);
             }
     };
+
+    template<typename ScoreIterator, typename IndexIterator>
+    static inline uint32 applyHead(ScoreIterator scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
+                                   BinaryLilMatrix::row row, uint32 numLabels) {
+        if (scoresBegin != scoresEnd) {
+            uint32 numElements = row.size();
+
+            if (numElements > 0) {
+                BinaryLilMatrix::iterator end = row.end();
+                BinaryLilMatrix::iterator start = std::lower_bound(row.begin(), end, indexIterator[*scoresBegin]);
+                uint32 bufferSize = end - start;
+                uint32* buffer = new uint32[bufferSize];
+
+                for (uint32 i = 0; i < bufferSize; i++) {
+                    buffer[i] = start[i];
+                }
+
+                uint32 i = 0;
+
+                for (uint32 n = 0; n < bufferSize; n++) {
+                    uint32 index1 = i < bufferSize ? buffer[i] : numLabels;
+                    uint32 index2 = scoresBegin != scoresEnd ? indexIterator[*scoresBegin] : numLabels;
+
+                    if (index1 < index2) {
+                        start[n] = index1;
+                        i++;
+                    } else if (index1 == index2) {
+                        start[n] = index1;
+                        i++;
+                        scoresBegin++;
+                    } else {
+                        start[n] = index2;
+                        scoresBegin++;
+                    }
+                }
+
+                while (i < bufferSize) {
+                    uint32 index1 = buffer[i];
+                    uint32 index2 = scoresBegin != scoresEnd ? indexIterator[*scoresBegin] : numLabels;
+
+                    if (index1 < index2) {
+                        row.emplace_back(index1);
+                        i++;
+                    } else if (index1 == index2) {
+                        row.emplace_back(index1);
+                        i++;
+                        scoresBegin++;
+                    } else {
+                        row.emplace_back(index2);
+                        scoresBegin++;
+                    }
+                }
+
+                delete[] buffer;
+            }
+
+            for (; scoresBegin != scoresEnd; scoresBegin++) {
+                row.emplace_back(indexIterator[*scoresBegin]);
+            }
+
+            return row.size() - numElements;
+        }
+
+        return 0;
+    }
+
+    static inline uint32 applyHead(const IHead& head, BinaryLilMatrix::row row, uint32 numLabels) {
+        uint32 numNonZeroElements;
+        auto completeHeadVisitor = [&](const CompleteHead& head) mutable {
+            numNonZeroElements =
+              applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
+                        make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0),
+                        row, numLabels);
+        };
+        auto partialHeadVisitor = [&](const PartialHead& head) mutable {
+            numNonZeroElements =
+              applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
+                        make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()),
+                        head.indices_cbegin(), row, numLabels);
+        };
+        head.visit(completeHeadVisitor, partialHeadVisitor);
+        return numNonZeroElements;
+    }
 
     static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
       const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
