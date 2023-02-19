@@ -8,14 +8,13 @@
 
 namespace boosting {
 
-    static inline void applyTransformationFunction(CContiguousConstView<float64>::value_const_iterator originalIterator,
-                                                   CContiguousView<float64>::value_iterator transformedIterator,
+    static inline void applyTransformationFunction(CContiguousView<float64>::value_iterator scoreIterator,
                                                    uint32 numElements,
                                                    const IProbabilityFunction& probabilityFunction) {
         for (uint32 i = 0; i < numElements; i++) {
-            float64 originalValue = originalIterator[i];
+            float64 originalValue = scoreIterator[i];
             float64 transformedValue = probabilityFunction.transform(originalValue);
-            transformedIterator[i] = transformedValue;
+            scoreIterator[i] = transformedValue;
         }
     }
 
@@ -24,7 +23,7 @@ namespace boosting {
       const IProbabilityFunction& probabilityFunction, uint32 numThreads, uint32 maxRules) {
         uint32 numExamples = featureMatrix.getNumRows();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
-          std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
+          std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
         const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
         CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
@@ -34,12 +33,10 @@ namespace boosting {
   firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
     firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
-            float64* scoreVector = new float64[numLabels] {};
+            CContiguousView<float64>::value_iterator scoreIterator = predictionMatrixRawPtr->row_values_begin(i);
             applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
-                       featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-            applyTransformationFunction(&scoreVector[0], predictionMatrixRawPtr->row_values_begin(i), numLabels,
-                                        *probabilityFunctionPtr);
-            delete[] scoreVector;
+                       featureMatrixPtr->row_values_cend(i), scoreIterator);
+            applyTransformationFunction(scoreIterator, numLabels, *probabilityFunctionPtr);
         }
 
         return predictionMatrixPtr;
@@ -51,7 +48,7 @@ namespace boosting {
         uint32 numExamples = featureMatrix.getNumRows();
         uint32 numFeatures = featureMatrix.getNumCols();
         std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
-          std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels);
+          std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
         const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
         CContiguousView<float64>* predictionMatrixRawPtr = predictionMatrixPtr.get();
         const RuleList* modelPtr = &model;
@@ -61,13 +58,11 @@ namespace boosting {
   firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
     firstprivate(probabilityFunctionPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
         for (int64 i = 0; i < numExamples; i++) {
-            float64* scoreVector = new float64[numLabels] {};
+            CContiguousView<float64>::value_iterator scoreIterator = predictionMatrixRawPtr->row_values_begin(i);
             applyRules(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                        featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                       featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-            applyTransformationFunction(&scoreVector[0], predictionMatrixRawPtr->row_values_begin(i), numLabels,
-                                        *probabilityFunctionPtr);
-            delete[] scoreVector;
+                       featureMatrixPtr->row_values_cend(i), scoreIterator);
+            applyTransformationFunction(scoreIterator, numLabels, *probabilityFunctionPtr);
         }
 
         return predictionMatrixPtr;
