@@ -1,5 +1,6 @@
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
 
+#include "common/data/arrays.hpp"
 #include "common/math/math.hpp"
 #include "omp.h"
 #include "predictor_common.hpp"
@@ -9,7 +10,7 @@
 
 namespace boosting {
 
-    static inline void calculateMarginalizedProbabilities(CContiguousView<float64>::value_iterator predictionIterator,
+    static inline void calculateMarginalizedProbabilities(CContiguousView<float64>::value_iterator scoreIterator,
                                                           const float64* jointProbabilities,
                                                           float64 sumOfJointProbabilities,
                                                           const LabelVectorSet& labelVectorSet) {
@@ -24,22 +25,22 @@ namespace boosting {
 
             for (uint32 j = 0; j < numRelevantLabels; j++) {
                 uint32 labelIndex = labelIndexIterator[j];
-                predictionIterator[labelIndex] += normalizedJointProbability;
+                scoreIterator[labelIndex] += normalizedJointProbability;
             }
 
             i++;
         }
     }
 
-    static inline void predictMarginalizedProbabilities(const float64* scoresBegin, const float64* scoresEnd,
-                                                        CContiguousView<float64>::value_iterator predictionIterator,
-                                                        const IProbabilityFunction& probabilityFunction,
-                                                        const LabelVectorSet& labelVectorSet, uint32 numLabelVectors) {
+    static inline void predictMarginalizedProbabilities(CContiguousView<float64>::value_iterator scoreIterator,
+                                                        uint32 numLabels, const LabelVectorSet& labelVectorSet,
+                                                        uint32 numLabelVectors,
+                                                        const IProbabilityFunction& probabilityFunction) {
         float64* jointProbabilities = new float64[numLabelVectors];
-        float64 sumOfJointProbabilities =
-          calculateJointProbabilities(scoresBegin, scoresEnd, jointProbabilities, probabilityFunction, labelVectorSet);
-        calculateMarginalizedProbabilities(predictionIterator, jointProbabilities, sumOfJointProbabilities,
-                                           labelVectorSet);
+        float64 sumOfJointProbabilities = calculateJointProbabilities(scoreIterator, numLabels, jointProbabilities,
+                                                                      probabilityFunction, labelVectorSet);
+        setArrayToZeros(scoreIterator, numLabels);
+        calculateMarginalizedProbabilities(scoreIterator, jointProbabilities, sumOfJointProbabilities, labelVectorSet);
         delete[] jointProbabilities;
     }
 
@@ -64,13 +65,11 @@ namespace boosting {
     firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) firstprivate(maxRules) schedule(dynamic) \
       num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
-                float64* scoreVector = new float64[numLabels] {};
+                CContiguousView<float64>::value_iterator scoreIterator = predictionMatrixRawPtr->row_values_begin(i);
                 applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
-                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                predictMarginalizedProbabilities(&scoreVector[0], &scoreVector[numLabels],
-                                                 predictionMatrixRawPtr->row_values_begin(i), *probabilityFunctionPtr,
-                                                 *labelVectorSetPtr, numLabelVectors);
-                delete[] scoreVector;
+                           featureMatrixPtr->row_values_cend(i), scoreIterator);
+                predictMarginalizedProbabilities(scoreIterator, numLabels, *labelVectorSetPtr, numLabelVectors,
+                                                 *probabilityFunctionPtr);
             }
         }
 
@@ -98,14 +97,12 @@ namespace boosting {
     firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
       firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
-                float64* scoreVector = new float64[numLabels] {};
+                CContiguousView<float64>::value_iterator scoreIterator = predictionMatrixRawPtr->row_values_begin(i);
                 applyRules(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                            featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                predictMarginalizedProbabilities(&scoreVector[0], &scoreVector[numLabels],
-                                                 predictionMatrixRawPtr->row_values_begin(i), *probabilityFunctionPtr,
-                                                 *labelVectorSetPtr, numLabelVectors);
-                delete[] scoreVector;
+                           featureMatrixPtr->row_values_cend(i), scoreIterator);
+                predictMarginalizedProbabilities(scoreIterator, numLabels, *labelVectorSetPtr, numLabelVectors,
+                                                 *probabilityFunctionPtr);
             }
         }
 

@@ -120,13 +120,13 @@ namespace boosting {
     }
 
     template<typename Prediction>
-    static inline uint32 predictGfm(const float64* scoresBegin, const float64* scoresEnd, Prediction prediction,
-                                    uint32 numLabels, const IProbabilityFunction& probabilityFunction,
+    static inline uint32 predictGfm(const float64* scoresBegin, Prediction prediction, uint32 numLabels,
+                                    const IProbabilityFunction& probabilityFunction,
                                     const LabelVectorSet& labelVectorSet, uint32 numLabelVectors,
                                     uint32 maxLabelCardinality) {
         float64* jointProbabilities = new float64[numLabelVectors];
         float64 sumOfJointProbabilities =
-          calculateJointProbabilities(scoresBegin, scoresEnd, jointProbabilities, probabilityFunction, labelVectorSet);
+          calculateJointProbabilities(scoresBegin, numLabels, jointProbabilities, probabilityFunction, labelVectorSet);
         SparseSetMatrix<float64> marginalProbabilities(numLabels, maxLabelCardinality);
         float64 bestQuality = calculateMarginalizedProbabilities(marginalProbabilities, numLabels, jointProbabilities,
                                                                  sumOfJointProbabilities, labelVectorSet);
@@ -179,8 +179,8 @@ namespace boosting {
                 float64* scoreVector = new float64[numLabels] {};
                 applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
                            featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                predictGfm(scoreVector, &scoreVector[numLabels], predictionMatrixRawPtr->row_values_begin(i), numLabels,
-                           *probabilityFunctionPtr, *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
+                predictGfm(scoreVector, predictionMatrixRawPtr->row_values_begin(i), numLabels, *probabilityFunctionPtr,
+                           *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
                 delete[] scoreVector;
             }
         }
@@ -214,8 +214,8 @@ namespace boosting {
                 applyRules(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
                            featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                            featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                predictGfm(scoreVector, &scoreVector[numLabels], predictionMatrixRawPtr->row_values_begin(i), numLabels,
-                           *probabilityFunctionPtr, *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
+                predictGfm(scoreVector, predictionMatrixRawPtr->row_values_begin(i), numLabels, *probabilityFunctionPtr,
+                           *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
                 delete[] scoreVector;
             }
         }
@@ -383,8 +383,8 @@ namespace boosting {
                 applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
                            featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 numNonZeroElements += predictGfm<BinaryLilMatrix::row>(
-                  scoreVector, &scoreVector[numLabels], (*predictionMatrixPtr)[i], numLabels, *probabilityFunctionPtr,
-                  *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
+                  scoreVector, (*predictionMatrixPtr)[i], numLabels, *probabilityFunctionPtr, *labelVectorSetPtr,
+                  numLabelVectors, maxLabelCardinality);
                 delete[] scoreVector;
             }
         }
@@ -419,8 +419,8 @@ namespace boosting {
                            featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
                            featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
                 numNonZeroElements += predictGfm<BinaryLilMatrix::row>(
-                  scoreVector, &scoreVector[numLabels], (*predictionMatrixPtr)[i], numLabels, *probabilityFunctionPtr,
-                  *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
+                  scoreVector, (*predictionMatrixPtr)[i], numLabels, *probabilityFunctionPtr, *labelVectorSetPtr,
+                  numLabelVectors, maxLabelCardinality);
                 delete[] scoreVector;
             }
         }
