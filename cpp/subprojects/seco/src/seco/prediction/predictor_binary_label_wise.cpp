@@ -12,7 +12,7 @@
 namespace seco {
 
     static inline void applyHead(const CompleteHead& head, CContiguousView<uint8>::value_iterator begin,
-                                 CContiguousView<uint8>::value_iterator end, BitVector& mask) {
+                                 BitVector& mask) {
         CompleteHead::score_const_iterator iterator = head.scores_cbegin();
         uint32 numElements = head.getNumElements();
 
@@ -26,7 +26,7 @@ namespace seco {
     }
 
     static inline void applyHead(const PartialHead& head, CContiguousView<uint8>::value_iterator begin,
-                                 CContiguousView<uint8>::value_iterator end, BitVector& mask) {
+                                 BitVector& mask) {
         PartialHead::score_const_iterator scoreIterator = head.scores_cbegin();
         PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
@@ -45,10 +45,10 @@ namespace seco {
     static inline void applyHead(const IHead& head, CContiguousView<uint8>& predictionMatrix, BitVector& mask,
                                  uint32 row) {
         auto completeHeadVisitor = [&, row](const CompleteHead& head) {
-            applyHead(head, predictionMatrix.row_values_begin(row), predictionMatrix.row_values_end(row), mask);
+            applyHead(head, predictionMatrix.row_values_begin(row), mask);
         };
         auto partialHeadVisitor = [&, row](const PartialHead& head) {
-            applyHead(head, predictionMatrix.row_values_begin(row), predictionMatrix.row_values_end(row), mask);
+            applyHead(head, predictionMatrix.row_values_begin(row), mask);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
