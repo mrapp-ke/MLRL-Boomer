@@ -112,8 +112,8 @@ namespace seco {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseBinaryPredictor final : virtual public AbstractPredictor<uint8, FeatureMatrix, Model>,
-                                           public IBinaryPredictor {
+    class LabelWiseBinaryPredictor final : public AbstractPredictor<uint8, FeatureMatrix, Model>,
+                                           virtual public IBinaryPredictor {
         protected:
 
             /**
