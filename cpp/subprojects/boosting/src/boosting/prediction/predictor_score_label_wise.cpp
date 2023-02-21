@@ -43,7 +43,8 @@ namespace boosting {
             /**
              * @see `AbstractPredictor::createPredictionMatrix`
              */
-            std::unique_ptr<DensePredictionMatrix<float64>> createPredictionMatrix(uint32 numExamples,
+            std::unique_ptr<DensePredictionMatrix<float64>> createPredictionMatrix(const RuleList& model,
+                                                                                   uint32 numExamples,
                                                                                    uint32 numLabels) const override {
                 return std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
             }

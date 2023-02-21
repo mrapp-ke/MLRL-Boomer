@@ -31,11 +31,13 @@ class AbstractPredictor : virtual public IPredictor<PredictionMatrix> {
         /**
          * Must be implement by subclasses in order to create the matrix that should be used to store predictions.
          *
+         * @param model         A reference to an object of template type `Model` that should be used to obtain
+         *                      predictions
          * @param numExamples   The number of examples to predict for
          * @param numLabels     The number of labels to predict for
          * @return              An unique pointer to an object of template type `PredictionMatrix` that has been created
          */
-        virtual std::unique_ptr<PredictionMatrix> createPredictionMatrix(uint32 numExamples,
+        virtual std::unique_ptr<PredictionMatrix> createPredictionMatrix(const Model& model, uint32 numExamples,
                                                                          uint32 numLabels) const = 0;
 
         /**
@@ -74,7 +76,7 @@ class AbstractPredictor : virtual public IPredictor<PredictionMatrix> {
         std::unique_ptr<PredictionMatrix> predict(uint32 maxRules) const override final {
             uint32 numExamples = featureMatrix_.getNumRows();
             std::unique_ptr<PredictionMatrix> predictionMatrixPtr =
-              this->createPredictionMatrix(numExamples, numLabels_);
+              this->createPredictionMatrix(model_, numExamples, numLabels_);
             const FeatureMatrix* featureMatrixPtr = &featureMatrix_;
             PredictionMatrix* predictionMatrixRawPtr = predictionMatrixPtr.get();
             const Model* modelPtr = &model_;
