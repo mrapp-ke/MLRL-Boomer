@@ -112,9 +112,8 @@ namespace seco {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseBinaryPredictor final
-        : virtual public AbstractPredictor<DensePredictionMatrix<uint8>, FeatureMatrix, Model>,
-          public IBinaryPredictor {
+    class LabelWiseBinaryPredictor final : virtual public AbstractPredictor<uint8, FeatureMatrix, Model>,
+                                           public IBinaryPredictor {
         protected:
 
             /**
@@ -147,8 +146,7 @@ namespace seco {
              */
             LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                      uint32 numThreads)
-                : AbstractPredictor<DensePredictionMatrix<uint8>, FeatureMatrix, Model>(featureMatrix, model, numLabels,
-                                                                                        numThreads) {}
+                : AbstractPredictor<uint8, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads) {}
 
             /**
              * @see `IPredictor::canPredictIncrementally`
