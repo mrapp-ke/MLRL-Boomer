@@ -94,7 +94,7 @@ namespace boosting {
      */
     template<typename FeatureMatrix, typename Model>
     class MarginalizedProbabilityPredictor final : public AbstractPredictor<float64, FeatureMatrix, Model>,
-                                                   public IProbabilityPredictor {
+                                                   virtual public IProbabilityPredictor {
         private:
 
             const LabelVectorSet& labelVectorSet_;
