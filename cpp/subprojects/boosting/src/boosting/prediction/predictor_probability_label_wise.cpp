@@ -56,9 +56,8 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseProbabilityPredictor final
-        : public AbstractPredictor<DensePredictionMatrix<float64>, FeatureMatrix, Model>,
-          virtual public IProbabilityPredictor {
+    class LabelWiseProbabilityPredictor final : public AbstractPredictor<float64, FeatureMatrix, Model>,
+                                                virtual public IProbabilityPredictor {
         private:
 
             std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
@@ -100,8 +99,7 @@ namespace boosting {
             LabelWiseProbabilityPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                           std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
                                           uint32 numThreads)
-                : AbstractPredictor<DensePredictionMatrix<float64>, FeatureMatrix, Model>(featureMatrix, model,
-                                                                                          numLabels, numThreads),
+                : AbstractPredictor<float64, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads),
                   probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
 
             /**

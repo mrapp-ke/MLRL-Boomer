@@ -35,9 +35,8 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseScorePredictor final
-        : public AbstractPredictor<DensePredictionMatrix<float64>, FeatureMatrix, Model>,
-          virtual public IScorePredictor {
+    class LabelWiseScorePredictor final : public AbstractPredictor<float64, FeatureMatrix, Model>,
+                                          virtual public IScorePredictor {
         protected:
 
             /**
@@ -71,8 +70,7 @@ namespace boosting {
              */
             LabelWiseScorePredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                     uint32 numThreads)
-                : AbstractPredictor<DensePredictionMatrix<float64>, FeatureMatrix, Model>(featureMatrix, model,
-                                                                                          numLabels, numThreads) {}
+                : AbstractPredictor<float64, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads) {}
 
             /**
              * @see `IPredictor::canPredictIncrementally`
