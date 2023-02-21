@@ -117,15 +117,6 @@ namespace seco {
         protected:
 
             /**
-             * @see `AbstractPredictor::createPredictionMatrix`
-             */
-            std::unique_ptr<DensePredictionMatrix<uint8>> createPredictionMatrix(const Model& model, uint32 numExamples,
-                                                                                 uint32 numLabels) const override {
-                return std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels,
-                                                                      !model.containsDefaultRule());
-            }
-
-            /**
              * @see `AbstractPredictor::predictForExample`
              */
             void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
@@ -146,7 +137,8 @@ namespace seco {
              */
             LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                      uint32 numThreads)
-                : AbstractPredictor<uint8, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads) {}
+                : AbstractPredictor<uint8, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads,
+                                                                 !model.containsDefaultRule()) {}
 
             /**
              * @see `IPredictor::canPredictIncrementally`

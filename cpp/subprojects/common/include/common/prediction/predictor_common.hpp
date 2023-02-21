@@ -28,19 +28,9 @@ class AbstractPredictor : virtual public IPredictor<DensePredictionMatrix<T>> {
 
         uint32 numThreads_;
 
-    protected:
+        bool initPredictionMatrix_;
 
-        /**
-         * Must be implement by subclasses in order to create the matrix that should be used to store predictions.
-         *
-         * @param model         A reference to an object of template type `Model` that should be used to obtain
-         *                      predictions
-         * @param numExamples   The number of examples to predict for
-         * @param numLabels     The number of labels to predict for
-         * @return              An unique pointer to an object of type `DensePredictionMatrix` that has been created
-         */
-        virtual std::unique_ptr<DensePredictionMatrix<T>> createPredictionMatrix(const Model& model, uint32 numExamples,
-                                                                                 uint32 numLabels) const = 0;
+    protected:
 
         /**
          * Must be implemented by subclasses in order to obtain predictions for a single query example.
@@ -62,23 +52,27 @@ class AbstractPredictor : virtual public IPredictor<DensePredictionMatrix<T>> {
     public:
 
         /**
-         * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise access
-         *                      to the feature values of the query examples
-         * @param model         A reference to an object of template type `Model` that should be used to obtain
-         *                      predictions
-         * @param numLabels     The number of labels to predict for
-         * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
-         *                      parallel. Must be at least 1
+         * @param featureMatrix         A reference to an object of template type `FeatureMatrix` that provides row-wise
+         *                              access to the feature values of the query examples
+         * @param model                 A reference to an object of template type `Model` that should be used to obtain
+         *                              predictions
+         * @param numLabels             The number of labels to predict for
+         * @param numThreads            The number of CPU threads to be used to make predictions for different query
+         *                              examples in parallel. Must be at least 1
+         * @param initPredictionMatrix  True, if all elements in the prediction matrix should be value-initialized,
+         *                              false otherwise
          */
-        AbstractPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads)
-            : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
+        AbstractPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
+                          bool initPredictionMatrix)
+            : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
+              initPredictionMatrix_(initPredictionMatrix) {}
 
         virtual ~AbstractPredictor() {};
 
         std::unique_ptr<DensePredictionMatrix<T>> predict(uint32 maxRules) const override final {
             uint32 numExamples = featureMatrix_.getNumRows();
             std::unique_ptr<DensePredictionMatrix<T>> predictionMatrixPtr =
-              this->createPredictionMatrix(model_, numExamples, numLabels_);
+              std::make_unique<DensePredictionMatrix<T>>(numExamples, numLabels_, initPredictionMatrix_);
             const FeatureMatrix* featureMatrixPtr = &featureMatrix_;
             DensePredictionMatrix<T>* predictionMatrixRawPtr = predictionMatrixPtr.get();
             const Model* modelPtr = &model_;
