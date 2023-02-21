@@ -65,15 +65,6 @@ namespace boosting {
         protected:
 
             /**
-             * @see `AbstractPredictor::createPredictionMatrix`
-             */
-            std::unique_ptr<DensePredictionMatrix<float64>> createPredictionMatrix(const Model& model,
-                                                                                   uint32 numExamples,
-                                                                                   uint32 numLabels) const override {
-                return std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels, true);
-            }
-
-            /**
              * @see `AbstractPredictor::predictForExample`
              */
             void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
@@ -99,7 +90,7 @@ namespace boosting {
             LabelWiseProbabilityPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                           std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
                                           uint32 numThreads)
-                : AbstractPredictor<float64, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads),
+                : AbstractPredictor<float64, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads, true),
                   probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
 
             /**
