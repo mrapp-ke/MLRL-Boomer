@@ -120,9 +120,9 @@ namespace seco {
              * @see `AbstractPredictor::predictForExample`
              */
             void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   DensePredictionMatrix<uint8>& predictionMatrixPtr, uint32 maxRules,
-                                   uint32 exampleIndex) const override final {
-                predictForExampleInternally(model, featureMatrix, predictionMatrixPtr, maxRules, exampleIndex);
+                                   DensePredictionMatrix<uint8>& predictionMatrix, uint32 maxRules,
+                                   uint32 exampleIndex) const override {
+                predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex);
             }
 
         public:
