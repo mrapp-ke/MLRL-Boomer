@@ -325,7 +325,7 @@ namespace seco {
         protected:
 
             /**
-             * @see `AbstractPredictor::predictForExample`
+             * @see `AbstractBinarySparsePredictor::predictForExample`
              */
             void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
                                    BinaryLilMatrix::row& predictionRow, uint32 numLabels, uint32 maxRules,
