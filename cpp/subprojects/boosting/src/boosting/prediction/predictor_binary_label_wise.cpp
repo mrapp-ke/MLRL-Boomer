@@ -80,6 +80,9 @@ namespace boosting {
 
         protected:
 
+            /**
+             * @see `AbstractPredictor::predictForExample`
+             */
             void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
                                    DensePredictionMatrix<uint8>& predictionMatrix, uint32 maxRules,
                                    uint32 exampleIndex) const override {
