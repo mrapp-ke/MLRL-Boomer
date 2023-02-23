@@ -9,9 +9,8 @@
 namespace boosting {
 
     static inline void applyTransformationFunction(CContiguousView<float64>::value_iterator scoreIterator,
-                                                   uint32 numElements,
-                                                   const IProbabilityFunction& probabilityFunction) {
-        for (uint32 i = 0; i < numElements; i++) {
+                                                   uint32 numLabels, const IProbabilityFunction& probabilityFunction) {
+        for (uint32 i = 0; i < numLabels; i++) {
             float64 originalValue = scoreIterator[i];
             float64 transformedValue = probabilityFunction.transform(originalValue);
             scoreIterator[i] = transformedValue;
