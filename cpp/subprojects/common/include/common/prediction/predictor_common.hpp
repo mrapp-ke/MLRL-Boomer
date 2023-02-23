@@ -67,7 +67,7 @@ class AbstractPredictor : virtual public IPredictor<DensePredictionMatrix<T>> {
             : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
               initPredictionMatrix_(initPredictionMatrix) {}
 
-        virtual ~AbstractPredictor() {};
+        virtual ~AbstractPredictor() override {};
 
         std::unique_ptr<DensePredictionMatrix<T>> predict(uint32 maxRules) const override final {
             uint32 numExamples = featureMatrix_.getNumRows();
