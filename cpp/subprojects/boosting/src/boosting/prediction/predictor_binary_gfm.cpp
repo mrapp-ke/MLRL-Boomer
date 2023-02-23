@@ -89,8 +89,8 @@ namespace boosting {
         return quality;
     }
 
-    static inline uint32 storePrediction(const SparseArrayVector<float64>& tmpVector,
-                                         DensePredictionMatrix<uint8>::value_iterator predictionIterator) {
+    static inline void storePrediction(const SparseArrayVector<float64>& tmpVector,
+                                       DensePredictionMatrix<uint8>::value_iterator predictionIterator) {
         uint32 numRelevantLabels = tmpVector.getNumElements();
         SparseArrayVector<float64>::const_iterator iterator = tmpVector.cbegin();
 
@@ -98,11 +98,9 @@ namespace boosting {
             uint32 labelIndex = iterator[i].index;
             predictionIterator[labelIndex] = 1;
         }
-
-        return numRelevantLabels;
     }
 
-    static inline uint32 storePrediction(SparseArrayVector<float64>& tmpVector, BinaryLilMatrix::row row) {
+    static inline void storePrediction(SparseArrayVector<float64>& tmpVector, BinaryLilMatrix::row row) {
         uint32 numRelevantLabels = tmpVector.getNumElements();
 
         if (numRelevantLabels > 0) {
@@ -115,15 +113,12 @@ namespace boosting {
                 row.emplace_back(iterator[i].index);
             }
         }
-
-        return numRelevantLabels;
     }
 
     template<typename Prediction>
-    static inline uint32 predictGfm(const float64* scoresBegin, Prediction prediction, uint32 numLabels,
-                                    const IProbabilityFunction& probabilityFunction,
-                                    const LabelVectorSet& labelVectorSet, uint32 numLabelVectors,
-                                    uint32 maxLabelCardinality) {
+    static inline void predictGfm(const float64* scoresBegin, Prediction prediction, uint32 numLabels,
+                                  const IProbabilityFunction& probabilityFunction, const LabelVectorSet& labelVectorSet,
+                                  uint32 numLabelVectors, uint32 maxLabelCardinality) {
         float64* jointProbabilities = new float64[numLabelVectors];
         float64 sumOfJointProbabilities =
           calculateJointProbabilities(scoresBegin, numLabels, jointProbabilities, probabilityFunction, labelVectorSet);
@@ -151,7 +146,7 @@ namespace boosting {
             }
         }
 
-        return storePrediction(*bestVectorPtr, prediction);
+        storePrediction(*bestVectorPtr, prediction);
     }
 
     static inline void predictForExampleInternally(const RuleList& model,
