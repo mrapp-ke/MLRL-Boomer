@@ -320,7 +320,7 @@ namespace boosting {
 
     static inline void predictForExampleInternally(const RuleList& model,
                                                    const CContiguousConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row& predictionRow, uint32 numLabels,
+                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
                                                    uint32 maxRules, uint32 exampleIndex,
                                                    const LabelVectorSet& labelVectorSet,
                                                    const IProbabilityFunction& probabilityFunction) {
@@ -337,7 +337,7 @@ namespace boosting {
 
     static inline void predictForExampleInternally(const RuleList& model,
                                                    const CsrConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row& predictionRow, uint32 numLabels,
+                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
                                                    uint32 maxRules, uint32 exampleIndex,
                                                    const LabelVectorSet& labelVectorSet,
                                                    const IProbabilityFunction& probabilityFunction) {
@@ -379,7 +379,7 @@ namespace boosting {
              * @see `AbstractBinarySparsePredictor::predictForExample`
              */
             void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   BinaryLilMatrix::row& predictionRow, uint32 numLabels, uint32 maxRules,
+                                   BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
                                    uint32 exampleIndex) const override {
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
                     predictForExampleInternally(model, featureMatrix, predictionRow, numLabels, maxRules, exampleIndex,
