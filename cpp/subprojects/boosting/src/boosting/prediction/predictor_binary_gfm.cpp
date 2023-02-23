@@ -100,7 +100,7 @@ namespace boosting {
         }
     }
 
-    static inline void storePrediction(SparseArrayVector<float64>& tmpVector, BinaryLilMatrix::row row) {
+    static inline void storePrediction(SparseArrayVector<float64>& tmpVector, BinaryLilMatrix::row predictionRow) {
         uint32 numRelevantLabels = tmpVector.getNumElements();
 
         if (numRelevantLabels > 0) {
@@ -110,7 +110,7 @@ namespace boosting {
             });
 
             for (uint32 i = 0; i < numRelevantLabels; i++) {
-                row.emplace_back(iterator[i].index);
+                predictionRow.emplace_back(iterator[i].index);
             }
         }
     }
