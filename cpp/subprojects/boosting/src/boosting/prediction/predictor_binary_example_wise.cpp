@@ -55,7 +55,7 @@ namespace boosting {
         }
     }
 
-    static inline void predictLabelVector(BinaryLilMatrix::row predictionRow, const LabelVector& labelVector) {
+    static inline void predictLabelVector(BinaryLilMatrix::row& predictionRow, const LabelVector& labelVector) {
         uint32 numElements = labelVector.getNumElements();
         LabelVector::const_iterator iterator = labelVector.cbegin();
         predictionRow.reserve(numElements);
