@@ -19,7 +19,7 @@ namespace boosting {
     }
 
     static inline void applyThreshold(CContiguousConstView<float64>::value_const_iterator originalIterator,
-                                      BinaryLilMatrix::row& predictionRow, uint32 numElements, float64 threshold) {
+                                      BinaryLilMatrix::row predictionRow, uint32 numElements, float64 threshold) {
         for (uint32 i = 0; i < numElements; i++) {
             float64 originalValue = originalIterator[i];
 
@@ -165,7 +165,7 @@ namespace boosting {
 
     static inline void predictForExampleInternally(const RuleList& model,
                                                    const CContiguousConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row& predictionRow, uint32 numLabels,
+                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
                                                    uint32 maxRules, uint32 exampleIndex, float64 threshold) {
         float64* scoreVector = new float64[numLabels] {};
         applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
@@ -176,7 +176,7 @@ namespace boosting {
 
     static inline void predictForExampleInternally(const RuleList& model,
                                                    const CsrConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row& predictionRow, uint32 numLabels,
+                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
                                                    uint32 maxRules, uint32 exampleIndex, float64 threshold) {
         uint32 numFeatures = featureMatrix.getNumCols();
         float64* scoreVector = new float64[numLabels] {};
@@ -211,7 +211,7 @@ namespace boosting {
              * @see `AbstractBinarySparsePredictor::predictForExample`
              */
             void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   BinaryLilMatrix::row& predictionRow, uint32 numLabels, uint32 maxRules,
+                                   BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
                                    uint32 exampleIndex) const override {
                 predictForExampleInternally(model, featureMatrix, predictionRow, numLabels, maxRules, exampleIndex,
                                             threshold_);

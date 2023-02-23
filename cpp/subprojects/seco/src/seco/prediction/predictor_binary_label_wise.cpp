@@ -193,7 +193,7 @@ namespace seco {
 
     template<typename ScoreIterator, typename IndexIterator>
     static inline void applyHead(ScoreIterator scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
-                                 BinaryLilMatrix::row& predictionRow, uint32 numLabels) {
+                                 BinaryLilMatrix::row predictionRow, uint32 numLabels) {
         if (scoresBegin != scoresEnd) {
             if (predictionRow.size() > 0) {
                 BinaryLilMatrix::iterator end = predictionRow.end();
@@ -251,7 +251,7 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const IHead& head, BinaryLilMatrix::row& predictionRow, uint32 numLabels) {
+    static inline void applyHead(const IHead& head, BinaryLilMatrix::row predictionRow, uint32 numLabels) {
         auto completeHeadVisitor = [&](const CompleteHead& head) {
             applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
                       make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0),
@@ -267,7 +267,7 @@ namespace seco {
 
     static inline void predictForExampleInternally(const RuleList& model,
                                                    const CContiguousConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row& predictionRow, uint32 numLabels,
+                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
                                                    uint32 maxRules, uint32 exampleIndex) {
         for (auto it = model.used_cbegin(maxRules); it != model.used_cend(maxRules); it++) {
             const RuleList::Rule& rule = *it;
@@ -283,7 +283,7 @@ namespace seco {
 
     static inline void predictForExampleInternally(const RuleList& model,
                                                    const CsrConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row& predictionRow, uint32 numLabels,
+                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
                                                    uint32 maxRules, uint32 exampleIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
         float32* tmpArray1 = new float32[numFeatures];
@@ -328,7 +328,7 @@ namespace seco {
              * @see `AbstractBinarySparsePredictor::predictForExample`
              */
             void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   BinaryLilMatrix::row& predictionRow, uint32 numLabels, uint32 maxRules,
+                                   BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
                                    uint32 exampleIndex) const override {
                 predictForExampleInternally(model, featureMatrix, predictionRow, numLabels, maxRules, exampleIndex);
             }

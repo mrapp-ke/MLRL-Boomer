@@ -123,7 +123,7 @@ class AbstractBinarySparsePredictor : virtual public IPredictor<BinarySparsePred
          * @param exampleIndex      The index of the query example to predict for
          */
         virtual void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                       BinaryLilMatrix::row& predictionRow, uint32 numLabels, uint32 maxRules,
+                                       BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
                                        uint32 exampleIndex) const = 0;
 
     public:
