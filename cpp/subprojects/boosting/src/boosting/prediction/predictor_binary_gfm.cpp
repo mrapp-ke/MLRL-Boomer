@@ -153,11 +153,10 @@ namespace boosting {
                                                    const CContiguousConstView<const float32>& featureMatrix,
                                                    CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
                                                    uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
-                                                   const IProbabilityFunction& probabilityFunction) {
+                                                   const IProbabilityFunction& probabilityFunction,
+                                                   uint32 maxLabelCardinality) {
         uint32 numLabels = predictionMatrix.getNumCols();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        // FIXME: Should not be executed for each example
-        uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet);
         float64* scoreVector = new float64[numLabels] {};
         applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
                    featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
@@ -170,12 +169,11 @@ namespace boosting {
                                                    const CsrConstView<const float32>& featureMatrix,
                                                    CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
                                                    uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
-                                                   const IProbabilityFunction& probabilityFunction) {
+                                                   const IProbabilityFunction& probabilityFunction,
+                                                   uint32 maxLabelCardinality) {
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        // FIXME: Should not be executed for each example
-        uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet);
         float64* scoreVector = new float64[numLabels] {};
         applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
                    featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
@@ -204,6 +202,8 @@ namespace boosting {
 
             std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
 
+            uint32 maxLabelCardinality_;
+
         protected:
 
             /**
@@ -214,7 +214,7 @@ namespace boosting {
                                    uint32 exampleIndex) const override {
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
                     predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
-                                                labelVectorSet_, *probabilityFunctionPtr_);
+                                                labelVectorSet_, *probabilityFunctionPtr_, maxLabelCardinality_);
                 }
             }
 
@@ -237,7 +237,8 @@ namespace boosting {
                                const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr, uint32 numThreads)
                 : AbstractPredictor<uint8, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads, true),
-                  labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
+                  labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)),
+                  maxLabelCardinality_(getMaxLabelCardinality(labelVectorSet)) {}
 
             /**
              * @see `IPredictor::canPredictIncrementally`
@@ -323,10 +324,9 @@ namespace boosting {
                                                    BinaryLilMatrix::row predictionRow, uint32 numLabels,
                                                    uint32 maxRules, uint32 exampleIndex,
                                                    const LabelVectorSet& labelVectorSet,
-                                                   const IProbabilityFunction& probabilityFunction) {
+                                                   const IProbabilityFunction& probabilityFunction,
+                                                   uint32 maxLabelCardinality) {
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        // FIXME: Should not be executed for each example
-        uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet);
         float64* scoreVector = new float64[numLabels] {};
         applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
                    featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
@@ -335,16 +335,12 @@ namespace boosting {
         delete[] scoreVector;
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
-                                                   uint32 maxRules, uint32 exampleIndex,
-                                                   const LabelVectorSet& labelVectorSet,
-                                                   const IProbabilityFunction& probabilityFunction) {
+    static inline void predictForExampleInternally(
+      const RuleList& model, const CsrConstView<const float32>& featureMatrix, BinaryLilMatrix::row predictionRow,
+      uint32 numLabels, uint32 maxRules, uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
+      const IProbabilityFunction& probabilityFunction, uint32 maxLabelCardinality) {
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        // FIXME: Should not be executed for each example
-        uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet);
         float64* scoreVector = new float64[numLabels] {};
         applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
                    featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
@@ -373,6 +369,8 @@ namespace boosting {
 
             std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
 
+            uint32 maxLabelCardinality_;
+
         protected:
 
             /**
@@ -383,7 +381,7 @@ namespace boosting {
                                    uint32 exampleIndex) const override {
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
                     predictForExampleInternally(model, featureMatrix, predictionRow, numLabels, maxRules, exampleIndex,
-                                                labelVectorSet_, *probabilityFunctionPtr_);
+                                                labelVectorSet_, *probabilityFunctionPtr_, maxLabelCardinality_);
                 }
             }
 
@@ -406,7 +404,8 @@ namespace boosting {
                                      const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                      std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr, uint32 numThreads)
                 : AbstractBinarySparsePredictor<FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads),
-                  labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
+                  labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)),
+                  maxLabelCardinality_(getMaxLabelCardinality(labelVectorSet)) {}
 
             /**
              * @see `IPredictor::canPredictIncrementally`
