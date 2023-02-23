@@ -55,14 +55,14 @@ namespace boosting {
         }
     }
 
-    static inline void predictLabelVector(BinaryLilMatrix::row row, const LabelVector& labelVector) {
+    static inline void predictLabelVector(BinaryLilMatrix::row predictionRow, const LabelVector& labelVector) {
         uint32 numElements = labelVector.getNumElements();
         LabelVector::const_iterator iterator = labelVector.cbegin();
-        row.reserve(numElements);
+        predictionRow.reserve(numElements);
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 labelIndex = iterator[i];
-            row.emplace_back(labelIndex);
+            predictionRow.emplace_back(labelIndex);
         }
     }
 
