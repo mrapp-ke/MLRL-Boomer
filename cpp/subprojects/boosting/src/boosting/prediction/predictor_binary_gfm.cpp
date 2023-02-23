@@ -3,7 +3,7 @@
 #include "common/data/matrix_sparse_set.hpp"
 #include "common/data/vector_sparse_array.hpp"
 #include "common/math/math.hpp"
-#include "omp.h"
+#include "common/prediction/predictor_common.hpp"
 #include "predictor_common.hpp"
 #include "predictor_probability_common.hpp"
 
@@ -154,73 +154,40 @@ namespace boosting {
         return storePrediction(*bestVectorPtr, prediction);
     }
 
-    static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
-      const LabelVectorSet& labelVectorSet, uint32 numLabels, const IProbabilityFunction& probabilityFunction,
-      uint32 numThreads, uint32 maxRules) {
-        uint32 numExamples = featureMatrix.getNumRows();
-        std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
+    static inline void predictForExampleInternally(const RuleList& model,
+                                                   const CContiguousConstView<const float32>& featureMatrix,
+                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
+                                                   uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
+                                                   const IProbabilityFunction& probabilityFunction) {
+        uint32 numLabels = predictionMatrix.getNumCols();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-
-        if (numLabelVectors > 0) {
-            uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet);
-            const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
-            CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
-            const RuleList* modelPtr = &model;
-            const IProbabilityFunction* probabilityFunctionPtr = &probabilityFunction;
-            const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
-
-#pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(probabilityFunctionPtr) \
-    firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) firstprivate(maxLabelCardinality) \
-      firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
-            for (int64 i = 0; i < numExamples; i++) {
-                float64* scoreVector = new float64[numLabels] {};
-                applyRules(*modelPtr, maxRules, featureMatrixPtr->row_values_cbegin(i),
-                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                predictGfm(scoreVector, predictionMatrixRawPtr->row_values_begin(i), numLabels, *probabilityFunctionPtr,
-                           *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
-                delete[] scoreVector;
-            }
-        }
-
-        return predictionMatrixPtr;
+        // FIXME: Should not be executed for each example
+        uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet);
+        float64* scoreVector = new float64[numLabels] {};
+        applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
+                   featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
+        predictGfm(scoreVector, predictionMatrix.row_values_begin(exampleIndex), numLabels, probabilityFunction,
+                   labelVectorSet, numLabelVectors, maxLabelCardinality);
+        delete[] scoreVector;
     }
 
-    static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-      const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet& labelVectorSet,
-      uint32 numLabels, const IProbabilityFunction& probabilityFunction, uint32 numThreads, uint32 maxRules) {
-        uint32 numExamples = featureMatrix.getNumRows();
+    static inline void predictForExampleInternally(const RuleList& model,
+                                                   const CsrConstView<const float32>& featureMatrix,
+                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
+                                                   uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
+                                                   const IProbabilityFunction& probabilityFunction) {
         uint32 numFeatures = featureMatrix.getNumCols();
-        std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, true);
+        uint32 numLabels = predictionMatrix.getNumCols();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-
-        if (numLabelVectors > 0) {
-            uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet);
-            const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
-            CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
-            const RuleList* modelPtr = &model;
-            const IProbabilityFunction* probabilityFunctionPtr = &probabilityFunction;
-            const LabelVectorSet* labelVectorSetPtr = &labelVectorSet;
-
-#pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) \
-    firstprivate(probabilityFunctionPtr) firstprivate(labelVectorSetPtr) firstprivate(numLabelVectors) \
-      firstprivate(maxLabelCardinality) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
-            for (int64 i = 0; i < numExamples; i++) {
-                float64* scoreVector = new float64[numLabels] {};
-                applyRules(*modelPtr, maxRules, numFeatures, featureMatrixPtr->row_indices_cbegin(i),
-                           featureMatrixPtr->row_indices_cend(i), featureMatrixPtr->row_values_cbegin(i),
-                           featureMatrixPtr->row_values_cend(i), &scoreVector[0]);
-                predictGfm(scoreVector, predictionMatrixRawPtr->row_values_begin(i), numLabels, *probabilityFunctionPtr,
-                           *labelVectorSetPtr, numLabelVectors, maxLabelCardinality);
-                delete[] scoreVector;
-            }
-        }
-
-        return predictionMatrixPtr;
+        // FIXME: Should not be executed for each example
+        uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet);
+        float64* scoreVector = new float64[numLabels] {};
+        applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
+                   featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
+                   featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
+        predictGfm(scoreVector, predictionMatrix.row_values_begin(exampleIndex), numLabels, probabilityFunction,
+                   labelVectorSet, numLabelVectors, maxLabelCardinality);
+        delete[] scoreVector;
     }
 
     /**
@@ -234,20 +201,27 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class GfmBinaryPredictor final : public IBinaryPredictor {
+    class GfmBinaryPredictor final : AbstractPredictor<uint8, FeatureMatrix, Model>,
+                                     virtual public IBinaryPredictor {
         private:
-
-            const FeatureMatrix& featureMatrix_;
-
-            const Model& model_;
 
             const LabelVectorSet& labelVectorSet_;
 
-            uint32 numLabels_;
-
             std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
 
-            uint32 numThreads_;
+        protected:
+
+            /**
+             * @see `AbstractPredictor::predictForExample`
+             */
+            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                                   DensePredictionMatrix<uint8>& predictionMatrix, uint32 maxRules,
+                                   uint32 exampleIndex) const override {
+                if (labelVectorSet_.getNumLabelVectors() > 0) {
+                    predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
+                                                labelVectorSet_, *probabilityFunctionPtr_);
+                }
+            }
 
         public:
 
@@ -267,16 +241,8 @@ namespace boosting {
             GfmBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model,
                                const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr, uint32 numThreads)
-                : featureMatrix_(featureMatrix), model_(model), labelVectorSet_(labelVectorSet), numLabels_(numLabels),
-                  probabilityFunctionPtr_(std::move(probabilityFunctionPtr)), numThreads_(numThreads) {}
-
-            /**
-             * @see `IPredictor::predict`
-             */
-            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
-                return predictInternally(featureMatrix_, model_, labelVectorSet_, numLabels_, *probabilityFunctionPtr_,
-                                         numThreads_, maxRules);
-            }
+                : AbstractPredictor<uint8, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads, true),
+                  labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
 
             /**
              * @see `IPredictor::canPredictIncrementally`
