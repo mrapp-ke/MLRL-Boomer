@@ -10,7 +10,7 @@
 /**
  * Defines an interface for all classes that allow to predict binary labels for given query examples.
  */
-class IBinaryPredictor : public IPredictor<DensePredictionMatrix<uint8>> {
+class IBinaryPredictor : virtual public IPredictor<DensePredictionMatrix<uint8>> {
     public:
 
         virtual ~IBinaryPredictor() override {};
@@ -28,7 +28,7 @@ class IBinaryPredictorFactory : public IPredictorFactory<IBinaryPredictor> {
 /**
  * Defines an interface for all classes that allow to predict sparse binary labels for given query examples.
  */
-class ISparseBinaryPredictor : public IPredictor<BinarySparsePredictionMatrix> {
+class ISparseBinaryPredictor : virtual public IPredictor<BinarySparsePredictionMatrix> {
     public:
 
         virtual ~ISparseBinaryPredictor() override {};

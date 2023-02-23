@@ -50,7 +50,7 @@ class IIncrementalPredictor {
 };
 
 /**
- * Defines an interface for all classes that allow to make prediction for given query examples.
+ * Defines an interface for all classes that allow to obtain predictions for given query examples.
  *
  * @tparam PredictionMatrix The type of the matrix that is used to store the predictions
  */
