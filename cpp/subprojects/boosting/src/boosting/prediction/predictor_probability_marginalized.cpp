@@ -50,15 +50,12 @@ namespace boosting {
                                                    uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
                                                    const IProbabilityFunction& probabilityFunction) {
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-
-        if (numLabelVectors > 0) {
-            uint32 numLabels = predictionMatrix.getNumCols();
-            CContiguousView<float64>::value_iterator scoreIterator = predictionMatrix.row_values_begin(exampleIndex);
-            applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
-                       featureMatrix.row_values_cend(exampleIndex), scoreIterator);
-            predictMarginalizedProbabilities(scoreIterator, numLabels, labelVectorSet, numLabelVectors,
-                                             probabilityFunction);
-        }
+        uint32 numLabels = predictionMatrix.getNumCols();
+        CContiguousView<float64>::value_iterator scoreIterator = predictionMatrix.row_values_begin(exampleIndex);
+        applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
+                   featureMatrix.row_values_cend(exampleIndex), scoreIterator);
+        predictMarginalizedProbabilities(scoreIterator, numLabels, labelVectorSet, numLabelVectors,
+                                         probabilityFunction);
     }
 
     static inline void predictForExampleInternally(const RuleList& model,
@@ -67,17 +64,14 @@ namespace boosting {
                                                    uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
                                                    const IProbabilityFunction& probabilityFunction) {
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-
-        if (numLabelVectors > 0) {
-            uint32 numFeatures = featureMatrix.getNumCols();
-            uint32 numLabels = predictionMatrix.getNumCols();
-            CContiguousView<float64>::value_iterator scoreIterator = predictionMatrix.row_values_begin(exampleIndex);
-            applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
-                       featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
-                       featureMatrix.row_values_cend(exampleIndex), scoreIterator);
-            predictMarginalizedProbabilities(scoreIterator, numLabels, labelVectorSet, numLabelVectors,
-                                             probabilityFunction);
-        }
+        uint32 numFeatures = featureMatrix.getNumCols();
+        uint32 numLabels = predictionMatrix.getNumCols();
+        CContiguousView<float64>::value_iterator scoreIterator = predictionMatrix.row_values_begin(exampleIndex);
+        applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
+                   featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
+                   featureMatrix.row_values_cend(exampleIndex), scoreIterator);
+        predictMarginalizedProbabilities(scoreIterator, numLabels, labelVectorSet, numLabelVectors,
+                                         probabilityFunction);
     }
 
     /**
@@ -109,8 +103,10 @@ namespace boosting {
             void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
                                    DensePredictionMatrix<float64>& predictionMatrix, uint32 maxRules,
                                    uint32 exampleIndex) const override {
-                predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
-                                            labelVectorSet_, *probabilityFunctionPtr_);
+                if (labelVectorSet_.getNumLabelVectors() > 0) {
+                    predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
+                                                labelVectorSet_, *probabilityFunctionPtr_);
+                }
             }
 
         public:
