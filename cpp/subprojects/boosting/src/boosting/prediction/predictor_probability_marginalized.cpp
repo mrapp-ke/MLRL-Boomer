@@ -2,8 +2,8 @@
 
 #include "common/data/arrays.hpp"
 #include "common/math/math.hpp"
-#include "predictor_score_common.hpp"
 #include "predictor_probability_common.hpp"
+#include "predictor_score_common.hpp"
 
 #include <stdexcept>
 
@@ -43,36 +43,6 @@ namespace boosting {
         delete[] jointProbabilities;
     }
 
-    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex,
-                                                   const LabelVectorSet& labelVectorSet,
-                                                   const IProbabilityFunction& probabilityFunction) {
-        uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        uint32 numLabels = predictionMatrix.getNumCols();
-        CContiguousView<float64>::value_iterator scoreIterator = predictionMatrix.row_values_begin(exampleIndex);
-        applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), scoreIterator);
-        predictMarginalizedProbabilities(scoreIterator, numLabels, labelVectorSet, numLabelVectors,
-                                         probabilityFunction);
-    }
-
-    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex,
-                                                   const LabelVectorSet& labelVectorSet,
-                                                   const IProbabilityFunction& probabilityFunction) {
-        uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        uint32 numFeatures = featureMatrix.getNumCols();
-        uint32 numLabels = predictionMatrix.getNumCols();
-        CContiguousView<float64>::value_iterator scoreIterator = predictionMatrix.row_values_begin(exampleIndex);
-        applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
-                   featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), scoreIterator);
-        predictMarginalizedProbabilities(scoreIterator, numLabels, labelVectorSet, numLabelVectors,
-                                         probabilityFunction);
-    }
-
     /**
      * An implementation of the type `IProbabilityPredictor` that allows to predict marginalized probabilities for given
      * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
@@ -109,8 +79,14 @@ namespace boosting {
 
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
-                                                    labelVectorSet_, probabilityFunction_);
+                        ScorePredictionDelegate<FeatureMatrix, Model>(predictionMatrix_)
+                          .predictForExample(featureMatrix, model, maxRules, exampleIndex);
+                        uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
+                        uint32 numLabels = predictionMatrix_.getNumCols();
+                        CContiguousView<float64>::value_iterator scoreIterator =
+                          predictionMatrix_.row_values_begin(exampleIndex);
+                        predictMarginalizedProbabilities(scoreIterator, numLabels, labelVectorSet_, numLabelVectors,
+                                                         probabilityFunction_);
                     }
             };
 
