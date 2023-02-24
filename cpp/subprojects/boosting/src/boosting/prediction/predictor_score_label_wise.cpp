@@ -1,27 +1,10 @@
 #include "boosting/prediction/predictor_score_label_wise.hpp"
 
-#include "common/prediction/predictor_common.hpp"
 #include "predictor_common.hpp"
 
 #include <stdexcept>
 
 namespace boosting {
-
-    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex) {
-        applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), predictionMatrix.row_values_begin(exampleIndex));
-    }
-
-    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex) {
-        uint32 numFeatures = featureMatrix.getNumCols();
-        applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
-                   featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), predictionMatrix.row_values_begin(exampleIndex));
-    }
 
     /**
      * An implementation of the type `IScorePredictor` that allows to predict label-wise regression scores for given

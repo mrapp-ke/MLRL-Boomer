@@ -5,6 +5,7 @@
 
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
+#include "common/prediction/predictor_common.hpp"
 
 namespace boosting {
 
@@ -96,5 +97,50 @@ namespace boosting {
         delete[] tmpArray1;
         delete[] tmpArray2;
     }
+
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<float64>& scoreMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex) {
+        applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
+                   featureMatrix.row_values_cend(exampleIndex), scoreMatrix.row_values_begin(exampleIndex));
+    }
+
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<float64>& scoreMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex) {
+        uint32 numFeatures = featureMatrix.getNumCols();
+        applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
+                   featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
+                   featureMatrix.row_values_cend(exampleIndex), scoreMatrix.row_values_begin(exampleIndex));
+    }
+
+    /**
+     * An implementation of the type `PredictionDispatcher::IPredictionDelegate` that aggregates the scores that are
+     * predicted by the individual rules in a model and stores them in a matrix.
+     *
+     * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of
+     *                          the query examples
+     * @tparam Model            The type of the rule-based model that is used to obtain predictions
+     */
+    template<typename FeatureMatrix, typename Model>
+    class ScorePredictionDelegate final
+        : public PredictionDispatcher<float64, FeatureMatrix, Model>::IPredictionDelegate {
+        private:
+
+            CContiguousView<float64>& scoreMatrix_;
+
+        public:
+
+            /**
+             * @param predictionMatrix A reference to an object of type `CContiguousView` that should be used to store
+             *                         the aggregated scores
+             */
+            ScorePredictionDelegate(CContiguousView<float64>& scoreMatrix) : scoreMatrix_(scoreMatrix) {}
+
+            void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                   uint32 exampleIndex) const override {
+                predictForExampleInternally(featureMatrix, model, scoreMatrix_, maxRules, exampleIndex);
+            }
+    };
 
 }
