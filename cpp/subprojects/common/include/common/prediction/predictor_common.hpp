@@ -33,17 +33,17 @@ class PredictionDispatcher final {
                 /**
                  * Obtains predictions for a single query example.
                  *
-                 * @param model             A reference to an object of template type `Model` that should be used to
-                 *                          obtain predictions
                  * @param featureMatrix     A reference to an object of template type `FeatureMatrix` that provides
                  *                          row-wise access to the feature values of the query examples
+                 * @param model             A reference to an object of template type `Model` that should be used to
+                 *                          obtain predictions
                  * @param predictionMatrix  A reference to an object of type `CContiguousView` that should be used to
                  *                          store the predictions
                  * @param maxRules          The maximum number of rules to be used for prediction or 0, if the number of
                  *                          rules should not be restricted
                  * @param exampleIndex      The index of the query example to predict for
                  */
-                virtual void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                virtual void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
                                                CContiguousView<T>& predictionMatrix, uint32 maxRules,
                                                uint32 exampleIndex) const = 0;
         };
@@ -77,7 +77,7 @@ class PredictionDispatcher final {
   firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(maxRules) schedule(dynamic) \
     num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
-                delegatePtr->predictForExample(*modelPtr, *featureMatrixPtr, *predictionMatrixPtr, maxRules, i);
+                delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, *predictionMatrixPtr, maxRules, i);
             }
         }
 };
@@ -106,10 +106,10 @@ class BinarySparsePredictionDispatcher final {
                 /**
                  * Obtains predictions for a single query example.
                  *
-                 * @param model         A reference to an object of template type `Model` that should be used to obtain
-                 *                      predictions
                  * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise
                  *                      access to the feature values of the query examples
+                 * @param model         A reference to an object of template type `Model` that should be used to obtain
+                 *                      predictions
                  * @param predictionRow A reference to an object of type `BinaryLilMatrix::Row` that should be used to
                  *                      store the predictions
                  * @param numLabels     The number of labels to predict for
@@ -117,7 +117,7 @@ class BinarySparsePredictionDispatcher final {
                  *                      rules should not be restricted
                  * @param exampleIndex  The index of the query example to predict for
                  */
-                virtual void predictForExample(const Model&, const FeatureMatrix& featureMatrix,
+                virtual void predictForExample(const FeatureMatrix& featureMatrix, const Model&,
                                                BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
                                                uint32 exampleIndex) const = 0;
         };
@@ -155,7 +155,7 @@ class BinarySparsePredictionDispatcher final {
     firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 BinaryLilMatrix::row predictionRow = (*predictionMatrixPtr)[i];
-                delegatePtr->predictForExample(*modelPtr, *featureMatrixPtr, predictionRow, numLabels, maxRules, i);
+                delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, predictionRow, numLabels, maxRules, i);
                 numNonZeroElements += (uint32) predictionRow.size();
             }
 

@@ -7,18 +7,16 @@
 
 namespace boosting {
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   CContiguousView<float64>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex) {
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex) {
         applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
                    featureMatrix.row_values_cend(exampleIndex), predictionMatrix.row_values_begin(exampleIndex));
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   CContiguousView<float64>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex) {
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
         applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
                    featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
@@ -43,10 +41,10 @@ namespace boosting {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 public:
 
-                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
                                            CContiguousView<float64>& predictionMatrix, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex);
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix, maxRules, exampleIndex);
                     }
             };
 
