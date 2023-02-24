@@ -374,6 +374,9 @@ namespace boosting {
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
                   labelVectorSet_(labelVectorSet), distanceMeasurePtr_(std::move(distanceMeasurePtr)) {}
 
+            /**
+             * @see `IPredictor::predict`
+             */
             std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
                 uint32 numExamples = featureMatrix_.getNumRows();
                 BinaryLilMatrix predictionMatrix(numExamples);
