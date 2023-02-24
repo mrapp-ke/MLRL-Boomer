@@ -61,9 +61,9 @@ namespace boosting {
                         : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix), threshold_(threshold) {}
 
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 exampleIndex) const override {
+                                           uint32 threadIndex, uint32 exampleIndex) const override {
                         ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
-                          .predictForExample(featureMatrix, model, maxRules, exampleIndex);
+                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex);
                         uint32 numLabels = predictionMatrix_.getNumCols();
                         CContiguousConstView<float64>::value_const_iterator scoreIterator =
                           scoreMatrix_.row_values_cbegin(exampleIndex);
@@ -232,7 +232,7 @@ namespace boosting {
                         : predictionMatrix_(predictionMatrix), numLabels_(numLabels), threshold_(threshold) {}
 
                     uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                             uint32 exampleIndex) const override {
+                                             uint32 threadIndex, uint32 exampleIndex) const override {
                         BinaryLilMatrix::row predictionRow = predictionMatrix_[exampleIndex];
                         predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
                                                     exampleIndex, threshold_);

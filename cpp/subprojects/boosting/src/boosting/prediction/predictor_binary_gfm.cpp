@@ -217,7 +217,7 @@ namespace boosting {
                           probabilityFunction_(probabilityFunction), maxLabelCardinality_(maxLabelCardinality) {}
 
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 exampleIndex) const override {
+                                           uint32 threadIndex, uint32 exampleIndex) const override {
                         predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
                                                     labelVectorSet_, probabilityFunction_, maxLabelCardinality_);
                     }
@@ -422,7 +422,7 @@ namespace boosting {
                           probabilityFunction_(probabilityFunction), maxLabelCardinality_(maxLabelCardinality) {}
 
                     uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                             uint32 exampleIndex) const override {
+                                             uint32 threadIndex, uint32 exampleIndex) const override {
                         BinaryLilMatrix::row predictionRow = predictionMatrix_[exampleIndex];
                         predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
                                                     exampleIndex, labelVectorSet_, probabilityFunction_,

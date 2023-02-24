@@ -138,7 +138,7 @@ namespace boosting {
             ScorePredictionDelegate(CContiguousView<float64>& scoreMatrix) : scoreMatrix_(scoreMatrix) {}
 
             void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
+                                   uint32 threadIndex, uint32 exampleIndex) const override {
                 predictForExampleInternally(featureMatrix, model, scoreMatrix_, maxRules, exampleIndex);
             }
     };

@@ -37,10 +37,11 @@ class PredictionDispatcher final {
                  *                      predictions
                  * @param maxRules      The maximum number of rules to be used for prediction or 0, if the number of
                  *                      rules should not be restricted
+                 * @param threadIndex   The index of the thread used for prediction
                  * @param exampleIndex  The index of the query example to predict for
                  */
                 virtual void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                               uint32 exampleIndex) const = 0;
+                                               uint32 threadIndex, uint32 exampleIndex) const = 0;
         };
 
         /**
@@ -68,7 +69,8 @@ class PredictionDispatcher final {
 #pragma omp parallel for firstprivate(numExamples) firstprivate(delegatePtr) firstprivate(modelPtr) \
   firstprivate(featureMatrixPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
-                delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, maxRules, i);
+                uint32 threadIndex = (uint32) omp_get_thread_num();
+                delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, maxRules, threadIndex, i);
             }
         }
 };
@@ -103,11 +105,12 @@ class BinarySparsePredictionDispatcher final {
                  *                      predictions
                  * @param maxRules      The maximum number of rules to be used for prediction or 0, if the number of
                  *                      rules should not be restricted
+                 * @param threadIndex   The index of the thread used for prediction
                  * @param exampleIndex  The index of the query example to predict for
                  * @return              The number of non-zero predictions
                  */
                 virtual uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                                 uint32 maxRules, uint32 exampleIndex) const = 0;
+                                                 uint32 maxRules, uint32 threadIndex, uint32 exampleIndex) const = 0;
         };
 
         /**
@@ -137,7 +140,9 @@ class BinarySparsePredictionDispatcher final {
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(delegatePtr) \
   firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
-                numNonZeroElements += delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, maxRules, i);
+                uint32 threadIndex = (uint32) omp_get_thread_num();
+                numNonZeroElements +=
+                  delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, maxRules, threadIndex, i);
             }
 
             return numNonZeroElements;

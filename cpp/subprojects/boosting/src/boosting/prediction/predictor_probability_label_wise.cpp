@@ -47,9 +47,9 @@ namespace boosting {
                         : predictionMatrix_(predictionMatrix), probabilityFunction_(probabilityFunction) {}
 
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 exampleIndex) const override {
+                                           uint32 threadIndex, uint32 exampleIndex) const override {
                         ScorePredictionDelegate<FeatureMatrix, Model>(predictionMatrix_)
-                          .predictForExample(featureMatrix, model, maxRules, exampleIndex);
+                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex);
                         uint32 numLabels = predictionMatrix_.getNumCols();
                         CContiguousView<float64>::value_iterator scoreIterator =
                           predictionMatrix_.row_values_begin(exampleIndex);

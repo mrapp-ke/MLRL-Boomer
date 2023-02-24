@@ -125,7 +125,7 @@ namespace seco {
                     Delegate(CContiguousView<uint8>& predictionMatrix) : predictionMatrix_(predictionMatrix) {}
 
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 exampleIndex) const override {
+                                           uint32 threadIndex, uint32 exampleIndex) const override {
                         predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex);
                     }
             };
@@ -361,7 +361,7 @@ namespace seco {
                         : predictionMatrix_(predictionMatrix), numLabels_(numLabels) {}
 
                     uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                             uint32 exampleIndex) const override {
+                                             uint32 threadIndex, uint32 exampleIndex) const override {
                         BinaryLilMatrix::row predictionRow = predictionMatrix_[exampleIndex];
                         predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
                                                     exampleIndex);
