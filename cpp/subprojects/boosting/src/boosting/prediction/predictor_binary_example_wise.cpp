@@ -67,7 +67,7 @@ namespace boosting {
 
     static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
                                                    const RuleList& model, CContiguousView<uint8>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex,
+                                                   uint32 maxRules, uint32 exampleIndex, uint32 predictionIndex,
                                                    const LabelVectorSet& labelVectorSet,
                                                    const IDistanceMeasure& distanceMeasure) {
         uint32 numLabels = predictionMatrix.getNumCols();
@@ -76,13 +76,13 @@ namespace boosting {
                    featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
         const LabelVector& closestLabelVector =
           findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels], distanceMeasure, labelVectorSet);
-        predictLabelVector(predictionMatrix.row_values_begin(exampleIndex), closestLabelVector);
+        predictLabelVector(predictionMatrix.row_values_begin(predictionIndex), closestLabelVector);
         delete[] scoreVector;
     }
 
     static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
                                                    const RuleList& model, CContiguousView<uint8>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex,
+                                                   uint32 maxRules, uint32 exampleIndex, uint32 predictionIndex,
                                                    const LabelVectorSet& labelVectorSet,
                                                    const IDistanceMeasure& distanceMeasure) {
         uint32 numFeatures = featureMatrix.getNumCols();
@@ -93,7 +93,7 @@ namespace boosting {
                    featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
         const LabelVector& closestLabelVector =
           findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels], distanceMeasure, labelVectorSet);
-        predictLabelVector(predictionMatrix.row_values_begin(exampleIndex), closestLabelVector);
+        predictLabelVector(predictionMatrix.row_values_begin(predictionIndex), closestLabelVector);
         delete[] scoreVector;
     }
 
@@ -130,9 +130,10 @@ namespace boosting {
                           distanceMeasure_(distanceMeasure) {}
 
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 threadIndex, uint32 exampleIndex) const override {
+                                           uint32 threadIndex, uint32 exampleIndex,
+                                           uint32 predictionIndex) const override {
                         predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
-                                                    labelVectorSet_, distanceMeasure_);
+                                                    predictionIndex, labelVectorSet_, distanceMeasure_);
                     }
             };
 
@@ -331,8 +332,9 @@ namespace boosting {
                           distanceMeasure_(distanceMeasure) {}
 
                     uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                             uint32 threadIndex, uint32 exampleIndex) const override {
-                        BinaryLilMatrix::row predictionRow = predictionMatrix_[exampleIndex];
+                                             uint32 threadIndex, uint32 exampleIndex,
+                                             uint32 predictionIndex) const override {
+                        BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
                         predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
                                                     exampleIndex, labelVectorSet_, distanceMeasure_);
                         return (uint32) predictionRow.size();
