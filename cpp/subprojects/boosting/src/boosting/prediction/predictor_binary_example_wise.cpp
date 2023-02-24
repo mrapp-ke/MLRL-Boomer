@@ -109,27 +109,42 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class ExampleWiseBinaryPredictor final : public AbstractPredictor<uint8, FeatureMatrix, Model>,
-                                             virtual public IBinaryPredictor {
+    class ExampleWiseBinaryPredictor final : public IBinaryPredictor {
         private:
+
+            typedef PredictionDispatcher<uint8, FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    const LabelVectorSet& labelVectorSet_;
+
+                    const IDistanceMeasure& distanceMeasure_;
+
+                public:
+
+                    Delegate(const LabelVectorSet& labelVectorSet, const IDistanceMeasure& distanceMeasure)
+                        : labelVectorSet_(labelVectorSet), distanceMeasure_(distanceMeasure) {}
+
+                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                                           CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
+                                           uint32 exampleIndex) const override {
+                        predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
+                                                    labelVectorSet_, distanceMeasure_);
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
 
             const LabelVectorSet& labelVectorSet_;
 
             std::unique_ptr<IDistanceMeasure> distanceMeasurePtr_;
-
-        protected:
-
-            /**
-             * @see `AbstractPredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   DensePredictionMatrix<uint8>& predictionMatrix, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                if (labelVectorSet_.getNumLabelVectors() > 0) {
-                    predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
-                                                labelVectorSet_, *distanceMeasurePtr_);
-                }
-            }
 
         public:
 
@@ -150,8 +165,24 @@ namespace boosting {
             ExampleWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model,
                                        const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                        std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
-                : AbstractPredictor<uint8, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads, true),
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
                   labelVectorSet_(labelVectorSet), distanceMeasurePtr_(std::move(distanceMeasurePtr)) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_, true);
+
+                if (labelVectorSet_.getNumLabelVectors() > 0) {
+                    Delegate delegate(labelVectorSet_, *distanceMeasurePtr_);
+                    Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+                }
+
+                return predictionMatrixPtr;
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`
