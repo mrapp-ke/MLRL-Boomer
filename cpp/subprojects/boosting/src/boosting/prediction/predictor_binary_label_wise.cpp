@@ -226,23 +226,37 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseSparseBinaryPredictor final : public AbstractBinarySparsePredictor<FeatureMatrix, Model>,
-                                                 virtual public ISparseBinaryPredictor {
+    class LabelWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
         private:
 
+            typedef BinarySparsePredictionDispatcher<FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    float64 threshold_;
+
+                public:
+
+                    Delegate(float64 threshold) : threshold_(threshold) {}
+
+                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                                           BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
+                                           uint32 exampleIndex) const override {
+                        predictForExampleInternally(model, featureMatrix, predictionRow, numLabels, maxRules,
+                                                    exampleIndex, threshold_);
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
+
             float64 threshold_;
-
-        protected:
-
-            /**
-             * @see `AbstractBinarySparsePredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                predictForExampleInternally(model, featureMatrix, predictionRow, numLabels, maxRules, exampleIndex,
-                                            threshold_);
-            }
 
         public:
 
@@ -258,8 +272,20 @@ namespace boosting {
              */
             LabelWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                            float64 threshold, uint32 numThreads)
-                : AbstractBinarySparsePredictor<FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads),
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
                   threshold_(threshold) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                BinaryLilMatrix predictionMatrix(numExamples);
+                Delegate delegate(threshold_);
+                uint32 numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_, predictionMatrix,
+                                                                 numLabels_, maxRules, numThreads_);
+                return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`
