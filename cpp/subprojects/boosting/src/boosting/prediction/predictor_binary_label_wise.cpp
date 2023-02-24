@@ -67,22 +67,37 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseBinaryPredictor final : public AbstractPredictor<uint8, FeatureMatrix, Model>,
-                                           virtual public IBinaryPredictor {
+    class LabelWiseBinaryPredictor final : public IBinaryPredictor {
         private:
 
+            typedef PredictionDispatcher<uint8, FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    float64 threshold_;
+
+                public:
+
+                    Delegate(float64 threshold) : threshold_(threshold) {}
+
+                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                                           CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
+                                           uint32 exampleIndex) const override {
+                        predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
+                                                    threshold_);
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
+
             float64 threshold_;
-
-        protected:
-
-            /**
-             * @see `AbstractPredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   DensePredictionMatrix<uint8>& predictionMatrix, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex, threshold_);
-            }
 
         public:
 
@@ -98,8 +113,20 @@ namespace boosting {
              */
             LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                      float64 threshold, uint32 numThreads)
-                : AbstractPredictor<uint8, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads, false),
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
                   threshold_(threshold) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_);
+                Delegate delegate(threshold_);
+                Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+                return predictionMatrixPtr;
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`
