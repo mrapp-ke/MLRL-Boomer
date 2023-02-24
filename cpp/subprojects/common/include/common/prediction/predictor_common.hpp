@@ -108,8 +108,8 @@ class BinarySparsePredictionDispatcher final {
                  * @param exampleIndex  The index of the query example to predict for
                  * @return              The number of non-zero predictions
                  */
-                virtual uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model&, uint32 maxRules,
-                                                 uint32 exampleIndex) const = 0;
+                virtual uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
+                                                 uint32 maxRules, uint32 exampleIndex) const = 0;
         };
 
         /**
