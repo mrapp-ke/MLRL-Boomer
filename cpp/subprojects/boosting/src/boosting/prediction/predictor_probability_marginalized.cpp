@@ -153,8 +153,12 @@ namespace boosting {
                 uint32 numExamples = featureMatrix_.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
-                Delegate delegate(labelVectorSet_, *probabilityFunctionPtr_);
-                Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+
+                if (labelVectorSet_.getNumLabelVectors() > 0) {
+                    Delegate delegate(labelVectorSet_, *probabilityFunctionPtr_);
+                    Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+                }
+
                 return predictionMatrixPtr;
             }
 
