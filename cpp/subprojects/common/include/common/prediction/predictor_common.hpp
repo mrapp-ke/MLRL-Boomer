@@ -73,9 +73,9 @@ class PredictionDispatcher final {
             const Model* modelPtr = &model;
             CContiguousView<T>* predictionMatrixPtr = &predictionMatrix;
 
-#pragma omp parallel for firstprivate(numExamples), \
-  firstprivate(delegatePtr) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-    firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(delegatePtr) firstprivate(modelPtr) \
+  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(maxRules) schedule(dynamic) \
+    num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 delegatePtr->predictForExample(*modelPtr, *featureMatrixPtr, *predictionMatrixPtr, maxRules, i);
             }
