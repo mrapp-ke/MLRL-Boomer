@@ -112,18 +112,28 @@ namespace seco {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseBinaryPredictor final : public AbstractPredictor<uint8, FeatureMatrix, Model>,
-                                           virtual public IBinaryPredictor {
-        protected:
+    class LabelWiseBinaryPredictor final : public IBinaryPredictor {
+        private:
 
-            /**
-             * @see `AbstractPredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   DensePredictionMatrix<uint8>& predictionMatrix, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex);
-            }
+            typedef PredictionDispatcher<uint8, FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                public:
+
+                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                                           CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
+                                           uint32 exampleIndex) const override {
+                        predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex);
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
 
         public:
 
@@ -137,8 +147,20 @@ namespace seco {
              */
             LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                      uint32 numThreads)
-                : AbstractPredictor<uint8, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads,
-                                                                 !model.containsDefaultRule()) {}
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_,
+                                                                 !model_.containsDefaultRule());
+                Delegate delegate;
+                Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+                return predictionMatrixPtr;
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`
