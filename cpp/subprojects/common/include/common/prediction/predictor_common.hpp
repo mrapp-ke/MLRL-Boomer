@@ -31,7 +31,7 @@ class PredictionDispatcher final {
                 virtual ~IPredictionDelegate() {};
 
                 /**
-                 * Obtain predictions for a single query example and stores them in a given prediction matrix.
+                 * Obtains predictions for a single query example.
                  *
                  * @param model             A reference to an object of template type `Model` that should be used to
                  *                          obtain predictions
@@ -49,7 +49,8 @@ class PredictionDispatcher final {
         };
 
         /**
-         * Obtains predictions for multiple query examples and stores them in a given prediction matrix.
+         * Obtains predictions for multiple query examples by delegating the prediction for individual examples to a
+         * given `PredictionDelegate`.
          *
          * @param delegate          A reference to an object of type `IPredictionDelegate`, the prediction for
          *                          individual examples should be delegated to
