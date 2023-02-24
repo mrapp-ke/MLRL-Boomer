@@ -17,10 +17,9 @@ namespace boosting {
         }
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   CContiguousView<float64>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex,
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex,
                                                    const IProbabilityFunction& probabilityFunction) {
         uint32 numLabels = predictionMatrix.getNumCols();
         CContiguousView<float64>::value_iterator scoreIterator = predictionMatrix.row_values_begin(exampleIndex);
@@ -29,10 +28,9 @@ namespace boosting {
         applyTransformationFunction(scoreIterator, numLabels, probabilityFunction);
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   CContiguousView<float64>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex,
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex,
                                                    const IProbabilityFunction& probabilityFunction) {
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();
@@ -55,23 +53,40 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseProbabilityPredictor final : public AbstractPredictor<float64, FeatureMatrix, Model>,
-                                                virtual public IProbabilityPredictor {
+    class LabelWiseProbabilityPredictor final : public IProbabilityPredictor {
         private:
 
+            typedef PredictionDispatcher<float64, FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    CContiguousView<float64>& predictionMatrix_;
+
+                    const IProbabilityFunction& probabilityFunction_;
+
+                public:
+
+                    Delegate(CContiguousView<float64>& predictionMatrix,
+                             const IProbabilityFunction& probabilityFunction)
+                        : predictionMatrix_(predictionMatrix), probabilityFunction_(probabilityFunction) {}
+
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                           uint32 exampleIndex) const override {
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
+                                                    probabilityFunction_);
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
+
             std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
-
-        protected:
-
-            /**
-             * @see `AbstractPredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   DensePredictionMatrix<float64>& predictionMatrix, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
-                                            *probabilityFunctionPtr_);
-            }
 
         public:
 
@@ -89,8 +104,20 @@ namespace boosting {
             LabelWiseProbabilityPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                           std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
                                           uint32 numThreads)
-                : AbstractPredictor<float64, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads, true),
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
                   probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
+                Delegate delegate(*predictionMatrixPtr, *probabilityFunctionPtr_);
+                Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                return predictionMatrixPtr;
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`

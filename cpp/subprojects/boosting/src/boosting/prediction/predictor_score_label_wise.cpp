@@ -7,18 +7,16 @@
 
 namespace boosting {
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   CContiguousView<float64>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex) {
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex) {
         applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
                    featureMatrix.row_values_cend(exampleIndex), predictionMatrix.row_values_begin(exampleIndex));
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   CContiguousView<float64>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex) {
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
         applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
                    featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
@@ -35,18 +33,33 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseScorePredictor final : public AbstractPredictor<float64, FeatureMatrix, Model>,
-                                          virtual public IScorePredictor {
-        protected:
+    class LabelWiseScorePredictor final : public IScorePredictor {
+        private:
 
-            /**
-             * @see `AbstractPredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   DensePredictionMatrix<float64>& predictionMatrix, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                return predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex);
-            }
+            typedef PredictionDispatcher<float64, FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    CContiguousView<float64>& predictionMatrix_;
+
+                public:
+
+                    Delegate(CContiguousView<float64>& predictionMatrix) : predictionMatrix_(predictionMatrix) {}
+
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                           uint32 exampleIndex) const override {
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex);
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
 
         public:
 
@@ -61,7 +74,19 @@ namespace boosting {
              */
             LabelWiseScorePredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                     uint32 numThreads)
-                : AbstractPredictor<float64, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads, true) {}
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
+                Delegate delegate(*predictionMatrixPtr);
+                Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                return predictionMatrixPtr;
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`
