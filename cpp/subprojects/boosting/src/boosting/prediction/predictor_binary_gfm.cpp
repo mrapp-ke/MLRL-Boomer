@@ -194,29 +194,46 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class GfmBinaryPredictor final : AbstractPredictor<uint8, FeatureMatrix, Model>,
-                                     virtual public IBinaryPredictor {
+    class GfmBinaryPredictor final : public IBinaryPredictor {
         private:
+
+            typedef PredictionDispatcher<uint8, FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    const LabelVectorSet& labelVectorSet_;
+
+                    const IProbabilityFunction& probabilityFunction_;
+
+                    uint32 maxLabelCardinality_;
+
+                public:
+
+                    Delegate(const LabelVectorSet& labelVectorSet, const IProbabilityFunction& probabilityFunction,
+                             uint32 maxLabelCardinality)
+                        : labelVectorSet_(labelVectorSet), probabilityFunction_(probabilityFunction),
+                          maxLabelCardinality_(maxLabelCardinality) {}
+
+                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                                           CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
+                                           uint32 exampleIndex) const override {
+                        predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
+                                                    labelVectorSet_, probabilityFunction_, maxLabelCardinality_);
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
 
             const LabelVectorSet& labelVectorSet_;
 
             std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
-
-            uint32 maxLabelCardinality_;
-
-        protected:
-
-            /**
-             * @see `AbstractPredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   DensePredictionMatrix<uint8>& predictionMatrix, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                if (labelVectorSet_.getNumLabelVectors() > 0) {
-                    predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
-                                                labelVectorSet_, *probabilityFunctionPtr_, maxLabelCardinality_);
-                }
-            }
 
         public:
 
@@ -236,9 +253,25 @@ namespace boosting {
             GfmBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model,
                                const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr, uint32 numThreads)
-                : AbstractPredictor<uint8, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads, true),
-                  labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)),
-                  maxLabelCardinality_(getMaxLabelCardinality(labelVectorSet)) {}
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
+                  labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_, true);
+
+                if (labelVectorSet_.getNumLabelVectors() > 0) {
+                    uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet_);
+                    Delegate delegate(labelVectorSet_, *probabilityFunctionPtr_, maxLabelCardinality);
+                    Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+                }
+
+                return predictionMatrixPtr;
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`
