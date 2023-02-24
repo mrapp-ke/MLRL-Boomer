@@ -87,27 +87,42 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class MarginalizedProbabilityPredictor final : public AbstractPredictor<float64, FeatureMatrix, Model>,
-                                                   virtual public IProbabilityPredictor {
+    class MarginalizedProbabilityPredictor final : public IProbabilityPredictor {
         private:
+
+            typedef PredictionDispatcher<float64, FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    const LabelVectorSet& labelVectorSet_;
+
+                    const IProbabilityFunction& probabilityFunction_;
+
+                public:
+
+                    Delegate(const LabelVectorSet& labelVectorSet, const IProbabilityFunction& probabilityFunction)
+                        : labelVectorSet_(labelVectorSet), probabilityFunction_(probabilityFunction) {}
+
+                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                                           CContiguousView<float64>& predictionMatrix, uint32 maxRules,
+                                           uint32 exampleIndex) const override {
+                        return predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules,
+                                                           exampleIndex, labelVectorSet_, probabilityFunction_);
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
 
             const LabelVectorSet& labelVectorSet_;
 
             std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
-
-        protected:
-
-            /**
-             * @see `AbstractPredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   DensePredictionMatrix<float64>& predictionMatrix, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                if (labelVectorSet_.getNumLabelVectors() > 0) {
-                    predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
-                                                labelVectorSet_, *probabilityFunctionPtr_);
-                }
-            }
 
         public:
 
@@ -128,8 +143,20 @@ namespace boosting {
                                              const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                              std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
                                              uint32 numThreads)
-                : AbstractPredictor<float64, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads, true),
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
                   labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
+                Delegate delegate(labelVectorSet_, *probabilityFunctionPtr_);
+                Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+                return predictionMatrixPtr;
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`
