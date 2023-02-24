@@ -44,10 +44,10 @@ namespace boosting {
         delete[] jointProbabilities;
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   CContiguousView<float64>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex,
+                                                   const LabelVectorSet& labelVectorSet,
                                                    const IProbabilityFunction& probabilityFunction) {
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
         uint32 numLabels = predictionMatrix.getNumCols();
@@ -58,10 +58,10 @@ namespace boosting {
                                          probabilityFunction);
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   CContiguousView<float64>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex,
+                                                   const LabelVectorSet& labelVectorSet,
                                                    const IProbabilityFunction& probabilityFunction) {
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
         uint32 numFeatures = featureMatrix.getNumCols();
@@ -104,10 +104,10 @@ namespace boosting {
                     Delegate(const LabelVectorSet& labelVectorSet, const IProbabilityFunction& probabilityFunction)
                         : labelVectorSet_(labelVectorSet), probabilityFunction_(probabilityFunction) {}
 
-                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
                                            CContiguousView<float64>& predictionMatrix, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix, maxRules, exampleIndex,
                                                     labelVectorSet_, probabilityFunction_);
                     }
             };

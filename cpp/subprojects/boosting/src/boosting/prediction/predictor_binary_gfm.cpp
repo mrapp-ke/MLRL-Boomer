@@ -149,10 +149,10 @@ namespace boosting {
         storePrediction(*bestVectorPtr, prediction);
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex,
+                                                   const LabelVectorSet& labelVectorSet,
                                                    const IProbabilityFunction& probabilityFunction,
                                                    uint32 maxLabelCardinality) {
         uint32 numLabels = predictionMatrix.getNumCols();
@@ -165,10 +165,10 @@ namespace boosting {
         delete[] scoreVector;
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex,
+                                                   const LabelVectorSet& labelVectorSet,
                                                    const IProbabilityFunction& probabilityFunction,
                                                    uint32 maxLabelCardinality) {
         uint32 numFeatures = featureMatrix.getNumCols();
@@ -215,10 +215,10 @@ namespace boosting {
                         : labelVectorSet_(labelVectorSet), probabilityFunction_(probabilityFunction),
                           maxLabelCardinality_(maxLabelCardinality) {}
 
-                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
                                            CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix, maxRules, exampleIndex,
                                                     labelVectorSet_, probabilityFunction_, maxLabelCardinality_);
                     }
             };
@@ -352,10 +352,9 @@ namespace boosting {
             }
     };
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
-                                                   uint32 maxRules, uint32 exampleIndex,
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
+                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex,
                                                    const LabelVectorSet& labelVectorSet,
                                                    const IProbabilityFunction& probabilityFunction,
                                                    uint32 maxLabelCardinality) {
@@ -368,10 +367,12 @@ namespace boosting {
         delete[] scoreVector;
     }
 
-    static inline void predictForExampleInternally(
-      const RuleList& model, const CsrConstView<const float32>& featureMatrix, BinaryLilMatrix::row predictionRow,
-      uint32 numLabels, uint32 maxRules, uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
-      const IProbabilityFunction& probabilityFunction, uint32 maxLabelCardinality) {
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
+                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex,
+                                                   const LabelVectorSet& labelVectorSet,
+                                                   const IProbabilityFunction& probabilityFunction,
+                                                   uint32 maxLabelCardinality) {
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
         float64* scoreVector = new float64[numLabels] {};
@@ -415,10 +416,10 @@ namespace boosting {
                         : labelVectorSet_(labelVectorSet), probabilityFunction_(probabilityFunction),
                           maxLabelCardinality_(maxLabelCardinality) {}
 
-                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
                                            BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(model, featureMatrix, predictionRow, numLabels, maxRules,
+                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels, maxRules,
                                                     exampleIndex, labelVectorSet_, probabilityFunction_,
                                                     maxLabelCardinality_);
                     }

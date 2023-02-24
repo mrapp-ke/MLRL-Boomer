@@ -29,10 +29,9 @@ namespace boosting {
         }
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex, float64 threshold) {
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex, float64 threshold) {
         uint32 numLabels = predictionMatrix.getNumCols();
         float64* scoreVector = new float64[numLabels] {};
         applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
@@ -41,10 +40,9 @@ namespace boosting {
         delete[] scoreVector;
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex, float64 threshold) {
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex, float64 threshold) {
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();
         float64* scoreVector = new float64[numLabels] {};
@@ -81,10 +79,10 @@ namespace boosting {
 
                     Delegate(float64 threshold) : threshold_(threshold) {}
 
-                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
                                            CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix, maxRules, exampleIndex,
                                                     threshold_);
                     }
             };
@@ -190,10 +188,10 @@ namespace boosting {
             }
     };
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
-                                                   uint32 maxRules, uint32 exampleIndex, float64 threshold) {
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
+                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex,
+                                                   float64 threshold) {
         float64* scoreVector = new float64[numLabels] {};
         applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
                    featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
@@ -201,10 +199,10 @@ namespace boosting {
         delete[] scoreVector;
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
-                                                   uint32 maxRules, uint32 exampleIndex, float64 threshold) {
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
+                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex,
+                                                   float64 threshold) {
         uint32 numFeatures = featureMatrix.getNumCols();
         float64* scoreVector = new float64[numLabels] {};
         applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
@@ -240,10 +238,10 @@ namespace boosting {
 
                     Delegate(float64 threshold) : threshold_(threshold) {}
 
-                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
                                            BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(model, featureMatrix, predictionRow, numLabels, maxRules,
+                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels, maxRules,
                                                     exampleIndex, threshold_);
                     }
             };

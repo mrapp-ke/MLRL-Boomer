@@ -53,10 +53,9 @@ namespace seco {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex) {
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex) {
         uint32 numLabels = predictionMatrix.getNumCols();
         BitVector mask(numLabels, true);
 
@@ -72,10 +71,9 @@ namespace seco {
         }
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex) {
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();
         BitVector mask(numLabels, true);
@@ -120,10 +118,10 @@ namespace seco {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 public:
 
-                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
                                            CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex);
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix, maxRules, exampleIndex);
                     }
             };
 
@@ -287,10 +285,9 @@ namespace seco {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
-                                                   uint32 maxRules, uint32 exampleIndex) {
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
+                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex) {
         for (auto it = model.used_cbegin(maxRules); it != model.used_cend(maxRules); it++) {
             const RuleList::Rule& rule = *it;
             const IBody& body = rule.getBody();
@@ -303,10 +300,9 @@ namespace seco {
         }
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
-                                                   uint32 maxRules, uint32 exampleIndex) {
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
+                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
         float32* tmpArray1 = new float32[numFeatures];
         uint32* tmpArray2 = new uint32[numFeatures] {};
@@ -350,10 +346,10 @@ namespace seco {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 public:
 
-                    void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
                                            BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(model, featureMatrix, predictionRow, numLabels, maxRules,
+                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels, maxRules,
                                                     exampleIndex);
                     }
             };
