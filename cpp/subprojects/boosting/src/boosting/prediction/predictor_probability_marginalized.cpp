@@ -2,7 +2,7 @@
 
 #include "common/data/arrays.hpp"
 #include "common/math/math.hpp"
-#include "predictor_common.hpp"
+#include "predictor_score_common.hpp"
 #include "predictor_probability_common.hpp"
 
 #include <stdexcept>

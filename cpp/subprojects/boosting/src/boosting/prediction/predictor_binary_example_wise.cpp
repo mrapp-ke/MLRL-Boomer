@@ -1,6 +1,6 @@
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 
-#include "predictor_common.hpp"
+#include "predictor_score_common.hpp"
 
 #include <algorithm>
 #include <stdexcept>
