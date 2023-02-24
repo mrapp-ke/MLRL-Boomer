@@ -1,7 +1,6 @@
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
 
 #include "boosting/prediction/probability_function.hpp"
-#include "common/prediction/predictor_common.hpp"
 #include "predictor_common.hpp"
 
 #include <stdexcept>

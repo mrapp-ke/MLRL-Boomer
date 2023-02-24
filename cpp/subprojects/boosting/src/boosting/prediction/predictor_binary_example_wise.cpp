@@ -1,6 +1,5 @@
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 
-#include "common/prediction/predictor_common.hpp"
 #include "predictor_common.hpp"
 
 #include <algorithm>
