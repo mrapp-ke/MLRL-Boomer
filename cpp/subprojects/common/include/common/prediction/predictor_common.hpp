@@ -22,7 +22,7 @@ class PredictionDispatcher final {
     public:
 
         /**
-         * Defines an interface for all classes the prediction for individual examples can be delegated to by a
+         * Defines an interface for all classes, the prediction for individual examples can be delegated to by a
          * `PredictionDispatcher`.
          */
         class IPredictionDelegate {
