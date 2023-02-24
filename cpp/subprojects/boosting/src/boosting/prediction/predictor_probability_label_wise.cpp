@@ -16,30 +16,6 @@ namespace boosting {
         }
     }
 
-    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex,
-                                                   const IProbabilityFunction& probabilityFunction) {
-        uint32 numLabels = predictionMatrix.getNumCols();
-        CContiguousView<float64>::value_iterator scoreIterator = predictionMatrix.row_values_begin(exampleIndex);
-        applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), scoreIterator);
-        applyTransformationFunction(scoreIterator, numLabels, probabilityFunction);
-    }
-
-    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex,
-                                                   const IProbabilityFunction& probabilityFunction) {
-        uint32 numFeatures = featureMatrix.getNumCols();
-        uint32 numLabels = predictionMatrix.getNumCols();
-        CContiguousView<float64>::value_iterator scoreIterator = predictionMatrix.row_values_begin(exampleIndex);
-        applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
-                   featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), scoreIterator);
-        applyTransformationFunction(scoreIterator, numLabels, probabilityFunction);
-    }
-
     /**
      * An implementation of the type `IProbabilityPredictor` that allows to predict label-wise probabilities for given
      * query examples, which estimate the chance of individual labels to be relevant, by summing up the scores that are
@@ -72,8 +48,12 @@ namespace boosting {
 
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
-                                                    probabilityFunction_);
+                        ScorePredictionDelegate<FeatureMatrix, Model>(predictionMatrix_)
+                          .predictForExample(featureMatrix, model, maxRules, exampleIndex);
+                        uint32 numLabels = predictionMatrix_.getNumCols();
+                        CContiguousView<float64>::value_iterator scoreIterator =
+                          predictionMatrix_.row_values_begin(exampleIndex);
+                        applyTransformationFunction(scoreIterator, numLabels, probabilityFunction_);
                     }
             };
 
