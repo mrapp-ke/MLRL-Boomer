@@ -73,16 +73,18 @@ namespace boosting {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 private:
 
+                    CContiguousView<uint8>& predictionMatrix_;
+
                     float64 threshold_;
 
                 public:
 
-                    Delegate(float64 threshold) : threshold_(threshold) {}
+                    Delegate(CContiguousView<uint8>& predictionMatrix, float64 threshold)
+                        : predictionMatrix_(predictionMatrix), threshold_(threshold) {}
 
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                           CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionMatrix, maxRules, exampleIndex,
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
                                                     threshold_);
                     }
             };
@@ -121,8 +123,8 @@ namespace boosting {
                 uint32 numExamples = featureMatrix_.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_);
-                Delegate delegate(threshold_);
-                Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+                Delegate delegate(*predictionMatrixPtr, threshold_);
+                Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 return predictionMatrixPtr;
             }
 
@@ -232,17 +234,23 @@ namespace boosting {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 private:
 
+                    BinaryLilMatrix& predictionMatrix_;
+
+                    uint32 numLabels_;
+
                     float64 threshold_;
 
                 public:
 
-                    Delegate(float64 threshold) : threshold_(threshold) {}
+                    Delegate(BinaryLilMatrix& predictionMatrix, uint32 numLabels, float64 threshold)
+                        : predictionMatrix_(predictionMatrix), numLabels_(numLabels), threshold_(threshold) {}
 
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                           BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
-                                           uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels, maxRules,
+                    uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                             uint32 exampleIndex) const override {
+                        BinaryLilMatrix::row predictionRow = predictionMatrix_[exampleIndex];
+                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
                                                     exampleIndex, threshold_);
+                        return (uint32) predictionRow.size();
                     }
             };
 
@@ -279,9 +287,9 @@ namespace boosting {
             std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
                 uint32 numExamples = featureMatrix_.getNumRows();
                 BinaryLilMatrix predictionMatrix(numExamples);
-                Delegate delegate(threshold_);
-                uint32 numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_, predictionMatrix,
-                                                                 numLabels_, maxRules, numThreads_);
+                Delegate delegate(predictionMatrix, numLabels_, threshold_);
+                uint32 numNonZeroElements =
+                  Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
             }
 

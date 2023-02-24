@@ -95,19 +95,22 @@ namespace boosting {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 private:
 
+                    CContiguousView<float64>& predictionMatrix_;
+
                     const LabelVectorSet& labelVectorSet_;
 
                     const IProbabilityFunction& probabilityFunction_;
 
                 public:
 
-                    Delegate(const LabelVectorSet& labelVectorSet, const IProbabilityFunction& probabilityFunction)
-                        : labelVectorSet_(labelVectorSet), probabilityFunction_(probabilityFunction) {}
+                    Delegate(CContiguousView<float64>& predictionMatrix, const LabelVectorSet& labelVectorSet,
+                             const IProbabilityFunction& probabilityFunction)
+                        : predictionMatrix_(predictionMatrix), labelVectorSet_(labelVectorSet),
+                          probabilityFunction_(probabilityFunction) {}
 
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                           CContiguousView<float64>& predictionMatrix, uint32 maxRules,
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionMatrix, maxRules, exampleIndex,
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
                                                     labelVectorSet_, probabilityFunction_);
                     }
             };
@@ -155,8 +158,8 @@ namespace boosting {
                   std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
 
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
-                    Delegate delegate(labelVectorSet_, *probabilityFunctionPtr_);
-                    Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+                    Delegate delegate(*predictionMatrixPtr, labelVectorSet_, *probabilityFunctionPtr_);
+                    Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 }
 
                 return predictionMatrixPtr;

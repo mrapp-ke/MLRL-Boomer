@@ -39,12 +39,17 @@ namespace boosting {
             typedef PredictionDispatcher<float64, FeatureMatrix, Model> Dispatcher;
 
             class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    CContiguousView<float64>& predictionMatrix_;
+
                 public:
 
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                           CContiguousView<float64>& predictionMatrix, uint32 maxRules,
+                    Delegate(CContiguousView<float64>& predictionMatrix) : predictionMatrix_(predictionMatrix) {}
+
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionMatrix, maxRules, exampleIndex);
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex);
                     }
             };
 
@@ -78,8 +83,8 @@ namespace boosting {
                 uint32 numExamples = featureMatrix_.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
-                Delegate delegate;
-                Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+                Delegate delegate(*predictionMatrixPtr);
+                Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 return predictionMatrixPtr;
             }
 
