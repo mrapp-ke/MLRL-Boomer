@@ -9,7 +9,7 @@
 /**
  * Defines an interface for all classes that allow to predict regression scores for given query examples.
  */
-class IScorePredictor : virtual public IPredictor<DensePredictionMatrix<float64>> {
+class IScorePredictor : public IPredictor<DensePredictionMatrix<float64>> {
     public:
 
         virtual ~IScorePredictor() override {};
