@@ -1,7 +1,6 @@
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
 
 #include "common/iterator/index_iterator.hpp"
-#include "common/prediction/predictor_common.hpp"
 #include "predictor_common.hpp"
 
 #include <stdexcept>
