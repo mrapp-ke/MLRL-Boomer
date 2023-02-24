@@ -1,5 +1,6 @@
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
 
+#include "common/data/arrays.hpp"
 #include "common/iterator/index_iterator.hpp"
 #include "predictor_score_common.hpp"
 
@@ -63,12 +64,12 @@ namespace boosting {
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                            uint32 threadIndex, uint32 exampleIndex,
                                            uint32 predictionIndex) const override {
+                        uint32 numLabels = scoreMatrix_.getNumCols();
+                        CContiguousView<float64>::value_iterator scoreIterator =
+                          scoreMatrix_.row_values_begin(threadIndex);
+                        setArrayToZeros(scoreIterator, numLabels);
                         ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
-                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex,
-                                             predictionIndex);
-                        uint32 numLabels = predictionMatrix_.getNumCols();
-                        CContiguousConstView<float64>::value_const_iterator scoreIterator =
-                          scoreMatrix_.row_values_cbegin(predictionIndex);
+                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex, threadIndex);
                         CContiguousView<uint8>::value_iterator predictionIterator =
                           predictionMatrix_.row_values_begin(predictionIndex);
                         applyThreshold(scoreIterator, predictionIterator, numLabels, threshold_);
@@ -108,7 +109,7 @@ namespace boosting {
             std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
                 uint32 numExamples = featureMatrix_.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<float64>> scoreMatrixPtr =
-                  std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
+                  std::make_unique<DensePredictionMatrix<float64>>(numThreads_, numLabels_);
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_);
                 Delegate delegate(*scoreMatrixPtr, *predictionMatrixPtr, threshold_);
