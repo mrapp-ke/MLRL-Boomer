@@ -98,16 +98,16 @@ namespace boosting {
         delete[] tmpArray2;
     }
 
-    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<float64>& scoreMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex, uint32 predictionIndex) {
+    static inline void aggregatePredictedScores(const CContiguousConstView<const float32>& featureMatrix,
+                                                const RuleList& model, CContiguousView<float64>& scoreMatrix,
+                                                uint32 maxRules, uint32 exampleIndex, uint32 predictionIndex) {
         applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
                    featureMatrix.row_values_cend(exampleIndex), scoreMatrix.row_values_begin(predictionIndex));
     }
 
-    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<float64>& scoreMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex, uint32 predictionIndex) {
+    static inline void aggregatePredictedScores(const CsrConstView<const float32>& featureMatrix, const RuleList& model,
+                                                CContiguousView<float64>& scoreMatrix, uint32 maxRules,
+                                                uint32 exampleIndex, uint32 predictionIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
         applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
                    featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
@@ -139,8 +139,7 @@ namespace boosting {
 
             void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                    uint32 threadIndex, uint32 exampleIndex, uint32 predictionIndex) const override {
-                predictForExampleInternally(featureMatrix, model, scoreMatrix_, maxRules, exampleIndex,
-                                            predictionIndex);
+                aggregatePredictedScores(featureMatrix, model, scoreMatrix_, maxRules, exampleIndex, predictionIndex);
             }
     };
 
