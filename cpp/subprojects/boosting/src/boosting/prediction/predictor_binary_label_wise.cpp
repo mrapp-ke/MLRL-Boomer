@@ -61,14 +61,16 @@ namespace boosting {
                         : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix), threshold_(threshold) {}
 
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 threadIndex, uint32 exampleIndex) const override {
+                                           uint32 threadIndex, uint32 exampleIndex,
+                                           uint32 predictionIndex) const override {
                         ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
-                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex);
+                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex,
+                                             predictionIndex);
                         uint32 numLabels = predictionMatrix_.getNumCols();
                         CContiguousConstView<float64>::value_const_iterator scoreIterator =
-                          scoreMatrix_.row_values_cbegin(exampleIndex);
+                          scoreMatrix_.row_values_cbegin(predictionIndex);
                         CContiguousView<uint8>::value_iterator predictionIterator =
-                          predictionMatrix_.row_values_begin(exampleIndex);
+                          predictionMatrix_.row_values_begin(predictionIndex);
                         applyThreshold(scoreIterator, predictionIterator, numLabels, threshold_);
                     }
             };
@@ -232,8 +234,9 @@ namespace boosting {
                         : predictionMatrix_(predictionMatrix), numLabels_(numLabels), threshold_(threshold) {}
 
                     uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                             uint32 threadIndex, uint32 exampleIndex) const override {
-                        BinaryLilMatrix::row predictionRow = predictionMatrix_[exampleIndex];
+                                             uint32 threadIndex, uint32 exampleIndex,
+                                             uint32 predictionIndex) const override {
+                        BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
                         predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
                                                     exampleIndex, threshold_);
                         return (uint32) predictionRow.size();

@@ -78,13 +78,15 @@ namespace boosting {
                           probabilityFunction_(probabilityFunction) {}
 
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 threadIndex, uint32 exampleIndex) const override {
+                                           uint32 threadIndex, uint32 exampleIndex,
+                                           uint32 predictionIndex) const override {
                         ScorePredictionDelegate<FeatureMatrix, Model>(predictionMatrix_)
-                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex);
+                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex,
+                                             predictionIndex);
                         uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
                         uint32 numLabels = predictionMatrix_.getNumCols();
                         CContiguousView<float64>::value_iterator scoreIterator =
-                          predictionMatrix_.row_values_begin(exampleIndex);
+                          predictionMatrix_.row_values_begin(predictionIndex);
                         predictMarginalizedProbabilities(scoreIterator, numLabels, labelVectorSet_, numLabelVectors,
                                                          probabilityFunction_);
                     }
