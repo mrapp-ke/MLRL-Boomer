@@ -7,49 +7,25 @@
 
 namespace boosting {
 
-    static inline void applyThreshold(CContiguousConstView<float64>::value_const_iterator originalIterator,
-                                      CContiguousView<uint8>::value_iterator transformedIterator, uint32 numElements,
+    static inline void applyThreshold(CContiguousConstView<float64>::value_const_iterator scoreIterator,
+                                      CContiguousView<uint8>::value_iterator predictionIterator, uint32 numLabels,
                                       float64 threshold) {
-        for (uint32 i = 0; i < numElements; i++) {
-            float64 originalValue = originalIterator[i];
-            uint8 transformedValue = originalValue > threshold ? 1 : 0;
-            transformedIterator[i] = transformedValue;
+        for (uint32 i = 0; i < numLabels; i++) {
+            float64 score = scoreIterator[i];
+            uint8 prediction = score > threshold ? 1 : 0;
+            predictionIterator[i] = prediction;
         }
     }
 
-    static inline void applyThreshold(CContiguousConstView<float64>::value_const_iterator originalIterator,
-                                      BinaryLilMatrix::row predictionRow, uint32 numElements, float64 threshold) {
-        for (uint32 i = 0; i < numElements; i++) {
-            float64 originalValue = originalIterator[i];
+    static inline void applyThreshold(CContiguousConstView<float64>::value_const_iterator scoreIterator,
+                                      BinaryLilMatrix::row predictionRow, uint32 numLabels, float64 threshold) {
+        for (uint32 i = 0; i < numLabels; i++) {
+            float64 score = scoreIterator[i];
 
-            if (originalValue > threshold) {
+            if (score > threshold) {
                 predictionRow.emplace_back(i);
             }
         }
-    }
-
-    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex, float64 threshold) {
-        uint32 numLabels = predictionMatrix.getNumCols();
-        float64* scoreVector = new float64[numLabels] {};
-        applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
-        applyThreshold(&scoreVector[0], predictionMatrix.row_values_begin(exampleIndex), numLabels, threshold);
-        delete[] scoreVector;
-    }
-
-    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex, float64 threshold) {
-        uint32 numFeatures = featureMatrix.getNumCols();
-        uint32 numLabels = predictionMatrix.getNumCols();
-        float64* scoreVector = new float64[numLabels] {};
-        applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
-                   featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
-        applyThreshold(&scoreVector[0], predictionMatrix.row_values_begin(exampleIndex), numLabels, threshold);
-        delete[] scoreVector;
     }
 
     /**
@@ -72,19 +48,28 @@ namespace boosting {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 private:
 
+                    CContiguousView<float64>& scoreMatrix_;
+
                     CContiguousView<uint8>& predictionMatrix_;
 
                     float64 threshold_;
 
                 public:
 
-                    Delegate(CContiguousView<uint8>& predictionMatrix, float64 threshold)
-                        : predictionMatrix_(predictionMatrix), threshold_(threshold) {}
+                    Delegate(CContiguousView<float64>& scoreMatrix, CContiguousView<uint8>& predictionMatrix,
+                             float64 threshold)
+                        : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix), threshold_(threshold) {}
 
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
-                                                    threshold_);
+                        ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
+                          .predictForExample(featureMatrix, model, maxRules, exampleIndex);
+                        uint32 numLabels = predictionMatrix_.getNumCols();
+                        CContiguousConstView<float64>::value_const_iterator scoreIterator =
+                          scoreMatrix_.row_values_cbegin(exampleIndex);
+                        CContiguousView<uint8>::value_iterator predictionIterator =
+                          predictionMatrix_.row_values_begin(exampleIndex);
+                        applyThreshold(scoreIterator, predictionIterator, numLabels, threshold_);
                     }
             };
 
@@ -120,9 +105,11 @@ namespace boosting {
              */
             std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
                 uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<float64>> scoreMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_);
-                Delegate delegate(*predictionMatrixPtr, threshold_);
+                Delegate delegate(*scoreMatrixPtr, *predictionMatrixPtr, threshold_);
                 Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 return predictionMatrixPtr;
             }
