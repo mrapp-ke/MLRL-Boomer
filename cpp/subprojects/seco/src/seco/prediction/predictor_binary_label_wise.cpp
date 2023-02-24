@@ -53,10 +53,9 @@ namespace seco {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex) {
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex) {
         uint32 numLabels = predictionMatrix.getNumCols();
         BitVector mask(numLabels, true);
 
@@ -72,10 +71,9 @@ namespace seco {
         }
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex) {
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();
         BitVector mask(numLabels, true);
@@ -112,18 +110,33 @@ namespace seco {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseBinaryPredictor final : public AbstractPredictor<uint8, FeatureMatrix, Model>,
-                                           virtual public IBinaryPredictor {
-        protected:
+    class LabelWiseBinaryPredictor final : public IBinaryPredictor {
+        private:
 
-            /**
-             * @see `AbstractPredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   DensePredictionMatrix<uint8>& predictionMatrix, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex);
-            }
+            typedef PredictionDispatcher<uint8, FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    CContiguousView<uint8>& predictionMatrix_;
+
+                public:
+
+                    Delegate(CContiguousView<uint8>& predictionMatrix) : predictionMatrix_(predictionMatrix) {}
+
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                           uint32 exampleIndex) const override {
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex);
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
 
         public:
 
@@ -137,8 +150,20 @@ namespace seco {
              */
             LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                      uint32 numThreads)
-                : AbstractPredictor<uint8, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads,
-                                                                 !model.containsDefaultRule()) {}
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_,
+                                                                 !model_.containsDefaultRule());
+                Delegate delegate(*predictionMatrixPtr);
+                Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                return predictionMatrixPtr;
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`
@@ -265,10 +290,9 @@ namespace seco {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
-                                                   uint32 maxRules, uint32 exampleIndex) {
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
+                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex) {
         for (auto it = model.used_cbegin(maxRules); it != model.used_cend(maxRules); it++) {
             const RuleList::Rule& rule = *it;
             const IBody& body = rule.getBody();
@@ -281,10 +305,9 @@ namespace seco {
         }
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
-                                                   uint32 maxRules, uint32 exampleIndex) {
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
+                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
         float32* tmpArray1 = new float32[numFeatures];
         uint32* tmpArray2 = new uint32[numFeatures] {};
@@ -320,18 +343,39 @@ namespace seco {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseSparseBinaryPredictor final : public AbstractBinarySparsePredictor<FeatureMatrix, Model>,
-                                                 virtual public ISparseBinaryPredictor {
-        protected:
+    class LabelWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
+        private:
 
-            /**
-             * @see `AbstractBinarySparsePredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                predictForExampleInternally(model, featureMatrix, predictionRow, numLabels, maxRules, exampleIndex);
-            }
+            typedef BinarySparsePredictionDispatcher<FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    BinaryLilMatrix& predictionMatrix_;
+
+                    uint32 numLabels_;
+
+                public:
+
+                    Delegate(BinaryLilMatrix& predictionMatrix, uint32 numLabels)
+                        : predictionMatrix_(predictionMatrix), numLabels_(numLabels) {}
+
+                    uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                             uint32 exampleIndex) const override {
+                        BinaryLilMatrix::row predictionRow = predictionMatrix_[exampleIndex];
+                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
+                                                    exampleIndex);
+                        return (uint32) predictionRow.size();
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
 
         public:
 
@@ -345,7 +389,19 @@ namespace seco {
              */
             LabelWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                            uint32 numThreads)
-                : AbstractBinarySparsePredictor<FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads) {}
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                BinaryLilMatrix predictionMatrix(numExamples);
+                Delegate delegate(predictionMatrix, numLabels_);
+                uint32 numNonZeroElements =
+                  Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`

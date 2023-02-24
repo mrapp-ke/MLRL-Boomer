@@ -66,10 +66,10 @@ namespace boosting {
         }
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex,
+                                                   const LabelVectorSet& labelVectorSet,
                                                    const IDistanceMeasure& distanceMeasure) {
         uint32 numLabels = predictionMatrix.getNumCols();
         float64* scoreVector = new float64[numLabels] {};
@@ -81,10 +81,10 @@ namespace boosting {
         delete[] scoreVector;
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex, const LabelVectorSet& labelVectorSet,
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex,
+                                                   const LabelVectorSet& labelVectorSet,
                                                    const IDistanceMeasure& distanceMeasure) {
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();
@@ -109,27 +109,45 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class ExampleWiseBinaryPredictor final : public AbstractPredictor<uint8, FeatureMatrix, Model>,
-                                             virtual public IBinaryPredictor {
+    class ExampleWiseBinaryPredictor final : public IBinaryPredictor {
         private:
+
+            typedef PredictionDispatcher<uint8, FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    CContiguousView<uint8>& predictionMatrix_;
+
+                    const LabelVectorSet& labelVectorSet_;
+
+                    const IDistanceMeasure& distanceMeasure_;
+
+                public:
+
+                    Delegate(CContiguousView<uint8>& predictionMatrix, const LabelVectorSet& labelVectorSet,
+                             const IDistanceMeasure& distanceMeasure)
+                        : predictionMatrix_(predictionMatrix), labelVectorSet_(labelVectorSet),
+                          distanceMeasure_(distanceMeasure) {}
+
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                           uint32 exampleIndex) const override {
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
+                                                    labelVectorSet_, distanceMeasure_);
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
 
             const LabelVectorSet& labelVectorSet_;
 
             std::unique_ptr<IDistanceMeasure> distanceMeasurePtr_;
-
-        protected:
-
-            /**
-             * @see `AbstractPredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   DensePredictionMatrix<uint8>& predictionMatrix, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                if (labelVectorSet_.getNumLabelVectors() > 0) {
-                    predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
-                                                labelVectorSet_, *distanceMeasurePtr_);
-                }
-            }
 
         public:
 
@@ -150,8 +168,24 @@ namespace boosting {
             ExampleWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model,
                                        const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                        std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
-                : AbstractPredictor<uint8, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads, true),
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
                   labelVectorSet_(labelVectorSet), distanceMeasurePtr_(std::move(distanceMeasurePtr)) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_, true);
+
+                if (labelVectorSet_.getNumLabelVectors() > 0) {
+                    Delegate delegate(*predictionMatrixPtr, labelVectorSet_, *distanceMeasurePtr_);
+                    Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                }
+
+                return predictionMatrixPtr;
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`
@@ -233,10 +267,9 @@ namespace boosting {
             }
     };
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
-                                                   uint32 maxRules, uint32 exampleIndex,
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
+                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex,
                                                    const LabelVectorSet& labelVectorSet,
                                                    const IDistanceMeasure& distanceMeasure) {
         float64* scoreVector = new float64[numLabels] {};
@@ -248,10 +281,9 @@ namespace boosting {
         delete[] scoreVector;
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
-                                                   uint32 maxRules, uint32 exampleIndex,
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
+                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex,
                                                    const LabelVectorSet& labelVectorSet,
                                                    const IDistanceMeasure& distanceMeasure) {
         uint32 numFeatures = featureMatrix.getNumCols();
@@ -276,27 +308,49 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class ExampleWiseSparseBinaryPredictor final : public AbstractBinarySparsePredictor<FeatureMatrix, Model>,
-                                                   virtual public ISparseBinaryPredictor {
+    class ExampleWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
         private:
+
+            typedef BinarySparsePredictionDispatcher<FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    BinaryLilMatrix& predictionMatrix_;
+
+                    uint32 numLabels_;
+
+                    const LabelVectorSet& labelVectorSet_;
+
+                    const IDistanceMeasure& distanceMeasure_;
+
+                public:
+
+                    Delegate(BinaryLilMatrix& predictionMatrix, uint32 numLabels, const LabelVectorSet& labelVectorSet,
+                             const IDistanceMeasure& distanceMeasure)
+                        : predictionMatrix_(predictionMatrix), numLabels_(numLabels), labelVectorSet_(labelVectorSet),
+                          distanceMeasure_(distanceMeasure) {}
+
+                    uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                             uint32 exampleIndex) const override {
+                        BinaryLilMatrix::row predictionRow = predictionMatrix_[exampleIndex];
+                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
+                                                    exampleIndex, labelVectorSet_, distanceMeasure_);
+                        return (uint32) predictionRow.size();
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
 
             const LabelVectorSet& labelVectorSet_;
 
             std::unique_ptr<IDistanceMeasure> distanceMeasurePtr_;
-
-        protected:
-
-            /**
-             * @see `AbstractBinarySparsePredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                if (labelVectorSet_.getNumLabelVectors() > 0) {
-                    predictForExampleInternally(model, featureMatrix, predictionRow, numLabels, maxRules, exampleIndex,
-                                                labelVectorSet_, *distanceMeasurePtr_);
-                }
-            }
 
         public:
 
@@ -317,8 +371,26 @@ namespace boosting {
             ExampleWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model,
                                              const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                              std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
-                : AbstractBinarySparsePredictor<FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads),
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
                   labelVectorSet_(labelVectorSet), distanceMeasurePtr_(std::move(distanceMeasurePtr)) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                BinaryLilMatrix predictionMatrix(numExamples);
+                uint32 numNonZeroElements;
+
+                if (labelVectorSet_.getNumLabelVectors() > 0) {
+                    Delegate delegate(predictionMatrix, numLabels_, labelVectorSet_, *distanceMeasurePtr_);
+                    numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                } else {
+                    numNonZeroElements = 0;
+                }
+
+                return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`

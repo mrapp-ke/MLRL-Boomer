@@ -9,7 +9,7 @@
 /**
  * Defines an interface for all classes that allow to predict probability estimates for given query examples.
  */
-class IProbabilityPredictor : virtual public IPredictor<DensePredictionMatrix<float64>> {
+class IProbabilityPredictor : public IPredictor<DensePredictionMatrix<float64>> {
     public:
 
         virtual ~IProbabilityPredictor() override {};

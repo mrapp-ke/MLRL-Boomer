@@ -29,10 +29,9 @@ namespace boosting {
         }
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex, float64 threshold) {
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex, float64 threshold) {
         uint32 numLabels = predictionMatrix.getNumCols();
         float64* scoreVector = new float64[numLabels] {};
         applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
@@ -41,10 +40,9 @@ namespace boosting {
         delete[] scoreVector;
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
-                                                   uint32 exampleIndex, float64 threshold) {
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
+                                                   uint32 maxRules, uint32 exampleIndex, float64 threshold) {
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();
         float64* scoreVector = new float64[numLabels] {};
@@ -67,22 +65,39 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseBinaryPredictor final : public AbstractPredictor<uint8, FeatureMatrix, Model>,
-                                           virtual public IBinaryPredictor {
+    class LabelWiseBinaryPredictor final : public IBinaryPredictor {
         private:
 
+            typedef PredictionDispatcher<uint8, FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    CContiguousView<uint8>& predictionMatrix_;
+
+                    float64 threshold_;
+
+                public:
+
+                    Delegate(CContiguousView<uint8>& predictionMatrix, float64 threshold)
+                        : predictionMatrix_(predictionMatrix), threshold_(threshold) {}
+
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                           uint32 exampleIndex) const override {
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
+                                                    threshold_);
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
+
             float64 threshold_;
-
-        protected:
-
-            /**
-             * @see `AbstractPredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   DensePredictionMatrix<uint8>& predictionMatrix, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex, threshold_);
-            }
 
         public:
 
@@ -98,8 +113,20 @@ namespace boosting {
              */
             LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                      float64 threshold, uint32 numThreads)
-                : AbstractPredictor<uint8, FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads, false),
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
                   threshold_(threshold) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_);
+                Delegate delegate(*predictionMatrixPtr, threshold_);
+                Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                return predictionMatrixPtr;
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`
@@ -163,10 +190,10 @@ namespace boosting {
             }
     };
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CContiguousConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
-                                                   uint32 maxRules, uint32 exampleIndex, float64 threshold) {
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
+                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex,
+                                                   float64 threshold) {
         float64* scoreVector = new float64[numLabels] {};
         applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
                    featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
@@ -174,10 +201,10 @@ namespace boosting {
         delete[] scoreVector;
     }
 
-    static inline void predictForExampleInternally(const RuleList& model,
-                                                   const CsrConstView<const float32>& featureMatrix,
-                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
-                                                   uint32 maxRules, uint32 exampleIndex, float64 threshold) {
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
+                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex,
+                                                   float64 threshold) {
         uint32 numFeatures = featureMatrix.getNumCols();
         float64* scoreVector = new float64[numLabels] {};
         applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
@@ -199,23 +226,43 @@ namespace boosting {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseSparseBinaryPredictor final : public AbstractBinarySparsePredictor<FeatureMatrix, Model>,
-                                                 virtual public ISparseBinaryPredictor {
+    class LabelWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
         private:
 
+            typedef BinarySparsePredictionDispatcher<FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    BinaryLilMatrix& predictionMatrix_;
+
+                    uint32 numLabels_;
+
+                    float64 threshold_;
+
+                public:
+
+                    Delegate(BinaryLilMatrix& predictionMatrix, uint32 numLabels, float64 threshold)
+                        : predictionMatrix_(predictionMatrix), numLabels_(numLabels), threshold_(threshold) {}
+
+                    uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                             uint32 exampleIndex) const override {
+                        BinaryLilMatrix::row predictionRow = predictionMatrix_[exampleIndex];
+                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
+                                                    exampleIndex, threshold_);
+                        return (uint32) predictionRow.size();
+                    }
+            };
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
+
             float64 threshold_;
-
-        protected:
-
-            /**
-             * @see `AbstractBinarySparsePredictor::predictForExample`
-             */
-            void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
-                                   BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
-                                   uint32 exampleIndex) const override {
-                predictForExampleInternally(model, featureMatrix, predictionRow, numLabels, maxRules, exampleIndex,
-                                            threshold_);
-            }
 
         public:
 
@@ -231,8 +278,20 @@ namespace boosting {
              */
             LabelWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                            float64 threshold, uint32 numThreads)
-                : AbstractBinarySparsePredictor<FeatureMatrix, Model>(featureMatrix, model, numLabels, numThreads),
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
                   threshold_(threshold) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                BinaryLilMatrix predictionMatrix(numExamples);
+                Delegate delegate(predictionMatrix, numLabels_, threshold_);
+                uint32 numNonZeroElements =
+                  Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
+            }
 
             /**
              * @see `IPredictor::canPredictIncrementally`
