@@ -33,18 +33,15 @@ class PredictionDispatcher final {
                 /**
                  * Obtains predictions for a single query example.
                  *
-                 * @param featureMatrix     A reference to an object of template type `FeatureMatrix` that provides
-                 *                          row-wise access to the feature values of the query examples
-                 * @param model             A reference to an object of template type `Model` that should be used to
-                 *                          obtain predictions
-                 * @param predictionMatrix  A reference to an object of type `CContiguousView` that should be used to
-                 *                          store the predictions
-                 * @param maxRules          The maximum number of rules to be used for prediction or 0, if the number of
-                 *                          rules should not be restricted
-                 * @param exampleIndex      The index of the query example to predict for
+                 * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise
+                 *                      access to the feature values of the query examples
+                 * @param model         A reference to an object of template type `Model` that should be used to obtain
+                 *                      predictions
+                 * @param maxRules      The maximum number of rules to be used for prediction or 0, if the number of
+                 *                      rules should not be restricted
+                 * @param exampleIndex  The index of the query example to predict for
                  */
-                virtual void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                               CContiguousView<T>& predictionMatrix, uint32 maxRules,
+                virtual void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                                uint32 exampleIndex) const = 0;
         };
 
@@ -52,32 +49,28 @@ class PredictionDispatcher final {
          * Obtains predictions for multiple query examples by delegating the prediction for individual examples to a
          * given `PredictionDelegate`.
          *
-         * @param delegate          A reference to an object of type `IPredictionDelegate`, the prediction for
-         *                          individual examples should be delegated to
-         * @param featureMatrix     A reference to an object of template type `FeatureMatrix` that provides row-wise
-         *                          access to the feature values of the query examples
-         * @param model             A reference to an object of template type `Model` that should be used to obtain
-         *                          predictions
-         * @param predictionMatrix  A reference to an object of type `CContiguousView` that should be used to store the
-         *                          predictions
-         * @param maxRules          The maximum number of rules to be used for prediction or 0, if the number of rules
-         *                          should not be restricted
-         * @param numThreads        The number of CPU threads to be used to make predictions for different query
-         *                          examples in parallel. Must be at least 1
+         * @param delegate      A reference to an object of type `IPredictionDelegate`, the prediction for individual
+         *                      examples should be delegated to
+         * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples
+         * @param model         A reference to an object of template type `Model` that should be used to obtain
+         *                      predictions
+         * @param maxRules      The maximum number of rules to be used for prediction or 0, if the number of rules
+         *                      should not be restricted
+         * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
+         *                      parallel. Must be at least 1
          */
         void predict(const IPredictionDelegate& delegate, const FeatureMatrix& featureMatrix, const Model& model,
-                     CContiguousView<T>& predictionMatrix, uint32 maxRules, uint32 numThreads) const {
+                     uint32 maxRules, uint32 numThreads) const {
             uint32 numExamples = featureMatrix.getNumRows();
             const IPredictionDelegate* delegatePtr = &delegate;
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
             const Model* modelPtr = &model;
-            CContiguousView<T>* predictionMatrixPtr = &predictionMatrix;
 
 #pragma omp parallel for firstprivate(numExamples) firstprivate(delegatePtr) firstprivate(modelPtr) \
-  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(maxRules) schedule(dynamic) \
-    num_threads(numThreads)
+  firstprivate(featureMatrixPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
-                delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, *predictionMatrixPtr, maxRules, i);
+                delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, maxRules, i);
             }
         }
 };
@@ -110,53 +103,43 @@ class BinarySparsePredictionDispatcher final {
                  *                      access to the feature values of the query examples
                  * @param model         A reference to an object of template type `Model` that should be used to obtain
                  *                      predictions
-                 * @param predictionRow A reference to an object of type `BinaryLilMatrix::Row` that should be used to
-                 *                      store the predictions
-                 * @param numLabels     The number of labels to predict for
                  * @param maxRules      The maximum number of rules to be used for prediction or 0, if the number of
                  *                      rules should not be restricted
                  * @param exampleIndex  The index of the query example to predict for
+                 * @return              The number of non-zero predictions
                  */
-                virtual void predictForExample(const FeatureMatrix& featureMatrix, const Model&,
-                                               BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
-                                               uint32 exampleIndex) const = 0;
+                virtual uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model&, uint32 maxRules,
+                                                 uint32 exampleIndex) const = 0;
         };
 
         /**
          * Obtains predictions for multiple query examples by delegating the prediction for individual examples to a
          * given `IPredictionDelegate`.
          *
-         * @param delegate          A reference to an object of type `IPredictionDelegate`, the prediction for
-         *                          individual examples should be delegated to
-         * @param featureMatrix     A reference to an object of template type `FeatureMatrix` that provides row-wise
-         *                          access to the feature values of the query examples
-         * @param model             A reference to an object of template type `Model` that should be used to obtain
-         *                          predictions
-         * @param predictionMatrix  A reference to an object of type `BinaryLilMatrix` that should be used to store the
-         *                          predictions
-         * @param numLabels         The number of labels to predict for
-         * @param maxRules          The maximum number of rules to be used for prediction or 0, if the number of rules
-         *                          should not be restricted
-         * @param numThreads        The number of CPU threads to be used to make predictions for different query
-         *                          examples in parallel. Must be at least 1
-         * @return                  The total number of non-zero elements in the prediction matrix
+         * @param delegate      A reference to an object of type `IPredictionDelegate`, the prediction for individual
+         *                      examples should be delegated to
+         * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples
+         * @param model         A reference to an object of template type `Model` that should be used to obtain
+         *                      predictions
+         * @param maxRules      The maximum number of rules to be used for prediction or 0, if the number of rules
+         *                      should not be restricted
+         * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
+         *                      parallel. Must be at least 1
+         * @return              The total number of non-zero predictions
          */
         uint32 predict(const IPredictionDelegate& delegate, const FeatureMatrix& featureMatrix, const Model& model,
-                       BinaryLilMatrix& predictionMatrix, uint32 numLabels, uint32 maxRules, uint32 numThreads) const {
+                       uint32 maxRules, uint32 numThreads) const {
             uint32 numExamples = featureMatrix.getNumRows();
             const IPredictionDelegate* delegatePtr = &delegate;
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
             const Model* modelPtr = &model;
-            BinaryLilMatrix* predictionMatrixPtr = &predictionMatrix;
             uint32 numNonZeroElements = 0;
 
-#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-  firstprivate(delegatePtr) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-    firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(delegatePtr) \
+  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
-                BinaryLilMatrix::row predictionRow = (*predictionMatrixPtr)[i];
-                delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, predictionRow, numLabels, maxRules, i);
-                numNonZeroElements += (uint32) predictionRow.size();
+                numNonZeroElements += delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, maxRules, i);
             }
 
             return numNonZeroElements;

@@ -117,19 +117,22 @@ namespace boosting {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 private:
 
+                    CContiguousView<uint8>& predictionMatrix_;
+
                     const LabelVectorSet& labelVectorSet_;
 
                     const IDistanceMeasure& distanceMeasure_;
 
                 public:
 
-                    Delegate(const LabelVectorSet& labelVectorSet, const IDistanceMeasure& distanceMeasure)
-                        : labelVectorSet_(labelVectorSet), distanceMeasure_(distanceMeasure) {}
+                    Delegate(CContiguousView<uint8>& predictionMatrix, const LabelVectorSet& labelVectorSet,
+                             const IDistanceMeasure& distanceMeasure)
+                        : predictionMatrix_(predictionMatrix), labelVectorSet_(labelVectorSet),
+                          distanceMeasure_(distanceMeasure) {}
 
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                           CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionMatrix, maxRules, exampleIndex,
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
                                                     labelVectorSet_, distanceMeasure_);
                     }
             };
@@ -177,8 +180,8 @@ namespace boosting {
                   std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_, true);
 
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
-                    Delegate delegate(labelVectorSet_, *distanceMeasurePtr_);
-                    Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+                    Delegate delegate(*predictionMatrixPtr, labelVectorSet_, *distanceMeasurePtr_);
+                    Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 }
 
                 return predictionMatrixPtr;
@@ -313,20 +316,27 @@ namespace boosting {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 private:
 
+                    BinaryLilMatrix& predictionMatrix_;
+
+                    uint32 numLabels_;
+
                     const LabelVectorSet& labelVectorSet_;
 
                     const IDistanceMeasure& distanceMeasure_;
 
                 public:
 
-                    Delegate(const LabelVectorSet& labelVectorSet, const IDistanceMeasure& distanceMeasure)
-                        : labelVectorSet_(labelVectorSet), distanceMeasure_(distanceMeasure) {}
+                    Delegate(BinaryLilMatrix& predictionMatrix, uint32 numLabels, const LabelVectorSet& labelVectorSet,
+                             const IDistanceMeasure& distanceMeasure)
+                        : predictionMatrix_(predictionMatrix), numLabels_(numLabels), labelVectorSet_(labelVectorSet),
+                          distanceMeasure_(distanceMeasure) {}
 
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                           BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
-                                           uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels, maxRules,
+                    uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                             uint32 exampleIndex) const override {
+                        BinaryLilMatrix::row predictionRow = predictionMatrix_[exampleIndex];
+                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
                                                     exampleIndex, labelVectorSet_, distanceMeasure_);
+                        return (uint32) predictionRow.size();
                     }
             };
 
@@ -370,9 +380,8 @@ namespace boosting {
                 uint32 numNonZeroElements;
 
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
-                    Delegate delegate(labelVectorSet_, *distanceMeasurePtr_);
-                    numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_, predictionMatrix,
-                                                              numLabels_, maxRules, numThreads_);
+                    Delegate delegate(predictionMatrix, numLabels_, labelVectorSet_, *distanceMeasurePtr_);
+                    numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 } else {
                     numNonZeroElements = 0;
                 }

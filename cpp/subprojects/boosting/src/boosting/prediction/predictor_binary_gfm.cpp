@@ -202,6 +202,8 @@ namespace boosting {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 private:
 
+                    CContiguousView<uint8>& predictionMatrix_;
+
                     const LabelVectorSet& labelVectorSet_;
 
                     const IProbabilityFunction& probabilityFunction_;
@@ -210,15 +212,14 @@ namespace boosting {
 
                 public:
 
-                    Delegate(const LabelVectorSet& labelVectorSet, const IProbabilityFunction& probabilityFunction,
-                             uint32 maxLabelCardinality)
-                        : labelVectorSet_(labelVectorSet), probabilityFunction_(probabilityFunction),
-                          maxLabelCardinality_(maxLabelCardinality) {}
+                    Delegate(CContiguousView<uint8>& predictionMatrix, const LabelVectorSet& labelVectorSet,
+                             const IProbabilityFunction& probabilityFunction, uint32 maxLabelCardinality)
+                        : predictionMatrix_(predictionMatrix), labelVectorSet_(labelVectorSet),
+                          probabilityFunction_(probabilityFunction), maxLabelCardinality_(maxLabelCardinality) {}
 
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                           CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionMatrix, maxRules, exampleIndex,
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
                                                     labelVectorSet_, probabilityFunction_, maxLabelCardinality_);
                     }
             };
@@ -266,8 +267,9 @@ namespace boosting {
 
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
                     uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet_);
-                    Delegate delegate(labelVectorSet_, *probabilityFunctionPtr_, maxLabelCardinality);
-                    Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+                    Delegate delegate(*predictionMatrixPtr, labelVectorSet_, *probabilityFunctionPtr_,
+                                      maxLabelCardinality);
+                    Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 }
 
                 return predictionMatrixPtr;
@@ -403,6 +405,10 @@ namespace boosting {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 private:
 
+                    BinaryLilMatrix& predictionMatrix_;
+
+                    uint32 numLabels_;
+
                     const LabelVectorSet& labelVectorSet_;
 
                     const IProbabilityFunction& probabilityFunction_;
@@ -411,17 +417,18 @@ namespace boosting {
 
                 public:
 
-                    Delegate(const LabelVectorSet& labelVectorSet, const IProbabilityFunction& probabilityFunction,
-                             uint32 maxLabelCardinality)
-                        : labelVectorSet_(labelVectorSet), probabilityFunction_(probabilityFunction),
-                          maxLabelCardinality_(maxLabelCardinality) {}
+                    Delegate(BinaryLilMatrix& predictionMatrix, uint32 numLabels, const LabelVectorSet& labelVectorSet,
+                             const IProbabilityFunction& probabilityFunction, uint32 maxLabelCardinality)
+                        : predictionMatrix_(predictionMatrix), numLabels_(numLabels), labelVectorSet_(labelVectorSet),
+                          probabilityFunction_(probabilityFunction), maxLabelCardinality_(maxLabelCardinality) {}
 
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                           BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
-                                           uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels, maxRules,
+                    uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                             uint32 exampleIndex) const override {
+                        BinaryLilMatrix::row predictionRow = predictionMatrix_[exampleIndex];
+                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
                                                     exampleIndex, labelVectorSet_, probabilityFunction_,
                                                     maxLabelCardinality_);
+                        return (uint32) predictionRow.size();
                     }
             };
 
@@ -468,9 +475,9 @@ namespace boosting {
 
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
                     uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet_);
-                    Delegate delegate(labelVectorSet_, *probabilityFunctionPtr_, maxLabelCardinality);
-                    numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_, predictionMatrix,
-                                                              numLabels_, maxRules, numThreads_);
+                    Delegate delegate(predictionMatrix, numLabels_, labelVectorSet_, *probabilityFunctionPtr_,
+                                      maxLabelCardinality);
+                    numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 } else {
                     numNonZeroElements = 0;
                 }

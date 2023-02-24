@@ -116,12 +116,17 @@ namespace seco {
             typedef PredictionDispatcher<uint8, FeatureMatrix, Model> Dispatcher;
 
             class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    CContiguousView<uint8>& predictionMatrix_;
+
                 public:
 
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                           CContiguousView<uint8>& predictionMatrix, uint32 maxRules,
+                    Delegate(CContiguousView<uint8>& predictionMatrix) : predictionMatrix_(predictionMatrix) {}
+
+                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionMatrix, maxRules, exampleIndex);
+                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex);
                     }
             };
 
@@ -155,8 +160,8 @@ namespace seco {
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_,
                                                                  !model_.containsDefaultRule());
-                Delegate delegate;
-                Dispatcher().predict(delegate, featureMatrix_, model_, *predictionMatrixPtr, maxRules, numThreads_);
+                Delegate delegate(*predictionMatrixPtr);
+                Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 return predictionMatrixPtr;
             }
 
@@ -344,13 +349,23 @@ namespace seco {
             typedef BinarySparsePredictionDispatcher<FeatureMatrix, Model> Dispatcher;
 
             class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    BinaryLilMatrix& predictionMatrix_;
+
+                    uint32 numLabels_;
+
                 public:
 
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                           BinaryLilMatrix::row predictionRow, uint32 numLabels, uint32 maxRules,
-                                           uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels, maxRules,
+                    Delegate(BinaryLilMatrix& predictionMatrix, uint32 numLabels)
+                        : predictionMatrix_(predictionMatrix), numLabels_(numLabels) {}
+
+                    uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
+                                             uint32 exampleIndex) const override {
+                        BinaryLilMatrix::row predictionRow = predictionMatrix_[exampleIndex];
+                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
                                                     exampleIndex);
+                        return (uint32) predictionRow.size();
                     }
             };
 
@@ -382,9 +397,9 @@ namespace seco {
             std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
                 uint32 numExamples = featureMatrix_.getNumRows();
                 BinaryLilMatrix predictionMatrix(numExamples);
-                Delegate delegate;
-                uint32 numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_, predictionMatrix,
-                                                                 numLabels_, maxRules, numThreads_);
+                Delegate delegate(predictionMatrix, numLabels_);
+                uint32 numNonZeroElements =
+                  Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
             }
 
