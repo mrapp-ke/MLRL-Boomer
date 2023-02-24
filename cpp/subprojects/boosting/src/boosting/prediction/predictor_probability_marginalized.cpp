@@ -107,8 +107,8 @@ namespace boosting {
                     void predictForExample(const Model& model, const FeatureMatrix& featureMatrix,
                                            CContiguousView<float64>& predictionMatrix, uint32 maxRules,
                                            uint32 exampleIndex) const override {
-                        return predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules,
-                                                           exampleIndex, labelVectorSet_, probabilityFunction_);
+                        predictForExampleInternally(model, featureMatrix, predictionMatrix, maxRules, exampleIndex,
+                                                    labelVectorSet_, probabilityFunction_);
                     }
             };
 
