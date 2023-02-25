@@ -5,7 +5,6 @@
 #include "common/data/vector_sparse_array.hpp"
 #include "common/math/math.hpp"
 #include "predictor_probability_common.hpp"
-#include "predictor_score_common.hpp"
 
 #include <algorithm>
 #include <stdexcept>
