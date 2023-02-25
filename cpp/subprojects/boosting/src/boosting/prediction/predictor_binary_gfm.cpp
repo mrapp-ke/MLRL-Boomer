@@ -333,38 +333,6 @@ namespace boosting {
             }
     };
 
-    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
-                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex,
-                                                   const LabelVectorSet& labelVectorSet,
-                                                   const IProbabilityFunction& probabilityFunction,
-                                                   uint32 maxLabelCardinality) {
-        uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        float64* scoreVector = new float64[numLabels] {};
-        applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
-        predictGfm<BinaryLilMatrix::row>(scoreVector, predictionRow, numLabels, probabilityFunction, labelVectorSet,
-                                         numLabelVectors, maxLabelCardinality);
-        delete[] scoreVector;
-    }
-
-    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
-                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex,
-                                                   const LabelVectorSet& labelVectorSet,
-                                                   const IProbabilityFunction& probabilityFunction,
-                                                   uint32 maxLabelCardinality) {
-        uint32 numFeatures = featureMatrix.getNumCols();
-        uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        float64* scoreVector = new float64[numLabels] {};
-        applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
-                   featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
-        predictGfm<BinaryLilMatrix::row>(scoreVector, predictionRow, numLabels, probabilityFunction, labelVectorSet,
-                                         numLabelVectors, maxLabelCardinality);
-        delete[] scoreVector;
-    }
-
     /**
      * An implementation of the type `ISparseBinaryPredictor` that allows to predict whether individual labels of given
      * query examples are relevant or irrelevant by summing up the scores that are provided by the individual rules of
@@ -384,9 +352,9 @@ namespace boosting {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 private:
 
-                    BinaryLilMatrix& predictionMatrix_;
+                    CContiguousView<float64>& scoreMatrix_;
 
-                    uint32 numLabels_;
+                    BinaryLilMatrix& predictionMatrix_;
 
                     const LabelVectorSet& labelVectorSet_;
 
@@ -396,18 +364,26 @@ namespace boosting {
 
                 public:
 
-                    Delegate(BinaryLilMatrix& predictionMatrix, uint32 numLabels, const LabelVectorSet& labelVectorSet,
-                             const IProbabilityFunction& probabilityFunction, uint32 maxLabelCardinality)
-                        : predictionMatrix_(predictionMatrix), numLabels_(numLabels), labelVectorSet_(labelVectorSet),
-                          probabilityFunction_(probabilityFunction), maxLabelCardinality_(maxLabelCardinality) {}
+                    Delegate(CContiguousView<float64>& scoreMatrix, BinaryLilMatrix& predictionMatrix,
+                             const LabelVectorSet& labelVectorSet, const IProbabilityFunction& probabilityFunction,
+                             uint32 maxLabelCardinality)
+                        : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix),
+                          labelVectorSet_(labelVectorSet), probabilityFunction_(probabilityFunction),
+                          maxLabelCardinality_(maxLabelCardinality) {}
 
                     uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                              uint32 threadIndex, uint32 exampleIndex,
                                              uint32 predictionIndex) const override {
+                        uint32 numLabels = scoreMatrix_.getNumCols();
+                        CContiguousView<float64>::value_iterator scoreIterator =
+                          scoreMatrix_.row_values_begin(threadIndex);
+                        setArrayToZeros(scoreIterator, numLabels);
+                        ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
+                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex, threadIndex);
                         BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
-                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
-                                                    exampleIndex, labelVectorSet_, probabilityFunction_,
-                                                    maxLabelCardinality_);
+                        uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
+                        predictGfm<BinaryLilMatrix::row>(scoreIterator, predictionRow, numLabels, probabilityFunction_,
+                                                         labelVectorSet_, numLabelVectors, maxLabelCardinality_);
                         return (uint32) predictionRow.size();
                     }
             };
@@ -455,7 +431,8 @@ namespace boosting {
 
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
                     uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet_);
-                    Delegate delegate(predictionMatrix, numLabels_, labelVectorSet_, *probabilityFunctionPtr_,
+                    DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
+                    Delegate delegate(scoreMatrix, predictionMatrix, labelVectorSet_, *probabilityFunctionPtr_,
                                       maxLabelCardinality);
                     numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 } else {
