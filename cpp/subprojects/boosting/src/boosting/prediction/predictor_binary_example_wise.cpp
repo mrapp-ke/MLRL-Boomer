@@ -1,5 +1,7 @@
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 
+#include "common/data/arrays.hpp"
+#include "common/data/matrix_dense.hpp"
 #include "predictor_score_common.hpp"
 
 #include <algorithm>
@@ -65,38 +67,6 @@ namespace boosting {
         }
     }
 
-    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex, uint32 predictionIndex,
-                                                   const LabelVectorSet& labelVectorSet,
-                                                   const IDistanceMeasure& distanceMeasure) {
-        uint32 numLabels = predictionMatrix.getNumCols();
-        float64* scoreVector = new float64[numLabels] {};
-        applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
-        const LabelVector& closestLabelVector =
-          findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels], distanceMeasure, labelVectorSet);
-        predictLabelVector(predictionMatrix.row_values_begin(predictionIndex), closestLabelVector);
-        delete[] scoreVector;
-    }
-
-    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex, uint32 predictionIndex,
-                                                   const LabelVectorSet& labelVectorSet,
-                                                   const IDistanceMeasure& distanceMeasure) {
-        uint32 numFeatures = featureMatrix.getNumCols();
-        uint32 numLabels = predictionMatrix.getNumCols();
-        float64* scoreVector = new float64[numLabels] {};
-        applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
-                   featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), &scoreVector[0]);
-        const LabelVector& closestLabelVector =
-          findClosestLabelVector(&scoreVector[0], &scoreVector[numLabels], distanceMeasure, labelVectorSet);
-        predictLabelVector(predictionMatrix.row_values_begin(predictionIndex), closestLabelVector);
-        delete[] scoreVector;
-    }
-
     /**
      * An implementation of the type `IBinaryPredictor` that allows to predict known label vectors for given query
      * examples by summing up the scores that are provided by an existing rule-based model and comparing the aggregated
@@ -116,6 +86,8 @@ namespace boosting {
             class Delegate final : public Dispatcher::IPredictionDelegate {
                 private:
 
+                    CContiguousView<float64>& scoreMatrix_;
+
                     CContiguousView<uint8>& predictionMatrix_;
 
                     const LabelVectorSet& labelVectorSet_;
@@ -124,16 +96,23 @@ namespace boosting {
 
                 public:
 
-                    Delegate(CContiguousView<uint8>& predictionMatrix, const LabelVectorSet& labelVectorSet,
-                             const IDistanceMeasure& distanceMeasure)
-                        : predictionMatrix_(predictionMatrix), labelVectorSet_(labelVectorSet),
-                          distanceMeasure_(distanceMeasure) {}
+                    Delegate(CContiguousView<float64>& scoreMatrix, CContiguousView<uint8>& predictionMatrix,
+                             const LabelVectorSet& labelVectorSet, const IDistanceMeasure& distanceMeasure)
+                        : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix),
+                          labelVectorSet_(labelVectorSet), distanceMeasure_(distanceMeasure) {}
 
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                            uint32 threadIndex, uint32 exampleIndex,
                                            uint32 predictionIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
-                                                    predictionIndex, labelVectorSet_, distanceMeasure_);
+                        uint32 numLabels = scoreMatrix_.getNumCols();
+                        CContiguousView<float64>::value_iterator scoreIterator =
+                          scoreMatrix_.row_values_begin(threadIndex);
+                        setArrayToZeros(scoreIterator, numLabels);
+                        ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
+                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex, threadIndex);
+                        const LabelVector& closestLabelVector = findClosestLabelVector(
+                          scoreIterator, scoreMatrix_.row_values_cend(threadIndex), distanceMeasure_, labelVectorSet_);
+                        predictLabelVector(predictionMatrix_.row_values_begin(predictionIndex), closestLabelVector);
                     }
             };
 
@@ -180,7 +159,8 @@ namespace boosting {
                   std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_, true);
 
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
-                    Delegate delegate(*predictionMatrixPtr, labelVectorSet_, *distanceMeasurePtr_);
+                    DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
+                    Delegate delegate(scoreMatrix, *predictionMatrixPtr, labelVectorSet_, *distanceMeasurePtr_);
                     Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
                 }
 
