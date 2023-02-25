@@ -5,6 +5,7 @@
 #include "common/data/matrix_sparse_set.hpp"
 #include "common/data/vector_sparse_array.hpp"
 #include "common/math/math.hpp"
+#include "probabilities.hpp"
 
 #include <algorithm>
 #include <stdexcept>
