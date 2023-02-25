@@ -1,7 +1,7 @@
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
 
 #include "boosting/prediction/predictor_probability_common.hpp"
-#include "transformation_probability_label_wise.hpp"
+#include "boosting/prediction/transformation_probability_label_wise.hpp"
 
 #include <stdexcept>
 
