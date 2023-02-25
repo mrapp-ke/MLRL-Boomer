@@ -4,8 +4,8 @@
 #pragma once
 
 #include "boosting/prediction/probability_function.hpp"
+#include "boosting/prediction/transformation_probability.hpp"
 #include "common/prediction/label_vector_set.hpp"
-#include "transformation_probability.hpp"
 
 namespace boosting {
 

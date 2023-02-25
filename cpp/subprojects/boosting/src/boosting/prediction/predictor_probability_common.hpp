@@ -3,9 +3,9 @@
  */
 #pragma once
 
+#include "boosting/prediction/transformation_probability.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
 #include "predictor_score_common.hpp"
-#include "transformation_probability.hpp"
 
 namespace boosting {
 
