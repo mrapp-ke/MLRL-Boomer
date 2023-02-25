@@ -3,45 +3,11 @@
 #include "common/data/arrays.hpp"
 #include "common/math/math.hpp"
 #include "predictor_probability_common.hpp"
-#include "predictor_score_common.hpp"
+#include "transformation_probability_marginalized.hpp"
 
 #include <stdexcept>
 
 namespace boosting {
-
-    static inline void calculateMarginalizedProbabilities(CContiguousView<float64>::value_iterator scoreIterator,
-                                                          const float64* jointProbabilities,
-                                                          float64 sumOfJointProbabilities,
-                                                          const LabelVectorSet& labelVectorSet) {
-        uint32 i = 0;
-
-        for (auto it = labelVectorSet.cbegin(); it != labelVectorSet.cend(); it++) {
-            const auto& entry = *it;
-            const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
-            uint32 numRelevantLabels = labelVectorPtr->getNumElements();
-            LabelVector::const_iterator labelIndexIterator = labelVectorPtr->cbegin();
-            float64 normalizedJointProbability = divideOrZero(jointProbabilities[i], sumOfJointProbabilities);
-
-            for (uint32 j = 0; j < numRelevantLabels; j++) {
-                uint32 labelIndex = labelIndexIterator[j];
-                scoreIterator[labelIndex] += normalizedJointProbability;
-            }
-
-            i++;
-        }
-    }
-
-    static inline void predictMarginalizedProbabilities(CContiguousView<float64>::value_iterator scoreIterator,
-                                                        uint32 numLabels, const LabelVectorSet& labelVectorSet,
-                                                        uint32 numLabelVectors,
-                                                        const IProbabilityFunction& probabilityFunction) {
-        float64* jointProbabilities = new float64[numLabelVectors];
-        float64 sumOfJointProbabilities = calculateJointProbabilities(scoreIterator, numLabels, jointProbabilities,
-                                                                      probabilityFunction, labelVectorSet);
-        setArrayToZeros(scoreIterator, numLabels);
-        calculateMarginalizedProbabilities(scoreIterator, jointProbabilities, sumOfJointProbabilities, labelVectorSet);
-        delete[] jointProbabilities;
-    }
 
     /**
      * An implementation of the type `IProbabilityPredictor` that allows to predict marginalized probabilities for given
@@ -59,39 +25,6 @@ namespace boosting {
     class MarginalizedProbabilityPredictor final : public IProbabilityPredictor {
         private:
 
-            typedef PredictionDispatcher<float64, FeatureMatrix, Model> Dispatcher;
-
-            class Delegate final : public Dispatcher::IPredictionDelegate {
-                private:
-
-                    CContiguousView<float64>& predictionMatrix_;
-
-                    const LabelVectorSet& labelVectorSet_;
-
-                    const IProbabilityFunction& probabilityFunction_;
-
-                public:
-
-                    Delegate(CContiguousView<float64>& predictionMatrix, const LabelVectorSet& labelVectorSet,
-                             const IProbabilityFunction& probabilityFunction)
-                        : predictionMatrix_(predictionMatrix), labelVectorSet_(labelVectorSet),
-                          probabilityFunction_(probabilityFunction) {}
-
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 threadIndex, uint32 exampleIndex,
-                                           uint32 predictionIndex) const override {
-                        ScorePredictionDelegate<FeatureMatrix, Model>(predictionMatrix_)
-                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex,
-                                             predictionIndex);
-                        uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
-                        uint32 numLabels = predictionMatrix_.getNumCols();
-                        CContiguousView<float64>::value_iterator scoreIterator =
-                          predictionMatrix_.row_values_begin(predictionIndex);
-                        predictMarginalizedProbabilities(scoreIterator, numLabels, labelVectorSet_, numLabelVectors,
-                                                         probabilityFunction_);
-                    }
-            };
-
             const FeatureMatrix& featureMatrix_;
 
             const Model& model_;
@@ -102,7 +35,7 @@ namespace boosting {
 
             const LabelVectorSet& labelVectorSet_;
 
-            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
+            std::unique_ptr<IProbabilityTransformation> probabilityTransformationPtr_;
 
         public:
 
@@ -124,7 +57,9 @@ namespace boosting {
                                              std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
                                              uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
-                  labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
+                  labelVectorSet_(labelVectorSet),
+                  probabilityTransformationPtr_(std::make_unique<MarginalizedProbabilityTransformation>(
+                    labelVectorSet, std::move(probabilityFunctionPtr))) {}
 
             /**
              * @see `IPredictor::predict`
@@ -135,8 +70,10 @@ namespace boosting {
                   std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
 
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
-                    Delegate delegate(*predictionMatrixPtr, labelVectorSet_, *probabilityFunctionPtr_);
-                    Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                    ProbabilityPredictionDelegate<FeatureMatrix, Model> delegate(*predictionMatrixPtr,
+                                                                                 *probabilityTransformationPtr_);
+                    PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix_, model_,
+                                                                                  maxRules, numThreads_);
                 }
 
                 return predictionMatrixPtr;
