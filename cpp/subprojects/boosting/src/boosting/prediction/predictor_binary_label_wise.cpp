@@ -1,9 +1,9 @@
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
 
+#include "boosting/prediction/predictor_score_common.hpp"
 #include "common/data/arrays.hpp"
 #include "common/data/matrix_dense.hpp"
 #include "common/iterator/index_iterator.hpp"
-#include "predictor_score_common.hpp"
 
 #include <stdexcept>
 
