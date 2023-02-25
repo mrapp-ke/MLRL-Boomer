@@ -1,27 +1,10 @@
 #include "boosting/prediction/predictor_score_label_wise.hpp"
 
-#include "common/prediction/predictor_common.hpp"
-#include "predictor_common.hpp"
+#include "predictor_score_common.hpp"
 
 #include <stdexcept>
 
 namespace boosting {
-
-    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex) {
-        applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), predictionMatrix.row_values_begin(exampleIndex));
-    }
-
-    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<float64>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex) {
-        uint32 numFeatures = featureMatrix.getNumCols();
-        applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
-                   featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), predictionMatrix.row_values_begin(exampleIndex));
-    }
 
     /**
      * An implementation of the type `IScorePredictor` that allows to predict label-wise regression scores for given
@@ -35,23 +18,6 @@ namespace boosting {
     template<typename FeatureMatrix, typename Model>
     class LabelWiseScorePredictor final : public IScorePredictor {
         private:
-
-            typedef PredictionDispatcher<float64, FeatureMatrix, Model> Dispatcher;
-
-            class Delegate final : public Dispatcher::IPredictionDelegate {
-                private:
-
-                    CContiguousView<float64>& predictionMatrix_;
-
-                public:
-
-                    Delegate(CContiguousView<float64>& predictionMatrix) : predictionMatrix_(predictionMatrix) {}
-
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 exampleIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex);
-                    }
-            };
 
             const FeatureMatrix& featureMatrix_;
 
@@ -83,8 +49,9 @@ namespace boosting {
                 uint32 numExamples = featureMatrix_.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
-                Delegate delegate(*predictionMatrixPtr);
-                Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                ScorePredictionDelegate<FeatureMatrix, Model> delegate(*predictionMatrixPtr);
+                PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix_, model_,
+                                                                              maxRules, numThreads_);
                 return predictionMatrixPtr;
             }
 
