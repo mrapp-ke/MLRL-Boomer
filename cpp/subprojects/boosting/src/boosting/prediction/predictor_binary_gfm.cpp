@@ -1,10 +1,10 @@
 #include "boosting/prediction/predictor_binary_gfm.hpp"
 
+#include "boosting/prediction/predictor_probability_common.hpp"
 #include "common/data/arrays.hpp"
 #include "common/data/matrix_sparse_set.hpp"
 #include "common/data/vector_sparse_array.hpp"
 #include "common/math/math.hpp"
-#include "predictor_probability_common.hpp"
 
 #include <algorithm>
 #include <stdexcept>
