@@ -3,9 +3,7 @@
  */
 #pragma once
 
-#include "common/prediction/prediction_matrix_dense.hpp"
-#include "common/prediction/prediction_matrix_sparse_binary.hpp"
-#include "common/prediction/predictor.hpp"
+#include "common/data/types.hpp"
 #include "omp.h"
 
 /**
@@ -33,16 +31,20 @@ class PredictionDispatcher final {
                 /**
                  * Obtains predictions for a single query example.
                  *
-                 * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise
-                 *                      access to the feature values of the query examples
-                 * @param model         A reference to an object of template type `Model` that should be used to obtain
-                 *                      predictions
-                 * @param maxRules      The maximum number of rules to be used for prediction or 0, if the number of
-                 *                      rules should not be restricted
-                 * @param exampleIndex  The index of the query example to predict for
+                 * @param featureMatrix     A reference to an object of template type `FeatureMatrix` that provides
+                 *                          row-wise access to the feature values of the query examples
+                 * @param model             A reference to an object of template type `Model` that should be used to
+                 *                          obtain predictions
+                 * @param maxRules          The maximum number of rules to be used for prediction or 0, if the number of
+                 *                          rules should not be restricted
+                 * @param threadIndex       The index of the thread used for prediction
+                 * @param exampleIndex      The index of the query example to predict for
+                 * @param predictionIndex   The index of the row in the prediction matrix, where the predictions should
+                 *                          be stored
                  */
                 virtual void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                               uint32 exampleIndex) const = 0;
+                                               uint32 threadIndex, uint32 exampleIndex,
+                                               uint32 predictionIndex) const = 0;
         };
 
         /**
@@ -70,7 +72,8 @@ class PredictionDispatcher final {
 #pragma omp parallel for firstprivate(numExamples) firstprivate(delegatePtr) firstprivate(modelPtr) \
   firstprivate(featureMatrixPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
-                delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, maxRules, i);
+                uint32 threadIndex = (uint32) omp_get_thread_num();
+                delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, maxRules, threadIndex, i, i);
             }
         }
 };
@@ -99,17 +102,21 @@ class BinarySparsePredictionDispatcher final {
                 /**
                  * Obtains predictions for a single query example.
                  *
-                 * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise
-                 *                      access to the feature values of the query examples
-                 * @param model         A reference to an object of template type `Model` that should be used to obtain
-                 *                      predictions
-                 * @param maxRules      The maximum number of rules to be used for prediction or 0, if the number of
-                 *                      rules should not be restricted
-                 * @param exampleIndex  The index of the query example to predict for
-                 * @return              The number of non-zero predictions
+                 * @param featureMatrix     A reference to an object of template type `FeatureMatrix` that provides
+                 *                          row-wise access to the feature values of the query examples
+                 * @param model             A reference to an object of template type `Model` that should be used to
+                 *                          obtain predictions
+                 * @param maxRules          The maximum number of rules to be used for prediction or 0, if the number of
+                 *                          rules should not be restricted
+                 * @param threadIndex       The index of the thread used for prediction
+                 * @param exampleIndex      The index of the query example to predict for
+                 * @param predictionIndex   The index of the row in the prediction matrix, where the predictions should
+                 *                          be stored
+                 * @return                  The number of non-zero predictions
                  */
                 virtual uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                                 uint32 maxRules, uint32 exampleIndex) const = 0;
+                                                 uint32 maxRules, uint32 threadIndex, uint32 exampleIndex,
+                                                 uint32 predictionIndex) const = 0;
         };
 
         /**
@@ -139,7 +146,9 @@ class BinarySparsePredictionDispatcher final {
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(delegatePtr) \
   firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
-                numNonZeroElements += delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, maxRules, i);
+                uint32 threadIndex = (uint32) omp_get_thread_num();
+                numNonZeroElements +=
+                  delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, maxRules, threadIndex, i, i);
             }
 
             return numNonZeroElements;
