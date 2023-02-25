@@ -132,8 +132,8 @@ namespace boosting {
         public:
 
             /**
-             * @param predictionMatrix A reference to an object of type `CContiguousView` that should be used to store
-             *                         the aggregated scores
+             * @param scoreMatrix A reference to an object of type `CContiguousView` that should be used to store the
+             *                    aggregated scores
              */
             ScorePredictionDelegate(CContiguousView<float64>& scoreMatrix) : scoreMatrix_(scoreMatrix) {}
 
