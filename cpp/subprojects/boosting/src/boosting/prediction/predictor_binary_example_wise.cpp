@@ -1,8 +1,8 @@
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 
+#include "boosting/prediction/predictor_score_common.hpp"
 #include "common/data/arrays.hpp"
 #include "common/data/matrix_dense.hpp"
-#include "predictor_score_common.hpp"
 
 #include <algorithm>
 #include <stdexcept>
