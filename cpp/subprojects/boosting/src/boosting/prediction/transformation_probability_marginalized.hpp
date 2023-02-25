@@ -6,6 +6,7 @@
 #include "boosting/prediction/probability_function.hpp"
 #include "boosting/prediction/transformation_probability.hpp"
 #include "common/prediction/label_vector_set.hpp"
+#include "probabilities.hpp"
 
 namespace boosting {
 
