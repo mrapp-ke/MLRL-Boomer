@@ -4,7 +4,7 @@
 #pragma once
 
 #include "boosting/prediction/probability_function.hpp"
-#include "transformation_probability.hpp"
+#include "boosting/prediction/transformation_probability.hpp"
 
 namespace boosting {
 
