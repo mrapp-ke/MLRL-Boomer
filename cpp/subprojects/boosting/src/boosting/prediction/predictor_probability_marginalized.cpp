@@ -1,9 +1,7 @@
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
 
 #include "boosting/prediction/predictor_probability_common.hpp"
-#include "common/data/arrays.hpp"
-#include "common/math/math.hpp"
-#include "transformation_probability_marginalized.hpp"
+#include "boosting/prediction/transformation_probability_marginalized.hpp"
 
 #include <stdexcept>
 

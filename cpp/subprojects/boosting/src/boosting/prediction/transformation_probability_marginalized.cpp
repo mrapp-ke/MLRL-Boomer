@@ -1,11 +1,7 @@
-/*
- * @author Michael Rapp (michael.rapp.ml@gmail.com)
- */
-#pragma once
+#include "boosting/prediction/transformation_probability_marginalized.hpp"
 
-#include "boosting/prediction/probability_function.hpp"
-#include "boosting/prediction/transformation_probability.hpp"
-#include "common/prediction/label_vector_set.hpp"
+#include "common/data/arrays.hpp"
+#include "common/math/math.hpp"
 #include "probabilities.hpp"
 
 namespace boosting {
@@ -44,30 +40,16 @@ namespace boosting {
         delete[] jointProbabilities;
     }
 
-    /**
-     * An implementation of the class `IProbabilityTransformation` that transforms aggregated scores into marginalized
-     * probability estimates.
-     */
-    class MarginalizedProbabilityTransformation final : public IProbabilityTransformation {
-        private:
+    MarginalizedProbabilityTransformation::MarginalizedProbabilityTransformation(
+      const LabelVectorSet& labelVectorSet, std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr)
+        : labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
 
-            const LabelVectorSet& labelVectorSet_;
-
-            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
-
-        public:
-
-            MarginalizedProbabilityTransformation(const LabelVectorSet& labelVectorSet,
-                                                  std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr)
-                : labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
-
-            void apply(CContiguousView<float64>::value_iterator scoresBegin,
-                       CContiguousView<float64>::value_iterator scoresEnd) const override {
-                uint32 numLabels = scoresEnd - scoresBegin;
-                uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
-                predictMarginalizedProbabilities(scoresBegin, numLabels, labelVectorSet_, numLabelVectors,
-                                                 *probabilityFunctionPtr_);
-            }
-    };
+    void MarginalizedProbabilityTransformation::apply(CContiguousView<float64>::value_iterator scoresBegin,
+                                                      CContiguousView<float64>::value_iterator scoresEnd) const {
+        uint32 numLabels = scoresEnd - scoresBegin;
+        uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
+        predictMarginalizedProbabilities(scoresBegin, numLabels, labelVectorSet_, numLabelVectors,
+                                         *probabilityFunctionPtr_);
+    }
 
 }
