@@ -4,7 +4,7 @@
 #include "common/data/arrays.hpp"
 #include "common/data/matrix_sparse_set.hpp"
 #include "common/data/vector_sparse_array.hpp"
-#include "probabilities.hpp"
+#include "joint_probabilities.hpp"
 
 #include <algorithm>
 #include <stdexcept>

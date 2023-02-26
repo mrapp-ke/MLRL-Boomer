@@ -1,7 +1,7 @@
 #include "boosting/prediction/transformation_probability_marginalized.hpp"
 
 #include "common/data/arrays.hpp"
-#include "probabilities.hpp"
+#include "joint_probabilities.hpp"
 
 namespace boosting {
 
