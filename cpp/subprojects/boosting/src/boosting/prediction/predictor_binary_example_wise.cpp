@@ -8,64 +8,6 @@
 
 namespace boosting {
 
-    static inline const LabelVector* measureDistance(LabelVectorSet::const_iterator iterator,
-                                                     const float64* scoresBegin, const float64* scoresEnd,
-                                                     const IDistanceMeasure& measure, float64& distance,
-                                                     uint32& count) {
-        const auto& entry = *iterator;
-        const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
-        distance = measure.measureDistance(*labelVectorPtr, scoresBegin, scoresEnd);
-        count = entry.second;
-        return labelVectorPtr.get();
-    }
-
-    static inline const LabelVector& findClosestLabelVector(const float64* scoresBegin, const float64* scoresEnd,
-                                                            const IDistanceMeasure& measure,
-                                                            const LabelVectorSet& labelVectorSet) {
-        float64 minDistance;
-        uint32 maxCount;
-        LabelVectorSet::const_iterator it = labelVectorSet.cbegin();
-        const LabelVector* closestLabelVector =
-          measureDistance(it, scoresBegin, scoresEnd, measure, minDistance, maxCount);
-        it++;
-
-        for (; it != labelVectorSet.cend(); it++) {
-            float64 distance;
-            uint32 count;
-            const LabelVector* labelVector = measureDistance(it, scoresBegin, scoresEnd, measure, distance, count);
-
-            if (distance < minDistance || (distance == minDistance && count > maxCount)) {
-                closestLabelVector = labelVector;
-                minDistance = distance;
-                maxCount = count;
-            }
-        }
-
-        return *closestLabelVector;
-    }
-
-    static inline void predictLabelVector(CContiguousView<uint8>::value_iterator predictionIterator,
-                                          const LabelVector& labelVector) {
-        uint32 numIndices = labelVector.getNumElements();
-        LabelVector::const_iterator indexIterator = labelVector.cbegin();
-
-        for (uint32 i = 0; i < numIndices; i++) {
-            uint32 labelIndex = indexIterator[i];
-            predictionIterator[labelIndex] = 1;
-        }
-    }
-
-    static inline void predictLabelVector(BinaryLilMatrix::row predictionRow, const LabelVector& labelVector) {
-        uint32 numElements = labelVector.getNumElements();
-        LabelVector::const_iterator iterator = labelVector.cbegin();
-        predictionRow.reserve(numElements);
-
-        for (uint32 i = 0; i < numElements; i++) {
-            uint32 labelIndex = iterator[i];
-            predictionRow.emplace_back(labelIndex);
-        }
-    }
-
     /**
      * An implementation of the type `IBinaryPredictor` that allows to predict known label vectors for given query
      * examples by summing up the scores that are provided by an existing rule-based model and comparing the aggregated
@@ -229,43 +171,6 @@ namespace boosting {
     class ExampleWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
         private:
 
-            typedef BinarySparsePredictionDispatcher<FeatureMatrix, Model> Dispatcher;
-
-            class Delegate final : public Dispatcher::IPredictionDelegate {
-                private:
-
-                    CContiguousView<float64>& scoreMatrix_;
-
-                    BinaryLilMatrix& predictionMatrix_;
-
-                    const LabelVectorSet& labelVectorSet_;
-
-                    const IDistanceMeasure& distanceMeasure_;
-
-                public:
-
-                    Delegate(CContiguousView<float64>& scoreMatrix, BinaryLilMatrix& predictionMatrix,
-                             const LabelVectorSet& labelVectorSet, const IDistanceMeasure& distanceMeasure)
-                        : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix),
-                          labelVectorSet_(labelVectorSet), distanceMeasure_(distanceMeasure) {}
-
-                    uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                             uint32 threadIndex, uint32 exampleIndex,
-                                             uint32 predictionIndex) const override {
-                        uint32 numLabels = scoreMatrix_.getNumCols();
-                        CContiguousView<float64>::value_iterator scoreIterator =
-                          scoreMatrix_.row_values_begin(threadIndex);
-                        setArrayToZeros(scoreIterator, numLabels);
-                        ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
-                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex, threadIndex);
-                        BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
-                        const LabelVector& closestLabelVector = findClosestLabelVector(
-                          scoreIterator, scoreMatrix_.row_values_cend(threadIndex), distanceMeasure_, labelVectorSet_);
-                        predictLabelVector(predictionRow, closestLabelVector);
-                        return (uint32) predictionRow.size();
-                    }
-            };
-
             const FeatureMatrix& featureMatrix_;
 
             const Model& model_;
@@ -276,7 +181,7 @@ namespace boosting {
 
             const LabelVectorSet& labelVectorSet_;
 
-            std::unique_ptr<IDistanceMeasure> distanceMeasurePtr_;
+            std::unique_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
         public:
 
@@ -298,7 +203,9 @@ namespace boosting {
                                              const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                              std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
-                  labelVectorSet_(labelVectorSet), distanceMeasurePtr_(std::move(distanceMeasurePtr)) {}
+                  labelVectorSet_(labelVectorSet),
+                  binaryTransformationPtr_(
+                    std::make_unique<ExampleWiseBinaryTransformation>(labelVectorSet, std::move(distanceMeasurePtr))) {}
 
             /**
              * @see `IPredictor::predict`
@@ -310,8 +217,10 @@ namespace boosting {
 
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
                     DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
-                    Delegate delegate(scoreMatrix, predictionMatrix, labelVectorSet_, *distanceMeasurePtr_);
-                    numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                    BinarySparsePredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix, predictionMatrix,
+                                                                                  *binaryTransformationPtr_);
+                    numNonZeroElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
+                      delegate, featureMatrix_, model_, maxRules, numThreads_);
                 } else {
                     numNonZeroElements = 0;
                 }
