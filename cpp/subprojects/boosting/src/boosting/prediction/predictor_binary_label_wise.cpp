@@ -3,7 +3,6 @@
 #include "boosting/prediction/predictor_binary_common.hpp"
 #include "boosting/prediction/transformation_binary_label_wise.hpp"
 #include "common/data/matrix_dense.hpp"
-#include "common/iterator/index_iterator.hpp"
 
 #include <stdexcept>
 
