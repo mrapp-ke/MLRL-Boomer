@@ -36,6 +36,7 @@ source_files = [
     'src/boosting/prediction/predictor_probability_label_wise.cpp',
     'src/boosting/prediction/predictor_probability_marginalized.cpp',
     'src/boosting/prediction/predictor_score_label_wise.cpp',
+    'src/boosting/prediction/transformation_binary_label_wise.cpp',
     'src/boosting/prediction/transformation_probability_label_wise.cpp',
     'src/boosting/prediction/transformation_probability_marginalized.cpp',
     'src/boosting/rule_evaluation/head_type_auto.cpp',
