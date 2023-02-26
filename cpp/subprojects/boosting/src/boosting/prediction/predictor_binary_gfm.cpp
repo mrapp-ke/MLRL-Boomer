@@ -1,6 +1,7 @@
 #include "boosting/prediction/predictor_binary_gfm.hpp"
 
-#include "boosting/prediction/predictor_probability_common.hpp"
+#include "boosting/prediction/predictor_binary_common.hpp"
+#include "boosting/prediction/transformation_binary_gfm.hpp"
 #include "common/data/arrays.hpp"
 #include "common/data/matrix_sparse_set.hpp"
 #include "common/data/vector_sparse_array.hpp"
@@ -164,45 +165,6 @@ namespace boosting {
     class GfmBinaryPredictor final : public IBinaryPredictor {
         private:
 
-            typedef PredictionDispatcher<uint8, FeatureMatrix, Model> Dispatcher;
-
-            class Delegate final : public Dispatcher::IPredictionDelegate {
-                private:
-
-                    CContiguousView<float64>& scoreMatrix_;
-
-                    CContiguousView<uint8>& predictionMatrix_;
-
-                    const LabelVectorSet& labelVectorSet_;
-
-                    const IProbabilityFunction& probabilityFunction_;
-
-                    uint32 maxLabelCardinality_;
-
-                public:
-
-                    Delegate(CContiguousView<float64>& scoreMatrix, CContiguousView<uint8>& predictionMatrix,
-                             const LabelVectorSet& labelVectorSet, const IProbabilityFunction& probabilityFunction,
-                             uint32 maxLabelCardinality)
-                        : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix),
-                          labelVectorSet_(labelVectorSet), probabilityFunction_(probabilityFunction),
-                          maxLabelCardinality_(maxLabelCardinality) {}
-
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 threadIndex, uint32 exampleIndex,
-                                           uint32 predictionIndex) const override {
-                        uint32 numLabels = scoreMatrix_.getNumCols();
-                        CContiguousView<float64>::value_iterator scoreIterator =
-                          scoreMatrix_.row_values_begin(threadIndex);
-                        setArrayToZeros(scoreIterator, numLabels);
-                        ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
-                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex, threadIndex);
-                        uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
-                        predictGfm(scoreIterator, predictionMatrix_.row_values_begin(predictionIndex), numLabels,
-                                   probabilityFunction_, labelVectorSet_, numLabelVectors, maxLabelCardinality_);
-                    }
-            };
-
             const FeatureMatrix& featureMatrix_;
 
             const Model& model_;
@@ -213,7 +175,7 @@ namespace boosting {
 
             const LabelVectorSet& labelVectorSet_;
 
-            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
+            std::unique_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
         public:
 
@@ -234,7 +196,9 @@ namespace boosting {
                                const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
-                  labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
+                  labelVectorSet_(labelVectorSet),
+                  binaryTransformationPtr_(std::make_unique<GfmBinaryTransformation>(
+                    labelVectorSet, std::move(probabilityFunctionPtr), getMaxLabelCardinality(labelVectorSet))) {}
 
             /**
              * @see `IPredictor::predict`
@@ -246,10 +210,10 @@ namespace boosting {
 
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
                     DenseMatrix<float64> scoreMatrix(numExamples, numLabels_);
-                    uint32 maxLabelCardinality = getMaxLabelCardinality(labelVectorSet_);
-                    Delegate delegate(scoreMatrix, *predictionMatrixPtr, labelVectorSet_, *probabilityFunctionPtr_,
-                                      maxLabelCardinality);
-                    Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                    BinaryPredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix, *predictionMatrixPtr,
+                                                                            *binaryTransformationPtr_);
+                    PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(delegate, featureMatrix_, model_,
+                                                                                maxRules, numThreads_);
                 }
 
                 return predictionMatrixPtr;
