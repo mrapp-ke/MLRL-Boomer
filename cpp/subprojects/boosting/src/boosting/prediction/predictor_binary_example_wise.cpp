@@ -4,7 +4,6 @@
 #include "common/data/arrays.hpp"
 #include "common/data/matrix_dense.hpp"
 
-#include <algorithm>
 #include <stdexcept>
 
 namespace boosting {
