@@ -1,7 +1,6 @@
 #include "boosting/prediction/transformation_probability_marginalized.hpp"
 
 #include "common/data/arrays.hpp"
-#include "common/data/vector_dense.hpp"
 #include "common/math/math.hpp"
 #include "probabilities.hpp"
 
@@ -14,19 +13,18 @@ namespace boosting {
     void MarginalizedProbabilityTransformation::apply(CContiguousView<float64>::value_iterator scoresBegin,
                                                       CContiguousView<float64>::value_iterator scoresEnd) const {
         uint32 numLabels = scoresEnd - scoresBegin;
-        uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
-        DenseVector<float64> jointProbabilityVector(numLabelVectors);
-        DenseVector<float64>::iterator jointProbabilityIterator = jointProbabilityVector.begin();
-        float64 sumOfJointProbabilities = calculateJointProbabilities(scoresBegin, numLabels, jointProbabilityIterator,
-                                                                      *probabilityFunctionPtr_, labelVectorSet_);
+        std::pair<std::unique_ptr<DenseVector<float64>>, float64> pair =
+          calculateJointProbabilities(scoresBegin, numLabels, labelVectorSet_, *probabilityFunctionPtr_);
+        const VectorConstView<float64>& jointProbabilityVector = *pair.first;
+        const VectorConstView<float64>::const_iterator jointProbabilityIterator = jointProbabilityVector.cbegin();
+        float64 sumOfJointProbabilities = pair.second;
         setArrayToZeros(scoresBegin, numLabels);
         uint32 i = 0;
 
         for (auto it = labelVectorSet_.cbegin(); it != labelVectorSet_.cend(); it++) {
-            const auto& entry = *it;
-            const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
-            uint32 numRelevantLabels = labelVectorPtr->getNumElements();
-            LabelVector::const_iterator labelIndexIterator = labelVectorPtr->cbegin();
+            const LabelVector& labelVector = *((*it).first);
+            uint32 numRelevantLabels = labelVector.getNumElements();
+            LabelVector::const_iterator labelIndexIterator = labelVector.cbegin();
             float64 normalizedJointProbability = divideOrZero(jointProbabilityIterator[i], sumOfJointProbabilities);
 
             for (uint32 j = 0; j < numRelevantLabels; j++) {

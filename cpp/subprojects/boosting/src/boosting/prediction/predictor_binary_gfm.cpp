@@ -28,10 +28,10 @@ namespace boosting {
         return maxLabelCardinality;
     }
 
-    static inline float64 calculateMarginalizedProbabilities(SparseSetMatrix<float64>& probabilities, uint32 numLabels,
-                                                             const float64* jointProbabilities,
-                                                             float64 sumOfJointProbabilities,
-                                                             const LabelVectorSet& labelVectorSet) {
+    static inline float64 calculateMarginalizedProbabilities(
+      SparseSetMatrix<float64>& probabilities, uint32 numLabels,
+      VectorConstView<float64>::const_iterator jointProbabilityIterator, float64 sumOfJointProbabilities,
+      const LabelVectorSet& labelVectorSet) {
         float64 nullVectorProbability = 0;
         uint32 i = 0;
 
@@ -39,7 +39,7 @@ namespace boosting {
             const auto& entry = *it;
             const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
             uint32 numRelevantLabels = labelVectorPtr->getNumElements();
-            float64 normalizedJointProbability = divideOrZero(jointProbabilities[i], sumOfJointProbabilities);
+            float64 normalizedJointProbability = divideOrZero(jointProbabilityIterator[i], sumOfJointProbabilities);
 
             if (numRelevantLabels > 0) {
                 LabelVector::const_iterator labelIndexIterator = labelVectorPtr->cbegin();
@@ -119,13 +119,14 @@ namespace boosting {
     static inline void predictGfm(const float64* scoresBegin, Prediction prediction, uint32 numLabels,
                                   const IProbabilityFunction& probabilityFunction, const LabelVectorSet& labelVectorSet,
                                   uint32 numLabelVectors, uint32 maxLabelCardinality) {
-        float64* jointProbabilities = new float64[numLabelVectors];
-        float64 sumOfJointProbabilities =
-          calculateJointProbabilities(scoresBegin, numLabels, jointProbabilities, probabilityFunction, labelVectorSet);
+        std::pair<std::unique_ptr<DenseVector<float64>>, float64> pair =
+          calculateJointProbabilities(scoresBegin, numLabels, labelVectorSet, probabilityFunction);
+        const VectorConstView<float64>& jointProbabilityVector = *pair.first;
+        VectorConstView<float64>::const_iterator jointProbabilityIterator = jointProbabilityVector.cbegin();
+        float64 sumOfJointProbabilities = pair.second;
         SparseSetMatrix<float64> marginalProbabilities(numLabels, maxLabelCardinality);
-        float64 bestQuality = calculateMarginalizedProbabilities(marginalProbabilities, numLabels, jointProbabilities,
-                                                                 sumOfJointProbabilities, labelVectorSet);
-        delete[] jointProbabilities;
+        float64 bestQuality = calculateMarginalizedProbabilities(
+          marginalProbabilities, numLabels, jointProbabilityIterator, sumOfJointProbabilities, labelVectorSet);
 
         SparseArrayVector<float64> tmpVector1(numLabels);
         tmpVector1.setNumElements(0, false);

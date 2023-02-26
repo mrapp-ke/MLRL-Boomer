@@ -1,15 +1,30 @@
 #pragma once
 
+#include "common/data/vector_dense.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
+
+#include <memory>
+#include <utility>
 
 namespace boosting {
 
-    static inline float64 calculateJointProbability(LabelVectorSet::const_iterator iterator,
-                                                    const float64* scoreIterator, uint32 numLabels,
+    /**
+     * Calculates and returns the joint probability of a specific label vector being the true label vector of an
+     * example, based on scores that are predicted for each label.
+     *
+     * @param scoresIterator        An iterator of type `VectorConstView<float64>::const_iterator` that provides access
+     *                              to the scores predicted for individual labels
+     * @param numLabels             The total number of available labels
+     * @param labelVector           A reference to an object of type `LabelVector` representing the label vector for
+     *                              which the joint probability should be calculated
+     * @param probabilityFunction   A reference to an object of type `IProbabilityFunction` that should be used to
+     *                              transform the scores for individual labels into marginal probabilities
+     * @return                      The joint probability that has been calculated
+     */
+    static inline float64 calculateJointProbability(VectorConstView<float64>::const_iterator scoreIterator,
+                                                    uint32 numLabels, const LabelVector& labelVector,
                                                     const IProbabilityFunction& probabilityFunction) {
-        const auto& entry = *iterator;
-        const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
-        auto labelIterator = make_binary_forward_iterator(labelVectorPtr->cbegin(), labelVectorPtr->cend());
+        auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
         float64 jointProbability = 1;
 
         for (uint32 i = 0; i < numLabels; i++) {
@@ -28,24 +43,45 @@ namespace boosting {
         return jointProbability;
     }
 
-    static inline float64 calculateJointProbabilities(const float64* scoreIterator, uint32 numLabels,
-                                                      float64* jointProbabilities,
-                                                      const IProbabilityFunction& probabilityFunction,
-                                                      const LabelVectorSet& labelVectorSet) {
-        LabelVectorSet::const_iterator it = labelVectorSet.cbegin();
-        float64 sumOfJointProbabilities = calculateJointProbability(it, scoreIterator, numLabels, probabilityFunction);
-        jointProbabilities[0] = sumOfJointProbabilities;
-        it++;
+    /**
+     * Calculates and returns the joint probability of all label vectors in a `LabelVectorSet` being the true label
+     * vector of an example, based on scores that are predicted for each label.
+     *
+     * @param scoreIterator         An iterator of type `VectorConstView<float64>::const_iterator` that provides access
+     *                              to the scores predicted for individual labels
+     * @param numLabels             The total number of available labels
+     * @param labelVectorSet        A reference to an object of type `LabelVectorSet` that stores the label vectors for
+     *                              which joint probabilities should be calculated
+     * @param probabilityFunction   A reference to an object of type `IProbabilityFunction` that should be used to
+     *                              transform the scores for individual labels into marginal probabilities
+     * @return                      A `std::pair` that stores an unique pointer to a `DenseVector` storing the joint
+     *                              probabilities that have been calculated, as well as the sum of these probabilities
+     */
+    static inline std::pair<std::unique_ptr<DenseVector<float64>>, float64> calculateJointProbabilities(
+      VectorConstView<float64>::const_iterator scoreIterator, uint32 numLabels, const LabelVectorSet& labelVectorSet,
+      const IProbabilityFunction& probabilityFunction) {
+        uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
+        std::unique_ptr<DenseVector<float64>> jointProbabilityVectorPtr =
+          std::make_unique<DenseVector<float64>>(numLabelVectors);
+        DenseVector<float64>::iterator jointProbabilityIterator = jointProbabilityVectorPtr->begin();
+        LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
+        const LabelVector& firstLabelVector = *((*labelVectorIterator).first);
+        float64 sumOfJointProbabilities =
+          calculateJointProbability(scoreIterator, numLabels, firstLabelVector, probabilityFunction);
+        jointProbabilityIterator[0] = sumOfJointProbabilities;
+        labelVectorIterator++;
         uint32 i = 1;
 
-        for (; it != labelVectorSet.cend(); it++) {
-            float64 jointProbability = calculateJointProbability(it, scoreIterator, numLabels, probabilityFunction);
+        for (; labelVectorIterator != labelVectorSet.cend(); labelVectorIterator++) {
+            const LabelVector& labelVector = *((*labelVectorIterator).first);
+            float64 jointProbability =
+              calculateJointProbability(scoreIterator, numLabels, labelVector, probabilityFunction);
             sumOfJointProbabilities += jointProbability;
-            jointProbabilities[i] = jointProbability;
+            jointProbabilityIterator[i] = jointProbability;
             i++;
         }
 
-        return sumOfJointProbabilities;
+        return std::make_pair(std::move(jointProbabilityVectorPtr), sumOfJointProbabilities);
     }
 
 }
