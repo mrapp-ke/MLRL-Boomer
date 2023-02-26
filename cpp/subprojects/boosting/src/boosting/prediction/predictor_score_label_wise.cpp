@@ -1,6 +1,6 @@
 #include "boosting/prediction/predictor_score_label_wise.hpp"
 
-#include "predictor_score_common.hpp"
+#include "boosting/prediction/predictor_score_common.hpp"
 
 #include <stdexcept>
 

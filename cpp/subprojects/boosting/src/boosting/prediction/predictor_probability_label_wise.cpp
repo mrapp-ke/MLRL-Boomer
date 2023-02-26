@@ -1,20 +1,11 @@
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
 
-#include "boosting/prediction/probability_function.hpp"
-#include "predictor_score_common.hpp"
+#include "boosting/prediction/predictor_probability_common.hpp"
+#include "boosting/prediction/transformation_probability_label_wise.hpp"
 
 #include <stdexcept>
 
 namespace boosting {
-
-    static inline void applyTransformationFunction(CContiguousView<float64>::value_iterator scoreIterator,
-                                                   uint32 numLabels, const IProbabilityFunction& probabilityFunction) {
-        for (uint32 i = 0; i < numLabels; i++) {
-            float64 originalValue = scoreIterator[i];
-            float64 transformedValue = probabilityFunction.transform(originalValue);
-            scoreIterator[i] = transformedValue;
-        }
-    }
 
     /**
      * An implementation of the type `IProbabilityPredictor` that allows to predict label-wise probabilities for given
@@ -31,34 +22,6 @@ namespace boosting {
     class LabelWiseProbabilityPredictor final : public IProbabilityPredictor {
         private:
 
-            typedef PredictionDispatcher<float64, FeatureMatrix, Model> Dispatcher;
-
-            class Delegate final : public Dispatcher::IPredictionDelegate {
-                private:
-
-                    CContiguousView<float64>& predictionMatrix_;
-
-                    const IProbabilityFunction& probabilityFunction_;
-
-                public:
-
-                    Delegate(CContiguousView<float64>& predictionMatrix,
-                             const IProbabilityFunction& probabilityFunction)
-                        : predictionMatrix_(predictionMatrix), probabilityFunction_(probabilityFunction) {}
-
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 threadIndex, uint32 exampleIndex,
-                                           uint32 predictionIndex) const override {
-                        ScorePredictionDelegate<FeatureMatrix, Model>(predictionMatrix_)
-                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex,
-                                             predictionIndex);
-                        uint32 numLabels = predictionMatrix_.getNumCols();
-                        CContiguousView<float64>::value_iterator scoreIterator =
-                          predictionMatrix_.row_values_begin(predictionIndex);
-                        applyTransformationFunction(scoreIterator, numLabels, probabilityFunction_);
-                    }
-            };
-
             const FeatureMatrix& featureMatrix_;
 
             const Model& model_;
@@ -67,7 +30,7 @@ namespace boosting {
 
             uint32 numThreads_;
 
-            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
+            std::unique_ptr<IProbabilityTransformation> probabilityTransformationPtr_;
 
         public:
 
@@ -86,7 +49,8 @@ namespace boosting {
                                           std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
                                           uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
-                  probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
+                  probabilityTransformationPtr_(
+                    std::make_unique<LabelWiseProbabilityTransformation>(std::move(probabilityFunctionPtr))) {}
 
             /**
              * @see `IPredictor::predict`
@@ -95,8 +59,10 @@ namespace boosting {
                 uint32 numExamples = featureMatrix_.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
-                Delegate delegate(*predictionMatrixPtr, *probabilityFunctionPtr_);
-                Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                ProbabilityPredictionDelegate<FeatureMatrix, Model> delegate(*predictionMatrixPtr,
+                                                                             *probabilityTransformationPtr_);
+                PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix_, model_,
+                                                                              maxRules, numThreads_);
                 return predictionMatrixPtr;
             }
 
