@@ -113,16 +113,16 @@ namespace seco {
     class LabelWiseBinaryPredictor final : public IBinaryPredictor {
         private:
 
-            typedef PredictionDispatcher<uint8, FeatureMatrix, Model> Dispatcher;
-
-            class Delegate final : public Dispatcher::IPredictionDelegate {
+            class PredictionDelegate final
+                : public PredictionDispatcher<uint8, FeatureMatrix, Model>::IPredictionDelegate {
                 private:
 
                     CContiguousView<uint8>& predictionMatrix_;
 
                 public:
 
-                    Delegate(CContiguousView<uint8>& predictionMatrix) : predictionMatrix_(predictionMatrix) {}
+                    PredictionDelegate(CContiguousView<uint8>& predictionMatrix)
+                        : predictionMatrix_(predictionMatrix) {}
 
                     void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                            uint32 threadIndex, uint32 exampleIndex,
@@ -162,8 +162,9 @@ namespace seco {
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_,
                                                                  !model_.containsDefaultRule());
-                Delegate delegate(*predictionMatrixPtr);
-                Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                PredictionDelegate delegate(*predictionMatrixPtr);
+                PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(delegate, featureMatrix_, model_, maxRules,
+                                                                            numThreads_);
                 return predictionMatrixPtr;
             }
 
