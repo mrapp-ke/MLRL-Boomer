@@ -1,7 +1,7 @@
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 
-#include "boosting/prediction/predictor_score_common.hpp"
-#include "common/data/arrays.hpp"
+#include "boosting/prediction/predictor_binary_common.hpp"
+#include "boosting/prediction/transformation_binary_example_wise.hpp"
 #include "common/data/matrix_dense.hpp"
 
 #include <stdexcept>
@@ -80,41 +80,6 @@ namespace boosting {
     class ExampleWiseBinaryPredictor final : public IBinaryPredictor {
         private:
 
-            typedef PredictionDispatcher<uint8, FeatureMatrix, Model> Dispatcher;
-
-            class Delegate final : public Dispatcher::IPredictionDelegate {
-                private:
-
-                    CContiguousView<float64>& scoreMatrix_;
-
-                    CContiguousView<uint8>& predictionMatrix_;
-
-                    const LabelVectorSet& labelVectorSet_;
-
-                    const IDistanceMeasure& distanceMeasure_;
-
-                public:
-
-                    Delegate(CContiguousView<float64>& scoreMatrix, CContiguousView<uint8>& predictionMatrix,
-                             const LabelVectorSet& labelVectorSet, const IDistanceMeasure& distanceMeasure)
-                        : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix),
-                          labelVectorSet_(labelVectorSet), distanceMeasure_(distanceMeasure) {}
-
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 threadIndex, uint32 exampleIndex,
-                                           uint32 predictionIndex) const override {
-                        uint32 numLabels = scoreMatrix_.getNumCols();
-                        CContiguousView<float64>::value_iterator scoreIterator =
-                          scoreMatrix_.row_values_begin(threadIndex);
-                        setArrayToZeros(scoreIterator, numLabels);
-                        ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
-                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex, threadIndex);
-                        const LabelVector& closestLabelVector = findClosestLabelVector(
-                          scoreIterator, scoreMatrix_.row_values_cend(threadIndex), distanceMeasure_, labelVectorSet_);
-                        predictLabelVector(predictionMatrix_.row_values_begin(predictionIndex), closestLabelVector);
-                    }
-            };
-
             const FeatureMatrix& featureMatrix_;
 
             const Model& model_;
@@ -125,7 +90,7 @@ namespace boosting {
 
             const LabelVectorSet& labelVectorSet_;
 
-            std::unique_ptr<IDistanceMeasure> distanceMeasurePtr_;
+            std::unique_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
         public:
 
@@ -147,7 +112,9 @@ namespace boosting {
                                        const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                        std::unique_ptr<IDistanceMeasure> distanceMeasurePtr, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
-                  labelVectorSet_(labelVectorSet), distanceMeasurePtr_(std::move(distanceMeasurePtr)) {}
+                  labelVectorSet_(labelVectorSet),
+                  binaryTransformationPtr_(
+                    std::make_unique<ExampleWiseBinaryTransformation>(labelVectorSet, std::move(distanceMeasurePtr))) {}
 
             /**
              * @see `IPredictor::predict`
@@ -159,8 +126,10 @@ namespace boosting {
 
                 if (labelVectorSet_.getNumLabelVectors() > 0) {
                     DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
-                    Delegate delegate(scoreMatrix, *predictionMatrixPtr, labelVectorSet_, *distanceMeasurePtr_);
-                    Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                    BinaryPredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix, *predictionMatrixPtr,
+                                                                            *binaryTransformationPtr_);
+                    PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(delegate, featureMatrix_, model_,
+                                                                                maxRules, numThreads_);
                 }
 
                 return predictionMatrixPtr;
