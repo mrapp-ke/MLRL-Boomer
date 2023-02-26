@@ -1,7 +1,6 @@
 #include "boosting/prediction/transformation_probability_marginalized.hpp"
 
 #include "common/data/arrays.hpp"
-#include "common/math/math.hpp"
 #include "probabilities.hpp"
 
 namespace boosting {
@@ -25,11 +24,12 @@ namespace boosting {
             const LabelVector& labelVector = *((*it).first);
             uint32 numRelevantLabels = labelVector.getNumElements();
             LabelVector::const_iterator labelIndexIterator = labelVector.cbegin();
-            float64 normalizedJointProbability = divideOrZero(jointProbabilityIterator[i], sumOfJointProbabilities);
+            float64 jointProbability = jointProbabilityIterator[i];
+            jointProbability = normalizeJointProbability(jointProbability, sumOfJointProbabilities);
 
             for (uint32 j = 0; j < numRelevantLabels; j++) {
                 uint32 labelIndex = labelIndexIterator[j];
-                scoresBegin[labelIndex] += normalizedJointProbability;
+                scoresBegin[labelIndex] += jointProbability;
             }
 
             i++;

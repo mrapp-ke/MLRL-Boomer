@@ -4,7 +4,6 @@
 #include "common/data/arrays.hpp"
 #include "common/data/matrix_sparse_set.hpp"
 #include "common/data/vector_sparse_array.hpp"
-#include "common/math/math.hpp"
 #include "probabilities.hpp"
 
 #include <algorithm>
@@ -39,7 +38,8 @@ namespace boosting {
             const auto& entry = *it;
             const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
             uint32 numRelevantLabels = labelVectorPtr->getNumElements();
-            float64 normalizedJointProbability = divideOrZero(jointProbabilityIterator[i], sumOfJointProbabilities);
+            float64 jointProbability = jointProbabilityIterator[i];
+            jointProbability = normalizeJointProbability(jointProbability, sumOfJointProbabilities);
 
             if (numRelevantLabels > 0) {
                 LabelVector::const_iterator labelIndexIterator = labelVectorPtr->cbegin();
@@ -48,10 +48,10 @@ namespace boosting {
                     uint32 labelIndex = labelIndexIterator[j];
                     SparseSetMatrix<float64>::row row = probabilities[labelIndex];
                     IndexedValue<float64>& indexedValue = row.emplace(numRelevantLabels - 1, 0.0);
-                    indexedValue.value += normalizedJointProbability;
+                    indexedValue.value += jointProbability;
                 }
             } else {
-                nullVectorProbability = normalizedJointProbability;
+                nullVectorProbability = jointProbability;
             }
 
             i++;
