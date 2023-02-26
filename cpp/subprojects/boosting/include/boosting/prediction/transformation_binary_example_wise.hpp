@@ -12,7 +12,7 @@ namespace boosting {
     /**
      * An implementation of the class `IBinaryTransformation` that transforms real-valued predictions into binary
      * predictions by comparing the real-valued predictions to the known label vectors according to a certain distance
-     * measure.
+     * measure and picking the closest one.
      */
     class ExampleWiseBinaryTransformation final : public IBinaryTransformation {
         private:
