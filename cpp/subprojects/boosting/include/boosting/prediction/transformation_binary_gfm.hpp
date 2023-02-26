@@ -18,9 +18,9 @@ namespace boosting {
 
             const LabelVectorSet& labelVectorSet_;
 
-            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
-
             uint32 maxLabelCardinality_;
+
+            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
 
         public:
 
@@ -29,11 +29,9 @@ namespace boosting {
              *                                  label vectors
              * @param probabilityFunctionPtr    An unique pointer to an object of type `IProbabilityFunction` that
              *                                  should be used to transform predicted scores into probabilities
-             * @param maxLabelCardinality       The maximum label cardinality
              */
             GfmBinaryTransformation(const LabelVectorSet& labelVectorSet,
-                                    std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
-                                    uint32 maxLabelCardinality);
+                                    std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr);
 
             void apply(CContiguousConstView<float64>::value_const_iterator realBegin,
                        CContiguousConstView<float64>::value_const_iterator realEnd,

@@ -8,22 +8,6 @@
 
 namespace boosting {
 
-    static inline uint32 getMaxLabelCardinality(const LabelVectorSet& labelVectorSet) {
-        uint32 maxLabelCardinality = 0;
-
-        for (auto it = labelVectorSet.cbegin(); it != labelVectorSet.cend(); it++) {
-            const auto& entry = *it;
-            const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
-            uint32 numRelevantLabels = labelVectorPtr->getNumElements();
-
-            if (numRelevantLabels > maxLabelCardinality) {
-                maxLabelCardinality = numRelevantLabels;
-            }
-        }
-
-        return maxLabelCardinality;
-    }
-
     /**
      * An implementation of the type `IBinaryPredictor` that allows to predict whether individual labels of given query
      * examples are relevant or irrelevant by summing up the scores that are provided by the individual rules of an
@@ -69,9 +53,8 @@ namespace boosting {
                                const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
-                  labelVectorSet_(labelVectorSet),
-                  binaryTransformationPtr_(std::make_unique<GfmBinaryTransformation>(
-                    labelVectorSet, std::move(probabilityFunctionPtr), getMaxLabelCardinality(labelVectorSet))) {}
+                  labelVectorSet_(labelVectorSet), binaryTransformationPtr_(std::make_unique<GfmBinaryTransformation>(
+                                                     labelVectorSet, std::move(probabilityFunctionPtr))) {}
 
             /**
              * @see `IPredictor::predict`
@@ -216,9 +199,8 @@ namespace boosting {
                                      const LabelVectorSet& labelVectorSet, uint32 numLabels,
                                      std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
-                  labelVectorSet_(labelVectorSet),
-                  binaryTransformationPtr_(std::make_unique<GfmBinaryTransformation>(
-                    labelVectorSet, std::move(probabilityFunctionPtr), getMaxLabelCardinality(labelVectorSet))) {}
+                  labelVectorSet_(labelVectorSet), binaryTransformationPtr_(std::make_unique<GfmBinaryTransformation>(
+                                                     labelVectorSet, std::move(probabilityFunctionPtr))) {}
 
             /**
              * @see `IPredictor::predict`
