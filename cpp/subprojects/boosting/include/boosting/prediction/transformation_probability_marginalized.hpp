@@ -22,6 +22,12 @@ namespace boosting {
 
         public:
 
+            /**
+             * @param labelVectorSet            A reference to an object of type `LabelVectorSet` that stores all known
+             *                                  label vectors
+             * @param probabilityFunctionPtr    An unique pointer to an object of type `IProbabilityFunction` that
+             *                                  should be used to transform aggregated scores into probability estimates
+             */
             MarginalizedProbabilityTransformation(const LabelVectorSet& labelVectorSet,
                                                   std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr);
 
