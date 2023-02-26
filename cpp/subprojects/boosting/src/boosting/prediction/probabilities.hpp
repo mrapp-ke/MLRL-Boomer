@@ -2,6 +2,7 @@
 
 #include "common/data/vector_dense.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
+#include "common/math/math.hpp"
 
 #include <memory>
 #include <utility>
@@ -82,6 +83,19 @@ namespace boosting {
         }
 
         return std::make_pair(std::move(jointProbabilityVectorPtr), sumOfJointProbabilities);
+    }
+
+    /**
+     * Normalizes and returns a joint probability, which was previously calculated via the function
+     * `calculateJointProbabilities`.
+     *
+     * @param jointProbability          The joint probability to be normalized
+     * @param sumOfJointProbabilities   The sum of all joint probabilities
+     * @return                          The normalized joint probability
+     */
+    static inline constexpr float64 normalizeJointProbability(float64 jointProbability,
+                                                              float64 sumOfJointProbabilities) {
+        return divideOrZero(jointProbability, sumOfJointProbabilities);
     }
 
 }
