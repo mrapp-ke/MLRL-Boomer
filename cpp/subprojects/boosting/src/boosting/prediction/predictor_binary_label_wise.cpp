@@ -1,34 +1,12 @@
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
 
-#include "boosting/prediction/predictor_score_common.hpp"
-#include "common/data/arrays.hpp"
+#include "boosting/prediction/predictor_binary_common.hpp"
+#include "boosting/prediction/transformation_binary_label_wise.hpp"
 #include "common/data/matrix_dense.hpp"
-#include "common/iterator/index_iterator.hpp"
 
 #include <stdexcept>
 
 namespace boosting {
-
-    static inline void applyThreshold(CContiguousConstView<float64>::value_const_iterator scoreIterator,
-                                      CContiguousView<uint8>::value_iterator predictionIterator, uint32 numLabels,
-                                      float64 threshold) {
-        for (uint32 i = 0; i < numLabels; i++) {
-            float64 score = scoreIterator[i];
-            uint8 prediction = score > threshold ? 1 : 0;
-            predictionIterator[i] = prediction;
-        }
-    }
-
-    static inline void applyThreshold(CContiguousConstView<float64>::value_const_iterator scoreIterator,
-                                      BinaryLilMatrix::row predictionRow, uint32 numLabels, float64 threshold) {
-        for (uint32 i = 0; i < numLabels; i++) {
-            float64 score = scoreIterator[i];
-
-            if (score > threshold) {
-                predictionRow.emplace_back(i);
-            }
-        }
-    }
 
     /**
      * An implementation of the type `IBinaryPredictor` that allows to predict whether individual labels of given query
@@ -45,38 +23,6 @@ namespace boosting {
     class LabelWiseBinaryPredictor final : public IBinaryPredictor {
         private:
 
-            typedef PredictionDispatcher<uint8, FeatureMatrix, Model> Dispatcher;
-
-            class Delegate final : public Dispatcher::IPredictionDelegate {
-                private:
-
-                    CContiguousView<float64>& scoreMatrix_;
-
-                    CContiguousView<uint8>& predictionMatrix_;
-
-                    float64 threshold_;
-
-                public:
-
-                    Delegate(CContiguousView<float64>& scoreMatrix, CContiguousView<uint8>& predictionMatrix,
-                             float64 threshold)
-                        : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix), threshold_(threshold) {}
-
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 threadIndex, uint32 exampleIndex,
-                                           uint32 predictionIndex) const override {
-                        uint32 numLabels = scoreMatrix_.getNumCols();
-                        CContiguousView<float64>::value_iterator scoreIterator =
-                          scoreMatrix_.row_values_begin(threadIndex);
-                        setArrayToZeros(scoreIterator, numLabels);
-                        ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
-                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex, threadIndex);
-                        CContiguousView<uint8>::value_iterator predictionIterator =
-                          predictionMatrix_.row_values_begin(predictionIndex);
-                        applyThreshold(scoreIterator, predictionIterator, numLabels, threshold_);
-                    }
-            };
-
             const FeatureMatrix& featureMatrix_;
 
             const Model& model_;
@@ -85,7 +31,7 @@ namespace boosting {
 
             uint32 numThreads_;
 
-            float64 threshold_;
+            std::unique_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
         public:
 
@@ -102,7 +48,7 @@ namespace boosting {
             LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                      float64 threshold, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
-                  threshold_(threshold) {}
+                  binaryTransformationPtr_(std::make_unique<LabelWiseBinaryTransformation>(threshold)) {}
 
             /**
              * @see `IPredictor::predict`
@@ -112,8 +58,10 @@ namespace boosting {
                 DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_);
-                Delegate delegate(scoreMatrix, *predictionMatrixPtr, threshold_);
-                Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                BinaryPredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix, *predictionMatrixPtr,
+                                                                        *binaryTransformationPtr_);
+                PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(delegate, featureMatrix_, model_, maxRules,
+                                                                            numThreads_);
                 return predictionMatrixPtr;
             }
 
@@ -194,38 +142,6 @@ namespace boosting {
     class LabelWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
         private:
 
-            typedef BinarySparsePredictionDispatcher<FeatureMatrix, Model> Dispatcher;
-
-            class Delegate final : public Dispatcher::IPredictionDelegate {
-                private:
-
-                    CContiguousView<float64>& scoreMatrix_;
-
-                    BinaryLilMatrix& predictionMatrix_;
-
-                    float64 threshold_;
-
-                public:
-
-                    Delegate(CContiguousView<float64>& scoreMatrix, BinaryLilMatrix& predictionMatrix,
-                             float64 threshold)
-                        : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix), threshold_(threshold) {}
-
-                    uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                             uint32 threadIndex, uint32 exampleIndex,
-                                             uint32 predictionIndex) const override {
-                        uint32 numLabels = scoreMatrix_.getNumCols();
-                        CContiguousView<float64>::value_iterator scoreIterator =
-                          scoreMatrix_.row_values_begin(threadIndex);
-                        setArrayToZeros(scoreIterator, numLabels);
-                        ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
-                          .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex, threadIndex);
-                        BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
-                        applyThreshold(scoreIterator, predictionRow, numLabels, threshold_);
-                        return (uint32) predictionRow.size();
-                    }
-            };
-
             const FeatureMatrix& featureMatrix_;
 
             const Model& model_;
@@ -234,7 +150,7 @@ namespace boosting {
 
             uint32 numThreads_;
 
-            float64 threshold_;
+            std::unique_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
         public:
 
@@ -251,7 +167,7 @@ namespace boosting {
             LabelWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                            float64 threshold, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
-                  threshold_(threshold) {}
+                  binaryTransformationPtr_(std::make_unique<LabelWiseBinaryTransformation>(threshold)) {}
 
             /**
              * @see `IPredictor::predict`
@@ -260,9 +176,10 @@ namespace boosting {
                 uint32 numExamples = featureMatrix_.getNumRows();
                 DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
                 BinaryLilMatrix predictionMatrix(numExamples);
-                Delegate delegate(scoreMatrix, predictionMatrix, threshold_);
-                uint32 numNonZeroElements =
-                  Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                BinarySparsePredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix, predictionMatrix,
+                                                                              *binaryTransformationPtr_);
+                uint32 numNonZeroElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
+                  delegate, featureMatrix_, model_, maxRules, numThreads_);
                 return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
             }
 
