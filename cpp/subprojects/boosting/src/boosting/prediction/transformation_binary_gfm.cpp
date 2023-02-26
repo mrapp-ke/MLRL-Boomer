@@ -8,6 +8,22 @@
 
 namespace boosting {
 
+    static inline uint32 getMaxLabelCardinality(const LabelVectorSet& labelVectorSet) {
+        uint32 maxLabelCardinality = 0;
+
+        for (auto it = labelVectorSet.cbegin(); it != labelVectorSet.cend(); it++) {
+            const auto& entry = *it;
+            const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
+            uint32 numRelevantLabels = labelVectorPtr->getNumElements();
+
+            if (numRelevantLabels > maxLabelCardinality) {
+                maxLabelCardinality = numRelevantLabels;
+            }
+        }
+
+        return maxLabelCardinality;
+    }
+
     static inline float64 calculateMarginalizedProbabilities(
       SparseSetMatrix<float64>& probabilities, uint32 numLabels,
       VectorConstView<float64>::const_iterator jointProbabilityIterator, float64 sumOfJointProbabilities,
@@ -133,10 +149,9 @@ namespace boosting {
     }
 
     GfmBinaryTransformation::GfmBinaryTransformation(const LabelVectorSet& labelVectorSet,
-                                                     std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr,
-                                                     uint32 maxLabelCardinality)
-        : labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)),
-          maxLabelCardinality_(maxLabelCardinality) {}
+                                                     std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr)
+        : labelVectorSet_(labelVectorSet), maxLabelCardinality_(getMaxLabelCardinality(labelVectorSet)),
+          probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
 
     void GfmBinaryTransformation::apply(CContiguousConstView<float64>::value_const_iterator realBegin,
                                         CContiguousConstView<float64>::value_const_iterator realEnd,
