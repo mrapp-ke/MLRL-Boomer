@@ -78,4 +78,8 @@ namespace boosting {
         }
     }
 
+    bool ExampleWiseBinaryTransformation::shouldInitPredictionMatrix() const {
+        return false;
+    }
+
 }
