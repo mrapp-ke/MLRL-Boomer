@@ -3,8 +3,6 @@
 #include "boosting/prediction/predictor_probability_common.hpp"
 #include "boosting/prediction/transformation_probability_label_wise.hpp"
 
-#include <stdexcept>
-
 namespace boosting {
 
     /**
@@ -116,9 +114,10 @@ namespace boosting {
             std::unique_ptr<IProbabilityPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                           uint32 numLabels) const override {
-                std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
-                return std::make_unique<LabelWiseProbabilityPredictor<CContiguousConstView<const float32>, RuleList>>(
-                  featureMatrix, model, numLabels, std::move(probabilityFunctionPtr), numThreads_);
+                std::unique_ptr<IProbabilityTransformation> probabilityTransformationPtr =
+                  std::make_unique<LabelWiseProbabilityTransformation>(probabilityFunctionFactoryPtr_->create());
+                return std::make_unique<ProbabilityPredictor<CContiguousConstView<const float32>, RuleList>>(
+                  featureMatrix, model, numLabels, numThreads_, std::move(probabilityTransformationPtr));
             }
 
             /**
@@ -127,9 +126,10 @@ namespace boosting {
             std::unique_ptr<IProbabilityPredictor> create(const CsrConstView<const float32>& featureMatrix,
                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                           uint32 numLabels) const override {
-                std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr = probabilityFunctionFactoryPtr_->create();
-                return std::make_unique<LabelWiseProbabilityPredictor<CsrConstView<const float32>, RuleList>>(
-                  featureMatrix, model, numLabels, std::move(probabilityFunctionPtr), numThreads_);
+                std::unique_ptr<IProbabilityTransformation> probabilityTransformationPtr =
+                  std::make_unique<LabelWiseProbabilityTransformation>(probabilityFunctionFactoryPtr_->create());
+                return std::make_unique<ProbabilityPredictor<CsrConstView<const float32>, RuleList>>(
+                  featureMatrix, model, numLabels, numThreads_, std::move(probabilityTransformationPtr));
             }
     };
 
