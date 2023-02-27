@@ -6,6 +6,9 @@
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
 #include "common/prediction/predictor_common.hpp"
+#include "common/prediction/predictor_score.hpp"
+
+#include <stdexcept>
 
 namespace boosting {
 
@@ -143,6 +146,62 @@ namespace boosting {
             void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
                                    uint32 threadIndex, uint32 exampleIndex, uint32 predictionIndex) const override {
                 aggregatePredictedScores(featureMatrix, model, scoreMatrix_, maxRules, exampleIndex, predictionIndex);
+            }
+    };
+
+    /**
+     * An implementation of the type `IScorePredictor` that allows to predict label-wise regression scores for given
+     * query examples by summing up the scores that are predicted by individual rules in a rule-based model for each
+     * label individually.
+     *
+     * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of
+     *                          the query examples
+     * @tparam Model            The type of the rule-based model that is used to obtain predictions
+     */
+    template<typename FeatureMatrix, typename Model>
+    class ScorePredictor final : public IScorePredictor {
+        private:
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
+
+        public:
+
+            ScorePredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads)
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<float64>> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
+                ScorePredictionDelegate<FeatureMatrix, Model> delegate(*predictionMatrixPtr);
+                PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix_, model_,
+                                                                              maxRules, numThreads_);
+                return predictionMatrixPtr;
+            }
+
+            /**
+             * @see `IPredictor::canPredictIncrementally`
+             */
+            bool canPredictIncrementally() const override {
+                return false;
+            }
+
+            /**
+             * @see `IPredictor::createIncrementalPredictor`
+             */
+            std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<float64>>> createIncrementalPredictor(
+              uint32 minRules, uint32 maxRules) const override {
+                throw std::runtime_error(
+                  "The rule learner does not support to predict regression scores incrementally");
             }
     };
 
