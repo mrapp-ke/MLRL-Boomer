@@ -1,5 +1,7 @@
 #include "boosting/prediction/transformation_binary_example_wise.hpp"
 
+#include "common/iterator/binary_forward_iterator.hpp"
+
 namespace boosting {
 
     static inline const LabelVector* measureDistance(CContiguousConstView<float64>::value_const_iterator realBegin,
@@ -51,12 +53,13 @@ namespace boosting {
                                                 CContiguousView<uint8>::value_iterator predictionEnd) const {
         const LabelVector& labelVector =
           findClosestLabelVector(realBegin, realEnd, labelVectorSet_, *distanceMeasurePtr_);
-        uint32 numIndices = labelVector.getNumElements();
-        LabelVector::const_iterator indexIterator = labelVector.cbegin();
+        uint32 numLabels = predictionEnd - predictionBegin;
+        auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
 
-        for (uint32 i = 0; i < numIndices; i++) {
-            uint32 labelIndex = indexIterator[i];
-            predictionBegin[labelIndex] = 1;
+        for (uint32 i = 0; i < numLabels; i++) {
+            bool label = *labelIterator;
+            predictionBegin[i] = label ? 1 : 0;
+            labelIterator++;
         }
     }
 
@@ -73,6 +76,10 @@ namespace boosting {
             uint32 labelIndex = indexIterator[i];
             predictionRow.emplace_back(labelIndex);
         }
+    }
+
+    bool ExampleWiseBinaryTransformation::shouldInitPredictionMatrix() const {
+        return false;
     }
 
 }

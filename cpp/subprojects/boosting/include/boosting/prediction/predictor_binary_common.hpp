@@ -6,6 +6,8 @@
 #include "boosting/prediction/predictor_score_common.hpp"
 #include "boosting/prediction/transformation_binary.hpp"
 #include "common/data/arrays.hpp"
+#include "common/data/matrix_dense.hpp"
+#include "common/prediction/predictor_binary.hpp"
 
 namespace boosting {
 
@@ -106,6 +108,156 @@ namespace boosting {
                 BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
                 binaryTransformation_.apply(realIterator, realMatrix_.row_values_end(threadIndex), predictionRow);
                 return (uint32) predictionRow.size();
+            }
+    };
+
+    /**
+     * An implementation of the type `IBinaryPredictor` that allows to predict binary labels for given query examples by
+     * summing up the scores that are predicted by individual rules in a rule-based model and transforming the
+     * aggregated scores into binary predictions in {0, 1} according to an `IBinaryTransformation`.
+     *
+     * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of
+     *                          the query examples
+     * @tparam Model            The type of the rule-based model that is used to obtain predictions
+     */
+    template<typename FeatureMatrix, typename Model>
+    class BinaryPredictor final : public IBinaryPredictor {
+        private:
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
+
+            std::unique_ptr<IBinaryTransformation> binaryTransformationPtr_;
+
+        public:
+
+            /**
+             * @param featureMatrix             A reference to an object of template type `FeatureMatrix` that provides
+             *                                  row-wise access to the feature values of the query examples
+             * @param model                     A reference to an object of template type `Model` that should be used to
+             *                                  obtain predictions
+             * @param numLabels                 The number of labels to predict for
+             * @param numThreads                The number of CPU threads to be used to make predictions for different
+             *                                  query examples in parallel. Must be at least 1
+             * @param binaryTransformationPtr   An unique pointer to an object of type `IBinaryTransformation` that
+             *                                  should be used to transform aggregated scores into binary predictions or
+             *                                  a null pointer, if all labels should be predicted as irrelevant
+             */
+            BinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
+                            std::unique_ptr<IBinaryTransformation> binaryTransformationPtr)
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
+                  binaryTransformationPtr_(std::move(binaryTransformationPtr)) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                bool initPredictionMatrix =
+                  binaryTransformationPtr_ == nullptr || binaryTransformationPtr_->shouldInitPredictionMatrix();
+                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_, initPredictionMatrix);
+
+                if (binaryTransformationPtr_) {
+                    DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
+                    BinaryPredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix, *predictionMatrixPtr,
+                                                                            *binaryTransformationPtr_);
+                    PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(delegate, featureMatrix_, model_,
+                                                                                maxRules, numThreads_);
+                }
+
+                return predictionMatrixPtr;
+            }
+
+            /**
+             * @see `IPredictor::canPredictIncrementally`
+             */
+            bool canPredictIncrementally() const override {
+                return false;
+            }
+
+            /**
+             * @see `IPredictor::createIncrementalPredictor`
+             */
+            std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<uint8>>> createIncrementalPredictor(
+              uint32 minRules, uint32 maxRules) const override {
+                throw std::runtime_error("The rule learner does not support to predict binary labels incrementally");
+            }
+    };
+
+    /**
+     * An implementation of the type `ISparseBinaryPredictor` that allows to predict sparse binary labels for given
+     * query examples by summing up the scores that are predicted by individual rules in a rule-based model and
+     * transforming the aggregated scores into binary predictions in {0, 1} according to an `IBinaryTransformation`.
+     *
+     * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of
+     *                          the query examples
+     * @tparam Model            The type of the rule-based model that is used to obtain predictions
+     */
+    template<typename FeatureMatrix, typename Model>
+    class SparseBinaryPredictor final : public ISparseBinaryPredictor {
+        private:
+
+            const FeatureMatrix& featureMatrix_;
+
+            const Model& model_;
+
+            uint32 numLabels_;
+
+            uint32 numThreads_;
+
+            std::unique_ptr<IBinaryTransformation> binaryTransformationPtr_;
+
+        public:
+
+            /**
+             * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise
+             *                      access to the feature values of the query examples
+             * @param model         A reference to an object of template type `Model` that should be used to obtain
+             *                      predictions
+             * @param numLabels     The number of labels to predict for
+             * @param threshold     The threshold to be used
+             * @param numThreads    The number of CPU threads to be used to make predictions for different query
+             *                      examples in parallel. Must be at least 1
+             */
+            SparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
+                                  uint32 numThreads, std::unique_ptr<IBinaryTransformation> binaryTransformationPtr)
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
+                  binaryTransformationPtr_(std::move(binaryTransformationPtr)) {}
+
+            /**
+             * @see `IPredictor::predict`
+             */
+            std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
+                uint32 numExamples = featureMatrix_.getNumRows();
+                DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
+                BinaryLilMatrix predictionMatrix(numExamples);
+                BinarySparsePredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix, predictionMatrix,
+                                                                              *binaryTransformationPtr_);
+                uint32 numNonZeroElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
+                  delegate, featureMatrix_, model_, maxRules, numThreads_);
+                return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
+            }
+
+            /**
+             * @see `IPredictor::canPredictIncrementally`
+             */
+            bool canPredictIncrementally() const override {
+                return false;
+            }
+
+            /**
+             * @see `IPredictor::createIncrementalPredictor`
+             */
+            std::unique_ptr<IIncrementalPredictor<BinarySparsePredictionMatrix>> createIncrementalPredictor(
+              uint32 minRules, uint32 maxRules) const override {
+                throw std::runtime_error(
+                  "The rule learner does not support to predict sparse binary labels incrementally");
             }
     };
 
