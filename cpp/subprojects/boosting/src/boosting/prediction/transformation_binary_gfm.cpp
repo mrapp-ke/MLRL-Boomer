@@ -170,4 +170,8 @@ namespace boosting {
                                          maxLabelCardinality_);
     }
 
+    bool GfmBinaryTransformation::shouldInitPredictionMatrix() const {
+        return true;
+    }
+
 }
