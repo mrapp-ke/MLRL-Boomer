@@ -41,6 +41,8 @@ namespace boosting {
             void apply(CContiguousConstView<float64>::value_const_iterator realBegin,
                        CContiguousConstView<float64>::value_const_iterator realEnd,
                        BinaryLilMatrix::row predictionRow) const override;
+
+            bool shouldInitPredictionMatrix() const override;
     };
 
 }

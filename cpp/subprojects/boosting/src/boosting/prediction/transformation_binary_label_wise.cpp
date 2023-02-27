@@ -31,4 +31,8 @@ namespace boosting {
         }
     }
 
+    bool LabelWiseBinaryTransformation::shouldInitPredictionMatrix() const {
+        return false;
+    }
+
 }
