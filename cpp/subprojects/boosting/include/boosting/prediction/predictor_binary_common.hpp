@@ -239,12 +239,19 @@ namespace boosting {
              */
             std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
                 uint32 numExamples = featureMatrix_.getNumRows();
-                DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
                 BinaryLilMatrix predictionMatrix(numExamples);
-                BinarySparsePredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix, predictionMatrix,
-                                                                              *binaryTransformationPtr_);
-                uint32 numNonZeroElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
-                  delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
+                uint32 numNonZeroElements;
+
+                if (binaryTransformationPtr_) {
+                    DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
+                    BinarySparsePredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix, predictionMatrix,
+                                                                                  *binaryTransformationPtr_);
+                    numNonZeroElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
+                      delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
+                } else {
+                    numNonZeroElements = 0;
+                }
+
                 return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
             }
 
