@@ -177,6 +177,15 @@ namespace boosting {
 
         public:
 
+            /**
+             * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise
+             *                      access to the feature values of the query examples
+             * @param model         A reference to an object of template type `Model` that should be used to obtain
+             *                      predictions
+             * @param numLabels     The number of labels to predict for
+             * @param numThreads    The number of CPU threads to be used to make predictions for different query
+             *                      examples in parallel. Must be at least 1
+             */
             ScorePredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
