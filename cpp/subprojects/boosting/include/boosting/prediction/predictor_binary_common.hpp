@@ -218,14 +218,16 @@ namespace boosting {
         public:
 
             /**
-             * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise
-             *                      access to the feature values of the query examples
-             * @param model         A reference to an object of template type `Model` that should be used to obtain
-             *                      predictions
-             * @param numLabels     The number of labels to predict for
-             * @param threshold     The threshold to be used
-             * @param numThreads    The number of CPU threads to be used to make predictions for different query
-             *                      examples in parallel. Must be at least 1
+             * @param featureMatrix             A reference to an object of template type `FeatureMatrix` that provides
+             *                                  row-wise access to the feature values of the query examples
+             * @param model                     A reference to an object of template type `Model` that should be used to
+             *                                  obtain predictions
+             * @param numLabels                 The number of labels to predict for
+             * @param numThreads                The number of CPU threads to be used to make predictions for different
+             *                                  query examples in parallel. Must be at least 1
+             * @param binaryTransformationPtr   An unique pointer to an object of type `IBinaryTransformation` that
+             *                                  should be used to transform real-valued predictions into binary
+             *                                  predictions or a null pointer, if no such object is available
              */
             SparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
                                   uint32 numThreads, std::unique_ptr<IBinaryTransformation> binaryTransformationPtr)
