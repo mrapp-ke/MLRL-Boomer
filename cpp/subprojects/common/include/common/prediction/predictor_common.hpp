@@ -33,18 +33,19 @@ class PredictionDispatcher final {
                  *
                  * @param featureMatrix     A reference to an object of template type `FeatureMatrix` that provides
                  *                          row-wise access to the feature values of the query examples
-                 * @param model             A reference to an object of template type `Model` that should be used to
-                 *                          obtain predictions
-                 * @param maxRules          The maximum number of rules to be used for prediction or 0, if the number of
-                 *                          rules should not be restricted
+                 * @param rulesBegin        An iterator of type `Model::const_iterator` to the first rule that should be
+                 *                          used for prediction
+                 * @param rulesEnd          An iterator of type `Model::const_iterator` to the last rule (exclusive)
+                 *                          that should be used for prediction
                  * @param threadIndex       The index of the thread used for prediction
                  * @param exampleIndex      The index of the query example to predict for
                  * @param predictionIndex   The index of the row in the prediction matrix, where the predictions should
                  *                          be stored
                  */
-                virtual void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                               uint32 threadIndex, uint32 exampleIndex,
-                                               uint32 predictionIndex) const = 0;
+                virtual void predictForExample(const FeatureMatrix& featureMatrix,
+                                               typename Model::const_iterator rulesBegin,
+                                               typename Model::const_iterator rulesEnd, uint32 threadIndex,
+                                               uint32 exampleIndex, uint32 predictionIndex) const = 0;
         };
 
         /**
@@ -55,25 +56,25 @@ class PredictionDispatcher final {
          *                      examples should be delegated to
          * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise access
          *                      to the feature values of the query examples
-         * @param model         A reference to an object of template type `Model` that should be used to obtain
-         *                      predictions
-         * @param maxRules      The maximum number of rules to be used for prediction or 0, if the number of rules
-         *                      should not be restricted
+         * @param rulesBegin    An iterator of type `Model::const_iterator` to the first rule that should be used for
+         *                      prediction
+         * @param rulesEnd      An iterator of type `Model::const_iterator` to the last rule (exclusive) that should be
+         *                      used for prediction
          * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
          *                      parallel. Must be at least 1
          */
-        void predict(const IPredictionDelegate& delegate, const FeatureMatrix& featureMatrix, const Model& model,
-                     uint32 maxRules, uint32 numThreads) const {
+        void predict(const IPredictionDelegate& delegate, const FeatureMatrix& featureMatrix,
+                     typename Model::const_iterator rulesBegin, typename Model::const_iterator rulesEnd,
+                     uint32 numThreads) const {
             uint32 numExamples = featureMatrix.getNumRows();
             const IPredictionDelegate* delegatePtr = &delegate;
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
-            const Model* modelPtr = &model;
 
-#pragma omp parallel for firstprivate(numExamples) firstprivate(delegatePtr) firstprivate(modelPtr) \
-  firstprivate(featureMatrixPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
+#pragma omp parallel for firstprivate(numExamples) firstprivate(delegatePtr) firstprivate(rulesBegin) \
+  firstprivate(rulesEnd) firstprivate(featureMatrixPtr) schedule(dynamic) num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 uint32 threadIndex = (uint32) omp_get_thread_num();
-                delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, maxRules, threadIndex, i, i);
+                delegatePtr->predictForExample(*featureMatrixPtr, rulesBegin, rulesEnd, threadIndex, i, i);
             }
         }
 };
@@ -104,19 +105,20 @@ class BinarySparsePredictionDispatcher final {
                  *
                  * @param featureMatrix     A reference to an object of template type `FeatureMatrix` that provides
                  *                          row-wise access to the feature values of the query examples
-                 * @param model             A reference to an object of template type `Model` that should be used to
-                 *                          obtain predictions
-                 * @param maxRules          The maximum number of rules to be used for prediction or 0, if the number of
-                 *                          rules should not be restricted
+                 * @param rulesBegin        An iterator of type `Model::const_iterator` to the first rule that should be
+                 *                          used for prediction
+                 * @param rulesEnd          An iterator of type `Model::const_iterator` to the last rule (exclusive)
+                 *                          that should be used for prediction
                  * @param threadIndex       The index of the thread used for prediction
                  * @param exampleIndex      The index of the query example to predict for
                  * @param predictionIndex   The index of the row in the prediction matrix, where the predictions should
                  *                          be stored
                  * @return                  The number of non-zero predictions
                  */
-                virtual uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model,
-                                                 uint32 maxRules, uint32 threadIndex, uint32 exampleIndex,
-                                                 uint32 predictionIndex) const = 0;
+                virtual uint32 predictForExample(const FeatureMatrix& featureMatrix,
+                                                 typename Model::const_iterator rulesBegin,
+                                                 typename Model::const_iterator rulesEnd, uint32 threadIndex,
+                                                 uint32 exampleIndex, uint32 predictionIndex) const = 0;
         };
 
         /**
@@ -127,28 +129,29 @@ class BinarySparsePredictionDispatcher final {
          *                      examples should be delegated to
          * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise access
          *                      to the feature values of the query examples
-         * @param model         A reference to an object of template type `Model` that should be used to obtain
-         *                      predictions
-         * @param maxRules      The maximum number of rules to be used for prediction or 0, if the number of rules
-         *                      should not be restricted
+         * @param rulesBegin    An iterator of type `Model::const_iterator` to the first rule that should be used for
+         *                      prediction
+         * @param rulesEnd      An iterator of type `Model::const_iterator` to the last rule (exclusive) that should be
+         *                      used for prediction
          * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
          *                      parallel. Must be at least 1
          * @return              The total number of non-zero predictions
          */
-        uint32 predict(const IPredictionDelegate& delegate, const FeatureMatrix& featureMatrix, const Model& model,
-                       uint32 maxRules, uint32 numThreads) const {
+        uint32 predict(const IPredictionDelegate& delegate, const FeatureMatrix& featureMatrix,
+                       typename Model::const_iterator rulesBegin, typename Model::const_iterator rulesEnd,
+                       uint32 numThreads) const {
             uint32 numExamples = featureMatrix.getNumRows();
             const IPredictionDelegate* delegatePtr = &delegate;
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
-            const Model* modelPtr = &model;
             uint32 numNonZeroElements = 0;
 
 #pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(delegatePtr) \
-  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
+  firstprivate(rulesBegin) firstprivate(rulesEnd) firstprivate(featureMatrixPtr) schedule(dynamic) \
+    num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 uint32 threadIndex = (uint32) omp_get_thread_num();
                 numNonZeroElements +=
-                  delegatePtr->predictForExample(*featureMatrixPtr, *modelPtr, maxRules, threadIndex, i, i);
+                  delegatePtr->predictForExample(*featureMatrixPtr, rulesBegin, rulesEnd, threadIndex, i, i);
             }
 
             return numNonZeroElements;

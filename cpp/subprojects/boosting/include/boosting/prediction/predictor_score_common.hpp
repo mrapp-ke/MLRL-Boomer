@@ -54,12 +54,12 @@ namespace boosting {
         }
     }
 
-    static inline void applyRules(const RuleList& model, uint32 maxRules,
+    static inline void applyRules(RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
                                   CContiguousConstView<const float32>::value_const_iterator featureValuesBegin,
                                   CContiguousConstView<const float32>::value_const_iterator featureValuesEnd,
                                   CContiguousView<float64>::value_iterator scoreIterator) {
-        for (auto it = model.used_cbegin(maxRules); it != model.used_cend(maxRules); it++) {
-            const RuleList::Rule& rule = *it;
+        for (; rulesBegin != rulesEnd; rulesBegin++) {
+            const RuleList::Rule& rule = *rulesBegin;
             applyRule(rule, featureValuesBegin, featureValuesEnd, scoreIterator);
         }
     }
@@ -80,7 +80,8 @@ namespace boosting {
         }
     }
 
-    static inline void applyRules(const RuleList& model, uint32 maxRules, uint32 numFeatures,
+    static inline void applyRules(RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
+                                  uint32 numFeatures,
                                   CsrConstView<const float32>::index_const_iterator featureIndicesBegin,
                                   CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
                                   CsrConstView<const float32>::value_const_iterator featureValuesBegin,
@@ -90,8 +91,8 @@ namespace boosting {
         uint32* tmpArray2 = new uint32[numFeatures] {};
         uint32 n = 1;
 
-        for (auto it = model.used_cbegin(maxRules); it != model.used_cend(maxRules); it++) {
-            const RuleList::Rule& rule = *it;
+        for (; rulesBegin != rulesEnd; rulesBegin++) {
+            const RuleList::Rule& rule = *rulesBegin;
             applyRule(rule, featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd, scoreIterator,
                       &tmpArray1[0], &tmpArray2[0], n);
             n++;
@@ -102,17 +103,19 @@ namespace boosting {
     }
 
     static inline void aggregatePredictedScores(const CContiguousConstView<const float32>& featureMatrix,
-                                                const RuleList& model, CContiguousView<float64>& scoreMatrix,
-                                                uint32 maxRules, uint32 exampleIndex, uint32 predictionIndex) {
-        applyRules(model, maxRules, featureMatrix.row_values_cbegin(exampleIndex),
+                                                RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
+                                                CContiguousView<float64>& scoreMatrix, uint32 exampleIndex,
+                                                uint32 predictionIndex) {
+        applyRules(rulesBegin, rulesEnd, featureMatrix.row_values_cbegin(exampleIndex),
                    featureMatrix.row_values_cend(exampleIndex), scoreMatrix.row_values_begin(predictionIndex));
     }
 
-    static inline void aggregatePredictedScores(const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-                                                CContiguousView<float64>& scoreMatrix, uint32 maxRules,
-                                                uint32 exampleIndex, uint32 predictionIndex) {
+    static inline void aggregatePredictedScores(const CsrConstView<const float32>& featureMatrix,
+                                                RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
+                                                CContiguousView<float64>& scoreMatrix, uint32 exampleIndex,
+                                                uint32 predictionIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
-        applyRules(model, maxRules, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
+        applyRules(rulesBegin, rulesEnd, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
                    featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
                    featureMatrix.row_values_cend(exampleIndex), scoreMatrix.row_values_begin(predictionIndex));
     }
@@ -143,9 +146,11 @@ namespace boosting {
             /**
              * @see `PredictionDispatcher::IPredictionDelegate::predictForExample`
              */
-            void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                   uint32 threadIndex, uint32 exampleIndex, uint32 predictionIndex) const override {
-                aggregatePredictedScores(featureMatrix, model, scoreMatrix_, maxRules, exampleIndex, predictionIndex);
+            void predictForExample(const FeatureMatrix& featureMatrix, typename Model::const_iterator rulesBegin,
+                                   typename Model::const_iterator rulesEnd, uint32 threadIndex, uint32 exampleIndex,
+                                   uint32 predictionIndex) const override {
+                aggregatePredictedScores(featureMatrix, rulesBegin, rulesEnd, scoreMatrix_, exampleIndex,
+                                         predictionIndex);
             }
     };
 
@@ -183,8 +188,8 @@ namespace boosting {
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
                 ScorePredictionDelegate<FeatureMatrix, Model> delegate(*predictionMatrixPtr);
-                PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix_, model_,
-                                                                              maxRules, numThreads_);
+                PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
+                  delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 return predictionMatrixPtr;
             }
 

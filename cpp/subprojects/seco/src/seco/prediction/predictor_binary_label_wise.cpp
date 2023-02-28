@@ -54,13 +54,15 @@ namespace seco {
     }
 
     static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex, uint32 predictionIndex) {
+                                                   RuleList::const_iterator rulesBegin,
+                                                   RuleList::const_iterator rulesEnd,
+                                                   CContiguousView<uint8>& predictionMatrix, uint32 exampleIndex,
+                                                   uint32 predictionIndex) {
         uint32 numLabels = predictionMatrix.getNumCols();
         BitVector mask(numLabels, true);
 
-        for (auto it = model.used_cbegin(maxRules); it != model.used_cend(maxRules); it++) {
-            const RuleList::Rule& rule = *it;
+        for (; rulesBegin != rulesEnd; rulesBegin++) {
+            const RuleList::Rule& rule = *rulesBegin;
             const IBody& body = rule.getBody();
 
             if (body.covers(featureMatrix.row_values_cbegin(exampleIndex),
@@ -72,8 +74,10 @@ namespace seco {
     }
 
     static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, CContiguousView<uint8>& predictionMatrix,
-                                                   uint32 maxRules, uint32 exampleIndex, uint32 predictionIndex) {
+                                                   RuleList::const_iterator rulesBegin,
+                                                   RuleList::const_iterator rulesEnd,
+                                                   CContiguousView<uint8>& predictionMatrix, uint32 exampleIndex,
+                                                   uint32 predictionIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();
         BitVector mask(numLabels, true);
@@ -81,8 +85,8 @@ namespace seco {
         uint32* tmpArray2 = new uint32[numFeatures] {};
         uint32 n = 1;
 
-        for (auto it = model.used_cbegin(maxRules); it != model.used_cend(maxRules); it++) {
-            const RuleList::Rule& rule = *it;
+        for (; rulesBegin != rulesEnd; rulesBegin++) {
+            const RuleList::Rule& rule = *rulesBegin;
             const IBody& body = rule.getBody();
 
             if (body.covers(featureMatrix.row_indices_cbegin(exampleIndex),
@@ -124,11 +128,12 @@ namespace seco {
                     PredictionDelegate(CContiguousView<uint8>& predictionMatrix)
                         : predictionMatrix_(predictionMatrix) {}
 
-                    void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                           uint32 threadIndex, uint32 exampleIndex,
-                                           uint32 predictionIndex) const override {
-                        predictForExampleInternally(featureMatrix, model, predictionMatrix_, maxRules, exampleIndex,
-                                                    predictionIndex);
+                    void predictForExample(const FeatureMatrix& featureMatrix,
+                                           typename Model::const_iterator rulesBegin,
+                                           typename Model::const_iterator rulesEnd, uint32 threadIndex,
+                                           uint32 exampleIndex, uint32 predictionIndex) const override {
+                        predictForExampleInternally(featureMatrix, rulesBegin, rulesEnd, predictionMatrix_,
+                                                    exampleIndex, predictionIndex);
                     }
             };
 
@@ -163,8 +168,8 @@ namespace seco {
                   std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_,
                                                                  !model_.containsDefaultRule());
                 PredictionDelegate delegate(*predictionMatrixPtr);
-                PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(delegate, featureMatrix_, model_, maxRules,
-                                                                            numThreads_);
+                PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
+                  delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 return predictionMatrixPtr;
             }
 
@@ -294,10 +299,12 @@ namespace seco {
     }
 
     static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
-                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex) {
-        for (auto it = model.used_cbegin(maxRules); it != model.used_cend(maxRules); it++) {
-            const RuleList::Rule& rule = *it;
+                                                   RuleList::const_iterator rulesBegin,
+                                                   RuleList::const_iterator rulesEnd,
+                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
+                                                   uint32 exampleIndex) {
+        for (; rulesBegin != rulesEnd; rulesBegin++) {
+            const RuleList::Rule& rule = *rulesBegin;
             const IBody& body = rule.getBody();
 
             if (body.covers(featureMatrix.row_values_cbegin(exampleIndex),
@@ -309,15 +316,17 @@ namespace seco {
     }
 
     static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
-                                                   const RuleList& model, BinaryLilMatrix::row predictionRow,
-                                                   uint32 numLabels, uint32 maxRules, uint32 exampleIndex) {
+                                                   RuleList::const_iterator rulesBegin,
+                                                   RuleList::const_iterator rulesEnd,
+                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
+                                                   uint32 exampleIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
         float32* tmpArray1 = new float32[numFeatures];
         uint32* tmpArray2 = new uint32[numFeatures] {};
         uint32 n = 1;
 
-        for (auto it = model.used_cbegin(maxRules); it != model.used_cend(maxRules); it++) {
-            const RuleList::Rule& rule = *it;
+        for (; rulesBegin != rulesEnd; rulesBegin++) {
+            const RuleList::Rule& rule = *rulesBegin;
             const IBody& body = rule.getBody();
 
             if (body.covers(featureMatrix.row_indices_cbegin(exampleIndex),
@@ -363,11 +372,12 @@ namespace seco {
                     Delegate(BinaryLilMatrix& predictionMatrix, uint32 numLabels)
                         : predictionMatrix_(predictionMatrix), numLabels_(numLabels) {}
 
-                    uint32 predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                             uint32 threadIndex, uint32 exampleIndex,
-                                             uint32 predictionIndex) const override {
+                    uint32 predictForExample(const FeatureMatrix& featureMatrix,
+                                             typename Model::const_iterator rulesBegin,
+                                             typename Model::const_iterator rulesEnd, uint32 threadIndex,
+                                             uint32 exampleIndex, uint32 predictionIndex) const override {
                         BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
-                        predictForExampleInternally(featureMatrix, model, predictionRow, numLabels_, maxRules,
+                        predictForExampleInternally(featureMatrix, rulesBegin, rulesEnd, predictionRow, numLabels_,
                                                     exampleIndex);
                         return (uint32) predictionRow.size();
                     }
@@ -402,8 +412,8 @@ namespace seco {
                 uint32 numExamples = featureMatrix_.getNumRows();
                 BinaryLilMatrix predictionMatrix(numExamples);
                 Delegate delegate(predictionMatrix, numLabels_);
-                uint32 numNonZeroElements =
-                  Dispatcher().predict(delegate, featureMatrix_, model_, maxRules, numThreads_);
+                uint32 numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_.used_cbegin(maxRules),
+                                                                 model_.used_cend(maxRules), numThreads_);
                 return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
             }
 

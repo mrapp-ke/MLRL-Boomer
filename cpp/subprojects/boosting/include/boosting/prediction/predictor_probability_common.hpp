@@ -41,10 +41,11 @@ namespace boosting {
             /**
              * @see `PredictionDispatcher::IPredictionDelegate::predictForExample`
              */
-            void predictForExample(const FeatureMatrix& featureMatrix, const Model& model, uint32 maxRules,
-                                   uint32 threadIndex, uint32 exampleIndex, uint32 predictionIndex) const override {
+            void predictForExample(const FeatureMatrix& featureMatrix, typename Model::const_iterator rulesBegin,
+                                   typename Model::const_iterator rulesEnd, uint32 threadIndex, uint32 exampleIndex,
+                                   uint32 predictionIndex) const override {
                 ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
-                  .predictForExample(featureMatrix, model, maxRules, threadIndex, exampleIndex, predictionIndex);
+                  .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex, predictionIndex);
                 probabilityTransformation_.apply(scoreMatrix_.row_values_begin(predictionIndex),
                                                  scoreMatrix_.row_values_end(predictionIndex));
             }
@@ -106,8 +107,8 @@ namespace boosting {
                 if (probabilityTransformationPtr_) {
                     ProbabilityPredictionDelegate<FeatureMatrix, Model> delegate(*predictionMatrixPtr,
                                                                                  *probabilityTransformationPtr_);
-                    PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix_, model_,
-                                                                                  maxRules, numThreads_);
+                    PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
+                      delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 }
 
                 return predictionMatrixPtr;
