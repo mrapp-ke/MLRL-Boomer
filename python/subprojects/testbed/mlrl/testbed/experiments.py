@@ -205,8 +205,8 @@ class IncrementalEvaluation(Evaluation):
                  max_size: int, step_size: int):
         """
         :param min_size:    The minimum number of ensemble members to be evaluated. Must be at least 1
-        :param max_size:    The maximum number of ensemble members to be evaluated. Must be at least `min_size` or 0, if
-                            all ensemble members should be evaluated
+        :param max_size:    The maximum number of ensemble members to be evaluated. Must be greater than `min_size` or
+                            0, if all ensemble members should be evaluated
         :param step_size:   The number of additional ensemble members to be considered at each repetition. Must be at
                             least 1
         """
