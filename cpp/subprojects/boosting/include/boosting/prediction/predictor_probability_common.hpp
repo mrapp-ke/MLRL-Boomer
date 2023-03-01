@@ -26,6 +26,8 @@ namespace boosting {
 
             CContiguousView<float64>& scoreMatrix_;
 
+            CContiguousView<float64>& predictionMatrix_;
+
             const IProbabilityTransformation& probabilityTransformation_;
 
         public:
@@ -33,12 +35,16 @@ namespace boosting {
             /**
              * @param scoreMatrix               A reference to an object of type `CContiguousView` that stores the
              *                                  aggregated scores
+             * @param predictionMatrix          A reference to an object of type `CContiguousView` that stores the
+             *                                  probability estimates
              * @param probabilityTransformation A reference to an object of type `IProbabilityTransformation` that
              *                                  should be used to transform aggregated scores into probability estimates
              */
             ProbabilityPredictionDelegate(CContiguousView<float64>& scoreMatrix,
+                                          CContiguousView<float64>& predictionMatrix,
                                           const IProbabilityTransformation& probabilityTransformation)
-                : scoreMatrix_(scoreMatrix), probabilityTransformation_(probabilityTransformation) {}
+                : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix),
+                  probabilityTransformation_(probabilityTransformation) {}
 
             /**
              * @see `PredictionDispatcher::IPredictionDelegate::predictForExample`
@@ -50,8 +56,8 @@ namespace boosting {
                   .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex, predictionIndex);
                 probabilityTransformation_.apply(scoreMatrix_.row_values_cbegin(predictionIndex),
                                                  scoreMatrix_.row_values_cend(predictionIndex),
-                                                 scoreMatrix_.row_values_begin(predictionIndex),
-                                                 scoreMatrix_.row_values_end(predictionIndex));
+                                                 predictionMatrix_.row_values_begin(predictionIndex),
+                                                 predictionMatrix_.row_values_end(predictionIndex));
             }
     };
 
@@ -109,8 +115,8 @@ namespace boosting {
                   std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
 
                 if (probabilityTransformationPtr_) {
-                    ProbabilityPredictionDelegate<FeatureMatrix, Model> delegate(*predictionMatrixPtr,
-                                                                                 *probabilityTransformationPtr_);
+                    ProbabilityPredictionDelegate<FeatureMatrix, Model> delegate(
+                      *predictionMatrixPtr, *predictionMatrixPtr, *probabilityTransformationPtr_);
                     PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
                       delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 }
