@@ -18,13 +18,19 @@ namespace boosting {
             /**
              * Transforms aggregated scores into probability estimates.
              *
-             * @param scoresBegin   An iterator of type `CContiguousView::value_iterator` to the beginning of the
-             *                      aggregated scores
-             * @param scoresEnd     An iterator of type `CContiguousView::value_iterator` to the end of the
-             *                      aggregated scores
+             * @param scoresBegin           An iterator of type `CContiguousConstView::value_const_iterator` to the
+             *                              beginning of the aggregated scores
+             * @param scoresEnd             An iterator of type `CContiguousConstView::value_const_iterator` to the end
+             *                              of the aggregated scores
+             * @param probabilitiesBegin    An iterator of type `CContiguousView::value_iterator` to the beginning of
+             *                              the probabilities
+             * @param probabilitiesEnd      An iterator of type `CContiguousView::value_iterator` to the end of the
+             *                              probabilities
              */
-            virtual void apply(CContiguousView<float64>::value_iterator scoresBegin,
-                               CContiguousView<float64>::value_iterator scoresEnd) const = 0;
+            virtual void apply(CContiguousConstView<float64>::value_const_iterator scoresBegin,
+                               CContiguousConstView<float64>::value_const_iterator scoresEnd,
+                               CContiguousView<float64>::value_iterator probabilitiesBegin,
+                               CContiguousView<float64>::value_iterator probabilitiesEnd) const = 0;
     };
 
 }
