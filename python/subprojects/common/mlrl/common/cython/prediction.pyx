@@ -102,6 +102,14 @@ cdef class IncrementalSparseBinaryPredictor:
     Allows to predict sparse binary labels for given query examples incrementally.
     """
 
+    def has_next(self) -> bool:
+        """
+        Returns whether there are any remaining ensemble members that have not been used yet or not.
+
+        :return: True, if there are any remaining ensemble members, False otherwise
+        """
+        return self.predictor_ptr.get().hasNext()
+
     def get_num_next(self) -> int:
         """
         Returns the number of remaining ensemble members that have not been used yet.
@@ -187,6 +195,14 @@ cdef class IncrementalScorePredictor:
     Allows to predict regression scores for given query examples incrementally.
     """
 
+    def has_next(self) -> bool:
+        """
+        Returns whether there are any remaining ensemble members that have not been used yet or not.
+
+        :return: True, if there are any remaining ensemble members, False otherwise
+        """
+        return self.predictor_ptr.get().hasNext()
+
     def get_num_next(self) -> int:
         """
         Returns the number of remaining ensemble members that have not been used yet.
@@ -262,6 +278,14 @@ cdef class IncrementalProbabilityPredictor:
     """
     Allows to predict probability estimates for given query examples incrementally.
     """
+
+    def has_next(self) -> bool:
+        """
+        Returns whether there are any remaining ensemble members that have not been used yet or not.
+
+        :return: True, if there are any remaining ensemble members, False otherwise
+        """
+        return self.predictor_ptr.get().hasNext()
 
     def get_num_next(self) -> int:
         """
