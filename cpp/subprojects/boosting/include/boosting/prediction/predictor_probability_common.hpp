@@ -96,8 +96,8 @@ namespace boosting {
                                          std::shared_ptr<IProbabilityTransformation> probabilityTransformationPtr)
                         : featureMatrix_(predictor.featureMatrix_), numThreads_(predictor.numThreads_),
                           probabilityTransformationPtr_(probabilityTransformationPtr),
-                          scoreMatrix_(
-                            DensePredictionMatrix<float64>(featureMatrix_.getNumRows(), predictor.numLabels_, true)),
+                          scoreMatrix_(DensePredictionMatrix<float64>(featureMatrix_.getNumRows(), predictor.numLabels_,
+                                                                      probabilityTransformationPtr_ != nullptr)),
                           predictionMatrix_(DensePredictionMatrix<float64>(featureMatrix_.getNumRows(),
                                                                            predictor.numLabels_,
                                                                            probabilityTransformationPtr_ == nullptr)),
