@@ -9,6 +9,8 @@
 #include "common/data/matrix_dense.hpp"
 #include "common/prediction/predictor_binary.hpp"
 
+#include <stdexcept>
+
 namespace boosting {
 
     /**

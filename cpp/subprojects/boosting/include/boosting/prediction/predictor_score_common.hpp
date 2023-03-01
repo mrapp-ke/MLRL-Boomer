@@ -7,8 +7,7 @@
 #include "common/model/head_partial.hpp"
 #include "common/prediction/predictor_common.hpp"
 #include "common/prediction/predictor_score.hpp"
-
-#include <stdexcept>
+#include "common/util/validation.hpp"
 
 namespace boosting {
 
@@ -167,6 +166,42 @@ namespace boosting {
     class ScorePredictor final : public IScorePredictor {
         private:
 
+            class IncrementalPredictor final : public IIncrementalPredictor<DensePredictionMatrix<float64>> {
+                private:
+
+                    const FeatureMatrix& featureMatrix_;
+
+                    uint32 numThreads_;
+
+                    DensePredictionMatrix<float64> predictionMatrix_;
+
+                    typename Model::const_iterator current_;
+
+                    typename Model::const_iterator end_;
+
+                public:
+
+                    IncrementalPredictor(const ScorePredictor& predictor, uint32 minRules, uint32 maxRules)
+                        : featureMatrix_(predictor.featureMatrix_), numThreads_(predictor.numThreads_),
+                          predictionMatrix_(
+                            DensePredictionMatrix<float64>(featureMatrix_.getNumRows(), predictor.numLabels_, true)),
+                          current_(predictor.model_.used_cbegin(maxRules) + (minRules - 1)),
+                          end_(predictor.model_.used_cend(maxRules)) {}
+
+                    uint32 getNumNext() const override {
+                        return (uint32) (end_ - current_);
+                    }
+
+                    DensePredictionMatrix<float64>& applyNext(uint32 stepSize) override {
+                        ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrix_);
+                        typename Model::const_iterator next = current_ + std::min(stepSize, this->getNumNext());
+                        PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix_,
+                                                                                      current_, next, numThreads_);
+                        current_ = next;
+                        return predictionMatrix_;
+                    }
+            };
+
             const FeatureMatrix& featureMatrix_;
 
             const Model& model_;
@@ -206,7 +241,7 @@ namespace boosting {
              * @see `IPredictor::canPredictIncrementally`
              */
             bool canPredictIncrementally() const override {
-                return false;
+                return true;
             }
 
             /**
@@ -214,8 +249,9 @@ namespace boosting {
              */
             std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<float64>>> createIncrementalPredictor(
               uint32 minRules, uint32 maxRules) const override {
-                throw std::runtime_error(
-                  "The rule learner does not support to predict regression scores incrementally");
+                assertGreaterOrEqual<uint32>("minRules", minRules, 1);
+                if (maxRules != 0) assertGreater<uint32>("maxRules", maxRules, minRules);
+                return std::make_unique<IncrementalPredictor>(*this, minRules, maxRules);
             }
     };
 
