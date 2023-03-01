@@ -62,8 +62,7 @@ cdef extern from "common/prediction/predictor.hpp" nogil:
 
         bool canPredictIncrementally() const
 
-        unique_ptr[IIncrementalPredictor[PredictionMatrix]] createIncrementalPredictor(uint32 minRules,
-                                                                                       uint32 maxRules) except +
+        unique_ptr[IIncrementalPredictor[PredictionMatrix]] createIncrementalPredictor(uint32 maxRules) except +
 
 
 cdef extern from "common/prediction/predictor_binary.hpp" nogil:
