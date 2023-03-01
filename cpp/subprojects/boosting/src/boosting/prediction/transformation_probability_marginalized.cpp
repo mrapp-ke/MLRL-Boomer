@@ -9,15 +9,17 @@ namespace boosting {
       const LabelVectorSet& labelVectorSet, std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr)
         : labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
 
-    void MarginalizedProbabilityTransformation::apply(CContiguousView<float64>::value_iterator scoresBegin,
-                                                      CContiguousView<float64>::value_iterator scoresEnd) const {
+    void MarginalizedProbabilityTransformation::apply(CContiguousConstView<float64>::value_const_iterator scoresBegin,
+                                                      CContiguousConstView<float64>::value_const_iterator scoresEnd,
+                                                      CContiguousView<float64>::value_iterator probabilitiesBegin,
+                                                      CContiguousView<float64>::value_iterator probabilitiesEnd) const {
         uint32 numLabels = scoresEnd - scoresBegin;
         std::pair<std::unique_ptr<DenseVector<float64>>, float64> pair =
           calculateJointProbabilities(scoresBegin, numLabels, labelVectorSet_, *probabilityFunctionPtr_);
         const VectorConstView<float64>& jointProbabilityVector = *pair.first;
         const VectorConstView<float64>::const_iterator jointProbabilityIterator = jointProbabilityVector.cbegin();
         float64 sumOfJointProbabilities = pair.second;
-        setArrayToZeros(scoresBegin, numLabels);
+        setArrayToZeros(probabilitiesBegin, numLabels);
         uint32 i = 0;
 
         for (auto it = labelVectorSet_.cbegin(); it != labelVectorSet_.cend(); it++) {
@@ -29,7 +31,7 @@ namespace boosting {
 
             for (uint32 j = 0; j < numRelevantLabels; j++) {
                 uint32 labelIndex = labelIndexIterator[j];
-                scoresBegin[labelIndex] += jointProbability;
+                probabilitiesBegin[labelIndex] += jointProbability;
             }
 
             i++;

@@ -48,7 +48,9 @@ namespace boosting {
                                    uint32 predictionIndex) const override {
                 ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
                   .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex, predictionIndex);
-                probabilityTransformation_.apply(scoreMatrix_.row_values_begin(predictionIndex),
+                probabilityTransformation_.apply(scoreMatrix_.row_values_cbegin(predictionIndex),
+                                                 scoreMatrix_.row_values_cend(predictionIndex),
+                                                 scoreMatrix_.row_values_begin(predictionIndex),
                                                  scoreMatrix_.row_values_end(predictionIndex));
             }
     };
