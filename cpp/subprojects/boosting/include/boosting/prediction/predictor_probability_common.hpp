@@ -7,6 +7,8 @@
 #include "boosting/prediction/transformation_probability.hpp"
 #include "common/prediction/predictor_probability.hpp"
 
+#include <stdexcept>
+
 namespace boosting {
 
     /**
