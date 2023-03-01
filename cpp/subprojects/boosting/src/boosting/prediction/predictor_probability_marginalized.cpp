@@ -3,6 +3,8 @@
 #include "boosting/prediction/predictor_probability_common.hpp"
 #include "boosting/prediction/transformation_probability_marginalized.hpp"
 
+#include <stdexcept>
+
 namespace boosting {
 
     template<typename FeatureMatrix, typename Model>
