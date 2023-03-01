@@ -1,0 +1,305 @@
+INFO Starting experiment...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fitting model to 397 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 237 milliseconds
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted probability estimates
+INFO Predicting for 196 test examples using a model of size 1...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 1:
+
+Coverage Error                    4.38
+Discounted Cumulative Gain        1.14
+Label Ranking Average Precision   0.57
+Mean Absolute Error               0.43
+Mean Absolute Percentage Error    9.66123e+14
+Mean Squared Error                0.21
+Median Absolute Error             0.32
+NDCG                             72.18
+Ranking Loss                      0.45
+
+INFO Predicting for 196 test examples using a model of size 51...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 51:
+
+Coverage Error                    2.99
+Discounted Cumulative Gain        1.35
+Label Ranking Average Precision   0.78
+Mean Absolute Error               0.33
+Mean Absolute Percentage Error    7.09821e+14
+Mean Squared Error                0.16
+Median Absolute Error             0.26
+NDCG                             85.8
+Ranking Loss                      0.18
+
+INFO Predicting for 196 test examples using a model of size 101...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 101:
+
+Coverage Error                    2.85
+Discounted Cumulative Gain        1.35
+Label Ranking Average Precision   0.79
+Mean Absolute Error               0.3
+Mean Absolute Percentage Error    6.22197e+14
+Mean Squared Error                0.15
+Median Absolute Error             0.22
+NDCG                             85.78
+Ranking Loss                      0.17
+
+INFO Predicting for 196 test examples using a model of size 151...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 151:
+
+Coverage Error                    2.79
+Discounted Cumulative Gain        1.36
+Label Ranking Average Precision   0.8
+Mean Absolute Error               0.28
+Mean Absolute Percentage Error    5.76418e+14
+Mean Squared Error                0.15
+Median Absolute Error             0.19
+NDCG                             86.28
+Ranking Loss                      0.16
+
+INFO Predicting for 196 test examples using a model of size 201...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 201:
+
+Coverage Error                    2.77
+Discounted Cumulative Gain        1.37
+Label Ranking Average Precision   0.81
+Mean Absolute Error               0.27
+Mean Absolute Percentage Error    5.46495e+14
+Mean Squared Error                0.14
+Median Absolute Error             0.17
+NDCG                             86.83
+Ranking Loss                      0.16
+
+INFO Predicting for 196 test examples using a model of size 251...
+INFO Successfully predicted in 2 milliseconds
+INFO Overall evaluation result on test data using a model of size 251:
+
+Coverage Error                    2.77
+Discounted Cumulative Gain        1.37
+Label Ranking Average Precision   0.81
+Mean Absolute Error               0.27
+Mean Absolute Percentage Error    5.20589e+14
+Mean Squared Error                0.14
+Median Absolute Error             0.17
+NDCG                             86.89
+Ranking Loss                      0.15
+
+INFO Predicting for 196 test examples using a model of size 301...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 301:
+
+Coverage Error                    2.8
+Discounted Cumulative Gain        1.37
+Label Ranking Average Precision   0.81
+Mean Absolute Error               0.26
+Mean Absolute Percentage Error    5.05725e+14
+Mean Squared Error                0.14
+Median Absolute Error             0.16
+NDCG                             86.9
+Ranking Loss                      0.16
+
+INFO Predicting for 196 test examples using a model of size 351...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 351:
+
+Coverage Error                    2.81
+Discounted Cumulative Gain        1.37
+Label Ranking Average Precision   0.81
+Mean Absolute Error               0.26
+Mean Absolute Percentage Error    4.80548e+14
+Mean Squared Error                0.14
+Median Absolute Error             0.15
+NDCG                             87.11
+Ranking Loss                      0.16
+
+INFO Predicting for 196 test examples using a model of size 401...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 401:
+
+Coverage Error                    2.81
+Discounted Cumulative Gain        1.37
+Label Ranking Average Precision   0.81
+Mean Absolute Error               0.25
+Mean Absolute Percentage Error    4.68511e+14
+Mean Squared Error                0.14
+Median Absolute Error             0.13
+NDCG                             87.15
+Ranking Loss                      0.16
+
+INFO Predicting for 196 test examples using a model of size 451...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 451:
+
+Coverage Error                    2.8
+Discounted Cumulative Gain        1.37
+Label Ranking Average Precision   0.81
+Mean Absolute Error               0.25
+Mean Absolute Percentage Error    4.52626e+14
+Mean Squared Error                0.14
+Median Absolute Error             0.12
+NDCG                             87.48
+Ranking Loss                      0.15
+
+INFO Predicting for 196 test examples using a model of size 501...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 501:
+
+Coverage Error                    2.78
+Discounted Cumulative Gain        1.37
+Label Ranking Average Precision   0.81
+Mean Absolute Error               0.25
+Mean Absolute Percentage Error    4.44682e+14
+Mean Squared Error                0.14
+Median Absolute Error             0.11
+NDCG                             86.77
+Ranking Loss                      0.16
+
+INFO Predicting for 196 test examples using a model of size 551...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 551:
+
+Coverage Error                    2.8
+Discounted Cumulative Gain        1.37
+Label Ranking Average Precision   0.81
+Mean Absolute Error               0.24
+Mean Absolute Percentage Error    4.32025e+14
+Mean Squared Error                0.14
+Median Absolute Error             0.11
+NDCG                             87.18
+Ranking Loss                      0.16
+
+INFO Predicting for 196 test examples using a model of size 601...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 601:
+
+Coverage Error                    2.77
+Discounted Cumulative Gain        1.37
+Label Ranking Average Precision   0.81
+Mean Absolute Error               0.24
+Mean Absolute Percentage Error    4.26688e+14
+Mean Squared Error                0.14
+Median Absolute Error             0.1
+NDCG                             87.21
+Ranking Loss                      0.15
+
+INFO Predicting for 196 test examples using a model of size 651...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 651:
+
+Coverage Error                    2.76
+Discounted Cumulative Gain        1.37
+Label Ranking Average Precision   0.81
+Mean Absolute Error               0.24
+Mean Absolute Percentage Error    4.1623e+14
+Mean Squared Error                0.14
+Median Absolute Error             0.1
+NDCG                             87.16
+Ranking Loss                      0.15
+
+INFO Predicting for 196 test examples using a model of size 701...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 701:
+
+Coverage Error                    2.72
+Discounted Cumulative Gain        1.37
+Label Ranking Average Precision   0.81
+Mean Absolute Error               0.24
+Mean Absolute Percentage Error    4.06277e+14
+Mean Squared Error                0.15
+Median Absolute Error             0.09
+NDCG                             87.1
+Ranking Loss                      0.15
+
+INFO Predicting for 196 test examples using a model of size 751...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 751:
+
+Coverage Error                    2.71
+Discounted Cumulative Gain        1.37
+Label Ranking Average Precision   0.81
+Mean Absolute Error               0.23
+Mean Absolute Percentage Error    4.02987e+14
+Mean Squared Error                0.15
+Median Absolute Error             0.09
+NDCG                             87.3
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 801...
+INFO Successfully predicted in 2 milliseconds
+INFO Overall evaluation result on test data using a model of size 801:
+
+Coverage Error                    2.7
+Discounted Cumulative Gain        1.38
+Label Ranking Average Precision   0.82
+Mean Absolute Error               0.23
+Mean Absolute Percentage Error    3.9561e+14
+Mean Squared Error                0.15
+Median Absolute Error             0.08
+NDCG                             87.83
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 851...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 851:
+
+Coverage Error                    2.7
+Discounted Cumulative Gain        1.38
+Label Ranking Average Precision   0.82
+Mean Absolute Error               0.23
+Mean Absolute Percentage Error    3.86762e+14
+Mean Squared Error                0.15
+Median Absolute Error             0.08
+NDCG                             87.67
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 901...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 901:
+
+Coverage Error                    2.68
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.82
+Mean Absolute Error               0.23
+Mean Absolute Percentage Error    3.79041e+14
+Mean Squared Error                0.15
+Median Absolute Error             0.07
+NDCG                             88.21
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 951...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 951:
+
+Coverage Error                    2.69
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.83
+Mean Absolute Error               0.23
+Mean Absolute Percentage Error    3.74257e+14
+Mean Squared Error                0.15
+Median Absolute Error             0.07
+NDCG                             88.41
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 1000...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 1000:
+
+Coverage Error                    2.68
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.83
+Mean Absolute Error               0.22
+Mean Absolute Percentage Error    3.673e+14
+Mean Squared Error                0.15
+Median Absolute Error             0.07
+NDCG                             88.54
+Ranking Loss                      0.13
+
+INFO Successfully finished after 1 second and 439 milliseconds
