@@ -98,8 +98,9 @@ namespace boosting {
                           probabilityTransformationPtr_(probabilityTransformationPtr),
                           scoreMatrix_(
                             DensePredictionMatrix<float64>(featureMatrix_.getNumRows(), predictor.numLabels_, true)),
-                          predictionMatrix_(
-                            DensePredictionMatrix<float64>(featureMatrix_.getNumRows(), predictor.numLabels_)),
+                          predictionMatrix_(DensePredictionMatrix<float64>(featureMatrix_.getNumRows(),
+                                                                           predictor.numLabels_,
+                                                                           probabilityTransformationPtr_ == nullptr)),
                           current_(predictor.model_.used_cbegin(maxRules) + (minRules - 1)),
                           end_(predictor.model_.used_cend(maxRules)) {}
 
@@ -109,10 +110,14 @@ namespace boosting {
 
                     DensePredictionMatrix<float64>& applyNext(uint32 stepSize) override {
                         typename Model::const_iterator next = current_ + std::min(stepSize, this->getNumNext());
-                        ProbabilityPredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix_, predictionMatrix_,
-                                                                                     *probabilityTransformationPtr_);
-                        PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix_,
-                                                                                      current_, next, numThreads_);
+
+                        if (probabilityTransformationPtr_) {
+                            ProbabilityPredictionDelegate<FeatureMatrix, Model> delegate(
+                              scoreMatrix_, predictionMatrix_, *probabilityTransformationPtr_);
+                            PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix_,
+                                                                                          current_, next, numThreads_);
+                        }
+
                         current_ = next;
                         return predictionMatrix_;
                     }
