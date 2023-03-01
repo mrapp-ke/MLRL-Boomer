@@ -10,56 +10,6 @@
 namespace boosting {
 
     /**
-     * An implementation of the type `PredictionDispatcher::IPredictionDelegate` that transforms the aggregated scores
-     * that are predicted by a rule-based model into probability estimates.
-     *
-     * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of
-     *                          the query examples.
-     * @tparam Model            The type of the rule-based model that is used to obtain predictions
-     */
-    template<typename FeatureMatrix, typename Model>
-    class ProbabilityPredictionDelegate final
-        : public PredictionDispatcher<float64, FeatureMatrix, Model>::IPredictionDelegate {
-        private:
-
-            CContiguousView<float64>& scoreMatrix_;
-
-            CContiguousView<float64>& predictionMatrix_;
-
-            const IProbabilityTransformation& probabilityTransformation_;
-
-        public:
-
-            /**
-             * @param scoreMatrix               A reference to an object of type `CContiguousView` that stores the
-             *                                  aggregated scores
-             * @param predictionMatrix          A reference to an object of type `CContiguousView` that stores the
-             *                                  probability estimates
-             * @param probabilityTransformation A reference to an object of type `IProbabilityTransformation` that
-             *                                  should be used to transform aggregated scores into probability estimates
-             */
-            ProbabilityPredictionDelegate(CContiguousView<float64>& scoreMatrix,
-                                          CContiguousView<float64>& predictionMatrix,
-                                          const IProbabilityTransformation& probabilityTransformation)
-                : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix),
-                  probabilityTransformation_(probabilityTransformation) {}
-
-            /**
-             * @see `PredictionDispatcher::IPredictionDelegate::predictForExample`
-             */
-            void predictForExample(const FeatureMatrix& featureMatrix, typename Model::const_iterator rulesBegin,
-                                   typename Model::const_iterator rulesEnd, uint32 threadIndex, uint32 exampleIndex,
-                                   uint32 predictionIndex) const override {
-                ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
-                  .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex, predictionIndex);
-                probabilityTransformation_.apply(scoreMatrix_.row_values_cbegin(predictionIndex),
-                                                 scoreMatrix_.row_values_cend(predictionIndex),
-                                                 predictionMatrix_.row_values_begin(predictionIndex),
-                                                 predictionMatrix_.row_values_end(predictionIndex));
-            }
-    };
-
-    /**
      * An implementation of the type `IProbabilityPredictor` that allows to predict label-wise probability estimates for
      * given query examples, estimating the chance of individual labels to be relevant, by summing up the scores that
      * are predicted by individual rules in a rule-based model and transforming the aggregated scores into probabilities
@@ -72,6 +22,38 @@ namespace boosting {
     template<typename FeatureMatrix, typename Model>
     class ProbabilityPredictor final : public IProbabilityPredictor {
         private:
+
+            class PredictionDelegate final
+                : public PredictionDispatcher<float64, FeatureMatrix, Model>::IPredictionDelegate {
+                private:
+
+                    CContiguousView<float64>& scoreMatrix_;
+
+                    CContiguousView<float64>& predictionMatrix_;
+
+                    const IProbabilityTransformation& probabilityTransformation_;
+
+                public:
+
+                    PredictionDelegate(CContiguousView<float64>& scoreMatrix,
+                                       CContiguousView<float64>& predictionMatrix,
+                                       const IProbabilityTransformation& probabilityTransformation)
+                        : scoreMatrix_(scoreMatrix), predictionMatrix_(predictionMatrix),
+                          probabilityTransformation_(probabilityTransformation) {}
+
+                    void predictForExample(const FeatureMatrix& featureMatrix,
+                                           typename Model::const_iterator rulesBegin,
+                                           typename Model::const_iterator rulesEnd, uint32 threadIndex,
+                                           uint32 exampleIndex, uint32 predictionIndex) const override {
+                        ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
+                          .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
+                                             predictionIndex);
+                        probabilityTransformation_.apply(scoreMatrix_.row_values_cbegin(predictionIndex),
+                                                         scoreMatrix_.row_values_cend(predictionIndex),
+                                                         predictionMatrix_.row_values_begin(predictionIndex),
+                                                         predictionMatrix_.row_values_end(predictionIndex));
+                    }
+            };
 
             class IncrementalPredictor final : public IIncrementalPredictor<DensePredictionMatrix<float64>> {
                 private:
@@ -112,8 +94,8 @@ namespace boosting {
                         typename Model::const_iterator next = current_ + std::min(stepSize, this->getNumNext());
 
                         if (probabilityTransformationPtr_) {
-                            ProbabilityPredictionDelegate<FeatureMatrix, Model> delegate(
-                              scoreMatrix_, predictionMatrix_, *probabilityTransformationPtr_);
+                            PredictionDelegate delegate(scoreMatrix_, predictionMatrix_,
+                                                        *probabilityTransformationPtr_);
                             PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix_,
                                                                                           current_, next, numThreads_);
                         }
@@ -163,8 +145,8 @@ namespace boosting {
                   std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
 
                 if (probabilityTransformationPtr_) {
-                    ProbabilityPredictionDelegate<FeatureMatrix, Model> delegate(
-                      *predictionMatrixPtr, *predictionMatrixPtr, *probabilityTransformationPtr_);
+                    PredictionDelegate delegate(*predictionMatrixPtr, *predictionMatrixPtr,
+                                                *probabilityTransformationPtr_);
                     PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
                       delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 }
