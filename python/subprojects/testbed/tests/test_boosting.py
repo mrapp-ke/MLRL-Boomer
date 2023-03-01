@@ -373,6 +373,16 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_predictions(True)
         self.run_cmd(builder, 'predictor-binary-label-wise')
 
+    def test_predictor_binary_label_wise_sparse(self):
+        """
+        Tests the BOOMER algorithm when predicting sparse binary labels that are obtained for each label individually.
+        """
+        builder = BoostingCmdBuilder() \
+            .binary_predictor(BINARY_PREDICTOR_LABEL_WISE) \
+            .print_predictions(True) \
+            .sparse_prediction_format(True)
+        self.run_cmd(builder, 'predictor-binary-label-wise_sparse')
+
     def test_predictor_binary_example_wise(self):
         """
         Tests the BOOMER algorithm when predicting binary labels that are obtained by predicting one of the known label
@@ -383,6 +393,17 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_predictions(True)
         self.run_cmd(builder, 'predictor-binary-example-wise')
 
+    def test_predictor_binary_example_wise_sparse(self):
+        """
+        Tests the BOOMER algorithm when predicting sparse binary labels that are obtained by predicting one of the known
+        label vectors.
+        """
+        builder = BoostingCmdBuilder() \
+            .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE) \
+            .print_predictions(True) \
+            .sparse_prediction_format(True)
+        self.run_cmd(builder, 'predictor-binary-example-wise_sparse')
+
     def test_predictor_binary_gfm(self):
         """
         Tests the BOOMER algorithm when predicting binary labels that are obtained via the general F-measure maximizer
@@ -392,6 +413,17 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .binary_predictor(BINARY_PREDICTOR_GFM) \
             .print_predictions(True)
         self.run_cmd(builder, 'predictor-binary-gfm')
+
+    def test_predictor_binary_gfm_sparse(self):
+        """
+        Tests the BOOMER algorithm when predicting binary labels that are obtained via the general F-measure maximizer
+        (GFM).
+        """
+        builder = BoostingCmdBuilder() \
+            .binary_predictor(BINARY_PREDICTOR_GFM) \
+            .print_predictions(True) \
+            .sparse_prediction_format(True)
+        self.run_cmd(builder, 'predictor-binary-gfm_sparse')
 
     def test_predictor_score_label_wise(self):
         """
