@@ -1,0 +1,452 @@
+INFO Starting experiment...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fitting model to 397 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in 246 milliseconds
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Predicting for 196 test examples using a model of size 1...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 1:
+
+Example-wise F1          44.35
+Example-wise Jaccard     29.92
+Example-wise Precision   33.42
+Example-wise Recall      71.68
+Hamming Accuracy         46
+Hamming Loss             54
+Macro F1                 33.04
+Macro Jaccard            22.28
+Macro Precision          55.61
+Macro Recall             66.67
+Micro F1                 45.21
+Micro Jaccard            29.21
+Micro Precision          33.42
+Micro Recall             69.87
+Subset 0/1 Loss         100
+Subset Accuracy           0
+
+INFO Predicting for 196 test examples using a model of size 51...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 51:
+
+Example-wise F1         66.52
+Example-wise Jaccard    56.05
+Example-wise Precision  63.74
+Example-wise Recall     78.83
+Hamming Accuracy        75.43
+Hamming Loss            24.57
+Macro F1                65.36
+Macro Jaccard           49.37
+Macro Precision         58.74
+Macro Recall            75.32
+Micro F1                66.82
+Micro Jaccard           50.17
+Micro Precision         58.67
+Micro Recall            77.6
+Subset 0/1 Loss         75
+Subset Accuracy         25
+
+INFO Predicting for 196 test examples using a model of size 101...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 101:
+
+Example-wise F1         67.05
+Example-wise Jaccard    57.75
+Example-wise Precision  65.26
+Example-wise Recall     75.6
+Hamming Accuracy        77.38
+Hamming Loss            22.62
+Macro F1                66.21
+Macro Jaccard           50.19
+Macro Precision         62.19
+Macro Recall            72.34
+Micro F1                67.8
+Micro Jaccard           51.28
+Micro Precision         62.08
+Micro Recall            74.67
+Subset 0/1 Loss         70.92
+Subset Accuracy         29.08
+
+INFO Predicting for 196 test examples using a model of size 151...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 151:
+
+Example-wise F1         67.38
+Example-wise Jaccard    57.92
+Example-wise Precision  65.99
+Example-wise Recall     75.09
+Hamming Accuracy        78.4
+Hamming Loss            21.6
+Macro F1                67.17
+Macro Jaccard           51.14
+Macro Precision         63.75
+Macro Recall            72.39
+Micro F1                68.72
+Micro Jaccard           52.35
+Micro Precision         63.84
+Micro Recall            74.4
+Subset 0/1 Loss         71.43
+Subset Accuracy         28.57
+
+INFO Predicting for 196 test examples using a model of size 201...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 201:
+
+Example-wise F1         68.71
+Example-wise Jaccard    60.03
+Example-wise Precision  67.26
+Example-wise Recall     75.77
+Hamming Accuracy        79.93
+Hamming Loss            20.07
+Macro F1                69.3
+Macro Jaccard           53.49
+Macro Precision         66.96
+Macro Recall            73.38
+Micro F1                70.5
+Micro Jaccard           54.44
+Micro Precision         66.35
+Micro Recall            75.2
+Subset 0/1 Loss         66.84
+Subset Accuracy         33.16
+
+INFO Predicting for 196 test examples using a model of size 251...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 251:
+
+Example-wise F1         67.99
+Example-wise Jaccard    58.89
+Example-wise Precision  67.64
+Example-wise Recall     74.15
+Hamming Accuracy        79.42
+Hamming Loss            20.58
+Macro F1                68.26
+Macro Jaccard           52.06
+Macro Precision         66.64
+Macro Recall            71.3
+Micro F1                69.29
+Micro Jaccard           53.01
+Micro Precision         66.1
+Micro Recall            72.8
+Subset 0/1 Loss         69.39
+Subset Accuracy         30.61
+
+INFO Predicting for 196 test examples using a model of size 301...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 301:
+
+Example-wise F1         68.3
+Example-wise Jaccard    59.05
+Example-wise Precision  67.22
+Example-wise Recall     74.91
+Hamming Accuracy        79.68
+Hamming Loss            20.32
+Macro F1                68.91
+Macro Jaccard           52.82
+Macro Precision         66.72
+Macro Recall            72.49
+Micro F1                69.86
+Micro Jaccard           53.68
+Micro Precision         66.27
+Micro Recall            73.87
+Subset 0/1 Loss         69.9
+Subset Accuracy         30.1
+
+INFO Predicting for 196 test examples using a model of size 351...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 351:
+
+Example-wise F1         67.74
+Example-wise Jaccard    58.41
+Example-wise Precision  67.6
+Example-wise Recall     73.55
+Hamming Accuracy        79.42
+Hamming Loss            20.58
+Macro F1                67.76
+Macro Jaccard           51.79
+Macro Precision         66.28
+Macro Recall            70.63
+Micro F1                69.05
+Micro Jaccard           52.73
+Micro Precision         66.34
+Micro Recall            72
+Subset 0/1 Loss         69.9
+Subset Accuracy         30.1
+
+INFO Predicting for 196 test examples using a model of size 401...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 401:
+
+Example-wise F1         67.88
+Example-wise Jaccard    58.62
+Example-wise Precision  68.54
+Example-wise Recall     72.79
+Hamming Accuracy        79.93
+Hamming Loss            20.07
+Macro F1                68.28
+Macro Jaccard           52.2
+Macro Precision         67.7
+Macro Recall            70.11
+Micro F1                69.43
+Micro Jaccard           53.17
+Micro Precision         67.51
+Micro Recall            71.47
+Subset 0/1 Loss         69.9
+Subset Accuracy         30.1
+
+INFO Predicting for 196 test examples using a model of size 451...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 451:
+
+Example-wise F1         67.64
+Example-wise Jaccard    58.28
+Example-wise Precision  68.03
+Example-wise Recall     72.79
+Hamming Accuracy        79.68
+Hamming Loss            20.32
+Macro F1                67.75
+Macro Jaccard           51.74
+Macro Precision         66.98
+Macro Recall            69.77
+Micro F1                69.08
+Micro Jaccard           52.77
+Micro Precision         67.09
+Micro Recall            71.2
+Subset 0/1 Loss         70.41
+Subset Accuracy         29.59
+
+INFO Predicting for 196 test examples using a model of size 501...
+INFO Successfully predicted in 0 milliseconds
+INFO Overall evaluation result on test data using a model of size 501:
+
+Example-wise F1         67.62
+Example-wise Jaccard    58.03
+Example-wise Precision  68.79
+Example-wise Recall     72.62
+Hamming Accuracy        79.68
+Hamming Loss            20.32
+Macro F1                67.4
+Macro Jaccard           51.49
+Macro Precision         67.05
+Macro Recall            69.16
+Micro F1                68.92
+Micro Jaccard           52.58
+Micro Precision         67.26
+Micro Recall            70.67
+Subset 0/1 Loss         71.43
+Subset Accuracy         28.57
+
+INFO Predicting for 196 test examples using a model of size 551...
+INFO Successfully predicted in 2 milliseconds
+INFO Overall evaluation result on test data using a model of size 551:
+
+Example-wise F1         68.52
+Example-wise Jaccard    58.78
+Example-wise Precision  70.66
+Example-wise Recall     72.87
+Hamming Accuracy        80.44
+Hamming Loss            19.56
+Macro F1                68.57
+Macro Jaccard           52.62
+Macro Precision         69
+Macro Recall            69.59
+Micro F1                69.74
+Micro Jaccard           53.54
+Micro Precision         68.83
+Micro Recall            70.67
+Subset 0/1 Loss         70.92
+Subset Accuracy         29.08
+
+INFO Predicting for 196 test examples using a model of size 601...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 601:
+
+Example-wise F1         67.89
+Example-wise Jaccard    58.39
+Example-wise Precision  70.24
+Example-wise Recall     72.19
+Hamming Accuracy        80.27
+Hamming Loss            19.73
+Macro F1                68.11
+Macro Jaccard           52.16
+Macro Precision         68.71
+Macro Recall            68.88
+Micro F1                69.39
+Micro Jaccard           53.13
+Micro Precision         68.67
+Micro Recall            70.13
+Subset 0/1 Loss         70.92
+Subset Accuracy         29.08
+
+INFO Predicting for 196 test examples using a model of size 651...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 651:
+
+Example-wise F1         67.72
+Example-wise Jaccard    57.93
+Example-wise Precision  69.47
+Example-wise Recall     72.7
+Hamming Accuracy        80.02
+Hamming Loss            19.98
+Macro F1                68.06
+Macro Jaccard           52.06
+Macro Precision         68.37
+Macro Recall            69.17
+Micro F1                69.2
+Micro Jaccard           52.91
+Micro Precision         68.04
+Micro Recall            70.4
+Subset 0/1 Loss         72.45
+Subset Accuracy         27.55
+
+INFO Predicting for 196 test examples using a model of size 701...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 701:
+
+Example-wise F1         67.02
+Example-wise Jaccard    57.37
+Example-wise Precision  69.3
+Example-wise Recall     71.43
+Hamming Accuracy        79.85
+Hamming Loss            20.15
+Macro F1                67.71
+Macro Jaccard           51.68
+Macro Precision         68.47
+Macro Recall            68.43
+Micro F1                68.77
+Micro Jaccard           52.41
+Micro Precision         67.97
+Micro Recall            69.6
+Subset 0/1 Loss         72.45
+Subset Accuracy         27.55
+
+INFO Predicting for 196 test examples using a model of size 751...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 751:
+
+Example-wise F1         67.24
+Example-wise Jaccard    57.8
+Example-wise Precision  69.47
+Example-wise Recall     71.68
+Hamming Accuracy        80.02
+Hamming Loss            19.98
+Macro F1                67.5
+Macro Jaccard           51.67
+Macro Precision         68.25
+Macro Recall            68.32
+Micro F1                69.04
+Micro Jaccard           52.72
+Micro Precision         68.23
+Micro Recall            69.87
+Subset 0/1 Loss         71.43
+Subset Accuracy         28.57
+
+INFO Predicting for 196 test examples using a model of size 801...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 801:
+
+Example-wise F1         67.13
+Example-wise Jaccard    57.84
+Example-wise Precision  69.9
+Example-wise Recall     70.92
+Hamming Accuracy        80.19
+Hamming Loss            19.81
+Macro F1                67.47
+Macro Jaccard           51.7
+Macro Precision         68.75
+Macro Recall            67.74
+Micro F1                69.06
+Micro Jaccard           52.74
+Micro Precision         68.78
+Micro Recall            69.33
+Subset 0/1 Loss         70.92
+Subset Accuracy         29.08
+
+INFO Predicting for 196 test examples using a model of size 851...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 851:
+
+Example-wise F1         67.79
+Example-wise Jaccard    58.35
+Example-wise Precision  70.15
+Example-wise Recall     72.19
+Hamming Accuracy        80.27
+Hamming Loss            19.73
+Macro F1                67.95
+Macro Jaccard           52.18
+Macro Precision         68.75
+Macro Recall            68.7
+Micro F1                69.39
+Micro Jaccard           53.13
+Micro Precision         68.67
+Micro Recall            70.13
+Subset 0/1 Loss         70.92
+Subset Accuracy         29.08
+
+INFO Predicting for 196 test examples using a model of size 901...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 901:
+
+Example-wise F1         66.65
+Example-wise Jaccard    57.5
+Example-wise Precision  69.73
+Example-wise Recall     70.15
+Hamming Accuracy        80.02
+Hamming Loss            19.98
+Macro F1                67.16
+Macro Jaccard           51.33
+Macro Precision         68.53
+Macro Recall            67.35
+Micro F1                68.71
+Micro Jaccard           52.33
+Micro Precision         68.62
+Micro Recall            68.8
+Subset 0/1 Loss         70.92
+Subset Accuracy         29.08
+
+INFO Predicting for 196 test examples using a model of size 951...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 951:
+
+Example-wise F1         67.35
+Example-wise Jaccard    58.31
+Example-wise Precision  70.49
+Example-wise Recall     70.92
+Hamming Accuracy        80.61
+Hamming Loss            19.39
+Macro F1                68.11
+Macro Jaccard           52.29
+Macro Precision         70.03
+Macro Recall            67.81
+Micro F1                69.52
+Micro Jaccard           53.28
+Micro Precision         69.71
+Micro Recall            69.33
+Subset 0/1 Loss         69.39
+Subset Accuracy         30.61
+
+INFO Predicting for 196 test examples using a model of size 1000...
+INFO Successfully predicted in 1 millisecond
+INFO Overall evaluation result on test data using a model of size 1000:
+
+Example-wise F1         67.76
+Example-wise Jaccard    58.9
+Example-wise Precision  70.58
+Example-wise Recall     71.43
+Hamming Accuracy        80.87
+Hamming Loss            19.13
+Macro F1                68.58
+Macro Jaccard           52.78
+Macro Precision         70.49
+Macro Recall            68.3
+Micro F1                69.96
+Micro Jaccard           53.8
+Micro Precision         70.05
+Micro Recall            69.87
+Subset 0/1 Loss         68.37
+Subset Accuracy         31.63
+
+INFO Successfully finished after 721 milliseconds
