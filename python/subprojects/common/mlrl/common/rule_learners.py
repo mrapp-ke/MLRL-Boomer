@@ -6,7 +6,6 @@ Provides base classes for implementing single- or multi-label rule learning algo
 import logging as log
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Optional
 
 import numpy as np
 from mlrl.common.arrays import enforce_dense, enforce_2d
@@ -23,6 +22,7 @@ from mlrl.common.format import format_enum_values
 from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
+from typing import Optional
 
 KWARG_MIN_RULES = 'min_rules'
 
@@ -229,8 +229,9 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         Allows to obtain probability estimates from a `RuleLearner` incrementally.
         """
 
-        def __init__(self, feature_matrix: RowWiseFeatureMatrix, model: RuleModel, max_rules, predictor):
-            super().__init__(feature_matrix, model, max_rules, predictor)
+        def __init__(self, feature_matrix: RowWiseFeatureMatrix, model: RuleModel, min_rules: int, max_rules: int,
+                     predictor):
+            super().__init__(feature_matrix, model, min_rules, max_rules, predictor)
 
         def apply_next(self, step_size: int):
             return create_sklearn_compatible_probabilities(super().apply_next(step_size))
