@@ -108,9 +108,9 @@ namespace boosting {
                     }
 
                     DensePredictionMatrix<float64>& applyNext(uint32 stepSize) override {
+                        typename Model::const_iterator next = current_ + std::min(stepSize, this->getNumNext());
                         ProbabilityPredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix_, predictionMatrix_,
                                                                                      *probabilityTransformationPtr_);
-                        typename Model::const_iterator next = current_ + std::min(stepSize, this->getNumNext());
                         PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix_,
                                                                                       current_, next, numThreads_);
                         current_ = next;
