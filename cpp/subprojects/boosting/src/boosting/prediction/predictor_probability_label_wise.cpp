@@ -75,7 +75,7 @@ namespace boosting {
              * @see `IPredictor::createIncrementalPredictor`
              */
             std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<float64>>> createIncrementalPredictor(
-              uint32 maxRules) const override {
+              uint32 minRules, uint32 maxRules) const override {
                 throw std::runtime_error(
                   "The rule learner does not support to predict probability estimates incrementally");
             }
