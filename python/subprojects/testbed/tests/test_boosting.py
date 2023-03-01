@@ -416,8 +416,8 @@ class BoostingIntegrationTests(CommonIntegrationTests):
 
     def test_predictor_binary_gfm_sparse(self):
         """
-        Tests the BOOMER algorithm when predicting binary labels that are obtained via the general F-measure maximizer
-        (GFM).
+        Tests the BOOMER algorithm when predicting sparse binary labels that are obtained via the general F-measure
+        maximizer (GFM).
         """
         builder = BoostingCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_GFM) \
