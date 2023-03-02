@@ -54,17 +54,9 @@ namespace boosting {
                                 ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                                   .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                                      predictionIndex);
-                                CContiguousView<uint8>::value_iterator predictionBegin =
-                                  predictionMatrix_.row_values_begin(predictionIndex);
-
-                                if (binaryTransformation_.shouldInitPredictionMatrix()) {
-                                    uint32 numLabels = predictionMatrix_.getNumCols();
-                                    setArrayToZeros(predictionBegin, numLabels);
-                                }
-
                                 binaryTransformation_.apply(realMatrix_.row_values_cbegin(predictionIndex),
                                                             realMatrix_.row_values_cend(predictionIndex),
-                                                            predictionBegin,
+                                                            predictionMatrix_.row_values_begin(predictionIndex),
                                                             predictionMatrix_.row_values_end(predictionIndex));
                             }
                     };
