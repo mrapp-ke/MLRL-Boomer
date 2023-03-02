@@ -1,5 +1,6 @@
 #include "boosting/prediction/transformation_binary_gfm.hpp"
 
+#include "common/data/arrays.hpp"
 #include "common/data/matrix_sparse_set.hpp"
 #include "common/data/vector_sparse_array.hpp"
 #include "joint_probabilities.hpp"
@@ -87,7 +88,8 @@ namespace boosting {
     }
 
     static inline void storePrediction(const SparseArrayVector<float64>& tmpVector,
-                                       CContiguousView<uint8>::value_iterator predictionIterator) {
+                                       CContiguousView<uint8>::value_iterator predictionIterator, uint32 numLabels) {
+        setArrayToZeros(predictionIterator, numLabels);
         uint32 numRelevantLabels = tmpVector.getNumElements();
         SparseArrayVector<float64>::const_iterator iterator = tmpVector.cbegin();
 
@@ -97,7 +99,8 @@ namespace boosting {
         }
     }
 
-    static inline void storePrediction(SparseArrayVector<float64>& tmpVector, BinaryLilMatrix::row predictionRow) {
+    static inline void storePrediction(SparseArrayVector<float64>& tmpVector, BinaryLilMatrix::row predictionRow,
+                                       uint32 numLabels) {
         uint32 numRelevantLabels = tmpVector.getNumElements();
 
         if (numRelevantLabels > 0) {
@@ -145,7 +148,7 @@ namespace boosting {
             }
         }
 
-        storePrediction(*bestVectorPtr, prediction);
+        storePrediction(*bestVectorPtr, prediction, numLabels);
     }
 
     GfmBinaryTransformation::GfmBinaryTransformation(const LabelVectorSet& labelVectorSet,
@@ -168,10 +171,6 @@ namespace boosting {
         uint32 numLabels = realEnd - realBegin;
         predictGfm<BinaryLilMatrix::row>(realBegin, predictionRow, numLabels, *probabilityFunctionPtr_, labelVectorSet_,
                                          maxLabelCardinality_);
-    }
-
-    bool GfmBinaryTransformation::shouldInitPredictionMatrix() const {
-        return true;
     }
 
 }
