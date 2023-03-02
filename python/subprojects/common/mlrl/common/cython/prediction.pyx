@@ -79,21 +79,19 @@ cdef class BinaryPredictor:
         """
         return self.predictor_ptr.get().canPredictIncrementally()
 
-    def create_incremental_predictor(self, uint32 min_rules, uint32 max_rules) -> IncrementalBinaryPredictor:
+    def create_incremental_predictor(self, uint32 max_rules) -> IncrementalBinaryPredictor:
         """
         Creates and returns a predictor that allows to predict binary labels incrementally. If incremental prediction is
         not supported, a `RuntimeError` is thrown.
 
-        :param min_rules:   The minimum number of rules to be used for prediction. Must be at least 1
-        :param max_rules:   The maximum number of rules to be used for prediction. Must be greater than `min_rules` or
-                            0, if the number of rules should not be restricted
+        :param max_rules:   The maximum number of rules to be used for prediction. Must be at least 1 or 0, if the
+                            number of rules should not be restricted
         :return:            A predictor that allows to predict binary labels incrementally
         """
-        assert_greater_or_equal('min_rules', min_rules, 1)
         if max_rules != 0:
-            assert_greater('max_rules', max_rules, min_rules)
+            assert_greater_or_equal('max_rules', max_rules, 1)
         cdef IncrementalBinaryPredictor predictor = IncrementalBinaryPredictor.__new__(IncrementalBinaryPredictor)
-        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(min_rules, max_rules))
+        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(max_rules))
         return predictor
 
 
@@ -101,6 +99,14 @@ cdef class IncrementalSparseBinaryPredictor:
     """
     Allows to predict sparse binary labels for given query examples incrementally.
     """
+
+    def has_next(self) -> bool:
+        """
+        Returns whether there are any remaining ensemble members that have not been used yet or not.
+
+        :return: True, if there are any remaining ensemble members, False otherwise
+        """
+        return self.predictor_ptr.get().hasNext()
 
     def get_num_next(self) -> int:
         """
@@ -164,21 +170,19 @@ cdef class SparseBinaryPredictor:
         """
         return self.predictor_ptr.get().canPredictIncrementally()
 
-    def create_incremental_predictor(self, uint32 min_rules, uint32 max_rules) -> IncrementalSparseBinaryPredictor:
+    def create_incremental_predictor(self, uint32 max_rules) -> IncrementalSparseBinaryPredictor:
         """
         Creates and returns a predictor that allows to predict sparse binary labels incrementally. If incremental
         prediction is not supported, a `RuntimeError` is thrown.
 
-        :param min_rules:   The minimum number of rules to be used for prediction. Must be at least 1
-        :param max_rules:   The maximum number of rules to be used for prediction. Must be greater than `min_rules` or
-                            0, if the number of rules should not be restricted
+        :param max_rules:   The maximum number of rules to be used for prediction. Must be at least 1 or 0, if the
+                            number of rules should not be restricted
         :return:            A predictor that allows to predict sparse binary labels incrementally
         """
-        assert_greater_or_equal('min_rules', min_rules, 1)
         if max_rules != 0:
-            assert_greater('max_rules', max_rules, min_rules)
+            assert_greater_or_equal('max_rules', max_rules, 1)
         cdef IncrementalSparseBinaryPredictor predictor = IncrementalSparseBinaryPredictor.__new__(IncrementalSparseBinaryPredictor)
-        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(min_rules, max_rules))
+        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(max_rules))
         return predictor
 
 
@@ -186,6 +190,14 @@ cdef class IncrementalScorePredictor:
     """
     Allows to predict regression scores for given query examples incrementally.
     """
+
+    def has_next(self) -> bool:
+        """
+        Returns whether there are any remaining ensemble members that have not been used yet or not.
+
+        :return: True, if there are any remaining ensemble members, False otherwise
+        """
+        return self.predictor_ptr.get().hasNext()
 
     def get_num_next(self) -> int:
         """
@@ -240,21 +252,19 @@ cdef class ScorePredictor:
         """
         return self.predictor_ptr.get().canPredictIncrementally()
 
-    def create_incremental_predictor(self, uint32 min_rules, uint32 max_rules) -> IncrementalScorePredictor:
+    def create_incremental_predictor(self, uint32 max_rules) -> IncrementalScorePredictor:
         """
         Creates and returns a predictor that allows to predict regression scores incrementally. If incremental
         prediction is not supported, a `RuntimeError` is thrown.
 
-        :param min_rules:   The minimum number of rules to be used for prediction. Must be at least 1
-        :param max_rules:   The maximum number of rules to be used for prediction. Must be greater than `min_rules` or
-                            0, if the number of rules should not be restricted
+        :param max_rules:   The maximum number of rules to be used for prediction. Must be at least 1 or 0, if the
+                            number of rules should not be restricted
         :return:            A predictor that allows to predict regression scores incrementally
         """
-        assert_greater_or_equal('min_rules', min_rules, 1)
         if max_rules != 0:
-            assert_greater('max_rules', max_rules, min_rules)
+            assert_greater_or_equal('max_rules', max_rules, 1)
         cdef IncrementalScorePredictor predictor = IncrementalScorePredictor.__new__(IncrementalScorePredictor)
-        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(min_rules, max_rules))
+        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(max_rules))
         return predictor
 
 
@@ -262,6 +272,14 @@ cdef class IncrementalProbabilityPredictor:
     """
     Allows to predict probability estimates for given query examples incrementally.
     """
+
+    def has_next(self) -> bool:
+        """
+        Returns whether there are any remaining ensemble members that have not been used yet or not.
+
+        :return: True, if there are any remaining ensemble members, False otherwise
+        """
+        return self.predictor_ptr.get().hasNext()
 
     def get_num_next(self) -> int:
         """
@@ -317,19 +335,17 @@ cdef class ProbabilityPredictor:
         """
         return self.predictor_ptr.get().canPredictIncrementally()
 
-    def create_incremental_predictor(self, uint32 min_rules, uint32 max_rules) -> IncrementalProbabilityPredictor:
+    def create_incremental_predictor(self, uint32 max_rules) -> IncrementalProbabilityPredictor:
         """
         Creates and returns a predictor that allows to predict probability estimates incrementally. If incremental
         prediction is not supported, a `RuntimeError` is thrown.
 
-        :param min_rules:   The minimum number of rules to be used for prediction. Must be at least 1
-        :param max_rules:   The maximum number of rules to be used for prediction. Must be greater than `min_rules` or
-                            0, if the number of rules should not be restricted
+        :param max_rules:   The maximum number of rules to be used for prediction. Must be at least 1 or 0, if the
+                            number of rules should not be restricted
         :return:            A predictor that allows to predict probability estimates incrementally
         """
-        assert_greater_or_equal('min_rules', min_rules, 1)
         if max_rules != 0:
-            assert_greater('max_rules', max_rules, min_rules)
+            assert_greater_or_equal('max_rules', max_rules, 1)
         cdef IncrementalProbabilityPredictor predictor = IncrementalProbabilityPredictor.__new__(IncrementalProbabilityPredictor)
-        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(min_rules, max_rules))
+        predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(max_rules))
         return predictor

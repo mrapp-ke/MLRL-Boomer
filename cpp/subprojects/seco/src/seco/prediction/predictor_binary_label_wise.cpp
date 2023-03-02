@@ -5,7 +5,7 @@
 #include "common/iterator/non_zero_index_forward_iterator.hpp"
 #include "common/model/head_complete.hpp"
 #include "common/model/head_partial.hpp"
-#include "omp.h"
+#include "common/prediction/predictor_common.hpp"
 
 #include <stdexcept>
 
@@ -53,75 +53,54 @@ namespace seco {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-      uint32 numThreads, uint32 maxRules) {
-        uint32 numExamples = featureMatrix.getNumRows();
-        std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, !model.containsDefaultRule());
-        const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
-        CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
-        const RuleList* modelPtr = &model;
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   RuleList::const_iterator rulesBegin,
+                                                   RuleList::const_iterator rulesEnd,
+                                                   CContiguousView<uint8>& predictionMatrix, uint32 exampleIndex,
+                                                   uint32 predictionIndex) {
+        uint32 numLabels = predictionMatrix.getNumCols();
+        BitVector mask(numLabels, true);
 
-#pragma omp parallel for firstprivate(numExamples) firstprivate(numLabels) firstprivate(modelPtr) \
-  firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(maxRules) schedule(dynamic) \
-    num_threads(numThreads)
-        for (int64 i = 0; i < numExamples; i++) {
-            BitVector mask(numLabels, true);
+        for (; rulesBegin != rulesEnd; rulesBegin++) {
+            const RuleList::Rule& rule = *rulesBegin;
+            const IBody& body = rule.getBody();
 
-            for (auto it = modelPtr->used_cbegin(maxRules); it != modelPtr->used_cend(maxRules); it++) {
-                const RuleList::Rule& rule = *it;
-                const IBody& body = rule.getBody();
-
-                if (body.covers(featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i))) {
-                    const IHead& head = rule.getHead();
-                    applyHead(head, predictionMatrixRawPtr->row_values_begin(i), mask);
-                }
+            if (body.covers(featureMatrix.row_values_cbegin(exampleIndex),
+                            featureMatrix.row_values_cend(exampleIndex))) {
+                const IHead& head = rule.getHead();
+                applyHead(head, predictionMatrix.row_values_begin(predictionIndex), mask);
             }
         }
-
-        return predictionMatrixPtr;
     }
 
-    static inline std::unique_ptr<DensePredictionMatrix<uint8>> predictInternally(
-      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads,
-      uint32 maxRules) {
-        uint32 numExamples = featureMatrix.getNumRows();
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   RuleList::const_iterator rulesBegin,
+                                                   RuleList::const_iterator rulesEnd,
+                                                   CContiguousView<uint8>& predictionMatrix, uint32 exampleIndex,
+                                                   uint32 predictionIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
-        std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-          std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels, !model.containsDefaultRule());
-        const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
-        CContiguousView<uint8>* predictionMatrixRawPtr = predictionMatrixPtr.get();
-        const RuleList* modelPtr = &model;
+        uint32 numLabels = predictionMatrix.getNumCols();
+        BitVector mask(numLabels, true);
+        float32* tmpArray1 = new float32[numFeatures];
+        uint32* tmpArray2 = new uint32[numFeatures] {};
+        uint32 n = 1;
 
-#pragma omp parallel for firstprivate(numExamples) firstprivate(numFeatures) firstprivate(numLabels) \
-  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixRawPtr) firstprivate(maxRules) \
-    schedule(dynamic) num_threads(numThreads)
-        for (int64 i = 0; i < numExamples; i++) {
-            BitVector mask(numLabels, true);
-            float32* tmpArray1 = new float32[numFeatures];
-            uint32* tmpArray2 = new uint32[numFeatures] {};
-            uint32 n = 1;
+        for (; rulesBegin != rulesEnd; rulesBegin++) {
+            const RuleList::Rule& rule = *rulesBegin;
+            const IBody& body = rule.getBody();
 
-            for (auto it = modelPtr->used_cbegin(maxRules); it != modelPtr->used_cend(maxRules); it++) {
-                const RuleList::Rule& rule = *it;
-                const IBody& body = rule.getBody();
-
-                if (body.covers(featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
-                                featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                                &tmpArray1[0], &tmpArray2[0], n)) {
-                    const IHead& head = rule.getHead();
-                    applyHead(head, predictionMatrixRawPtr->row_values_begin(i), mask);
-                }
-
-                n++;
+            if (body.covers(featureMatrix.row_indices_cbegin(exampleIndex),
+                            featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
+                            featureMatrix.row_values_cend(exampleIndex), &tmpArray1[0], &tmpArray2[0], n)) {
+                const IHead& head = rule.getHead();
+                applyHead(head, predictionMatrix.row_values_begin(predictionIndex), mask);
             }
 
-            delete[] tmpArray1;
-            delete[] tmpArray2;
+            n++;
         }
 
-        return predictionMatrixPtr;
+        delete[] tmpArray1;
+        delete[] tmpArray2;
     }
 
     /**
@@ -137,6 +116,26 @@ namespace seco {
     template<typename FeatureMatrix, typename Model>
     class LabelWiseBinaryPredictor final : public IBinaryPredictor {
         private:
+
+            class PredictionDelegate final
+                : public PredictionDispatcher<uint8, FeatureMatrix, Model>::IPredictionDelegate {
+                private:
+
+                    CContiguousView<uint8>& predictionMatrix_;
+
+                public:
+
+                    PredictionDelegate(CContiguousView<uint8>& predictionMatrix)
+                        : predictionMatrix_(predictionMatrix) {}
+
+                    void predictForExample(const FeatureMatrix& featureMatrix,
+                                           typename Model::const_iterator rulesBegin,
+                                           typename Model::const_iterator rulesEnd, uint32 threadIndex,
+                                           uint32 exampleIndex, uint32 predictionIndex) const override {
+                        predictForExampleInternally(featureMatrix, rulesBegin, rulesEnd, predictionMatrix_,
+                                                    exampleIndex, predictionIndex);
+                    }
+            };
 
             const FeatureMatrix& featureMatrix_;
 
@@ -160,8 +159,18 @@ namespace seco {
                                      uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
+            /**
+             * @see `IPredictor::predict`
+             */
             std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
-                return predictInternally(featureMatrix_, model_, numLabels_, numThreads_, maxRules);
+                uint32 numExamples = featureMatrix_.getNumRows();
+                std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
+                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_,
+                                                                 !model_.containsDefaultRule());
+                PredictionDelegate delegate(*predictionMatrixPtr);
+                PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
+                  delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
+                return predictionMatrixPtr;
             }
 
             /**
@@ -175,7 +184,7 @@ namespace seco {
              * @see `IPredictor::createIncrementalPredictor`
              */
             std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<uint8>>> createIncrementalPredictor(
-              uint32 minRules, uint32 maxRules) const override {
+              uint32 maxRules) const override {
                 throw std::runtime_error("The rule learner does not support to predict binary labels incrementally");
             }
     };
@@ -216,14 +225,13 @@ namespace seco {
     };
 
     template<typename ScoreIterator, typename IndexIterator>
-    static inline uint32 applyHead(ScoreIterator scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
-                                   BinaryLilMatrix::row row, uint32 numLabels) {
+    static inline void applyHead(ScoreIterator scoresBegin, ScoreIterator scoresEnd, IndexIterator indexIterator,
+                                 BinaryLilMatrix::row predictionRow, uint32 numLabels) {
         if (scoresBegin != scoresEnd) {
-            uint32 numElements = row.size();
-
-            if (numElements > 0) {
-                BinaryLilMatrix::iterator end = row.end();
-                BinaryLilMatrix::iterator start = std::lower_bound(row.begin(), end, indexIterator[*scoresBegin]);
+            if (predictionRow.size() > 0) {
+                BinaryLilMatrix::iterator end = predictionRow.end();
+                BinaryLilMatrix::iterator start =
+                  std::lower_bound(predictionRow.begin(), end, indexIterator[*scoresBegin]);
                 uint32 bufferSize = end - start;
                 uint32* buffer = new uint32[bufferSize];
 
@@ -255,14 +263,14 @@ namespace seco {
                     uint32 index2 = scoresBegin != scoresEnd ? indexIterator[*scoresBegin] : numLabels;
 
                     if (index1 < index2) {
-                        row.emplace_back(index1);
+                        predictionRow.emplace_back(index1);
                         i++;
                     } else if (index1 == index2) {
-                        row.emplace_back(index1);
+                        predictionRow.emplace_back(index1);
                         i++;
                         scoresBegin++;
                     } else {
-                        row.emplace_back(index2);
+                        predictionRow.emplace_back(index2);
                         scoresBegin++;
                     }
                 }
@@ -271,102 +279,68 @@ namespace seco {
             }
 
             for (; scoresBegin != scoresEnd; scoresBegin++) {
-                row.emplace_back(indexIterator[*scoresBegin]);
+                predictionRow.emplace_back(indexIterator[*scoresBegin]);
             }
-
-            return row.size() - numElements;
         }
-
-        return 0;
     }
 
-    static inline uint32 applyHead(const IHead& head, BinaryLilMatrix::row row, uint32 numLabels) {
-        uint32 numNonZeroElements;
-        auto completeHeadVisitor = [&](const CompleteHead& head) mutable {
-            numNonZeroElements =
-              applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
-                        make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0),
-                        row, numLabels);
+    static inline void applyHead(const IHead& head, BinaryLilMatrix::row predictionRow, uint32 numLabels) {
+        auto completeHeadVisitor = [&](const CompleteHead& head) {
+            applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
+                      make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0),
+                      predictionRow, numLabels);
         };
-        auto partialHeadVisitor = [&](const PartialHead& head) mutable {
-            numNonZeroElements =
-              applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
-                        make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()),
-                        head.indices_cbegin(), row, numLabels);
+        auto partialHeadVisitor = [&](const PartialHead& head) {
+            applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
+                      make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()),
+                      head.indices_cbegin(), predictionRow, numLabels);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
-        return numNonZeroElements;
     }
 
-    static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-      const CContiguousConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels,
-      uint32 numThreads, uint32 maxRules) {
-        uint32 numExamples = featureMatrix.getNumRows();
-        BinaryLilMatrix lilMatrix(numExamples);
-        const CContiguousConstView<const float32>* featureMatrixPtr = &featureMatrix;
-        BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
-        const RuleList* modelPtr = &model;
-        uint32 numNonZeroElements = 0;
+    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+                                                   RuleList::const_iterator rulesBegin,
+                                                   RuleList::const_iterator rulesEnd,
+                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
+                                                   uint32 exampleIndex) {
+        for (; rulesBegin != rulesEnd; rulesBegin++) {
+            const RuleList::Rule& rule = *rulesBegin;
+            const IBody& body = rule.getBody();
 
-#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numLabels) \
-  firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) firstprivate(maxRules) \
-    schedule(dynamic) num_threads(numThreads)
-        for (int64 i = 0; i < numExamples; i++) {
-            BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
-
-            for (auto it = modelPtr->used_cbegin(maxRules); it != modelPtr->used_cend(maxRules); it++) {
-                const RuleList::Rule& rule = *it;
-                const IBody& body = rule.getBody();
-
-                if (body.covers(featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i))) {
-                    const IHead& head = rule.getHead();
-                    numNonZeroElements += applyHead(head, row, numLabels);
-                }
+            if (body.covers(featureMatrix.row_values_cbegin(exampleIndex),
+                            featureMatrix.row_values_cend(exampleIndex))) {
+                const IHead& head = rule.getHead();
+                applyHead(head, predictionRow, numLabels);
             }
         }
-
-        return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
     }
 
-    static inline std::unique_ptr<BinarySparsePredictionMatrix> predictSparseInternally(
-      const CsrConstView<const float32>& featureMatrix, const RuleList& model, uint32 numLabels, uint32 numThreads,
-      uint32 maxRules) {
-        uint32 numExamples = featureMatrix.getNumRows();
+    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+                                                   RuleList::const_iterator rulesBegin,
+                                                   RuleList::const_iterator rulesEnd,
+                                                   BinaryLilMatrix::row predictionRow, uint32 numLabels,
+                                                   uint32 exampleIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
-        BinaryLilMatrix lilMatrix(numExamples);
-        const CsrConstView<const float32>* featureMatrixPtr = &featureMatrix;
-        BinaryLilMatrix* predictionMatrixPtr = &lilMatrix;
-        const RuleList* modelPtr = &model;
-        uint32 numNonZeroElements = 0;
+        float32* tmpArray1 = new float32[numFeatures];
+        uint32* tmpArray2 = new uint32[numFeatures] {};
+        uint32 n = 1;
 
-#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(numFeatures) \
-  firstprivate(numLabels) firstprivate(modelPtr) firstprivate(featureMatrixPtr) firstprivate(predictionMatrixPtr) \
-    firstprivate(maxRules) schedule(dynamic) num_threads(numThreads)
-        for (int64 i = 0; i < numExamples; i++) {
-            BinaryLilMatrix::row row = (*predictionMatrixPtr)[i];
-            float32* tmpArray1 = new float32[numFeatures];
-            uint32* tmpArray2 = new uint32[numFeatures] {};
-            uint32 n = 1;
+        for (; rulesBegin != rulesEnd; rulesBegin++) {
+            const RuleList::Rule& rule = *rulesBegin;
+            const IBody& body = rule.getBody();
 
-            for (auto it = modelPtr->used_cbegin(maxRules); it != modelPtr->used_cend(maxRules); it++) {
-                const RuleList::Rule& rule = *it;
-                const IBody& body = rule.getBody();
-
-                if (body.covers(featureMatrixPtr->row_indices_cbegin(i), featureMatrixPtr->row_indices_cend(i),
-                                featureMatrixPtr->row_values_cbegin(i), featureMatrixPtr->row_values_cend(i),
-                                &tmpArray1[0], &tmpArray2[0], n)) {
-                    const IHead& head = rule.getHead();
-                    numNonZeroElements += applyHead(head, row, numLabels);
-                }
-
-                n++;
+            if (body.covers(featureMatrix.row_indices_cbegin(exampleIndex),
+                            featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
+                            featureMatrix.row_values_cend(exampleIndex), &tmpArray1[0], &tmpArray2[0], n)) {
+                const IHead& head = rule.getHead();
+                applyHead(head, predictionRow, numLabels);
             }
 
-            delete[] tmpArray1;
-            delete[] tmpArray2;
+            n++;
         }
 
-        return createBinarySparsePredictionMatrix(lilMatrix, numLabels, numNonZeroElements);
+        delete[] tmpArray1;
+        delete[] tmpArray2;
     }
 
     /**
@@ -383,6 +357,31 @@ namespace seco {
     template<typename FeatureMatrix, typename Model>
     class LabelWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
         private:
+
+            typedef BinarySparsePredictionDispatcher<FeatureMatrix, Model> Dispatcher;
+
+            class Delegate final : public Dispatcher::IPredictionDelegate {
+                private:
+
+                    BinaryLilMatrix& predictionMatrix_;
+
+                    uint32 numLabels_;
+
+                public:
+
+                    Delegate(BinaryLilMatrix& predictionMatrix, uint32 numLabels)
+                        : predictionMatrix_(predictionMatrix), numLabels_(numLabels) {}
+
+                    uint32 predictForExample(const FeatureMatrix& featureMatrix,
+                                             typename Model::const_iterator rulesBegin,
+                                             typename Model::const_iterator rulesEnd, uint32 threadIndex,
+                                             uint32 exampleIndex, uint32 predictionIndex) const override {
+                        BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
+                        predictForExampleInternally(featureMatrix, rulesBegin, rulesEnd, predictionRow, numLabels_,
+                                                    exampleIndex);
+                        return (uint32) predictionRow.size();
+                    }
+            };
 
             const FeatureMatrix& featureMatrix_;
 
@@ -406,8 +405,16 @@ namespace seco {
                                            uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
+            /**
+             * @see `IPredictor::predict`
+             */
             std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
-                return predictSparseInternally(featureMatrix_, model_, numLabels_, numThreads_, maxRules);
+                uint32 numExamples = featureMatrix_.getNumRows();
+                BinaryLilMatrix predictionMatrix(numExamples);
+                Delegate delegate(predictionMatrix, numLabels_);
+                uint32 numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_.used_cbegin(maxRules),
+                                                                 model_.used_cend(maxRules), numThreads_);
+                return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
             }
 
             /**
@@ -421,7 +428,7 @@ namespace seco {
              * @see `IPredictor::createIncrementalPredictor`
              */
             std::unique_ptr<IIncrementalPredictor<BinarySparsePredictionMatrix>> createIncrementalPredictor(
-              uint32 minRules, uint32 maxRules) const override {
+              uint32 maxRules) const override {
                 throw std::runtime_error(
                   "The rule learner does not support to predict sparse binary labels incrementally");
             }
