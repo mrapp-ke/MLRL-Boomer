@@ -26,6 +26,95 @@ namespace boosting {
     class BinaryPredictor final : public IBinaryPredictor {
         private:
 
+            class IncrementalPredictor final : public IIncrementalPredictor<DensePredictionMatrix<uint8>> {
+                private:
+
+                    class IncrementalPredictionDelegate final
+                        : public PredictionDispatcher<uint8, FeatureMatrix, Model>::IPredictionDelegate {
+                        private:
+
+                            CContiguousView<float64>& realMatrix_;
+
+                            CContiguousView<uint8>& predictionMatrix_;
+
+                            const IBinaryTransformation& binaryTransformation_;
+
+                        public:
+
+                            IncrementalPredictionDelegate(CContiguousView<float64>& realMatrix,
+                                                          CContiguousView<uint8>& predictionMatrix,
+                                                          const IBinaryTransformation& binaryTransformation)
+                                : realMatrix_(realMatrix), predictionMatrix_(predictionMatrix),
+                                  binaryTransformation_(binaryTransformation) {}
+
+                            void predictForExample(const FeatureMatrix& featureMatrix,
+                                                   typename Model::const_iterator rulesBegin,
+                                                   typename Model::const_iterator rulesEnd, uint32 threadIndex,
+                                                   uint32 exampleIndex, uint32 predictionIndex) const override {
+                                ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
+                                  .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
+                                                     predictionIndex);
+                                CContiguousView<uint8>::value_iterator predictionBegin =
+                                  predictionMatrix_.row_values_begin(predictionIndex);
+
+                                if (binaryTransformation_.shouldInitPredictionMatrix()) {
+                                    uint32 numLabels = predictionMatrix_.getNumCols();
+                                    setArrayToZeros(predictionBegin, numLabels);
+                                }
+
+                                binaryTransformation_.apply(realMatrix_.row_values_cbegin(predictionIndex),
+                                                            realMatrix_.row_values_cend(predictionIndex),
+                                                            predictionBegin,
+                                                            predictionMatrix_.row_values_end(predictionIndex));
+                            }
+                    };
+
+                    const FeatureMatrix& featureMatrix_;
+
+                    uint32 numThreads_;
+
+                    std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
+
+                    DensePredictionMatrix<float64> realMatrix_;
+
+                    DensePredictionMatrix<uint8> predictionMatrix_;
+
+                    typename Model::const_iterator current_;
+
+                    typename Model::const_iterator end_;
+
+                public:
+
+                    IncrementalPredictor(const BinaryPredictor& predictor, uint32 minRules, uint32 maxRules,
+                                         std::shared_ptr<IBinaryTransformation> binaryTransformationPtr)
+                        : featureMatrix_(predictor.featureMatrix_), numThreads_(predictor.numThreads_),
+                          binaryTransformationPtr_(binaryTransformationPtr),
+                          realMatrix_(DensePredictionMatrix<float64>(featureMatrix_.getNumRows(), predictor.numLabels_,
+                                                                     binaryTransformationPtr_ != nullptr)),
+                          predictionMatrix_(DensePredictionMatrix<uint8>(
+                            featureMatrix_.getNumRows(), predictor.numLabels_, binaryTransformationPtr_ == nullptr)),
+                          current_(predictor.model_.used_cbegin(maxRules) + (minRules - 1)),
+                          end_(predictor.model_.used_cend(maxRules)) {}
+
+                    uint32 getNumNext() const override {
+                        return (uint32) (end_ - current_);
+                    }
+
+                    DensePredictionMatrix<uint8>& applyNext(uint32 stepSize) override {
+                        typename Model::const_iterator next = current_ + std::min(stepSize, this->getNumNext());
+
+                        if (binaryTransformationPtr_) {
+                            IncrementalPredictionDelegate delegate(realMatrix_, predictionMatrix_,
+                                                                   *binaryTransformationPtr_);
+                            PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(delegate, featureMatrix_,
+                                                                                        current_, next, numThreads_);
+                        }
+
+                        current_ = next;
+                        return predictionMatrix_;
+                    }
+            };
+
             class PredictionDelegate final
                 : public PredictionDispatcher<uint8, FeatureMatrix, Model>::IPredictionDelegate {
                 private:
@@ -68,7 +157,7 @@ namespace boosting {
 
             uint32 numThreads_;
 
-            std::unique_ptr<IBinaryTransformation> binaryTransformationPtr_;
+            std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
         public:
 
@@ -113,7 +202,7 @@ namespace boosting {
              * @see `IPredictor::canPredictIncrementally`
              */
             bool canPredictIncrementally() const override {
-                return false;
+                return true;
             }
 
             /**
@@ -121,7 +210,9 @@ namespace boosting {
              */
             std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<uint8>>> createIncrementalPredictor(
               uint32 minRules, uint32 maxRules) const override {
-                throw std::runtime_error("The rule learner does not support to predict binary labels incrementally");
+                assertGreaterOrEqual<uint32>("minRules", minRules, 1);
+                if (maxRules != 0) assertGreater<uint32>("maxRules", maxRules, minRules);
+                return std::make_unique<IncrementalPredictor>(*this, minRules, maxRules, binaryTransformationPtr_);
             }
     };
 
