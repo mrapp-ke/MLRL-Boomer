@@ -9,8 +9,6 @@
 #include "common/data/matrix_dense.hpp"
 #include "common/prediction/predictor_binary.hpp"
 
-#include <stdexcept>
-
 namespace boosting {
 
     /**
@@ -267,7 +265,7 @@ namespace boosting {
                         if (binaryTransformationPtr_) {
                             IncrementalPredictionDelegate delegate(realMatrix_, predictionMatrix_,
                                                                    *binaryTransformationPtr_);
-                            numNonZeroElements = PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
+                            numNonZeroElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
                               delegate, featureMatrix, rulesBegin, rulesEnd, numThreads);
                         } else {
                             numNonZeroElements = 0;
@@ -334,7 +332,7 @@ namespace boosting {
 
             uint32 numThreads_;
 
-            std::unique_ptr<IBinaryTransformation> binaryTransformationPtr_;
+            std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
         public:
 
@@ -379,7 +377,7 @@ namespace boosting {
              * @see `IPredictor::canPredictIncrementally`
              */
             bool canPredictIncrementally() const override {
-                return false;
+                return true;
             }
 
             /**
@@ -387,8 +385,9 @@ namespace boosting {
              */
             std::unique_ptr<IIncrementalPredictor<BinarySparsePredictionMatrix>> createIncrementalPredictor(
               uint32 minRules, uint32 maxRules) const override {
-                throw std::runtime_error(
-                  "The rule learner does not support to predict sparse binary labels incrementally");
+                assertGreaterOrEqual<uint32>("minRules", minRules, 1);
+                if (maxRules != 0) assertGreater<uint32>("maxRules", maxRules, minRules);
+                return std::make_unique<IncrementalPredictor>(*this, minRules, maxRules, binaryTransformationPtr_);
             }
     };
 

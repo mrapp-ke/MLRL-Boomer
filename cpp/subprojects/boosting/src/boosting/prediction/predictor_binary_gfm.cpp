@@ -3,6 +3,8 @@
 #include "boosting/prediction/predictor_binary_common.hpp"
 #include "boosting/prediction/transformation_binary_gfm.hpp"
 
+#include <stdexcept>
+
 namespace boosting {
 
     static inline std::unique_ptr<IBinaryTransformation> createBinaryTransformation(
