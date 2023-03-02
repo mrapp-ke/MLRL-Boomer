@@ -14,57 +14,6 @@
 namespace boosting {
 
     /**
-     * An implementation of the type `PredictionDispatcher::IPredictionDelegate` that transforms real-valued predictions
-     * into sparse binary predictions.
-     *
-     * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of
-     *                          the query examples.
-     * @tparam Model            The type of the rule-based model that is used to obtain predictions
-     */
-    template<typename FeatureMatrix, typename Model>
-    class BinarySparsePredictionDelegate final
-        : public BinarySparsePredictionDispatcher<FeatureMatrix, Model>::IPredictionDelegate {
-        private:
-
-            CContiguousView<float64>& realMatrix_;
-
-            BinaryLilMatrix& predictionMatrix_;
-
-            const IBinaryTransformation& binaryTransformation_;
-
-        public:
-
-            /**
-             * @param realMatrix            A reference to an object of type `CContiguousView` that stores the
-             *                              real-valued predictions
-             * @param predictionMatrix      A reference to an object of type `BinaryLilMatrix` that stores the binary
-             *                              predictions
-             * @param binaryTransformation  A reference to an object of type `IBinaryTransformation` that should be used
-             *                              to transform real-valued predictions into binary predictions
-             */
-            BinarySparsePredictionDelegate(CContiguousView<float64>& realMatrix, BinaryLilMatrix& predictionMatrix,
-                                           const IBinaryTransformation& binaryTransformation)
-                : realMatrix_(realMatrix), predictionMatrix_(predictionMatrix),
-                  binaryTransformation_(binaryTransformation) {}
-
-            /**
-             * @see `BinarySparsePredictionDispatcher::IPredictionDelegate::predictForExample`
-             */
-            uint32 predictForExample(const FeatureMatrix& featureMatrix, typename Model::const_iterator rulesBegin,
-                                     typename Model::const_iterator rulesEnd, uint32 threadIndex, uint32 exampleIndex,
-                                     uint32 predictionIndex) const override {
-                uint32 numLabels = realMatrix_.getNumCols();
-                CContiguousView<float64>::value_iterator realIterator = realMatrix_.row_values_begin(threadIndex);
-                setArrayToZeros(realIterator, numLabels);
-                ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
-                  .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex, threadIndex);
-                BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
-                binaryTransformation_.apply(realIterator, realMatrix_.row_values_end(threadIndex), predictionRow);
-                return (uint32) predictionRow.size();
-            }
-    };
-
-    /**
      * An implementation of the type `IBinaryPredictor` that allows to predict binary labels for given query examples by
      * summing up the scores that are predicted by individual rules in a rule-based model and transforming the
      * aggregated scores into binary predictions in {0, 1} according to an `IBinaryTransformation`.
@@ -189,6 +138,41 @@ namespace boosting {
     class SparseBinaryPredictor final : public ISparseBinaryPredictor {
         private:
 
+            class PredictionDelegate final
+                : public BinarySparsePredictionDispatcher<FeatureMatrix, Model>::IPredictionDelegate {
+                private:
+
+                    CContiguousView<float64>& realMatrix_;
+
+                    BinaryLilMatrix& predictionMatrix_;
+
+                    const IBinaryTransformation& binaryTransformation_;
+
+                public:
+
+                    PredictionDelegate(CContiguousView<float64>& realMatrix, BinaryLilMatrix& predictionMatrix,
+                                       const IBinaryTransformation& binaryTransformation)
+                        : realMatrix_(realMatrix), predictionMatrix_(predictionMatrix),
+                          binaryTransformation_(binaryTransformation) {}
+
+                    uint32 predictForExample(const FeatureMatrix& featureMatrix,
+                                             typename Model::const_iterator rulesBegin,
+                                             typename Model::const_iterator rulesEnd, uint32 threadIndex,
+                                             uint32 exampleIndex, uint32 predictionIndex) const override {
+                        uint32 numLabels = realMatrix_.getNumCols();
+                        CContiguousView<float64>::value_iterator realIterator =
+                          realMatrix_.row_values_begin(threadIndex);
+                        setArrayToZeros(realIterator, numLabels);
+                        ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
+                          .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
+                                             threadIndex);
+                        BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
+                        binaryTransformation_.apply(realIterator, realMatrix_.row_values_end(threadIndex),
+                                                    predictionRow);
+                        return (uint32) predictionRow.size();
+                    }
+            };
+
             const FeatureMatrix& featureMatrix_;
 
             const Model& model_;
@@ -228,8 +212,7 @@ namespace boosting {
 
                 if (binaryTransformationPtr_) {
                     DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
-                    BinarySparsePredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix, predictionMatrix,
-                                                                                  *binaryTransformationPtr_);
+                    PredictionDelegate delegate(scoreMatrix, predictionMatrix, *binaryTransformationPtr_);
                     numNonZeroElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
                       delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 } else {
