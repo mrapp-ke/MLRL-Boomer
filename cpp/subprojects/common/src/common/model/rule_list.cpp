@@ -51,12 +51,27 @@ RuleList::ConstIterator& RuleList::ConstIterator::operator++(int n) {
     return *this;
 }
 
+RuleList::ConstIterator RuleList::ConstIterator::operator+(const uint32 difference) const {
+    ConstIterator iterator(*this);
+    iterator += difference;
+    return iterator;
+}
+
+RuleList::ConstIterator& RuleList::ConstIterator::operator+=(const uint32 difference) {
+    index_ += difference;
+    return *this;
+}
+
 bool RuleList::ConstIterator::operator!=(const ConstIterator& rhs) const {
     return index_ != rhs.index_;
 }
 
 bool RuleList::ConstIterator::operator==(const ConstIterator& rhs) const {
     return index_ == rhs.index_;
+}
+
+RuleList::ConstIterator::difference_type RuleList::ConstIterator::operator-(const ConstIterator& rhs) const {
+    return index_ - rhs.index_;
 }
 
 RuleList::RuleList(bool defaultRuleTakesPrecedence)

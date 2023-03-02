@@ -209,6 +209,22 @@ class RuleList final : public IRuleList {
                 ConstIterator& operator++(int n);
 
                 /**
+                 * Returns an iterator to one of the subsequent elements.
+                 *
+                 * @param difference    The number of elements to increment the iterator by
+                 * @return              A copy of this iterator that refers to the specified element
+                 */
+                ConstIterator operator+(const uint32 difference) const;
+
+                /**
+                 * Returns an iterator to one of the subsequent elements.
+                 *
+                 * @param difference    The number of elements to increment the iterator by
+                 * @return              A reference to an iterator that refers to the specified element
+                 */
+                ConstIterator& operator+=(const uint32 difference);
+
+                /**
                  * Returns whether this iterator and another one refer to the same element.
                  *
                  * @param rhs   A reference to another iterator
@@ -223,6 +239,14 @@ class RuleList final : public IRuleList {
                  * @return      True, if the iterators refer to the same element, false otherwise
                  */
                 bool operator==(const ConstIterator& rhs) const;
+
+                /**
+                 * Returns the difference between this iterator and another one.
+                 *
+                 * @param rhs   A reference to another iterator
+                 * @return      The difference between the iterators
+                 */
+                difference_type operator-(const ConstIterator& rhs) const;
         };
 
         std::unique_ptr<Rule> defaultRulePtr_;
