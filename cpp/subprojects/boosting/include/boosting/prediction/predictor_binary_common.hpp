@@ -15,57 +15,6 @@ namespace boosting {
 
     /**
      * An implementation of the type `PredictionDispatcher::IPredictionDelegate` that transforms real-valued predictions
-     * into binary predictions.
-     *
-     * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of
-     *                          the query examples.
-     * @tparam Model            The type of the rule-based model that is used to obtain predictions
-     */
-    template<typename FeatureMatrix, typename Model>
-    class BinaryPredictionDelegate final
-        : public PredictionDispatcher<uint8, FeatureMatrix, Model>::IPredictionDelegate {
-        private:
-
-            CContiguousView<float64>& realMatrix_;
-
-            CContiguousView<uint8>& predictionMatrix_;
-
-            const IBinaryTransformation& binaryTransformation_;
-
-        public:
-
-            /**
-             * @param realMatrix            A reference to an object of type `CContiguousView` that stores the
-             *                              real-valued predictions
-             * @param predictionMatrix      A reference to an object of type `CContiguousView` that stores the binary
-             *                              predictions
-             * @param binaryTransformation  A reference to an object of type `IBinaryTransformation` that should be used
-             *                              to transform real-valued predictions into binary predictions
-             */
-            BinaryPredictionDelegate(CContiguousView<float64>& realMatrix, CContiguousView<uint8>& predictionMatrix,
-                                     const IBinaryTransformation& binaryTransformation)
-                : realMatrix_(realMatrix), predictionMatrix_(predictionMatrix),
-                  binaryTransformation_(binaryTransformation) {}
-
-            /**
-             * @see `PredictionDispatcher::IPredictionDelegate::predictForExample`
-             */
-            void predictForExample(const FeatureMatrix& featureMatrix, typename Model::const_iterator rulesBegin,
-                                   typename Model::const_iterator rulesEnd, uint32 threadIndex, uint32 exampleIndex,
-                                   uint32 predictionIndex) const override {
-                uint32 numLabels = realMatrix_.getNumCols();
-                CContiguousView<float64>::value_iterator realIterator = realMatrix_.row_values_begin(threadIndex);
-                setArrayToZeros(realIterator, numLabels);
-                ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
-                  .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex, threadIndex);
-                binaryTransformation_.apply(realIterator, realMatrix_.row_values_end(threadIndex),
-                                            predictionMatrix_.row_values_begin(predictionIndex),
-                                            predictionMatrix_.row_values_end(predictionIndex));
-            }
-    };
-
-    /**
-     * An implementation of the type `PredictionDispatcher::IPredictionDelegate` that transforms real-valued predictions
      * into sparse binary predictions.
      *
      * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of
@@ -128,6 +77,40 @@ namespace boosting {
     class BinaryPredictor final : public IBinaryPredictor {
         private:
 
+            class PredictionDelegate final
+                : public PredictionDispatcher<uint8, FeatureMatrix, Model>::IPredictionDelegate {
+                private:
+
+                    CContiguousView<float64>& realMatrix_;
+
+                    CContiguousView<uint8>& predictionMatrix_;
+
+                    const IBinaryTransformation& binaryTransformation_;
+
+                public:
+
+                    PredictionDelegate(CContiguousView<float64>& realMatrix, CContiguousView<uint8>& predictionMatrix,
+                                       const IBinaryTransformation& binaryTransformation)
+                        : realMatrix_(realMatrix), predictionMatrix_(predictionMatrix),
+                          binaryTransformation_(binaryTransformation) {}
+
+                    void predictForExample(const FeatureMatrix& featureMatrix,
+                                           typename Model::const_iterator rulesBegin,
+                                           typename Model::const_iterator rulesEnd, uint32 threadIndex,
+                                           uint32 exampleIndex, uint32 predictionIndex) const override {
+                        uint32 numLabels = realMatrix_.getNumCols();
+                        CContiguousView<float64>::value_iterator realIterator =
+                          realMatrix_.row_values_begin(threadIndex);
+                        setArrayToZeros(realIterator, numLabels);
+                        ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
+                          .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
+                                             threadIndex);
+                        binaryTransformation_.apply(realIterator, realMatrix_.row_values_end(threadIndex),
+                                                    predictionMatrix_.row_values_begin(predictionIndex),
+                                                    predictionMatrix_.row_values_end(predictionIndex));
+                    }
+            };
+
             const FeatureMatrix& featureMatrix_;
 
             const Model& model_;
@@ -169,8 +152,7 @@ namespace boosting {
 
                 if (binaryTransformationPtr_) {
                     DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
-                    BinaryPredictionDelegate<FeatureMatrix, Model> delegate(scoreMatrix, *predictionMatrixPtr,
-                                                                            *binaryTransformationPtr_);
+                    PredictionDelegate delegate(scoreMatrix, *predictionMatrixPtr, *binaryTransformationPtr_);
                     PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
                       delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 }
