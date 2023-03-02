@@ -205,14 +205,13 @@ class AbstractIncrementalPredictor : public IIncrementalPredictor<PredictionMatr
          * @param model         A reference to an object of template type `Model` that should be used for prediction
          * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
          *                      parallel. Must be at least 1
-         * @param minRules      The minimum number of rules to be used for prediction. Must be at least 1
-         * @param maxRules      The maximum number of rules to be used for prediction. Must be greater than `minRules`
-         *                      or 0, if the number of rules should not be restricted
+         * @param maxRules      The maximum number of rules to be used for prediction. Must be at least 1 or 0, if the
+         *                      number of rules should not be restricted
          */
         AbstractIncrementalPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numThreads,
-                                     uint32 minRules, uint32 maxRules)
-            : featureMatrix_(featureMatrix), numThreads_(numThreads),
-              current_(model.used_cbegin(maxRules) + (minRules - 1)), end_(model.used_cend(maxRules)) {}
+                                     uint32 maxRules)
+            : featureMatrix_(featureMatrix), numThreads_(numThreads), current_(model.used_cbegin(maxRules)),
+              end_(model.used_cend(maxRules)) {}
 
         virtual ~AbstractIncrementalPredictor() override {};
 

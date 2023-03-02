@@ -83,10 +83,10 @@ namespace boosting {
 
                 public:
 
-                    IncrementalPredictor(const BinaryPredictor& predictor, uint32 minRules, uint32 maxRules,
+                    IncrementalPredictor(const BinaryPredictor& predictor, uint32 maxRules,
                                          std::shared_ptr<IBinaryTransformation> binaryTransformationPtr)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<uint8>>(
-                          predictor.featureMatrix_, predictor.model_, predictor.numThreads_, minRules, maxRules),
+                          predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           binaryTransformationPtr_(binaryTransformationPtr),
                           realMatrix_(DensePredictionMatrix<float64>(predictor.featureMatrix_.getNumRows(),
                                                                      predictor.numLabels_,
@@ -191,7 +191,7 @@ namespace boosting {
             std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<uint8>>> createIncrementalPredictor(
               uint32 maxRules) const override {
                 if (maxRules != 0) assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
-                return std::make_unique<IncrementalPredictor>(*this, minRules, maxRules, binaryTransformationPtr_);
+                return std::make_unique<IncrementalPredictor>(*this, maxRules, binaryTransformationPtr_);
             }
     };
 
@@ -277,10 +277,10 @@ namespace boosting {
 
                 public:
 
-                    IncrementalPredictor(const SparseBinaryPredictor& predictor, uint32 minRules, uint32 maxRules,
+                    IncrementalPredictor(const SparseBinaryPredictor& predictor, uint32 maxRules,
                                          std::shared_ptr<IBinaryTransformation> binaryTransformationPtr)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, BinarySparsePredictionMatrix>(
-                          predictor.featureMatrix_, predictor.model_, predictor.numThreads_, minRules, maxRules),
+                          predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           binaryTransformationPtr_(binaryTransformationPtr),
                           realMatrix_(DensePredictionMatrix<float64>(predictor.featureMatrix_.getNumRows(),
                                                                      predictor.numLabels_,
@@ -385,7 +385,7 @@ namespace boosting {
             std::unique_ptr<IIncrementalPredictor<BinarySparsePredictionMatrix>> createIncrementalPredictor(
               uint32 maxRules) const override {
                 if (maxRules != 0) assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
-                return std::make_unique<IncrementalPredictor>(*this, minRules, maxRules, binaryTransformationPtr_);
+                return std::make_unique<IncrementalPredictor>(*this, maxRules, binaryTransformationPtr_);
             }
     };
 

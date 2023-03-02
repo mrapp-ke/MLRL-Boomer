@@ -185,9 +185,9 @@ namespace boosting {
 
                 public:
 
-                    IncrementalPredictor(const ScorePredictor& predictor, uint32 minRules, uint32 maxRules)
+                    IncrementalPredictor(const ScorePredictor& predictor, uint32 maxRules)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>>(
-                          predictor.featureMatrix_, predictor.model_, predictor.numThreads_, minRules, maxRules),
+                          predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           predictionMatrix_(DensePredictionMatrix<float64>(predictor.featureMatrix_.getNumRows(),
                                                                            predictor.numLabels_, true)) {}
             };
@@ -240,7 +240,7 @@ namespace boosting {
             std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<float64>>> createIncrementalPredictor(
               uint32 maxRules) const override {
                 if (maxRules != 0) assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
-                return std::make_unique<IncrementalPredictor>(*this, minRules, maxRules);
+                return std::make_unique<IncrementalPredictor>(*this, maxRules);
             }
     };
 
