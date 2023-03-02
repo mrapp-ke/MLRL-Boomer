@@ -50,7 +50,7 @@ class IIncrementalPredictor {
 };
 
 /**
- * Defines an interface for all classes that allow to make prediction for given query examples.
+ * Defines an interface for all classes that allow to obtain predictions for given query examples.
  *
  * @tparam PredictionMatrix The type of the matrix that is used to store the predictions
  */
@@ -82,14 +82,13 @@ class IPredictor {
          * prediction is not supported, a `std::runtime_error` is thrown.
          *
          * @throws std::runtime_exception   The exception that is thrown if incremental prediction is not supported
-         * @param minRules                  The minimum number of rules to be used for prediction. Must be at least 1
-         * @param maxRules                  The maximum number of rules to be used for prediction. Must be greater than
-         *                                  `minRules` or 0, if the number of rules should not be restricted
+         * @param maxRules                  The maximum number of rules to be used for prediction. Must be at least 1 or
+         *                                  0, if the number of rules should not be restricted
          * @return                          An unique pointer to an object of type `IIncrementalPredictor` that may be
          *                                  used to obtain predictions incrementally
          */
         virtual std::unique_ptr<IIncrementalPredictor<PredictionMatrix>> createIncrementalPredictor(
-          uint32 minRules = 0, uint32 maxRules = 0) const = 0;
+          uint32 maxRules = 0) const = 0;
 };
 
 /**
