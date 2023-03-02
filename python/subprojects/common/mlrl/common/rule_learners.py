@@ -220,7 +220,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
             return self.num_total_rules - self.n
 
         def apply_next(self, step_size: int):
-            assert_greater_or_equal('min_rules', step_size, 1)
+            assert_greater_or_equal('step_size', step_size, 1)
             self.n = min(self.num_total_rules, self.n + step_size)
             return self.predictor.predict(self.n)
 
