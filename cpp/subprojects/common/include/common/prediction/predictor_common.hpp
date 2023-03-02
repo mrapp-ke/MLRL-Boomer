@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "common/prediction/predictor.hpp"
 #include "omp.h"
 
 /**
@@ -155,5 +155,75 @@ class BinarySparsePredictionDispatcher final {
             }
 
             return numNonZeroElements;
+        }
+};
+
+/**
+ * An abstract base class for all implementations of the class `IIncrementalPredictor`.
+ *
+ * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of the
+ *                          query examples
+ * @tparam Model            The type of the rule-based model that is used to obtain predictions
+ * @tparam PredictionMatrix The type of the matrix that is used to store the predictions
+ */
+template<typename FeatureMatrix, typename Model, typename PredictionMatrix>
+class AbstractIncrementalPredictor : public IIncrementalPredictor<PredictionMatrix> {
+    private:
+
+        const FeatureMatrix& featureMatrix_;
+
+        uint32 numThreads_;
+
+        typename Model::const_iterator current_;
+
+        typename Model::const_iterator end_;
+
+    protected:
+
+        /**
+         * Must be implemented by subclasses in order to obtain predictions.
+         *
+         * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples
+         * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
+         *                      parallel. Must be at least 1
+         * @param rulesBegin    An iterator of type `Model::const_iterator` to the first rule that should be used for
+         *                      prediction
+         * @param rulesEnd      An iterator of type `Model::const_iterator` to the last rule (exclusive) that should be
+         *                      used for prediction
+         * @return              A reference to an object of template type `PredictionMatrix` that stores the predictions
+         */
+        virtual PredictionMatrix& applyNext(const FeatureMatrix& featureMatrix, uint32 numThreads,
+                                            typename Model::const_iterator rulesBegin,
+                                            typename Model::const_iterator rulesEnd) = 0;
+
+    public:
+
+        /**
+         * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples
+         * @param model         A reference to an object of template type `Model` that should be used for prediction
+         * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
+         *                      parallel. Must be at least 1
+         * @param minRules      The minimum number of rules to be used for prediction. Must be at least 1
+         * @param maxRules      The maximum number of rules to be used for prediction. Must be greater than `minRules`
+         *                      or 0, if the number of rules should not be restricted
+         */
+        AbstractIncrementalPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numThreads,
+                                     uint32 minRules, uint32 maxRules)
+            : featureMatrix_(featureMatrix), numThreads_(numThreads),
+              current_(model.used_cbegin(maxRules) + (minRules - 1)), end_(model.used_cend(maxRules)) {}
+
+        virtual ~AbstractIncrementalPredictor() override {};
+
+        uint32 getNumNext() const override final {
+            return (uint32) (end_ - current_);
+        }
+
+        PredictionMatrix& applyNext(uint32 stepSize) override final {
+            typename Model::const_iterator next = current_ + std::min(stepSize, this->getNumNext());
+            PredictionMatrix& predictionMatrix = this->applyNext(featureMatrix_, numThreads_, current_, next);
+            current_ = next;
+            return predictionMatrix;
         }
 };

@@ -166,40 +166,30 @@ namespace boosting {
     class ScorePredictor final : public IScorePredictor {
         private:
 
-            class IncrementalPredictor final : public IIncrementalPredictor<DensePredictionMatrix<float64>> {
+            class IncrementalPredictor final
+                : public AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>> {
                 private:
-
-                    const FeatureMatrix& featureMatrix_;
-
-                    uint32 numThreads_;
 
                     DensePredictionMatrix<float64> predictionMatrix_;
 
-                    typename Model::const_iterator current_;
+                protected:
 
-                    typename Model::const_iterator end_;
+                    DensePredictionMatrix<float64>& applyNext(const FeatureMatrix& featureMatrix, uint32 numThreads,
+                                                              typename Model::const_iterator rulesBegin,
+                                                              typename Model::const_iterator rulesEnd) override {
+                        ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrix_);
+                        PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix,
+                                                                                      rulesBegin, rulesEnd, numThreads);
+                        return predictionMatrix_;
+                    }
 
                 public:
 
                     IncrementalPredictor(const ScorePredictor& predictor, uint32 minRules, uint32 maxRules)
-                        : featureMatrix_(predictor.featureMatrix_), numThreads_(predictor.numThreads_),
-                          predictionMatrix_(
-                            DensePredictionMatrix<float64>(featureMatrix_.getNumRows(), predictor.numLabels_, true)),
-                          current_(predictor.model_.used_cbegin(maxRules) + (minRules - 1)),
-                          end_(predictor.model_.used_cend(maxRules)) {}
-
-                    uint32 getNumNext() const override {
-                        return (uint32) (end_ - current_);
-                    }
-
-                    DensePredictionMatrix<float64>& applyNext(uint32 stepSize) override {
-                        typename Model::const_iterator next = current_ + std::min(stepSize, this->getNumNext());
-                        ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrix_);
-                        PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix_,
-                                                                                      current_, next, numThreads_);
-                        current_ = next;
-                        return predictionMatrix_;
-                    }
+                        : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>>(
+                          predictor.featureMatrix_, predictor.model_, predictor.numThreads_, minRules, maxRules),
+                          predictionMatrix_(DensePredictionMatrix<float64>(predictor.featureMatrix_.getNumRows(),
+                                                                           predictor.numLabels_, true)) {}
             };
 
             const FeatureMatrix& featureMatrix_;
