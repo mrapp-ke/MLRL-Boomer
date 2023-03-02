@@ -82,10 +82,10 @@ namespace boosting {
 
                 public:
 
-                    IncrementalPredictor(const ProbabilityPredictor& predictor, uint32 minRules, uint32 maxRules,
+                    IncrementalPredictor(const ProbabilityPredictor& predictor, uint32 maxRules,
                                          std::shared_ptr<IProbabilityTransformation> probabilityTransformationPtr)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>>(
-                          predictor.featureMatrix_, predictor.model_, predictor.numThreads_, minRules, maxRules),
+                          predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           probabilityTransformationPtr_(probabilityTransformationPtr),
                           scoreMatrix_(DensePredictionMatrix<float64>(predictor.featureMatrix_.getNumRows(),
                                                                       predictor.numLabels_,
@@ -157,7 +157,7 @@ namespace boosting {
             std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<float64>>> createIncrementalPredictor(
               uint32 maxRules) const override {
                 if (maxRules != 0) assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
-                return std::make_unique<IncrementalPredictor>(*this, minRules, maxRules, probabilityTransformationPtr_);
+                return std::make_unique<IncrementalPredictor>(*this, maxRules, probabilityTransformationPtr_);
             }
     };
 
