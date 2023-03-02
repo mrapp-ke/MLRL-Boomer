@@ -155,9 +155,8 @@ namespace boosting {
              * @see `IPredictor::createIncrementalPredictor`
              */
             std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<float64>>> createIncrementalPredictor(
-              uint32 minRules, uint32 maxRules) const override {
-                assertGreaterOrEqual<uint32>("minRules", minRules, 1);
-                if (maxRules != 0) assertGreater<uint32>("maxRules", maxRules, minRules);
+              uint32 maxRules) const override {
+                if (maxRules != 0) assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
                 return std::make_unique<IncrementalPredictor>(*this, minRules, maxRules, probabilityTransformationPtr_);
             }
     };
