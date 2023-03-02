@@ -160,10 +160,9 @@ namespace boosting {
              */
             std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
                 uint32 numExamples = featureMatrix_.getNumRows();
-                bool initPredictionMatrix =
-                  binaryTransformationPtr_ == nullptr || binaryTransformationPtr_->shouldInitPredictionMatrix();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_, initPredictionMatrix);
+                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_,
+                                                                 binaryTransformationPtr_ == nullptr);
 
                 if (binaryTransformationPtr_) {
                     DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
