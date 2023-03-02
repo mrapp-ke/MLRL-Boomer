@@ -46,13 +46,6 @@ namespace boosting {
             virtual void apply(CContiguousConstView<float64>::value_const_iterator realBegin,
                                CContiguousConstView<float64>::value_const_iterator realEnd,
                                BinaryLilMatrix::row predictionRow) const = 0;
-
-            /**
-             * Returns whether all elements of the prediction matrix should be value-initialized or not.
-             *
-             * @return True, if all elements of the prediction matrix should be value-initialized, false otherwise
-             */
-            virtual bool shouldInitPredictionMatrix() const = 0;
     };
 
 }
