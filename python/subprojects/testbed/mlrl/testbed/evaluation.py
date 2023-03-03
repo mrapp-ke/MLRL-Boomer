@@ -19,6 +19,8 @@ from mlrl.testbed.predictions import PredictionScope
 from sklearn.utils.multiclass import is_multilabel
 from typing import List, Dict, Set, Optional
 
+ARGUMENT_ENABLE_ALL = 'enable_all'
+
 ARGUMENT_HAMMING_LOSS = 'hamming_loss'
 
 ARGUMENT_HAMMING_ACCURACY = 'hamming_accuracy'
@@ -341,9 +343,10 @@ class EvaluationLogOutput(EvaluationOutput):
                                  evaluation_result: EvaluationResult, fold: Optional[int]):
         options = self.options
         rows = []
+        enable_all = options.get_bool(ARGUMENT_ENABLE_ALL, True)
 
         for measure in sorted(evaluation_result.measures):
-            if options.get_bool(measure.argument, True) and measure != EVALUATION_MEASURE_TRAINING_TIME \
+            if options.get_bool(measure.argument, enable_all) and measure != EVALUATION_MEASURE_TRAINING_TIME \
                     and measure != EVALUATION_MEASURE_PREDICTION_TIME:
                 score = evaluation_result.get(measure, fold, percentage=self.percentage, decimals=self.decimals)
                 rows.append([str(measure), score])
@@ -357,9 +360,10 @@ class EvaluationLogOutput(EvaluationOutput):
                                          evaluation_result: EvaluationResult, num_folds: int):
         options = self.options
         rows = []
+        enable_all = options.get_bool(ARGUMENT_ENABLE_ALL, True)
 
         for measure in sorted(evaluation_result.measures):
-            if options.get_bool(measure.argument, True) and measure != EVALUATION_MEASURE_TRAINING_TIME \
+            if options.get_bool(measure.argument, enable_all) and measure != EVALUATION_MEASURE_TRAINING_TIME \
                     and measure != EVALUATION_MEASURE_PREDICTION_TIME:
                 score, std_dev = evaluation_result.avg(measure, percentage=self.percentage, decimals=self.decimals)
                 row = [str(measure), score]
@@ -395,9 +399,10 @@ class EvaluationCsvOutput(EvaluationOutput):
         columns: Dict = evaluation_result.dict(fold, percentage=self.percentage, decimals=self.decimals)
         header = columns.keys()
         options = self.options
+        enable_all = options.get_bool(ARGUMENT_ENABLE_ALL, True)
 
         for formattable in header:
-            if not options.get_bool(formattable.argument, True):
+            if not options.get_bool(formattable.argument, enable_all):
                 del columns[formattable]
 
         header = sorted(columns.keys())
@@ -420,9 +425,10 @@ class EvaluationCsvOutput(EvaluationOutput):
             if num_folds > 1 else evaluation_result.dict(0, percentage=self.percentage, decimals=self.decimals)
         header = columns.keys()
         options = self.options
+        enable_all = options.get_bool(ARGUMENT_ENABLE_ALL, True)
 
         for formattable in header:
-            if not options.get_bool(formattable.argument, True):
+            if not options.get_bool(formattable.argument, enable_all):
                 del columns[formattable]
 
         header = sorted(columns.keys())
