@@ -33,7 +33,7 @@ In addition to the mandatory arguments that must be provided to the command line
 
   * ``true`` Ensemble models are evaluated repeatedly, using only a subset of their ensemble members with increasing size, e.g., the first 100, 200, ... rules.
 
-    * ``min_size`` (Default value = ``1``) The minimum number of ensemble members to be evaluated. Must be at least 1.
+    * ``min_size`` (Default value = ``0``) The minimum number of ensemble members to be evaluated. Must be at least 0.
     * ``max_size`` (Default value = ``0``) The maximum number of ensemble members to be evaluated. Must be greater than ``min_size`` or 0, if all ensemble members should be evaluated.
     * ``step_size`` (Default value = ``1``) The number of additional ensemble members to be evaluated at each repetition. Must be at least 1.
 

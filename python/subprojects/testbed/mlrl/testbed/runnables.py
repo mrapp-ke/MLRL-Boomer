@@ -366,8 +366,8 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
                                                  INCREMENTAL_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            min_size = options.get_int(ARGUMENT_MIN_SIZE, 1)
-            assert_greater_or_equal(ARGUMENT_MIN_SIZE, min_size, 1)
+            min_size = options.get_int(ARGUMENT_MIN_SIZE, 0)
+            assert_greater_or_equal(ARGUMENT_MIN_SIZE, min_size, 0)
             max_size = options.get_int(ARGUMENT_MAX_SIZE, 0)
             if max_size != 0:
                 assert_greater(ARGUMENT_MAX_SIZE, max_size, min_size)
