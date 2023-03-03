@@ -5,53 +5,32 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emot
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 154 milliseconds
+INFO Successfully fit model in 129 milliseconds
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Predicting for 196 test examples using a model of size 1...
+INFO Predicting for 196 test examples using a model of size 50...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 1:
+INFO Overall evaluation result on test data using a model of size 50:
 
-Example-wise F1           0
-Example-wise Jaccard      0
-Example-wise Precision  100
-Example-wise Recall       0
-Hamming Accuracy         68.11
-Hamming Loss             31.89
-Macro F1                  0
-Macro Jaccard             0
-Macro Precision         100
-Macro Recall              0
-Micro F1                  0
-Micro Jaccard             0
-Micro Precision         100
-Micro Recall              0
-Subset 0/1 Loss         100
-Subset Accuracy           0
-
-INFO Predicting for 196 test examples using a model of size 51...
-INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 51:
-
-Example-wise F1         55.6
-Example-wise Jaccard    46.68
+Example-wise F1         55.15
+Example-wise Jaccard    46.46
 Example-wise Precision  66.75
-Example-wise Recall     57.82
-Hamming Accuracy        74.91
-Hamming Loss            25.09
-Macro F1                50.5
-Macro Jaccard           36.86
-Macro Precision         73.37
-Macro Recall            52.51
-Micro F1                58.27
-Micro Jaccard           41.12
-Micro Precision         62.05
-Micro Recall            54.93
-Subset 0/1 Loss         78.57
-Subset Accuracy         21.43
+Example-wise Recall     57.31
+Hamming Accuracy        74.83
+Hamming Loss            25.17
+Macro F1                50.33
+Macro Jaccard           36.66
+Macro Precision         73.35
+Macro Recall            52.16
+Micro F1                57.95
+Micro Jaccard           40.8
+Micro Precision         62.01
+Micro Recall            54.4
+Subset 0/1 Loss         78.06
+Subset Accuracy         21.94
 
 INFO Predicting for 196 test examples using a model of size 69...
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in 0 milliseconds
 INFO Overall evaluation result on test data using a model of size 69:
 
 Example-wise F1         58.13
@@ -71,4 +50,4 @@ Micro Recall            60.53
 Subset 0/1 Loss         79.59
 Subset Accuracy         20.41
 
-INFO Successfully finished after 252 milliseconds
+INFO Successfully finished after 204 milliseconds
