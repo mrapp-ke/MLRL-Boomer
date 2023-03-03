@@ -397,7 +397,7 @@ class EvaluationCsvOutput(EvaluationOutput):
     def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                  evaluation_result: EvaluationResult, fold: Optional[int]):
         columns: Dict = evaluation_result.dict(fold, percentage=self.percentage, decimals=self.decimals)
-        header = columns.keys()
+        header = list(columns.keys())
         options = self.options
         enable_all = options.get_bool(ARGUMENT_ENABLE_ALL, True)
 
@@ -423,7 +423,7 @@ class EvaluationCsvOutput(EvaluationOutput):
                                          evaluation_result: EvaluationResult, num_folds: int):
         columns: Dict = evaluation_result.avg_dict(percentage=self.percentage, decimals=self.decimals) \
             if num_folds > 1 else evaluation_result.dict(0, percentage=self.percentage, decimals=self.decimals)
-        header = columns.keys()
+        header = list(columns.keys())
         options = self.options
         enable_all = options.get_bool(ARGUMENT_ENABLE_ALL, True)
 
