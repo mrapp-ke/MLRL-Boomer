@@ -62,6 +62,7 @@ In addition to the mandatory arguments that must be provided to the command line
 
     * ``decimals`` (Default value = ``2``) The number of decimals to be used for evaluation scores or 0, if the number of decimals should not be restricted.
     * ``percentage`` (Default value = ``true``) ``true``, if evaluation scores should be given as a percentage, if possible, ``false`` otherwise.
+    * ``enable_all`` (Default value = ``true``) ``true``, if all supported metrics should be used unless specified otherwise, ``false`` if all metrics should be disabled by default.
     * ``hamming_loss`` (Default value = ``true``) ``true``, if evaluation scores according to the Hamming loss should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
     * ``hamming_accuracy`` (Default value = ``true``) ``true``, if evaluation scores according to the Hamming accuracy metric should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
     * ``subset_zero_one_loss`` (Default value = ``true``) ``true``, if evaluation scores according to the subset 0/1 loss should be printed, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
@@ -102,6 +103,7 @@ In addition to the mandatory arguments that must be provided to the command line
 
     * ``decimals`` (Default value = ``0``) The number of decimals to be used for evaluation scores or 0, if the number of decimals should not be restricted.
     * ``percentage`` (Default value = ``true``) ``true``, if evaluation scores should be given as a percentage, if possible, ``false`` otherwise.
+    * ``enable_all`` (Default value = ``true``) ``true``, if all supported metrics should be used unless specified otherwise, ``false`` if all metrics should be disabled by default.
     * ``hamming_loss`` (Default value = ``true``) ``true``, if evaluation scores according to the Hamming loss should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
     * ``hamming_accuracy`` (Default value = ``true``) ``true``, if evaluation scores according to the Hamming accuracy metric should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
     * ``subset_zero_one_loss`` (Default value = ``true``) ``true``, if evaluation scores according to the subset 0/1 loss should be stored, ``false`` otherwise. Does only have an effect when dealing with multi-label data and if the parameter ``--prediction-type`` is set to ``labels``.
