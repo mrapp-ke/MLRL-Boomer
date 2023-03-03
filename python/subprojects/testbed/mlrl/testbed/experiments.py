@@ -204,7 +204,7 @@ class IncrementalEvaluation(Evaluation):
                  prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter], min_size: int,
                  max_size: int, step_size: int):
         """
-        :param min_size:    The minimum number of ensemble members to be evaluated. Must be at least 1
+        :param min_size:    The minimum number of ensemble members to be evaluated. Must be at least 0
         :param max_size:    The maximum number of ensemble members to be evaluated. Must be greater than `min_size` or
                             0, if all ensemble members should be evaluated
         :param step_size:   The number of additional ensemble members to be considered at each repetition. Must be at
@@ -231,7 +231,8 @@ class IncrementalEvaluation(Evaluation):
             if max_size > 0:
                 total_size = min(max_size, total_size)
 
-            next_step_size = self.min_size
+            min_size = self.min_size
+            next_step_size = min_size if min_size > 0 else step_size
             current_size = min(next_step_size, total_size)
 
             while incremental_predictor.has_next():
