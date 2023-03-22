@@ -17,7 +17,7 @@ namespace boosting {
     class DenseLabelWiseStatisticVector final {
         private:
 
-            uint32 numElements_;
+            const uint32 numElements_;
 
             Tuple<float64>* statistics_;
 

@@ -31,7 +31,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
         std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr_;
 
-        bool useDefaultRule_;
+        const bool useDefaultRule_;
 
     public:
 
@@ -182,7 +182,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFactory {
     private:
 
-        bool useDefaultRule_;
+        const bool useDefaultRule_;
 
     public:
 

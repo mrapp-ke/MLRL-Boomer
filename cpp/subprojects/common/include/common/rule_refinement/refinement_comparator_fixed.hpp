@@ -18,7 +18,7 @@ class FixedRefinementComparator final {
 
         RuleCompareFunction ruleCompareFunction_;
 
-        uint32 maxRefinements_;
+        const uint32 maxRefinements_;
 
         Refinement* refinements_;
 

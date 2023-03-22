@@ -27,7 +27,7 @@ namespace boosting {
 
             std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 
@@ -91,7 +91,7 @@ namespace boosting {
 
             std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 

@@ -17,7 +17,7 @@ template<typename LabelMatrix, typename IndexIterator>
 class ExampleWiseStratifiedSampling final : public IInstanceSampling {
     private:
 
-        float32 sampleSize_;
+        const float32 sampleSize_;
 
         BitWeightVector weightVector_;
 
@@ -56,7 +56,7 @@ class ExampleWiseStratifiedSampling final : public IInstanceSampling {
 class ExampleWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplingFactory {
     private:
 
-        float32 sampleSize_;
+        const float32 sampleSize_;
 
     public:
 

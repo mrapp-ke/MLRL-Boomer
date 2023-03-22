@@ -22,7 +22,7 @@ template<typename LabelMatrix, typename IndexIterator>
 class LabelWiseStratification final {
     private:
 
-        uint32 numRows_;
+        const uint32 numRows_;
 
         uint32 numCols_;
 

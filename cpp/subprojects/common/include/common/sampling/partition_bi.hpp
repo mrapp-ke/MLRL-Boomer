@@ -17,7 +17,7 @@ class BiPartition final : public IPartition {
 
         DenseVector<uint32> vector_;
 
-        uint32 numFirst_;
+        const uint32 numFirst_;
 
         BitVector* firstSet_;
 

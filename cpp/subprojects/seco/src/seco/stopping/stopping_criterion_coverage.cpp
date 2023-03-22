@@ -13,7 +13,7 @@ namespace seco {
     class CoverageStoppingCriterion final : public IStoppingCriterion {
         private:
 
-            float64 threshold_;
+            const float64 threshold_;
 
         public:
 
@@ -42,7 +42,7 @@ namespace seco {
     class CoverageStoppingCriterionFactory final : public IStoppingCriterionFactory {
         private:
 
-            float64 threshold_;
+            const float64 threshold_;
 
         public:
 

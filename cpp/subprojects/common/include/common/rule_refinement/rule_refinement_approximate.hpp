@@ -23,11 +23,11 @@ class ApproximateRuleRefinement final : public IRuleRefinement {
 
         const IndexVector& labelIndices_;
 
-        uint32 numExamples_;
+        const uint32 numExamples_;
 
-        uint32 featureIndex_;
+        const uint32 featureIndex_;
 
-        bool nominal_;
+        const bool nominal_;
 
         typedef IRuleRefinementCallback<IHistogram, ThresholdVector> Callback;
 

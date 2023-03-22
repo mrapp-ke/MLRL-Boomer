@@ -33,5 +33,5 @@ struct RuleCompareFunction {
         /**
          * The minimum quality of a rule.
          */
-        float64 minQuality;
+        const float64 minQuality;
 };

@@ -271,17 +271,17 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
         RuleCompareFunction ruleCompareFunction_;
 
-        uint32 beamWidth_;
+        const uint32 beamWidth_;
 
-        bool resampleFeatures_;
+        const bool resampleFeatures_;
 
-        uint32 minCoverage_;
+        const uint32 minCoverage_;
 
-        uint32 maxConditions_;
+        const uint32 maxConditions_;
 
-        uint32 maxHeadRefinements_;
+        const uint32 maxHeadRefinements_;
 
-        uint32 numThreads_;
+        const uint32 numThreads_;
 
     public:
 
@@ -368,19 +368,19 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 
         RuleCompareFunction ruleCompareFunction_;
 
-        uint32 beamWidth_;
+        const uint32 beamWidth_;
 
-        bool resampleFeatures_;
+        const bool resampleFeatures_;
 
-        uint32 minCoverage_;
+        const uint32 minCoverage_;
 
-        uint32 maxConditions_;
+        const uint32 maxConditions_;
 
-        uint32 maxHeadRefinements_;
+        const uint32 maxHeadRefinements_;
 
-        bool recalculatePredictions_;
+        const bool recalculatePredictions_;
 
-        uint32 numThreads_;
+        const uint32 numThreads_;
 
     public:
 

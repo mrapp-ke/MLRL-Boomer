@@ -15,9 +15,9 @@ namespace boosting {
     class LabelWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
 
-            float64 threshold_;
+            const float64 threshold_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 
@@ -65,9 +65,9 @@ namespace boosting {
     class LabelWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
 
-            float64 threshold_;
+            const float64 threshold_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 

@@ -11,7 +11,7 @@
 class LabelSamplingWithoutReplacement final : public ILabelSampling {
     private:
 
-        uint32 numLabels_;
+        const uint32 numLabels_;
 
         PartialIndexVector indexVector_;
 
@@ -37,9 +37,9 @@ class LabelSamplingWithoutReplacement final : public ILabelSampling {
 class LabelSamplingWithoutReplacementFactory final : public ILabelSamplingFactory {
     private:
 
-        uint32 numLabels_;
+        const uint32 numLabels_;
 
-        uint32 numSamples_;
+        const uint32 numSamples_;
 
     public:
 

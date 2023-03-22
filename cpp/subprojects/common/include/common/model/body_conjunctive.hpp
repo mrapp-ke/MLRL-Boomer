@@ -12,25 +12,25 @@
 class MLRLCOMMON_API ConjunctiveBody final : public IBody {
     private:
 
-        uint32 numLeq_;
+        const uint32 numLeq_;
 
         uint32* leqFeatureIndices_;
 
         float32* leqThresholds_;
 
-        uint32 numGr_;
+        const uint32 numGr_;
 
         uint32* grFeatureIndices_;
 
         float32* grThresholds_;
 
-        uint32 numEq_;
+        const uint32 numEq_;
 
         uint32* eqFeatureIndices_;
 
         float32* eqThresholds_;
 
-        uint32 numNeq_;
+        const uint32 numNeq_;
 
         uint32* neqFeatureIndices_;
 

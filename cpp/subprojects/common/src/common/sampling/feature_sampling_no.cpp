@@ -33,7 +33,7 @@ class NoFeatureSampling final : public IFeatureSampling {
 class NoFeatureSamplingFactory final : public IFeatureSamplingFactory {
     private:
 
-        uint32 numFeatures_;
+        const uint32 numFeatures_;
 
     public:
 

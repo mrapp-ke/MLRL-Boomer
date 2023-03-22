@@ -18,11 +18,11 @@ class PostPruning final : public IStoppingCriterion {
 
         Partition& partition_;
 
-        bool useHoldoutSet_;
+        const bool useHoldoutSet_;
 
-        uint32 minRules_;
+        const uint32 minRules_;
 
-        uint32 interval_;
+        const uint32 interval_;
 
         float64 bestScore_;
 
@@ -68,11 +68,11 @@ class PostPruning final : public IStoppingCriterion {
 class PostPruningFactory final : public IStoppingCriterionFactory {
     private:
 
-        bool useHoldoutSet_;
+        const bool useHoldoutSet_;
 
-        uint32 minRules_;
+        const uint32 minRules_;
 
-        uint32 interval_;
+        const uint32 interval_;
 
     public:
 

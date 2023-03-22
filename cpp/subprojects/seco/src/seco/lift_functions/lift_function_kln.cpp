@@ -17,9 +17,9 @@ namespace seco {
     class KlnLiftFunction final : public ILiftFunction {
         private:
 
-            float64 k_;
+            const float64 k_;
 
-            float64 maxLift_;
+            const float64 maxLift_;
 
         public:
 
@@ -46,9 +46,9 @@ namespace seco {
     class KlnLiftFunctionFactory final : public ILiftFunctionFactory {
         private:
 
-            float64 k_;
+            const float64 k_;
 
-            float64 maxLift_;
+            const float64 maxLift_;
 
         public:
 

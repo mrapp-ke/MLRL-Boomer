@@ -95,7 +95,7 @@ namespace boosting {
 
             std::unique_ptr<ILabelWiseStatistics<LabelWiseRuleEvaluationFactory>> labelWiseStatisticsPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 

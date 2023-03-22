@@ -17,7 +17,7 @@ namespace boosting {
 
             std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 

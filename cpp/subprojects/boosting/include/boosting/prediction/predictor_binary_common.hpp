@@ -134,9 +134,9 @@ namespace boosting {
 
             const Model& model_;
 
-            uint32 numLabels_;
+            const uint32 numLabels_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
             std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
@@ -327,9 +327,9 @@ namespace boosting {
 
             const Model& model_;
 
-            uint32 numLabels_;
+            const uint32 numLabels_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
             std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
 

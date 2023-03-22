@@ -21,15 +21,15 @@ class PrePruning final : public IStoppingCriterion {
 
         std::unique_ptr<IAggregationFunction> aggregationFunctionPtr_;
 
-        bool useHoldoutSet_;
+        const bool useHoldoutSet_;
 
-        bool removeUnusedRules_;
+        const bool removeUnusedRules_;
 
-        uint32 updateInterval_;
+        const uint32 updateInterval_;
 
-        uint32 stopInterval_;
+        const uint32 stopInterval_;
 
-        float64 minImprovement_;
+        const float64 minImprovement_;
 
         RingBuffer<float64> pastBuffer_;
 

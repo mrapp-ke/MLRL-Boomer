@@ -11,7 +11,7 @@
 class EqualWeightVector final : public IWeightVector {
     private:
 
-        uint32 numElements_;
+        const uint32 numElements_;
 
     public:
 

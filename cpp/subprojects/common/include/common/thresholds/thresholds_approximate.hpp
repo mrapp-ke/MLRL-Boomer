@@ -17,7 +17,7 @@ class ApproximateThresholdsFactory final : public IThresholdsFactory {
 
         std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr_;
 
-        uint32 numThreads_;
+        const uint32 numThreads_;
 
     public:
 

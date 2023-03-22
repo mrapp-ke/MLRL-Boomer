@@ -17,17 +17,17 @@ namespace boosting {
             /**
              * The number of rows in the view.
              */
-            uint32 numRows_;
+            const uint32 numRows_;
 
             /**
              * The number of gradients per row.
              */
-            uint32 numGradients_;
+            const uint32 numGradients_;
 
             /**
              * The number of Hessians per row.
              */
-            uint32 numHessians_;
+            const uint32 numHessians_;
 
             /**
              * A pointer to an array that stores the gradients.

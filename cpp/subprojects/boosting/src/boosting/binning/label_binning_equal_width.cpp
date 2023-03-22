@@ -20,11 +20,11 @@ namespace boosting {
     class EqualWidthLabelBinning final : public ILabelBinning {
         private:
 
-            float32 binRatio_;
+            const float32 binRatio_;
 
-            uint32 minBins_;
+            const uint32 minBins_;
 
-            uint32 maxBins_;
+            const uint32 maxBins_;
 
         public:
 
@@ -139,11 +139,11 @@ namespace boosting {
     class EqualWidthLabelBinningFactory final : public ILabelBinningFactory {
         private:
 
-            float32 binRatio_;
+            const float32 binRatio_;
 
-            uint32 minBins_;
+            const uint32 minBins_;
 
-            uint32 maxBins_;
+            const uint32 maxBins_;
 
         public:
 

@@ -32,13 +32,13 @@ namespace seco {
     class PeakLiftFunction final : public ILiftFunction {
         private:
 
-            uint32 numLabels_;
+            const uint32 numLabels_;
 
-            uint32 peakLabel_;
+            const uint32 peakLabel_;
 
-            float64 maxLift_;
+            const float64 maxLift_;
 
-            float64 exponent_;
+            const float64 exponent_;
 
             const float64* maxLiftsAfterPeak_;
 
@@ -79,14 +79,15 @@ namespace seco {
     class PeakLiftFunctionFactory final : public ILiftFunctionFactory {
         private:
 
-            uint32 numLabels_;
+            const uint32 numLabels_;
 
-            uint32 peakLabel_;
+            const uint32 peakLabel_;
 
-            float64 maxLift_;
+            const float64 maxLift_;
 
-            float64 curvature_;
+            const float64 curvature_;
 
+            // TODO Mark as const
             float64* maxLiftsAfterPeak_;
 
         public:

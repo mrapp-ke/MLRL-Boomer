@@ -12,7 +12,7 @@
 class MLRLCOMMON_API CompleteHead final : public IHead {
     private:
 
-        uint32 numElements_;
+        const uint32 numElements_;
 
         float64* scores_;
 

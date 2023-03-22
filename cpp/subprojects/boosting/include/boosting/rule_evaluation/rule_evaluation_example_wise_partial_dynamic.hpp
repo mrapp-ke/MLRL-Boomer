@@ -16,13 +16,13 @@ namespace boosting {
     class ExampleWiseDynamicPartialRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
         private:
 
-            float32 threshold_;
+            const float32 threshold_;
 
-            float32 exponent_;
+            const float32 exponent_;
 
-            float64 l1RegularizationWeight_;
+            const float64 l1RegularizationWeight_;
 
-            float64 l2RegularizationWeight_;
+            const float64 l2RegularizationWeight_;
 
             const Blas& blas_;
 
