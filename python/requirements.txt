@@ -1,7 +1,7 @@
 cython==0.29.33
 meson==1.0.1
 ninja==1.11.1
-wheel==0.38.4
+wheel==0.40.0
 build==0.10.0
 yapf==0.32.0
 clang-format==15.0.7
