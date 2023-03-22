@@ -22,6 +22,11 @@ namespace boosting {
         protected:
 
             /**
+             * A pointer to a temporary array that is used for executing the LAPACK routine DSPMV.
+             */
+            float64* dspmvTmpArray_;
+
+            /**
              * A pointer to a temporary array that is used for executing the LAPACK routine DSYSV.
              */
             float64* dsysvTmpArray1_;
@@ -41,11 +46,6 @@ namespace boosting {
              */
             double* dsysvTmpArray3_;
 
-            /**
-             * A pointer to a temporary array that is used for executing the LAPACK routine DSPMV.
-             */
-            float64* dspmvTmpArray_;
-
         public:
 
             /**
@@ -54,16 +54,17 @@ namespace boosting {
              *                          LAPACK routines
              */
             AbstractExampleWiseRuleEvaluation(uint32 numPredictions, const Lapack& lapack)
-                : dsysvTmpArray1_(new float64[numPredictions * numPredictions]),
+                : dspmvTmpArray_(new float64[numPredictions]),
+                  dsysvTmpArray1_(new float64[numPredictions * numPredictions]),
                   dsysvTmpArray2_(new int[numPredictions]),
                   dsysvLwork_(lapack.queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_, numPredictions)),
-                  dsysvTmpArray3_(new double[dsysvLwork_]), dspmvTmpArray_(new float64[numPredictions]) {}
+                  dsysvTmpArray3_(new double[dsysvLwork_]) {}
 
             virtual ~AbstractExampleWiseRuleEvaluation() override {
+                delete[] dspmvTmpArray_;
                 delete[] dsysvTmpArray1_;
                 delete[] dsysvTmpArray2_;
                 delete[] dsysvTmpArray3_;
-                delete[] dspmvTmpArray_;
             }
     };
 
