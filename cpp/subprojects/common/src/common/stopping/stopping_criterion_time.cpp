@@ -14,7 +14,7 @@ class TimeStoppingCriterion final : public IStoppingCriterion {
 
         typedef std::chrono::seconds timer_unit;
 
-        timer_unit timeLimit_;
+        const timer_unit timeLimit_;
 
         std::chrono::time_point<timer> startTime_;
 
@@ -54,7 +54,7 @@ class TimeStoppingCriterion final : public IStoppingCriterion {
 class TimeStoppingCriterionFactory final : public IStoppingCriterionFactory {
     private:
 
-        uint32 timeLimit_;
+        const uint32 timeLimit_;
 
     public:
 

@@ -11,7 +11,7 @@
 class ExactThresholdsFactory final : public IThresholdsFactory {
     private:
 
-        uint32 numThreads_;
+        const uint32 numThreads_;
 
     public:
 

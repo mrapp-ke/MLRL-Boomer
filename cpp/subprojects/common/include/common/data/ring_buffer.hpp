@@ -18,7 +18,7 @@ class RingBuffer final {
 
         T* array_;
 
-        uint32 capacity_;
+        const uint32 capacity_;
 
         uint32 pos_;
 

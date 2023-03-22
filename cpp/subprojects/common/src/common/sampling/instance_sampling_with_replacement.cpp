@@ -69,7 +69,7 @@ class InstanceSamplingWithReplacement final : public IInstanceSampling {
 
         Partition& partition_;
 
-        float32 sampleSize_;
+        const float32 sampleSize_;
 
         DenseWeightVector<uint32> weightVector_;
 
@@ -98,7 +98,7 @@ class InstanceSamplingWithReplacement final : public IInstanceSampling {
 class InstanceSamplingWithReplacementFactory final : public IInstanceSamplingFactory {
     private:
 
-        float32 sampleSize_;
+        const float32 sampleSize_;
 
     public:
 

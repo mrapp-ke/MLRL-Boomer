@@ -16,7 +16,7 @@ template<typename T>
 class LilMatrix final {
     private:
 
-        uint32 numRows_;
+        const uint32 numRows_;
 
         std::vector<IndexedValue<T>>* array_;
 

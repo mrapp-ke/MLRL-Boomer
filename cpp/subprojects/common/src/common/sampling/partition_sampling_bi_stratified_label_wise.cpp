@@ -47,7 +47,7 @@ class LabelWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
 class LabelWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
     private:
 
-        float32 holdoutSetSize_;
+        const float32 holdoutSetSize_;
 
     public:
 

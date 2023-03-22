@@ -172,7 +172,7 @@ class AbstractIncrementalPredictor : public IIncrementalPredictor<PredictionMatr
 
         const FeatureMatrix& featureMatrix_;
 
-        uint32 numThreads_;
+        const uint32 numThreads_;
 
         typename Model::const_iterator current_;
 

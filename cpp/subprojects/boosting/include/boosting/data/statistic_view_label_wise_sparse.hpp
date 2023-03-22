@@ -18,7 +18,7 @@ namespace boosting {
             /**
              * The number of columns in the view.
              */
-            uint32 numCols_;
+            const uint32 numCols_;
 
             /**
              * A pointer to an object of type `SparseSetMatrix` that stores the gradients and Hessians.

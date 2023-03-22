@@ -47,7 +47,7 @@ namespace boosting {
 
             std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 
@@ -105,7 +105,7 @@ namespace boosting {
 
             std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 

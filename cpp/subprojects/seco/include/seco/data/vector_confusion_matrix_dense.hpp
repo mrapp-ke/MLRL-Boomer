@@ -18,7 +18,7 @@ namespace seco {
 
             ConfusionMatrix* array_;
 
-            uint32 numElements_;
+            const uint32 numElements_;
 
         public:
 

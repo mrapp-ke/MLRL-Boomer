@@ -48,11 +48,11 @@ static inline uint32 getNumBins(FeatureVector& featureVector, bool sparse, float
 class EqualFrequencyFeatureBinning final : public IFeatureBinning {
     private:
 
-        float32 binRatio_;
+        const float32 binRatio_;
 
-        uint32 minBins_;
+        const uint32 minBins_;
 
-        uint32 maxBins_;
+        const uint32 maxBins_;
 
     public:
 
@@ -161,11 +161,11 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 class EqualFrequencyFeatureBinningFactory final : public IFeatureBinningFactory {
     private:
 
-        float32 binRatio_;
+        const float32 binRatio_;
 
-        uint32 minBins_;
+        const uint32 minBins_;
 
-        uint32 maxBins_;
+        const uint32 maxBins_;
 
     public:
 

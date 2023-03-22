@@ -9,7 +9,7 @@
 class SizeStoppingCriterion final : public IStoppingCriterion {
     private:
 
-        uint32 maxRules_;
+        const uint32 maxRules_;
 
     public:
 
@@ -36,7 +36,7 @@ class SizeStoppingCriterion final : public IStoppingCriterion {
 class SizeStoppingCriterionFactory final : public IStoppingCriterionFactory {
     private:
 
-        uint32 maxRules_;
+        const uint32 maxRules_;
 
     public:
 

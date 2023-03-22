@@ -34,7 +34,7 @@ class InstanceSamplingWithoutReplacement final : public IInstanceSampling {
 
         Partition& partition_;
 
-        float32 sampleSize_;
+        const float32 sampleSize_;
 
         BitWeightVector weightVector_;
 
@@ -63,7 +63,7 @@ class InstanceSamplingWithoutReplacement final : public IInstanceSampling {
 class InstanceSamplingWithoutReplacementFactory final : public IInstanceSamplingFactory {
     private:
 
-        float32 sampleSize_;
+        const float32 sampleSize_;
 
     public:
 

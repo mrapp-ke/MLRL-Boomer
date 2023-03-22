@@ -23,9 +23,9 @@ namespace boosting {
 
             std::unique_ptr<PartialIndexVector> indexVectorPtr_;
 
-            float64 threshold_;
+            const float64 threshold_;
 
-            float64 exponent_;
+            const float64 exponent_;
 
         protected:
 

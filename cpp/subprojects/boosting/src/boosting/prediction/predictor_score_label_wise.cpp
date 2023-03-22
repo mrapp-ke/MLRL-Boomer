@@ -12,7 +12,7 @@ namespace boosting {
     class LabelWiseScorePredictorFactory final : public IScorePredictorFactory {
         private:
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 

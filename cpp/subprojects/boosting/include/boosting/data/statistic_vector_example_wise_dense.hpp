@@ -18,9 +18,9 @@ namespace boosting {
     class DenseExampleWiseStatisticVector final {
         private:
 
-            uint32 numGradients_;
+            const uint32 numGradients_;
 
-            uint32 numHessians_;
+            const uint32 numHessians_;
 
             float64* gradients_;
 

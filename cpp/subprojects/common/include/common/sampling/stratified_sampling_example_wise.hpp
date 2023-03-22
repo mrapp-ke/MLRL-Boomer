@@ -22,7 +22,7 @@ template<typename LabelMatrix, typename IndexIterator>
 class ExampleWiseStratification final {
     private:
 
-        uint32 numTotal_;
+        const uint32 numTotal_;
 
         typedef typename LabelMatrix::view_type Key;
 

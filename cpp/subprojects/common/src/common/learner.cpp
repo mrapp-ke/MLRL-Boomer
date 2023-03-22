@@ -20,7 +20,7 @@
 class TrainingResult final : public ITrainingResult {
     private:
 
-        uint32 numLabels_;
+        const uint32 numLabels_;
 
         std::unique_ptr<IRuleModel> ruleModelPtr_;
 

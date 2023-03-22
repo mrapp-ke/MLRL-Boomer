@@ -14,7 +14,7 @@ namespace seco {
     class MEstimate final : public IHeuristic {
         private:
 
-            float64 m_;
+            const float64 m_;
 
         public:
 
@@ -56,7 +56,7 @@ namespace seco {
     class MEstimateFactory final : public IHeuristicFactory {
         private:
 
-            float64 m_;
+            const float64 m_;
 
         public:
 
