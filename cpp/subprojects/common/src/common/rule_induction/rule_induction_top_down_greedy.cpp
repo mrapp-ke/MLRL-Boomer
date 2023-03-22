@@ -12,7 +12,7 @@
 class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
         const uint32 minCoverage_;
 
@@ -112,7 +112,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
         const uint32 minCoverage_;
 

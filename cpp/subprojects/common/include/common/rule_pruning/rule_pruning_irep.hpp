@@ -12,7 +12,7 @@
 class IrepConfig final : public IRulePruningConfig {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
     public:
 

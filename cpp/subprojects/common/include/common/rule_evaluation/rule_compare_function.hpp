@@ -28,7 +28,7 @@ struct RuleCompareFunction {
         /**
          * A function of type `CompareFunction` for comparing the quality of different rules.
          */
-        CompareFunction compare;
+        const CompareFunction compare;
 
         /**
          * The minimum quality of a rule.

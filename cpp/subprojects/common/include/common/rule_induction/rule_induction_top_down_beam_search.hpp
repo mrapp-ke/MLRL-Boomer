@@ -152,7 +152,7 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
                                                    public IBeamSearchTopDownRuleInductionConfig {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
         uint32 beamWidth_;
 

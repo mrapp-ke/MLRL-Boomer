@@ -269,7 +269,7 @@ class Beam final {
 class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
         const uint32 beamWidth_;
 
@@ -366,7 +366,7 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
         const uint32 beamWidth_;
 
