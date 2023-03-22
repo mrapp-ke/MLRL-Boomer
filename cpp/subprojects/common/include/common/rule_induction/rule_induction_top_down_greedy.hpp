@@ -117,7 +117,7 @@ class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig,
                                                public IGreedyTopDownRuleInductionConfig {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
         uint32 minCoverage_;
 
