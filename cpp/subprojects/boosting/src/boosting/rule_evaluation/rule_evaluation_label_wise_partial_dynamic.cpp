@@ -24,13 +24,13 @@ namespace boosting {
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
 
-            float64 threshold_;
+            const float64 threshold_;
 
-            float64 exponent_;
+            const float64 exponent_;
 
-            float64 l1RegularizationWeight_;
+            const float64 l1RegularizationWeight_;
 
-            float64 l2RegularizationWeight_;
+            const float64 l2RegularizationWeight_;
 
         public:
 

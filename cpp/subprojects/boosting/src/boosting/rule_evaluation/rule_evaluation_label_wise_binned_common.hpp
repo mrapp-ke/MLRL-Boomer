@@ -54,7 +54,7 @@ namespace boosting {
     class AbstractLabelWiseBinnedRuleEvaluation : public IRuleEvaluation<StatisticVector> {
         private:
 
-            uint32 maxBins_;
+            const uint32 maxBins_;
 
             DenseBinnedScoreVector<IndexVector> scoreVector_;
 
@@ -64,11 +64,11 @@ namespace boosting {
 
             float64* criteria_;
 
-            float64 l1RegularizationWeight_;
+            const float64 l1RegularizationWeight_;
 
-            float64 l2RegularizationWeight_;
+            const float64 l2RegularizationWeight_;
 
-            std::unique_ptr<ILabelBinning> binningPtr_;
+            const std::unique_ptr<ILabelBinning> binningPtr_;
 
         protected:
 

@@ -603,9 +603,9 @@ namespace boosting {
 
             IBoostingRuleLearner::IConfig& config_;
 
-            Blas blas_;
+            const Blas blas_;
 
-            Lapack lapack_;
+            const Lapack lapack_;
 
         protected:
 

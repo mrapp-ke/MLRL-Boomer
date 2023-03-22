@@ -18,7 +18,7 @@ class DokVector final {
 
         std::unordered_map<uint32, T> data_;
 
-        T sparseValue_;
+        const T sparseValue_;
 
     public:
 

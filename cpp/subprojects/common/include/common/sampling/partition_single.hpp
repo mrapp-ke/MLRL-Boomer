@@ -13,7 +13,7 @@
 class SinglePartition final : public IPartition {
     private:
 
-        uint32 numElements_;
+        const uint32 numElements_;
 
     public:
 

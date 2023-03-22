@@ -45,9 +45,9 @@ namespace boosting {
     class GfmBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
 
-            std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
+            const std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 
@@ -102,9 +102,9 @@ namespace boosting {
     class GfmSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
 
-            std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
+            const std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 

@@ -7,7 +7,7 @@
 class Irep final : public IRulePruning {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
     public:
 
@@ -82,7 +82,7 @@ class Irep final : public IRulePruning {
 class IrepFactory final : public IRulePruningFactory {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
     public:
 

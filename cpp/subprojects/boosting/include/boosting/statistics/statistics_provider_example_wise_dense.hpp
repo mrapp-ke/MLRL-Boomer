@@ -17,17 +17,17 @@ namespace boosting {
     class DenseExampleWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
         private:
 
-            std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr_;
 
-            std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 
@@ -81,17 +81,17 @@ namespace boosting {
     class DenseConvertibleExampleWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
         private:
 
-            std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr_;
 
-            std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 

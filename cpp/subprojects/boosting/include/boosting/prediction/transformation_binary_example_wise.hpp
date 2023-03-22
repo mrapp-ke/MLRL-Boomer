@@ -19,7 +19,7 @@ namespace boosting {
 
             const LabelVectorSet& labelVectorSet_;
 
-            std::unique_ptr<IDistanceMeasure> distanceMeasurePtr_;
+            const std::unique_ptr<IDistanceMeasure> distanceMeasurePtr_;
 
         public:
 

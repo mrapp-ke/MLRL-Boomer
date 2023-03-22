@@ -14,7 +14,7 @@ namespace seco {
     class FMeasure final : public IHeuristic {
         private:
 
-            float64 beta_;
+            const float64 beta_;
 
         public:
 
@@ -53,7 +53,7 @@ namespace seco {
     class FMeasureFactory final : public IHeuristicFactory {
         private:
 
-            float64 beta_;
+            const float64 beta_;
 
         public:
 

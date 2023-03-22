@@ -12,15 +12,15 @@
 class IrepConfig final : public IRulePruningConfig {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
     public:
 
         /**
-         * @param compareFunction An object of type `RuleCompareFunction` that defines the function that should be used
-         *                        for comparing the quality of different rules
+         * @param ruleCompareFunction An object of type `RuleCompareFunction` that defines the function that should be
+         *                            used for comparing the quality of different rules
          */
-        IrepConfig(RuleCompareFunction compareFunction);
+        IrepConfig(RuleCompareFunction ruleCompareFunction);
 
         std::unique_ptr<IRulePruningFactory> createRulePruningFactory() const override;
 };

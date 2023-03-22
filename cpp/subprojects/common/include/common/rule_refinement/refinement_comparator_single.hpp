@@ -13,7 +13,7 @@
 class SingleRefinementComparator final {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
         Refinement bestRefinement_;
 

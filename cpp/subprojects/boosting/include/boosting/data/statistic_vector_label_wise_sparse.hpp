@@ -132,7 +132,7 @@ namespace boosting {
                     difference_type operator-(const ConstIterator& rhs) const;
             };
 
-            uint32 numElements_;
+            const uint32 numElements_;
 
             Triple<float64>* statistics_;
 

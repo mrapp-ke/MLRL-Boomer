@@ -12,15 +12,15 @@
 class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
-        uint32 minCoverage_;
+        const uint32 minCoverage_;
 
-        uint32 maxConditions_;
+        const uint32 maxConditions_;
 
-        uint32 maxHeadRefinements_;
+        const uint32 maxHeadRefinements_;
 
-        uint32 numThreads_;
+        const uint32 numThreads_;
 
     public:
 
@@ -112,17 +112,17 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
     private:
 
-        RuleCompareFunction ruleCompareFunction_;
+        const RuleCompareFunction ruleCompareFunction_;
 
-        uint32 minCoverage_;
+        const uint32 minCoverage_;
 
-        uint32 maxConditions_;
+        const uint32 maxConditions_;
 
-        uint32 maxHeadRefinements_;
+        const uint32 maxHeadRefinements_;
 
-        bool recalculatePredictions_;
+        const bool recalculatePredictions_;
 
-        uint32 numThreads_;
+        const uint32 numThreads_;
 
     public:
 

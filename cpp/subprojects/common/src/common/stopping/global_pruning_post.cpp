@@ -16,13 +16,13 @@ template<typename Partition>
 class PostPruning final : public IStoppingCriterion {
     private:
 
-        Partition& partition_;
+        const Partition& partition_;
 
-        bool useHoldoutSet_;
+        const bool useHoldoutSet_;
 
-        uint32 minRules_;
+        const uint32 minRules_;
 
-        uint32 interval_;
+        const uint32 interval_;
 
         float64 bestScore_;
 
@@ -39,7 +39,7 @@ class PostPruning final : public IStoppingCriterion {
          * @param interval      The interval to be used to check whether the current model is the best one evaluated so
          *                      far, e.g., a value of 10 means that the best model may contain 10, 20, ... rules
          */
-        PostPruning(Partition& partition, bool useHoldoutSet, uint32 minRules, uint32 interval)
+        PostPruning(const Partition& partition, bool useHoldoutSet, uint32 minRules, uint32 interval)
             : partition_(partition), useHoldoutSet_(useHoldoutSet), minRules_(minRules), interval_(interval),
               bestScore_(std::numeric_limits<float64>::infinity()), bestNumRules_(minRules) {}
 
@@ -68,11 +68,11 @@ class PostPruning final : public IStoppingCriterion {
 class PostPruningFactory final : public IStoppingCriterionFactory {
     private:
 
-        bool useHoldoutSet_;
+        const bool useHoldoutSet_;
 
-        uint32 minRules_;
+        const uint32 minRules_;
 
-        uint32 interval_;
+        const uint32 interval_;
 
     public:
 

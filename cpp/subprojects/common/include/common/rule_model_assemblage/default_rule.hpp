@@ -29,7 +29,7 @@ class IDefaultRuleConfig {
 class DefaultRuleConfig final : public IDefaultRuleConfig {
     private:
 
-        bool useDefaultRule_;
+        const bool useDefaultRule_;
 
     public:
 

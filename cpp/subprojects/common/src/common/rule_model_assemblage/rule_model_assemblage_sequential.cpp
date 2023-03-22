@@ -7,31 +7,31 @@
 class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
     private:
 
-        std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr_;
+        const std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr_;
 
-        std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr_;
+        const std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr_;
 
-        std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr_;
+        const std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr_;
 
-        std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr_;
+        const std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr_;
 
-        std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr_;
+        const std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr_;
 
-        std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr_;
+        const std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr_;
 
-        std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr_;
+        const std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr_;
 
-        std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr_;
+        const std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr_;
 
-        std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr_;
+        const std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr_;
 
-        std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr_;
+        const std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr_;
 
-        std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr_;
+        const std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr_;
 
-        std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr_;
+        const std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr_;
 
-        bool useDefaultRule_;
+        const bool useDefaultRule_;
 
     public:
 
@@ -182,7 +182,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFactory {
     private:
 
-        bool useDefaultRule_;
+        const bool useDefaultRule_;
 
     public:
 

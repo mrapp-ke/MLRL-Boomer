@@ -14,7 +14,7 @@
 class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
     private:
 
-        uint32 numFeatures_;
+        const uint32 numFeatures_;
 
         PartialIndexVector indexVector_;
 
@@ -49,9 +49,9 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
 class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFactory {
     private:
 
-        uint32 numFeatures_;
+        const uint32 numFeatures_;
 
-        uint32 numSamples_;
+        const uint32 numSamples_;
 
     public:
 

@@ -71,11 +71,11 @@ static inline uint32 getBinIndex(float32 value, float32 min, float32 width, uint
 class EqualWidthFeatureBinning final : public IFeatureBinning {
     private:
 
-        float32 binRatio_;
+        const float32 binRatio_;
 
-        uint32 minBins_;
+        const uint32 minBins_;
 
-        uint32 maxBins_;
+        const uint32 maxBins_;
 
     public:
 
@@ -181,11 +181,11 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
 class EqualWidthFeatureBinningFactory final : public IFeatureBinningFactory {
     private:
 
-        float32 binRatio_;
+        const float32 binRatio_;
 
-        uint32 minBins_;
+        const uint32 minBins_;
 
-        uint32 maxBins_;
+        const uint32 maxBins_;
 
     public:
 

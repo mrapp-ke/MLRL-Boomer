@@ -15,7 +15,7 @@ namespace boosting {
     class LabelWiseProbabilityTransformation final : public IProbabilityTransformation {
         private:
 
-            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
+            const std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
 
         public:
 

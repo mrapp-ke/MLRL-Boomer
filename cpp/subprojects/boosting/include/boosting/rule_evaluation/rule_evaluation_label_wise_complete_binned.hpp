@@ -15,11 +15,11 @@ namespace boosting {
     class LabelWiseCompleteBinnedRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
         private:
 
-            float64 l1RegularizationWeight_;
+            const float64 l1RegularizationWeight_;
 
-            float64 l2RegularizationWeight_;
+            const float64 l2RegularizationWeight_;
 
-            std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr_;
+            const std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr_;
 
         public:
 

@@ -20,7 +20,7 @@ namespace boosting {
 
             const IndexVector& labelIndices_;
 
-            std::unique_ptr<PartialIndexVector> indexVectorPtr_;
+            const std::unique_ptr<PartialIndexVector> indexVectorPtr_;
 
             SparseArrayVector<float64> tmpVector_;
 

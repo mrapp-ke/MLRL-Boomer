@@ -45,9 +45,9 @@ namespace boosting {
     class ExampleWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
 
-            std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr_;
+            const std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 
@@ -103,9 +103,9 @@ namespace boosting {
     class ExampleWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
 
-            std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr_;
+            const std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 

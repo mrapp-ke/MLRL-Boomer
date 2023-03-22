@@ -10,7 +10,7 @@ namespace boosting {
     class ConstantShrinkage final : public IPostProcessor {
         private:
 
-            float64 shrinkage_;
+            const float64 shrinkage_;
 
         public:
 
@@ -39,7 +39,7 @@ namespace boosting {
     class ConstantShrinkageFactory final : public IPostProcessorFactory {
         private:
 
-            float64 shrinkage_;
+            const float64 shrinkage_;
 
         public:
 

@@ -16,17 +16,17 @@ namespace boosting {
     class LabelWiseFixedPartialBinnedRuleEvaluationFactory final : public ISparseLabelWiseRuleEvaluationFactory {
         private:
 
-            float32 labelRatio_;
+            const float32 labelRatio_;
 
-            uint32 minLabels_;
+            const uint32 minLabels_;
 
-            uint32 maxLabels_;
+            const uint32 maxLabels_;
 
-            float64 l1RegularizationWeight_;
+            const float64 l1RegularizationWeight_;
 
-            float64 l2RegularizationWeight_;
+            const float64 l2RegularizationWeight_;
 
-            std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr_;
+            const std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr_;
 
         public:
 
