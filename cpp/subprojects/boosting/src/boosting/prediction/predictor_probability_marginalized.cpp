@@ -40,7 +40,7 @@ namespace boosting {
     class MarginalizedProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
         private:
 
-            std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
+            const std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
 
             const uint32 numThreads_;
 

@@ -6,7 +6,7 @@
 class PostOptimizationPhaseList final : public IPostOptimization {
     private:
 
-        std::unique_ptr<IntermediateModelBuilder> intermediateModelBuilderPtr_;
+        const std::unique_ptr<IntermediateModelBuilder> intermediateModelBuilderPtr_;
 
         std::vector<std::unique_ptr<IPostOptimizationPhase>> postOptimizationPhases_;
 
@@ -56,7 +56,7 @@ class PostOptimizationPhaseList final : public IPostOptimization {
 class NoPostOptimization final : public IPostOptimization {
     private:
 
-        std::unique_ptr<IModelBuilder> modelBuilderPtr_;
+        const std::unique_ptr<IModelBuilder> modelBuilderPtr_;
 
     public:
 

@@ -19,7 +19,7 @@ class PrePruning final : public IStoppingCriterion {
 
         const Partition& partition_;
 
-        std::unique_ptr<IAggregationFunction> aggregationFunctionPtr_;
+        const std::unique_ptr<IAggregationFunction> aggregationFunctionPtr_;
 
         const bool useHoldoutSet_;
 

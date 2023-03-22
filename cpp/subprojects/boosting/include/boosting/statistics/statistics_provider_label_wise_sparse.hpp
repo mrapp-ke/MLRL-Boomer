@@ -17,13 +17,13 @@ namespace boosting {
     class SparseLabelWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
         private:
 
-            std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr_;
 
-            std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
 
-            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
 
-            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
 
             const uint32 numThreads_;
 

@@ -32,7 +32,7 @@ class ExactRuleRefinement final : public IRuleRefinement {
 
         typedef IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector> Callback;
 
-        std::unique_ptr<Callback> callbackPtr_;
+        const std::unique_ptr<Callback> callbackPtr_;
 
     public:
 

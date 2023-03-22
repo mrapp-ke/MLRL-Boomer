@@ -20,7 +20,7 @@ namespace seco {
 
             const RuleEvaluationFactory& pruningRuleEvaluationFactory_;
 
-            std::unique_ptr<ILabelWiseStatistics<RuleEvaluationFactory>> statisticsPtr_;
+            const std::unique_ptr<ILabelWiseStatistics<RuleEvaluationFactory>> statisticsPtr_;
 
         public:
 

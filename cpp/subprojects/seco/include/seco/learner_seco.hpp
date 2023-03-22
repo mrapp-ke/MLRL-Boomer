@@ -88,7 +88,7 @@ namespace seco {
 
         private:
 
-            std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr_;
+            const std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr_;
 
         public:
 

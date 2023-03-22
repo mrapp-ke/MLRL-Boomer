@@ -59,7 +59,7 @@ namespace boosting {
                 : public AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>> {
                 private:
 
-                    std::shared_ptr<IProbabilityTransformation> probabilityTransformationPtr_;
+                    const std::shared_ptr<IProbabilityTransformation> probabilityTransformationPtr_;
 
                     DensePredictionMatrix<float64> scoreMatrix_;
 
@@ -103,7 +103,7 @@ namespace boosting {
 
             const uint32 numThreads_;
 
-            std::shared_ptr<IProbabilityTransformation> probabilityTransformationPtr_;
+            const std::shared_ptr<IProbabilityTransformation> probabilityTransformationPtr_;
 
         public:
 
