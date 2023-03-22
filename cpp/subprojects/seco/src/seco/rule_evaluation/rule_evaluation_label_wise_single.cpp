@@ -23,7 +23,7 @@ namespace seco {
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
 
-            std::unique_ptr<IHeuristic> heuristicPtr_;
+            const std::unique_ptr<IHeuristic> heuristicPtr_;
 
         public:
 

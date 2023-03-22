@@ -26,9 +26,9 @@ namespace seco {
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
 
-            std::unique_ptr<IHeuristic> heuristicPtr_;
+            const std::unique_ptr<IHeuristic> heuristicPtr_;
 
-            std::unique_ptr<ILiftFunction> liftFunctionPtr_;
+            const std::unique_ptr<ILiftFunction> liftFunctionPtr_;
 
         public:
 
@@ -93,9 +93,9 @@ namespace seco {
 
             SparseArrayVector<Tuple<float64>> sortedVector_;
 
-            std::unique_ptr<IHeuristic> heuristicPtr_;
+            const std::unique_ptr<IHeuristic> heuristicPtr_;
 
-            std::unique_ptr<ILiftFunction> liftFunctionPtr_;
+            const std::unique_ptr<ILiftFunction> liftFunctionPtr_;
 
         public:
 

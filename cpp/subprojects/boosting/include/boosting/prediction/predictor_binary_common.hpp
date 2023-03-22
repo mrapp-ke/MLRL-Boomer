@@ -60,7 +60,7 @@ namespace boosting {
                             }
                     };
 
-                    std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
+                    const std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
                     DensePredictionMatrix<float64> realMatrix_;
 
@@ -138,7 +138,7 @@ namespace boosting {
 
             const uint32 numThreads_;
 
-            std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
+            const std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
         public:
 
@@ -246,7 +246,7 @@ namespace boosting {
                             }
                     };
 
-                    std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
+                    const std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
                     DensePredictionMatrix<float64> realMatrix_;
 
@@ -331,7 +331,7 @@ namespace boosting {
 
             const uint32 numThreads_;
 
-            std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
+            const std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
         public:
 

@@ -345,9 +345,9 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
         };
 
-        std::unique_ptr<IFeatureBinning> numericalFeatureBinningPtr_;
+        const std::unique_ptr<IFeatureBinning> numericalFeatureBinningPtr_;
 
-        std::unique_ptr<IFeatureBinning> nominalFeatureBinningPtr_;
+        const std::unique_ptr<IFeatureBinning> nominalFeatureBinningPtr_;
 
         const uint32 numThreads_;
 

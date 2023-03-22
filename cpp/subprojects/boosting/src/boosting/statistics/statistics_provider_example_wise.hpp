@@ -28,7 +28,7 @@ namespace boosting {
 
             const ExampleWiseRuleEvaluationFactory& pruningRuleEvaluationFactory_;
 
-            std::unique_ptr<ExampleWiseStatistics> statisticsPtr_;
+            const std::unique_ptr<ExampleWiseStatistics> statisticsPtr_;
 
         public:
 

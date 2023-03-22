@@ -204,7 +204,7 @@ namespace boosting {
 
             const float64 l2RegularizationWeight_;
 
-            std::unique_ptr<ILabelBinning> binningPtr_;
+            const std::unique_ptr<ILabelBinning> binningPtr_;
 
             const Blas& blas_;
 

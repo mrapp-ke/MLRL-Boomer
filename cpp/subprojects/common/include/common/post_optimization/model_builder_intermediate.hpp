@@ -23,7 +23,7 @@ class IntermediateModelBuilder final : public IModelBuilder {
 
     private:
 
-        std::unique_ptr<IModelBuilder> modelBuilderPtr_;
+        const std::unique_ptr<IModelBuilder> modelBuilderPtr_;
 
         std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr_;
 
