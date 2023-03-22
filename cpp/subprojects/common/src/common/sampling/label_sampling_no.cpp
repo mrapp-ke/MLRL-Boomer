@@ -8,7 +8,7 @@
 class NoLabelSampling final : public ILabelSampling {
     private:
 
-        CompleteIndexVector indexVector_;
+        const CompleteIndexVector indexVector_;
 
     public:
 

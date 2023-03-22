@@ -21,7 +21,7 @@ class ExampleWiseStratifiedSampling final : public IInstanceSampling {
 
         BitWeightVector weightVector_;
 
-        ExampleWiseStratification<LabelMatrix, IndexIterator> stratification_;
+        const ExampleWiseStratification<LabelMatrix, IndexIterator> stratification_;
 
     public:
 
