@@ -27,5 +27,5 @@ class DenseMatrix : public CContiguousView<T> {
          */
         DenseMatrix(uint32 numRows, uint32 numCols, bool init);
 
-        virtual ~DenseMatrix();
+        virtual ~DenseMatrix() override;
 };

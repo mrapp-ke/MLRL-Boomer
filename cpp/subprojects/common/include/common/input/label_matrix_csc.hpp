@@ -61,5 +61,5 @@ class CscLabelMatrix final : public BinaryCscConstView {
         CscLabelMatrix(const BinaryCsrConstView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                        PartialIndexVector::const_iterator indicesEnd);
 
-        ~CscLabelMatrix();
+        ~CscLabelMatrix() override;
 };
