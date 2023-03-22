@@ -145,9 +145,9 @@ class BinarySparsePredictionDispatcher final {
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
             uint32 numNonZeroElements = 0;
 
-#pragma omp parallel for reduction(+:numNonZeroElements) firstprivate(numExamples) firstprivate(delegatePtr) \
+#pragma omp parallel for reduction(+ : numNonZeroElements) firstprivate(numExamples) firstprivate(delegatePtr) \
   firstprivate(rulesBegin) firstprivate(rulesEnd) firstprivate(featureMatrixPtr) schedule(dynamic) \
-    num_threads(numThreads)
+  num_threads(numThreads)
             for (int64 i = 0; i < numExamples; i++) {
                 uint32 threadIndex = (uint32) omp_get_thread_num();
                 numNonZeroElements +=
