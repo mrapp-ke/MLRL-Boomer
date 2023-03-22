@@ -78,7 +78,7 @@ namespace boosting {
              * An unique pointer to an object of type `IRuleEvaluation` that is used to calculate the predictions of
              * rules, as well as their overall quality.
              */
-            std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
+            const std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
 
         public:
 
@@ -354,9 +354,9 @@ namespace boosting {
                     }
             };
 
-            std::unique_ptr<Histogram> histogramPtr_;
+            const std::unique_ptr<Histogram> histogramPtr_;
 
-            std::unique_ptr<BinWeightVector> binWeightVectorPtr_;
+            const std::unique_ptr<BinWeightVector> binWeightVectorPtr_;
 
             const BinIndexVector& binIndexVector_;
 
@@ -564,7 +564,7 @@ namespace boosting {
                     }
             };
 
-            std::unique_ptr<StatisticVector> totalSumVectorPtr_;
+            const std::unique_ptr<StatisticVector> totalSumVectorPtr_;
 
         public:
 
@@ -722,9 +722,9 @@ namespace boosting {
 
             const LabelMatrix& labelMatrix_;
 
-            std::unique_ptr<StatisticView> statisticViewPtr_;
+            const std::unique_ptr<StatisticView> statisticViewPtr_;
 
-            std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
+            const std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
 
         public:
 

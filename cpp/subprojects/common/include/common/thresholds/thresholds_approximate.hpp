@@ -13,11 +13,11 @@
 class ApproximateThresholdsFactory final : public IThresholdsFactory {
     private:
 
-        std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr_;
+        const std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr_;
 
-        std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr_;
+        const std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr_;
 
-        uint32 numThreads_;
+        const uint32 numThreads_;
 
     public:
 

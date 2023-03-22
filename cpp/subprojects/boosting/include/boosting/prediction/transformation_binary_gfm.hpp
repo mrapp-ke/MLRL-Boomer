@@ -18,9 +18,9 @@ namespace boosting {
 
             const LabelVectorSet& labelVectorSet_;
 
-            uint32 maxLabelCardinality_;
+            const uint32 maxLabelCardinality_;
 
-            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
+            const std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
 
         public:
 

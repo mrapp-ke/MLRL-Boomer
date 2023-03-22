@@ -160,7 +160,7 @@ namespace boosting {
 
         private:
 
-            std::unique_ptr<IBoomer::IConfig> configPtr_;
+            const std::unique_ptr<IBoomer::IConfig> configPtr_;
 
         public:
 

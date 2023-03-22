@@ -30,12 +30,12 @@ namespace boosting {
             /**
              * The "update function" that is used for updating gradients and Hessians.
              */
-            UpdateFunction updateFunction_;
+            const UpdateFunction updateFunction_;
 
             /**
              * The "evaluation function" that is used for evaluating predictions.
              */
-            EvaluateFunction evaluateFunction_;
+            const EvaluateFunction evaluateFunction_;
 
             /**
              * @param updateFunction    The "update function" to be used for updating gradients and Hessians

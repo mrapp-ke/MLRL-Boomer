@@ -26,9 +26,9 @@ namespace boosting {
 
         private:
 
-            DdotFunction ddotFunction_;
+            const DdotFunction ddotFunction_;
 
-            DspmvFunction dspmvFunction_;
+            const DspmvFunction dspmvFunction_;
 
         public:
 

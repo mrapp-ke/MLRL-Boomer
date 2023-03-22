@@ -18,7 +18,7 @@ namespace boosting {
 
             const LabelVectorSet& labelVectorSet_;
 
-            std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
+            const std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
 
         public:
 

@@ -21,11 +21,11 @@ namespace boosting {
 
             const IndexVector& labelIndices_;
 
-            std::unique_ptr<PartialIndexVector> indexVectorPtr_;
+            const std::unique_ptr<PartialIndexVector> indexVectorPtr_;
 
-            float64 threshold_;
+            const float64 threshold_;
 
-            float64 exponent_;
+            const float64 exponent_;
 
         protected:
 

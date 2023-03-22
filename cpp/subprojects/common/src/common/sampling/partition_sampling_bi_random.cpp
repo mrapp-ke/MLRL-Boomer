@@ -50,7 +50,7 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
 class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
     private:
 
-        float32 holdoutSetSize_;
+        const float32 holdoutSetSize_;
 
     public:
 

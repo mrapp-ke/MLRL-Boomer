@@ -14,9 +14,9 @@ namespace boosting {
     class LabelWiseSingleLabelRuleEvaluationFactory final : public ISparseLabelWiseRuleEvaluationFactory {
         private:
 
-            float64 l1RegularizationWeight_;
+            const float64 l1RegularizationWeight_;
 
-            float64 l2RegularizationWeight_;
+            const float64 l2RegularizationWeight_;
 
         public:
 

@@ -14,7 +14,7 @@
 class BinaryLilMatrix final {
     private:
 
-        uint32 numRows_;
+        const uint32 numRows_;
 
         std::vector<uint32>* array_;
 

@@ -21,7 +21,7 @@ namespace boosting {
 
         private:
 
-            DsysvFunction dsysvFunction_;
+            const DsysvFunction dsysvFunction_;
 
         public:
 

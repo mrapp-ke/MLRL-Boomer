@@ -46,11 +46,11 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 
         IntermediateModelBuilder& modelBuilder_;
 
-        uint32 numIterations_;
+        const uint32 numIterations_;
 
-        bool refineHeads_;
+        const bool refineHeads_;
 
-        bool resampleFeatures_;
+        const bool resampleFeatures_;
 
     public:
 
@@ -130,11 +130,11 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 class SequentialPostOptimizationFactory final : public IPostOptimizationPhaseFactory {
     private:
 
-        uint32 numIterations_;
+        const uint32 numIterations_;
 
-        bool refineHeads_;
+        const bool refineHeads_;
 
-        bool resampleFeatures_;
+        const bool resampleFeatures_;
 
     public:
 

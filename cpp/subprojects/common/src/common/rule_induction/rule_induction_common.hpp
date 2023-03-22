@@ -13,7 +13,7 @@
 class AbstractRuleInduction : public IRuleInduction {
     private:
 
-        bool recalculatePredictions_;
+        const bool recalculatePredictions_;
 
     protected:
 

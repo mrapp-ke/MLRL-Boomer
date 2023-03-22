@@ -17,19 +17,19 @@ template<typename Partition>
 class PrePruning final : public IStoppingCriterion {
     private:
 
-        Partition& partition_;
+        const Partition& partition_;
 
-        std::unique_ptr<IAggregationFunction> aggregationFunctionPtr_;
+        const std::unique_ptr<IAggregationFunction> aggregationFunctionPtr_;
 
-        bool useHoldoutSet_;
+        const bool useHoldoutSet_;
 
-        bool removeUnusedRules_;
+        const bool removeUnusedRules_;
 
-        uint32 updateInterval_;
+        const uint32 updateInterval_;
 
-        uint32 stopInterval_;
+        const uint32 stopInterval_;
 
-        float64 minImprovement_;
+        const float64 minImprovement_;
 
         RingBuffer<float64> pastBuffer_;
 
@@ -70,7 +70,7 @@ class PrePruning final : public IStoppingCriterion {
          * @param minImprovement            The minimum improvement in percent that must be reached for the rule
          *                                  induction to be continued. Must be in [0, 1]
          */
-        PrePruning(Partition& partition, std::unique_ptr<IAggregationFunction> aggregationFunctionPtr,
+        PrePruning(const Partition& partition, std::unique_ptr<IAggregationFunction> aggregationFunctionPtr,
                    bool useHoldoutSet, bool removeUnusedRules, uint32 minRules, uint32 updateInterval,
                    uint32 stopInterval, uint32 numPast, uint32 numCurrent, float64 minImprovement)
             : partition_(partition), aggregationFunctionPtr_(std::move(aggregationFunctionPtr)),

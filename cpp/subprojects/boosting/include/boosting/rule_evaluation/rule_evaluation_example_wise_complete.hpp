@@ -16,9 +16,9 @@ namespace boosting {
     class ExampleWiseCompleteRuleEvaluationFactory final : public IExampleWiseRuleEvaluationFactory {
         private:
 
-            float64 l1RegularizationWeight_;
+            const float64 l1RegularizationWeight_;
 
-            float64 l2RegularizationWeight_;
+            const float64 l2RegularizationWeight_;
 
             const Blas& blas_;
 

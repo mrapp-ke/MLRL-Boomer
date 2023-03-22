@@ -11,7 +11,7 @@
 class BitVector final {
     private:
 
-        uint32 numElements_;
+        const uint32 numElements_;
 
         uint32* array_;
 

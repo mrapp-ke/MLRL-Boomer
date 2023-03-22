@@ -15,7 +15,7 @@ class CoverageMask final : public ICoverageState {
 
         uint32* array_;
 
-        uint32 numElements_;
+        const uint32 numElements_;
 
         uint32 indicatorValue_;
 

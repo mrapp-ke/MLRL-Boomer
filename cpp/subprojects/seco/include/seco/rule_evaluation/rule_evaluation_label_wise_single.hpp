@@ -16,7 +16,7 @@ namespace seco {
     class LabelWiseSingleLabelRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
         private:
 
-            std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr_;
+            const std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr_;
 
         public:
 

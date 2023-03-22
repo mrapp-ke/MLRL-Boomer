@@ -118,9 +118,9 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                         ThresholdsSubset& thresholdsSubset_;
 
-                        uint32 featureIndex_;
+                        const uint32 featureIndex_;
 
-                        bool nominal_;
+                        const bool nominal_;
 
                     public:
 
@@ -345,11 +345,11 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
         };
 
-        std::unique_ptr<IFeatureBinning> numericalFeatureBinningPtr_;
+        const std::unique_ptr<IFeatureBinning> numericalFeatureBinningPtr_;
 
-        std::unique_ptr<IFeatureBinning> nominalFeatureBinningPtr_;
+        const std::unique_ptr<IFeatureBinning> nominalFeatureBinningPtr_;
 
-        uint32 numThreads_;
+        const uint32 numThreads_;
 
         std::unordered_map<uint32, IFeatureBinning::Result> cache_;
 

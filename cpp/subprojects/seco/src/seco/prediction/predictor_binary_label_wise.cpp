@@ -141,9 +141,9 @@ namespace seco {
 
             const Model& model_;
 
-            uint32 numLabels_;
+            const uint32 numLabels_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 
@@ -199,7 +199,7 @@ namespace seco {
     class LabelWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 
@@ -365,7 +365,7 @@ namespace seco {
 
                     BinaryLilMatrix& predictionMatrix_;
 
-                    uint32 numLabels_;
+                    const uint32 numLabels_;
 
                 public:
 
@@ -387,9 +387,9 @@ namespace seco {
 
             const Model& model_;
 
-            uint32 numLabels_;
+            const uint32 numLabels_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 
@@ -444,7 +444,7 @@ namespace seco {
     class LabelWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 

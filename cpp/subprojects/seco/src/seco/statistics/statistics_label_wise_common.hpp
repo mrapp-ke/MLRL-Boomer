@@ -103,7 +103,7 @@ namespace seco {
              * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
              * rules, as well as their overall quality.
              */
-            std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr_;
+            const std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr_;
 
         public:
 
@@ -207,7 +207,7 @@ namespace seco {
                                                    RuleEvaluationFactory, WeightVector, IndexVector> {
         private:
 
-            std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr_;
+            const std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr_;
 
         public:
 
@@ -594,9 +594,9 @@ namespace seco {
 
             const LabelMatrix& labelMatrix_;
 
-            std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr_;
+            const std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr_;
 
-            std::unique_ptr<CoverageMatrix> coverageMatrixPtr_;
+            const std::unique_ptr<CoverageMatrix> coverageMatrixPtr_;
 
         public:
 

@@ -242,7 +242,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                         ThresholdsSubset& thresholdsSubset_;
 
-                        uint32 featureIndex_;
+                        const uint32 featureIndex_;
 
                     public:
 
@@ -487,7 +487,7 @@ class ExactThresholds final : public AbstractThresholds {
                 }
         };
 
-        uint32 numThreads_;
+        const uint32 numThreads_;
 
         std::unordered_map<uint32, std::unique_ptr<FeatureVector>> cache_;
 

@@ -14,7 +14,7 @@ namespace boosting {
     class LabelWiseBinaryTransformation final : public IBinaryTransformation {
         private:
 
-            float64 threshold_;
+            const float64 threshold_;
 
         public:
 

@@ -17,17 +17,17 @@ namespace boosting {
     class DenseLabelWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
         private:
 
-            std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr_;
 
-            std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
 
-            uint32 numThreads_;
+            const uint32 numThreads_;
 
         public:
 

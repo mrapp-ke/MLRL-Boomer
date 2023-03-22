@@ -17,7 +17,7 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
 
         BiPartition partition_;
 
-        ExampleWiseStratification<LabelMatrix, IndexIterator> stratification_;
+        const ExampleWiseStratification<LabelMatrix, IndexIterator> stratification_;
 
     public:
 
@@ -46,7 +46,7 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
 class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
     private:
 
-        float32 holdoutSetSize_;
+        const float32 holdoutSetSize_;
 
     public:
 

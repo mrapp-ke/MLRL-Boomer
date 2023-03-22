@@ -18,12 +18,12 @@ class CsrConstView : virtual public ITwoDimensionalView {
         /**
          * The number of rows in the view.
          */
-        uint32 numRows_;
+        const uint32 numRows_;
 
         /**
          * The number of columns in the view.
          */
-        uint32 numCols_;
+        const uint32 numCols_;
 
         /**
          * A pointer to an array that stores all non-zero values.
