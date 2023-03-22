@@ -1253,7 +1253,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
             private:
 
-                RuleCompareFunction ruleCompareFunction_;
+                const RuleCompareFunction ruleCompareFunction_;
 
                 RuleCompareFunction getRuleCompareFunction() const override final;
 
