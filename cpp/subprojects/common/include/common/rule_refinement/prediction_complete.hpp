@@ -12,7 +12,7 @@
 class CompletePrediction final : public AbstractEvaluatedPrediction {
     private:
 
-        CompleteIndexVector indexVector_;
+        const CompleteIndexVector indexVector_;
 
     public:
 

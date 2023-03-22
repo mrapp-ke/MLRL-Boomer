@@ -18,7 +18,7 @@ class LabelWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
 
         BiPartition partition_;
 
-        LabelWiseStratification<LabelMatrix, IndexIterator> stratification_;
+        const LabelWiseStratification<LabelMatrix, IndexIterator> stratification_;
 
     public:
 

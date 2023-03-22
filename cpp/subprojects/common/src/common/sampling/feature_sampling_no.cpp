@@ -9,7 +9,7 @@
 class NoFeatureSampling final : public IFeatureSampling {
     private:
 
-        CompleteIndexVector indexVector_;
+        const CompleteIndexVector indexVector_;
 
     public:
 
