@@ -100,15 +100,13 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
         std::unique_ptr<IRuleModel> induceRules(const IFeatureInfo& featureInfo,
                                                 const IColumnWiseFeatureMatrix& featureMatrix,
-                                                const IRowWiseLabelMatrix& labelMatrix,
-                                                uint32 randomState) const override {
+                                                const IRowWiseLabelMatrix& labelMatrix, RNG& rng) const override {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
 
             // Partition training data...
             std::unique_ptr<IPartitionSampling> partitionSamplingPtr =
               labelMatrix.createPartitionSampling(*partitionSamplingFactoryPtr_);
-            RNG rng(randomState);
             IPartition& partition = partitionSamplingPtr->partition(rng);
 
             // Induce default rule...
