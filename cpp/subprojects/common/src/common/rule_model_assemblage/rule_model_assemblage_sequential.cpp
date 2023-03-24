@@ -21,8 +21,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
         const std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr_;
 
-        const std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr_;
-
         const std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr_;
 
         const std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr_;
@@ -56,9 +54,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
          * @param featureSamplingFactoryPtr     An unique pointer to an object of type `IFeatureSamplingFactory` that
          *                                      allows to create the implementation to be used for sampling the features
          *                                      that may be used by the conditions of a rule
-         * @param partitionSamplingFactoryPtr   An unique pointer to an object of type `IPartitionSamplingFactory` that
-         *                                      allows to create the implementation to be used for partitioning the
-         *                                      training examples into a training set and a holdout set
          * @param rulePruningFactoryPtr         An unique pointer to an object of type `IRulePruningFactory` that allows
          *                                      to create the implementation to be used for pruning rules
          * @param postProcessorFactoryPtr       An unique pointer to an object of type `IPostProcessorFactory` that
@@ -79,7 +74,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                                       std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
                                       std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
                                       std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
-                                      std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
                                       std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
                                       std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
                                       std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
@@ -92,7 +86,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
               labelSamplingFactoryPtr_(std::move(labelSamplingFactoryPtr)),
               instanceSamplingFactoryPtr_(std::move(instanceSamplingFactoryPtr)),
               featureSamplingFactoryPtr_(std::move(featureSamplingFactoryPtr)),
-              partitionSamplingFactoryPtr_(std::move(partitionSamplingFactoryPtr)),
               rulePruningFactoryPtr_(std::move(rulePruningFactoryPtr)),
               postProcessorFactoryPtr_(std::move(postProcessorFactoryPtr)),
               postOptimizationFactoryPtr_(std::move(postOptimizationFactoryPtr)),
@@ -100,14 +93,10 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
         std::unique_ptr<IRuleModel> induceRules(const IFeatureInfo& featureInfo,
                                                 const IColumnWiseFeatureMatrix& featureMatrix,
-                                                const IRowWiseLabelMatrix& labelMatrix, RNG& rng) const override {
+                                                const IRowWiseLabelMatrix& labelMatrix, IPartition& partition,
+                                                RNG& rng) const override {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
-
-            // Partition training data...
-            std::unique_ptr<IPartitionSampling> partitionSamplingPtr =
-              labelMatrix.createPartitionSampling(*partitionSamplingFactoryPtr_);
-            IPartition& partition = partitionSamplingPtr->partition(rng);
 
             // Induce default rule...
             std::unique_ptr<IPostOptimization> postOptimizationPtr =
@@ -197,7 +186,6 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
           std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
           std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
           std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
-          std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
           std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
           std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
           std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
@@ -206,9 +194,8 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
               std::move(modelBuilderFactoryPtr), std::move(statisticsProviderFactoryPtr),
               std::move(thresholdsFactoryPtr), std::move(ruleInductionFactoryPtr), std::move(labelSamplingFactoryPtr),
               std::move(instanceSamplingFactoryPtr), std::move(featureSamplingFactoryPtr),
-              std::move(partitionSamplingFactoryPtr), std::move(rulePruningFactoryPtr),
-              std::move(postProcessorFactoryPtr), std::move(postOptimizationFactoryPtr),
-              std::move(stoppingCriterionFactoryPtr), useDefaultRule_);
+              std::move(rulePruningFactoryPtr), std::move(postProcessorFactoryPtr),
+              std::move(postOptimizationFactoryPtr), std::move(stoppingCriterionFactoryPtr), useDefaultRule_);
         }
 };
 
