@@ -35,6 +35,8 @@ class IRuleModelAssemblage {
          *                      access to the feature values of individual training examples
          * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
          *                      the labels of individual training examples
+         * @param partition     A reference to an object of type `IPartition` that provides access to the indices of the
+         *                      training examples that belong to the training set and the holdout set, respectively
          * @param rng           A reference to an object of type `RNG` that implements the random number generator to be
          *                      used
          * @return              An unique pointer to an object of type `IRuleModel` that consists of the rules that have
@@ -42,7 +44,8 @@ class IRuleModelAssemblage {
          */
         virtual std::unique_ptr<IRuleModel> induceRules(const IFeatureInfo& featureInfo,
                                                         const IColumnWiseFeatureMatrix& featureMatrix,
-                                                        const IRowWiseLabelMatrix& labelMatrix, RNG& rng) const = 0;
+                                                        const IRowWiseLabelMatrix& labelMatrix, IPartition& partition,
+                                                        RNG& rng) const = 0;
 };
 
 /**
@@ -76,9 +79,6 @@ class IRuleModelAssemblageFactory {
          * @param featureSamplingFactoryPtr     An unique pointer to an object of type `IFeatureSamplingFactory` that
          *                                      allows to create the implementation to be used for sampling the features
          *                                      that may be used by the conditions of a rule
-         * @param partitionSamplingFactoryPtr   An unique pointer to an object of type `IPartitionSamplingFactory` that
-         *                                      allows to create the implementation to be used for partitioning the
-         *                                      training examples into a training set and a holdout set
          * @param rulePruningFactoryPtr         An unique pointer to an object of type `IRulePruningFactory` that allows
          *                                      to create the implementation to be used for pruning rules
          * @param postProcessorFactoryPtr       An unique pointer to an object of type `IPostProcessorFactory` that
@@ -99,7 +99,6 @@ class IRuleModelAssemblageFactory {
           std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
           std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
           std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
-          std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
           std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
           std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
           std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
