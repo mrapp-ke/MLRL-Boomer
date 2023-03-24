@@ -420,8 +420,9 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
       this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(featureMatrix),
       this->createPartitionSamplingFactory(), this->createRulePruningFactory(), this->createPostProcessorFactory(),
       std::move(postOptimizationFactoryPtr), std::move(stoppingCriterionFactoryPtr));
+    RNG rng(randomState);
     std::unique_ptr<IRuleModel> ruleModelPtr =
-      ruleModelAssemblagePtr->induceRules(featureInfo, featureMatrix, labelMatrix, randomState);
+      ruleModelAssemblagePtr->induceRules(featureInfo, featureMatrix, labelMatrix, rng);
     return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), std::move(ruleModelPtr),
                                             std::move(labelSpaceInfoPtr));
 }

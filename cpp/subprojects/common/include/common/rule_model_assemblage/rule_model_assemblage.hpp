@@ -35,14 +35,14 @@ class IRuleModelAssemblage {
          *                      access to the feature values of individual training examples
          * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
          *                      the labels of individual training examples
-         * @param randomState   The seed to be used by the random number generators
+         * @param rng           A reference to an object of type `RNG` that implements the random number generator to be
+         *                      used
          * @return              An unique pointer to an object of type `IRuleModel` that consists of the rules that have
          *                      been induced
          */
         virtual std::unique_ptr<IRuleModel> induceRules(const IFeatureInfo& featureInfo,
                                                         const IColumnWiseFeatureMatrix& featureMatrix,
-                                                        const IRowWiseLabelMatrix& labelMatrix,
-                                                        uint32 randomState) const = 0;
+                                                        const IRowWiseLabelMatrix& labelMatrix, RNG& rng) const = 0;
 };
 
 /**
