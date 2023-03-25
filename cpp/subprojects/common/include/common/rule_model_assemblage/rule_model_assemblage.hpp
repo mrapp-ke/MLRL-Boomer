@@ -37,6 +37,8 @@ class IRuleModelAssemblage {
          * @param ruleInduction         A reference to an object of type `IRuleInduction` to be used for the induction
          *                              of individual rules
          * @param rulePruning           A reference to an object of type `IRulePruning` to be used for pruning rules
+         * @param postProcessor         A reference to an object of type `IPostProcessor` to be used for post-processing
+         *                              the predictions of rules
          * @param partition             A reference to an object of type `IPartition` that provides access to the
          *                              indices of the training examples that belong to the training set and the holdout
          *                              set, respectively
@@ -56,7 +58,8 @@ class IRuleModelAssemblage {
          */
         virtual void induceRules(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
                                  const IRowWiseLabelMatrix& labelMatrix, const IRuleInduction& ruleInduction,
-                                 const IRulePruning& rulePruning, IPartition& partition, ILabelSampling& labelSampling,
+                                 const IRulePruning& rulePruning, const IPostProcessor& postProcessor,
+                                 IPartition& partition, ILabelSampling& labelSampling,
                                  IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
                                  IStatisticsProvider& statisticsProvider, IThresholds& thresholds,
                                  IModelBuilder& modelBuilder, RNG& rng) const = 0;
@@ -73,15 +76,11 @@ class IRuleModelAssemblageFactory {
         /**
          * Creates and returns a new object of the type `IRuleModelAssemblage`.
          *
-         * @param postProcessorFactoryPtr       An unique pointer to an object of type `IPostProcessorFactory` that
-         *                                      allows to create the implementation to be used for post-processing the
-         *                                      predictions of rules
          * @param stoppingCriterionFactoryPtr   An unique pointer to an object of type `IStoppingCriterionFactory` that
          *                                      allows to create the implementations to be used to decide whether
          *                                      additional rules should be induced or not
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
-          std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
           std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const = 0;
 };
 
