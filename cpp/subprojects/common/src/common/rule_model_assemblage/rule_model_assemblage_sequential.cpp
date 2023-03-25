@@ -64,7 +64,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
 
-            // Induce default rule...
+            // Induce default rule, if necessary...
             if (useDefaultRule_) {
                 ruleInduction.induceDefaultRule(statisticsProvider.get(), modelBuilder);
             }
