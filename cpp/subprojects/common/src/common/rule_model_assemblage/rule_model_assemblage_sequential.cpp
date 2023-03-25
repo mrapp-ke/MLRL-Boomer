@@ -23,12 +23,11 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                                       bool useDefaultRule)
             : stoppingCriterionFactoryPtr_(std::move(stoppingCriterionFactoryPtr)), useDefaultRule_(useDefaultRule) {}
 
-        void induceRules(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
-                         const IRowWiseLabelMatrix& labelMatrix, const IRuleInduction& ruleInduction,
-                         const IRulePruning& rulePruning, const IPostProcessor& postProcessor, IPartition& partition,
-                         ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
-                         IFeatureSampling& featureSampling, IStatisticsProvider& statisticsProvider,
-                         IThresholds& thresholds, IModelBuilder& modelBuilder, RNG& rng) const override {
+        void induceRules(const IRuleInduction& ruleInduction, const IRulePruning& rulePruning,
+                         const IPostProcessor& postProcessor, IPartition& partition, ILabelSampling& labelSampling,
+                         IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
+                         IStatisticsProvider& statisticsProvider, IThresholds& thresholds, IModelBuilder& modelBuilder,
+                         RNG& rng) const override {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
 
