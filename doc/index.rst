@@ -23,3 +23,5 @@ This document is intended for users and developers who are interested in the alg
    references/index
 
    source/CHANGELOG.md
+
+   source/CONTRIBUTORS.md
