@@ -7,8 +7,6 @@
 class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
     private:
 
-        const std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr_;
-
         const std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr_;
 
         const std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr_;
@@ -24,9 +22,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
     public:
 
         /**
-         * @param labelSamplingFactoryPtr       An unique pointer to an object of type `ILabelSamplingFactory` that
-         *                                      allows to create the implementation to be used for sampling the labels
-         *                                      whenever a new rule is induced
          * @param instanceSamplingFactoryPtr    An unique pointer to an object of type `IInstanceSamplingFactory` that
          *                                      allows create the implementation to be used for sampling the examples
          *                                      whenever a new rule is induced
@@ -43,15 +38,13 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
          *                                      additional rules should be induced or not
          * @param useDefaultRule                True, if a default rule should be used, False otherwise
          */
-        SequentialRuleModelAssemblage(std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
-                                      std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
+        SequentialRuleModelAssemblage(std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
                                       std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
                                       std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
                                       std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
                                       std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr,
                                       bool useDefaultRule)
-            : labelSamplingFactoryPtr_(std::move(labelSamplingFactoryPtr)),
-              instanceSamplingFactoryPtr_(std::move(instanceSamplingFactoryPtr)),
+            : instanceSamplingFactoryPtr_(std::move(instanceSamplingFactoryPtr)),
               featureSamplingFactoryPtr_(std::move(featureSamplingFactoryPtr)),
               rulePruningFactoryPtr_(std::move(rulePruningFactoryPtr)),
               postProcessorFactoryPtr_(std::move(postProcessorFactoryPtr)),
@@ -59,8 +52,8 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
         void induceRules(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
                          const IRowWiseLabelMatrix& labelMatrix, const IRuleInduction& ruleInduction,
-                         IPartition& partition, IStatisticsProvider& statisticsProvider, IThresholds& thresholds,
-                         IModelBuilder& modelBuilder, RNG& rng) const override {
+                         IPartition& partition, ILabelSampling& labelSampling, IStatisticsProvider& statisticsProvider,
+                         IThresholds& thresholds, IModelBuilder& modelBuilder, RNG& rng) const override {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
 
@@ -75,7 +68,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             std::unique_ptr<IInstanceSampling> instanceSamplingPtr =
               partition.createInstanceSampling(*instanceSamplingFactoryPtr_, labelMatrix, statisticsProvider.get());
             std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr_->create();
-            std::unique_ptr<ILabelSampling> labelSamplingPtr = labelSamplingFactoryPtr_->create();
             std::unique_ptr<IRulePruning> rulePruningPtr = rulePruningFactoryPtr_->create();
             std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr_->create();
             std::unique_ptr<IStoppingCriterion> stoppingCriterionPtr =
@@ -94,7 +86,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 }
 
                 const IWeightVector& weights = instanceSamplingPtr->sample(rng);
-                const IIndexVector& labelIndices = labelSamplingPtr->sample(rng);
+                const IIndexVector& labelIndices = labelSampling.sample(rng);
                 bool success =
                   ruleInduction.induceRule(thresholds, labelIndices, weights, partition, *featureSamplingPtr,
                                            *rulePruningPtr, *postProcessorPtr, rng, modelBuilder);
@@ -128,16 +120,15 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
         SequentialRuleModelAssemblageFactory(bool useDefaultRule) : useDefaultRule_(useDefaultRule) {}
 
         std::unique_ptr<IRuleModelAssemblage> create(
-          std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
           std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
           std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
           std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
           std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
           std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const override {
             return std::make_unique<SequentialRuleModelAssemblage>(
-              std::move(labelSamplingFactoryPtr), std::move(instanceSamplingFactoryPtr),
-              std::move(featureSamplingFactoryPtr), std::move(rulePruningFactoryPtr),
-              std::move(postProcessorFactoryPtr), std::move(stoppingCriterionFactoryPtr), useDefaultRule_);
+              std::move(instanceSamplingFactoryPtr), std::move(featureSamplingFactoryPtr),
+              std::move(rulePruningFactoryPtr), std::move(postProcessorFactoryPtr),
+              std::move(stoppingCriterionFactoryPtr), useDefaultRule_);
         }
 };
 
