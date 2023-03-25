@@ -7,7 +7,6 @@
 #include "common/input/feature_matrix_column_wise.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/model/model_builder.hpp"
-#include "common/post_optimization/post_optimization.hpp"
 #include "common/rule_induction/rule_induction.hpp"
 #include "common/sampling/feature_sampling.hpp"
 #include "common/sampling/instance_sampling.hpp"
@@ -42,13 +41,12 @@ class IRuleModelAssemblage {
          *                              the statistics which serve as the basis for learning rules
          * @param rng                   A reference to an object of type `RNG` that implements the random number
          *                              generator to be used
-         * @return                      An unique pointer to an object of type `IRuleModel` that consists of the rules
-         *                              that have been induced
+         * @param modelBuilder          A reference to an object of type `IModelBuilder`, the rules should be added to
          */
-        virtual std::unique_ptr<IRuleModel> induceRules(const IFeatureInfo& featureInfo,
-                                                        const IColumnWiseFeatureMatrix& featureMatrix,
-                                                        const IRowWiseLabelMatrix& labelMatrix, IPartition& partition,
-                                                        IStatisticsProvider& statisticsProvider, RNG& rng) const = 0;
+        virtual void induceRules(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
+                                 const IRowWiseLabelMatrix& labelMatrix, IPartition& partition,
+                                 IStatisticsProvider& statisticsProvider, IModelBuilder& modelBuilder,
+                                 RNG& rng) const = 0;
 };
 
 /**
@@ -62,8 +60,6 @@ class IRuleModelAssemblageFactory {
         /**
          * Creates and returns a new object of the type `IRuleModelAssemblage`.
          *
-         * @param modelBuilderFactoryPtr        An unique pointer to an object of type `IModelBuilderFactory` that
-         *                                      allows to create the builder to be used for assembling a model
          * @param thresholdsFactoryPtr          An unique pointer to an object of type `IThresholdsFactory` that allows
          *                                      to create objects that provide access to the thresholds that may be used
          *                                      by the conditions of rules
@@ -84,15 +80,11 @@ class IRuleModelAssemblageFactory {
          * @param postProcessorFactoryPtr       An unique pointer to an object of type `IPostProcessorFactory` that
          *                                      allows to create the implementation to be used for post-processing the
          *                                      predictions of rules
-         * @param postOptimizationFactoryPtr    An unique pointer to an object of type `IPostOptimizationFactory` that
-         *                                      allows to create the implementation to be used for optimizing a
-         *                                      rule-based model once it has been learned
          * @param stoppingCriterionFactoryPtr   An unique pointer to an object of type `IStoppingCriterionFactory` that
          *                                      allows to create the implementations to be used to decide whether
          *                                      additional rules should be induced or not
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
-          std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
           std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
           std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
           std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
@@ -100,7 +92,6 @@ class IRuleModelAssemblageFactory {
           std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
           std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
           std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-          std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
           std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const = 0;
 };
 
