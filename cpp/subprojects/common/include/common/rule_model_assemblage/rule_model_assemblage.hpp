@@ -43,6 +43,8 @@ class IRuleModelAssemblage {
          *                              labels whenever a new rule is induced
          * @param instanceSampling      A reference to an object of type `IInstanceSampling` to be used for sampling the
          *                              examples whenever a new rule is induced
+         * @param featureSampling       A reference to an object of type `IFeatureSampling` to be used for sampling the
+         *                              features that may be used by the conditions of a rule
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
          *                              the statistics which serve as the basis for learning rules
          * @param thresholds            A reference to an object of type `IThresholds` that provides access to the
@@ -54,8 +56,9 @@ class IRuleModelAssemblage {
         virtual void induceRules(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
                                  const IRowWiseLabelMatrix& labelMatrix, const IRuleInduction& ruleInduction,
                                  IPartition& partition, ILabelSampling& labelSampling,
-                                 IInstanceSampling& instanceSampling, IStatisticsProvider& statisticsProvider,
-                                 IThresholds& thresholds, IModelBuilder& modelBuilder, RNG& rng) const = 0;
+                                 IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
+                                 IStatisticsProvider& statisticsProvider, IThresholds& thresholds,
+                                 IModelBuilder& modelBuilder, RNG& rng) const = 0;
 };
 
 /**
@@ -69,9 +72,6 @@ class IRuleModelAssemblageFactory {
         /**
          * Creates and returns a new object of the type `IRuleModelAssemblage`.
          *
-         * @param featureSamplingFactoryPtr     An unique pointer to an object of type `IFeatureSamplingFactory` that
-         *                                      allows to create the implementation to be used for sampling the features
-         *                                      that may be used by the conditions of a rule
          * @param rulePruningFactoryPtr         An unique pointer to an object of type `IRulePruningFactory` that allows
          *                                      to create the implementation to be used for pruning rules
          * @param postProcessorFactoryPtr       An unique pointer to an object of type `IPostProcessorFactory` that
@@ -82,7 +82,6 @@ class IRuleModelAssemblageFactory {
          *                                      additional rules should be induced or not
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
-          std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
           std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
           std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
           std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const = 0;
