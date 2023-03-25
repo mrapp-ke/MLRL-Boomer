@@ -39,14 +39,16 @@ class IRuleModelAssemblage {
          *                              set, respectively
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
          *                              the statistics which serve as the basis for learning rules
+         * @param thresholds            A reference to an object of type `IThresholds` that provides access to the
+         *                              thresholds that may be used by the conditions of rules
          * @param rng                   A reference to an object of type `RNG` that implements the random number
          *                              generator to be used
          * @param modelBuilder          A reference to an object of type `IModelBuilder`, the rules should be added to
          */
         virtual void induceRules(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
                                  const IRowWiseLabelMatrix& labelMatrix, IPartition& partition,
-                                 IStatisticsProvider& statisticsProvider, IModelBuilder& modelBuilder,
-                                 RNG& rng) const = 0;
+                                 IStatisticsProvider& statisticsProvider, IThresholds& thresholds,
+                                 IModelBuilder& modelBuilder, RNG& rng) const = 0;
 };
 
 /**
@@ -60,9 +62,6 @@ class IRuleModelAssemblageFactory {
         /**
          * Creates and returns a new object of the type `IRuleModelAssemblage`.
          *
-         * @param thresholdsFactoryPtr          An unique pointer to an object of type `IThresholdsFactory` that allows
-         *                                      to create objects that provide access to the thresholds that may be used
-         *                                      by the conditions of rules
          * @param ruleInductionFactoryPtr       An unique pointer to an object of type `IRuleInductionFactory` that
          *                                      allows to create the implementation to be used for the induction of
          *                                      individual rules
@@ -85,7 +84,6 @@ class IRuleModelAssemblageFactory {
          *                                      additional rules should be induced or not
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
-          std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
           std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
           std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
           std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,

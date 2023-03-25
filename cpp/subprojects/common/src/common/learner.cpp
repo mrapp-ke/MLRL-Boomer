@@ -429,16 +429,21 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
     std::unique_ptr<IStatisticsProvider> statisticsProviderPtr =
       labelMatrix.createStatisticsProvider(*statisticsProviderFactoryPtr);
 
+    // Create thresholds...
+    std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr =
+      this->createThresholdsFactory(featureMatrix, labelMatrix);
+    std::unique_ptr<IThresholds> thresholdsPtr =
+      thresholdsFactoryPtr->create(featureMatrix, featureInfo, *statisticsProviderPtr);
+
     // Assemble rule model...
     std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
       this->createRuleModelAssemblageFactory(labelMatrix);
     std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr = ruleModelAssemblageFactoryPtr->create(
-      this->createThresholdsFactory(featureMatrix, labelMatrix),
       this->createRuleInductionFactory(featureMatrix, labelMatrix), this->createLabelSamplingFactory(labelMatrix),
       this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(featureMatrix),
       this->createRulePruningFactory(), this->createPostProcessorFactory(), std::move(stoppingCriterionFactoryPtr));
     ruleModelAssemblagePtr->induceRules(featureInfo, featureMatrix, labelMatrix, partition, *statisticsProviderPtr,
-                                        modelBuilder, rng);
+                                        *thresholdsPtr, modelBuilder, rng);
 
     // TODO Post-optimize the model...
     /*
