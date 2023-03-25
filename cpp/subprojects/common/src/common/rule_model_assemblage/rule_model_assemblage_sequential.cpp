@@ -7,8 +7,6 @@
 class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
     private:
 
-        const std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr_;
-
         const std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr_;
 
         const std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr_;
@@ -28,9 +26,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
     public:
 
         /**
-         * @param thresholdsFactoryPtr          An unique pointer to an object of type `IThresholdsFactory` that allows
-         *                                      to create objects that provide access to the thresholds that may be used
-         *                                      by the conditions of rules
          * @param ruleInductionFactoryPtr       An unique pointer to an object of type `IRuleInductionFactory` that
          *                                      allows to create the implementation to be used for the induction of
          *                                      individual rules
@@ -53,8 +48,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
          *                                      additional rules should be induced or not
          * @param useDefaultRule                True, if a default rule should be used, False otherwise
          */
-        SequentialRuleModelAssemblage(std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-                                      std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
+        SequentialRuleModelAssemblage(std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
                                       std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
                                       std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
                                       std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
@@ -62,8 +56,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                                       std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
                                       std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr,
                                       bool useDefaultRule)
-            : thresholdsFactoryPtr_(std::move(thresholdsFactoryPtr)),
-              ruleInductionFactoryPtr_(std::move(ruleInductionFactoryPtr)),
+            : ruleInductionFactoryPtr_(std::move(ruleInductionFactoryPtr)),
               labelSamplingFactoryPtr_(std::move(labelSamplingFactoryPtr)),
               instanceSamplingFactoryPtr_(std::move(instanceSamplingFactoryPtr)),
               featureSamplingFactoryPtr_(std::move(featureSamplingFactoryPtr)),
@@ -73,7 +66,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
         void induceRules(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
                          const IRowWiseLabelMatrix& labelMatrix, IPartition& partition,
-                         IStatisticsProvider& statisticsProvider, IModelBuilder& modelBuilder,
+                         IStatisticsProvider& statisticsProvider, IThresholds& thresholds, IModelBuilder& modelBuilder,
                          RNG& rng) const override {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
@@ -88,8 +81,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             statisticsProvider.switchToRegularRuleEvaluation();
 
             // Induce the remaining rules...
-            std::unique_ptr<IThresholds> thresholdsPtr =
-              thresholdsFactoryPtr_->create(featureMatrix, featureInfo, statisticsProvider);
             std::unique_ptr<IInstanceSampling> instanceSamplingPtr =
               partition.createInstanceSampling(*instanceSamplingFactoryPtr_, labelMatrix, statisticsProvider.get());
             std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr_->create();
@@ -114,7 +105,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 const IWeightVector& weights = instanceSamplingPtr->sample(rng);
                 const IIndexVector& labelIndices = labelSamplingPtr->sample(rng);
                 bool success =
-                  ruleInductionPtr->induceRule(*thresholdsPtr, labelIndices, weights, partition, *featureSamplingPtr,
+                  ruleInductionPtr->induceRule(thresholds, labelIndices, weights, partition, *featureSamplingPtr,
                                                *rulePruningPtr, *postProcessorPtr, rng, modelBuilder);
 
                 if (success) {
@@ -146,7 +137,6 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
         SequentialRuleModelAssemblageFactory(bool useDefaultRule) : useDefaultRule_(useDefaultRule) {}
 
         std::unique_ptr<IRuleModelAssemblage> create(
-          std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
           std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
           std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
           std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
@@ -155,7 +145,7 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
           std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
           std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const override {
             return std::make_unique<SequentialRuleModelAssemblage>(
-              std::move(thresholdsFactoryPtr), std::move(ruleInductionFactoryPtr), std::move(labelSamplingFactoryPtr),
+              std::move(ruleInductionFactoryPtr), std::move(labelSamplingFactoryPtr),
               std::move(instanceSamplingFactoryPtr), std::move(featureSamplingFactoryPtr),
               std::move(rulePruningFactoryPtr), std::move(postProcessorFactoryPtr),
               std::move(stoppingCriterionFactoryPtr), useDefaultRule_);
