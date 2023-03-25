@@ -417,18 +417,23 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
       labelMatrix.createPartitionSampling(*partitionSamplingFactoryPtr);
     IPartition& partition = partitionSamplingPtr->partition(rng);
 
+    // Create statistics provider...
+    std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr =
+      this->createStatisticsProviderFactory(featureMatrix, labelMatrix);
+    std::unique_ptr<IStatisticsProvider> statisticsProviderPtr =
+      labelMatrix.createStatisticsProvider(*statisticsProviderFactoryPtr);
+
     // Assemble rule model...
     std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
       this->createRuleModelAssemblageFactory(labelMatrix);
     std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr = ruleModelAssemblageFactoryPtr->create(
-      this->createModelBuilderFactory(), this->createStatisticsProviderFactory(featureMatrix, labelMatrix),
-      this->createThresholdsFactory(featureMatrix, labelMatrix),
+      this->createModelBuilderFactory(), this->createThresholdsFactory(featureMatrix, labelMatrix),
       this->createRuleInductionFactory(featureMatrix, labelMatrix), this->createLabelSamplingFactory(labelMatrix),
       this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(featureMatrix),
       this->createRulePruningFactory(), this->createPostProcessorFactory(), std::move(postOptimizationFactoryPtr),
       std::move(stoppingCriterionFactoryPtr));
-    std::unique_ptr<IRuleModel> ruleModelPtr =
-      ruleModelAssemblagePtr->induceRules(featureInfo, featureMatrix, labelMatrix, partition, rng);
+    std::unique_ptr<IRuleModel> ruleModelPtr = ruleModelAssemblagePtr->induceRules(
+      featureInfo, featureMatrix, labelMatrix, partition, *statisticsProviderPtr, rng);
     return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), std::move(ruleModelPtr),
                                             std::move(labelSpaceInfoPtr));
 }

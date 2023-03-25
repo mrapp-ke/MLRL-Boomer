@@ -29,23 +29,26 @@ class IRuleModelAssemblage {
         /**
          * Assembles and returns a rule-based model that consists of several rules.
          *
-         * @param featureInfo   A reference to an object of type `IFeatureInfo` that provides information about the
-         *                      types of individual features
-         * @param featureMatrix A reference to an object of type `IColumnWiseFeatureMatrix` that provides column-wise
-         *                      access to the feature values of individual training examples
-         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
-         *                      the labels of individual training examples
-         * @param partition     A reference to an object of type `IPartition` that provides access to the indices of the
-         *                      training examples that belong to the training set and the holdout set, respectively
-         * @param rng           A reference to an object of type `RNG` that implements the random number generator to be
-         *                      used
-         * @return              An unique pointer to an object of type `IRuleModel` that consists of the rules that have
-         *                      been induced
+         * @param featureInfo           A reference to an object of type `IFeatureInfo` that provides information about
+         *                              the types of individual features
+         * @param featureMatrix         A reference to an object of type `IColumnWiseFeatureMatrix` that provides
+         *                              column-wise access to the feature values of individual training examples
+         * @param labelMatrix           A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise
+         *                              access to the labels of individual training examples
+         * @param partition             A reference to an object of type `IPartition` that provides access to the
+         *                              indices of the training examples that belong to the training set and the holdout
+         *                              set, respectively
+         * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
+         *                              the statistics which serve as the basis for learning rules
+         * @param rng                   A reference to an object of type `RNG` that implements the random number
+         *                              generator to be used
+         * @return                      An unique pointer to an object of type `IRuleModel` that consists of the rules
+         *                              that have been induced
          */
         virtual std::unique_ptr<IRuleModel> induceRules(const IFeatureInfo& featureInfo,
                                                         const IColumnWiseFeatureMatrix& featureMatrix,
                                                         const IRowWiseLabelMatrix& labelMatrix, IPartition& partition,
-                                                        RNG& rng) const = 0;
+                                                        IStatisticsProvider& statisticsProvider, RNG& rng) const = 0;
 };
 
 /**
@@ -61,9 +64,6 @@ class IRuleModelAssemblageFactory {
          *
          * @param modelBuilderFactoryPtr        An unique pointer to an object of type `IModelBuilderFactory` that
          *                                      allows to create the builder to be used for assembling a model
-         * @param statisticsProviderFactoryPtr  An unique pointer to an object of type `IStatisticsProviderFactory` that
-         *                                      provides access to the statistics which serve as the basis for learning
-         *                                      rules
          * @param thresholdsFactoryPtr          An unique pointer to an object of type `IThresholdsFactory` that allows
          *                                      to create objects that provide access to the thresholds that may be used
          *                                      by the conditions of rules
@@ -93,7 +93,6 @@ class IRuleModelAssemblageFactory {
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
           std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
-          std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
           std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
           std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
           std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
