@@ -34,6 +34,8 @@ class IRuleModelAssemblage {
          *                              column-wise access to the feature values of individual training examples
          * @param labelMatrix           A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise
          *                              access to the labels of individual training examples
+         * @param ruleInduction         A reference to an object of type `IRuleInduction` to be used for the induction
+         *                              of individual rules
          * @param partition             A reference to an object of type `IPartition` that provides access to the
          *                              indices of the training examples that belong to the training set and the holdout
          *                              set, respectively
@@ -46,9 +48,9 @@ class IRuleModelAssemblage {
          * @param modelBuilder          A reference to an object of type `IModelBuilder`, the rules should be added to
          */
         virtual void induceRules(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
-                                 const IRowWiseLabelMatrix& labelMatrix, IPartition& partition,
-                                 IStatisticsProvider& statisticsProvider, IThresholds& thresholds,
-                                 IModelBuilder& modelBuilder, RNG& rng) const = 0;
+                                 const IRowWiseLabelMatrix& labelMatrix, const IRuleInduction& ruleInduction,
+                                 IPartition& partition, IStatisticsProvider& statisticsProvider,
+                                 IThresholds& thresholds, IModelBuilder& modelBuilder, RNG& rng) const = 0;
 };
 
 /**
@@ -62,9 +64,6 @@ class IRuleModelAssemblageFactory {
         /**
          * Creates and returns a new object of the type `IRuleModelAssemblage`.
          *
-         * @param ruleInductionFactoryPtr       An unique pointer to an object of type `IRuleInductionFactory` that
-         *                                      allows to create the implementation to be used for the induction of
-         *                                      individual rules
          * @param labelSamplingFactoryPtr       An unique pointer to an object of type `ILabelSamplingFactory` that
          *                                      allows to create the implementation to be used for sampling the labels
          *                                      whenever a new rule is induced
@@ -84,7 +83,6 @@ class IRuleModelAssemblageFactory {
          *                                      additional rules should be induced or not
          */
         virtual std::unique_ptr<IRuleModelAssemblage> create(
-          std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
           std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
           std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
           std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
