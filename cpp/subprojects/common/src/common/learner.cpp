@@ -396,6 +396,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
                                                           const IRowWiseLabelMatrix& labelMatrix,
                                                           uint32 randomState) const {
     assertGreaterOrEqual<uint32>("randomState", randomState, 1);
+    RNG rng(randomState);
 
     // Create stopping criteria...
     std::unique_ptr<StoppingCriterionListFactory> stoppingCriterionFactoryPtr =
@@ -407,19 +408,75 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
       std::make_unique<PostOptimizationPhaseListFactory>();
     this->createPostOptimizationPhaseFactories(*postOptimizationFactoryPtr);
 
+    // Create label space info...
     std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr = this->createLabelSpaceInfo(labelMatrix);
+
+    // Partition training data...
+    std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr = this->createPartitionSamplingFactory();
+    std::unique_ptr<IPartitionSampling> partitionSamplingPtr =
+      labelMatrix.createPartitionSampling(*partitionSamplingFactoryPtr);
+    IPartition& partition = partitionSamplingPtr->partition(rng);
+
+    // Create post-optimization and model builder...
+    std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr = this->createModelBuilderFactory();
+    std::unique_ptr<IPostOptimization> postOptimizationPtr =
+      postOptimizationFactoryPtr->create(*modelBuilderFactoryPtr);
+    IModelBuilder& modelBuilder = postOptimizationPtr->getModelBuilder();
+
+    // Create statistics provider...
+    std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr =
+      this->createStatisticsProviderFactory(featureMatrix, labelMatrix);
+    std::unique_ptr<IStatisticsProvider> statisticsProviderPtr =
+      labelMatrix.createStatisticsProvider(*statisticsProviderFactoryPtr);
+
+    // Create thresholds...
+    std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr =
+      this->createThresholdsFactory(featureMatrix, labelMatrix);
+    std::unique_ptr<IThresholds> thresholdsPtr =
+      thresholdsFactoryPtr->create(featureMatrix, featureInfo, *statisticsProviderPtr);
+
+    // Create rule induction...
+    std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr =
+      this->createRuleInductionFactory(featureMatrix, labelMatrix);
+    std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr->create();
+
+    // Create label sampling...
+    std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr = this->createLabelSamplingFactory(labelMatrix);
+    std::unique_ptr<ILabelSampling> labelSamplingPtr = labelSamplingFactoryPtr->create();
+
+    // Create instance sampling...
+    std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr = this->createInstanceSamplingFactory();
+    std::unique_ptr<IInstanceSampling> instanceSamplingPtr =
+      partition.createInstanceSampling(*instanceSamplingFactoryPtr, labelMatrix, statisticsProviderPtr->get());
+
+    // Create feature sampling...
+    std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr =
+      this->createFeatureSamplingFactory(featureMatrix);
+    std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr->create();
+
+    // Create rule pruning...
+    std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr = this->createRulePruningFactory();
+    std::unique_ptr<IRulePruning> rulePruningPtr = rulePruningFactoryPtr->create();
+
+    // Create post-processor...
+    std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr = this->createPostProcessorFactory();
+    std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr->create();
+
+    // Assemble rule model...
     std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
       this->createRuleModelAssemblageFactory(labelMatrix);
-    std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr = ruleModelAssemblageFactoryPtr->create(
-      this->createModelBuilderFactory(), this->createStatisticsProviderFactory(featureMatrix, labelMatrix),
-      this->createThresholdsFactory(featureMatrix, labelMatrix),
-      this->createRuleInductionFactory(featureMatrix, labelMatrix), this->createLabelSamplingFactory(labelMatrix),
-      this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(featureMatrix),
-      this->createPartitionSamplingFactory(), this->createRulePruningFactory(), this->createPostProcessorFactory(),
-      std::move(postOptimizationFactoryPtr), std::move(stoppingCriterionFactoryPtr));
-    std::unique_ptr<IRuleModel> ruleModelPtr =
-      ruleModelAssemblagePtr->induceRules(featureInfo, featureMatrix, labelMatrix, randomState);
-    return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), std::move(ruleModelPtr),
+    std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr =
+      ruleModelAssemblageFactoryPtr->create(std::move(stoppingCriterionFactoryPtr));
+    ruleModelAssemblagePtr->induceRules(*ruleInductionPtr, *rulePruningPtr, *postProcessorPtr, partition,
+                                        *labelSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
+                                        *statisticsProviderPtr, *thresholdsPtr, modelBuilder, rng);
+
+    // Post-optimize the model...
+    postOptimizationPtr->optimizeModel(*thresholdsPtr, *ruleInductionPtr, partition, *labelSamplingPtr,
+                                       *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr, *postProcessorPtr,
+                                       rng);
+
+    return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), modelBuilder.buildModel(),
                                             std::move(labelSpaceInfoPtr));
 }
 

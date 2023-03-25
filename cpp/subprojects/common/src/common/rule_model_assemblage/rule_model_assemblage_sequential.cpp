@@ -7,28 +7,6 @@
 class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
     private:
 
-        const std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr_;
-
-        const std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr_;
-
-        const std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr_;
-
-        const std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr_;
-
-        const std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr_;
-
-        const std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr_;
-
-        const std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr_;
-
-        const std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr_;
-
-        const std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr_;
-
-        const std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr_;
-
-        const std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr_;
-
         const std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr_;
 
         const bool useDefaultRule_;
@@ -36,110 +14,37 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
     public:
 
         /**
-         * @param modelBuilderFactoryPtr        An unique pointer to an object of type `IModelBuilderFactory` that
-         *                                      allows to create the builder to be used for assembling a model
-         * @param statisticsProviderFactoryPtr  An unique pointer to an object of type `IStatisticsProviderFactory` that
-         *                                      provides access to the statistics which serve as the basis for learning
-         *                                      rules
-         * @param thresholdsFactoryPtr          An unique pointer to an object of type `IThresholdsFactory` that allows
-         *                                      to create objects that provide access to the thresholds that may be used
-         *                                      by the conditions of rules
-         * @param ruleInductionFactoryPtr       An unique pointer to an object of type `IRuleInductionFactory` that
-         *                                      allows to create the implementation to be used for the induction of
-         *                                      individual rules
-         * @param labelSamplingFactoryPtr       An unique pointer to an object of type `ILabelSamplingFactory` that
-         *                                      allows to create the implementation to be used for sampling the labels
-         *                                      whenever a new rule is induced
-         * @param instanceSamplingFactoryPtr    An unique pointer to an object of type `IInstanceSamplingFactory` that
-         *                                      allows create the implementation to be used for sampling the examples
-         *                                      whenever a new rule is induced
-         * @param featureSamplingFactoryPtr     An unique pointer to an object of type `IFeatureSamplingFactory` that
-         *                                      allows to create the implementation to be used for sampling the features
-         *                                      that may be used by the conditions of a rule
-         * @param partitionSamplingFactoryPtr   An unique pointer to an object of type `IPartitionSamplingFactory` that
-         *                                      allows to create the implementation to be used for partitioning the
-         *                                      training examples into a training set and a holdout set
-         * @param rulePruningFactoryPtr         An unique pointer to an object of type `IRulePruningFactory` that allows
-         *                                      to create the implementation to be used for pruning rules
-         * @param postProcessorFactoryPtr       An unique pointer to an object of type `IPostProcessorFactory` that
-         *                                      allows to create the implementation to be used for post-processing the
-         *                                      predictions of rules
-         * @param postOptimizationFactoryPtr    An unique pointer to an object of type `IPostOptimizationFactory` that
-         *                                      allows to create the implementation to be used for optimizing a
-         *                                      rule-based model once it has been learned
          * @param stoppingCriterionFactoryPtr   An unique pointer to an object of type `IStoppingCriterionFactory` that
          *                                      allows to create the implementations to be used to decide whether
          *                                      additional rules should be induced or not
          * @param useDefaultRule                True, if a default rule should be used, False otherwise
          */
-        SequentialRuleModelAssemblage(std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
-                                      std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
-                                      std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-                                      std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
-                                      std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
-                                      std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
-                                      std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
-                                      std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-                                      std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
-                                      std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-                                      std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
-                                      std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr,
+        SequentialRuleModelAssemblage(std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr,
                                       bool useDefaultRule)
-            : modelBuilderFactoryPtr_(std::move(modelBuilderFactoryPtr)),
-              statisticsProviderFactoryPtr_(std::move(statisticsProviderFactoryPtr)),
-              thresholdsFactoryPtr_(std::move(thresholdsFactoryPtr)),
-              ruleInductionFactoryPtr_(std::move(ruleInductionFactoryPtr)),
-              labelSamplingFactoryPtr_(std::move(labelSamplingFactoryPtr)),
-              instanceSamplingFactoryPtr_(std::move(instanceSamplingFactoryPtr)),
-              featureSamplingFactoryPtr_(std::move(featureSamplingFactoryPtr)),
-              partitionSamplingFactoryPtr_(std::move(partitionSamplingFactoryPtr)),
-              rulePruningFactoryPtr_(std::move(rulePruningFactoryPtr)),
-              postProcessorFactoryPtr_(std::move(postProcessorFactoryPtr)),
-              postOptimizationFactoryPtr_(std::move(postOptimizationFactoryPtr)),
-              stoppingCriterionFactoryPtr_(std::move(stoppingCriterionFactoryPtr)), useDefaultRule_(useDefaultRule) {}
+            : stoppingCriterionFactoryPtr_(std::move(stoppingCriterionFactoryPtr)), useDefaultRule_(useDefaultRule) {}
 
-        std::unique_ptr<IRuleModel> induceRules(const IFeatureInfo& featureInfo,
-                                                const IColumnWiseFeatureMatrix& featureMatrix,
-                                                const IRowWiseLabelMatrix& labelMatrix,
-                                                uint32 randomState) const override {
+        void induceRules(const IRuleInduction& ruleInduction, const IRulePruning& rulePruning,
+                         const IPostProcessor& postProcessor, IPartition& partition, ILabelSampling& labelSampling,
+                         IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
+                         IStatisticsProvider& statisticsProvider, IThresholds& thresholds, IModelBuilder& modelBuilder,
+                         RNG& rng) const override {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
 
-            // Partition training data...
-            std::unique_ptr<IPartitionSampling> partitionSamplingPtr =
-              labelMatrix.createPartitionSampling(*partitionSamplingFactoryPtr_);
-            RNG rng(randomState);
-            IPartition& partition = partitionSamplingPtr->partition(rng);
-
-            // Induce default rule...
-            std::unique_ptr<IPostOptimization> postOptimizationPtr =
-              postOptimizationFactoryPtr_->create(*modelBuilderFactoryPtr_);
-            std::unique_ptr<IStatisticsProvider> statisticsProviderPtr =
-              labelMatrix.createStatisticsProvider(*statisticsProviderFactoryPtr_);
-            std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr_->create();
-            IModelBuilder& modelBuilder = postOptimizationPtr->getModelBuilder();
-
+            // Induce default rule, if necessary...
             if (useDefaultRule_) {
-                ruleInductionPtr->induceDefaultRule(statisticsProviderPtr->get(), modelBuilder);
+                ruleInduction.induceDefaultRule(statisticsProvider.get(), modelBuilder);
             }
 
-            statisticsProviderPtr->switchToRegularRuleEvaluation();
+            statisticsProvider.switchToRegularRuleEvaluation();
 
             // Induce the remaining rules...
-            std::unique_ptr<IThresholds> thresholdsPtr =
-              thresholdsFactoryPtr_->create(featureMatrix, featureInfo, *statisticsProviderPtr);
-            std::unique_ptr<IInstanceSampling> instanceSamplingPtr =
-              partition.createInstanceSampling(*instanceSamplingFactoryPtr_, labelMatrix, statisticsProviderPtr->get());
-            std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr_->create();
-            std::unique_ptr<ILabelSampling> labelSamplingPtr = labelSamplingFactoryPtr_->create();
-            std::unique_ptr<IRulePruning> rulePruningPtr = rulePruningFactoryPtr_->create();
-            std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr_->create();
             std::unique_ptr<IStoppingCriterion> stoppingCriterionPtr =
               partition.createStoppingCriterion(*stoppingCriterionFactoryPtr_);
 
             while (true) {
                 IStoppingCriterion::Result stoppingCriterionResult =
-                  stoppingCriterionPtr->test(statisticsProviderPtr->get(), numRules);
+                  stoppingCriterionPtr->test(statisticsProvider.get(), numRules);
 
                 if (stoppingCriterionResult.numUsedRules != 0) {
                     numUsedRules = stoppingCriterionResult.numUsedRules;
@@ -149,11 +54,10 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                     break;
                 }
 
-                const IWeightVector& weights = instanceSamplingPtr->sample(rng);
-                const IIndexVector& labelIndices = labelSamplingPtr->sample(rng);
-                bool success =
-                  ruleInductionPtr->induceRule(*thresholdsPtr, labelIndices, weights, partition, *featureSamplingPtr,
-                                               *rulePruningPtr, *postProcessorPtr, rng, modelBuilder);
+                const IWeightVector& weights = instanceSampling.sample(rng);
+                const IIndexVector& labelIndices = labelSampling.sample(rng);
+                bool success = ruleInduction.induceRule(thresholds, labelIndices, weights, partition, featureSampling,
+                                                        rulePruning, postProcessor, rng, modelBuilder);
 
                 if (success) {
                     numRules++;
@@ -164,14 +68,6 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
             // Set the number of used rules...
             modelBuilder.setNumUsedRules(numUsedRules);
-
-            // Post-optimize the model...
-            postOptimizationPtr->optimizeModel(*thresholdsPtr, *ruleInductionPtr, partition, *labelSamplingPtr,
-                                               *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr,
-                                               *postProcessorPtr, rng);
-
-            // Build and return the final model...
-            return modelBuilder.buildModel();
         }
 };
 
@@ -192,25 +88,9 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
         SequentialRuleModelAssemblageFactory(bool useDefaultRule) : useDefaultRule_(useDefaultRule) {}
 
         std::unique_ptr<IRuleModelAssemblage> create(
-          std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr,
-          std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr,
-          std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr,
-          std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
-          std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr,
-          std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr,
-          std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr,
-          std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr,
-          std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
-          std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
-          std::unique_ptr<IPostOptimizationFactory> postOptimizationFactoryPtr,
           std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const override {
-            return std::make_unique<SequentialRuleModelAssemblage>(
-              std::move(modelBuilderFactoryPtr), std::move(statisticsProviderFactoryPtr),
-              std::move(thresholdsFactoryPtr), std::move(ruleInductionFactoryPtr), std::move(labelSamplingFactoryPtr),
-              std::move(instanceSamplingFactoryPtr), std::move(featureSamplingFactoryPtr),
-              std::move(partitionSamplingFactoryPtr), std::move(rulePruningFactoryPtr),
-              std::move(postProcessorFactoryPtr), std::move(postOptimizationFactoryPtr),
-              std::move(stoppingCriterionFactoryPtr), useDefaultRule_);
+            return std::make_unique<SequentialRuleModelAssemblage>(std::move(stoppingCriterionFactoryPtr),
+                                                                   useDefaultRule_);
         }
 };
 
