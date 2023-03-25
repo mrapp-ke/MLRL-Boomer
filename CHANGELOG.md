@@ -1,4 +1,4 @@
-# Changelog
+# Release Notes
 
 ### Version 0.9.0 (to be released)
 
