@@ -21,3 +21,5 @@ This document is intended for users and developers who are interested in the alg
    api/index
 
    references/index
+
+   source/CHANGELOG.md
