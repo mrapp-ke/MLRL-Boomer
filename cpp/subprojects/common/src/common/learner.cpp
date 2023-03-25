@@ -471,12 +471,10 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
                                         *postProcessorPtr, partition, *labelSamplingPtr, *instanceSamplingPtr,
                                         *featureSamplingPtr, *statisticsProviderPtr, *thresholdsPtr, modelBuilder, rng);
 
-    // TODO Post-optimize the model...
-    /*
+    // Post-optimize the model...
     postOptimizationPtr->optimizeModel(*thresholdsPtr, *ruleInductionPtr, partition, *labelSamplingPtr,
                                        *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr, *postProcessorPtr,
                                        rng);
-    */
 
     return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), modelBuilder.buildModel(),
                                             std::move(labelSpaceInfoPtr));
