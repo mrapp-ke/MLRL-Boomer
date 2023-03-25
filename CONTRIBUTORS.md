@@ -8,6 +8,7 @@ We highly appreciate the efforts of the following persons (listed in alphabetica
 
 * [Andreas Seidl Fernandez](https://github.com/AndreasSeidl)
 * [Anna Kulischkin](https://github.com/Anna-inf)
+* [Carsten Ostlender](https://github.com/CarstenOstlender)
 * [Dennis Drössler](https://github.com/ddroessler)
 * [Eneldo Loza Mencía](https://github.com/keelm)
 * [Jakob Steeg](https://github.com/JayJayJay1)
