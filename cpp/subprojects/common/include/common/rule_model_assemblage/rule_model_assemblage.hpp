@@ -3,8 +3,6 @@
  */
 #pragma once
 
-#include "common/input/feature_info.hpp"
-#include "common/input/feature_matrix_column_wise.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/model/model_builder.hpp"
 #include "common/rule_induction/rule_induction.hpp"
@@ -28,12 +26,6 @@ class IRuleModelAssemblage {
         /**
          * Assembles and returns a rule-based model that consists of several rules.
          *
-         * @param featureInfo           A reference to an object of type `IFeatureInfo` that provides information about
-         *                              the types of individual features
-         * @param featureMatrix         A reference to an object of type `IColumnWiseFeatureMatrix` that provides
-         *                              column-wise access to the feature values of individual training examples
-         * @param labelMatrix           A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise
-         *                              access to the labels of individual training examples
          * @param ruleInduction         A reference to an object of type `IRuleInduction` to be used for the induction
          *                              of individual rules
          * @param rulePruning           A reference to an object of type `IRulePruning` to be used for pruning rules
@@ -56,13 +48,11 @@ class IRuleModelAssemblage {
          *                              generator to be used
          * @param modelBuilder          A reference to an object of type `IModelBuilder`, the rules should be added to
          */
-        virtual void induceRules(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
-                                 const IRowWiseLabelMatrix& labelMatrix, const IRuleInduction& ruleInduction,
-                                 const IRulePruning& rulePruning, const IPostProcessor& postProcessor,
-                                 IPartition& partition, ILabelSampling& labelSampling,
-                                 IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
-                                 IStatisticsProvider& statisticsProvider, IThresholds& thresholds,
-                                 IModelBuilder& modelBuilder, RNG& rng) const = 0;
+        virtual void induceRules(const IRuleInduction& ruleInduction, const IRulePruning& rulePruning,
+                                 const IPostProcessor& postProcessor, IPartition& partition,
+                                 ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
+                                 IFeatureSampling& featureSampling, IStatisticsProvider& statisticsProvider,
+                                 IThresholds& thresholds, IModelBuilder& modelBuilder, RNG& rng) const = 0;
 };
 
 /**

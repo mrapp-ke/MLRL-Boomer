@@ -467,9 +467,9 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
       this->createRuleModelAssemblageFactory(labelMatrix);
     std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr =
       ruleModelAssemblageFactoryPtr->create(std::move(stoppingCriterionFactoryPtr));
-    ruleModelAssemblagePtr->induceRules(featureInfo, featureMatrix, labelMatrix, *ruleInductionPtr, *rulePruningPtr,
-                                        *postProcessorPtr, partition, *labelSamplingPtr, *instanceSamplingPtr,
-                                        *featureSamplingPtr, *statisticsProviderPtr, *thresholdsPtr, modelBuilder, rng);
+    ruleModelAssemblagePtr->induceRules(*ruleInductionPtr, *rulePruningPtr, *postProcessorPtr, partition,
+                                        *labelSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
+                                        *statisticsProviderPtr, *thresholdsPtr, modelBuilder, rng);
 
     // Post-optimize the model...
     postOptimizationPtr->optimizeModel(*thresholdsPtr, *ruleInductionPtr, partition, *labelSamplingPtr,
