@@ -435,15 +435,20 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
     std::unique_ptr<IThresholds> thresholdsPtr =
       thresholdsFactoryPtr->create(featureMatrix, featureInfo, *statisticsProviderPtr);
 
+    // Create rule induction...
+    std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr =
+      this->createRuleInductionFactory(featureMatrix, labelMatrix);
+    std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr->create();
+
     // Assemble rule model...
     std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
       this->createRuleModelAssemblageFactory(labelMatrix);
     std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr = ruleModelAssemblageFactoryPtr->create(
-      this->createRuleInductionFactory(featureMatrix, labelMatrix), this->createLabelSamplingFactory(labelMatrix),
-      this->createInstanceSamplingFactory(), this->createFeatureSamplingFactory(featureMatrix),
-      this->createRulePruningFactory(), this->createPostProcessorFactory(), std::move(stoppingCriterionFactoryPtr));
-    ruleModelAssemblagePtr->induceRules(featureInfo, featureMatrix, labelMatrix, partition, *statisticsProviderPtr,
-                                        *thresholdsPtr, modelBuilder, rng);
+      this->createLabelSamplingFactory(labelMatrix), this->createInstanceSamplingFactory(),
+      this->createFeatureSamplingFactory(featureMatrix), this->createRulePruningFactory(),
+      this->createPostProcessorFactory(), std::move(stoppingCriterionFactoryPtr));
+    ruleModelAssemblagePtr->induceRules(featureInfo, featureMatrix, labelMatrix, *ruleInductionPtr, partition,
+                                        *statisticsProviderPtr, *thresholdsPtr, modelBuilder, rng);
 
     // TODO Post-optimize the model...
     /*
