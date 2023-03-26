@@ -327,6 +327,10 @@ std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createUnused
     return nullptr;
 }
 
+std::unique_ptr<IProbabilityCalibrator> AbstractRuleLearner::createProbabilityCalibrator() const {
+    return config_.getProbabilityCalibratorConfigPtr()->createProbabilityCalibrator();
+}
+
 void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
     std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory = this->createSizeStoppingCriterionFactory();
 
@@ -485,6 +489,11 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
     postOptimizationPtr->optimizeModel(*thresholdsPtr, *ruleInductionPtr, partition, *labelSamplingPtr,
                                        *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr, *postProcessorPtr,
                                        rng);
+
+    // Fit model for the calibration of probabilities...
+    std::unique_ptr<IProbabilityCalibrator> probabilityCalibratorPtr = this->createProbabilityCalibrator();
+    std::unique_ptr<IProbabilityCalibrationModel> probabilityCalibrationModelPtr =
+      probabilityCalibratorPtr->fitCalibrationModel();
 
     return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), modelBuilder.buildModel(),
                                             std::move(labelSpaceInfoPtr));
