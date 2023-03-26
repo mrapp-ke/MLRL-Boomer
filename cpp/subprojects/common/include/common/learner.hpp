@@ -19,6 +19,7 @@
 #include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
+#include "common/prediction/probability_calibration.hpp"
 #include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
@@ -85,6 +86,22 @@ class MLRLCOMMON_API ITrainingResult {
          *         predictions
          */
         virtual const std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() const = 0;
+
+        /**
+         * Returns a model that may be used for the calibration of probabilities.
+         *
+         * @return An unique pointer to an object of type `IProbabilityCalibrationModel` that may be used for the
+         *         calibration of probabilities
+         */
+        virtual std::unique_ptr<IProbabilityCalibrationModel>& getProbabilityCalibrationModel() = 0;
+
+        /**
+         * Returns a model that may be used for the calibration of probabilities.
+         *
+         * @return An unique pointer to an object of type `IProbabilityCalibrationModel` that may be used for the
+         *         calibration of probabilities
+         */
+        virtual const std::unique_ptr<IProbabilityCalibrationModel>& getProbabilityCalibrationModel() const = 0;
 };
 
 /**
@@ -280,6 +297,16 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() = 0;
 
                 /**
+                 * Returns an unique pointer to the configuration of the calibrator that allows to fit a model for the
+                 * calibration of probabilities.
+                 *
+                 * @return A reference to an unique pointer of type `IProbabilityCalibratorConfig` that stores the
+                 *         configuration of the calibrator that allows to fit a model for the calibration of
+                 *         probabilities
+                 */
+                virtual std::unique_ptr<IProbabilityCalibratorConfig>& getProbabilityCalibratorConfigPtr() = 0;
+
+                /**
                  * Returns an unique pointer to the configuration of the predictor that allows to predict binary labels.
                  *
                  * @return A reference to an unique pointer of type `IBinaryPredictorConfig` that stores the
@@ -410,6 +437,11 @@ class MLRLCOMMON_API IRuleLearner {
                  * by relearning it in the context of the other rules.
                  */
                 virtual void useNoSequentialPostOptimization() = 0;
+
+                /**
+                 * Configures the rule learner to not use probability calibration.
+                 */
+                virtual void useNoProbabilityCalibration() = 0;
         };
 
         /**
@@ -1234,6 +1266,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<UnusedRuleRemovalConfig> unusedRuleRemovalConfigPtr_;
 
                 /**
+                 * An unique pointer that stores the configuration of the calibrator that allows to fit a model for the
+                 * calibration of probabilities.
+                 */
+                std::unique_ptr<IProbabilityCalibratorConfig> probabilityCalibratorConfigPtr_;
+
+                /**
                  * An unique pointer that stores the configuration of the predictor that allows to predict binary
                  * labels.
                  */
@@ -1294,6 +1332,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() override final;
 
+                std::unique_ptr<IProbabilityCalibratorConfig>& getProbabilityCalibratorConfigPtr() override final;
+
                 std::unique_ptr<IBinaryPredictorConfig>& getBinaryPredictorConfigPtr() override final;
 
                 std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() override final;
@@ -1341,6 +1381,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoGlobalPruning() override;
 
                 void useNoSequentialPostOptimization() override;
+
+                void useNoProbabilityCalibration() override;
         };
 
     private:
@@ -1378,6 +1420,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         std::unique_ptr<IPostOptimizationPhaseFactory> createSequentialPostOptimizationFactory() const;
 
         std::unique_ptr<IPostOptimizationPhaseFactory> createUnusedRuleRemovalFactory() const;
+
+        std::unique_ptr<IProbabilityCalibrator> createProbabilityCalibrator() const;
 
     protected:
 
