@@ -38,3 +38,19 @@ class IProbabilityCalibrator {
          */
         virtual std::unique_ptr<IProbabilityCalibrationModel> fitCalibrationModel() const = 0;
 };
+
+/**
+ * Defines an interface for all classes that allow to create instances of the type `IProbabilityCalibrator`.
+ */
+class IProbabilityCalibratorFactory {
+    public:
+
+        virtual ~IProbabilityCalibratorFactory() {};
+
+        /**
+         * Creates and returns a new object of the type `IProbabilityCalibrator`.
+         *
+         * @return An unique pointer to an object of type `IProbabilityCalibrator` that has been created
+         */
+        virtual std::unique_ptr<IProbabilityCalibrator> create() const = 0;
+};
