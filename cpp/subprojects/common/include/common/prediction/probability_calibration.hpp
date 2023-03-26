@@ -4,13 +4,14 @@
 #pragma once
 
 #include "common/data/view_vector.hpp"
+#include "common/macros.hpp"
 
 #include <memory>
 
 /**
  * Defines an interface for all classes that implement a model for the calibration of probabilities.
  */
-class IProbabilityCalibrationModel {
+class MLRLCOMMON_API IProbabilityCalibrationModel {
     public:
 
         virtual ~IProbabilityCalibrationModel() {};
