@@ -11,8 +11,7 @@
 
 namespace seco {
 
-    static inline void applyHead(const CompleteHead& head, CContiguousView<uint8>::value_iterator iterator,
-                                 BitVector& mask) {
+    static inline void applyHead(const CompleteHead& head, VectorView<uint8>::iterator iterator, BitVector& mask) {
         CompleteHead::score_const_iterator scoreIterator = head.scores_cbegin();
         uint32 numElements = head.getNumElements();
 
@@ -25,8 +24,7 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const PartialHead& head, CContiguousView<uint8>::value_iterator iterator,
-                                 BitVector& mask) {
+    static inline void applyHead(const PartialHead& head, VectorView<uint8>::iterator iterator, BitVector& mask) {
         PartialHead::score_const_iterator scoreIterator = head.scores_cbegin();
         PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
@@ -42,8 +40,7 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const IHead& head, CContiguousView<uint8>::value_iterator scoreIterator,
-                                 BitVector& mask) {
+    static inline void applyHead(const IHead& head, VectorView<uint8>::iterator scoreIterator, BitVector& mask) {
         auto completeHeadVisitor = [&](const CompleteHead& head) {
             applyHead(head, scoreIterator, mask);
         };

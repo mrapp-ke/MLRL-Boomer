@@ -22,9 +22,10 @@ namespace boosting {
     }
 
     template<typename LabelIterator>
-    static inline void updateLabelWiseStatisticsInternally(
-      CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
-      DenseLabelWiseStatisticView::iterator statisticIterator, uint32 numLabels) {
+    static inline void updateLabelWiseStatisticsInternally(VectorConstView<float64>::const_iterator scoreIterator,
+                                                           LabelIterator labelIterator,
+                                                           DenseLabelWiseStatisticView::iterator statisticIterator,
+                                                           uint32 numLabels) {
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
         // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
         // of the form `exp(x_1) / (exp(x_1) + exp(x_2) + ...)` as
@@ -72,7 +73,7 @@ namespace boosting {
 
     template<typename LabelIterator>
     static inline void updateExampleWiseStatisticsInternally(
-      CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
+      VectorConstView<float64>::const_iterator scoreIterator, LabelIterator labelIterator,
       DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
       DenseExampleWiseStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
@@ -155,7 +156,7 @@ namespace boosting {
     }
 
     template<typename LabelIterator>
-    static inline float64 evaluateInternally(CContiguousConstView<float64>::value_const_iterator scoreIterator,
+    static inline float64 evaluateInternally(VectorConstView<float64>::const_iterator scoreIterator,
                                              LabelIterator labelIterator, uint32 numLabels) {
         // The example-wise logistic loss calculates as
         // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2) + ...)`.
@@ -289,8 +290,8 @@ namespace boosting {
              * @see `IDistanceMeasure::measureDistance`
              */
             float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
-                                    CContiguousView<float64>::value_const_iterator scoresBegin,
-                                    CContiguousView<float64>::value_const_iterator scoresEnd) const override {
+                                    VectorView<float64>::const_iterator scoresBegin,
+                                    VectorView<float64>::const_iterator scoresEnd) const override {
                 // The example-wise logistic loss calculates as
                 // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2)
                 // + ...)`. In the following, we exploit the identity `log(exp(x_1) + exp(x_2) + ...) =

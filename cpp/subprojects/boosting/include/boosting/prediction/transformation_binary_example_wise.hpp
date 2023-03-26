@@ -33,13 +33,12 @@ namespace boosting {
             ExampleWiseBinaryTransformation(const LabelVectorSet& labelVectorSet,
                                             std::unique_ptr<IDistanceMeasure> distanceMeasurePtr);
 
-            void apply(CContiguousConstView<float64>::value_const_iterator realBegin,
-                       CContiguousConstView<float64>::value_const_iterator realEnd,
-                       CContiguousView<uint8>::value_iterator predictionBegin,
-                       CContiguousView<uint8>::value_iterator predictionEnd) const override;
+            void apply(VectorConstView<float64>::const_iterator realBegin,
+                       VectorConstView<float64>::const_iterator realEnd, VectorView<uint8>::iterator predictionBegin,
+                       VectorView<uint8>::iterator predictionEnd) const override;
 
-            void apply(CContiguousConstView<float64>::value_const_iterator realBegin,
-                       CContiguousConstView<float64>::value_const_iterator realEnd,
+            void apply(VectorConstView<float64>::const_iterator realBegin,
+                       VectorConstView<float64>::const_iterator realEnd,
                        BinaryLilMatrix::row predictionRow) const override;
     };
 

@@ -6,9 +6,10 @@
 namespace boosting {
 
     template<typename LabelIterator>
-    static inline void updateLabelWiseStatisticsInternally(
-      CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
-      DenseLabelWiseStatisticView::iterator statisticIterator, uint32 numLabels) {
+    static inline void updateLabelWiseStatisticsInternally(VectorConstView<float64>::const_iterator scoreIterator,
+                                                           LabelIterator labelIterator,
+                                                           DenseLabelWiseStatisticView::iterator statisticIterator,
+                                                           uint32 numLabels) {
         LabelIterator labelIterator2 = labelIterator;
 
         // For each label `i`, calculate `x_i = predictedScore_i^2 + (-2 * expectedScore_i * predictedScore_i) + 1` and
@@ -52,7 +53,7 @@ namespace boosting {
 
     template<typename LabelIterator>
     static inline void updateExampleWiseStatisticsInternally(
-      CContiguousConstView<float64>::value_const_iterator scoreIterator, LabelIterator labelIterator,
+      VectorConstView<float64>::const_iterator scoreIterator, LabelIterator labelIterator,
       DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
       DenseExampleWiseStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
         LabelIterator labelIterator2 = labelIterator;
@@ -113,7 +114,7 @@ namespace boosting {
     }
 
     template<typename LabelIterator>
-    static inline float64 evaluateInternally(CContiguousConstView<float64>::value_const_iterator scoreIterator,
+    static inline float64 evaluateInternally(VectorConstView<float64>::const_iterator scoreIterator,
                                              LabelIterator labelIterator, uint32 numLabels) {
         // The example-wise squared error loss calculates as `sqrt((expectedScore_1 - predictedScore_1)^2 + ...)`.
         float64 sumOfSquares = 0;
@@ -225,8 +226,8 @@ namespace boosting {
              * @see `IDistanceMeasure::measureDistance`
              */
             float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
-                                    CContiguousView<float64>::value_const_iterator scoresBegin,
-                                    CContiguousView<float64>::value_const_iterator scoresEnd) const override {
+                                    VectorView<float64>::const_iterator scoresBegin,
+                                    VectorView<float64>::const_iterator scoresEnd) const override {
                 uint32 numLabels = scoresEnd - scoresBegin;
                 auto labelIterator =
                   make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
