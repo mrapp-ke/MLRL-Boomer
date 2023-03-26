@@ -7,6 +7,7 @@ from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseF
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
 from mlrl.common.cython.prediction cimport BinaryPredictor, SparseBinaryPredictor, ScorePredictor, ProbabilityPredictor
+from mlrl.common.cython.probability_calibration cimport create_probability_calibration_model
 from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
 
@@ -214,9 +215,11 @@ cdef class RuleLearner:
         cdef uint32 num_labels = training_result_ptr.get().getNumLabels()
         cdef unique_ptr[IRuleModel] rule_model_ptr = move(training_result_ptr.get().getRuleModel())
         cdef unique_ptr[ILabelSpaceInfo] label_space_info_ptr = move(training_result_ptr.get().getLabelSpaceInfo())
+        cdef unique_ptr[IProbabilityCalibrationModel] probability_calibration_model_ptr = move(training_result_ptr.get().getProbabilityCalibrationModel())
         cdef RuleModel rule_model = create_rule_model(move(rule_model_ptr))
         cdef LabelSpaceInfo label_space_info = create_label_space_info(move(label_space_info_ptr))
-        return TrainingResult.__new__(TrainingResult, num_labels, rule_model, label_space_info)
+        cdef ProbabilityCalibrationModel probability_calibration_model = create_probability_calibration_model(move(probability_calibration_model_ptr))
+        return TrainingResult.__new__(TrainingResult, num_labels, rule_model, label_space_info, probability_calibration_model)
 
     def can_predict_binary(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
         """
