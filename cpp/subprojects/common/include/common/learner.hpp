@@ -86,6 +86,22 @@ class MLRLCOMMON_API ITrainingResult {
          *         predictions
          */
         virtual const std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() const = 0;
+
+        /**
+         * Returns a model that may be used for the calibration of probabilities.
+         *
+         * @return An unique pointer to an object of type `IProbabilityCalibrationModel` that may be used for the
+         *         calibration of probabilities
+         */
+        virtual std::unique_ptr<IProbabilityCalibrationModel>& getProbabilityCalibrationModel() = 0;
+
+        /**
+         * Returns a model that may be used for the calibration of probabilities.
+         *
+         * @return An unique pointer to an object of type `IProbabilityCalibrationModel` that may be used for the
+         *         calibration of probabilities
+         */
+        virtual const std::unique_ptr<IProbabilityCalibrationModel>& getProbabilityCalibrationModel() const = 0;
 };
 
 /**

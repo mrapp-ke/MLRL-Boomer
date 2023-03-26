@@ -27,18 +27,26 @@ class TrainingResult final : public ITrainingResult {
 
         std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr_;
 
+        std::unique_ptr<IProbabilityCalibrationModel> probabilityCalibrationModelPtr_;
+
     public:
 
         /**
-         * @param numLabels         The number of labels for which a model has been trained
-         * @param ruleModelPtr      An unique pointer to an object of type `IRuleModel` that has been trained
-         * @param labelSpaceInfoPtr An unique pointer to an object of type `ILabelSpaceInfo` that may be used as a basis
-         *                          for making predictions
+         * @param numLabels                         The number of labels for which a model has been trained
+         * @param ruleModelPtr                      An unique pointer to an object of type `IRuleModel` that has been
+         *                                          trained
+         * @param labelSpaceInfoPtr                 An unique pointer to an object of type `ILabelSpaceInfo` that may be
+         *                                          used as a basis for making predictions
+         * @param probabilityCalibrationModelPtr    An unique pointer to an object of type
+         *                                          `IProbabilityCalibrationModel` that may be used for the calibration
+         *                                          of probabilities
          */
         TrainingResult(uint32 numLabels, std::unique_ptr<IRuleModel> ruleModelPtr,
-                       std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr)
+                       std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr,
+                       std::unique_ptr<IProbabilityCalibrationModel> probabilityCalibrationModelPtr)
             : numLabels_(numLabels), ruleModelPtr_(std::move(ruleModelPtr)),
-              labelSpaceInfoPtr_(std::move(labelSpaceInfoPtr)) {}
+              labelSpaceInfoPtr_(std::move(labelSpaceInfoPtr)),
+              probabilityCalibrationModelPtr_(std::move(probabilityCalibrationModelPtr)) {}
 
         uint32 getNumLabels() const override {
             return numLabels_;
@@ -58,6 +66,14 @@ class TrainingResult final : public ITrainingResult {
 
         const std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() const override {
             return labelSpaceInfoPtr_;
+        }
+
+        std::unique_ptr<IProbabilityCalibrationModel>& getProbabilityCalibrationModel() override {
+            return probabilityCalibrationModelPtr_;
+        }
+
+        const std::unique_ptr<IProbabilityCalibrationModel>& getProbabilityCalibrationModel() const override {
+            return probabilityCalibrationModelPtr_;
         }
 };
 
@@ -496,7 +512,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
       probabilityCalibratorPtr->fitCalibrationModel();
 
     return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), modelBuilder.buildModel(),
-                                            std::move(labelSpaceInfoPtr));
+                                            std::move(labelSpaceInfoPtr), std::move(probabilityCalibrationModelPtr));
 }
 
 bool AbstractRuleLearner::canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix,

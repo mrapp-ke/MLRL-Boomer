@@ -21,15 +21,19 @@ cdef class TrainingResult:
     trained, as well as additional information that is necessary for obtaining predictions for unseen data.
     """
 
-    def __cinit__(self, uint32 num_labels, RuleModel rule_model not None, LabelSpaceInfo label_space_info not None):
+    def __cinit__(self, uint32 num_labels, RuleModel rule_model not None, LabelSpaceInfo label_space_info not None,
+                  ProbabilityCalibrationModel probability_calibration_model not None):
         """
-        :param num_labels:          The number of labels for which a model has been trained
-        :param rule_model:          The `RuleModel` that has been trained
-        :param label_space_info:    The `LabelSpaceInfo` that may be used as a basis for making predictions
+        :param num_labels:                      The number of labels for which a model has been trained
+        :param rule_model:                      The `RuleModel` that has been trained
+        :param label_space_info:                The `LabelSpaceInfo` that may be used as a basis for making predictions
+        :param probability_calibration_model:   The `ProbabilityCalibrationModel` that may be used for the calibration
+                                                of probabilities
         """
         self.num_labels = num_labels
         self.rule_model = rule_model
         self.label_space_info = label_space_info
+        self.probability_calibration_model = probability_calibration_model
 
 
 cdef class RuleLearnerConfig:
