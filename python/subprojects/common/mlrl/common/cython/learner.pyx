@@ -7,6 +7,7 @@ from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseF
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
 from mlrl.common.cython.prediction cimport BinaryPredictor, SparseBinaryPredictor, ScorePredictor, ProbabilityPredictor
+from mlrl.common.cython.probability_calibration cimport create_probability_calibration_model
 from mlrl.common.cython.rule_induction cimport GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport create_rule_model
 
@@ -21,15 +22,19 @@ cdef class TrainingResult:
     trained, as well as additional information that is necessary for obtaining predictions for unseen data.
     """
 
-    def __cinit__(self, uint32 num_labels, RuleModel rule_model not None, LabelSpaceInfo label_space_info not None):
+    def __cinit__(self, uint32 num_labels, RuleModel rule_model not None, LabelSpaceInfo label_space_info not None,
+                  ProbabilityCalibrationModel probability_calibration_model not None):
         """
-        :param num_labels:          The number of labels for which a model has been trained
-        :param rule_model:          The `RuleModel` that has been trained
-        :param label_space_info:    The `LabelSpaceInfo` that may be used as a basis for making predictions
+        :param num_labels:                      The number of labels for which a model has been trained
+        :param rule_model:                      The `RuleModel` that has been trained
+        :param label_space_info:                The `LabelSpaceInfo` that may be used as a basis for making predictions
+        :param probability_calibration_model:   The `ProbabilityCalibrationModel` that may be used for the calibration
+                                                of probabilities
         """
         self.num_labels = num_labels
         self.rule_model = rule_model
         self.label_space_info = label_space_info
+        self.probability_calibration_model = probability_calibration_model
 
 
 cdef class RuleLearnerConfig:
@@ -172,6 +177,13 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoSequentialPostOptimization()
 
+    def use_no_probability_calibration(self):
+        """
+        Configures the rule learner to not use probability calibration.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoProbabilityCalibration()
+
 
 cdef class RuleLearner:
     """
@@ -203,9 +215,11 @@ cdef class RuleLearner:
         cdef uint32 num_labels = training_result_ptr.get().getNumLabels()
         cdef unique_ptr[IRuleModel] rule_model_ptr = move(training_result_ptr.get().getRuleModel())
         cdef unique_ptr[ILabelSpaceInfo] label_space_info_ptr = move(training_result_ptr.get().getLabelSpaceInfo())
+        cdef unique_ptr[IProbabilityCalibrationModel] probability_calibration_model_ptr = move(training_result_ptr.get().getProbabilityCalibrationModel())
         cdef RuleModel rule_model = create_rule_model(move(rule_model_ptr))
         cdef LabelSpaceInfo label_space_info = create_label_space_info(move(label_space_info_ptr))
-        return TrainingResult.__new__(TrainingResult, num_labels, rule_model, label_space_info)
+        cdef ProbabilityCalibrationModel probability_calibration_model = create_probability_calibration_model(move(probability_calibration_model_ptr))
+        return TrainingResult.__new__(TrainingResult, num_labels, rule_model, label_space_info, probability_calibration_model)
 
     def can_predict_binary(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
         """
