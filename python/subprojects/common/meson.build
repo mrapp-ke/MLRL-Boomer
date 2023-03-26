@@ -16,6 +16,7 @@ cython_module_names = [
     'partition_sampling',
     'post_optimization',
     'prediction',
+    'probability_calibration',
     'rule_induction',
     'rule_model',
     'stopping_criterion'
