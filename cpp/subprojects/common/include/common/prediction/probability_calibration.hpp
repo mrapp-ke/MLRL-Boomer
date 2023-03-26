@@ -40,22 +40,6 @@ class IProbabilityCalibrator {
 };
 
 /**
- * Defines an interface for all classes that allow to create instances of the type `IProbabilityCalibrator`.
- */
-class IProbabilityCalibratorFactory {
-    public:
-
-        virtual ~IProbabilityCalibratorFactory() {};
-
-        /**
-         * Creates and returns a new object of the type `IProbabilityCalibrator`.
-         *
-         * @return An unique pointer to an object of type `IProbabilityCalibrator` that has been created
-         */
-        virtual std::unique_ptr<IProbabilityCalibrator> create() const = 0;
-};
-
-/**
  * Defines an interface for all classes that allow to configure a method for fitting a model for the calibration of
  * probabilities.
  */
@@ -65,9 +49,9 @@ class IProbabilityCalibratorConfig {
         virtual ~IProbabilityCalibratorConfig() {};
 
         /**
-         * Creates and returns a new object of type `IProbabilityCalibratorFactory` according to the configuration.
+         * Creates and returns a new object of type `IProbabilityCalibrator` according to the configuration.
          *
-         * @return An unique pointer to an object of type `IProbabilityCalibratorFactory` that has been created
+         * @return An unique pointer to an object of type `IProbabilityCalibrator` that has been created
          */
-        virtual std::unique_ptr<IProbabilityCalibratorFactory> createProbabilityCalibratorFactory() const = 0;
+        virtual std::unique_ptr<IProbabilityCalibrator> createProbabilityCalibrator() const = 0;
 };

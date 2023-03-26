@@ -20,7 +20,7 @@ class MLRLCOMMON_API INoProbabilityCalibrationModel : public IProbabilityCalibra
 class NoProbabilityCalibratorConfig final : public IProbabilityCalibratorConfig {
     public:
 
-        std::unique_ptr<IProbabilityCalibratorFactory> createProbabilityCalibratorFactory() const override;
+        std::unique_ptr<IProbabilityCalibrator> createProbabilityCalibrator() const override;
 };
 
 /**

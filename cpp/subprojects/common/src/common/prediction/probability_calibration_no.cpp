@@ -15,16 +15,8 @@ class NoProbabilityCalibrator final : public IProbabilityCalibrator {
         }
 };
 
-class NoProbabilityCalibratorFactory final : public IProbabilityCalibratorFactory {
-    public:
-
-        std::unique_ptr<IProbabilityCalibrator> create() const override {
-            return std::make_unique<NoProbabilityCalibrator>();
-        }
-};
-
-std::unique_ptr<IProbabilityCalibratorFactory> NoProbabilityCalibratorConfig::createProbabilityCalibratorFactory() const {
-    return std::make_unique<NoProbabilityCalibratorFactory>();
+std::unique_ptr<IProbabilityCalibrator> NoProbabilityCalibratorConfig::createProbabilityCalibrator() const {
+    return std::make_unique<NoProbabilityCalibrator>();
 }
 
 std::unique_ptr<INoProbabilityCalibrationModel> createNoProbabilityCalibrationModel() {
