@@ -5,6 +5,8 @@
 
 #include "common/data/view_vector.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that implement a model for the calibration of probabilities.
  */
@@ -21,4 +23,18 @@ class IProbabilityCalibrationModel {
          */
         virtual void calibrateProbabilities(VectorView<float64>::iterator probabilitiesBegin,
                                             VectorView<float64>::iterator probabilitiesEnd) const = 0;
+};
+
+/**
+ * Defines an interface for all classes that implement a method for fitting models for the calibration of probabilities.
+ */
+class IProbabilityCalibrator {
+    public:
+
+        virtual ~IProbabilityCalibrator() {};
+
+        /**
+         * Fits and returns a model for the calibration of probabilities.
+         */
+        virtual std::unique_ptr<IProbabilityCalibrationModel> fitCalibrationModel() const = 0;
 };
