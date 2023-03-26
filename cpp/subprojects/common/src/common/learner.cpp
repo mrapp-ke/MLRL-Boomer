@@ -4,6 +4,7 @@
 #include "common/multi_threading/multi_threading_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
 #include "common/prediction/label_space_info_no.hpp"
+#include "common/prediction/probability_calibration_no.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 #include "common/rule_pruning/rule_pruning_no.hpp"
 #include "common/sampling/feature_sampling_no.hpp"
@@ -80,6 +81,7 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
     this->useNoTimeStoppingCriterion();
     this->useNoGlobalPruning();
     this->useNoSequentialPostOptimization();
+    this->useNoProbabilityCalibration();
 }
 
 RuleCompareFunction AbstractRuleLearner::Config::getRuleCompareFunction() const {
@@ -157,6 +159,10 @@ std::unique_ptr<SequentialPostOptimizationConfig>&
 
 std::unique_ptr<UnusedRuleRemovalConfig>& AbstractRuleLearner::Config::getUnusedRuleRemovalConfigPtr() {
     return unusedRuleRemovalConfigPtr_;
+}
+
+std::unique_ptr<IProbabilityCalibratorConfig>& AbstractRuleLearner::Config::getProbabilityCalibratorConfigPtr() {
+    return probabilityCalibratorConfigPtr_;
 }
 
 std::unique_ptr<IBinaryPredictorConfig>& AbstractRuleLearner::Config::getBinaryPredictorConfigPtr() {
@@ -241,6 +247,10 @@ void AbstractRuleLearner::Config::useNoGlobalPruning() {
 
 void AbstractRuleLearner::Config::useNoSequentialPostOptimization() {
     sequentialPostOptimizationConfigPtr_ = nullptr;
+}
+
+void AbstractRuleLearner::Config::useNoProbabilityCalibration() {
+    probabilityCalibratorConfigPtr_ = std::make_unique<NoProbabilityCalibratorConfig>();
 }
 
 AbstractRuleLearner::AbstractRuleLearner(IRuleLearner::IConfig& config) : config_(config) {}
