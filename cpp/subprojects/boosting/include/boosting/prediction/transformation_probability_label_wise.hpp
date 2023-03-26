@@ -25,10 +25,10 @@ namespace boosting {
              */
             LabelWiseProbabilityTransformation(std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr);
 
-            void apply(CContiguousConstView<float64>::value_const_iterator scoresBegin,
-                       CContiguousConstView<float64>::value_const_iterator scoresEnd,
-                       CContiguousView<float64>::value_iterator probabilitiesBegin,
-                       CContiguousView<float64>::value_iterator probabilitiesEnd) const override;
+            void apply(VectorConstView<float64>::const_iterator scoresBegin,
+                       VectorConstView<float64>::const_iterator scoresEnd,
+                       VectorView<float64>::iterator probabilitiesBegin,
+                       VectorView<float64>::iterator probabilitiesEnd) const override;
     };
 
 }

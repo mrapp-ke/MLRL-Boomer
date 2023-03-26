@@ -88,7 +88,7 @@ namespace boosting {
     }
 
     static inline void storePrediction(const SparseArrayVector<float64>& tmpVector,
-                                       CContiguousView<uint8>::value_iterator predictionIterator, uint32 numLabels) {
+                                       VectorView<uint8>::iterator predictionIterator, uint32 numLabels) {
         setArrayToZeros(predictionIterator, numLabels);
         uint32 numRelevantLabels = tmpVector.getNumElements();
         SparseArrayVector<float64>::const_iterator iterator = tmpVector.cbegin();
@@ -116,10 +116,9 @@ namespace boosting {
     }
 
     template<typename Prediction>
-    static inline void predictGfm(CContiguousConstView<float64>::value_const_iterator scoresBegin,
-                                  Prediction prediction, uint32 numLabels,
-                                  const IProbabilityFunction& probabilityFunction, const LabelVectorSet& labelVectorSet,
-                                  uint32 maxLabelCardinality) {
+    static inline void predictGfm(VectorConstView<float64>::const_iterator scoresBegin, Prediction prediction,
+                                  uint32 numLabels, const IProbabilityFunction& probabilityFunction,
+                                  const LabelVectorSet& labelVectorSet, uint32 maxLabelCardinality) {
         std::pair<std::unique_ptr<DenseVector<float64>>, float64> pair =
           calculateJointProbabilities(scoresBegin, numLabels, labelVectorSet, probabilityFunction);
         const VectorConstView<float64>& jointProbabilityVector = *pair.first;
@@ -156,17 +155,17 @@ namespace boosting {
         : labelVectorSet_(labelVectorSet), maxLabelCardinality_(getMaxLabelCardinality(labelVectorSet)),
           probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
 
-    void GfmBinaryTransformation::apply(CContiguousConstView<float64>::value_const_iterator realBegin,
-                                        CContiguousConstView<float64>::value_const_iterator realEnd,
-                                        CContiguousView<uint8>::value_iterator predictionBegin,
-                                        CContiguousView<uint8>::value_iterator predictionEnd) const {
+    void GfmBinaryTransformation::apply(VectorConstView<float64>::const_iterator realBegin,
+                                        VectorConstView<float64>::const_iterator realEnd,
+                                        VectorView<uint8>::iterator predictionBegin,
+                                        VectorView<uint8>::iterator predictionEnd) const {
         uint32 numLabels = realEnd - realBegin;
         predictGfm(realBegin, predictionBegin, numLabels, *probabilityFunctionPtr_, labelVectorSet_,
                    maxLabelCardinality_);
     }
 
-    void GfmBinaryTransformation::apply(CContiguousConstView<float64>::value_const_iterator realBegin,
-                                        CContiguousConstView<float64>::value_const_iterator realEnd,
+    void GfmBinaryTransformation::apply(VectorConstView<float64>::const_iterator realBegin,
+                                        VectorConstView<float64>::const_iterator realEnd,
                                         BinaryLilMatrix::row predictionRow) const {
         uint32 numLabels = realEnd - realBegin;
         predictGfm<BinaryLilMatrix::row>(realBegin, predictionRow, numLabels, *probabilityFunctionPtr_, labelVectorSet_,

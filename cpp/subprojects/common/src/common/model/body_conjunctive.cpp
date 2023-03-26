@@ -161,8 +161,8 @@ ConjunctiveBody::index_const_iterator ConjunctiveBody::neq_indices_cend() const 
     return &neqFeatureIndices_[numLeq_];
 }
 
-bool ConjunctiveBody::covers(CContiguousConstView<const float32>::value_const_iterator begin,
-                             CContiguousConstView<const float32>::value_const_iterator end) const {
+bool ConjunctiveBody::covers(VectorConstView<const float32>::const_iterator begin,
+                             VectorConstView<const float32>::const_iterator end) const {
     // Test conditions using the <= operator...
     for (uint32 i = 0; i < numLeq_; i++) {
         uint32 featureIndex = leqFeatureIndices_[i];

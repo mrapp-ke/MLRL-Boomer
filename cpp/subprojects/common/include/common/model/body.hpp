@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_csr.hpp"
+#include "common/data/view_vector.hpp"
 #include "common/macros.hpp"
 
 #include <functional>
@@ -35,12 +35,12 @@ class MLRLCOMMON_API IBody {
          * Returns whether an individual example, which is stored in a C-contiguous matrix, is covered by the body or
          * not.
          *
-         * @param begin An iterator to the beginning of the example's feature values
-         * @param end   An iterator to the end of the example's feature values
+         * @param begin A `VectorConstView::const_iterator` to the beginning of the example's feature values
+         * @param end   A `VectorConstView::const_iterator` to the end of the example's feature values
          * @return      True, if the example is covered, false otherwise
          */
-        virtual bool covers(CContiguousConstView<const float32>::value_const_iterator begin,
-                            CContiguousConstView<const float32>::value_const_iterator end) const = 0;
+        virtual bool covers(VectorConstView<const float32>::const_iterator begin,
+                            VectorConstView<const float32>::const_iterator end) const = 0;
 
         /**
          * Returns whether an individual example, which is stored in a CSR sparse matrix, is covered by the body or not.

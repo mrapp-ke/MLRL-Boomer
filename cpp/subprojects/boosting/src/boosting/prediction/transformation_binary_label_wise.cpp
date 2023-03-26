@@ -4,10 +4,10 @@ namespace boosting {
 
     LabelWiseBinaryTransformation::LabelWiseBinaryTransformation(float64 threshold) : threshold_(threshold) {}
 
-    void LabelWiseBinaryTransformation::apply(CContiguousConstView<float64>::value_const_iterator realBegin,
-                                              CContiguousConstView<float64>::value_const_iterator realEnd,
-                                              CContiguousView<uint8>::value_iterator predictionBegin,
-                                              CContiguousView<uint8>::value_iterator predictionEnd) const {
+    void LabelWiseBinaryTransformation::apply(VectorConstView<float64>::const_iterator realBegin,
+                                              VectorConstView<float64>::const_iterator realEnd,
+                                              VectorView<uint8>::iterator predictionBegin,
+                                              VectorView<uint8>::iterator predictionEnd) const {
         uint32 numPredictions = realEnd - realBegin;
 
         for (uint32 i = 0; i < numPredictions; i++) {
@@ -17,8 +17,8 @@ namespace boosting {
         }
     }
 
-    void LabelWiseBinaryTransformation::apply(CContiguousConstView<float64>::value_const_iterator realBegin,
-                                              CContiguousConstView<float64>::value_const_iterator realEnd,
+    void LabelWiseBinaryTransformation::apply(VectorConstView<float64>::const_iterator realBegin,
+                                              VectorConstView<float64>::const_iterator realEnd,
                                               BinaryLilMatrix::row predictionRow) const {
         uint32 numPredictions = realEnd - realBegin;
 

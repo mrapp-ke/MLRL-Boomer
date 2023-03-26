@@ -23,13 +23,13 @@ class IDistanceMeasure {
          *
          * @param relevantLabelIndices  A reference to an object of type `VectorConstView` that provides access to the
          *                              indices of the labels that are relevant to the given example
-         * @param scoresBegin           An iterator to the beginning of the predicted scores
-         * @param scoresEnd             An iterator to the end of the predicted scores
+         * @param scoresBegin           A `VectorConstView::const_iterator` to the beginning of the predicted scores
+         * @param scoresEnd             A `VectorConstView::const_iterator` to the end of the predicted scores
          * @return                      The distance that has been calculated
          */
         virtual float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
-                                        CContiguousConstView<float64>::value_const_iterator scoresBegin,
-                                        CContiguousConstView<float64>::value_const_iterator scoresEnd) const = 0;
+                                        VectorConstView<float64>::const_iterator scoresBegin,
+                                        VectorConstView<float64>::const_iterator scoresEnd) const = 0;
 };
 
 /**

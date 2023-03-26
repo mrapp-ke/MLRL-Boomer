@@ -4,8 +4,8 @@
 
 namespace boosting {
 
-    static inline const LabelVector* measureDistance(CContiguousConstView<float64>::value_const_iterator realBegin,
-                                                     CContiguousConstView<float64>::value_const_iterator realEnd,
+    static inline const LabelVector* measureDistance(VectorConstView<float64>::const_iterator realBegin,
+                                                     VectorConstView<float64>::const_iterator realEnd,
                                                      LabelVectorSet::const_iterator labelVectorIterator,
                                                      const IDistanceMeasure& distanceMeasure, float64& distance,
                                                      uint32& count) {
@@ -16,10 +16,10 @@ namespace boosting {
         return labelVectorPtr.get();
     }
 
-    static inline const LabelVector& findClosestLabelVector(
-      CContiguousConstView<float64>::value_const_iterator realBegin,
-      CContiguousConstView<float64>::value_const_iterator realEnd, const LabelVectorSet& labelVectorSet,
-      const IDistanceMeasure& distanceMeasure) {
+    static inline const LabelVector& findClosestLabelVector(VectorConstView<float64>::const_iterator realBegin,
+                                                            VectorConstView<float64>::const_iterator realEnd,
+                                                            const LabelVectorSet& labelVectorSet,
+                                                            const IDistanceMeasure& distanceMeasure) {
         float64 minDistance;
         uint32 maxCount;
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
@@ -47,10 +47,10 @@ namespace boosting {
       const LabelVectorSet& labelVectorSet, std::unique_ptr<IDistanceMeasure> distanceMeasurePtr)
         : labelVectorSet_(labelVectorSet), distanceMeasurePtr_(std::move(distanceMeasurePtr)) {}
 
-    void ExampleWiseBinaryTransformation::apply(CContiguousConstView<float64>::value_const_iterator realBegin,
-                                                CContiguousConstView<float64>::value_const_iterator realEnd,
-                                                CContiguousView<uint8>::value_iterator predictionBegin,
-                                                CContiguousView<uint8>::value_iterator predictionEnd) const {
+    void ExampleWiseBinaryTransformation::apply(VectorConstView<float64>::const_iterator realBegin,
+                                                VectorConstView<float64>::const_iterator realEnd,
+                                                VectorView<uint8>::iterator predictionBegin,
+                                                VectorView<uint8>::iterator predictionEnd) const {
         const LabelVector& labelVector =
           findClosestLabelVector(realBegin, realEnd, labelVectorSet_, *distanceMeasurePtr_);
         uint32 numLabels = predictionEnd - predictionBegin;
@@ -63,8 +63,8 @@ namespace boosting {
         }
     }
 
-    void ExampleWiseBinaryTransformation::apply(CContiguousConstView<float64>::value_const_iterator realBegin,
-                                                CContiguousConstView<float64>::value_const_iterator realEnd,
+    void ExampleWiseBinaryTransformation::apply(VectorConstView<float64>::const_iterator realBegin,
+                                                VectorConstView<float64>::const_iterator realEnd,
                                                 BinaryLilMatrix::row predictionRow) const {
         const LabelVector& labelVector =
           findClosestLabelVector(realBegin, realEnd, labelVectorSet_, *distanceMeasurePtr_);

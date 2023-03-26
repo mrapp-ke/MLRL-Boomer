@@ -358,8 +358,8 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         /**
          * @see `IBody::covers`
          */
-        bool covers(CContiguousConstView<const float32>::value_const_iterator begin,
-                    CContiguousConstView<const float32>::value_const_iterator end) const override;
+        bool covers(VectorConstView<const float32>::const_iterator begin,
+                    VectorConstView<const float32>::const_iterator end) const override;
 
         /**
          * @see `IBody::covers`

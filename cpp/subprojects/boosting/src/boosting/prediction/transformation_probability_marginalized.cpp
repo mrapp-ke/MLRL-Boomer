@@ -9,10 +9,10 @@ namespace boosting {
       const LabelVectorSet& labelVectorSet, std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr)
         : labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
 
-    void MarginalizedProbabilityTransformation::apply(CContiguousConstView<float64>::value_const_iterator scoresBegin,
-                                                      CContiguousConstView<float64>::value_const_iterator scoresEnd,
-                                                      CContiguousView<float64>::value_iterator probabilitiesBegin,
-                                                      CContiguousView<float64>::value_iterator probabilitiesEnd) const {
+    void MarginalizedProbabilityTransformation::apply(VectorConstView<float64>::const_iterator scoresBegin,
+                                                      VectorConstView<float64>::const_iterator scoresEnd,
+                                                      VectorView<float64>::iterator probabilitiesBegin,
+                                                      VectorView<float64>::iterator probabilitiesEnd) const {
         uint32 numLabels = scoresEnd - scoresBegin;
         std::pair<std::unique_ptr<DenseVector<float64>>, float64> pair =
           calculateJointProbabilities(scoresBegin, numLabels, labelVectorSet_, *probabilityFunctionPtr_);
