@@ -6,7 +6,7 @@
 #include "common/prediction/probability_calibration.hpp"
 
 /**
- * Defines an interface for all models for the calibration of probabilities that do perform any adjustments.
+ * Defines an interface for all models for the calibration of probabilities that do make any adjustments.
  */
 class MLRLCOMMON_API INoProbabilityCalibrationModel : public IProbabilityCalibrationModel {
     public:
