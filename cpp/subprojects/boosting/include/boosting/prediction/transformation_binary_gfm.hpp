@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "boosting/prediction/probability_function.hpp"
+#include "boosting/prediction/probability_function_label_wise.hpp"
 #include "boosting/prediction/transformation_binary.hpp"
 #include "common/prediction/label_vector_set.hpp"
 

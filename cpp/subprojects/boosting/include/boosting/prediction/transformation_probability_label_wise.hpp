@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "boosting/prediction/probability_function.hpp"
+#include "boosting/prediction/probability_function_label_wise.hpp"
 #include "boosting/prediction/transformation_probability.hpp"
 
 namespace boosting {
