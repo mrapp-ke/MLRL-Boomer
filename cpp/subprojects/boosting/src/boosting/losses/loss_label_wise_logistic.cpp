@@ -83,7 +83,8 @@ namespace boosting {
         return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
     }
 
-    std::unique_ptr<IProbabilityFunctionFactory> LabelWiseLogisticLossConfig::createProbabilityFunctionFactory() const {
+    std::unique_ptr<ILabelWiseProbabilityFunctionFactory>
+      LabelWiseLogisticLossConfig::createLabelWiseProbabilityFunctionFactory() const {
         return std::make_unique<LogisticFunctionFactory>();
     }
 

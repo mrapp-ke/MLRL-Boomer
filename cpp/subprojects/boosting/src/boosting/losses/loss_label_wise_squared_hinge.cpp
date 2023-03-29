@@ -65,8 +65,8 @@ namespace boosting {
         }
     }
 
-    std::unique_ptr<IProbabilityFunctionFactory> LabelWiseSquaredHingeLossConfig::createProbabilityFunctionFactory()
-      const {
+    std::unique_ptr<ILabelWiseProbabilityFunctionFactory>
+      LabelWiseSquaredHingeLossConfig::createLabelWiseProbabilityFunctionFactory() const {
         return nullptr;
     }
 
