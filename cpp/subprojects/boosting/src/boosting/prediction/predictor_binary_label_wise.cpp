@@ -35,6 +35,7 @@ namespace boosting {
              */
             std::unique_ptr<IBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                     const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                      uint32 numLabels) const override {
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(threshold_);
@@ -47,6 +48,7 @@ namespace boosting {
              */
             std::unique_ptr<IBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                     const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                      uint32 numLabels) const override {
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(threshold_);
@@ -83,9 +85,10 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<ISparseBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                           uint32 numLabels) const override {
+            std::unique_ptr<ISparseBinaryPredictor> create(
+              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+              uint32 numLabels) const override {
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(threshold_);
                 return std::make_unique<SparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
@@ -95,9 +98,10 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<ISparseBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                           uint32 numLabels) const override {
+            std::unique_ptr<ISparseBinaryPredictor> create(
+              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+              uint32 numLabels) const override {
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(threshold_);
                 return std::make_unique<SparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(

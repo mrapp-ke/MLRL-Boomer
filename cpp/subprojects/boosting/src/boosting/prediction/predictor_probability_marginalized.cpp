@@ -60,9 +60,10 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<IProbabilityPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                          const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                          uint32 numLabels) const override {
+            std::unique_ptr<IProbabilityPredictor> create(
+              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+              uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
                                        *probabilityFunctionFactoryPtr_);
             }
@@ -70,9 +71,10 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<IProbabilityPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                          const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                          uint32 numLabels) const override {
+            std::unique_ptr<IProbabilityPredictor> create(
+              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+              uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
                                        *probabilityFunctionFactoryPtr_);
             }
