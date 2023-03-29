@@ -11,10 +11,10 @@
  * Defines an interface for all classes that allow to transform regression scores that are predicted for individual
  * labels into probabilities.
  */
-class IProbabilityFunction {
+class ILabelWiseProbabilityFunction {
     public:
 
-        virtual ~IProbabilityFunction() {};
+        virtual ~ILabelWiseProbabilityFunction() {};
 
         /**
          * Transforms the regression score that is predicted for an individual label into a probability.
@@ -26,17 +26,17 @@ class IProbabilityFunction {
 };
 
 /**
- * Defines an interface for all factories that allow to create instances of the type `IProbabilityFunction`.
+ * Defines an interface for all factories that allow to create instances of the type `ILabelWiseProbabilityFunction`.
  */
-class IProbabilityFunctionFactory {
+class ILabelWiseProbabilityFunctionFactory {
     public:
 
-        virtual ~IProbabilityFunctionFactory() {};
+        virtual ~ILabelWiseProbabilityFunctionFactory() {};
 
         /**
-         * Creates and returns a new object of the type `IProbabilityFunction`.
+         * Creates and returns a new object of the type `ILabelWiseProbabilityFunction`.
          *
-         * @return An unique pointer to an object of type `IProbabilityFunction` that has been created
+         * @return An unique pointer to an object of type `ILabelWiseProbabilityFunction` that has been created
          */
-        virtual std::unique_ptr<IProbabilityFunction> create() const = 0;
+        virtual std::unique_ptr<ILabelWiseProbabilityFunction> create() const = 0;
 };

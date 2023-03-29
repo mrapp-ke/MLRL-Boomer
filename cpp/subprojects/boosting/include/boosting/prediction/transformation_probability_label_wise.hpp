@@ -10,20 +10,23 @@ namespace boosting {
 
     /**
      * An implementation of the class `IProbabilityTransformation` that transforms aggregated scores into probability
-     * estimates via element-wise application of a `IProbabilityFunction`.
+     * estimates via element-wise application of a `ILabelWiseProbabilityFunction`.
      */
     class LabelWiseProbabilityTransformation final : public IProbabilityTransformation {
         private:
 
-            const std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
+            const std::unique_ptr<ILabelWiseProbabilityFunction> labelWiseProbabilityFunctionPtr_;
 
         public:
 
             /**
-             * @param probabilityFunctionPtr An unique pointer to an object of type `IProbabilityFunction` that should
-             *                               be used to transform aggregated scores into probability estimates
+             * @param labelWiseProbabilityFunctionPtr An unique pointer to an object of type
+             *                                        `ILabelWiseProbabilityFunction` that should be used to transform
+             *                                        regression scores that are predicted for individual labels into
+             *                                        probabilities
              */
-            LabelWiseProbabilityTransformation(std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr);
+            LabelWiseProbabilityTransformation(
+              std::unique_ptr<ILabelWiseProbabilityFunction> labelWiseProbabilityFunctionPtr);
 
             void apply(VectorConstView<float64>::const_iterator scoresBegin,
                        VectorConstView<float64>::const_iterator scoresEnd,

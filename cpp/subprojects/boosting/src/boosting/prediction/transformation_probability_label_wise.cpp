@@ -3,8 +3,8 @@
 namespace boosting {
 
     LabelWiseProbabilityTransformation::LabelWiseProbabilityTransformation(
-      std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr)
-        : probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
+      std::unique_ptr<ILabelWiseProbabilityFunction> labelWiseProbabilityFunctionPtr)
+        : labelWiseProbabilityFunctionPtr_(std::move(labelWiseProbabilityFunctionPtr)) {}
 
     void LabelWiseProbabilityTransformation::apply(VectorConstView<float64>::const_iterator scoresBegin,
                                                    VectorConstView<float64>::const_iterator scoresEnd,
@@ -14,7 +14,7 @@ namespace boosting {
 
         for (uint32 i = 0; i < numScores; i++) {
             float64 score = scoresBegin[i];
-            float64 probability = probabilityFunctionPtr_->transform(score);
+            float64 probability = labelWiseProbabilityFunctionPtr_->transform(score);
             probabilitiesBegin[i] = probability;
         }
     }
