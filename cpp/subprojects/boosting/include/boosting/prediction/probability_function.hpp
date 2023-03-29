@@ -8,8 +8,8 @@
 #include <memory>
 
 /**
- * Defines an interface for all classes that allow to transform the scores that are predicted for individual labels into
- * probabilities.
+ * Defines an interface for all classes that allow to transform regression scores that are predicted for individual
+ * labels into probabilities.
  */
 class IProbabilityFunction {
     public:
@@ -17,9 +17,9 @@ class IProbabilityFunction {
         virtual ~IProbabilityFunction() {};
 
         /**
-         * Transforms the score that is predicted for an individual label into a probability.
+         * Transforms the regression score that is predicted for an individual label into a probability.
          *
-         * @param predictedScore    The predicted score
+         * @param predictedScore    The regression score that is predicted for a label
          * @return                  The probability
          */
         virtual float64 transform(float64 predictedScore) const = 0;
