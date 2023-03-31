@@ -3,9 +3,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
-
-#include <memory>
+#include "common/prediction/probability_calibration.hpp"
 
 namespace boosting {
 
@@ -39,9 +37,13 @@ namespace boosting {
             /**
              * Creates and returns a new object of the type `IMarginalProbabilityFunction`.
              *
-             * @return An unique pointer to an object of type `IMarginalProbabilityFunction` that has been created
+             * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that
+             *                                      should be used for the calibration of probabilities
+             * @return                              An unique pointer to an object of type
+             *                                      `IMarginalProbabilityFunction` that has been created
              */
-            virtual std::unique_ptr<IMarginalProbabilityFunction> create() const = 0;
+            virtual std::unique_ptr<IMarginalProbabilityFunction> create(
+              const IProbabilityCalibrationModel& probabilityCalibrationModel) const = 0;
     };
 
 }

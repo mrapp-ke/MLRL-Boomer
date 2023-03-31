@@ -45,7 +45,7 @@ namespace boosting {
               uint32 numLabels) const override {
                 std::unique_ptr<IProbabilityTransformation> probabilityTransformationPtr =
                   std::make_unique<LabelWiseProbabilityTransformation>(
-                    marginalProbabilityFunctionFactoryPtr_->create());
+                    marginalProbabilityFunctionFactoryPtr_->create(probabilityCalibrationModel));
                 return std::make_unique<ProbabilityPredictor<CContiguousConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(probabilityTransformationPtr));
             }
@@ -59,7 +59,7 @@ namespace boosting {
               uint32 numLabels) const override {
                 std::unique_ptr<IProbabilityTransformation> probabilityTransformationPtr =
                   std::make_unique<LabelWiseProbabilityTransformation>(
-                    marginalProbabilityFunctionFactoryPtr_->create());
+                    marginalProbabilityFunctionFactoryPtr_->create(probabilityCalibrationModel));
                 return std::make_unique<ProbabilityPredictor<CsrConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(probabilityTransformationPtr));
             }

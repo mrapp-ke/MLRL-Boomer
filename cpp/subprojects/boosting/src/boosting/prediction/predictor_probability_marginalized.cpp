@@ -10,7 +10,8 @@ namespace boosting {
     template<typename FeatureMatrix, typename Model>
     static inline std::unique_ptr<IProbabilityPredictor> createPredictor(
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
-      const LabelVectorSet* labelVectorSet, const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
+      const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+      const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
         if (!labelVectorSet) {
             throw std::runtime_error(
               "Information about the label vectors that have been encountered in the training data is required for "
@@ -22,7 +23,7 @@ namespace boosting {
 
         if (labelVectorSet->getNumLabelVectors() > 0) {
             probabilityTransformationPtr = std::make_unique<MarginalizedProbabilityTransformation>(
-              *labelVectorSet, jointProbabilityFunctionFactory.create());
+              *labelVectorSet, jointProbabilityFunctionFactory.create(probabilityCalibrationModel));
         }
 
         return std::make_unique<ProbabilityPredictor<FeatureMatrix, Model>>(featureMatrix, model, numLabels, numThreads,
@@ -68,7 +69,7 @@ namespace boosting {
               const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
               uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       *jointProbabilityFunctionFactoryPtr_);
+                                       probabilityCalibrationModel, *jointProbabilityFunctionFactoryPtr_);
             }
 
             /**
@@ -79,7 +80,7 @@ namespace boosting {
               const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
               uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       *jointProbabilityFunctionFactoryPtr_);
+                                       probabilityCalibrationModel, *jointProbabilityFunctionFactoryPtr_);
             }
     };
 

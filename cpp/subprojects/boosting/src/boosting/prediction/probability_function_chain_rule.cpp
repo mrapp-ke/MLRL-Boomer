@@ -4,8 +4,10 @@
 
 namespace boosting {
 
-    ChainRule::ChainRule(std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr)
-        : marginalProbabilityFunctionPtr_(std::move(marginalProbabilityFunctionPtr)) {}
+    ChainRule::ChainRule(std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr,
+                         const IProbabilityCalibrationModel& probabilityCalibrationModel)
+        : marginalProbabilityFunctionPtr_(std::move(marginalProbabilityFunctionPtr)),
+          probabilityCalibrationModel_(probabilityCalibrationModel) {}
 
     float64 ChainRule::transformScoresIntoJointProbability(VectorConstView<float64>::const_iterator scoresBegin,
                                                            VectorConstView<float64>::const_iterator scoresEnd,
@@ -28,15 +30,17 @@ namespace boosting {
             labelIterator++;
         }
 
-        return jointProbability;
+        return probabilityCalibrationModel_.calibrateJointProbability(jointProbability);
     }
 
     ChainRuleFactory::ChainRuleFactory(
       std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr)
         : marginalProbabilityFunctionFactoryPtr_(std::move(marginalProbabilityFunctionFactoryPtr)) {}
 
-    std::unique_ptr<IJointProbabilityFunction> ChainRuleFactory::create() const {
-        return std::make_unique<ChainRule>(marginalProbabilityFunctionFactoryPtr_->create());
+    std::unique_ptr<IJointProbabilityFunction> ChainRuleFactory::create(
+      const IProbabilityCalibrationModel& probabilityCalibrationModel) const {
+        return std::make_unique<ChainRule>(marginalProbabilityFunctionFactoryPtr_->create(probabilityCalibrationModel),
+                                           probabilityCalibrationModel);
     }
 
 }
