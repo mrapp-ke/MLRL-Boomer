@@ -36,8 +36,8 @@ namespace boosting {
     class LogisticFunction final : public ILabelWiseProbabilityFunction {
         public:
 
-            float64 transform(float64 predictedScore) const override {
-                return logisticFunction(predictedScore);
+            float64 transform(float64 score) const override {
+                return logisticFunction(score);
             }
     };
 
