@@ -28,7 +28,8 @@ namespace boosting {
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
               const Lapack& lapack, bool preferSparseStatistics) const override;
 
-            std::unique_ptr<IProbabilityFunctionFactory> createProbabilityFunctionFactory() const override;
+            std::unique_ptr<ILabelWiseProbabilityFunctionFactory> createLabelWiseProbabilityFunctionFactory()
+              const override;
 
             float64 getDefaultPrediction() const override;
 

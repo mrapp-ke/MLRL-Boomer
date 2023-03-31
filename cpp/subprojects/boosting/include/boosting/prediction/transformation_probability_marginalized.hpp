@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "boosting/prediction/probability_function.hpp"
+#include "boosting/prediction/probability_function_label_wise.hpp"
 #include "boosting/prediction/transformation_probability.hpp"
 #include "common/prediction/label_vector_set.hpp"
 
@@ -18,18 +18,21 @@ namespace boosting {
 
             const LabelVectorSet& labelVectorSet_;
 
-            const std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
+            const std::unique_ptr<ILabelWiseProbabilityFunction> labelWiseProbabilityFunctionPtr_;
 
         public:
 
             /**
-             * @param labelVectorSet            A reference to an object of type `LabelVectorSet` that stores all known
-             *                                  label vectors
-             * @param probabilityFunctionPtr    An unique pointer to an object of type `IProbabilityFunction` that
-             *                                  should be used to transform aggregated scores into probability estimates
+             * @param labelVectorSet                    A reference to an object of type `LabelVectorSet` that stores
+             *                                          all known label vectors
+             * @param labelWiseProbabilityFunctionPtr   An unique pointer to an object of type
+             *                                          `ILabelWiseProbabilityFunction` that should be used to transform
+             *                                          regression scores that are predicted for individual labels into
+             *                                          probabilities
              */
-            MarginalizedProbabilityTransformation(const LabelVectorSet& labelVectorSet,
-                                                  std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr);
+            MarginalizedProbabilityTransformation(
+              const LabelVectorSet& labelVectorSet,
+              std::unique_ptr<ILabelWiseProbabilityFunction> labelWiseProbabilityFunctionPtr);
 
             void apply(VectorConstView<float64>::const_iterator scoresBegin,
                        VectorConstView<float64>::const_iterator scoresEnd,

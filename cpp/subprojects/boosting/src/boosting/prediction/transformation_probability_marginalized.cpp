@@ -6,8 +6,10 @@
 namespace boosting {
 
     MarginalizedProbabilityTransformation::MarginalizedProbabilityTransformation(
-      const LabelVectorSet& labelVectorSet, std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr)
-        : labelVectorSet_(labelVectorSet), probabilityFunctionPtr_(std::move(probabilityFunctionPtr)) {}
+      const LabelVectorSet& labelVectorSet,
+      std::unique_ptr<ILabelWiseProbabilityFunction> labelWiseProbabilityFunctionPtr)
+        : labelVectorSet_(labelVectorSet),
+          labelWiseProbabilityFunctionPtr_(std::move(labelWiseProbabilityFunctionPtr)) {}
 
     void MarginalizedProbabilityTransformation::apply(VectorConstView<float64>::const_iterator scoresBegin,
                                                       VectorConstView<float64>::const_iterator scoresEnd,
@@ -15,7 +17,7 @@ namespace boosting {
                                                       VectorView<float64>::iterator probabilitiesEnd) const {
         uint32 numLabels = scoresEnd - scoresBegin;
         std::pair<std::unique_ptr<DenseVector<float64>>, float64> pair =
-          calculateJointProbabilities(scoresBegin, numLabels, labelVectorSet_, *probabilityFunctionPtr_);
+          calculateJointProbabilities(scoresBegin, numLabels, labelVectorSet_, *labelWiseProbabilityFunctionPtr_);
         const VectorConstView<float64>& jointProbabilityVector = *pair.first;
         const VectorConstView<float64>::const_iterator jointProbabilityIterator = jointProbabilityVector.cbegin();
         float64 sumOfJointProbabilities = pair.second;

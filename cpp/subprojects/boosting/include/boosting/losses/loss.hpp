@@ -5,7 +5,7 @@
 
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
-#include "boosting/prediction/probability_function.hpp"
+#include "boosting/prediction/probability_function_label_wise.hpp"
 #include "common/input/feature_matrix.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/measures/measure_distance.hpp"
@@ -70,13 +70,14 @@ namespace boosting {
             virtual std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const = 0;
 
             /**
-             * Creates and returns a new object of type `IProbabilityFunctionFactory` according to the specified
-             * configuration.
+             * Creates and returns a new object of type `ILabelWiseProbabilityFunctionFactory` according to the
+             * specified configuration.
              *
-             * @return An unique pointer to an object of type `IProbabilityFunctionFactory` that has been created or a
-             *         null pointer, if the loss function does not support the prediction of probabilities
+             * @return An unique pointer to an object of type `ILabelWiseProbabilityFunctionFactory` that has been
+             *         created or a null pointer, if the loss function does not support the prediction of probabilities
              */
-            virtual std::unique_ptr<IProbabilityFunctionFactory> createProbabilityFunctionFactory() const = 0;
+            virtual std::unique_ptr<ILabelWiseProbabilityFunctionFactory> createLabelWiseProbabilityFunctionFactory()
+              const = 0;
 
             /**
              * Returns whether the loss function is decomposable or not.
