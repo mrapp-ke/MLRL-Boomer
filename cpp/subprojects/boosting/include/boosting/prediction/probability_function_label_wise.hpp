@@ -19,10 +19,10 @@ class ILabelWiseProbabilityFunction {
         /**
          * Transforms the regression score that is predicted for an individual label into a probability.
          *
-         * @param predictedScore    The regression score that is predicted for a label
-         * @return                  The probability
+         * @param score The regression score that is predicted for a label
+         * @return      The probability into which the given score was transformed
          */
-        virtual float64 transform(float64 predictedScore) const = 0;
+        virtual float64 transform(float64 score) const = 0;
 };
 
 /**
