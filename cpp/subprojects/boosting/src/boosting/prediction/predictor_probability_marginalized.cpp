@@ -11,7 +11,7 @@ namespace boosting {
     static inline std::unique_ptr<IProbabilityPredictor> createPredictor(
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
       const LabelVectorSet* labelVectorSet,
-      const ILabelWiseProbabilityFunctionFactory& labelWiseProbabilityFunctionFactory) {
+      const IMarginalProbabilityFunctionFactory& marginalProbabilityFunctionFactory) {
         if (!labelVectorSet) {
             throw std::runtime_error(
               "Information about the label vectors that have been encountered in the training data is required for "
@@ -23,7 +23,7 @@ namespace boosting {
 
         if (labelVectorSet->getNumLabelVectors() > 0) {
             probabilityTransformationPtr = std::make_unique<MarginalizedProbabilityTransformation>(
-              *labelVectorSet, labelWiseProbabilityFunctionFactory.create());
+              *labelVectorSet, marginalProbabilityFunctionFactory.create());
         }
 
         return std::make_unique<ProbabilityPredictor<FeatureMatrix, Model>>(featureMatrix, model, numLabels, numThreads,
@@ -41,26 +41,25 @@ namespace boosting {
     class MarginalizedProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
         private:
 
-            const std::unique_ptr<ILabelWiseProbabilityFunctionFactory> labelWiseProbabilityFunctionFactoryPtr_;
+            const std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr_;
 
             const uint32 numThreads_;
 
         public:
 
             /**
-             * @param labelWiseProbabilityFunctionFactoryPtr    An unique pointer to an object of type
-             *                                                  `ILabelWiseProbabilityFunctionFactory` that allows to
-             *                                                  create implementations of the transformation function to
-             *                                                  be used to transform regression scores that are
-             *                                                  predicted for individual labels into probabilities
-             * @param numThreads                                The number of CPU threads to be used to make predictions
-             *                                                  for different query examples in parallel. Must be at
-             *                                                  least 1
+             * @param marginalProbabilityFunctionFactoryPtr An unique pointer to an object of type
+             *                                              `IMarginalProbabilityFunctionFactory` that allows to create
+             *                                              implementations of the transformation function to be used to
+             *                                              transform regression scores that are predicted for
+             *                                              individual labels into probabilities
+             * @param numThreads                            The number of CPU threads to be used to make predictions for
+             *                                              different query examples in parallel. Must be at least 1
              */
             MarginalizedProbabilityPredictorFactory(
-              std::unique_ptr<ILabelWiseProbabilityFunctionFactory> labelWiseProbabilityFunctionFactoryPtr,
+              std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr,
               uint32 numThreads)
-                : labelWiseProbabilityFunctionFactoryPtr_(std::move(labelWiseProbabilityFunctionFactoryPtr)),
+                : marginalProbabilityFunctionFactoryPtr_(std::move(marginalProbabilityFunctionFactoryPtr)),
                   numThreads_(numThreads) {}
 
             /**
@@ -70,7 +69,7 @@ namespace boosting {
                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                           uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       *labelWiseProbabilityFunctionFactoryPtr_);
+                                       *marginalProbabilityFunctionFactoryPtr_);
             }
 
             /**
@@ -80,7 +79,7 @@ namespace boosting {
                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                           uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       *labelWiseProbabilityFunctionFactoryPtr_);
+                                       *marginalProbabilityFunctionFactoryPtr_);
             }
     };
 
@@ -91,13 +90,13 @@ namespace boosting {
 
     std::unique_ptr<IProbabilityPredictorFactory> MarginalizedProbabilityPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        std::unique_ptr<ILabelWiseProbabilityFunctionFactory> labelWiseProbabilityFunctionFactoryPtr =
-          lossConfigPtr_->createLabelWiseProbabilityFunctionFactory();
+        std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr =
+          lossConfigPtr_->createMarginalProbabilityFunctionFactory();
 
-        if (labelWiseProbabilityFunctionFactoryPtr) {
+        if (marginalProbabilityFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
             return std::make_unique<MarginalizedProbabilityPredictorFactory>(
-              std::move(labelWiseProbabilityFunctionFactoryPtr), numThreads);
+              std::move(marginalProbabilityFunctionFactoryPtr), numThreads);
         } else {
             return nullptr;
         }

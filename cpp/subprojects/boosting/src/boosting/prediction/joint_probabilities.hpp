@@ -18,20 +18,20 @@ namespace boosting {
      * @param numLabels                     The total number of available labels
      * @param labelVector                   A reference to an object of type `LabelVector` representing the label vector
      *                                      for which the joint probability should be calculated
-     * @param labelWiseProbabilityFunction  A reference to an object of type `ILabelWiseProbabilityFunction` that should
+     * @param marginalProbabilityFunction   A reference to an object of type `IMarginalProbabilityFunction` that should
      *                                      be used to transform the regression scores that are predicted for individual
      *                                      labels into marginal probabilities
      * @return                              The joint probability that has been calculated
      */
     static inline float64 calculateJointProbability(VectorConstView<float64>::const_iterator scoreIterator,
                                                     uint32 numLabels, const LabelVector& labelVector,
-                                                    const ILabelWiseProbabilityFunction& labelWiseProbabilityFunction) {
+                                                    const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
         float64 jointProbability = 1;
 
         for (uint32 i = 0; i < numLabels; i++) {
             float64 score = scoreIterator[i];
-            float64 probability = labelWiseProbabilityFunction.transformScoreIntoProbability(score);
+            float64 probability = marginalProbabilityFunction.transformScoreIntoMarginalProbability(score);
             bool trueLabel = *labelIterator;
 
             if (!trueLabel) {
@@ -54,7 +54,7 @@ namespace boosting {
      * @param numLabels                     The total number of available labels
      * @param labelVectorSet                A reference to an object of type `LabelVectorSet` that stores the label
      *                                      vectors for which joint probabilities should be calculated
-     * @param labelWiseProbabilityFunction  A reference to an object of type `ILabelWiseProbabilityFunction` that should
+     * @param marginalProbabilityFunction   A reference to an object of type `IMarginalProbabilityFunction` that should
      *                                      be used to transform the regression scores that are predicted for individual
      *                                      labels into marginal probabilities
      * @return                              A `std::pair` that stores an unique pointer to a `DenseVector` storing the
@@ -63,7 +63,7 @@ namespace boosting {
      */
     static inline std::pair<std::unique_ptr<DenseVector<float64>>, float64> calculateJointProbabilities(
       VectorConstView<float64>::const_iterator scoreIterator, uint32 numLabels, const LabelVectorSet& labelVectorSet,
-      const ILabelWiseProbabilityFunction& labelWiseProbabilityFunction) {
+      const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
         std::unique_ptr<DenseVector<float64>> jointProbabilityVectorPtr =
           std::make_unique<DenseVector<float64>>(numLabelVectors);
@@ -71,7 +71,7 @@ namespace boosting {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
         const LabelVector& firstLabelVector = *((*labelVectorIterator).first);
         float64 sumOfJointProbabilities =
-          calculateJointProbability(scoreIterator, numLabels, firstLabelVector, labelWiseProbabilityFunction);
+          calculateJointProbability(scoreIterator, numLabels, firstLabelVector, marginalProbabilityFunction);
         jointProbabilityIterator[0] = sumOfJointProbabilities;
         labelVectorIterator++;
         uint32 i = 1;
@@ -79,7 +79,7 @@ namespace boosting {
         for (; labelVectorIterator != labelVectorSet.cend(); labelVectorIterator++) {
             const LabelVector& labelVector = *((*labelVectorIterator).first);
             float64 jointProbability =
-              calculateJointProbability(scoreIterator, numLabels, labelVector, labelWiseProbabilityFunction);
+              calculateJointProbability(scoreIterator, numLabels, labelVector, marginalProbabilityFunction);
             sumOfJointProbabilities += jointProbability;
             jointProbabilityIterator[i] = jointProbability;
             i++;

@@ -4,7 +4,7 @@
 #pragma once
 
 #include "boosting/prediction/probability_function_marginal.hpp"
-#include "common/input/label_vector.hpp"
+#include "common/data/view_vector.hpp"
 
 namespace boosting {
 
