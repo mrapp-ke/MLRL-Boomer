@@ -31,7 +31,7 @@ namespace boosting {
 
         for (uint32 i = 0; i < numLabels; i++) {
             float64 score = scoreIterator[i];
-            float64 probability = labelWiseProbabilityFunction.transform(score);
+            float64 probability = labelWiseProbabilityFunction.transformScoreIntoProbability(score);
             bool trueLabel = *labelIterator;
 
             if (!trueLabel) {
