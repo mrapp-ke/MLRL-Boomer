@@ -31,6 +31,8 @@ namespace boosting {
             std::unique_ptr<IMarginalProbabilityFunctionFactory> createMarginalProbabilityFunctionFactory()
               const override;
 
+            std::unique_ptr<IJointProbabilityFunctionFactory> createJointProbabilityFunctionFactory() const override;
+
             float64 getDefaultPrediction() const override;
 
             std::unique_ptr<IExampleWiseLossFactory> createExampleWiseLossFactory() const override;

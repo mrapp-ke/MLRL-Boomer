@@ -43,6 +43,11 @@ namespace boosting {
         return nullptr;
     }
 
+    std::unique_ptr<IJointProbabilityFunctionFactory>
+      LabelWiseSquaredErrorLossConfig::createJointProbabilityFunctionFactory() const {
+        return nullptr;
+    }
+
     float64 LabelWiseSquaredErrorLossConfig::getDefaultPrediction() const {
         return 0;
     }

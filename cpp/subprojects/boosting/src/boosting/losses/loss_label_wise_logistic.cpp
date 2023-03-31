@@ -1,6 +1,7 @@
 #include "boosting/losses/loss_label_wise_logistic.hpp"
 
 #include "boosting/math/math.hpp"
+#include "boosting/prediction/probability_function_chain_rule.hpp"
 #include "boosting/prediction/probability_function_logistic.hpp"
 #include "loss_label_wise_common.hpp"
 
@@ -87,6 +88,11 @@ namespace boosting {
     std::unique_ptr<IMarginalProbabilityFunctionFactory>
       LabelWiseLogisticLossConfig::createMarginalProbabilityFunctionFactory() const {
         return std::make_unique<LogisticFunctionFactory>();
+    }
+
+    std::unique_ptr<IJointProbabilityFunctionFactory>
+      LabelWiseLogisticLossConfig::createJointProbabilityFunctionFactory() const {
+        return std::make_unique<ChainRuleFactory>(this->createMarginalProbabilityFunctionFactory());
     }
 
     float64 LabelWiseLogisticLossConfig::getDefaultPrediction() const {
