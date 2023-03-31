@@ -17,13 +17,21 @@ class MLRLCOMMON_API IProbabilityCalibrationModel {
         virtual ~IProbabilityCalibrationModel() {};
 
         /**
-         * Calibrates given probabilities.
+         * Calibrates the marginal probability that is predicted for a specific label.
          *
-         * @param probabilitiesBegin
-         * @param probabilitiesEnd
+         * @param labelIndex            The index of the label, the probability is predicted for
+         * @param marginalProbability   The marginal probability to be calibrated
+         * @return                      The calibrated probability
          */
-        virtual void calibrateProbabilities(VectorView<float64>::iterator probabilitiesBegin,
-                                            VectorView<float64>::iterator probabilitiesEnd) const = 0;
+        virtual float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const = 0;
+
+        /**
+         * Calibrates a joint probability.
+         *
+         * @param jointProbability  The joint probability to be calibrated
+         * @return                  The calibrated probability
+         */
+        virtual float64 calibrateJointProbability(float64 jointProbability) const = 0;
 };
 
 /**
