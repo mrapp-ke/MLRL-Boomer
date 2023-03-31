@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "boosting/prediction/probability_function_label_wise.hpp"
+#include "boosting/prediction/probability_function_marginal.hpp"
 #include "boosting/prediction/transformation_probability.hpp"
 #include "common/prediction/label_vector_set.hpp"
 
@@ -18,21 +18,21 @@ namespace boosting {
 
             const LabelVectorSet& labelVectorSet_;
 
-            const std::unique_ptr<ILabelWiseProbabilityFunction> labelWiseProbabilityFunctionPtr_;
+            const std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr_;
 
         public:
 
             /**
              * @param labelVectorSet                    A reference to an object of type `LabelVectorSet` that stores
              *                                          all known label vectors
-             * @param labelWiseProbabilityFunctionPtr   An unique pointer to an object of type
-             *                                          `ILabelWiseProbabilityFunction` that should be used to transform
+             * @param marginalProbabilityFunctionPtr    An unique pointer to an object of type
+             *                                          `IMarginalProbabilityFunction` that should be used to transform
              *                                          regression scores that are predicted for individual labels into
              *                                          probabilities
              */
             MarginalizedProbabilityTransformation(
               const LabelVectorSet& labelVectorSet,
-              std::unique_ptr<ILabelWiseProbabilityFunction> labelWiseProbabilityFunctionPtr);
+              std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr);
 
             void apply(VectorConstView<float64>::const_iterator scoresBegin,
                        VectorConstView<float64>::const_iterator scoresEnd,

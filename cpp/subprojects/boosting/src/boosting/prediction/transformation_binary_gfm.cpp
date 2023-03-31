@@ -117,10 +117,10 @@ namespace boosting {
 
     template<typename Prediction>
     static inline void predictGfm(VectorConstView<float64>::const_iterator scoresBegin, Prediction prediction,
-                                  uint32 numLabels, const ILabelWiseProbabilityFunction& labelWiseProbabilityFunction,
+                                  uint32 numLabels, const IMarginalProbabilityFunction& marginalProbabilityFunction,
                                   const LabelVectorSet& labelVectorSet, uint32 maxLabelCardinality) {
         std::pair<std::unique_ptr<DenseVector<float64>>, float64> pair =
-          calculateJointProbabilities(scoresBegin, numLabels, labelVectorSet, labelWiseProbabilityFunction);
+          calculateJointProbabilities(scoresBegin, numLabels, labelVectorSet, marginalProbabilityFunction);
         const VectorConstView<float64>& jointProbabilityVector = *pair.first;
         VectorConstView<float64>::const_iterator jointProbabilityIterator = jointProbabilityVector.cbegin();
         float64 sumOfJointProbabilities = pair.second;
@@ -152,16 +152,16 @@ namespace boosting {
 
     GfmBinaryTransformation::GfmBinaryTransformation(
       const LabelVectorSet& labelVectorSet,
-      std::unique_ptr<ILabelWiseProbabilityFunction> labelWiseProbabilityFunctionPtr)
+      std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr)
         : labelVectorSet_(labelVectorSet), maxLabelCardinality_(getMaxLabelCardinality(labelVectorSet)),
-          labelWiseProbabilityFunctionPtr_(std::move(labelWiseProbabilityFunctionPtr)) {}
+          marginalProbabilityFunctionPtr_(std::move(marginalProbabilityFunctionPtr)) {}
 
     void GfmBinaryTransformation::apply(VectorConstView<float64>::const_iterator realBegin,
                                         VectorConstView<float64>::const_iterator realEnd,
                                         VectorView<uint8>::iterator predictionBegin,
                                         VectorView<uint8>::iterator predictionEnd) const {
         uint32 numLabels = realEnd - realBegin;
-        predictGfm(realBegin, predictionBegin, numLabels, *labelWiseProbabilityFunctionPtr_, labelVectorSet_,
+        predictGfm(realBegin, predictionBegin, numLabels, *marginalProbabilityFunctionPtr_, labelVectorSet_,
                    maxLabelCardinality_);
     }
 
@@ -169,7 +169,7 @@ namespace boosting {
                                         VectorConstView<float64>::const_iterator realEnd,
                                         BinaryLilMatrix::row predictionRow) const {
         uint32 numLabels = realEnd - realBegin;
-        predictGfm<BinaryLilMatrix::row>(realBegin, predictionRow, numLabels, *labelWiseProbabilityFunctionPtr_,
+        predictGfm<BinaryLilMatrix::row>(realBegin, predictionRow, numLabels, *marginalProbabilityFunctionPtr_,
                                          labelVectorSet_, maxLabelCardinality_);
     }
 
