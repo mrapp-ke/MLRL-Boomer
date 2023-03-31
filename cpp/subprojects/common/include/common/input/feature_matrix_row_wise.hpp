@@ -10,6 +10,7 @@
 // Forward declarations
 class IRuleModel;
 class ILabelSpaceInfo;
+class IProbabilityCalibrationModel;
 class IBinaryPredictor;
 class IBinaryPredictorFactory;
 class ISparseBinaryPredictor;
@@ -30,69 +31,84 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
         /**
          * Creates and returns a new instance of the class `IBinaryPredictor`, based on the type of this feature matrix.
          *
-         * @param factory           A reference to an object of type `IBinaryPredictorFactory` that should be used to
-         *                          create the instance
-         * @param ruleModel         A reference to an object of type `IRuleModel` that should be used to obtain
-         *                          predictions
-         * @param labelSpaceInfo    A reference to an object of type `ILabelSpaceInfo` that provides information about
-         *                          the label space that may be used as a basis for making predictions
-         * @param numLabels         The number of labels to predict for
-         * @return                  An unique pointer to an object of type `IBinaryPredictor` that has been created
+         * @param factory                       A reference to an object of type `IBinaryPredictorFactory` that should
+         *                                      be used to create the instance
+         * @param ruleModel                     A reference to an object of type `IRuleModel` that should be used to
+         *                                      obtain predictions
+         * @param labelSpaceInfo                A reference to an object of type `ILabelSpaceInfo` that provides
+         *                                      information about the label space that may be used as a basis for making
+         *                                      predictions
+         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
+         *                                      be used for the calibration of probabilities
+         * @param numLabels                     The number of labels to predict for
+         * @return                              An unique pointer to an object of type `IBinaryPredictor` that has been
+         *                                      created
          */
-        virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
-                                                                        const IRuleModel& ruleModel,
-                                                                        const ILabelSpaceInfo& labelSpaceInfo,
-                                                                        uint32 numLabels) const = 0;
+        virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
+          const IBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+          const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `ISparseBinaryPredictor`, based on the type of this feature
          * matrix.
          *
-         * @param factory           A reference to an object of type `ISparseBinaryPredictorFactory` that should be used
-         *                          to create the instance
-         * @param ruleModel         A reference to an object of type `IRuleModel` that should be used to obtain
-         *                          predictions
-         * @param labelSpaceInfo    A reference to an object of type `ILabelSpaceInfo` that provides information about
-         *                          the label space that may be used as a basis for making predictions
-         * @param numLabels         The number of labels to predict for
-         * @return                  An unique pointer to an object of type `ISparseBinaryPredictor` that has been
-         *                          created
+         * @param factory                       A reference to an object of type `ISparseBinaryPredictorFactory` that
+         *                                      should be used to create the instance
+         * @param ruleModel                     A reference to an object of type `IRuleModel` that should be used to
+         *                                      obtain predictions
+         * @param labelSpaceInfo                A reference to an object of type `ILabelSpaceInfo` that provides
+         *                                      information about the label space that may be used as a basis for making
+         *                                      predictions
+         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
+         *                                      be used for the calibration of probabilities
+         * @param numLabels                     The number of labels to predict for
+         * @return                              An unique pointer to an object of type `ISparseBinaryPredictor` that has
+         *                                      been created
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
+          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+          uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IScorePredictor`, based on the type of this feature matrix.
          *
-         * @param factory           A reference to an object of type `IScorePredictorFactory` that should be used to
-         *                          create the instance
-         * @param ruleModel         A reference to an object of type `IRuleModel` that should be used to obtain
-         *                          predictions
-         * @param labelSpaceInfo    A reference to an object of type `ILabelSpaceInfo` that provides information about
-         *                          the label space that may be used as a basis for making predictions
-         * @param numLabels         The number of labels to predict for
-         * @return                  An unique pointer to an object of type `IScorePredictor` that has been created
+         * @param factory                       A reference to an object of type `IScorePredictorFactory` that should be
+         *                                      be used to create the instance
+         * @param ruleModel                     A reference to an object of type `IRuleModel` that should be used to
+         *                                      obtain predictions
+         * @param labelSpaceInfo                A reference to an object of type `ILabelSpaceInfo` that provides
+         *                                      information about the label space that may be used as a basis for making
+         *                                      predictions
+         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
+         *                                      be used for the calibration of probabilities
+         * @param numLabels                     The number of labels to predict for
+         * @return                              An unique pointer to an object of type `IScorePredictor` that has been
+         *                                      created
          */
-        virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
-                                                                      const IRuleModel& ruleModel,
-                                                                      const ILabelSpaceInfo& labelSpaceInfo,
-                                                                      uint32 numLabels) const = 0;
+        virtual std::unique_ptr<IScorePredictor> createScorePredictor(
+          const IScorePredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+          const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this feature
          * matrix.
          *
-         * @param factory           A reference to an object of type `IProbabilityPredictorFactory` that should be used
-         *                          to create the instance
-         * @param ruleModel         A reference to an object of type `IRuleModel` that should be used to obtain
-         *                          predictions
-         * @param labelSpaceInfo    A reference to an object of type `ILabelSpaceInfo` that provides information about
-         *                          the label space that may be used as a basis for making predictions
-         * @param numLabels         The number of labels to predict for
-         * @return                  An unique pointer to an object of type `IProbabilityPredictor` that has been created
+         * @param factory                       A reference to an object of type `IProbabilityPredictorFactory` that
+         *                                      should be used to create the instance
+         * @param ruleModel                     A reference to an object of type `IRuleModel` that should be used to
+         *                                      obtain predictions
+         * @param labelSpaceInfo                A reference to an object of type `ILabelSpaceInfo` that provides
+         *                                      information about the label space that may be used as a basis for making
+         *                                      predictions
+         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
+         *                                      be used for the calibration of probabilities
+         * @param numLabels                     The number of labels to predict for
+         * @return                              An unique pointer to an object of type `IProbabilityPredictor` that has
+         *                                      been created
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
+          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+          uint32 numLabels) const = 0;
 };

@@ -14,7 +14,7 @@ namespace boosting {
 
         for (uint32 i = 0; i < numScores; i++) {
             float64 score = scoresBegin[i];
-            float64 probability = marginalProbabilityFunctionPtr_->transformScoreIntoMarginalProbability(score);
+            float64 probability = marginalProbabilityFunctionPtr_->transformScoreIntoMarginalProbability(i, score);
             probabilitiesBegin[i] = probability;
         }
     }

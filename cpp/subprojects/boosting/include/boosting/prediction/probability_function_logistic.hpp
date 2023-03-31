@@ -12,9 +12,19 @@ namespace boosting {
      * predicted for individual labels into marginal probabilities via the logistic sigmoid function.
      */
     class LogisticFunction final : public IMarginalProbabilityFunction {
+        private:
+
+            const IProbabilityCalibrationModel& probabilityCalibrationModel_;
+
         public:
 
-            float64 transformScoreIntoMarginalProbability(float64 score) const override;
+            /**
+             * @param probabilityCalibrationModel A reference to an object of type `IProbabilityCalibrationModel` that
+             *                                    should be used for the calibration of probabilities
+             */
+            LogisticFunction(const IProbabilityCalibrationModel& probabilityCalibrationModel);
+
+            float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float64 score) const override;
     };
 
     /**
@@ -24,7 +34,8 @@ namespace boosting {
     class LogisticFunctionFactory final : public IMarginalProbabilityFunctionFactory {
         public:
 
-            std::unique_ptr<IMarginalProbabilityFunction> create() const override;
+            std::unique_ptr<IMarginalProbabilityFunction> create(
+              const IProbabilityCalibrationModel& probabilityCalibrationModel) const override;
     };
 
 }

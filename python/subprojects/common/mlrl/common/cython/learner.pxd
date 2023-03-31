@@ -200,11 +200,13 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[IBinaryPredictor] createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                            const IRuleModel& ruleModel,
                                                            const ILabelSpaceInfo& labelSpaceInfo,
+                                                           const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                            uint32 numLabels) except +
 
         unique_ptr[ISparseBinaryPredictor] createSparseBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                        const IRuleModel& ruleModel,
                                                                        const ILabelSpaceInfo& labelSpaceInfo,
+                                                                       const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                                        uint32 numLabels) except +
 
         bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
@@ -212,6 +214,7 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[IScorePredictor] createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                          const IRuleModel& ruleModel,
                                                          const ILabelSpaceInfo& labelSpaceInfo,
+                                                         const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                          uint32 numLabels) except +
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
@@ -219,6 +222,7 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[IProbabilityPredictor] createProbabilityPredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                      const IRuleModel& ruleModel,
                                                                      const ILabelSpaceInfo& labelSpaceInfo,
+                                                                     const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                                      uint32 numLabels) except +
 
 

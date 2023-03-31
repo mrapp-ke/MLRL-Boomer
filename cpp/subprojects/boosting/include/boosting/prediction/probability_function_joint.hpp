@@ -86,9 +86,13 @@ namespace boosting {
             /**
              * Creates and returns a new object of the type `IJointProbabilityFunction`.
              *
-             * @return An unique pointer to an object of type `IJointProbabilityFunction` that has been created
+             * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that
+             *                                      should be used for the calibration of probabilities
+             * @return                              An unique pointer to an object of type `IJointProbabilityFunction`
+             *                                      that has been created
              */
-            virtual std::unique_ptr<IJointProbabilityFunction> create() const = 0;
+            virtual std::unique_ptr<IJointProbabilityFunction> create(
+              const IProbabilityCalibrationModel& probabilityCalibrationModel) const = 0;
     };
 
 }

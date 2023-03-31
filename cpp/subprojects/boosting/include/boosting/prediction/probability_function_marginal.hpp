@@ -3,9 +3,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
-
-#include <memory>
+#include "common/prediction/probability_calibration.hpp"
 
 namespace boosting {
 
@@ -19,12 +17,13 @@ namespace boosting {
             virtual ~IMarginalProbabilityFunction() {};
 
             /**
-             * Transforms the regression score that is predicted for an individual label into a probability.
+             * Transforms the regression score that is predicted for a specific label into a probability.
              *
-             * @param score The regression score that is predicted for a label
-             * @return      The probability into which the given score was transformed
+             * @param labelIndex    The index of the label, the regression score is predicted for
+             * @param score         The regression score that is predicted
+             * @return              The probability into which the given score was transformed
              */
-            virtual float64 transformScoreIntoMarginalProbability(float64 score) const = 0;
+            virtual float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float64 score) const = 0;
     };
 
     /**
@@ -38,9 +37,13 @@ namespace boosting {
             /**
              * Creates and returns a new object of the type `IMarginalProbabilityFunction`.
              *
-             * @return An unique pointer to an object of type `IMarginalProbabilityFunction` that has been created
+             * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that
+             *                                      should be used for the calibration of probabilities
+             * @return                              An unique pointer to an object of type
+             *                                      `IMarginalProbabilityFunction` that has been created
              */
-            virtual std::unique_ptr<IMarginalProbabilityFunction> create() const = 0;
+            virtual std::unique_ptr<IMarginalProbabilityFunction> create(
+              const IProbabilityCalibrationModel& probabilityCalibrationModel) const = 0;
     };
 
 }
