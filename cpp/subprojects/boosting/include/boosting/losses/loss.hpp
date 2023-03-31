@@ -5,6 +5,7 @@
 
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
+#include "boosting/prediction/probability_function_joint.hpp"
 #include "boosting/prediction/probability_function_marginal.hpp"
 #include "common/input/feature_matrix.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
@@ -79,6 +80,15 @@ namespace boosting {
              */
             virtual std::unique_ptr<IMarginalProbabilityFunctionFactory> createMarginalProbabilityFunctionFactory()
               const = 0;
+
+            /**
+             * Creates and returns a new object of type `IJointProbabilityFunctionFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `IJointProbabilityFunctionFactory` that has been created
+             *         to a null pointer, if the loss function does not support the prediction of joint probabilities
+             */
+            virtual std::unique_ptr<IJointProbabilityFunctionFactory> createJointProbabilityFunctionFactory() const = 0;
 
             /**
              * Returns whether the loss function is decomposable or not.

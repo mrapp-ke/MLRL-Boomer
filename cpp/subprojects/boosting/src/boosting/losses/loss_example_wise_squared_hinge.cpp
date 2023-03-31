@@ -355,6 +355,11 @@ namespace boosting {
         return nullptr;
     }
 
+    std::unique_ptr<IJointProbabilityFunctionFactory>
+      ExampleWiseSquaredHingeLossConfig::createJointProbabilityFunctionFactory() const {
+        return nullptr;
+    }
+
     float64 ExampleWiseSquaredHingeLossConfig::getDefaultPrediction() const {
         return 0.5;
     }
