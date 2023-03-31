@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "boosting/prediction/probability_function.hpp"
+#include "boosting/prediction/probability_function_label_wise.hpp"
 #include "boosting/prediction/transformation_binary.hpp"
 #include "common/prediction/label_vector_set.hpp"
 
@@ -20,18 +20,20 @@ namespace boosting {
 
             const uint32 maxLabelCardinality_;
 
-            const std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr_;
+            const std::unique_ptr<ILabelWiseProbabilityFunction> labelWiseProbabilityFunctionPtr_;
 
         public:
 
             /**
-             * @param labelVectorSet            A reference to an object of type `LabelVectorSet` that stores all known
-             *                                  label vectors
-             * @param probabilityFunctionPtr    An unique pointer to an object of type `IProbabilityFunction` that
-             *                                  should be used to transform predicted scores into probabilities
+             * @param labelVectorSet                    A reference to an object of type `LabelVectorSet` that stores
+             *                                          all known label vectors
+             * @param labelWiseProbabilityFunctionPtr   An unique pointer to an object of type
+             *                                          `ILabelWise ProbabilityFunction` that should be used to
+             *                                          transform regression scores that are predicted for individual
+             *                                          labels into probabilities
              */
             GfmBinaryTransformation(const LabelVectorSet& labelVectorSet,
-                                    std::unique_ptr<IProbabilityFunction> probabilityFunctionPtr);
+                                    std::unique_ptr<ILabelWiseProbabilityFunction> labelWiseProbabilityFunctionPtr);
 
             void apply(VectorConstView<float64>::const_iterator realBegin,
                        VectorConstView<float64>::const_iterator realEnd, VectorView<uint8>::iterator predictionBegin,
