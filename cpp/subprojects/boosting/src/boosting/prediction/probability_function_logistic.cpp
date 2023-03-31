@@ -4,7 +4,7 @@
 
 namespace boosting {
 
-    float64 LogisticFunction::transformScoreIntoMarginalProbability(float64 score) const {
+    float64 LogisticFunction::transformScoreIntoMarginalProbability(uint32 labelIndex, float64 score) const {
         return logisticFunction(score);
     }
 

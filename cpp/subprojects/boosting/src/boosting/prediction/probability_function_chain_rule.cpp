@@ -16,7 +16,8 @@ namespace boosting {
 
         for (uint32 i = 0; i < numLabels; i++) {
             float64 score = scoresBegin[i];
-            float64 marginalProbability = marginalProbabilityFunctionPtr_->transformScoreIntoMarginalProbability(score);
+            float64 marginalProbability =
+              marginalProbabilityFunctionPtr_->transformScoreIntoMarginalProbability(i, score);
             bool trueLabel = *labelIterator;
 
             if (!trueLabel) {

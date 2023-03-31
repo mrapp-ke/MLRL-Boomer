@@ -14,7 +14,7 @@ namespace boosting {
     class LogisticFunction final : public IMarginalProbabilityFunction {
         public:
 
-            float64 transformScoreIntoMarginalProbability(float64 score) const override;
+            float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float64 score) const override;
     };
 
     /**

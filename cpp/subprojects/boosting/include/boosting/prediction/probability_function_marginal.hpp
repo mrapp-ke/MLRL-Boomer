@@ -19,12 +19,13 @@ namespace boosting {
             virtual ~IMarginalProbabilityFunction() {};
 
             /**
-             * Transforms the regression score that is predicted for an individual label into a probability.
+             * Transforms the regression score that is predicted for a specific label into a probability.
              *
-             * @param score The regression score that is predicted for a label
-             * @return      The probability into which the given score was transformed
+             * @param labelIndex    The index of the label, the regression score is predicted for
+             * @param score         The regression score that is predicted
+             * @return              The probability into which the given score was transformed
              */
-            virtual float64 transformScoreIntoMarginalProbability(float64 score) const = 0;
+            virtual float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float64 score) const = 0;
     };
 
     /**
