@@ -1,6 +1,7 @@
 #include "boosting/losses/loss_label_wise_logistic.hpp"
 
-#include "logistic_function.hpp"
+#include "boosting/math/math.hpp"
+#include "boosting/prediction/probability_function_logistic.hpp"
 #include "loss_label_wise_common.hpp"
 
 namespace boosting {

@@ -1,8 +1,8 @@
 #include "boosting/losses/loss_example_wise_logistic.hpp"
 
+#include "boosting/prediction/probability_function_logistic.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
 #include "common/math/math.hpp"
-#include "logistic_function.hpp"
 
 namespace boosting {
 
