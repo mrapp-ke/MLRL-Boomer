@@ -44,24 +44,23 @@ class CsrFeatureMatrix final : public CsrConstView<const float32>,
 
         bool isSparse() const override;
 
-        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
-                                                                const IRuleModel& ruleModel,
-                                                                const ILabelSpaceInfo& labelSpaceInfo,
-                                                                uint32 numLabels) const override;
+        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
+          const IBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+          const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
+          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+          uint32 numLabels) const override;
 
-        std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
-                                                              const IRuleModel& ruleModel,
-                                                              const ILabelSpaceInfo& labelSpaceInfo,
-                                                              uint32 numLabels) const override;
+        std::unique_ptr<IScorePredictor> createScorePredictor(
+          const IScorePredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+          const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const override;
 
-        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(const IProbabilityPredictorFactory& factory,
-                                                                          const IRuleModel& ruleModel,
-                                                                          const ILabelSpaceInfo& labelSpaceInfo,
-                                                                          uint32 numLabels) const override;
+        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
+          const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel,
+          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+          uint32 numLabels) const override;
 };
 
 /**

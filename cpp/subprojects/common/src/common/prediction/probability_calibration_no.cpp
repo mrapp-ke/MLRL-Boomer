@@ -6,8 +6,13 @@
 class NoProbabilityCalibrationModel final : public INoProbabilityCalibrationModel {
     public:
 
-        void calibrateProbabilities(VectorView<float64>::iterator probabilitiesBegin,
-                                    VectorView<float64>::iterator probabilitiesEnd) const override {}
+        float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const override {
+            return marginalProbability;
+        }
+
+        float64 calibrateJointProbability(float64 jointProbability) const override {
+            return jointProbability;
+        }
 };
 
 /**

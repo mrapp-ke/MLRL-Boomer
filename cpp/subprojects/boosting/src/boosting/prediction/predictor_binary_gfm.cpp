@@ -8,7 +8,8 @@
 namespace boosting {
 
     static inline std::unique_ptr<IBinaryTransformation> createBinaryTransformation(
-      const LabelVectorSet* labelVectorSet, const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
+      const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+      const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
         if (!labelVectorSet) {
             throw std::runtime_error(
               "Information about the label vectors that have been encountered in the training data is required for "
@@ -19,8 +20,10 @@ namespace boosting {
         std::unique_ptr<IBinaryTransformation> binaryTransformationPtr;
 
         if (labelVectorSet->getNumLabelVectors() > 0) {
+            std::unique_ptr<IJointProbabilityFunction> jointProbabilityFunctionPtr =
+              jointProbabilityFunctionFactory.create(probabilityCalibrationModel);
             binaryTransformationPtr =
-              std::make_unique<GfmBinaryTransformation>(*labelVectorSet, jointProbabilityFunctionFactory.create());
+              std::make_unique<GfmBinaryTransformation>(*labelVectorSet, std::move(jointProbabilityFunctionPtr));
         }
 
         return binaryTransformationPtr;
@@ -29,9 +32,10 @@ namespace boosting {
     template<typename FeatureMatrix, typename Model>
     static inline std::unique_ptr<IBinaryPredictor> createPredictor(
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
-      const LabelVectorSet* labelVectorSet, const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
+      const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+      const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
         std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-          createBinaryTransformation(labelVectorSet, jointProbabilityFunctionFactory);
+          createBinaryTransformation(labelVectorSet, probabilityCalibrationModel, jointProbabilityFunctionFactory);
         return std::make_unique<BinaryPredictor<FeatureMatrix, Model>>(featureMatrix, model, numLabels, numThreads,
                                                                        std::move(binaryTransformationPtr));
     }
@@ -70,9 +74,10 @@ namespace boosting {
              */
             std::unique_ptr<IBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                     const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                      uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       *jointProbabilityFunctionFactoryPtr_);
+                                       probabilityCalibrationModel, *jointProbabilityFunctionFactoryPtr_);
             }
 
             /**
@@ -80,18 +85,20 @@ namespace boosting {
              */
             std::unique_ptr<IBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
+                                                     const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                      uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       *jointProbabilityFunctionFactoryPtr_);
+                                       probabilityCalibrationModel, *jointProbabilityFunctionFactoryPtr_);
             }
     };
 
     template<typename FeatureMatrix, typename Model>
     static inline std::unique_ptr<ISparseBinaryPredictor> createSparsePredictor(
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
-      const LabelVectorSet* labelVectorSet, const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
+      const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+      const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
         std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-          createBinaryTransformation(labelVectorSet, jointProbabilityFunctionFactory);
+          createBinaryTransformation(labelVectorSet, probabilityCalibrationModel, jointProbabilityFunctionFactory);
         return std::make_unique<SparseBinaryPredictor<FeatureMatrix, Model>>(
           featureMatrix, model, numLabels, numThreads, std::move(binaryTransformationPtr));
     }
@@ -128,21 +135,23 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<ISparseBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                           uint32 numLabels) const override {
+            std::unique_ptr<ISparseBinaryPredictor> create(
+              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+              uint32 numLabels) const override {
                 return createSparsePredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                             *jointProbabilityFunctionFactoryPtr_);
+                                             probabilityCalibrationModel, *jointProbabilityFunctionFactoryPtr_);
             }
 
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<ISparseBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                           uint32 numLabels) const override {
+            std::unique_ptr<ISparseBinaryPredictor> create(
+              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+              uint32 numLabels) const override {
                 return createSparsePredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                             *jointProbabilityFunctionFactoryPtr_);
+                                             probabilityCalibrationModel, *jointProbabilityFunctionFactoryPtr_);
             }
     };
 
