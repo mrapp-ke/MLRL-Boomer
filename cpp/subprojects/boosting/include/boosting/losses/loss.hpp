@@ -74,7 +74,8 @@ namespace boosting {
              * configuration.
              *
              * @return An unique pointer to an object of type `IMarginalProbabilityFunctionFactory` that has been
-             *         created or a null pointer, if the loss function does not support the prediction of probabilities
+             *         created or a null pointer, if the loss function does not support the prediction of marginal
+             *         probabilities
              */
             virtual std::unique_ptr<IMarginalProbabilityFunctionFactory> createMarginalProbabilityFunctionFactory()
               const = 0;
