@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "boosting/prediction/probability_function.hpp"
+#include "boosting/prediction/probability_function_label_wise.hpp"
 
 #include <cmath>
 
@@ -30,25 +30,25 @@ namespace boosting {
     }
 
     /**
-     * Allows to transform the score that is predicted for an individual label into a probability by applying the
+     * Allows to transform regression scores that are predicted for individual labels into a probability via the
      * logistic sigmoid function.
      */
-    class LogisticFunction final : public IProbabilityFunction {
+    class LogisticFunction final : public ILabelWiseProbabilityFunction {
         public:
 
-            float64 transform(float64 predictedScore) const override {
-                return logisticFunction(predictedScore);
+            float64 transformScoreIntoProbability(float64 score) const override {
+                return logisticFunction(score);
             }
     };
 
     /**
-     * Allows to create instances of the type `IProbabilityFunction` that transform the score that is predicted for an
-     * individual label into a probability by applying the logistic sigmoid function.
+     * Allows to create instances of the type `ILabelWiseProbabilityFunction` that transform regression scores that are
+     * predicted for individual labels into a probability via the logistic sigmoid function.
      */
-    class LogisticFunctionFactory final : public IProbabilityFunctionFactory {
+    class LogisticFunctionFactory final : public ILabelWiseProbabilityFunctionFactory {
         public:
 
-            std::unique_ptr<IProbabilityFunction> create() const override {
+            std::unique_ptr<ILabelWiseProbabilityFunction> create() const override {
                 return std::make_unique<LogisticFunction>();
             }
     };

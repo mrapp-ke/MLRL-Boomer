@@ -8,7 +8,8 @@
 namespace boosting {
 
     static inline std::unique_ptr<IBinaryTransformation> createBinaryTransformation(
-      const LabelVectorSet* labelVectorSet, const IProbabilityFunctionFactory& probabilityFunctionFactory) {
+      const LabelVectorSet* labelVectorSet,
+      const ILabelWiseProbabilityFunctionFactory& labelWiseProbabilityFunctionFactory) {
         if (!labelVectorSet) {
             throw std::runtime_error(
               "Information about the label vectors that have been encountered in the training data is required for "
@@ -20,7 +21,7 @@ namespace boosting {
 
         if (labelVectorSet->getNumLabelVectors() > 0) {
             binaryTransformationPtr =
-              std::make_unique<GfmBinaryTransformation>(*labelVectorSet, probabilityFunctionFactory.create());
+              std::make_unique<GfmBinaryTransformation>(*labelVectorSet, labelWiseProbabilityFunctionFactory.create());
         }
 
         return binaryTransformationPtr;
@@ -29,9 +30,10 @@ namespace boosting {
     template<typename FeatureMatrix, typename Model>
     static inline std::unique_ptr<IBinaryPredictor> createPredictor(
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
-      const LabelVectorSet* labelVectorSet, const IProbabilityFunctionFactory& probabilityFunctionFactory) {
+      const LabelVectorSet* labelVectorSet,
+      const ILabelWiseProbabilityFunctionFactory& labelWiseProbabilityFunctionFactory) {
         std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-          createBinaryTransformation(labelVectorSet, probabilityFunctionFactory);
+          createBinaryTransformation(labelVectorSet, labelWiseProbabilityFunctionFactory);
         return std::make_unique<BinaryPredictor<FeatureMatrix, Model>>(featureMatrix, model, numLabels, numThreads,
                                                                        std::move(binaryTransformationPtr));
     }
@@ -45,22 +47,27 @@ namespace boosting {
     class GfmBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
 
-            const std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
+            const std::unique_ptr<ILabelWiseProbabilityFunctionFactory> labelWiseProbabilityFunctionFactoryPtr_;
 
             const uint32 numThreads_;
 
         public:
 
             /**
-             * @param probabilityFunctionFactoryPtr An unique pointer to an object of type `IProbabilityFunctionFactory`
-             *                                      that allows to create implementations of the transformation function
-             *                                      to be used to transform predicted scores into probabilities
-             * @param numThreads                    The number of CPU threads to be used to make predictions for
-             *                                      different query examples in parallel. Must be at least 1
+             * @param labelWiseProbabilityFunctionFactoryPtr    An unique pointer to an object of type
+             *                                                  `ILabelWiseProbabilityFunctionFactory` that allows to
+             *                                                  create implementations of the transformation function
+             *                                                  to be used to transform regression scores that are
+             *                                                  predicted for individual labels into probabilities
+             * @param numThreads                                The number of CPU threads to be used to make predictions
+             *                                                  for different query examples in parallel. Must be at
+             *                                                  least 1
              */
-            GfmBinaryPredictorFactory(std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr,
-                                      uint32 numThreads)
-                : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {}
+            GfmBinaryPredictorFactory(
+              std::unique_ptr<ILabelWiseProbabilityFunctionFactory> labelWiseProbabilityFunctionFactoryPtr,
+              uint32 numThreads)
+                : labelWiseProbabilityFunctionFactoryPtr_(std::move(labelWiseProbabilityFunctionFactoryPtr)),
+                  numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -70,7 +77,7 @@ namespace boosting {
                                                      const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                      uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       *probabilityFunctionFactoryPtr_);
+                                       *labelWiseProbabilityFunctionFactoryPtr_);
             }
 
             /**
@@ -81,16 +88,17 @@ namespace boosting {
                                                      const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                      uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       *probabilityFunctionFactoryPtr_);
+                                       *labelWiseProbabilityFunctionFactoryPtr_);
             }
     };
 
     template<typename FeatureMatrix, typename Model>
     static inline std::unique_ptr<ISparseBinaryPredictor> createSparsePredictor(
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
-      const LabelVectorSet* labelVectorSet, const IProbabilityFunctionFactory& probabilityFunctionFactory) {
+      const LabelVectorSet* labelVectorSet,
+      const ILabelWiseProbabilityFunctionFactory& labelWiseProbabilityFunctionFactory) {
         std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-          createBinaryTransformation(labelVectorSet, probabilityFunctionFactory);
+          createBinaryTransformation(labelVectorSet, labelWiseProbabilityFunctionFactory);
         return std::make_unique<SparseBinaryPredictor<FeatureMatrix, Model>>(
           featureMatrix, model, numLabels, numThreads, std::move(binaryTransformationPtr));
     }
@@ -104,22 +112,27 @@ namespace boosting {
     class GfmSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
 
-            const std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr_;
+            const std::unique_ptr<ILabelWiseProbabilityFunctionFactory> labelWiseProbabilityFunctionFactoryPtr_;
 
             const uint32 numThreads_;
 
         public:
 
             /**
-             * @param probabilityFunctionFactoryPtr An unique pointer to an object of type `IProbabilityFunctionFactory`
-             *                                      that allows to create implementations of the transformation function
-             *                                      to be used to transform predicted scores into probabilities
-             * @param numThreads                    The number of CPU threads to be used to make predictions for
-             *                                      different query examples in parallel. Must be at least 1
+             * @param labelWiseProbabilityFunctionFactoryPtr    An unique pointer to an object of type
+             *                                                  `ILabelWiseProbabilityFunctionFactory` that allows to
+             *                                                  create implementations of the transformation function to
+             *                                                  be used to transform regression scores that are
+             *                                                  predicted for individual labels into probabilities
+             * @param numThreads                                The number of CPU threads to be used to make predictions
+             *                                                  for different query examples in parallel. Must be at
+             *                                                  least 1
              */
-            GfmSparseBinaryPredictorFactory(std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr,
-                                            uint32 numThreads)
-                : probabilityFunctionFactoryPtr_(std::move(probabilityFunctionFactoryPtr)), numThreads_(numThreads) {}
+            GfmSparseBinaryPredictorFactory(
+              std::unique_ptr<ILabelWiseProbabilityFunctionFactory> labelWiseProbabilityFunctionFactoryPtr,
+              uint32 numThreads)
+                : labelWiseProbabilityFunctionFactoryPtr_(std::move(labelWiseProbabilityFunctionFactoryPtr)),
+                  numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -129,7 +142,7 @@ namespace boosting {
               const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
               uint32 numLabels) const override {
                 return createSparsePredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                             *probabilityFunctionFactoryPtr_);
+                                             *labelWiseProbabilityFunctionFactoryPtr_);
             }
 
             /**
@@ -140,7 +153,7 @@ namespace boosting {
               const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
               uint32 numLabels) const override {
                 return createSparsePredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                             *probabilityFunctionFactoryPtr_);
+                                             *labelWiseProbabilityFunctionFactoryPtr_);
             }
     };
 
@@ -151,12 +164,13 @@ namespace boosting {
 
     std::unique_ptr<IBinaryPredictorFactory> GfmBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
-          lossConfigPtr_->createProbabilityFunctionFactory();
+        std::unique_ptr<ILabelWiseProbabilityFunctionFactory> labelWiseProbabilityFunctionFactoryPtr =
+          lossConfigPtr_->createLabelWiseProbabilityFunctionFactory();
 
-        if (probabilityFunctionFactoryPtr) {
+        if (labelWiseProbabilityFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-            return std::make_unique<GfmBinaryPredictorFactory>(std::move(probabilityFunctionFactoryPtr), numThreads);
+            return std::make_unique<GfmBinaryPredictorFactory>(std::move(labelWiseProbabilityFunctionFactoryPtr),
+                                                               numThreads);
         } else {
             return nullptr;
         }
@@ -164,12 +178,12 @@ namespace boosting {
 
     std::unique_ptr<ISparseBinaryPredictorFactory> GfmBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        std::unique_ptr<IProbabilityFunctionFactory> probabilityFunctionFactoryPtr =
-          lossConfigPtr_->createProbabilityFunctionFactory();
+        std::unique_ptr<ILabelWiseProbabilityFunctionFactory> labelWiseProbabilityFunctionFactoryPtr =
+          lossConfigPtr_->createLabelWiseProbabilityFunctionFactory();
 
-        if (probabilityFunctionFactoryPtr) {
+        if (labelWiseProbabilityFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-            return std::make_unique<GfmSparseBinaryPredictorFactory>(std::move(probabilityFunctionFactoryPtr),
+            return std::make_unique<GfmSparseBinaryPredictorFactory>(std::move(labelWiseProbabilityFunctionFactoryPtr),
                                                                      numThreads);
         } else {
             return nullptr;
