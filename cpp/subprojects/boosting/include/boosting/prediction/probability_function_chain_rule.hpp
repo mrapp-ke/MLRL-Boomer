@@ -16,16 +16,21 @@ namespace boosting {
     class ChainRule final : public IJointProbabilityFunction {
         private:
 
-            std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr_;
+            const std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr_;
+
+            const IProbabilityCalibrationModel& probabilityCalibrationModel_;
 
         public:
 
             /**
-             * @param marginalProbabilityFunctionPtr An unique pointer to an object of type
-             *                                       `IMarginalProbabilityFunction` to be used to transform regression
-             *                                       scores into marginal probabilities
+             * @param marginalProbabilityFunctionPtr    An unique pointer to an object of type
+             *                                          `IMarginalProbabilityFunction` to be used to transform
+             *                                          regression scores into marginal probabilities
+             * @param probabilityCalibrationModel       A reference to an object of type `IProbabilityCalibrationModel`
+             *                                          that should be used for the calibration of probabilities
              */
-            ChainRule(std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr);
+            ChainRule(std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr,
+                      const IProbabilityCalibrationModel& probabilityCalibrationModel);
 
             float64 transformScoresIntoJointProbability(VectorConstView<float64>::const_iterator scoresBegin,
                                                         VectorConstView<float64>::const_iterator scoresEnd,
@@ -53,7 +58,8 @@ namespace boosting {
             ChainRuleFactory(
               std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr);
 
-            std::unique_ptr<IJointProbabilityFunction> create() const override;
+            std::unique_ptr<IJointProbabilityFunction> create(
+              const IProbabilityCalibrationModel& probabilityCalibrationModel) const override;
     };
 
 }
