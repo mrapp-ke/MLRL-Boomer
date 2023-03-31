@@ -1,8 +1,9 @@
 #include "boosting/losses/loss_example_wise_logistic.hpp"
 
+#include "boosting/prediction/probability_function_chain_rule.hpp"
+#include "boosting/prediction/probability_function_logistic.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
 #include "common/math/math.hpp"
-#include "logistic_function.hpp"
 
 namespace boosting {
 
@@ -355,9 +356,14 @@ namespace boosting {
         return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
     }
 
-    std::unique_ptr<ILabelWiseProbabilityFunctionFactory>
-      ExampleWiseLogisticLossConfig::createLabelWiseProbabilityFunctionFactory() const {
+    std::unique_ptr<IMarginalProbabilityFunctionFactory>
+      ExampleWiseLogisticLossConfig::createMarginalProbabilityFunctionFactory() const {
         return std::make_unique<LogisticFunctionFactory>();
+    }
+
+    std::unique_ptr<IJointProbabilityFunctionFactory>
+      ExampleWiseLogisticLossConfig::createJointProbabilityFunctionFactory() const {
+        return std::make_unique<ChainRuleFactory>(this->createMarginalProbabilityFunctionFactory());
     }
 
     float64 ExampleWiseLogisticLossConfig::getDefaultPrediction() const {
