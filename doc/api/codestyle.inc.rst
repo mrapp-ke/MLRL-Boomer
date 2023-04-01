@@ -1,0 +1,22 @@
+.. _codestyle:
+
+Code Style
+----------
+
+We aim to enforce a consistent code style across the entire project. For formatting the C++ code, we employ `clang-format <https://clang.llvm.org/docs/ClangFormat.html>`__. The desired C++ code style is defined in the file ``.clang-format`` in project's root directory. Accordingly, we use `YAPF <https://github.com/google/yapf>`__ to enforce the Python code style defined in the file ``.style.yapf``. If you have modified the project's source code, you can check whether it adheres to our style guidelines via the following command:
+
+.. code-block:: text
+
+   make test_format
+
+.. note::
+    If you want to check for compliance with the C++ or Python code style independently, you can alternatively use the command ``make test_format_cpp`` or ``make test_format_python``.
+
+In order to automatically format the project's source files according to our style guidelines, the following command can be used:
+
+.. code-block:: text
+
+   make format
+
+.. note::
+    If you want to format only the C++ source files, you can run the command ``make format_cpp`` instead. Accordingly, the command ``make format_python`` may be used to format only the Python source files.
