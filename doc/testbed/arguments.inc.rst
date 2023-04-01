@@ -166,12 +166,12 @@ In addition to the mandatory arguments that must be provided to the command line
 
     * ``decimals`` (Default value = ``2``) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     * ``percentage`` (Default value = ``true``) ``true``, if the characteristics should be given as a percentage, if possible, ``false`` otherwise.
-    * ``labels``(Default value = ``true``) ``true``, if the number of labels should be printed, ``false`` otherwise.
-    * ``label_density``(Default value = ``true``) ``true``, if the label density should be printed, ``false`` otherwise.
-    * ``label_sparsity``(Default value = ``true``) ``true``, if the label sparsity should be printed, ``false`` otherwise.
-    * ``label_imbalance_ratio``(Default value = ``true``) ``true``, if the label imbalance ratio should be printed, ``false`` otherwise.
-    * ``label_cardinality``(Default value = ``true``) ``true``, if the average label cardinality should be printed, ``false`` otherwise.
-    * ``distinct_label_vectors``(Default value = ``true``) ``true``, if the number of distinct label vectors should be printed, ``false`` otherwise.
+    * ``labels`` (Default value = ``true``) ``true``, if the number of labels should be printed, ``false`` otherwise.
+    * ``label_density`` (Default value = ``true``) ``true``, if the label density should be printed, ``false`` otherwise.
+    * ``label_sparsity`` (Default value = ``true``) ``true``, if the label sparsity should be printed, ``false`` otherwise.
+    * ``label_imbalance_ratio`` (Default value = ``true``) ``true``, if the label imbalance ratio should be printed, ``false`` otherwise.
+    * ``label_cardinality`` (Default value = ``true``) ``true``, if the average label cardinality should be printed, ``false`` otherwise.
+    * ``distinct_label_vectors`` (Default value = ``true``) ``true``, if the number of distinct label vectors should be printed, ``false`` otherwise.
 
   * ``false`` The characteristics of predictions are not printed on the console.
 
@@ -181,12 +181,12 @@ In addition to the mandatory arguments that must be provided to the command line
 
     * ``decimals`` (Default value = ``0``) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     * ``percentage`` (Default value = ``true``) ``true``, if the characteristics should be given as a percentage, if possible, ``false`` otherwise.
-    * ``labels``(Default value = ``true``) ``true``, if the number of labels should be stored, ``false`` otherwise.
-    * ``label_density``(Default value = ``true``) ``true``, if the label density should be stored, ``false`` otherwise.
-    * ``label_sparsity``(Default value = ``true``) ``true``, if the label sparsity should be stored, ``false`` otherwise.
-    * ``label_imbalance_ratio``(Default value = ``true``) ``true``, if the label imbalance ratio should be stored, ``false`` otherwise.
-    * ``label_cardinality``(Default value = ``true``) ``true``, if the average label cardinality should be stored, ``false`` otherwise.
-    * ``distinct_label_vectors``(Default value = ``true``) ``true``, if the number of distinct label vectors should be stored, ``false`` otherwise.
+    * ``labels`` (Default value = ``true``) ``true``, if the number of labels should be stored, ``false`` otherwise.
+    * ``label_density`` (Default value = ``true``) ``true``, if the label density should be stored, ``false`` otherwise.
+    * ``label_sparsity`` (Default value = ``true``) ``true``, if the label sparsity should be stored, ``false`` otherwise.
+    * ``label_imbalance_ratio`` (Default value = ``true``) ``true``, if the label imbalance ratio should be stored, ``false`` otherwise.
+    * ``label_cardinality`` (Default value = ``true``) ``true``, if the average label cardinality should be stored, ``false`` otherwise.
+    * ``distinct_label_vectors`` (Default value = ``true``) ``true``, if the number of distinct label vectors should be stored, ``false`` otherwise.
 
   * ``false`` The characteristics of predictions are not written into .csv files.
 
@@ -196,12 +196,12 @@ In addition to the mandatory arguments that must be provided to the command line
 
     * ``decimals`` (Default value = ``2``) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     * ``percentage`` (Default value = ``true``) ``true``, if the characteristics should be given as a percentage, if possible, ``false`` otherwise.
-    * ``labels``(Default value = ``true``) ``true``, if the number of labels should be printed, ``false`` otherwise.
-    * ``label_density``(Default value = ``true``) ``true``, if the label density should be printed, ``false`` otherwise.
-    * ``label_sparsity``(Default value = ``true``) ``true``, if the label sparsity should be printed, ``false`` otherwise.
-    * ``label_imbalance_ratio``(Default value = ``true``) ``true``, if the label imbalance ratio should be printed, ``false`` otherwise.
-    * ``label_cardinality``(Default value = ``true``) ``true``, if the average label cardinality should be printed, ``false`` otherwise.
-    * ``distinct_label_vectors``(Default value = ``true``) ``true``, if the number of distinct label vectors should be printed, ``false`` otherwise.
+    * ``labels`` (Default value = ``true``) ``true``, if the number of labels should be printed, ``false`` otherwise.
+    * ``label_density`` (Default value = ``true``) ``true``, if the label density should be printed, ``false`` otherwise.
+    * ``label_sparsity`` (Default value = ``true``) ``true``, if the label sparsity should be printed, ``false`` otherwise.
+    * ``label_imbalance_ratio`` (Default value = ``true``) ``true``, if the label imbalance ratio should be printed, ``false`` otherwise.
+    * ``label_cardinality`` (Default value = ``true``) ``true``, if the average label cardinality should be printed, ``false`` otherwise.
+    * ``distinct_label_vectors`` (Default value = ``true``) ``true``, if the number of distinct label vectors should be printed, ``false`` otherwise.
     * ``examples`` (Default value = ``true``) ``true``, if the number of examples should be printed, ``false`` otherwise.
     * ``features`` (Default value = ``true``) ``true``, if the number of features should be printed, ``false`` otherwise.
     * ``numerical_features`` (Default value = ``true``) ``true``, if the number of numerical features should be printed, ``false`` otherwise.
@@ -217,12 +217,12 @@ In addition to the mandatory arguments that must be provided to the command line
 
     * ``decimals`` (Default value = ``0``) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     * ``percentage`` (Default value = ``true``) ``true``, if the characteristics should be given as a percentage, if possible, ``false`` otherwise.
-    * ``labels``(Default value = ``true``) ``true``, if the number of labels should be stored, ``false`` otherwise.
-    * ``label_density``(Default value = ``true``) ``true``, if the label density should be stored, ``false`` otherwise.
-    * ``label_sparsity``(Default value = ``true``) ``true``, if the label sparsity should be stored, ``false`` otherwise.
-    * ``label_imbalance_ratio``(Default value = ``true``) ``true``, if the label imbalance ratio should be stored, ``false`` otherwise.
-    * ``label_cardinality``(Default value = ``true``) ``true``, if the average label cardinality should be stored, ``false`` otherwise.
-    * ``distinct_label_vectors``(Default value = ``true``) ``true``, if the number of distinct label vectors should be stored, ``false`` otherwise.
+    * ``labels`` (Default value = ``true``) ``true``, if the number of labels should be stored, ``false`` otherwise.
+    * ``label_density`` (Default value = ``true``) ``true``, if the label density should be stored, ``false`` otherwise.
+    * ``label_sparsity`` (Default value = ``true``) ``true``, if the label sparsity should be stored, ``false`` otherwise.
+    * ``label_imbalance_ratio`` (Default value = ``true``) ``true``, if the label imbalance ratio should be stored, ``false`` otherwise.
+    * ``label_cardinality`` (Default value = ``true``) ``true``, if the average label cardinality should be stored, ``false`` otherwise.
+    * ``distinct_label_vectors`` (Default value = ``true``) ``true``, if the number of distinct label vectors should be stored, ``false`` otherwise.
     * ``examples`` (Default value = ``true``) ``true``, if the number of examples should be stored, ``false`` otherwise.
     * ``features`` (Default value = ``true``) ``true``, if the number of features should be stored, ``false`` otherwise.
     * ``numerical_features`` (Default value = ``true``) ``true``, if the number of numerical features should be stored, ``false`` otherwise.
