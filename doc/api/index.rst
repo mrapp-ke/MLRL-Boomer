@@ -9,5 +9,6 @@ This section is intended for developers who are interested in the technical deta
 .. include:: compilation.inc.rst
 .. include:: documentation.inc.rst
 .. include:: testing.inc.rst
+.. include:: codestyle.inc.rst
 .. include:: cpp.inc.rst
 .. include:: python.inc.rst
