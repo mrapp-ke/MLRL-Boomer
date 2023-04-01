@@ -16,7 +16,7 @@ namespace boosting {
     class ChainRule final : public IJointProbabilityFunction {
         private:
 
-            std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr_;
+            const std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr_;
 
         public:
 
