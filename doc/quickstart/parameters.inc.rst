@@ -67,7 +67,7 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'top-down-beam-search'`` A top-down beam search, where rules are successively refined by adding new conditions, is used for the induction of individual rules. The following options may be provided using the bracket notation:
 
     * ``beam_width`` (Default value = ``4``) The width to be used by the beam search. A larger value tends to result in more accurate rules being found, but negatively affects the training time. Must be at least 2
-    * ``resample_features` (Default value = ``'false'``) ``'true'``, if a new sample of the available features should be created for each rule that is refined during a beam search, ``'false'`` otherwise. Does only have an effect if the parameter ``feature_sampling`` is not set to ``'none'``.
+    * ``resample_features`` (Default value = ``'false'``) ``'true'``, if a new sample of the available features should be created for each rule that is refined during a beam search, ``'false'`` otherwise. Does only have an effect if the parameter ``feature_sampling`` is not set to ``'none'``.
     * ``max_conditions`` (Default value = ``0``) The maximum number of conditions to be included in a rule's body. Must be at least 2 or 0, if the number of conditions should not be restricted.
     * ``min_coverage`` (Default value = ``1``) The minimum number of training examples that must be covered by a rule. Must be at least 1.
     * ``min_support`` (Default value = ``0.0``) The minimum support, i.e., the fraction of training examples that must be covered by a rule. Must be in [0, 1] or 0, if the support of rules should not be restricted.
