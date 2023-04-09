@@ -9,8 +9,8 @@ namespace boosting {
 
     float64 ChainRule::transformScoresIntoJointProbability(VectorConstView<float64>::const_iterator scoresBegin,
                                                            VectorConstView<float64>::const_iterator scoresEnd,
-                                                           const LabelVector& labelVector) const {
-        auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
+                                                           const VectorConstView<uint32>& relevantLabelIndices) const {
+        auto labelIterator = make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
         uint32 numLabels = scoresEnd - scoresBegin;
         float64 jointProbability = 1;
 

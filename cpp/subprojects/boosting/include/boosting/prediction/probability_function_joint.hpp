@@ -21,17 +21,18 @@ namespace boosting {
 
             /**
              * Transforms the regression scores that are predicted for an example into a joint probability that
-             * corresponds to the chance of a given label vector being correct.
+             * corresponds to the chance of given ground truth labels being correct.
              *
-             * @param scoresBegin   A `VectorConstView::const_iterator` to the beginning of the scores
-             * @param scoresEnd     A `VectorConstView::const_iterator` to the end of the scores
-             * @param labelVector   A reference to an object of type `LabelVector` the scores should be compared to
-             * @return              The joint probability that corresponds to the chance of the given label vector being
-             *                      correct
+             * @param scoresBegin           A `VectorConstView::const_iterator` to the beginning of the scores
+             * @param scoresEnd             A `VectorConstView::const_iterator` to the end of the scores
+             * @param relevantLabelIndices  A reference to an object of type `VectorConstView` that provides access to
+             *                              the indices of the relevant labels according to the ground truth
+             * @return                      The joint probability that corresponds to the chance of the given ground
+             *                              truth labels being correct
              */
-            virtual float64 transformScoresIntoJointProbability(VectorConstView<float64>::const_iterator scoresBegin,
-                                                                VectorConstView<float64>::const_iterator scoresEnd,
-                                                                const LabelVector& labelVector) const = 0;
+            virtual float64 transformScoresIntoJointProbability(
+              VectorConstView<float64>::const_iterator scoresBegin, VectorConstView<float64>::const_iterator scoresEnd,
+              const VectorConstView<uint32>& relevantLabelIndices) const = 0;
 
             /**
              * Transforms the regression scores that are predicted for an example into joint probabilities that
