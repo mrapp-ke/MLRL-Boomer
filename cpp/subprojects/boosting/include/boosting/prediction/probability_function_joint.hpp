@@ -23,32 +23,32 @@ namespace boosting {
              * Transforms the regression scores that are predicted for an example into a joint probability that
              * corresponds to the chance of given ground truth labels being correct.
              *
-             * @param scoresBegin           A `VectorConstView::const_iterator` to the beginning of the scores
-             * @param scoresEnd             A `VectorConstView::const_iterator` to the end of the scores
              * @param relevantLabelIndices  A reference to an object of type `VectorConstView` that provides access to
              *                              the indices of the relevant labels according to the ground truth
+             * @param scoresBegin           A `VectorConstView::const_iterator` to the beginning of the scores
+             * @param scoresEnd             A `VectorConstView::const_iterator` to the end of the scores
              * @return                      The joint probability that corresponds to the chance of the given ground
              *                              truth labels being correct
              */
             virtual float64 transformScoresIntoJointProbability(
-              VectorConstView<float64>::const_iterator scoresBegin, VectorConstView<float64>::const_iterator scoresEnd,
-              const VectorConstView<uint32>& relevantLabelIndices) const = 0;
+              const VectorConstView<uint32>& relevantLabelIndices, VectorConstView<float64>::const_iterator scoresBegin,
+              VectorConstView<float64>::const_iterator scoresEnd) const = 0;
 
             /**
              * Transforms the regression scores that are predicted for an example into joint probabilities that
              * correspond to the chance of individual label vectors contained by a `LabelVectorSet` being correct.
              *
-             * @param scoresBegin       A `VectorConstView::const_iterator` to the beginning of the scores
-             * @param scoresEnd         A `VectorConstView::const_iterator` to the end of the scores
              * @param labelVectorSet    A reference to an object of type `LabelVectorSet` that contains the label
              *                          vectors the scores should be compared to
+             * @param scoresBegin       A `VectorConstView::const_iterator` to the beginning of the scores
+             * @param scoresEnd         A `VectorConstView::const_iterator` to the end of the scores
              * @return                  An unique pointer to an object of type `DenseVector` that stores the joint
              *                          probabilities that correspond to the chance of the given label vectors being
              *                          correct
              */
             virtual std::unique_ptr<DenseVector<float64>> transformScoresIntoJointProbabilities(
-              VectorConstView<float64>::const_iterator scoresBegin, VectorConstView<float64>::const_iterator scoresEnd,
-              const LabelVectorSet& labelVectorSet) const {
+              const LabelVectorSet& labelVectorSet, VectorConstView<float64>::const_iterator scoresBegin,
+              VectorConstView<float64>::const_iterator scoresEnd) const {
                 uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
                 std::unique_ptr<DenseVector<float64>> jointProbabilityVectorPtr =
                   std::make_unique<DenseVector<float64>>(numLabelVectors);
@@ -60,7 +60,7 @@ namespace boosting {
                 for (auto it = labelVectorSet.cbegin(); it != labelVectorSet.cend(); it++) {
                     const LabelVector& labelVector = *((*it).first);
                     float64 jointProbability =
-                      this->transformScoresIntoJointProbability(scoresBegin, scoresEnd, labelVector);
+                      this->transformScoresIntoJointProbability(labelVector, scoresBegin, scoresEnd);
                     sumOfJointProbabilities += jointProbability;
                     jointProbabilityIterator[i] = jointProbability;
                     i++;
