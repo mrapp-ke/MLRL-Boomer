@@ -22,7 +22,7 @@ class IDistanceMeasure {
          * ground truth labels.
          *
          * @param relevantLabelIndices  A reference to an object of type `VectorConstView` that provides access to the
-         *                              indices of the labels that are relevant to the given example
+         *                              indices of the relevant labels according to the ground truth
          * @param scoresBegin           A `VectorConstView::const_iterator` to the beginning of the predicted scores
          * @param scoresEnd             A `VectorConstView::const_iterator` to the end of the predicted scores
          * @return                      The distance that has been calculated
