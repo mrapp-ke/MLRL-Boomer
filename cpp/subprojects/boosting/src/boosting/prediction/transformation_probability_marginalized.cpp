@@ -13,7 +13,7 @@ namespace boosting {
                                                       VectorView<float64>::iterator probabilitiesBegin,
                                                       VectorView<float64>::iterator probabilitiesEnd) const {
         std::unique_ptr<DenseVector<float64>> jointProbabilityVectorPtr =
-          jointProbabilityFunctionPtr_->transformScoresIntoJointProbabilities(scoresBegin, scoresEnd, labelVectorSet_);
+          jointProbabilityFunctionPtr_->transformScoresIntoJointProbabilities(labelVectorSet_, scoresBegin, scoresEnd);
         DenseVector<float64>::const_iterator jointProbabilityIterator = jointProbabilityVectorPtr->cbegin();
         uint32 numLabels = probabilitiesEnd - probabilitiesBegin;
         setArrayToZeros(probabilitiesBegin, numLabels);
