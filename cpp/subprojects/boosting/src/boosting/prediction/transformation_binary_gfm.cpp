@@ -118,7 +118,7 @@ namespace boosting {
                                   const IJointProbabilityFunction& jointProbabilityFunction,
                                   const LabelVectorSet& labelVectorSet, uint32 maxLabelCardinality) {
         std::unique_ptr<DenseVector<float64>> jointProbabilityVectorPtr =
-          jointProbabilityFunction.transformScoresIntoJointProbabilities(scoresBegin, scoresEnd, labelVectorSet);
+          jointProbabilityFunction.transformScoresIntoJointProbabilities(labelVectorSet, scoresBegin, scoresEnd);
         DenseVector<float64>::const_iterator jointProbabilityIterator = jointProbabilityVectorPtr->cbegin();
         uint32 numLabels = scoresEnd - scoresBegin;
         SparseSetMatrix<float64> marginalizedProbabilities(numLabels, maxLabelCardinality);
