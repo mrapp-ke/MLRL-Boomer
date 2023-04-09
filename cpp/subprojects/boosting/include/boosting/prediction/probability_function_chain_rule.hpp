@@ -32,9 +32,9 @@ namespace boosting {
             ChainRule(std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr,
                       const IProbabilityCalibrationModel& probabilityCalibrationModel);
 
-            float64 transformScoresIntoJointProbability(VectorConstView<float64>::const_iterator scoresBegin,
-                                                        VectorConstView<float64>::const_iterator scoresEnd,
-                                                        const LabelVector& labelVector) const override;
+            float64 transformScoresIntoJointProbability(
+              const VectorConstView<uint32>& relevantLabelIndices, VectorConstView<float64>::const_iterator scoresBegin,
+              VectorConstView<float64>::const_iterator scoresEnd) const override;
     };
 
     /**
