@@ -1,6 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+from mlrl.boosting.cython.prediction cimport LabelWiseBinaryPredictorConfig
 
 
 cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
@@ -54,15 +55,20 @@ cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.get_boosting_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoLabelBinning()
 
-    def use_label_wise_binary_predictor(self):
+    def use_label_wise_binary_predictor(self) -> LabelWiseBinaryPredictorConfig:
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
         irrelevant by summing up the scores that are provided by the individual rules of an existing rule-based model
         and transforming them into binary values according to a certain threshold that is applied to each label
         individually.
+
+        :return: A `LabelWiseBinaryPredictorConfig` that allows further configuration of the predictor
         """
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.get_boosting_rule_learner_config_ptr()
-        rule_learner_config_ptr.useLabelWiseBinaryPredictor()
+        cdef ILabelWiseBinaryPredictorConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseBinaryPredictor()
+        cdef LabelWiseBinaryPredictorConfig config = LabelWiseBinaryPredictorConfig.__new__(LabelWiseBinaryPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_label_wise_score_predictor(self):
         """

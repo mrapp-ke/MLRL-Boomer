@@ -19,6 +19,7 @@
 #include "boosting/post_processing/shrinkage_constant.hpp"
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 #include "boosting/prediction/predictor_binary_gfm.hpp"
+#include "boosting/prediction/predictor_binary_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
@@ -137,8 +138,11 @@ namespace boosting {
                      * relevant or irrelevant by summing up the scores that are provided by the individual rules of an
                      * existing rule-based model and transforming them into binary values according to a certain
                      * threshold that is applied to each label individually.
+                     *
+                     * @return A reference to an object of type `ILabelWiseBinaryPredictorConfig` that allows further
+                     *         configuration of the predictor
                      */
-                    virtual void useLabelWiseBinaryPredictor() = 0;
+                    virtual ILabelWiseBinaryPredictorConfig& useLabelWiseBinaryPredictor() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting regression scores by summing up the
@@ -599,7 +603,7 @@ namespace boosting {
 
                     void useNoLabelBinning() override;
 
-                    void useLabelWiseBinaryPredictor() override;
+                    ILabelWiseBinaryPredictorConfig& useLabelWiseBinaryPredictor() override;
 
                     void useLabelWiseScorePredictor() override;
 
