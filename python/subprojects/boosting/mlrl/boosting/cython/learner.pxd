@@ -1,8 +1,9 @@
 from mlrl.common.cython.learner cimport  IRuleLearnerConfig, RuleLearnerConfig
 from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
-from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
-from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
+from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
+from mlrl.boosting.cython.prediction cimport IExampleWiseBinaryPredictorConfig, ILabelWiseBinaryPredictorConfig
+from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
 
 
 ctypedef double (*DdotFunction)(int* n, double* dx, int* incx, double* dy, int* incy)
@@ -124,7 +125,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useExampleWiseBinaryPredictor()
+        IExampleWiseBinaryPredictorConfig& useExampleWiseBinaryPredictor()
 
 
     cdef cppclass IGfmBinaryPredictorMixin"boosting::IBoostingRuleLearner::IGfmBinaryPredictorMixin":
