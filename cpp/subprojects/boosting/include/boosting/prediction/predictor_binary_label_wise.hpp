@@ -11,9 +11,8 @@ namespace boosting {
 
     /**
      * Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
-     * irrelevant by summing up the scores that are provided by the individual rules of an existing rule-based model and
-     * transforming them into binary values according to a certain threshold that is applied to each label individually
-     * (1 if a score exceeds the threshold, i.e., the label is relevant, 0 otherwise).
+     * irrelevant by discretizing the regression scores or probability estimates that are predicted for each label
+     * individually.
      */
     class LabelWiseBinaryPredictorConfig final : public IBinaryPredictorConfig {
         private:

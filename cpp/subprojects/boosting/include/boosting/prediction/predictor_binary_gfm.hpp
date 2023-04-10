@@ -11,10 +11,10 @@ namespace boosting {
 
     /**
      * Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
-     * irrelevant by summing up the scores that are provided by the individual rules of an existing rule-based model and
-     * transforming them into binary values according to the general F-measure maximizer (GFM) presented in the paper
-     * "An exact algorithm for F-measure maximization", Dembczyński, Waegeman, Cheng and Hüllermeier 2011
-     * (see https://proceedings.neurips.cc/paper/2011/file/71ad16ad2c4d81f348082ff6c4b20768-Paper.pdf).
+     * irrelevant by discretizing the regression scores or probability estimates that are predicted for each label
+     * according to the general F-measure maximizer (GFM) presented in the paper "An exact algorithm for F-measure
+     * maximization", Dembczyński, Waegeman, Cheng and Hüllermeier 2011 (see
+     * https://proceedings.neurips.cc/paper/2011/file/71ad16ad2c4d81f348082ff6c4b20768-Paper.pdf).
      */
     class GfmBinaryPredictorConfig final : public IBinaryPredictorConfig {
         private:
