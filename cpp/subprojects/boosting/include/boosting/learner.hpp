@@ -453,12 +453,19 @@ namespace boosting {
                      * and comparing the aggregated score vector to the known label vectors according to a certain
                      * distance measure. The label vector that is closest to the aggregated score vector is finally
                      * predicted.
+                     *
+                     * @return A reference to an object of type `IExampleWiseBinaryPredictorConfig` that allows further
+                     *         configuration of the predictor
                      */
-                    virtual void useExampleWiseBinaryPredictor() {
+                    virtual IExampleWiseBinaryPredictorConfig& useExampleWiseBinaryPredictor() {
                         std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
                           this->getBinaryPredictorConfigPtr();
-                        binaryPredictorConfigPtr = std::make_unique<ExampleWiseBinaryPredictorConfig>(
-                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                        std::unique_ptr<ExampleWiseBinaryPredictorConfig> ptr =
+                          std::make_unique<ExampleWiseBinaryPredictorConfig>(this->getLossConfigPtr(),
+                                                                             this->getParallelPredictionConfigPtr());
+                        IExampleWiseBinaryPredictorConfig& ref = *ptr;
+                        binaryPredictorConfigPtr = std::move(ptr);
+                        return ref;
                     }
             };
 
