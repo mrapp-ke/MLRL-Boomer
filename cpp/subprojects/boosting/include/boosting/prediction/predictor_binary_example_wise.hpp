@@ -10,10 +10,8 @@
 namespace boosting {
 
     /**
-     * Allows to configure a predictor that predicts known label vectors for given query examples by summing up the
-     * scores that are provided by an existing rule-based model and comparing the aggregated score vector to the known
-     * label vectors according to a certain distance measure. The label vector that is closest to the aggregated score
-     * vector is finally predicted.
+     * Allows to configure a predictor that predicts known label vectors for given query examples by comparing the
+     * predicted regression scores or probability estimates to the label vectors encountered in the training data.
      */
     class ExampleWiseBinaryPredictorConfig final : public IBinaryPredictorConfig {
         private:
