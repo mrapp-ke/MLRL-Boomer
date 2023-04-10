@@ -112,7 +112,18 @@ namespace boosting {
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
       const std::unique_ptr<ILossConfig>& lossConfigPtr,
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
+        : basedOnProbabilities_(false), lossConfigPtr_(lossConfigPtr),
+          multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
+
+    bool LabelWiseBinaryPredictorConfig::isBasedOnProbabilities() const {
+        return basedOnProbabilities_;
+    }
+
+    ILabelWiseBinaryPredictorConfig& LabelWiseBinaryPredictorConfig::setBasedOnProbabilities(
+      bool basedOnProbabilities) {
+        basedOnProbabilities_ = basedOnProbabilities;
+        return *this;
+    }
 
     std::unique_ptr<IBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
