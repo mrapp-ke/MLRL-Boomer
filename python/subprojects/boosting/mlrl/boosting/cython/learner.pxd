@@ -31,7 +31,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useNoLabelBinning()
 
-        void useLabelWiseBinaryPredictor()
+        ILabelWiseBinaryPredictorConfig& useLabelWiseBinaryPredictor()
 
         void useLabelWiseScorePredictor()
 
