@@ -19,6 +19,7 @@
 #include "boosting/post_processing/shrinkage_constant.hpp"
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 #include "boosting/prediction/predictor_binary_gfm.hpp"
+#include "boosting/prediction/predictor_binary_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
@@ -137,8 +138,11 @@ namespace boosting {
                      * relevant or irrelevant by summing up the scores that are provided by the individual rules of an
                      * existing rule-based model and transforming them into binary values according to a certain
                      * threshold that is applied to each label individually.
+                     *
+                     * @return A reference to an object of type `ILabelWiseBinaryPredictorConfig` that allows further
+                     *         configuration of the predictor
                      */
-                    virtual void useLabelWiseBinaryPredictor() = 0;
+                    virtual ILabelWiseBinaryPredictorConfig& useLabelWiseBinaryPredictor() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting regression scores by summing up the
@@ -453,12 +457,19 @@ namespace boosting {
                      * and comparing the aggregated score vector to the known label vectors according to a certain
                      * distance measure. The label vector that is closest to the aggregated score vector is finally
                      * predicted.
+                     *
+                     * @return A reference to an object of type `IExampleWiseBinaryPredictorConfig` that allows further
+                     *         configuration of the predictor
                      */
-                    virtual void useExampleWiseBinaryPredictor() {
+                    virtual IExampleWiseBinaryPredictorConfig& useExampleWiseBinaryPredictor() {
                         std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
                           this->getBinaryPredictorConfigPtr();
-                        binaryPredictorConfigPtr = std::make_unique<ExampleWiseBinaryPredictorConfig>(
-                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                        std::unique_ptr<ExampleWiseBinaryPredictorConfig> ptr =
+                          std::make_unique<ExampleWiseBinaryPredictorConfig>(this->getLossConfigPtr(),
+                                                                             this->getParallelPredictionConfigPtr());
+                        IExampleWiseBinaryPredictorConfig& ref = *ptr;
+                        binaryPredictorConfigPtr = std::move(ptr);
+                        return ref;
                     }
             };
 
@@ -478,12 +489,18 @@ namespace boosting {
                      * relevant or irrelevant by summing up the scores that are provided by the individual rules of a
                      * existing rule-based model and transforming them into binary values according to the general
                      * F-measure maximizer (GFM).
+                     *
+                     * @return A reference to an object of type `IGfmBinaryPredictorConfig` that allows further
+                     *         configuration of the predictor
                      */
-                    virtual void useGfmBinaryPredictor() {
+                    virtual IGfmBinaryPredictorConfig& useGfmBinaryPredictor() {
                         std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
                           this->getBinaryPredictorConfigPtr();
-                        binaryPredictorConfigPtr = std::make_unique<GfmBinaryPredictorConfig>(
+                        std::unique_ptr<GfmBinaryPredictorConfig> ptr = std::make_unique<GfmBinaryPredictorConfig>(
                           this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                        IGfmBinaryPredictorConfig& ref = *ptr;
+                        binaryPredictorConfigPtr = std::move(ptr);
+                        return ref;
                     }
             };
 
@@ -592,7 +609,7 @@ namespace boosting {
 
                     void useNoLabelBinning() override;
 
-                    void useLabelWiseBinaryPredictor() override;
+                    ILabelWiseBinaryPredictorConfig& useLabelWiseBinaryPredictor() override;
 
                     void useLabelWiseScorePredictor() override;
 

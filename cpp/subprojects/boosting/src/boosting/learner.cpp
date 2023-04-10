@@ -75,9 +75,12 @@ namespace boosting {
           std::make_unique<NoLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
-    void AbstractBoostingRuleLearner::Config::useLabelWiseBinaryPredictor() {
-        binaryPredictorConfigPtr_ =
+    ILabelWiseBinaryPredictorConfig& AbstractBoostingRuleLearner::Config::useLabelWiseBinaryPredictor() {
+        std::unique_ptr<LabelWiseBinaryPredictorConfig> ptr =
           std::make_unique<LabelWiseBinaryPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
+        ILabelWiseBinaryPredictorConfig& ref = *ptr;
+        binaryPredictorConfigPtr_ = std::move(ptr);
+        return ref;
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseScorePredictor() {

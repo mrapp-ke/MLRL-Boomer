@@ -4,19 +4,53 @@
 #pragma once
 
 #include "boosting/losses/loss.hpp"
+#include "boosting/macros.hpp"
 #include "common/multi_threading/multi_threading.hpp"
 #include "common/prediction/predictor_binary.hpp"
 
 namespace boosting {
 
     /**
-     * Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
-     * irrelevant by summing up the scores that are provided by the individual rules of an existing rule-based model and
-     * transforming them into binary values according to a certain threshold that is applied to each label individually
-     * (1 if a score exceeds the threshold, i.e., the label is relevant, 0 otherwise).
+     * Defines an interface for all classes that allow to configure a predictor that predicts whether individual labels
+     * of given query examples are relevant or irrelevant by discretizing the regression scores or probability estimates
+     * that are predicted for each label individually.
      */
-    class LabelWiseBinaryPredictorConfig final : public IBinaryPredictorConfig {
+    class MLRLBOOSTING_API ILabelWiseBinaryPredictorConfig {
+        public:
+
+            virtual ~ILabelWiseBinaryPredictorConfig() {};
+
+            /**
+             * Returns whether binary predictions are derived from probability estimates rather than regression scores
+             * or not.
+             *
+             * @return True, if binary predictions are derived from probability estimates rather than regression scores,
+             *         false otherwise
+             */
+            virtual bool isBasedOnProbabilities() const = 0;
+
+            /**
+             * Sets whether binary predictions should be derived from probability estimates rather than regression
+             * scores or not.
+             *
+             * @param basedOnProbabilities  True, if binary predictions should be derived from probability estimates
+             *                              rather than regression scores, false otherwise
+             * @return                      A reference to an object of type `ILabelWiseBinaryPredictorConfig` that
+             *                              allows further configuration of the predictor
+             */
+            virtual ILabelWiseBinaryPredictorConfig& setBasedOnProbabilities(bool basedOnProbabilities) = 0;
+    };
+
+    /**
+     * Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
+     * irrelevant by discretizing the regression scores or probability estimates that are predicted for each label
+     * individually.
+     */
+    class LabelWiseBinaryPredictorConfig final : public ILabelWiseBinaryPredictorConfig,
+                                                 public IBinaryPredictorConfig {
         private:
+
+            bool basedOnProbabilities_;
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
 
@@ -33,6 +67,10 @@ namespace boosting {
              */
             LabelWiseBinaryPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
                                            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+
+            bool isBasedOnProbabilities() const override;
+
+            ILabelWiseBinaryPredictorConfig& setBasedOnProbabilities(bool basedOnProbabilities) override;
 
             /**
              * @see `IPredictorFactory::createPredictorFactory`

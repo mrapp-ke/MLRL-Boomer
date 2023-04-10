@@ -74,7 +74,7 @@ class BoomerRunnable(RuleLearnerRunnable):
         parser.add_argument(PARAM_BINARY_PREDICTOR,
                             type=str,
                             help='The name of the strategy to be used for predicting binary labels. Must be one of '
-                            + format_string_set(BINARY_PREDICTOR_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
+                            + format_dict_keys(BINARY_PREDICTOR_VALUES) + '. If set to "' + AUTOMATIC + '", the most '
                             + 'suitable strategy is chosen automatically based on the parameter ' + PARAM_LOSS + '.')
         parser.add_argument(PARAM_PROBABILITY_PREDICTOR,
                             type=str,
