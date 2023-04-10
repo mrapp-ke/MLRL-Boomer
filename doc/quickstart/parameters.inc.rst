@@ -231,9 +231,17 @@ The following parameters allow to control the behavior of the algorithm:
 * ``binary_predictor`` (Default value = ``'auto'``)
 
   * ``'auto'`` The most suitable strategy for predicting binary labels is chosen automatically, depending on the loss function.
-  * ``'label-wise'`` The prediction for an example is determined for each label independently.
-  * ``'example-wise'`` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data.
+  * ``'label-wise'`` The prediction for an example is determined for each label independently. The following options may be provided using the bracket notation:
+
+    * ``based_on_probabilities`` (Default value = ``'false'``) ``'true'``, if binary predictions should be derived from probability estimates rather than regression scores, ``'false'`` otherwise.
+
+  * ``'example-wise'`` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data. The following options may be provided using the bracket notation:
+
+    * ``based_on_probabilities`` (Default value = ``'false'``) ``'true'``, if binary predictions should be derived from probability estimates rather than regression scores, ``'false'`` otherwise.
+
   * ``'gfm'`` The label vector that is predicted for an example is chosen according to the general F-measure maximizer (GFM).
+
+    * ``based_on_probabilities`` (Default value = ``'true'``) ``'true'``, if binary predictions should be derived from probability estimates rather than regression scores, ``'false'`` otherwise.
 
 * ``probability_predictor`` (Default value = ``'auto'``)
 
