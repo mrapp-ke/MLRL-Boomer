@@ -12,7 +12,7 @@ from mlrl.common.config import configure_rule_induction, configure_feature_binni
     configure_size_stopping_criterion, configure_time_stopping_criterion, configure_global_pruning, \
     configure_sequential_post_optimization
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.options import parse_param
+from mlrl.common.options import parse_param, parse_param_and_options
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int, get_float
 from sklearn.base import ClassifierMixin, RegressorMixin, MultiOutputMixin
 from typing import Dict, Set, Optional
@@ -21,7 +21,7 @@ import mlrl.boosting.config as boosting_config
 from mlrl.boosting.config import LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL_WISE, \
     LOSS_LOGISTIC_LABEL_WISE, LOSS_SQUARED_ERROR_EXAMPLE_WISE, LOSS_SQUARED_HINGE_EXAMPLE_WISE, \
     LOSS_LOGISTIC_EXAMPLE_WISE, BINARY_PREDICTOR_LABEL_WISE, BINARY_PREDICTOR_EXAMPLE_WISE, BINARY_PREDICTOR_GFM, \
-    PROBABILITY_PREDICTOR_LABEL_WISE, PROBABILITY_PREDICTOR_MARGINALIZED
+    PROBABILITY_PREDICTOR_LABEL_WISE, PROBABILITY_PREDICTOR_MARGINALIZED, ARGUMENT_BASED_ON_PROBABILITIES
 from mlrl.boosting.config import configure_post_processor, configure_l1_regularization, configure_l2_regularization, \
     configure_default_rule, configure_head_type, configure_statistics, configure_label_wise_squared_error_loss, \
     configure_label_wise_squared_hinge_loss, configure_label_wise_logistic_loss, configure_example_wise_logistic_loss, \
@@ -48,8 +48,11 @@ LOSS_VALUES: Set[str] = {
     LOSS_SQUARED_HINGE_EXAMPLE_WISE, LOSS_LOGISTIC_LABEL_WISE, LOSS_LOGISTIC_EXAMPLE_WISE
 }
 
-BINARY_PREDICTOR_VALUES: Set[str] = {
-    BINARY_PREDICTOR_LABEL_WISE, BINARY_PREDICTOR_EXAMPLE_WISE, BINARY_PREDICTOR_GFM, AUTOMATIC
+BINARY_PREDICTOR_VALUES: Dict[str, Set[str]] = {
+    BINARY_PREDICTOR_LABEL_WISE: {ARGUMENT_BASED_ON_PROBABILITIES},
+    BINARY_PREDICTOR_EXAMPLE_WISE: {ARGUMENT_BASED_ON_PROBABILITIES},
+    BINARY_PREDICTOR_GFM: {ARGUMENT_BASED_ON_PROBABILITIES},
+    AUTOMATIC: {}
 }
 
 PROBABILITY_PREDICTOR_VALUES: Set[str] = {
@@ -310,10 +313,10 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         if binary_predictor == AUTOMATIC:
             config.use_automatic_binary_predictor()
         elif binary_predictor is not None:
-            value = parse_param('binary_predictor', binary_predictor, BINARY_PREDICTOR_VALUES)
-            configure_label_wise_binary_predictor(config, value)
-            configure_example_wise_binary_predictor(config, value)
-            configure_gfm_binary_predictor(config, value)
+            value, options = parse_param_and_options('binary_predictor', binary_predictor, BINARY_PREDICTOR_VALUES)
+            configure_label_wise_binary_predictor(config, value, options)
+            configure_example_wise_binary_predictor(config, value, options)
+            configure_gfm_binary_predictor(config, value, options)
 
     def __configure_probability_predictor(self, config: BoomerConfig):
         probability_predictor = get_string(self.probability_predictor)

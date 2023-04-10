@@ -5,7 +5,7 @@ Provides utility function for configuring boosting algorithms.
 """
 from mlrl.boosting.cython.learner import BoostingRuleLearnerConfig
 from mlrl.common.config import NONE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, BINNING_EQUAL_WIDTH
-from mlrl.common.options import BooleanOption, parse_param, parse_param_and_options
+from mlrl.common.options import Options, BooleanOption, parse_param, parse_param_and_options
 from typing import Dict, Set, Optional
 
 STATISTIC_FORMAT_DENSE = 'dense'
@@ -45,6 +45,8 @@ LOSS_SQUARED_HINGE_EXAMPLE_WISE = 'squared-hinge-example-wise'
 BINARY_PREDICTOR_LABEL_WISE = 'label-wise'
 
 BINARY_PREDICTOR_EXAMPLE_WISE = 'example-wise'
+
+ARGUMENT_BASED_ON_PROBABILITIES = 'based_on_probabilities'
 
 BINARY_PREDICTOR_GFM = 'gfm'
 
@@ -175,19 +177,22 @@ def configure_example_wise_squared_hinge_loss(config: BoostingRuleLearnerConfig,
         config.use_example_wise_squared_hinge_loss()
 
 
-def configure_label_wise_binary_predictor(config: BoostingRuleLearnerConfig, value: str):
+def configure_label_wise_binary_predictor(config: BoostingRuleLearnerConfig, value: str, options: Options):
     if value == BINARY_PREDICTOR_LABEL_WISE:
-        config.use_label_wise_binary_predictor()
+        c = config.use_label_wise_binary_predictor()
+        c.set_based_on_probabilities(options.get_bool(ARGUMENT_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
 
 
-def configure_example_wise_binary_predictor(config: BoostingRuleLearnerConfig, value: str):
+def configure_example_wise_binary_predictor(config: BoostingRuleLearnerConfig, value: str, options: Options):
     if value == BINARY_PREDICTOR_EXAMPLE_WISE:
-        config.use_example_wise_binary_predictor()
+        c = config.use_example_wise_binary_predictor()
+        c.set_based_on_probabilities(options.get_bool(ARGUMENT_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
 
 
-def configure_gfm_binary_predictor(config: BoostingRuleLearnerConfig, value: str):
+def configure_gfm_binary_predictor(config: BoostingRuleLearnerConfig, value: str, options: Options):
     if value == BINARY_PREDICTOR_GFM:
-        config.use_gfm_binary_predictor()
+        c = config.use_gfm_binary_predictor()
+        c.set_based_on_probabilities(options.get_bool(ARGUMENT_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
 
 
 def configure_label_wise_probability_predictor(config: BoostingRuleLearnerConfig, value: str):
