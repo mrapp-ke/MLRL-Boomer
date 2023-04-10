@@ -5,6 +5,8 @@ from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, FixedPartia
     IDynamicPartialHeadConfig, DynamicPartialHeadConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig, EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig, ConstantShrinkageConfig
+from mlrl.boosting.cython.prediction cimport IExampleWiseBinaryPredictorConfig, ExampleWiseBinaryPredictorConfig, \
+    IGfmBinaryPredictorConfig, GfmBinaryPredictorConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig, ManualRegularizationConfig
 from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
     IEqualFrequencyFeatureBinningConfig, EqualFrequencyFeatureBinningConfig
@@ -523,24 +525,34 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
-    def use_example_wise_binary_predictor(self):
+    def use_example_wise_binary_predictor(self) -> ExampleWiseBinaryPredictorConfig:
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
         irrelevant by summing up the scores that are provided by an existing rule-based model and comparing the
         aggregated score vector to the known label vectors according to a certain distance measure. The label vector
         that is closest to the aggregated score vector is finally predicted.
+
+        :return: An `ExampleWiseBinaryPredictorConfig` that allows further configuration of the predictor
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useExampleWiseBinaryPredictor()
+        cdef IExampleWiseBinaryPredictorConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseBinaryPredictor()
+        cdef ExampleWiseBinaryPredictorConfig config = ExampleWiseBinaryPredictorConfig.__new__(ExampleWiseBinaryPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_gfm_binary_predictor(self):
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
         irrelevant by summing up the scores that are provided by the individual rules of a existing rule-based model and
         transforming them into binary values according to the general F-measure maximizer (GFM).
+
+        :return: A `GfmBinaryPredictorConfig` that allows further configuration of the predictor
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        rule_learner_config_ptr.useGfmBinaryPredictor()
+        cdef IGfmBinaryPredictorConfig* config_ptr = &rule_learner_config_ptr.useGfmBinaryPredictor()
+        cdef GfmBinaryPredictorConfig config = GfmBinaryPredictorConfig.__new__(GfmBinaryPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_automatic_binary_predictor(self):
         """
