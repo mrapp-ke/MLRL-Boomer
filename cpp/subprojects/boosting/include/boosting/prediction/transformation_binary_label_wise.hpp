@@ -3,25 +3,27 @@
  */
 #pragma once
 
+#include "boosting/prediction/discretization_function.hpp"
 #include "boosting/prediction/transformation_binary.hpp"
 
 namespace boosting {
 
     /**
-     * An implementation of the class `IBinaryTransformation` that transforms regression scores into binary predictions
-     * via element-wise comparison to a predefined threshold.
+     * An implementation of the class `IBinaryTransformation` that transforms regression scores that are predicted for
+     * individual labels into binary predictions via element-wise application of an `IDiscretizationFunction`.
      */
     class LabelWiseBinaryTransformation final : public IBinaryTransformation {
         private:
 
-            const float64 threshold_;
+            std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr_;
 
         public:
 
             /**
-             * @param threshold The threshold to be used for discretization
+             * @param discretizationFunctionPtr An unique pointer to an object of type `IDiscretizationFunction` that
+             *                                  should be used to discretize regression scores
              */
-            LabelWiseBinaryTransformation(float64 threshold);
+            LabelWiseBinaryTransformation(std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr);
 
             void apply(VectorConstView<float64>::const_iterator scoresBegin,
                        VectorConstView<float64>::const_iterator scoresEnd, VectorView<uint8>::iterator predictionBegin,

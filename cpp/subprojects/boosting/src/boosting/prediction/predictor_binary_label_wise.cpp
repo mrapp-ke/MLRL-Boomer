@@ -1,5 +1,7 @@
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
 
+#include "boosting/prediction/discretization_function_probability.hpp"
+#include "boosting/prediction/discretization_function_score.hpp"
 #include "boosting/prediction/predictor_binary_common.hpp"
 #include "boosting/prediction/transformation_binary_label_wise.hpp"
 
@@ -7,28 +9,29 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `IBinaryPredictor` that allow to predict whether individual labels of
-     * given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
-     * rules of an existing rule-based model and transforming them into binary values according to a certain threshold
-     * that is applied to each label individually (1 if a score exceeds the threshold, i.e., the label is relevant, 0
-     * otherwise).
+     * given query examples are relevant or irrelevant by discretizing the regression scores or probability estimates
+     * that are predicted for each label individually.
      */
     class LabelWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
 
-            const float64 threshold_;
+            const std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr_;
 
             const uint32 numThreads_;
 
         public:
 
             /**
-             * @param threshold     The threshold that should be used to transform predicted scores into binary
-             *                      predictions
-             * @param numThreads    The number of CPU threads to be used to make predictions for different query
-             *                      examples in parallel. Must be at least 1
+             * @param discretizationFunctionFactoryPtr  An unique pointer to an object of type
+             *                                          `IDiscretizationFunctionFactory` that allows to create the
+             *                                          implementation to be used for discretization
+             * @param numThreads                        The number of CPU threads to be used to make predictions for
+             *                                          different query examples in parallel. Must be at least 1
              */
-            LabelWiseBinaryPredictorFactory(float64 threshold, uint32 numThreads)
-                : threshold_(threshold), numThreads_(numThreads) {}
+            LabelWiseBinaryPredictorFactory(
+              std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr, uint32 numThreads)
+                : discretizationFunctionFactoryPtr_(std::move(discretizationFunctionFactoryPtr)),
+                  numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -37,8 +40,10 @@ namespace boosting {
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                      const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                      uint32 numLabels) const override {
+                std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
+                  discretizationFunctionFactoryPtr_->create(probabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-                  std::make_unique<LabelWiseBinaryTransformation>(threshold_);
+                  std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<BinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
@@ -50,8 +55,10 @@ namespace boosting {
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                      const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                      uint32 numLabels) const override {
+                std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
+                  discretizationFunctionFactoryPtr_->create(probabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-                  std::make_unique<LabelWiseBinaryTransformation>(threshold_);
+                  std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<BinaryPredictor<CsrConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
@@ -67,20 +74,23 @@ namespace boosting {
     class LabelWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
 
-            const float64 threshold_;
+            const std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr_;
 
             const uint32 numThreads_;
 
         public:
 
             /**
-             * @param threshold     The threshold that should be used to transform predicted scores into binary
-             *                      predictions
-             * @param numThreads    The number of CPU threads to be used to make predictions for different query
-             *                      examples in parallel. Must be at least 1
+             * @param discretizationFunctionFactoryPtr  An unique pointer to an object of type
+             *                                          `IDiscretizationFunctionFactory` that allows to create the
+             *                                          implementation to be used for discretization
+             * @param numThreads                        The number of CPU threads to be used to make predictions for
+             *                                          different query examples in parallel. Must be at least 1
              */
-            LabelWiseSparseBinaryPredictorFactory(float64 threshold, uint32 numThreads)
-                : threshold_(threshold), numThreads_(numThreads) {}
+            LabelWiseSparseBinaryPredictorFactory(
+              std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr, uint32 numThreads)
+                : discretizationFunctionFactoryPtr_(std::move(discretizationFunctionFactoryPtr)),
+                  numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -89,8 +99,10 @@ namespace boosting {
               const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
               uint32 numLabels) const override {
+                std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
+                  discretizationFunctionFactoryPtr_->create(probabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-                  std::make_unique<LabelWiseBinaryTransformation>(threshold_);
+                  std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<SparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
@@ -102,12 +114,25 @@ namespace boosting {
               const CsrConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
               uint32 numLabels) const override {
+                std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
+                  discretizationFunctionFactoryPtr_->create(probabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-                  std::make_unique<LabelWiseBinaryTransformation>(threshold_);
+                  std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<SparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
     };
+
+    static inline std::unique_ptr<IDiscretizationFunctionFactory> createDiscretizationFunctionFactory(
+      bool basedOnProbabilities, const ILossConfig& lossConfig) {
+        if (basedOnProbabilities) {
+            return std::make_unique<ProbabilityDiscretizationFunctionFactory>(
+              lossConfig.createMarginalProbabilityFunctionFactory());
+        } else {
+            float64 threshold = lossConfig.getDefaultPrediction();
+            return std::make_unique<ScoreDiscretizationFunctionFactory>(threshold);
+        }
+    }
 
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
       const std::unique_ptr<ILossConfig>& lossConfigPtr,
@@ -127,16 +152,20 @@ namespace boosting {
 
     std::unique_ptr<IBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        float64 threshold = lossConfigPtr_->getDefaultPrediction();
+        std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr =
+          createDiscretizationFunctionFactory(basedOnProbabilities_, *lossConfigPtr_);
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<LabelWiseBinaryPredictorFactory>(threshold, numThreads);
+        return std::make_unique<LabelWiseBinaryPredictorFactory>(std::move(discretizationFunctionFactoryPtr),
+                                                                 numThreads);
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        float64 threshold = lossConfigPtr_->getDefaultPrediction();
+        std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr =
+          createDiscretizationFunctionFactory(basedOnProbabilities_, *lossConfigPtr_);
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<LabelWiseSparseBinaryPredictorFactory>(threshold, numThreads);
+        return std::make_unique<LabelWiseSparseBinaryPredictorFactory>(std::move(discretizationFunctionFactoryPtr),
+                                                                       numThreads);
     }
 
     bool LabelWiseBinaryPredictorConfig::isLabelVectorSetNeeded() const {
