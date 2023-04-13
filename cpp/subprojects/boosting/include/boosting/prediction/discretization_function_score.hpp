@@ -23,7 +23,8 @@ namespace boosting {
              */
             ScoreDiscretizationFunctionFactory(float64 threshold);
 
-            std::unique_ptr<IDiscretizationFunction> create() const override;
+            std::unique_ptr<IDiscretizationFunction> create(
+              const IProbabilityCalibrationModel& probabilityCalibrationModel) const override;
     };
 
 }
