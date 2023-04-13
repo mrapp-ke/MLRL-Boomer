@@ -18,7 +18,7 @@ namespace boosting {
              */
             ScoreDiscretizationFunction(float64 threshold) : threshold_(threshold) {}
 
-            bool discretizeScore(float64 score) const override {
+            bool discretizeScore(uint32 labelIndex, float64 score) const override {
                 return score > threshold_;
             }
     };

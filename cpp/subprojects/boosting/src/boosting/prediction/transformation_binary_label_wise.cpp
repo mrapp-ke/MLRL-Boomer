@@ -14,7 +14,7 @@ namespace boosting {
 
         for (uint32 i = 0; i < numPredictions; i++) {
             float64 score = scoresBegin[i];
-            uint8 binaryPrediction = discretizationFunctionPtr_->discretizeScore(score) ? 1 : 0;
+            uint8 binaryPrediction = discretizationFunctionPtr_->discretizeScore(i, score) ? 1 : 0;
             predictionBegin[i] = binaryPrediction;
         }
     }
@@ -27,7 +27,7 @@ namespace boosting {
         for (uint32 i = 0; i < numPredictions; i++) {
             float64 score = scoresBegin[i];
 
-            if (discretizationFunctionPtr_->discretizeScore(score)) {
+            if (discretizationFunctionPtr_->discretizeScore(i, score)) {
                 predictionRow.emplace_back(i);
             }
         }
