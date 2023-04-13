@@ -22,7 +22,7 @@ namespace boosting {
             LogisticFunction(const IProbabilityCalibrationModel& probabilityCalibrationModel)
                 : probabilityCalibrationModel_(probabilityCalibrationModel) {}
 
-            float64 transformScoreIntoMarginalProbability(float64 score) const override {
+            float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float64 score) const override {
                 return probabilityCalibrationModel_.calibrateMarginalProbability(labelIndex, logisticFunction(score));
             }
     };
