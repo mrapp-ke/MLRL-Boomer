@@ -28,6 +28,8 @@ source_files = [
     'src/boosting/multi_threading/parallel_rule_refinement_auto.cpp',
     'src/boosting/multi_threading/parallel_statistic_update_auto.cpp',
     'src/boosting/post_processing/shrinkage_constant.cpp',
+    'src/boosting/prediction/discretization_function_probability.cpp',
+    'src/boosting/prediction/discretization_function_score.cpp',
     'src/boosting/prediction/predictor_binary_auto.cpp',
     'src/boosting/prediction/predictor_binary_example_wise.cpp',
     'src/boosting/prediction/predictor_binary_gfm.cpp',
