@@ -78,9 +78,9 @@ namespace boosting {
             /**
              * @see `IDistanceMeasure::measureDistance`
              */
-            virtual float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
-                                            VectorConstView<float64>::const_iterator scoresBegin,
-                                            VectorConstView<float64>::const_iterator scoresEnd) const override {
+            float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
+                                    VectorConstView<float64>::const_iterator scoresBegin,
+                                    VectorConstView<float64>::const_iterator scoresEnd) const override final {
                 return 1.0 - this->transformScoresIntoJointProbability(relevantLabelIndices, scoresBegin, scoresEnd);
             }
     };
