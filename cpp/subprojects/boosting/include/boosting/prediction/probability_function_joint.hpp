@@ -6,7 +6,7 @@
 #include "boosting/prediction/probability_function_marginal.hpp"
 #include "common/data/vector_dense.hpp"
 #include "common/math/math.hpp"
-#include "common/prediction/label_vector_set.hpp"
+#include "common/measures/measure_distance.hpp"
 
 namespace boosting {
 
@@ -14,7 +14,7 @@ namespace boosting {
      * Defines an interface for all classes that allow to transform the regression scores that are predicted an example
      * into a joint probability that corresponds to the chance of a label vector being correct.
      */
-    class IJointProbabilityFunction {
+    class IJointProbabilityFunction : public IDistanceMeasure {
         public:
 
             virtual ~IJointProbabilityFunction() {};
@@ -74,12 +74,21 @@ namespace boosting {
 
                 return jointProbabilityVectorPtr;
             }
+
+            /**
+             * @see `IDistanceMeasure::measureDistance`
+             */
+            float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
+                                    VectorConstView<float64>::const_iterator scoresBegin,
+                                    VectorConstView<float64>::const_iterator scoresEnd) const override final {
+                return 1.0 - this->transformScoresIntoJointProbability(relevantLabelIndices, scoresBegin, scoresEnd);
+            }
     };
 
     /**
      * Defines an interface for all factories that allow to create instances of the type `IJointProbabilityFunction`.
      */
-    class IJointProbabilityFunctionFactory {
+    class IJointProbabilityFunctionFactory : public IDistanceMeasureFactory {
         public:
 
             virtual ~IJointProbabilityFunctionFactory() {};
@@ -94,6 +103,14 @@ namespace boosting {
              */
             virtual std::unique_ptr<IJointProbabilityFunction> create(
               const IProbabilityCalibrationModel& probabilityCalibrationModel) const = 0;
+
+            /**
+             * @see `IDistanceMeasureFactory::createDistanceMeasure`
+             */
+            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+              const IProbabilityCalibrationModel& probabilityCalibrationModel) const override final {
+                return this->create(probabilityCalibrationModel);
+            }
     };
 
 }
