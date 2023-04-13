@@ -149,6 +149,15 @@ namespace boosting {
             }
     };
 
+    static inline std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory(bool basedOnProbabilities,
+                                                                                        const ILossConfig& lossConfig) {
+        if (basedOnProbabilities) {
+            return lossConfig.createJointProbabilityFunctionFactory();
+        } else {
+            return lossConfig.createDistanceMeasureFactory();
+        }
+    }
+
     ExampleWiseBinaryPredictorConfig::ExampleWiseBinaryPredictorConfig(
       const std::unique_ptr<ILossConfig>& lossConfigPtr,
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
@@ -168,18 +177,29 @@ namespace boosting {
     std::unique_ptr<IBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
-          lossConfigPtr_->createDistanceMeasureFactory();
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<ExampleWiseBinaryPredictorFactory>(std::move(distanceMeasureFactoryPtr), numThreads);
+          createDistanceMeasureFactory(basedOnProbabilities_, *lossConfigPtr_);
+
+        if (distanceMeasureFactoryPtr) {
+            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+            return std::make_unique<ExampleWiseBinaryPredictorFactory>(std::move(distanceMeasureFactoryPtr),
+                                                                       numThreads);
+        }
+
+        return nullptr;
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
-          lossConfigPtr_->createDistanceMeasureFactory();
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<ExampleWiseSparseBinaryPredictorFactory>(std::move(distanceMeasureFactoryPtr),
-                                                                         numThreads);
+          createDistanceMeasureFactory(basedOnProbabilities_, *lossConfigPtr_);
+
+        if (distanceMeasureFactoryPtr) {
+            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+            return std::make_unique<ExampleWiseSparseBinaryPredictorFactory>(std::move(distanceMeasureFactoryPtr),
+                                                                             numThreads);
+        }
+
+        return nullptr;
     }
 
     bool ExampleWiseBinaryPredictorConfig::isLabelVectorSetNeeded() const {
