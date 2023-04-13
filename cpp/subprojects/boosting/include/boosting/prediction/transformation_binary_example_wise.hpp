@@ -10,9 +10,9 @@
 namespace boosting {
 
     /**
-     * An implementation of the class `IBinaryTransformation` that transforms real-valued predictions into binary
-     * predictions by comparing the real-valued predictions to the known label vectors according to a certain distance
-     * measure and picking the closest one.
+     * An implementation of the class `IBinaryTransformation` that transforms regression scores into binary predictions
+     * by comparing the scores to the known label vectors according to a certain distance measure and picking the
+     * closest one.
      */
     class ExampleWiseBinaryTransformation final : public IBinaryTransformation {
         private:
@@ -27,18 +27,17 @@ namespace boosting {
              * @param labelVectorSet        A reference to an object of type `LabelVectorSet` that stores all known
              *                              label vectors
              * @param distanceMeasurePtr    An unique pointer to an object of type `IDistanceMeasure` that implements
-             *                              the distance measure for comparing real-valued predictions to known label
-             *                              vectors
+             *                              the distance measure for comparing regression scores to known label vectors
              */
             ExampleWiseBinaryTransformation(const LabelVectorSet& labelVectorSet,
                                             std::unique_ptr<IDistanceMeasure> distanceMeasurePtr);
 
-            void apply(VectorConstView<float64>::const_iterator realBegin,
-                       VectorConstView<float64>::const_iterator realEnd, VectorView<uint8>::iterator predictionBegin,
+            void apply(VectorConstView<float64>::const_iterator scoresBegin,
+                       VectorConstView<float64>::const_iterator scoresEnd, VectorView<uint8>::iterator predictionBegin,
                        VectorView<uint8>::iterator predictionEnd) const override;
 
-            void apply(VectorConstView<float64>::const_iterator realBegin,
-                       VectorConstView<float64>::const_iterator realEnd,
+            void apply(VectorConstView<float64>::const_iterator scoresBegin,
+                       VectorConstView<float64>::const_iterator scoresEnd,
                        BinaryLilMatrix::row predictionRow) const override;
     };
 
