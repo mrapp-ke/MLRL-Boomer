@@ -88,7 +88,7 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type `IJointProbabilityFunction`.
      */
-    class IJointProbabilityFunctionFactory {
+    class IJointProbabilityFunctionFactory : public IDistanceMeasureFactory {
         public:
 
             virtual ~IJointProbabilityFunctionFactory() {};
@@ -103,6 +103,14 @@ namespace boosting {
              */
             virtual std::unique_ptr<IJointProbabilityFunction> create(
               const IProbabilityCalibrationModel& probabilityCalibrationModel) const = 0;
+
+            /**
+             * @see `IDistanceMeasureFactory::createDistanceMeasure`
+             */
+            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+              const IProbabilityCalibrationModel& probabilityCalibrationModel) const override final {
+                return this->create(probabilityCalibrationModel);
+            }
     };
 
 }
