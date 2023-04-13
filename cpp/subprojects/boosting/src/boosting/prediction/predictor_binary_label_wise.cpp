@@ -126,12 +126,17 @@ namespace boosting {
     static inline std::unique_ptr<IDiscretizationFunctionFactory> createDiscretizationFunctionFactory(
       bool basedOnProbabilities, const ILossConfig& lossConfig) {
         if (basedOnProbabilities) {
-            return std::make_unique<ProbabilityDiscretizationFunctionFactory>(
-              lossConfig.createMarginalProbabilityFunctionFactory());
-        } else {
-            float64 threshold = lossConfig.getDefaultPrediction();
-            return std::make_unique<ScoreDiscretizationFunctionFactory>(threshold);
+            std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactory =
+              lossConfig.createMarginalProbabilityFunctionFactory();
+
+            if (marginalProbabilityFunctionFactory) {
+                return std::make_unique<ProbabilityDiscretizationFunctionFactory>(
+                  std::move(marginalProbabilityFunctionFactory));
+            }
         }
+
+        float64 threshold = lossConfig.getDefaultPrediction();
+        return std::make_unique<ScoreDiscretizationFunctionFactory>(threshold);
     }
 
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
@@ -171,5 +176,4 @@ namespace boosting {
     bool LabelWiseBinaryPredictorConfig::isLabelVectorSetNeeded() const {
         return false;
     }
-
 }
