@@ -137,7 +137,7 @@ namespace boosting {
                                              *distanceMeasureFactoryPtr_, probabilityCalibrationModel);
             }
 
-            /** 
+            /**
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<ISparseBinaryPredictor> create(
