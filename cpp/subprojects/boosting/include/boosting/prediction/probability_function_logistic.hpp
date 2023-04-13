@@ -8,16 +8,6 @@
 namespace boosting {
 
     /**
-     * An implementation of the class `IMarginalProbabilityFunction` that transforms regression scores that are
-     * predicted for individual labels into marginal probabilities via the logistic sigmoid function.
-     */
-    class LogisticFunction final : public IMarginalProbabilityFunction {
-        public:
-
-            float64 transformScoreIntoMarginalProbability(float64 score) const override;
-    };
-
-    /**
      * Allows to create instances of the type `IMarginalProbabilityFunction` that transform regression scores that are
      * predicted for individual labels into marginal probabilities via the logistic sigmoid function.
      */
