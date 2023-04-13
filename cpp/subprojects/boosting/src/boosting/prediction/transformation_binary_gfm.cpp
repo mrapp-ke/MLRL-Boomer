@@ -152,18 +152,18 @@ namespace boosting {
         : labelVectorSet_(labelVectorSet), maxLabelCardinality_(getMaxLabelCardinality(labelVectorSet)),
           jointProbabilityFunctionPtr_(std::move(jointProbabilityFunctionPtr)) {}
 
-    void GfmBinaryTransformation::apply(VectorConstView<float64>::const_iterator realBegin,
-                                        VectorConstView<float64>::const_iterator realEnd,
+    void GfmBinaryTransformation::apply(VectorConstView<float64>::const_iterator scoresBegin,
+                                        VectorConstView<float64>::const_iterator scoresEnd,
                                         VectorView<uint8>::iterator predictionBegin,
                                         VectorView<uint8>::iterator predictionEnd) const {
-        predictGfm(realBegin, realEnd, predictionBegin, *jointProbabilityFunctionPtr_, labelVectorSet_,
+        predictGfm(scoresBegin, scoresEnd, predictionBegin, *jointProbabilityFunctionPtr_, labelVectorSet_,
                    maxLabelCardinality_);
     }
 
-    void GfmBinaryTransformation::apply(VectorConstView<float64>::const_iterator realBegin,
-                                        VectorConstView<float64>::const_iterator realEnd,
+    void GfmBinaryTransformation::apply(VectorConstView<float64>::const_iterator scoresBegin,
+                                        VectorConstView<float64>::const_iterator scoresEnd,
                                         BinaryLilMatrix::row predictionRow) const {
-        predictGfm<BinaryLilMatrix::row>(realBegin, realEnd, predictionRow, *jointProbabilityFunctionPtr_,
+        predictGfm<BinaryLilMatrix::row>(scoresBegin, scoresEnd, predictionRow, *jointProbabilityFunctionPtr_,
                                          labelVectorSet_, maxLabelCardinality_);
     }
 
