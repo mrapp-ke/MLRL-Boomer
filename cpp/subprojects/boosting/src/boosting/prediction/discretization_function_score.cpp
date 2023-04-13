@@ -6,7 +6,7 @@ namespace boosting {
      * An implementation of the type `IDiscretizationFunction` that allows to discretize regression scores by comparing
      * them to a threshold.
      */
-    class ScoreDiscretizationFunction : public IDiscretizationFunction {
+    class ScoreDiscretizationFunction final : public IDiscretizationFunction {
         private:
 
             float64 threshold_;

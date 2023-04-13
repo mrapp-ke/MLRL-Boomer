@@ -6,7 +6,7 @@ namespace boosting {
      * An implementation of the type `IDiscretizationFunction` that allows to discretize regression scores by
      * transforming them into marginal probabilities.
      */
-    class ProbabilityDiscretizationFunction : public IDiscretizationFunction {
+    class ProbabilityDiscretizationFunction final : public IDiscretizationFunction {
         private:
 
             std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr_;
