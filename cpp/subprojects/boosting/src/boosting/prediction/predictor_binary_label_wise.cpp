@@ -39,8 +39,10 @@ namespace boosting {
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                      const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                      uint32 numLabels) const override {
+                std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
+                  discretizationFunctionFactoryPtr_->create(probabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-                  std::make_unique<LabelWiseBinaryTransformation>(discretizationFunctionFactoryPtr_->create());
+                  std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<BinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
@@ -52,8 +54,10 @@ namespace boosting {
                                                      const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                      const IProbabilityCalibrationModel& probabilityCalibrationModel,
                                                      uint32 numLabels) const override {
+                std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
+                  discretizationFunctionFactoryPtr_->create(probabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-                  std::make_unique<LabelWiseBinaryTransformation>(discretizationFunctionFactoryPtr_->create());
+                  std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<BinaryPredictor<CsrConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
@@ -94,8 +98,10 @@ namespace boosting {
               const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
               uint32 numLabels) const override {
+                std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
+                  discretizationFunctionFactoryPtr_->create(probabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-                  std::make_unique<LabelWiseBinaryTransformation>(discretizationFunctionFactoryPtr_->create());
+                  std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<SparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
@@ -107,8 +113,10 @@ namespace boosting {
               const CsrConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
               uint32 numLabels) const override {
+                std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
+                  discretizationFunctionFactoryPtr_->create(probabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-                  std::make_unique<LabelWiseBinaryTransformation>(discretizationFunctionFactoryPtr_->create());
+                  std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<SparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
