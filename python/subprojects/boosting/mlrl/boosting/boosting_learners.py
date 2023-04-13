@@ -51,7 +51,7 @@ LOSS_VALUES: Set[str] = {
 BINARY_PREDICTOR_VALUES: Dict[str, Set[str]] = {
     BINARY_PREDICTOR_LABEL_WISE: {ARGUMENT_BASED_ON_PROBABILITIES},
     BINARY_PREDICTOR_EXAMPLE_WISE: {ARGUMENT_BASED_ON_PROBABILITIES},
-    BINARY_PREDICTOR_GFM: {ARGUMENT_BASED_ON_PROBABILITIES},
+    BINARY_PREDICTOR_GFM: {},
     AUTOMATIC: {}
 }
 
@@ -316,7 +316,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
             value, options = parse_param_and_options('binary_predictor', binary_predictor, BINARY_PREDICTOR_VALUES)
             configure_label_wise_binary_predictor(config, value, options)
             configure_example_wise_binary_predictor(config, value, options)
-            configure_gfm_binary_predictor(config, value, options)
+            configure_gfm_binary_predictor(config, value)
 
     def __configure_probability_predictor(self, config: BoomerConfig):
         probability_predictor = get_string(self.probability_predictor)
