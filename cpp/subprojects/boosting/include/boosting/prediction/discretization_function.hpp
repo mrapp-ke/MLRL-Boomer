@@ -18,12 +18,13 @@ namespace boosting {
             virtual ~IDiscretizationFunction() {};
 
             /**
-             * Discretizes a given regression score.
+             * Discretizes the regression score that is predicted for a specific label.
              *
-             * @param score The regression score to be discretized
-             * @return      A binary value the given regression score has been turned into
+             * @param labelIndex    The index of the label, the regression score is predicted for
+             * @param score         The regression score to be discretized
+             * @return              A binary value the given regression score has been turned into
              */
-            virtual bool discretizeScore(float64 score) const = 0;
+            virtual bool discretizeScore(uint32 labelIndex, float64 score) const = 0;
     };
 
     /**
