@@ -6,7 +6,7 @@
 #include "boosting/prediction/probability_function_marginal.hpp"
 #include "common/data/vector_dense.hpp"
 #include "common/math/math.hpp"
-#include "common/prediction/label_vector_set.hpp"
+#include "common/measures/measure_distance.hpp"
 
 namespace boosting {
 
@@ -14,7 +14,7 @@ namespace boosting {
      * Defines an interface for all classes that allow to transform the regression scores that are predicted an example
      * into a joint probability that corresponds to the chance of a label vector being correct.
      */
-    class IJointProbabilityFunction {
+    class IJointProbabilityFunction : public IDistanceMeasure {
         public:
 
             virtual ~IJointProbabilityFunction() {};
@@ -73,6 +73,15 @@ namespace boosting {
                 }
 
                 return jointProbabilityVectorPtr;
+            }
+
+            /**
+             * @see `IDistanceMeasure::measureDistance`
+             */
+            virtual float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
+                                            VectorConstView<float64>::const_iterator scoresBegin,
+                                            VectorConstView<float64>::const_iterator scoresEnd) const override {
+                return 1.0 - this->transformScoresIntoJointProbability(relevantLabelIndices, scoresBegin, scoresEnd);
             }
     };
 
