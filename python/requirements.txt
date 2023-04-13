@@ -1,4 +1,4 @@
-cython==0.29.33
+cython==0.29.34
 meson==1.1.0
 ninja==1.11.1
 wheel==0.40.0
