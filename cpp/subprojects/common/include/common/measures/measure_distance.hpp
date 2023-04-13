@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/data/view_vector.hpp"
+#include "common/prediction/label_vector_set.hpp"
 
 #include <memory>
 
@@ -29,6 +30,40 @@ class IDistanceMeasure {
         virtual float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
                                         VectorConstView<float64>::const_iterator scoresBegin,
                                         VectorConstView<float64>::const_iterator scoresEnd) const = 0;
+
+        /**
+         * Searches among the label vectors contained in a `LabelVectorSet` and returns the one that is closest to the
+         * scores that are predicted for an example.
+         *
+         * @param labelVectorSet        A reference to an object of type `LabelVectorSet` that contains the label
+         *                              vectors
+         * @param scoresBegin           A `VectorConstView::const_iterator` to the beginning of the predicted scores
+         * @param scoresEnd             A `VectorConstView::const_iterator` to the end of the predicted scores
+         * @return                      A reference to an object of type `LabelVector` that has been found
+         */
+        virtual const LabelVector& getClosestLabelVector(const LabelVectorSet& labelVectorSet,
+                                                         VectorConstView<float64>::const_iterator scoresBegin,
+                                                         VectorConstView<float64>::const_iterator scoresEnd) const {
+            LabelVectorSet::const_iterator it = labelVectorSet.cbegin();
+            const LabelVector* closestLabelVector = (*it).first.get();
+            uint32 maxCount = (*it).second;
+            float64 minDistance = this->measureDistance(*closestLabelVector, scoresBegin, scoresEnd);
+            it++;
+
+            for (; it != labelVectorSet.cend(); it++) {
+                const LabelVector& labelVector = *((*it).first);
+                uint32 count = (*it).second;
+                float64 distance = this->measureDistance(labelVector, scoresBegin, scoresEnd);
+
+                if (distance < minDistance || (distance == minDistance && count > maxCount)) {
+                    closestLabelVector = &labelVector;
+                    maxCount = count;
+                    minDistance = distance;
+                }
+            }
+
+            return *closestLabelVector;
+        }
 };
 
 /**
