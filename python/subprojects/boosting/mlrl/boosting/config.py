@@ -189,10 +189,9 @@ def configure_example_wise_binary_predictor(config: BoostingRuleLearnerConfig, v
         c.set_based_on_probabilities(options.get_bool(ARGUMENT_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
 
 
-def configure_gfm_binary_predictor(config: BoostingRuleLearnerConfig, value: str, options: Options):
+def configure_gfm_binary_predictor(config: BoostingRuleLearnerConfig, value: str):
     if value == BINARY_PREDICTOR_GFM:
-        c = config.use_gfm_binary_predictor()
-        c.set_based_on_probabilities(options.get_bool(ARGUMENT_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
+        config.use_gfm_binary_predictor()
 
 
 def configure_label_wise_probability_predictor(config: BoostingRuleLearnerConfig, value: str):

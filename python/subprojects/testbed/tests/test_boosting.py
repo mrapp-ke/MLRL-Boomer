@@ -49,8 +49,6 @@ BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES = BINARY_PREDICTOR_EXAMPLE_
 
 BINARY_PREDICTOR_GFM = 'gfm'
 
-BINARY_PREDICTOR_GFM_BASED_ON_PROBABILITIES = BINARY_PREDICTOR_GFM + '{based_on_probabilities=true}'
-
 PROBABILITY_PREDICTOR_AUTO = 'auto'
 
 PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
@@ -520,16 +518,6 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_predictions(True)
         self.run_cmd(builder, 'predictor-binary-gfm')
 
-    def test_predictor_binary_gfm_based_on_probabilities(self):
-        """
-        Tests the BOOMER algorithm when predicting binary labels that are obtained via the general F-measure maximizer
-        (GFM) based on probabilities.
-        """
-        builder = BoostingCmdBuilder() \
-            .binary_predictor(BINARY_PREDICTOR_GFM_BASED_ON_PROBABILITIES) \
-            .print_predictions(True)
-        self.run_cmd(builder, 'predictor-binary-gfm_based-on-probabilities')
-
     def test_predictor_binary_gfm_incremental(self):
         """
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting binary labels
@@ -542,19 +530,6 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_evaluation() \
             .store_evaluation()
         self.run_cmd(builder, 'predictor-binary-gfm_incremental')
-
-    def test_predictor_binary_gfm_incremental_based_on_probabilities(self):
-        """
-        Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting binary labels
-        that are obtained via the general F-measure maximizer (GFM) based on probabilities.
-        """
-        builder = BoostingCmdBuilder() \
-            .binary_predictor(BINARY_PREDICTOR_GFM_BASED_ON_PROBABILITIES) \
-            .incremental_evaluation() \
-            .set_output_dir() \
-            .print_evaluation() \
-            .store_evaluation()
-        self.run_cmd(builder, 'predictor-binary-gfm_incremental_based-on-probabilities')
 
     def test_predictor_binary_gfm_sparse(self):
         """

@@ -241,8 +241,6 @@ The following parameters allow to control the behavior of the algorithm:
 
   * ``'gfm'`` The label vector that is predicted for an example is chosen according to the general F-measure maximizer (GFM).
 
-    * ``based_on_probabilities`` (Default value = ``'true'``) ``'true'``, if binary predictions should be derived from probability estimates rather than regression scores if supported by the loss function, ``'false'`` otherwise.
-
 * ``probability_predictor`` (Default value = ``'auto'``)
 
   * ``'auto'`` The most suitable strategy for predicting probability estimates is chosen automatically, depending on the loss function.
