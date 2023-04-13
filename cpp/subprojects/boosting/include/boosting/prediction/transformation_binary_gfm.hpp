@@ -10,8 +10,8 @@
 namespace boosting {
 
     /**
-     * An implementation of the class `IBinaryTransformation` that transforms real-valued predictions into binary
-     * predictions according to the general F-measure maximizer (GFM).
+     * An implementation of the class `IBinaryTransformation` that transforms regression scores into binary predictions
+     * according to the general F-measure maximizer (GFM).
      */
     class GfmBinaryTransformation final : public IBinaryTransformation {
         private:
@@ -34,12 +34,12 @@ namespace boosting {
             GfmBinaryTransformation(const LabelVectorSet& labelVectorSet,
                                     std::unique_ptr<IJointProbabilityFunction> jointProbabilityFunctionPtr);
 
-            void apply(VectorConstView<float64>::const_iterator realBegin,
-                       VectorConstView<float64>::const_iterator realEnd, VectorView<uint8>::iterator predictionBegin,
+            void apply(VectorConstView<float64>::const_iterator scoresBegin,
+                       VectorConstView<float64>::const_iterator scoresEnd, VectorView<uint8>::iterator predictionBegin,
                        VectorView<uint8>::iterator predictionEnd) const override;
 
-            void apply(VectorConstView<float64>::const_iterator realBegin,
-                       VectorConstView<float64>::const_iterator realEnd,
+            void apply(VectorConstView<float64>::const_iterator scoresBegin,
+                       VectorConstView<float64>::const_iterator scoresEnd,
                        BinaryLilMatrix::row predictionRow) const override;
     };
 
