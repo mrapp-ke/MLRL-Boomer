@@ -19,10 +19,11 @@ namespace boosting {
         public:
 
             /**
-             * @param marginalProbabilityFunctionPtr An unique pointer to an object of type
-             *                                       `IMarginalProbabilityFunction` to be used to transform regression
-             *                                       scores into marginal probabilities
-             * @param probabilityCalibrationModel
+             * @param marginalProbabilityFunctionPtr    An unique pointer to an object of type
+             *                                          `IMarginalProbabilityFunction` to be used to transform
+             *                                          regression scores into marginal probabilities
+             * @param probabilityCalibrationModel       A reference to an object of type `IProbabilityCalibrationModel`
+             *                                          that should be used for the calibration of probabilities
              */
             ChainRule(std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr,
                       const IProbabilityCalibrationModel& probabilityCalibrationModel)
