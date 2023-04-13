@@ -20,10 +20,10 @@ namespace boosting {
         public:
 
             /**
-             * @param marginalProbabilityFunctionPtr An unique pointer to an object of type
-             *                                       `IMarginalProbabilityFunctionFactory` that allows to create the
-             *                                       implementation to be used to transform regression scores into
-             *                                       marginal probabilities
+             * @param marginalProbabilityFunctionFactoryPtr An unique pointer to an object of type
+             *                                              `IMarginalProbabilityFunctionFactory` that allows to create
+             *                                              the implementation to be used to transform regression scores
+             *                                              into marginal probabilities
              */
             ProbabilityDiscretizationFunctionFactory(
               std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr);
