@@ -1,5 +1,6 @@
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
 
+#include "boosting/prediction/discretization_function_probability.hpp"
 #include "boosting/prediction/discretization_function_score.hpp"
 #include "boosting/prediction/predictor_binary_common.hpp"
 #include "boosting/prediction/transformation_binary_label_wise.hpp"
@@ -122,6 +123,17 @@ namespace boosting {
             }
     };
 
+    static inline std::unique_ptr<IDiscretizationFunctionFactory> createDiscretizationFunctionFactory(
+      bool basedOnProbabilities, const ILossConfig& lossConfig) {
+        if (basedOnProbabilities) {
+            return std::make_unique<ProbabilityDiscretizationFunctionFactory>(
+              lossConfig.createMarginalProbabilityFunctionFactory());
+        } else {
+            float64 threshold = lossConfig.getDefaultPrediction();
+            return std::make_unique<ScoreDiscretizationFunctionFactory>(threshold);
+        }
+    }
+
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
       const std::unique_ptr<ILossConfig>& lossConfigPtr,
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
@@ -140,20 +152,18 @@ namespace boosting {
 
     std::unique_ptr<IBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        float64 threshold = lossConfigPtr_->getDefaultPrediction();
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr =
-          std::make_unique<ScoreDiscretizationFunctionFactory>(threshold);
+          createDiscretizationFunctionFactory(basedOnProbabilities_, *lossConfigPtr_);
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseBinaryPredictorFactory>(std::move(discretizationFunctionFactoryPtr),
                                                                  numThreads);
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        float64 threshold = lossConfigPtr_->getDefaultPrediction();
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr =
-          std::make_unique<ScoreDiscretizationFunctionFactory>(threshold);
+          createDiscretizationFunctionFactory(basedOnProbabilities_, *lossConfigPtr_);
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
         return std::make_unique<LabelWiseSparseBinaryPredictorFactory>(std::move(discretizationFunctionFactoryPtr),
                                                                        numThreads);
     }
