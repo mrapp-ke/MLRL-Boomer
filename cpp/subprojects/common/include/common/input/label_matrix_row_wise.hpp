@@ -101,11 +101,31 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          *
          * @param probabilityCalibrator A reference to an object of type `IProbabilityCalibrator` that should be used to
          *                              fit the calibration model
+         * @param partition             A reference to an object of type `SinglePartition` that provides access to the
+         *                              indices of the training examples that are included in the training set
          * @param statistics            A reference to an object of type `IStatistics` that provides access to
          *                              statistics about the labels of the training examples
          * @return                      An unique pointer to an object of type `IProbabilityCalibrationModel` that has
          *                              been fit
          */
         virtual std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const IProbabilityCalibrator& probabilityCalibrator, const IStatistics& statistics) const = 0;
+          const IProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
+          const IStatistics& statistics) const = 0;
+
+        /**
+         * Fits and returns a model for the calibration of probabilities, based on the type of this label matrix.
+         *
+         * @param probabilityCalibrator A reference to an object of type `IProbabilityCalibrator` that should be used to
+         *                              fit the calibration model
+         * @param partition             A reference to an object of type `BiPartition` that provides access to the
+         *                              indices of the training examples that are included in the training set and the
+         *                              holdout set, respectively
+         * @param statistics            A reference to an object of type `IStatistics` that provides access to
+         *                              statistics about the labels of the training examples
+         * @return                      An unique pointer to an object of type `IProbabilityCalibrationModel` that has
+         *                              been fit
+         */
+        virtual std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          const IProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
+          const IStatistics& statistics) const = 0;
 };
