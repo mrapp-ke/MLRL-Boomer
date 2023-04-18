@@ -4,7 +4,7 @@
 #pragma once
 
 #include "boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
-#include "common/statistics/statistics.hpp"
+#include "boosting/statistics/statistics.hpp"
 
 namespace boosting {
 
@@ -16,7 +16,7 @@ namespace boosting {
      *                               as well as their overall quality
      */
     template<typename RuleEvaluationFactory>
-    class ILabelWiseStatistics : virtual public IStatistics {
+    class ILabelWiseStatistics : virtual public IBoostingStatistics {
         public:
 
             virtual ~ILabelWiseStatistics() override {};

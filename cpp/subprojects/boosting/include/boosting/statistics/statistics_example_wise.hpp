@@ -18,7 +18,7 @@ namespace boosting {
      *                                          predictions of rules, as well as their overall quality
      */
     template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
-    class IExampleWiseStatistics : virtual public IStatistics {
+    class IExampleWiseStatistics : virtual public IBoostingStatistics {
         public:
 
             virtual ~IExampleWiseStatistics() override {};

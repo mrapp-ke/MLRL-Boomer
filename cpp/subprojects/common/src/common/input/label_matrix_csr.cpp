@@ -2,6 +2,7 @@
 
 #include "common/data/arrays.hpp"
 #include "common/math/math.hpp"
+#include "common/prediction/probability_calibration.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/sampling/partition_sampling.hpp"
 #include "common/statistics/statistics_provider.hpp"
@@ -65,6 +66,11 @@ std::unique_ptr<IInstanceSampling> CsrLabelMatrix::createInstanceSampling(const 
                                                                           BiPartition& partition,
                                                                           IStatistics& statistics) const {
     return factory.create(*this, partition, statistics);
+}
+
+std::unique_ptr<IProbabilityCalibrationModel> CsrLabelMatrix::fitProbabilityCalibrationModel(
+  const IProbabilityCalibrator& probabilityCalibrator, const IStatistics& statistics) const {
+    return probabilityCalibrator.fitProbabilityCalibrationModel(*this, statistics);
 }
 
 std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices,

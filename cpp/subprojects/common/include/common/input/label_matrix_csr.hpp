@@ -123,6 +123,9 @@ class CsrLabelMatrix final : public BinaryCsrConstView,
         std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
                                                                   BiPartition& partition,
                                                                   IStatistics& statistics) const override;
+
+        std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          const IProbabilityCalibrator& probabilityCalibrator, const IStatistics& statistics) const override;
 };
 
 /**

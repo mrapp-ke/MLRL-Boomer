@@ -18,6 +18,8 @@ class IInstanceSamplingFactory;
 class IStatistics;
 class SinglePartition;
 class BiPartition;
+class IProbabilityCalibrator;
+class IProbabilityCalibrationModel;
 
 /**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
@@ -93,4 +95,17 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
         virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
                                                                           BiPartition& partition,
                                                                           IStatistics& statistics) const = 0;
+
+        /**
+         * Fits and returns a model for the calibration of probabilities, based on the type of this label matrix.
+         *
+         * @param probabilityCalibrator A reference to an object of type `IProbabilityCalibrator` that should be used to
+         *                              fit the calibration model
+         * @param statistics            A reference to an object of type `IStatistics` that provides access to
+         *                              statistics about the labels of the training examples
+         * @return                      An unique pointer to an object of type `IProbabilityCalibrationModel` that has
+         *                              been fit
+         */
+        virtual std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          const IProbabilityCalibrator& probabilityCalibrator, const IStatistics& statistics) const = 0;
 };
