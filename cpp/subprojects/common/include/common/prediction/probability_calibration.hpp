@@ -48,6 +48,7 @@ class IProbabilityCalibrator {
          *
          * @param statistics A reference to an object of type `IStatistics` that provides access to statistics about the
          *                   labels of the training examples
+         * @return           An unique pointer to an object of type `IProbabilityCalibrationModel` that has been fit
          */
         virtual std::unique_ptr<IProbabilityCalibrationModel> fitCalibrationModel(
           const IStatistics& statistics) const = 0;
