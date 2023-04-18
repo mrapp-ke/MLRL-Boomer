@@ -509,7 +509,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
     // Fit model for the calibration of probabilities...
     std::unique_ptr<IProbabilityCalibrator> probabilityCalibratorPtr = this->createProbabilityCalibrator();
     std::unique_ptr<IProbabilityCalibrationModel> probabilityCalibrationModelPtr =
-      probabilityCalibratorPtr->fitCalibrationModel(statisticsProviderPtr->get());
+      labelMatrix.fitProbabilityCalibrationModel(*probabilityCalibratorPtr, statisticsProviderPtr->get());
 
     return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), modelBuilder.buildModel(),
                                             std::move(labelSpaceInfoPtr), std::move(probabilityCalibrationModelPtr));
