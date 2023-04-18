@@ -5,6 +5,7 @@
 
 #include "common/data/view_vector.hpp"
 #include "common/macros.hpp"
+#include "common/statistics/statistics.hpp"
 
 #include <memory>
 
@@ -44,8 +45,12 @@ class IProbabilityCalibrator {
 
         /**
          * Fits and returns a model for the calibration of probabilities.
+         *
+         * @param statistics A reference to an object of type `IStatistics` that provides access to statistics about the
+         *                   labels of the training examples
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel> fitCalibrationModel() const = 0;
+        virtual std::unique_ptr<IProbabilityCalibrationModel> fitCalibrationModel(
+          const IStatistics& statistics) const = 0;
 };
 
 /**
