@@ -1,5 +1,6 @@
 #include "common/sampling/partition_bi.hpp"
 
+#include "common/prediction/probability_calibration.hpp"
 #include "common/rule_refinement/prediction.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/stopping/stopping_criterion.hpp"
@@ -104,4 +105,10 @@ Quality BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubs
 void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
                                         AbstractPrediction& head) {
     coverageState.recalculatePrediction(thresholdsSubset, *this, head);
+}
+
+std::unique_ptr<IProbabilityCalibrationModel> BiPartition::fitProbabilityCalibrationModel(
+  const IProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
+  const IStatistics& statistics) const {
+    return labelMatrix.fitProbabilityCalibrationModel(probabilityCalibrator, *this, statistics);
 }

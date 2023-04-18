@@ -1,5 +1,6 @@
 #include "common/sampling/partition_single.hpp"
 
+#include "common/prediction/probability_calibration.hpp"
 #include "common/rule_refinement/prediction.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/stopping/stopping_criterion.hpp"
@@ -37,4 +38,10 @@ Quality SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholds
 void SinglePartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset,
                                             const ICoverageState& coverageState, AbstractPrediction& head) {
     coverageState.recalculatePrediction(thresholdsSubset, *this, head);
+}
+
+std::unique_ptr<IProbabilityCalibrationModel> SinglePartition::fitProbabilityCalibrationModel(
+  const IProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
+  const IStatistics& statistics) const {
+    return labelMatrix.fitProbabilityCalibrationModel(probabilityCalibrator, *this, statistics);
 }
