@@ -50,7 +50,7 @@ class IProbabilityCalibrator {
          *                   labels of the training examples
          * @return           An unique pointer to an object of type `IProbabilityCalibrationModel` that has been fit
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel> fitCalibrationModel(
+        virtual std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
           const IStatistics& statistics) const = 0;
 };
 
