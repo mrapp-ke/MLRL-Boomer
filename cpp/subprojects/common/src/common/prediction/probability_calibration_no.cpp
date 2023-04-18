@@ -23,12 +23,26 @@ class NoProbabilityCalibrator final : public IProbabilityCalibrator {
     public:
 
         std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics) const override {
+          const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
+          const IStatistics& statistics) const override {
             return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const override {
+          const SinglePartition& partition, const CsrLabelMatrix& labelMatrix,
+          const IStatistics& statistics) const override {
+            return std::make_unique<NoProbabilityCalibrationModel>();
+        }
+
+        std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          const BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
+          const IStatistics& statistics) const override {
+            return std::make_unique<NoProbabilityCalibrationModel>();
+        }
+
+        std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          const BiPartition& partition, const CsrLabelMatrix& labelMatrix,
+          const IStatistics& statistics) const override {
             return std::make_unique<NoProbabilityCalibrationModel>();
         }
 };
