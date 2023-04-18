@@ -81,7 +81,7 @@ std::unique_ptr<IInstanceSampling> CContiguousLabelMatrix::createInstanceSamplin
 
 std::unique_ptr<IProbabilityCalibrationModel> CContiguousLabelMatrix::fitProbabilityCalibrationModel(
   const IProbabilityCalibrator& probabilityCalibrator, const IStatistics& statistics) const {
-    return probabilityCalibrator.fitCalibrationModel(statistics);
+    return probabilityCalibrator.fitProbabilityCalibrationModel(statistics);
 }
 
 std::unique_ptr<ICContiguousLabelMatrix> createCContiguousLabelMatrix(uint32 numRows, uint32 numCols,

@@ -22,7 +22,7 @@ class NoProbabilityCalibrationModel final : public INoProbabilityCalibrationMode
 class NoProbabilityCalibrator final : public IProbabilityCalibrator {
     public:
 
-        std::unique_ptr<IProbabilityCalibrationModel> fitCalibrationModel(
+        std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
           const IStatistics& statistics) const override {
             return std::make_unique<NoProbabilityCalibrationModel>();
         }
