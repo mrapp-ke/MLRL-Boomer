@@ -724,6 +724,11 @@ namespace boosting {
 
             const std::unique_ptr<StatisticView> statisticViewPtr_;
 
+        protected:
+
+            /**
+             * An unique pointer to an object of template type `ScoreMatrix` that stores the currently predicted scores.
+             */
             const std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
 
         public:

@@ -96,6 +96,14 @@ namespace boosting {
                                               ISparseLabelWiseRuleEvaluationFactory>(
                   std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                   std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
+
+            /**
+             * @see `IBoostingStatistics::visitScoreMatrix`
+             */
+            void visitScoreMatrix(IBoostingStatistics::DenseScoreMatrixVisitor denseVisitor,
+                                  IBoostingStatistics::SparseScoreMatrixVisitor sparseVisitor) const override {
+                sparseVisitor(*this->scoreMatrixPtr_);
+            }
     };
 
     template<typename LabelMatrix>
