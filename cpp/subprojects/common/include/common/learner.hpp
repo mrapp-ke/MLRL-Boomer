@@ -19,6 +19,7 @@
 #include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
+#include "common/prediction/probability_calibration_joint.hpp"
 #include "common/prediction/probability_calibration_marginal.hpp"
 #include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
@@ -299,14 +300,25 @@ class MLRLCOMMON_API IRuleLearner {
 
                 /**
                  * Returns an unique pointer to the configuration of the calibrator that allows to fit a model for the
-                 * calibration of probabilities.
+                 * calibration of marginal probabilities.
                  *
                  * @return A reference to an unique pointer of type `IMarginalProbabilityCalibratorConfig` that stores
                  *         the configuration of the calibrator that allows to fit a model for the calibration of
-                 *         probabilities
+                 *         marginal probabilities
                  */
                 virtual std::unique_ptr<IMarginalProbabilityCalibratorConfig>&
                   getMarginalProbabilityCalibratorConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the configuration of the calibrator that allows to fit a model for the
+                 * calibration of joint probabilities.
+                 *
+                 * @return A reference to an unique pointer of type `IJointProbabilityCalibratorConfig` that stores the
+                 *         configuration of the calibrator that allows to fit a model for the calibration of joint
+                 *         probabilities
+                 */
+                virtual std::unique_ptr<IJointProbabilityCalibratorConfig>&
+                  getJointProbabilityCalibratorConfigPtr() = 0;
 
                 /**
                  * Returns an unique pointer to the configuration of the predictor that allows to predict binary labels.
@@ -444,6 +456,11 @@ class MLRLCOMMON_API IRuleLearner {
                  * Configures the rule learner to not calibrate marginal probabilities.
                  */
                 virtual void useNoMarginalProbabilityCalibration() = 0;
+
+                /**
+                 * Configures the rule learner to not calibrate joint probabilities.
+                 */
+                virtual void useNoJointProbabilityCalibration() = 0;
         };
 
         /**
@@ -1293,9 +1310,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 /**
                  * An unique pointer that stores the configuration of the calibrator that allows to fit a model for the
-                 * calibration of probabilities.
+                 * calibration of marginal probabilities.
                  */
                 std::unique_ptr<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigPtr_;
+
+                /**
+                 * An unique pointer that stores the configuration of the calibrator that allows to fit a model for the
+                 * calibration of joint probabilities.
+                 */
+                std::unique_ptr<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigPtr_;
 
                 /**
                  * An unique pointer that stores the configuration of the predictor that allows to predict binary
@@ -1361,6 +1384,9 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<IMarginalProbabilityCalibratorConfig>& getMarginalProbabilityCalibratorConfigPtr()
                   override final;
 
+                std::unique_ptr<IJointProbabilityCalibratorConfig>& getJointProbabilityCalibratorConfigPtr()
+                  override final;
+
                 std::unique_ptr<IBinaryPredictorConfig>& getBinaryPredictorConfigPtr() override final;
 
                 std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() override final;
@@ -1410,6 +1436,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoSequentialPostOptimization() override;
 
                 void useNoMarginalProbabilityCalibration() override;
+
+                void useNoJointProbabilityCalibration() override;
         };
 
     private:
@@ -1449,6 +1477,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         std::unique_ptr<IPostOptimizationPhaseFactory> createUnusedRuleRemovalFactory() const;
 
         std::unique_ptr<IMarginalProbabilityCalibrator> createMarginalProbabilityCalibrator() const;
+
+        std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator() const;
 
     protected:
 
