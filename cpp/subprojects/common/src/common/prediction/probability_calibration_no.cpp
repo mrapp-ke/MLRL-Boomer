@@ -9,10 +9,6 @@ class NoMarginalProbabilityCalibrationModel final : public INoMarginalProbabilit
         float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const override {
             return marginalProbability;
         }
-
-        float64 calibrateJointProbability(float64 jointProbability) const override {
-            return jointProbability;
-        }
 };
 
 /**

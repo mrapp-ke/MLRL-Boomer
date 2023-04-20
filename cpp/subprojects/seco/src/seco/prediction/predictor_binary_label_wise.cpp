@@ -210,6 +210,7 @@ namespace seco {
               const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return std::make_unique<LabelWiseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
@@ -219,6 +220,7 @@ namespace seco {
               const CsrConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return std::make_unique<LabelWiseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
@@ -459,6 +461,7 @@ namespace seco {
               const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return std::make_unique<LabelWiseSparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
@@ -468,6 +471,7 @@ namespace seco {
               const CsrConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return std::make_unique<LabelWiseSparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);

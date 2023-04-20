@@ -116,6 +116,9 @@ class IPredictorFactory {
          * @param marginalProbabilityCalibrationModel   A reference to an object of type
          *                                              `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                              calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel      A reference to an object of type
+         *                                              `IJointProbabilityCalibrationModel` that may be used for the
+         *                                              calibration of joint probabilities
          * @param numLabels                             The number of labels to predict for
          * @return                                      An unique pointer to an object of template type `Predictor` that
          *                                              has been created
@@ -123,7 +126,8 @@ class IPredictorFactory {
         virtual std::unique_ptr<Predictor> create(
           const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
           const LabelVectorSet* labelVectorSet,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new object of the template type `Predictor`.
@@ -138,13 +142,17 @@ class IPredictorFactory {
          * @param marginalProbabilityCalibrationModel   A reference to an object of type
          *                                              `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                              calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel      A reference to an object of type
+         *                                              `IJointProbabilityCalibrationModel` that may be used for the
+         *                                              calibration of joint probabilities
          * @param numLabels                             The number of labels to predict for
          * @return                                      An unique pointer to an object of template type `Predictor` that
          *                                              has been created
          */
         virtual std::unique_ptr<Predictor> create(
           const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 };
 
 /**

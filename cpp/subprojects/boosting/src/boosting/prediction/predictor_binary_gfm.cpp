@@ -10,6 +10,7 @@ namespace boosting {
     static inline std::unique_ptr<IBinaryTransformation> createBinaryTransformation(
       const LabelVectorSet* labelVectorSet,
       const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+      const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
       const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
         if (!labelVectorSet) {
             throw std::runtime_error(
@@ -22,7 +23,8 @@ namespace boosting {
 
         if (labelVectorSet->getNumLabelVectors() > 0) {
             std::unique_ptr<IJointProbabilityFunction> jointProbabilityFunctionPtr =
-              jointProbabilityFunctionFactory.create(marginalProbabilityCalibrationModel);
+              jointProbabilityFunctionFactory.create(marginalProbabilityCalibrationModel,
+                                                     jointProbabilityCalibrationModel);
             binaryTransformationPtr =
               std::make_unique<GfmBinaryTransformation>(*labelVectorSet, std::move(jointProbabilityFunctionPtr));
         }
@@ -35,9 +37,11 @@ namespace boosting {
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
       const LabelVectorSet* labelVectorSet,
       const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+      const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
       const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
-        std::unique_ptr<IBinaryTransformation> binaryTransformationPtr = createBinaryTransformation(
-          labelVectorSet, marginalProbabilityCalibrationModel, jointProbabilityFunctionFactory);
+        std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
+          createBinaryTransformation(labelVectorSet, marginalProbabilityCalibrationModel,
+                                     jointProbabilityCalibrationModel, jointProbabilityFunctionFactory);
         return std::make_unique<BinaryPredictor<FeatureMatrix, Model>>(featureMatrix, model, numLabels, numThreads,
                                                                        std::move(binaryTransformationPtr));
     }
@@ -78,9 +82,11 @@ namespace boosting {
               const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       marginalProbabilityCalibrationModel, *jointProbabilityFunctionFactoryPtr_);
+                                       marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel,
+                                       *jointProbabilityFunctionFactoryPtr_);
             }
 
             /**
@@ -90,9 +96,11 @@ namespace boosting {
               const CsrConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       marginalProbabilityCalibrationModel, *jointProbabilityFunctionFactoryPtr_);
+                                       marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel,
+                                       *jointProbabilityFunctionFactoryPtr_);
             }
     };
 
@@ -101,9 +109,11 @@ namespace boosting {
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
       const LabelVectorSet* labelVectorSet,
       const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+      const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
       const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
-        std::unique_ptr<IBinaryTransformation> binaryTransformationPtr = createBinaryTransformation(
-          labelVectorSet, marginalProbabilityCalibrationModel, jointProbabilityFunctionFactory);
+        std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
+          createBinaryTransformation(labelVectorSet, marginalProbabilityCalibrationModel,
+                                     jointProbabilityCalibrationModel, jointProbabilityFunctionFactory);
         return std::make_unique<SparseBinaryPredictor<FeatureMatrix, Model>>(
           featureMatrix, model, numLabels, numThreads, std::move(binaryTransformationPtr));
     }
@@ -144,9 +154,11 @@ namespace boosting {
               const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return createSparsePredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                             marginalProbabilityCalibrationModel, *jointProbabilityFunctionFactoryPtr_);
+                                             marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel,
+                                             *jointProbabilityFunctionFactoryPtr_);
             }
 
             /**
@@ -156,9 +168,11 @@ namespace boosting {
               const CsrConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return createSparsePredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                             marginalProbabilityCalibrationModel, *jointProbabilityFunctionFactoryPtr_);
+                                             marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel,
+                                             *jointProbabilityFunctionFactoryPtr_);
             }
     };
 
