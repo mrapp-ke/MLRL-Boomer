@@ -81,6 +81,8 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoMarginalProbabilityCalibration()
 
+        void useNoJointProbabilityCalibration()
+
 
     cdef cppclass IBeamSearchTopDownMixin"IRuleLearner::IBeamSearchTopDownMixin":
 
