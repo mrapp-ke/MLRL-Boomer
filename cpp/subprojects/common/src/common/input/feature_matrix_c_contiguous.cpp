@@ -27,12 +27,11 @@ std::unique_ptr<ISparseBinaryPredictor> CContiguousFeatureMatrix::createSparseBi
                                                  jointProbabilityCalibrationModel, numLabels);
 }
 
-std::unique_ptr<IScorePredictor> CContiguousFeatureMatrix::createScorePredictor(
-  const IScorePredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
-    return ruleModel.createScorePredictor(factory, *this, labelSpaceInfo, marginalProbabilityCalibrationModel,
-                                          jointProbabilityCalibrationModel, numLabels);
+std::unique_ptr<IScorePredictor> CContiguousFeatureMatrix::createScorePredictor(const IScorePredictorFactory& factory,
+                                                                                const IRuleModel& ruleModel,
+                                                                                const ILabelSpaceInfo& labelSpaceInfo,
+                                                                                uint32 numLabels) const {
+    return ruleModel.createScorePredictor(factory, *this, labelSpaceInfo, numLabels);
 }
 
 std::unique_ptr<IProbabilityPredictor> CContiguousFeatureMatrix::createProbabilityPredictor(

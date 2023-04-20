@@ -639,9 +639,7 @@ std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(
       this->createScorePredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
-        return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo,
-                                                  marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel,
-                                                  numLabels);
+        return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
     }
 
     throw std::runtime_error("The rule learner does not support to predict regression scores");

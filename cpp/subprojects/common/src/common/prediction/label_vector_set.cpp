@@ -64,20 +64,16 @@ std::unique_ptr<ISparseBinaryPredictor> LabelVectorSet::createSparseBinaryPredic
                           jointProbabilityCalibrationModel, numLabels);
 }
 
-std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(
-  const IScorePredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix, const RuleList& model,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
-    return factory.create(featureMatrix, model, this, marginalProbabilityCalibrationModel,
-                          jointProbabilityCalibrationModel, numLabels);
+std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(const IScorePredictorFactory& factory,
+                                                                      const CContiguousFeatureMatrix& featureMatrix,
+                                                                      const RuleList& model, uint32 numLabels) const {
+    return factory.create(featureMatrix, model, this, numLabels);
 }
 
-std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(
-  const IScorePredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
-    return factory.create(featureMatrix, model, this, marginalProbabilityCalibrationModel,
-                          jointProbabilityCalibrationModel, numLabels);
+std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(const IScorePredictorFactory& factory,
+                                                                      const CsrFeatureMatrix& featureMatrix,
+                                                                      const RuleList& model, uint32 numLabels) const {
+    return factory.create(featureMatrix, model, this, numLabels);
 }
 
 std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(

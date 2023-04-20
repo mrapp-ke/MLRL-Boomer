@@ -46,20 +46,16 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
                                   jointProbabilityCalibrationModel, numLabels);
         }
 
-        std::unique_ptr<IScorePredictor> createScorePredictor(
-          const IScorePredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix, const RuleList& model,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
-            return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel,
-                                  jointProbabilityCalibrationModel, numLabels);
+        std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
+                                                              const CContiguousFeatureMatrix& featureMatrix,
+                                                              const RuleList& model, uint32 numLabels) const override {
+            return factory.create(featureMatrix, model, nullptr, numLabels);
         }
 
-        std::unique_ptr<IScorePredictor> createScorePredictor(
-          const IScorePredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
-            return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel,
-                                  jointProbabilityCalibrationModel, numLabels);
+        std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
+                                                              const CsrFeatureMatrix& featureMatrix,
+                                                              const RuleList& model, uint32 numLabels) const override {
+            return factory.create(featureMatrix, model, nullptr, numLabels);
         }
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(

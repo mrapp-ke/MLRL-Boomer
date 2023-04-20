@@ -3,8 +3,13 @@
  */
 #pragma once
 
+#include "common/data/view_c_contiguous.hpp"
+#include "common/data/view_csr.hpp"
+#include "common/model/rule_list.hpp"
+#include "common/prediction/label_vector_set.hpp"
 #include "common/prediction/prediction_matrix_dense.hpp"
 #include "common/prediction/predictor.hpp"
+#include "common/prediction/probability_calibration_marginal.hpp"
 
 /**
  * Defines an interface for all classes that allow to predict probability estimates for given query examples.

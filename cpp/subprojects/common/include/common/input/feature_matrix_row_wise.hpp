@@ -84,27 +84,19 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
         /**
          * Creates and returns a new instance of the class `IScorePredictor`, based on the type of this feature matrix.
          *
-         * @param factory                             A reference to an object of type `IScorePredictorFactory` that
-         *                                            should be used to create the instance
-         * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
-         *                                            to obtain predictions
-         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                            information about the label space that may be used as a basis for
-         *                                            making predictions
-         * @param marginalProbabilityCalibrationModel A reference to an object of type
-         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
-         *                                            calibration of marginal probabilities
-         * @param jointProbabilityCalibrationModel    A reference to an object of type
-         *                                            `IJointProbabilityCalibrationModel` that may be used for the
-         *                                            calibration of joint probabilities
-         * @param numLabels                           The number of labels to predict for
-         * @return                                    An unique pointer to an object of type `IScorePredictor` that has
-         *                                            been created
+         * @param factory         A reference to an object of type `IScorePredictorFactory` that should be used to
+         *                        create the instance
+         * @param ruleModel       A reference to an object of type `IRuleModel` that should be used to obtain
+         *                        predictions
+         * @param labelSpaceInfo  A reference to an object of type `ILabelSpaceInfo` that provides information about the
+         *                        label space that may be used as a basis for making predictions
+         * @param numLabels       The number of labels to predict for
+         * @return                An unique pointer to an object of type `IScorePredictor` that has been created
          */
-        virtual std::unique_ptr<IScorePredictor> createScorePredictor(
-          const IScorePredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
+        virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
+                                                                      const IRuleModel& ruleModel,
+                                                                      const ILabelSpaceInfo& labelSpaceInfo,
+                                                                      uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this feature
