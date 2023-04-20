@@ -26,14 +26,6 @@ class MLRLCOMMON_API IMarginalProbabilityCalibrationModel {
          * @return                      The calibrated probability
          */
         virtual float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const = 0;
-
-        /**
-         * Calibrates a joint probability.
-         *
-         * @param jointProbability  The joint probability to be calibrated
-         * @return                  The calibrated probability
-         */
-        virtual float64 calibrateJointProbability(float64 jointProbability) const = 0;
 };
 
 /**

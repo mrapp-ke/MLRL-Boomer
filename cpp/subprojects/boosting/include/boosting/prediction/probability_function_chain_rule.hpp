@@ -30,7 +30,8 @@ namespace boosting {
               std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr);
 
             std::unique_ptr<IJointProbabilityFunction> create(
-              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override;
     };
 
 }

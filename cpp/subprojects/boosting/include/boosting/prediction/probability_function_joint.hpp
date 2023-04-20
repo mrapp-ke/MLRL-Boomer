@@ -99,18 +99,23 @@ namespace boosting {
              * @param marginalProbabilityCalibrationModel A reference to an object of type
              *                                            `IMarginalProbabilityCalibrationModel` that should be used for
              *                                            the calibration of marginal probabilities
+             * @param jointProbabilityCalibrationModel    A reference to an object of type
+             *                                            `IJointProbabilityCalibrationModel` that should be used for
+             *                                            the calibration of marginal probabilities
              * @return                                    An unique pointer to an object of type
              *                                            `IJointProbabilityFunction` that has been created
              */
             virtual std::unique_ptr<IJointProbabilityFunction> create(
-              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const = 0;
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const = 0;
 
             /**
              * @see `IDistanceMeasureFactory::createDistanceMeasure`
              */
             std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
-              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override final {
-                return this->create(marginalProbabilityCalibrationModel);
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override final {
+                return this->create(marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel);
             }
     };
 

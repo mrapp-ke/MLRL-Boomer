@@ -5,7 +5,7 @@
 
 #include "common/data/view_vector.hpp"
 #include "common/prediction/label_vector_set.hpp"
-#include "common/prediction/probability_calibration_marginal.hpp"
+#include "common/prediction/probability_calibration_joint.hpp"
 
 #include <memory>
 
@@ -81,9 +81,13 @@ class IDistanceMeasureFactory {
          * @param marginalProbabilityCalibrationModel   A reference to an object of type
          *                                              `IMarginalProbabilityCalibrationModel` that should be used for
          *                                              the calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel      A reference to an object of type
+         *                                              `IJointProbabilityCalibrationModel` that should be used for the
+         *                                              calibration of joint probabilities
          * @return                                      An unique pointer to an object of type `IDistanceMeasure` that
          *                                              has been created
          */
         virtual std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const = 0;
 };

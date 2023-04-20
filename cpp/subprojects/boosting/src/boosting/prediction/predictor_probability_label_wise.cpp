@@ -43,6 +43,7 @@ namespace boosting {
               const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 std::unique_ptr<IProbabilityTransformation> probabilityTransformationPtr =
                   std::make_unique<LabelWiseProbabilityTransformation>(
@@ -58,6 +59,7 @@ namespace boosting {
               const CsrConstView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 std::unique_ptr<IProbabilityTransformation> probabilityTransformationPtr =
                   std::make_unique<LabelWiseProbabilityTransformation>(

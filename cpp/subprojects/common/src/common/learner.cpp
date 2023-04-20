@@ -583,7 +583,8 @@ std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
 
     if (predictorFactoryPtr) {
         return featureMatrix.createBinaryPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo,
-                                                   marginalProbabilityCalibrationModel, numLabels);
+                                                   marginalProbabilityCalibrationModel,
+                                                   jointProbabilityCalibrationModel, numLabels);
     }
 
     throw std::runtime_error("The rule learner does not support to predict binary labels");
@@ -606,7 +607,8 @@ std::unique_ptr<ISparseBinaryPredictor> AbstractRuleLearner::createSparseBinaryP
 
     if (predictorFactoryPtr) {
         return featureMatrix.createSparseBinaryPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo,
-                                                         marginalProbabilityCalibrationModel, numLabels);
+                                                         marginalProbabilityCalibrationModel,
+                                                         jointProbabilityCalibrationModel, numLabels);
     }
 
     throw std::runtime_error("The rule learner does not support to predict sparse binary labels");
@@ -638,7 +640,8 @@ std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(
 
     if (predictorFactoryPtr) {
         return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo,
-                                                  marginalProbabilityCalibrationModel, numLabels);
+                                                  marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel,
+                                                  numLabels);
     }
 
     throw std::runtime_error("The rule learner does not support to predict regression scores");
@@ -670,7 +673,8 @@ std::unique_ptr<IProbabilityPredictor> AbstractRuleLearner::createProbabilityPre
 
     if (predictorFactoryPtr) {
         return featureMatrix.createProbabilityPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo,
-                                                        marginalProbabilityCalibrationModel, numLabels);
+                                                        marginalProbabilityCalibrationModel,
+                                                        jointProbabilityCalibrationModel, numLabels);
     }
 
     throw std::runtime_error("The rule learner does not support to predict probability estimates");

@@ -13,6 +13,7 @@ class ILabelSpaceInfo;
 class CContiguousFeatureMatrix;
 class CsrFeatureMatrix;
 class IMarginalProbabilityCalibrationModel;
+class IJointProbabilityCalibrationModel;
 class IBinaryPredictor;
 class IBinaryPredictorFactory;
 class ISparseBinaryPredictor;
@@ -65,6 +66,9 @@ class MLRLCOMMON_API IRuleModel {
          * @param marginalprobabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
          * @param numLabels                           The number of labels to predict for
          * @return                                    An unique pointer to an object of type `IBinaryPredictor` that has
          *                                            been created
@@ -72,7 +76,8 @@ class MLRLCOMMON_API IRuleModel {
         virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IBinaryPredictor`, based on the type of this rule-based
@@ -88,6 +93,9 @@ class MLRLCOMMON_API IRuleModel {
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
          * @param numLabels                           The number of labels to predict for
          * @return                                    An unique pointer to an object of type `IBinaryPredictor` that has
          *                                            been created
@@ -95,7 +103,8 @@ class MLRLCOMMON_API IRuleModel {
         virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `ISparseBinaryPredictor`, based on the type of this
@@ -111,6 +120,9 @@ class MLRLCOMMON_API IRuleModel {
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
          * @param numLabels                           The number of labels to predict for
          * @return                                    An unique pointer to an object of type `ISparseBinaryPredictor`
          *                                            that has been created
@@ -118,7 +130,8 @@ class MLRLCOMMON_API IRuleModel {
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `ISparseBinaryPredictor`, based on the type of this
@@ -134,6 +147,9 @@ class MLRLCOMMON_API IRuleModel {
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
          * @param numLabels                           The number of labels to predict for
          * @return                                    An unique pointer to an object of type `ISparseBinaryPredictor`
          *                                            that has been created
@@ -141,7 +157,8 @@ class MLRLCOMMON_API IRuleModel {
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IScorePredictor`, based on the type of this rule-based
@@ -157,6 +174,9 @@ class MLRLCOMMON_API IRuleModel {
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
          * @param numLabels                           The number of labels to predict for
          * @return                                    An unique pointer to an object of type `IScorePredictor` that has
          *                                            been created
@@ -164,7 +184,8 @@ class MLRLCOMMON_API IRuleModel {
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(
           const IScorePredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IScorePredictor`, based on the type of this rule-based
@@ -180,6 +201,9 @@ class MLRLCOMMON_API IRuleModel {
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
          * @param numLabels                           The number of labels to predict for
          * @return                                    An unique pointer to an object of type `IScorePredictor` that has
          *                                            been created
@@ -187,7 +211,8 @@ class MLRLCOMMON_API IRuleModel {
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(
           const IScorePredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this rule-based
@@ -203,6 +228,9 @@ class MLRLCOMMON_API IRuleModel {
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
          * @param numLabels                           The number of labels to predict for
          * @return                                    An unique pointer to an object of type `IProbabilityPredictor`
          *                                            that has been created
@@ -210,7 +238,8 @@ class MLRLCOMMON_API IRuleModel {
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this rule-based
@@ -226,6 +255,9 @@ class MLRLCOMMON_API IRuleModel {
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
          * @param numLabels                           The number of labels to predict for
          * @return                                    An unique pointer to an object of type `IProbabilityPredictor`
          *                                            that has been created
@@ -233,5 +265,6 @@ class MLRLCOMMON_API IRuleModel {
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 };
