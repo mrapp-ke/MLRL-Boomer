@@ -1,6 +1,6 @@
 #include "common/sampling/partition_single.hpp"
 
-#include "common/prediction/probability_calibration.hpp"
+#include "common/prediction/probability_calibration_joint.hpp"
 #include "common/rule_refinement/prediction.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/stopping/stopping_criterion.hpp"
@@ -40,8 +40,16 @@ void SinglePartition::recalculatePrediction(const IThresholdsSubset& thresholdsS
     coverageState.recalculatePrediction(thresholdsSubset, *this, head);
 }
 
-std::unique_ptr<IProbabilityCalibrationModel> SinglePartition::fitProbabilityCalibrationModel(
-  const IProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
+std::unique_ptr<IMarginalProbabilityCalibrationModel> SinglePartition::fitMarginalProbabilityCalibrationModel(
+  const IMarginalProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
   const IStatistics& statistics) const {
-    return labelMatrix.fitProbabilityCalibrationModel(probabilityCalibrator, *this, statistics);
+    return labelMatrix.fitMarginalProbabilityCalibrationModel(probabilityCalibrator, *this, statistics);
+}
+
+std::unique_ptr<IJointProbabilityCalibrationModel> SinglePartition::fitJointProbabilityCalibrationModel(
+  const IJointProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
+  const IStatistics& statistics,
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
+    return labelMatrix.fitJointProbabilityCalibrationModel(probabilityCalibrator, *this, statistics,
+                                                           marginalProbabilityCalibrationModel);
 }

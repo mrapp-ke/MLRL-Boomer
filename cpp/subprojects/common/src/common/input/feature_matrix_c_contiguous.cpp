@@ -13,27 +13,34 @@ bool CContiguousFeatureMatrix::isSparse() const {
 
 std::unique_ptr<IBinaryPredictor> CContiguousFeatureMatrix::createBinaryPredictor(
   const IBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-  const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const {
-    return ruleModel.createBinaryPredictor(factory, *this, labelSpaceInfo, probabilityCalibrationModel, numLabels);
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return ruleModel.createBinaryPredictor(factory, *this, labelSpaceInfo, marginalProbabilityCalibrationModel,
+                                           jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<ISparseBinaryPredictor> CContiguousFeatureMatrix::createSparseBinaryPredictor(
   const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-  const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const {
-    return ruleModel.createSparseBinaryPredictor(factory, *this, labelSpaceInfo, probabilityCalibrationModel,
-                                                 numLabels);
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return ruleModel.createSparseBinaryPredictor(factory, *this, labelSpaceInfo, marginalProbabilityCalibrationModel,
+                                                 jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<IScorePredictor> CContiguousFeatureMatrix::createScorePredictor(
   const IScorePredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-  const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const {
-    return ruleModel.createScorePredictor(factory, *this, labelSpaceInfo, probabilityCalibrationModel, numLabels);
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return ruleModel.createScorePredictor(factory, *this, labelSpaceInfo, marginalProbabilityCalibrationModel,
+                                          jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<IProbabilityPredictor> CContiguousFeatureMatrix::createProbabilityPredictor(
   const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-  const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const {
-    return ruleModel.createProbabilityPredictor(factory, *this, labelSpaceInfo, probabilityCalibrationModel, numLabels);
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return ruleModel.createProbabilityPredictor(factory, *this, labelSpaceInfo, marginalProbabilityCalibrationModel,
+                                                jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<ICContiguousFeatureMatrix> createCContiguousFeatureMatrix(uint32 numRows, uint32 numCols,

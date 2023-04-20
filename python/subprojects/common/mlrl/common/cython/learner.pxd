@@ -15,7 +15,8 @@ from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiParti
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
 from mlrl.common.cython.prediction cimport IBinaryPredictor, ISparseBinaryPredictor, IScorePredictor, \
     IProbabilityPredictor
-from mlrl.common.cython.probability_calibration cimport IProbabilityCalibrationModel, ProbabilityCalibrationModel
+from mlrl.common.cython.probability_calibration cimport IMarginalProbabilityCalibrationModel, \
+    MarginalProbabilityCalibrationModel, IJointProbabilityCalibrationModel, JointProbabilityCalibrationModel
 from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, IBeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig, \
@@ -37,7 +38,9 @@ cdef extern from "common/learner.hpp" nogil:
 
         unique_ptr[ILabelSpaceInfo]& getLabelSpaceInfo()
 
-        unique_ptr[IProbabilityCalibrationModel]& getProbabilityCalibrationModel()
+        unique_ptr[IMarginalProbabilityCalibrationModel]& getMarginalProbabilityCalibrationModel()
+
+        unique_ptr[IJointProbabilityCalibrationModel]& getJointProbabilityCalibrationModel()
 
 
     cdef cppclass IRuleLearnerConfig"IRuleLearner::IConfig":
@@ -78,7 +81,9 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoSequentialPostOptimization()
 
-        void useNoProbabilityCalibration()
+        void useNoMarginalProbabilityCalibration()
+
+        void useNoJointProbabilityCalibration()
 
 
     cdef cppclass IBeamSearchTopDownMixin"IRuleLearner::IBeamSearchTopDownMixin":
@@ -197,33 +202,33 @@ cdef extern from "common/learner.hpp" nogil:
 
         bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
-        unique_ptr[IBinaryPredictor] createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                           const IRuleModel& ruleModel,
-                                                           const ILabelSpaceInfo& labelSpaceInfo,
-                                                           const IProbabilityCalibrationModel& probabilityCalibrationModel,
-                                                           uint32 numLabels) except +
+        unique_ptr[IBinaryPredictor] createBinaryPredictor(
+            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+            const ILabelSpaceInfo& labelSpaceInfo,
+            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
-        unique_ptr[ISparseBinaryPredictor] createSparseBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                       const IRuleModel& ruleModel,
-                                                                       const ILabelSpaceInfo& labelSpaceInfo,
-                                                                       const IProbabilityCalibrationModel& probabilityCalibrationModel,
-                                                                       uint32 numLabels) except +
+        unique_ptr[ISparseBinaryPredictor] createSparseBinaryPredictor(
+            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+            const ILabelSpaceInfo& labelSpaceInfo,
+            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
         bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
 
-        unique_ptr[IScorePredictor] createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                         const IRuleModel& ruleModel,
-                                                         const ILabelSpaceInfo& labelSpaceInfo,
-                                                         const IProbabilityCalibrationModel& probabilityCalibrationModel,
-                                                         uint32 numLabels) except +
+        unique_ptr[IScorePredictor] createScorePredictor(
+            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+            const ILabelSpaceInfo& labelSpaceInfo,
+            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
-        unique_ptr[IProbabilityPredictor] createProbabilityPredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                     const IRuleModel& ruleModel,
-                                                                     const ILabelSpaceInfo& labelSpaceInfo,
-                                                                     const IProbabilityCalibrationModel& probabilityCalibrationModel,
-                                                                     uint32 numLabels) except +
+        unique_ptr[IProbabilityPredictor] createProbabilityPredictor(
+            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+            const ILabelSpaceInfo& labelSpaceInfo,
+            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
 
 cdef class TrainingResult:
@@ -236,7 +241,9 @@ cdef class TrainingResult:
 
     cdef readonly LabelSpaceInfo label_space_info
 
-    cdef readonly ProbabilityCalibrationModel probability_calibration_model
+    cdef readonly MarginalProbabilityCalibrationModel marginal_probability_calibration_model
+    
+    cdef readonly JointProbabilityCalibrationModel joint_probability_calibration_model
 
 
 cdef class RuleLearnerConfig:

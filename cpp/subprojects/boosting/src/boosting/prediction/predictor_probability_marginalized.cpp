@@ -10,7 +10,9 @@ namespace boosting {
     template<typename FeatureMatrix, typename Model>
     static inline std::unique_ptr<IProbabilityPredictor> createPredictor(
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
-      const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+      const LabelVectorSet* labelVectorSet,
+      const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+      const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
       const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
         if (!labelVectorSet) {
             throw std::runtime_error(
@@ -23,7 +25,8 @@ namespace boosting {
 
         if (labelVectorSet->getNumLabelVectors() > 0) {
             probabilityTransformationPtr = std::make_unique<MarginalizedProbabilityTransformation>(
-              *labelVectorSet, jointProbabilityFunctionFactory.create(probabilityCalibrationModel));
+              *labelVectorSet, jointProbabilityFunctionFactory.create(marginalProbabilityCalibrationModel,
+                                                                      jointProbabilityCalibrationModel));
         }
 
         return std::make_unique<ProbabilityPredictor<FeatureMatrix, Model>>(featureMatrix, model, numLabels, numThreads,
@@ -66,10 +69,13 @@ namespace boosting {
              */
             std::unique_ptr<IProbabilityPredictor> create(
               const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       probabilityCalibrationModel, *jointProbabilityFunctionFactoryPtr_);
+                                       marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel,
+                                       *jointProbabilityFunctionFactoryPtr_);
             }
 
             /**
@@ -77,10 +83,13 @@ namespace boosting {
              */
             std::unique_ptr<IProbabilityPredictor> create(
               const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       probabilityCalibrationModel, *jointProbabilityFunctionFactoryPtr_);
+                                       marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel,
+                                       *jointProbabilityFunctionFactoryPtr_);
             }
     };
 

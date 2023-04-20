@@ -15,7 +15,7 @@ namespace boosting {
         public:
 
             std::unique_ptr<IMarginalProbabilityFunction> create(
-              const IProbabilityCalibrationModel& probabilityCalibrationModel) const override;
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
     };
 
 }

@@ -19,7 +19,7 @@
 #include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
-#include "common/prediction/probability_calibration.hpp"
+#include "common/prediction/probability_calibration_joint.hpp"
 #include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
@@ -88,20 +88,38 @@ class MLRLCOMMON_API ITrainingResult {
         virtual const std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() const = 0;
 
         /**
-         * Returns a model that may be used for the calibration of probabilities.
+         * Returns a model that may be used for the calibration of marginal probabilities.
          *
-         * @return An unique pointer to an object of type `IProbabilityCalibrationModel` that may be used for the
-         *         calibration of probabilities
+         * @return An unique pointer to an object of type `IMarginalProbabilityCalibrationModel` that may be used for
+         *         the calibration of marginal probabilities
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel>& getProbabilityCalibrationModel() = 0;
+        virtual std::unique_ptr<IMarginalProbabilityCalibrationModel>& getMarginalProbabilityCalibrationModel() = 0;
 
         /**
-         * Returns a model that may be used for the calibration of probabilities.
+         * Returns a model that may be used for the calibration of marginal probabilities.
          *
-         * @return An unique pointer to an object of type `IProbabilityCalibrationModel` that may be used for the
-         *         calibration of probabilities
+         * @return An unique pointer to an object of type `IMarginalProbabilityCalibrationModel` that may be used for
+         *         the calibration of marginal probabilities
          */
-        virtual const std::unique_ptr<IProbabilityCalibrationModel>& getProbabilityCalibrationModel() const = 0;
+        virtual const std::unique_ptr<IMarginalProbabilityCalibrationModel>& getMarginalProbabilityCalibrationModel()
+          const = 0;
+
+        /**
+         * Returns a model that may be used for the calibration of joint probabilities.
+         *
+         * @return An unique pointer to an object of type `IJointProbabilityCalibrationModel` that may be used for the
+         *         calibration of joint probabilities
+         */
+        virtual std::unique_ptr<IJointProbabilityCalibrationModel>& getJointProbabilityCalibrationModel() = 0;
+
+        /**
+         * Returns a model that may be used for the calibration of joint probabilities.
+         *
+         * @return An unique pointer to an object of type `IJointProbabilityCalibrationModel` that may be used for the
+         *         calibration of joint probabilities
+         */
+        virtual const std::unique_ptr<IJointProbabilityCalibrationModel>& getJointProbabilityCalibrationModel()
+          const = 0;
 };
 
 /**
@@ -298,13 +316,25 @@ class MLRLCOMMON_API IRuleLearner {
 
                 /**
                  * Returns an unique pointer to the configuration of the calibrator that allows to fit a model for the
-                 * calibration of probabilities.
+                 * calibration of marginal probabilities.
                  *
-                 * @return A reference to an unique pointer of type `IProbabilityCalibratorConfig` that stores the
-                 *         configuration of the calibrator that allows to fit a model for the calibration of
+                 * @return A reference to an unique pointer of type `IMarginalProbabilityCalibratorConfig` that stores
+                 *         the configuration of the calibrator that allows to fit a model for the calibration of
+                 *         marginal probabilities
+                 */
+                virtual std::unique_ptr<IMarginalProbabilityCalibratorConfig>&
+                  getMarginalProbabilityCalibratorConfigPtr() = 0;
+
+                /**
+                 * Returns an unique pointer to the configuration of the calibrator that allows to fit a model for the
+                 * calibration of joint probabilities.
+                 *
+                 * @return A reference to an unique pointer of type `IJointProbabilityCalibratorConfig` that stores the
+                 *         configuration of the calibrator that allows to fit a model for the calibration of joint
                  *         probabilities
                  */
-                virtual std::unique_ptr<IProbabilityCalibratorConfig>& getProbabilityCalibratorConfigPtr() = 0;
+                virtual std::unique_ptr<IJointProbabilityCalibratorConfig>&
+                  getJointProbabilityCalibratorConfigPtr() = 0;
 
                 /**
                  * Returns an unique pointer to the configuration of the predictor that allows to predict binary labels.
@@ -439,9 +469,14 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoSequentialPostOptimization() = 0;
 
                 /**
-                 * Configures the rule learner to not use probability calibration.
+                 * Configures the rule learner to not calibrate marginal probabilities.
                  */
-                virtual void useNoProbabilityCalibration() = 0;
+                virtual void useNoMarginalProbabilityCalibration() = 0;
+
+                /**
+                 * Configures the rule learner to not calibrate joint probabilities.
+                 */
+                virtual void useNoJointProbabilityCalibration() = 0;
         };
 
         /**
@@ -971,25 +1006,31 @@ class MLRLCOMMON_API IRuleLearner {
          * Creates and returns a predictor that may be used to predict binary labels for given query examples. If the
          * prediction of binary labels is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception       The exception that is thrown if the prediction of binary labels is not
-         *                                      supported by the rule learner
-         * @param featureMatrix                 A reference to an object of type `IRowWiseFeatureMatrix` that provides
-         *                                      row-wise access to the feature values of the query examples
-         * @param ruleModel                     A reference to an object of type `IRuleModel` that should be used to
-         *                                      obtain predictions
-         * @param labelSpaceInfo                A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                      information about the label space that may be used as a basis for
-         *                                      obtaining predictions
-         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
-         *                                      be used for the calibration of probabilities
-         * @param numLabels                     The number of labels to predict for
-         * @return                              An unique pointer to an object of type `IBinaryPredictor` that may be
-         *                                      used to predict binary labels for the given query examples
+         * @throws std::runtime_exception             The exception that is thrown if the prediction of binary labels is
+         *                                            not supported by the rule learner
+         * @param featureMatrix                       A reference to an object of type `IRowWiseFeatureMatrix` that
+         *                                            provides row-wise access to the feature values of the query
+         *                                            examples
+         * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
+         *                                            to obtain predictions
+         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
+         *                                            information about the label space that may be used as a basis for
+         *                                            obtaining predictions
+         * @param marginalProbabilityCalibrationModel A reference to an object of type
+         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
+         * @param numLabels                           The number of labels to predict for
+         * @return                                    An unique pointer to an object of type `IBinaryPredictor` that may
+         *                                            be used to predict binary labels for the given query examples
          */
         virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
-          uint32 numLabels) const = 0;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
@@ -1014,25 +1055,32 @@ class MLRLCOMMON_API IRuleLearner {
          * the prediction of sparse binary labels is not supported by the rule learner, a `std::runtime_error` is
          * thrown.
          *
-         * @throws std::runtime_exception       The exception that is thrown if the prediction of sparse binary labels
-         *                                      is not supported by the rule learner
-         * @param featureMatrix                 A reference to an object of type `IRowWiseFeatureMatrix` that provides
-         *                                      row-wise access to the feature values of the query examples
-         * @param ruleModel                     A reference to an object of type `IRuleModel` that should be used to
-         *                                      obtain predictions
-         * @param labelSpaceInfo                A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                      information about the label space that may be used as a basis for
-         *                                      obtaining predictions
-         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
-         *                                      be used for the calibration of probabilities
-         * @param numLabels                     The number of labels to predict for
-         * @return                              An unique pointer to an object of type `ISparseBinaryPredictor` that may
-         *                                      be used to predict sparse binary labels for the given query examples
+         * @throws std::runtime_exception             The exception that is thrown if the prediction of sparse binary
+         *                                            labels is not supported by the rule learner
+         * @param featureMatrix                       A reference to an object of type `IRowWiseFeatureMatrix` that
+         *                                            provides row-wise access to the feature values of the query
+         *                                            examples
+         * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
+         *                                            to obtain predictions
+         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
+         *                                            information about the label space that may be used as a basis for
+         *                                            obtaining predictions
+         * @param marginalProbabilityCalibrationModel A reference to an object of type
+         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
+         * @param numLabels                           The number of labels to predict for
+         * @return                                    An unique pointer to an object of type `ISparseBinaryPredictor`
+         *                                            that may be used to predict sparse binary labels for the given
+         *                                            query examples
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
-          uint32 numLabels) const = 0;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Returns whether the rule learner is able to predict regression scores or not.
@@ -1077,25 +1125,31 @@ class MLRLCOMMON_API IRuleLearner {
          * Creates and returns a predictor that may be used to predict regression scores for given query examples. If
          * the prediction of regression scores is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception       The exception that is thrown if the prediction of regression scores is
-         *                                      not supported by the rule learner
-         * @param featureMatrix                 A reference to an object of type `IRowWiseFeatureMatrix` that provides
-         *                                      row-wise access to the feature values of the query examples
-         * @param ruleModel                     A reference to an object of type `IRuleModel` that should be used to
-         *                                      obtain predictions
-         * @param labelSpaceInfo                A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                      information about the label space that may be used as a basis for
-         *                                      obtaining predictions
-         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
-         *                                      be used for the calibration of probabilities
-         * @param numLabels                     The number of labels to predict for
-         * @return                              An unique pointer to an object of type `IScorePredictor` that may be
-         *                                      used to predict regression scores for the given query examples
+         * @throws std::runtime_exception             The exception that is thrown if the prediction of regression
+         *                                            scores is not supported by the rule learner
+         * @param featureMatrix                       A reference to an object of type `IRowWiseFeatureMatrix` that
+         *                                            provides row-wise access to the feature values of the query
+         *                                            examples
+         * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
+         *                                            to obtain predictions
+         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
+         *                                            information about the label space that may be used as a basis for
+         *                                            obtaining predictions
+         * @param marginalProbabilityCalibrationModel A reference to an object of type
+         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
+         * @param numLabels                           The number of labels to predict for
+         * @return                                    An unique pointer to an object of type `IScorePredictor` that may
+         *                                            be used to predict regression scores for the given query examples
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
-          uint32 numLabels) const = 0;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Returns whether the rule learner is able to predict probabilities or not.
@@ -1142,25 +1196,32 @@ class MLRLCOMMON_API IRuleLearner {
          * If the prediction of probability estimates is not supported by the rule learner, a `std::runtime_error` is
          * thrown.
          *
-         * @throws std::runtime_exception       The exception that is thrown if the prediction of probability estimates
-         *                                      is not supported by the rule learner
-         * @param featureMatrix                 A reference to an object of type `IRowWiseFeatureMatrix` that provides
-         *                                      row-wise access to the feature values of the query examples
-         * @param ruleModel                     A reference to an object of type `IRuleModel` that should be used to
-         *                                      obtain predictions
-         * @param labelSpaceInfo                A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                      information about the label space that may be used as a basis for
-         *                                      obtaining predictions
-         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
-         *                                      be used for the calibration of probabilities
-         * @param numLabels                     The number of labels to predict for
-         * @return                              An unique pointer to an object of type `IProbabilityPredictor` that may
-         *                                      be used to predict probability estimates for the given query examples
+         * @throws std::runtime_exception             The exception that is thrown if the prediction of probability
+         *                                            estimates is not supported by the rule learner
+         * @param featureMatrix                       A reference to an object of type `IRowWiseFeatureMatrix` that
+         *                                            provides row-wise access to the feature values of the query
+         *                                            examples
+         * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
+         *                                            to obtain predictions
+         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
+         *                                            information about the label space that may be used as a basis for
+         *                                            obtaining predictions
+         * @param marginalProbabilityCalibrationModel A reference to an object of type
+         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
+         * @param numLabels                           The number of labels to predict for
+         * @return                                    An unique pointer to an object of type `IProbabilityPredictor`
+         *                                            that may be used to predict probability estimates for the given
+         *                                            query examples
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
-          uint32 numLabels) const = 0;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 };
 
 /**
@@ -1281,9 +1342,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 /**
                  * An unique pointer that stores the configuration of the calibrator that allows to fit a model for the
-                 * calibration of probabilities.
+                 * calibration of marginal probabilities.
                  */
-                std::unique_ptr<IProbabilityCalibratorConfig> probabilityCalibratorConfigPtr_;
+                std::unique_ptr<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigPtr_;
+
+                /**
+                 * An unique pointer that stores the configuration of the calibrator that allows to fit a model for the
+                 * calibration of joint probabilities.
+                 */
+                std::unique_ptr<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigPtr_;
 
                 /**
                  * An unique pointer that stores the configuration of the predictor that allows to predict binary
@@ -1346,7 +1413,11 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() override final;
 
-                std::unique_ptr<IProbabilityCalibratorConfig>& getProbabilityCalibratorConfigPtr() override final;
+                std::unique_ptr<IMarginalProbabilityCalibratorConfig>& getMarginalProbabilityCalibratorConfigPtr()
+                  override final;
+
+                std::unique_ptr<IJointProbabilityCalibratorConfig>& getJointProbabilityCalibratorConfigPtr()
+                  override final;
 
                 std::unique_ptr<IBinaryPredictorConfig>& getBinaryPredictorConfigPtr() override final;
 
@@ -1396,7 +1467,9 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoSequentialPostOptimization() override;
 
-                void useNoProbabilityCalibration() override;
+                void useNoMarginalProbabilityCalibration() override;
+
+                void useNoJointProbabilityCalibration() override;
         };
 
     private:
@@ -1435,7 +1508,9 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IPostOptimizationPhaseFactory> createUnusedRuleRemovalFactory() const;
 
-        std::unique_ptr<IProbabilityCalibrator> createProbabilityCalibrator() const;
+        std::unique_ptr<IMarginalProbabilityCalibrator> createMarginalProbabilityCalibrator() const;
+
+        std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator() const;
 
     protected:
 
@@ -1564,16 +1639,18 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
-          uint32 numLabels) const override;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
-          uint32 numLabels) const override;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix,
                               const ITrainingResult& trainingResult) const override;
@@ -1585,8 +1662,9 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IScorePredictor> createScorePredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
-          uint32 numLabels) const override;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
                                      const ITrainingResult& trainingResult) const override;
@@ -1598,6 +1676,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
-          uint32 numLabels) const override;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 };

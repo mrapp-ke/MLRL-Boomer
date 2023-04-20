@@ -11,25 +11,27 @@ namespace boosting {
     class LogisticFunction final : public IMarginalProbabilityFunction {
         private:
 
-            const IProbabilityCalibrationModel& probabilityCalibrationModel_;
+            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel_;
 
         public:
 
             /**
-             * @param probabilityCalibrationModel A reference to an object of type `IProbabilityCalibrationModel` that
-             *                                    should be used for the calibration of probabilities
+             * @param marginalProbabilityCalibrationModel A reference to an object of type
+             *                                            `IMarginalProbabilityCalibrationModel` that should be used for
+             *                                            the calibration of marginal probabilities
              */
-            LogisticFunction(const IProbabilityCalibrationModel& probabilityCalibrationModel)
-                : probabilityCalibrationModel_(probabilityCalibrationModel) {}
+            LogisticFunction(const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel)
+                : marginalProbabilityCalibrationModel_(marginalProbabilityCalibrationModel) {}
 
             float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float64 score) const override {
-                return probabilityCalibrationModel_.calibrateMarginalProbability(labelIndex, logisticFunction(score));
+                return marginalProbabilityCalibrationModel_.calibrateMarginalProbability(labelIndex,
+                                                                                         logisticFunction(score));
             }
     };
 
     std::unique_ptr<IMarginalProbabilityFunction> LogisticFunctionFactory::create(
-      const IProbabilityCalibrationModel& probabilityCalibrationModel) const {
-        return std::make_unique<LogisticFunction>(probabilityCalibrationModel);
+      const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
+        return std::make_unique<LogisticFunction>(marginalProbabilityCalibrationModel);
     }
 
 }

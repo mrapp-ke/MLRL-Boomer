@@ -2,7 +2,7 @@
 
 #include "common/data/arrays.hpp"
 #include "common/math/math.hpp"
-#include "common/prediction/probability_calibration.hpp"
+#include "common/prediction/probability_calibration_joint.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/sampling/partition_sampling.hpp"
 #include "common/statistics/statistics_provider.hpp"
@@ -68,16 +68,31 @@ std::unique_ptr<IInstanceSampling> CsrLabelMatrix::createInstanceSampling(const 
     return factory.create(*this, partition, statistics);
 }
 
-std::unique_ptr<IProbabilityCalibrationModel> CsrLabelMatrix::fitProbabilityCalibrationModel(
-  const IProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
+std::unique_ptr<IMarginalProbabilityCalibrationModel> CsrLabelMatrix::fitMarginalProbabilityCalibrationModel(
+  const IMarginalProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
   const IStatistics& statistics) const {
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
 }
 
-std::unique_ptr<IProbabilityCalibrationModel> CsrLabelMatrix::fitProbabilityCalibrationModel(
-  const IProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
+std::unique_ptr<IMarginalProbabilityCalibrationModel> CsrLabelMatrix::fitMarginalProbabilityCalibrationModel(
+  const IMarginalProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
   const IStatistics& statistics) const {
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
+}
+
+std::unique_ptr<IJointProbabilityCalibrationModel> CsrLabelMatrix::fitJointProbabilityCalibrationModel(
+  const IJointProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
+  const IStatistics& statistics,
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
+    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics,
+                                                                marginalProbabilityCalibrationModel);
+}
+
+std::unique_ptr<IJointProbabilityCalibrationModel> CsrLabelMatrix::fitJointProbabilityCalibrationModel(
+  const IJointProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition, const IStatistics& statistics,
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
+    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics,
+                                                                marginalProbabilityCalibrationModel);
 }
 
 std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices,
