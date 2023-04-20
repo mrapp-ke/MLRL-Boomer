@@ -150,6 +150,6 @@ class BiPartition final : public IPartition {
                                    AbstractPrediction& head) override;
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
-          const IProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
+          const IMarginalProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
           const IStatistics& statistics) const override;
 };

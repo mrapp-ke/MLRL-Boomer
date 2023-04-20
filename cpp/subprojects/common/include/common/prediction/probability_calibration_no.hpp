@@ -20,7 +20,7 @@ class MLRLCOMMON_API INoProbabilityCalibrationModel : public IMarginalProbabilit
 class NoProbabilityCalibratorConfig final : public IProbabilityCalibratorConfig {
     public:
 
-        std::unique_ptr<IProbabilityCalibrator> createProbabilityCalibrator() const override;
+        std::unique_ptr<IMarginalProbabilityCalibrator> createProbabilityCalibrator() const override;
 };
 
 /**
