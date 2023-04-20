@@ -63,7 +63,7 @@ class MLRLCOMMON_API IRuleModel {
          * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
          *                                            information about the label space that may be used as a basis for
          *                                            making predictions
-         * @param marginalprobabilityCalibrationModel A reference to an object of type
+         * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
          * @param jointProbabilityCalibrationModel    A reference to an object of type
