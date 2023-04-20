@@ -184,6 +184,13 @@ cdef class RuleLearnerConfig:
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoMarginalProbabilityCalibration()
+    
+    def use_no_joint_probability_calibration(self):
+        """
+        Configures the rule learner to not calibrate joint probabilities.
+        """
+        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
+        rule_learner_config_ptr.useNoJointProbabilityCalibration()
 
 
 cdef class RuleLearner:
