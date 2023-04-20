@@ -16,7 +16,7 @@ from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationCon
 from mlrl.common.cython.prediction cimport IBinaryPredictor, ISparseBinaryPredictor, IScorePredictor, \
     IProbabilityPredictor
 from mlrl.common.cython.probability_calibration cimport IMarginalProbabilityCalibrationModel, \
-    MarginalProbabilityCalibrationModel
+    MarginalProbabilityCalibrationModel, IJointProbabilityCalibrationModel, JointProbabilityCalibrationModel
 from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, IBeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig, \
@@ -39,6 +39,8 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[ILabelSpaceInfo]& getLabelSpaceInfo()
 
         unique_ptr[IMarginalProbabilityCalibrationModel]& getMarginalProbabilityCalibrationModel()
+
+        unique_ptr[IJointProbabilityCalibrationModel]& getJointProbabilityCalibrationModel()
 
 
     cdef cppclass IRuleLearnerConfig"IRuleLearner::IConfig":

@@ -103,6 +103,23 @@ class MLRLCOMMON_API ITrainingResult {
          */
         virtual const std::unique_ptr<IMarginalProbabilityCalibrationModel>& getMarginalProbabilityCalibrationModel()
           const = 0;
+
+        /**
+         * Returns a model that may be used for the calibration of joint probabilities.
+         *
+         * @return An unique pointer to an object of type `IJointProbabilityCalibrationModel` that may be used for the
+         *         calibration of joint probabilities
+         */
+        virtual std::unique_ptr<IJointProbabilityCalibrationModel>& getJointProbabilityCalibrationModel() = 0;
+
+        /**
+         * Returns a model that may be used for the calibration of joint probabilities.
+         *
+         * @return An unique pointer to an object of type `IJointProbabilityCalibrationModel` that may be used for the
+         *         calibration of joint probabilities
+         */
+        virtual const std::unique_ptr<IJointProbabilityCalibrationModel>& getJointProbabilityCalibrationModel()
+          const = 0;
 };
 
 /**
