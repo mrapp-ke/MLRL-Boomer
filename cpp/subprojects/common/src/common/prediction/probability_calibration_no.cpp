@@ -47,8 +47,8 @@ class NoMarginalProbabilityCalibrator final : public IMarginalProbabilityCalibra
         }
 };
 
-std::unique_ptr<IMarginalProbabilityCalibrator> NoMarginalProbabilityCalibratorConfig::createProbabilityCalibrator()
-  const {
+std::unique_ptr<IMarginalProbabilityCalibrator>
+  NoMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibrator() const {
     return std::make_unique<NoMarginalProbabilityCalibrator>();
 }
 
@@ -99,7 +99,8 @@ class NoJointProbabilityCalibrator final : public IJointProbabilityCalibrator {
         }
 };
 
-std::unique_ptr<IJointProbabilityCalibrator> NoJointProbabilityCalibratorConfig::createProbabilityCalibrator() const {
+std::unique_ptr<IJointProbabilityCalibrator> NoJointProbabilityCalibratorConfig::createJointProbabilityCalibrator()
+  const {
     return std::make_unique<NoJointProbabilityCalibrator>();
 }
 
