@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "common/data/view_vector.hpp"
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
 #include "common/macros.hpp"
@@ -11,15 +10,13 @@
 #include "common/sampling/partition_single.hpp"
 #include "common/statistics/statistics.hpp"
 
-#include <memory>
-
 /**
- * Defines an interface for all classes that implement a model for the calibration of probabilities.
+ * Defines an interface for all classes that implement a model for the calibration of marginal probabilities.
  */
-class MLRLCOMMON_API IProbabilityCalibrationModel {
+class MLRLCOMMON_API IMarginalProbabilityCalibrationModel {
     public:
 
-        virtual ~IProbabilityCalibrationModel() {};
+        virtual ~IMarginalProbabilityCalibrationModel() {};
 
         /**
          * Calibrates the marginal probability that is predicted for a specific label.
@@ -29,26 +26,19 @@ class MLRLCOMMON_API IProbabilityCalibrationModel {
          * @return                      The calibrated probability
          */
         virtual float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const = 0;
-
-        /**
-         * Calibrates a joint probability.
-         *
-         * @param jointProbability  The joint probability to be calibrated
-         * @return                  The calibrated probability
-         */
-        virtual float64 calibrateJointProbability(float64 jointProbability) const = 0;
 };
 
 /**
- * Defines an interface for all classes that implement a method for fitting models for the calibration of probabilities.
+ * Defines an interface for all classes that implement a method for fitting models for the calibration of marginal
+ * probabilities.
  */
-class IProbabilityCalibrator {
+class IMarginalProbabilityCalibrator {
     public:
 
-        virtual ~IProbabilityCalibrator() {};
+        virtual ~IMarginalProbabilityCalibrator() {};
 
         /**
-         * Fits and returns a model for the calibration of probabilities.
+         * Fits and returns a model for the calibration of marginal probabilities.
          *
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
          *                      of the training examples that are included in the training set
@@ -56,14 +46,15 @@ class IProbabilityCalibrator {
          *                      to the labels of the training examples
          * @param statistics    A reference to an object of type `IStatistics` that provides access to statistics about
          *                      the labels of the training examples
-         * @return              An unique pointer to an object of type `IProbabilityCalibrationModel` that has been fit
+         * @return              An unique pointer to an object of type `IMarginalProbabilityCalibrationModel` that has
+         *                      been fit
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+        virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
           const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
           const IStatistics& statistics) const = 0;
 
         /**
-         * Fits and returns a model for the calibration of probabilities.
+         * Fits and returns a model for the calibration of marginal probabilities.
          *
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
          *                      of the training examples that are included in the training set
@@ -71,13 +62,14 @@ class IProbabilityCalibrator {
          *                      labels of the training examples
          * @param statistics    A reference to an object of type `IStatistics` that provides access to statistics about
          *                      the labels of the training examples
-         * @return              An unique pointer to an object of type `IProbabilityCalibrationModel` that has been fit
+         * @return              An unique pointer to an object of type `IMarginalProbabilityCalibrationModel` that has
+         *                      been fit
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+        virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
           const SinglePartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const = 0;
 
         /**
-         * Fits and returns a model for the calibration of probabilities.
+         * Fits and returns a model for the calibration of marginal probabilities.
          *
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
          *                      the training examples that are included in the training set and the holdout set,
@@ -86,14 +78,15 @@ class IProbabilityCalibrator {
          *                      to the labels of the training examples
          * @param statistics    A reference to an object of type `IStatistics` that provides access to statistics about
          *                      the labels of the training examples
-         * @return              An unique pointer to an object of type `IProbabilityCalibrationModel` that has been fit
+         * @return              An unique pointer to an object of type `IMarginalProbabilityCalibrationModel` that has
+         *                      been fit
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+        virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
           const BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
           const IStatistics& statistics) const = 0;
 
         /**
-         * Fits and returns a model for the calibration of probabilities.
+         * Fits and returns a model for the calibration of marginal probabilities.
          *
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
          *                      the training examples that are included in the training set and the holdout set,
@@ -102,25 +95,28 @@ class IProbabilityCalibrator {
          *                      labels of the training examples
          * @param statistics    A reference to an object of type `IStatistics` that provides access to statistics about
          *                      the labels of the training examples
-         * @return              An unique pointer to an object of type `IProbabilityCalibrationModel` that has been fit
+         * @return              An unique pointer to an object of type `IMarginalProbabilityCalibrationModel` that has
+         *                      been fit
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+        virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
           const BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const = 0;
 };
 
 /**
  * Defines an interface for all classes that allow to configure a method for fitting a model for the calibration of
- * probabilities.
+ * marginal probabilities.
  */
-class IProbabilityCalibratorConfig {
+class IMarginalProbabilityCalibratorConfig {
     public:
 
-        virtual ~IProbabilityCalibratorConfig() {};
+        virtual ~IMarginalProbabilityCalibratorConfig() {};
 
         /**
-         * Creates and returns a new object of type `IProbabilityCalibrator` according to the configuration.
+         * Creates and returns a new object of template type `IMarginalProbabilityCalibrator` according to the
+         * configuration.
          *
-         * @return An unique pointer to an object of type `IProbabilityCalibrator` that has been created
+         * @return An unique pointer to an object of template type `IMarginalProbabilityCalibrator` that has been
+         *         created
          */
-        virtual std::unique_ptr<IProbabilityCalibrator> createProbabilityCalibrator() const = 0;
+        virtual std::unique_ptr<IMarginalProbabilityCalibrator> createMarginalProbabilityCalibrator() const = 0;
 };

@@ -8,7 +8,7 @@
 #include "common/input/feature_matrix_row_wise.hpp"
 #include "common/model/rule_list.hpp"
 #include "common/prediction/label_vector_set.hpp"
-#include "common/prediction/probability_calibration.hpp"
+#include "common/prediction/probability_calibration_marginal.hpp"
 
 #include <memory>
 
@@ -106,42 +106,53 @@ class IPredictorFactory {
         /**
          * Creates and returns a new object of the template type `Predictor`.
          *
-         * @param featureMatrix                 A reference to an object of type `CsrConstView` that stores the feature
-         *                                      values of the query examples to predict for
-         * @param model                         A reference to an object of type `RuleList` that should be used to
-         *                                      obtain predictions
-         * @param labelVectorSet                A pointer to an object of type `LabelVectorSet` that stores all known
-         *                                      label vectors or a null pointer, if no such set is available
-         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
-         *                                      be used for the calibration of probabilities
-         * @param numLabels                     The number of labels to predict for
-         * @return                              An unique pointer to an object of template type `Predictor` that has
-         *                                      been created
+         * @param featureMatrix                         A reference to an object of type `CsrConstView` that stores the
+         *                                              feature values of the query examples to predict for
+         * @param model                                 A reference to an object of type `RuleList` that should be used
+         *                                              to obtain predictions
+         * @param labelVectorSet                        A pointer to an object of type `LabelVectorSet` that stores all
+         *                                              known label vectors or a null pointer, if no such set is
+         *                                              available
+         * @param marginalProbabilityCalibrationModel   A reference to an object of type
+         *                                              `IMarginalProbabilityCalibrationModel` that may be used for the
+         *                                              calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel      A reference to an object of type
+         *                                              `IJointProbabilityCalibrationModel` that may be used for the
+         *                                              calibration of joint probabilities
+         * @param numLabels                             The number of labels to predict for
+         * @return                                      An unique pointer to an object of template type `Predictor` that
+         *                                              has been created
          */
-        virtual std::unique_ptr<Predictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                  const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                  const IProbabilityCalibrationModel& probabilityCalibrationModel,
-                                                  uint32 numLabels) const = 0;
+        virtual std::unique_ptr<Predictor> create(
+          const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+          const LabelVectorSet* labelVectorSet,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new object of the template type `Predictor`.
          *
-         * @param featureMatrix                 A reference to an object of type `CsrConstView` that stores the feature
-         *                                      values of the query examples to predict for
-         * @param model                         A reference to an object of type `RuleList` that should be used to
-         *                                      obtain predictions
-         * @param labelVectorSet                A pointer to an object of type `LabelVectorSet` that stores all known
-         *                                      label vectors or a null pointer, if no such set is available
-         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
-         *                                      be used for the calibration of probabilities
-         * @param numLabels                     The number of labels to predict for
-         * @return                              An unique pointer to an object of template type `Predictor` that has
-         *                                      been created
+         * @param featureMatrix                         A reference to an object of type `CsrConstView` that stores the
+         *                                              feature values of the query examples to predict for
+         * @param model                                 A reference to an object of type `RuleList` that should be used
+         *                                              to obtain predictions
+         * @param labelVectorSet                        A pointer to an object of type `LabelVectorSet` that stores all
+         *                                              known label vectors or a null pointer, if no such set is
+         *                                              available
+         * @param marginalProbabilityCalibrationModel   A reference to an object of type
+         *                                              `IMarginalProbabilityCalibrationModel` that may be used for the
+         *                                              calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel      A reference to an object of type
+         *                                              `IJointProbabilityCalibrationModel` that may be used for the
+         *                                              calibration of joint probabilities
+         * @param numLabels                             The number of labels to predict for
+         * @return                                      An unique pointer to an object of template type `Predictor` that
+         *                                              has been created
          */
-        virtual std::unique_ptr<Predictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                  const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                  const IProbabilityCalibrationModel& probabilityCalibrationModel,
-                                                  uint32 numLabels) const = 0;
+        virtual std::unique_ptr<Predictor> create(
+          const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 };
 
 /**
