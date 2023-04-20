@@ -29,6 +29,8 @@ class TrainingResult final : public ITrainingResult {
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> marginalProbabilityCalibrationModelPtr_;
 
+        std::unique_ptr<IJointProbabilityCalibrationModel> jointProbabilityCalibrationModelPtr_;
+
     public:
 
         /**
@@ -40,13 +42,18 @@ class TrainingResult final : public ITrainingResult {
          * @param marginalProbabilityCalibrationModelPtr    An unique pointer to an object of type
          *                                                  `IMarginalProbabilityCalibrationModel` that may be used for
          *                                                  the calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModelPtr       An unique pointer to an object of type
+         *                                                  `IJointProbabilityCalibrationModel` that may be used for the
+         *                                                  calibration of joint probabilities
          */
         TrainingResult(uint32 numLabels, std::unique_ptr<IRuleModel> ruleModelPtr,
                        std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr,
-                       std::unique_ptr<IMarginalProbabilityCalibrationModel> marginalProbabilityCalibrationModelPtr)
+                       std::unique_ptr<IMarginalProbabilityCalibrationModel> marginalProbabilityCalibrationModelPtr,
+                       std::unique_ptr<IJointProbabilityCalibrationModel> jointProbabilityCalibrationModelPtr)
             : numLabels_(numLabels), ruleModelPtr_(std::move(ruleModelPtr)),
               labelSpaceInfoPtr_(std::move(labelSpaceInfoPtr)),
-              marginalProbabilityCalibrationModelPtr_(std::move(marginalProbabilityCalibrationModelPtr)) {}
+              marginalProbabilityCalibrationModelPtr_(std::move(marginalProbabilityCalibrationModelPtr)),
+              jointProbabilityCalibrationModelPtr_(std::move(jointProbabilityCalibrationModelPtr)) {}
 
         uint32 getNumLabels() const override {
             return numLabels_;
@@ -75,6 +82,14 @@ class TrainingResult final : public ITrainingResult {
         const std::unique_ptr<IMarginalProbabilityCalibrationModel>& getMarginalProbabilityCalibrationModel()
           const override {
             return marginalProbabilityCalibrationModelPtr_;
+        }
+
+        std::unique_ptr<IJointProbabilityCalibrationModel>& getJointProbabilityCalibrationModel() override {
+            return jointProbabilityCalibrationModelPtr_;
+        }
+
+        const std::unique_ptr<IJointProbabilityCalibrationModel>& getJointProbabilityCalibrationModel() const override {
+            return jointProbabilityCalibrationModelPtr_;
         }
 };
 
@@ -537,9 +552,9 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
                                                     statisticsProviderPtr->get(),
                                                     *marginalProbabilityCalibrationModelPtr);
 
-    return std::make_unique<TrainingResult>(labelMatrix.getNumCols(), modelBuilder.buildModel(),
-                                            std::move(labelSpaceInfoPtr),
-                                            std::move(marginalProbabilityCalibrationModelPtr));
+    return std::make_unique<TrainingResult>(
+      labelMatrix.getNumCols(), modelBuilder.buildModel(), std::move(labelSpaceInfoPtr),
+      std::move(marginalProbabilityCalibrationModelPtr), std::move(jointProbabilityCalibrationModelPtr));
 }
 
 bool AbstractRuleLearner::canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix,
