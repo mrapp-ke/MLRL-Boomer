@@ -138,6 +138,16 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>,
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
           const IMarginalProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
           const IStatistics& statistics) const override;
+
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+          const IJointProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
+          const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
+
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+          const IJointProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
+          const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
 };
 
 /**
