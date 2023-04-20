@@ -6,26 +6,26 @@
 #include "common/prediction/probability_calibration_marginal.hpp"
 
 /**
- * Defines an interface for all models for the calibration of probabilities that do make any adjustments.
+ * Defines an interface for all models for the calibration of marginal probabilities that do make any adjustments.
  */
-class MLRLCOMMON_API INoProbabilityCalibrationModel : public IMarginalProbabilityCalibrationModel {
+class MLRLCOMMON_API INoMarginalProbabilityCalibrationModel : public IMarginalProbabilityCalibrationModel {
     public:
 
-        virtual ~INoProbabilityCalibrationModel() override {};
+        virtual ~INoMarginalProbabilityCalibrationModel() override {};
 };
 
 /**
- * Allows to configure a calibrator that does not fit a model for the calibration of probabilities.
+ * Allows to configure a calibrator that does not fit a model for the calibration of marginal probabilities.
  */
-class NoProbabilityCalibratorConfig final : public IMarginalProbabilityCalibratorConfig {
+class NoMarginalProbabilityCalibratorConfig final : public IMarginalProbabilityCalibratorConfig {
     public:
 
         std::unique_ptr<IMarginalProbabilityCalibrator> createProbabilityCalibrator() const override;
 };
 
 /**
- * Creates and returns a new object of the type `INoProbabilityCalibrationModel`.
+ * Creates and returns a new object of the type `INoMarginalProbabilityCalibrationModel`.
  *
- * @return An unique pointer to an object of type `INoProbabilityCalibrationModel` that has been created
+ * @return An unique pointer to an object of type `INoMarginalProbabilityCalibrationModel` that has been created
  */
-MLRLCOMMON_API std::unique_ptr<INoProbabilityCalibrationModel> createNoProbabilityCalibrationModel();
+MLRLCOMMON_API std::unique_ptr<INoMarginalProbabilityCalibrationModel> createNoMarginalProbabilityCalibrationModel();

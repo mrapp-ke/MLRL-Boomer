@@ -268,7 +268,7 @@ void AbstractRuleLearner::Config::useNoSequentialPostOptimization() {
 }
 
 void AbstractRuleLearner::Config::useNoProbabilityCalibration() {
-    marginalProbabilityCalibratorConfigPtr_ = std::make_unique<NoProbabilityCalibratorConfig>();
+    marginalProbabilityCalibratorConfigPtr_ = std::make_unique<NoMarginalProbabilityCalibratorConfig>();
 }
 
 AbstractRuleLearner::AbstractRuleLearner(IRuleLearner::IConfig& config) : config_(config) {}
