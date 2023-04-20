@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/prediction/probability_calibration_joint.hpp"
 #include "common/prediction/probability_calibration_marginal.hpp"
 
 /**
@@ -29,3 +30,28 @@ class NoMarginalProbabilityCalibratorConfig final : public IMarginalProbabilityC
  * @return An unique pointer to an object of type `INoMarginalProbabilityCalibrationModel` that has been created
  */
 MLRLCOMMON_API std::unique_ptr<INoMarginalProbabilityCalibrationModel> createNoMarginalProbabilityCalibrationModel();
+
+/**
+ * Defines an interface for all models for the calibration of joint probabilities that do make any adjustments.
+ */
+class MLRLCOMMON_API INoJointProbabilityCalibrationModel : public IJointProbabilityCalibrationModel {
+    public:
+
+        virtual ~INoJointProbabilityCalibrationModel() override {};
+};
+
+/**
+ * Allows to configure a calibrator that does not fit a model for the calibration of joint probabilities.
+ */
+class NoJointProbabilityCalibratorConfig final : public IJointProbabilityCalibratorConfig {
+    public:
+
+        std::unique_ptr<IJointProbabilityCalibrator> createProbabilityCalibrator() const override;
+};
+
+/**
+ * Creates and returns a new object of the type `INoJointProbabilityCalibrationModel`.
+ *
+ * @return An unique pointer to an object of type `INoJointProbabilityCalibrationModel` that has been created
+ */
+MLRLCOMMON_API std::unique_ptr<INoJointProbabilityCalibrationModel> createNoJointProbabilityCalibrationModel();
