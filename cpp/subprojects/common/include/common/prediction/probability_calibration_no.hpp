@@ -17,7 +17,7 @@ class MLRLCOMMON_API INoProbabilityCalibrationModel : public IMarginalProbabilit
 /**
  * Allows to configure a calibrator that does not fit a model for the calibration of probabilities.
  */
-class NoProbabilityCalibratorConfig final : public IProbabilityCalibratorConfig {
+class NoProbabilityCalibratorConfig final : public IMarginalProbabilityCalibratorConfig {
     public:
 
         std::unique_ptr<IMarginalProbabilityCalibrator> createProbabilityCalibrator() const override;
