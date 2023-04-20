@@ -98,7 +98,7 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
     this->useNoTimeStoppingCriterion();
     this->useNoGlobalPruning();
     this->useNoSequentialPostOptimization();
-    this->useNoProbabilityCalibration();
+    this->useNoMarginalProbabilityCalibration();
 }
 
 RuleCompareFunction AbstractRuleLearner::Config::getRuleCompareFunction() const {
@@ -267,7 +267,7 @@ void AbstractRuleLearner::Config::useNoSequentialPostOptimization() {
     sequentialPostOptimizationConfigPtr_ = nullptr;
 }
 
-void AbstractRuleLearner::Config::useNoProbabilityCalibration() {
+void AbstractRuleLearner::Config::useNoMarginalProbabilityCalibration() {
     marginalProbabilityCalibratorConfigPtr_ = std::make_unique<NoMarginalProbabilityCalibratorConfig>();
 }
 
