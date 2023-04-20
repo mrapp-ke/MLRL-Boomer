@@ -14,21 +14,22 @@ namespace boosting {
 
             const std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr_;
 
-            const IProbabilityCalibrationModel& probabilityCalibrationModel_;
+            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel_;
 
         public:
 
             /**
-             * @param marginalProbabilityFunctionPtr    An unique pointer to an object of type
-             *                                          `IMarginalProbabilityFunction` to be used to transform
-             *                                          regression scores into marginal probabilities
-             * @param probabilityCalibrationModel       A reference to an object of type `IProbabilityCalibrationModel`
-             *                                          that should be used for the calibration of probabilities
+             * @param marginalProbabilityFunctionPtr      An unique pointer to an object of type
+             *                                            `IMarginalProbabilityFunction` to be used to transform
+             *                                            regression scores into marginal probabilities
+             * @param marginalProbabilityCalibrationModel A reference to an object of type
+             *                                            `IMarginalProbabilityCalibrationModel` that should be used for
+             *                                            the calibration of marginal probabilities
              */
             ChainRule(std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr,
-                      const IProbabilityCalibrationModel& probabilityCalibrationModel)
+                      const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel)
                 : marginalProbabilityFunctionPtr_(std::move(marginalProbabilityFunctionPtr)),
-                  probabilityCalibrationModel_(probabilityCalibrationModel) {}
+                  marginalProbabilityCalibrationModel_(marginalProbabilityCalibrationModel) {}
 
             float64 transformScoresIntoJointProbability(
               const VectorConstView<uint32>& relevantLabelIndices, VectorConstView<float64>::const_iterator scoresBegin,
@@ -52,7 +53,7 @@ namespace boosting {
                     labelIterator++;
                 }
 
-                return probabilityCalibrationModel_.calibrateJointProbability(jointProbability);
+                return marginalProbabilityCalibrationModel_.calibrateJointProbability(jointProbability);
             }
     };
 
@@ -61,9 +62,10 @@ namespace boosting {
         : marginalProbabilityFunctionFactoryPtr_(std::move(marginalProbabilityFunctionFactoryPtr)) {}
 
     std::unique_ptr<IJointProbabilityFunction> ChainRuleFactory::create(
-      const IProbabilityCalibrationModel& probabilityCalibrationModel) const {
-        return std::make_unique<ChainRule>(marginalProbabilityFunctionFactoryPtr_->create(probabilityCalibrationModel),
-                                           probabilityCalibrationModel);
+      const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
+        return std::make_unique<ChainRule>(
+          marginalProbabilityFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel),
+          marginalProbabilityCalibrationModel);
     }
 
 }

@@ -124,7 +124,7 @@ namespace boosting {
              * @see `IDistanceMeasureFactory::createDistanceMeasure`
              */
             std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
-              const IProbabilityCalibrationModel& probabilityCalibrationModel) const override final {
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override final {
                 return this->createLabelWiseLoss();
             }
     };

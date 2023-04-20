@@ -19,7 +19,7 @@ class IStatistics;
 class SinglePartition;
 class BiPartition;
 class IProbabilityCalibrator;
-class IProbabilityCalibrationModel;
+class IMarginalProbabilityCalibrationModel;
 
 /**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
@@ -106,10 +106,10 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          *                              indices of the training examples that are included in the training set
          * @param statistics            A reference to an object of type `IStatistics` that provides access to
          *                              statistics about the labels of the training examples
-         * @return                      An unique pointer to an object of type `IProbabilityCalibrationModel` that has
-         *                              been fit
+         * @return                      An unique pointer to an object of type `IMarginalProbabilityCalibrationModel`
+         *                              that has been fit
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
+        virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
           const IProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
           const IStatistics& statistics) const = 0;
 
@@ -124,10 +124,10 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          *                              holdout set, respectively
          * @param statistics            A reference to an object of type `IStatistics` that provides access to
          *                              statistics about the labels of the training examples
-         * @return                      An unique pointer to an object of type `IProbabilityCalibrationModel` that has
-         *                              been fit
+         * @return                      An unique pointer to an object of type `IMarginalProbabilityCalibrationModel`
+         *                              that has been fit
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
+        virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
           const IProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
           const IStatistics& statistics) const = 0;
 };

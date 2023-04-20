@@ -36,12 +36,13 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<IBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                     const IProbabilityCalibrationModel& probabilityCalibrationModel,
-                                                     uint32 numLabels) const override {
+            std::unique_ptr<IBinaryPredictor> create(
+              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              uint32 numLabels) const override {
                 std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
-                  discretizationFunctionFactoryPtr_->create(probabilityCalibrationModel);
+                  discretizationFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<BinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
@@ -51,12 +52,13 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<IBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                     const IProbabilityCalibrationModel& probabilityCalibrationModel,
-                                                     uint32 numLabels) const override {
+            std::unique_ptr<IBinaryPredictor> create(
+              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              uint32 numLabels) const override {
                 std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
-                  discretizationFunctionFactoryPtr_->create(probabilityCalibrationModel);
+                  discretizationFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<BinaryPredictor<CsrConstView<const float32>, RuleList>>(
@@ -97,10 +99,11 @@ namespace boosting {
              */
             std::unique_ptr<ISparseBinaryPredictor> create(
               const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
-                  discretizationFunctionFactoryPtr_->create(probabilityCalibrationModel);
+                  discretizationFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<SparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
@@ -112,10 +115,11 @@ namespace boosting {
              */
             std::unique_ptr<ISparseBinaryPredictor> create(
               const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
-                  discretizationFunctionFactoryPtr_->create(probabilityCalibrationModel);
+                  discretizationFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<SparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(

@@ -16,52 +16,58 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix, const RuleList& model,
-          const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const override {
-            return factory.create(featureMatrix, model, nullptr, probabilityCalibrationModel, numLabels);
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          uint32 numLabels) const override {
+            return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel, numLabels);
         }
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
-          const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const override {
-            return factory.create(featureMatrix, model, nullptr, probabilityCalibrationModel, numLabels);
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          uint32 numLabels) const override {
+            return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel, numLabels);
         }
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-          const RuleList& model, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+          const RuleList& model, const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           uint32 numLabels) const override {
-            return factory.create(featureMatrix, model, nullptr, probabilityCalibrationModel, numLabels);
+            return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel, numLabels);
         }
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
-          const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const override {
-            return factory.create(featureMatrix, model, nullptr, probabilityCalibrationModel, numLabels);
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          uint32 numLabels) const override {
+            return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel, numLabels);
         }
 
         std::unique_ptr<IScorePredictor> createScorePredictor(
           const IScorePredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix, const RuleList& model,
-          const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const override {
-            return factory.create(featureMatrix, model, nullptr, probabilityCalibrationModel, numLabels);
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          uint32 numLabels) const override {
+            return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel, numLabels);
         }
 
         std::unique_ptr<IScorePredictor> createScorePredictor(
           const IScorePredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
-          const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const override {
-            return factory.create(featureMatrix, model, nullptr, probabilityCalibrationModel, numLabels);
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          uint32 numLabels) const override {
+            return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel, numLabels);
         }
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-          const RuleList& model, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+          const RuleList& model, const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           uint32 numLabels) const override {
-            return factory.create(featureMatrix, model, nullptr, probabilityCalibrationModel, numLabels);
+            return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel, numLabels);
         }
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
-          const IProbabilityCalibrationModel& probabilityCalibrationModel, uint32 numLabels) const override {
-            return factory.create(featureMatrix, model, nullptr, probabilityCalibrationModel, numLabels);
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          uint32 numLabels) const override {
+            return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel, numLabels);
         }
 };
 

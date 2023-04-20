@@ -9,7 +9,7 @@ namespace boosting {
 
     static inline std::unique_ptr<IBinaryTransformation> createBinaryTransformation(
       const LabelVectorSet* labelVectorSet, const IDistanceMeasureFactory& distanceMeasureFactory,
-      const IProbabilityCalibrationModel& probabilityCalibrationModel) {
+      const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) {
         if (!labelVectorSet) {
             throw std::runtime_error(
               "Information about the label vectors that have been encountered in the training data is required for "
@@ -21,7 +21,7 @@ namespace boosting {
 
         if (labelVectorSet->getNumLabelVectors() > 0) {
             binaryTransformationPtr = std::make_unique<ExampleWiseBinaryTransformation>(
-              *labelVectorSet, distanceMeasureFactory.createDistanceMeasure(probabilityCalibrationModel));
+              *labelVectorSet, distanceMeasureFactory.createDistanceMeasure(marginalProbabilityCalibrationModel));
         }
 
         return binaryTransformationPtr;
@@ -31,9 +31,9 @@ namespace boosting {
     static inline std::unique_ptr<IBinaryPredictor> createPredictor(
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
       const LabelVectorSet* labelVectorSet, const IDistanceMeasureFactory& distanceMeasureFactory,
-      const IProbabilityCalibrationModel& probabilityCalibrationModel) {
+      const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) {
         std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-          createBinaryTransformation(labelVectorSet, distanceMeasureFactory, probabilityCalibrationModel);
+          createBinaryTransformation(labelVectorSet, distanceMeasureFactory, marginalProbabilityCalibrationModel);
         return std::make_unique<BinaryPredictor<FeatureMatrix, Model>>(featureMatrix, model, numLabels, numThreads,
                                                                        std::move(binaryTransformationPtr));
     }
@@ -68,23 +68,25 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<IBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                     const IProbabilityCalibrationModel& probabilityCalibrationModel,
-                                                     uint32 numLabels) const override {
+            std::unique_ptr<IBinaryPredictor> create(
+              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       *distanceMeasureFactoryPtr_, probabilityCalibrationModel);
+                                       *distanceMeasureFactoryPtr_, marginalProbabilityCalibrationModel);
             }
 
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<IBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                     const IProbabilityCalibrationModel& probabilityCalibrationModel,
-                                                     uint32 numLabels) const override {
+            std::unique_ptr<IBinaryPredictor> create(
+              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                       *distanceMeasureFactoryPtr_, probabilityCalibrationModel);
+                                       *distanceMeasureFactoryPtr_, marginalProbabilityCalibrationModel);
             }
     };
 
@@ -92,9 +94,9 @@ namespace boosting {
     static inline std::unique_ptr<ISparseBinaryPredictor> createSparsePredictor(
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
       const LabelVectorSet* labelVectorSet, const IDistanceMeasureFactory& distanceMeasureFactory,
-      const IProbabilityCalibrationModel& probabilityCalibrationModel) {
+      const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) {
         std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-          createBinaryTransformation(labelVectorSet, distanceMeasureFactory, probabilityCalibrationModel);
+          createBinaryTransformation(labelVectorSet, distanceMeasureFactory, marginalProbabilityCalibrationModel);
         return std::make_unique<SparseBinaryPredictor<FeatureMatrix, Model>>(
           featureMatrix, model, numLabels, numThreads, std::move(binaryTransformationPtr));
     }
@@ -131,10 +133,11 @@ namespace boosting {
              */
             std::unique_ptr<ISparseBinaryPredictor> create(
               const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return createSparsePredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                             *distanceMeasureFactoryPtr_, probabilityCalibrationModel);
+                                             *distanceMeasureFactoryPtr_, marginalProbabilityCalibrationModel);
             }
 
             /**
@@ -142,10 +145,11 @@ namespace boosting {
              */
             std::unique_ptr<ISparseBinaryPredictor> create(
               const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return createSparsePredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
-                                             *distanceMeasureFactoryPtr_, probabilityCalibrationModel);
+                                             *distanceMeasureFactoryPtr_, marginalProbabilityCalibrationModel);
             }
     };
 
