@@ -115,16 +115,19 @@ class IMarginalProbabilityCalibrator {
 /**
  * Defines an interface for all classes that allow to configure a method for fitting a model for the calibration of
  * probabilities.
+ *
+ * @tparam ProbabilityCalibrator The type of the method for fitting a calibration model
  */
-class IMarginalProbabilityCalibratorConfig {
+template<typename ProbabilityCalibrator>
+class IProbabilityCalibratorConfig {
     public:
 
-        virtual ~IMarginalProbabilityCalibratorConfig() {};
+        virtual ~IProbabilityCalibratorConfig() {};
 
         /**
-         * Creates and returns a new object of type `IMarginalProbabilityCalibrator` according to the configuration.
+         * Creates and returns a new object of template type `ProbabilityCalibrator` according to the configuration.
          *
-         * @return An unique pointer to an object of type `IMarginalProbabilityCalibrator` that has been created
+         * @return An unique pointer to an object of template type `ProbabilityCalibrator` that has been created
          */
-        virtual std::unique_ptr<IMarginalProbabilityCalibrator> createProbabilityCalibrator() const = 0;
+        virtual std::unique_ptr<ProbabilityCalibrator> createProbabilityCalibrator() const = 0;
 };
