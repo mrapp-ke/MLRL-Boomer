@@ -97,7 +97,8 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
                                                                           IStatistics& statistics) const = 0;
 
         /**
-         * Fits and returns a model for the calibration of probabilities, based on the type of this label matrix.
+         * Fits and returns a model for the calibration of marginal probabilities, based on the type of this label
+         * matrix.
          *
          * @param probabilityCalibrator A reference to an object of type `IProbabilityCalibrator` that should be used to
          *                              fit the calibration model
@@ -108,12 +109,13 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          * @return                      An unique pointer to an object of type `IProbabilityCalibrationModel` that has
          *                              been fit
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+        virtual std::unique_ptr<IProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
           const IProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
           const IStatistics& statistics) const = 0;
 
         /**
-         * Fits and returns a model for the calibration of probabilities, based on the type of this label matrix.
+         * Fits and returns a model for the calibration of marginal probabilities, based on the type of this label
+         * matrix.
          *
          * @param probabilityCalibrator A reference to an object of type `IProbabilityCalibrator` that should be used to
          *                              fit the calibration model
@@ -125,7 +127,7 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          * @return                      An unique pointer to an object of type `IProbabilityCalibrationModel` that has
          *                              been fit
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+        virtual std::unique_ptr<IProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
           const IProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
           const IStatistics& statistics) const = 0;
 };
