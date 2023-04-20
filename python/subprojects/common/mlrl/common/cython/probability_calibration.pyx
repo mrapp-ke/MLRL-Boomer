@@ -12,16 +12,16 @@ cdef class MarginalProbabilityCalibrationModel:
         pass
 
 
-cdef class NoProbabilityCalibrationModel(MarginalProbabilityCalibrationModel):
+cdef class NoMarginalProbabilityCalibrationModel(MarginalProbabilityCalibrationModel):
     """
-    A model for the calibration of probabilities that does not make any adjustments.
+    A model for the calibration of marginal probabilities that does not make any adjustments.
     """
 
     cdef IMarginalProbabilityCalibrationModel* get_marginal_probability_calibration_model_ptr(self):
         return self.probability_calibration_model_ptr.get()
 
     def __reduce__(self):
-        return (NoProbabilityCalibrationModel, (), ())
+        return (NoMarginalProbabilityCalibrationModel, (), ())
 
     def __setstate__(self, state):
-        self.probability_calibration_model_ptr = createNoProbabilityCalibrationModel()
+        self.probability_calibration_model_ptr = createNoMarginalProbabilityCalibrationModel()
