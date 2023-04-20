@@ -75,26 +75,26 @@ class NoJointProbabilityCalibrator final : public IJointProbabilityCalibrator {
     public:
 
         std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
-          const IStatistics& statistics) const override {
+          const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
             return std::make_unique<NoJointProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const SinglePartition& partition, const CsrLabelMatrix& labelMatrix,
-          const IStatistics& statistics) const override {
+          const SinglePartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
             return std::make_unique<NoJointProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
-          const IStatistics& statistics) const override {
+          const BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
             return std::make_unique<NoJointProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const BiPartition& partition, const CsrLabelMatrix& labelMatrix,
-          const IStatistics& statistics) const override {
+          const BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
             return std::make_unique<NoJointProbabilityCalibrationModel>();
         }
 };
