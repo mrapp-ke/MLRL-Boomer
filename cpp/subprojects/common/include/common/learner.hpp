@@ -301,11 +301,12 @@ class MLRLCOMMON_API IRuleLearner {
                  * Returns an unique pointer to the configuration of the calibrator that allows to fit a model for the
                  * calibration of probabilities.
                  *
-                 * @return A reference to an unique pointer of type `IProbabilityCalibratorConfig` that stores the
-                 *         configuration of the calibrator that allows to fit a model for the calibration of
+                 * @return A reference to an unique pointer of type `IMarginalProbabilityCalibratorConfig` that stores
+                 *         the configuration of the calibrator that allows to fit a model for the calibration of
                  *         probabilities
                  */
-                virtual std::unique_ptr<IProbabilityCalibratorConfig>& getProbabilityCalibratorConfigPtr() = 0;
+                virtual std::unique_ptr<IMarginalProbabilityCalibratorConfig>&
+                  getMarginalProbabilityCalibratorConfigPtr() = 0;
 
                 /**
                  * Returns an unique pointer to the configuration of the predictor that allows to predict binary labels.
@@ -1294,7 +1295,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  * An unique pointer that stores the configuration of the calibrator that allows to fit a model for the
                  * calibration of probabilities.
                  */
-                std::unique_ptr<IProbabilityCalibratorConfig> probabilityCalibratorConfigPtr_;
+                std::unique_ptr<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigPtr_;
 
                 /**
                  * An unique pointer that stores the configuration of the predictor that allows to predict binary
@@ -1357,7 +1358,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() override final;
 
-                std::unique_ptr<IProbabilityCalibratorConfig>& getProbabilityCalibratorConfigPtr() override final;
+                std::unique_ptr<IMarginalProbabilityCalibratorConfig>& getMarginalProbabilityCalibratorConfigPtr()
+                  override final;
 
                 std::unique_ptr<IBinaryPredictorConfig>& getBinaryPredictorConfigPtr() override final;
 

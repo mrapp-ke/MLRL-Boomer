@@ -116,10 +116,10 @@ class IMarginalProbabilityCalibrator {
  * Defines an interface for all classes that allow to configure a method for fitting a model for the calibration of
  * probabilities.
  */
-class IProbabilityCalibratorConfig {
+class IMarginalProbabilityCalibratorConfig {
     public:
 
-        virtual ~IProbabilityCalibratorConfig() {};
+        virtual ~IMarginalProbabilityCalibratorConfig() {};
 
         /**
          * Creates and returns a new object of type `IMarginalProbabilityCalibrator` according to the configuration.

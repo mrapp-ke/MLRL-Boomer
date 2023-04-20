@@ -178,8 +178,9 @@ std::unique_ptr<UnusedRuleRemovalConfig>& AbstractRuleLearner::Config::getUnused
     return unusedRuleRemovalConfigPtr_;
 }
 
-std::unique_ptr<IProbabilityCalibratorConfig>& AbstractRuleLearner::Config::getProbabilityCalibratorConfigPtr() {
-    return probabilityCalibratorConfigPtr_;
+std::unique_ptr<IMarginalProbabilityCalibratorConfig>&
+  AbstractRuleLearner::Config::getMarginalProbabilityCalibratorConfigPtr() {
+    return marginalProbabilityCalibratorConfigPtr_;
 }
 
 std::unique_ptr<IBinaryPredictorConfig>& AbstractRuleLearner::Config::getBinaryPredictorConfigPtr() {
@@ -267,7 +268,7 @@ void AbstractRuleLearner::Config::useNoSequentialPostOptimization() {
 }
 
 void AbstractRuleLearner::Config::useNoProbabilityCalibration() {
-    probabilityCalibratorConfigPtr_ = std::make_unique<NoProbabilityCalibratorConfig>();
+    marginalProbabilityCalibratorConfigPtr_ = std::make_unique<NoProbabilityCalibratorConfig>();
 }
 
 AbstractRuleLearner::AbstractRuleLearner(IRuleLearner::IConfig& config) : config_(config) {}
@@ -345,7 +346,7 @@ std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createUnused
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrator> AbstractRuleLearner::createMarginalProbabilityCalibrator() const {
-    return config_.getProbabilityCalibratorConfigPtr()->createProbabilityCalibrator();
+    return config_.getMarginalProbabilityCalibratorConfigPtr()->createProbabilityCalibrator();
 }
 
 void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
