@@ -84,7 +84,7 @@ class IPartition {
                                            const ICoverageState& coverageState, AbstractPrediction& head) = 0;
 
         /**
-         * Fits and returns a model for the calibration of probabilities, based on the type of this partition.
+         * Fits and returns a model for the calibration of marginal probabilities, based on the type of this partition.
          *
          * @param probabilityCalibrator A reference to an object of type `IProbabilityCalibrator` that should be used to
          *                              fit the calibration model
@@ -95,7 +95,7 @@ class IPartition {
          * @return                      An unique pointer to an object of type `IProbabilityCalibrationModel` that has
          *                              been fit
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+        virtual std::unique_ptr<IProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
           const IProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
           const IStatistics& statistics) const = 0;
 };

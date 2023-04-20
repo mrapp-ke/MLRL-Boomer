@@ -40,8 +40,8 @@ void SinglePartition::recalculatePrediction(const IThresholdsSubset& thresholdsS
     coverageState.recalculatePrediction(thresholdsSubset, *this, head);
 }
 
-std::unique_ptr<IProbabilityCalibrationModel> SinglePartition::fitProbabilityCalibrationModel(
+std::unique_ptr<IProbabilityCalibrationModel> SinglePartition::fitMarginalProbabilityCalibrationModel(
   const IProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
   const IStatistics& statistics) const {
-    return labelMatrix.fitProbabilityCalibrationModel(probabilityCalibrator, *this, statistics);
+    return labelMatrix.fitMarginalProbabilityCalibrationModel(probabilityCalibrator, *this, statistics);
 }

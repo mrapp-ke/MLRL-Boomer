@@ -68,13 +68,13 @@ std::unique_ptr<IInstanceSampling> CsrLabelMatrix::createInstanceSampling(const 
     return factory.create(*this, partition, statistics);
 }
 
-std::unique_ptr<IProbabilityCalibrationModel> CsrLabelMatrix::fitProbabilityCalibrationModel(
+std::unique_ptr<IProbabilityCalibrationModel> CsrLabelMatrix::fitMarginalProbabilityCalibrationModel(
   const IProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
   const IStatistics& statistics) const {
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
 }
 
-std::unique_ptr<IProbabilityCalibrationModel> CsrLabelMatrix::fitProbabilityCalibrationModel(
+std::unique_ptr<IProbabilityCalibrationModel> CsrLabelMatrix::fitMarginalProbabilityCalibrationModel(
   const IProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
   const IStatistics& statistics) const {
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);

@@ -60,7 +60,7 @@ class SinglePartition final : public IPartition {
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
                                    AbstractPrediction& head) override;
 
-        std::unique_ptr<IProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+        std::unique_ptr<IProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
           const IProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
           const IStatistics& statistics) const override;
 };
