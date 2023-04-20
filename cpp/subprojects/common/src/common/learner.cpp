@@ -99,6 +99,7 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
     this->useNoGlobalPruning();
     this->useNoSequentialPostOptimization();
     this->useNoMarginalProbabilityCalibration();
+    this->useNoJointProbabilityCalibration();
 }
 
 RuleCompareFunction AbstractRuleLearner::Config::getRuleCompareFunction() const {
@@ -181,6 +182,11 @@ std::unique_ptr<UnusedRuleRemovalConfig>& AbstractRuleLearner::Config::getUnused
 std::unique_ptr<IMarginalProbabilityCalibratorConfig>&
   AbstractRuleLearner::Config::getMarginalProbabilityCalibratorConfigPtr() {
     return marginalProbabilityCalibratorConfigPtr_;
+}
+
+std::unique_ptr<IJointProbabilityCalibratorConfig>&
+  AbstractRuleLearner::Config::getJointProbabilityCalibratorConfigPtr() {
+    return jointProbabilityCalibratorConfigPtr_;
 }
 
 std::unique_ptr<IBinaryPredictorConfig>& AbstractRuleLearner::Config::getBinaryPredictorConfigPtr() {
@@ -271,6 +277,10 @@ void AbstractRuleLearner::Config::useNoMarginalProbabilityCalibration() {
     marginalProbabilityCalibratorConfigPtr_ = std::make_unique<NoMarginalProbabilityCalibratorConfig>();
 }
 
+void AbstractRuleLearner::Config::useNoJointProbabilityCalibration() {
+    jointProbabilityCalibratorConfigPtr_ = std::make_unique<NoJointProbabilityCalibratorConfig>();
+}
+
 AbstractRuleLearner::AbstractRuleLearner(IRuleLearner::IConfig& config) : config_(config) {}
 
 std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleModelAssemblageFactory(
@@ -347,6 +357,10 @@ std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createUnused
 
 std::unique_ptr<IMarginalProbabilityCalibrator> AbstractRuleLearner::createMarginalProbabilityCalibrator() const {
     return config_.getMarginalProbabilityCalibratorConfigPtr()->createProbabilityCalibrator();
+}
+
+std::unique_ptr<IJointProbabilityCalibrator> AbstractRuleLearner::createJointProbabilityCalibrator() const {
+    return config_.getJointProbabilityCalibratorConfigPtr()->createProbabilityCalibrator();
 }
 
 void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
