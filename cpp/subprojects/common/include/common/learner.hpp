@@ -1019,6 +1019,9 @@ class MLRLCOMMON_API IRuleLearner {
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
          * @param numLabels                           The number of labels to predict for
          * @return                                    An unique pointer to an object of type `IBinaryPredictor` that may
          *                                            be used to predict binary labels for the given query examples
@@ -1026,7 +1029,8 @@ class MLRLCOMMON_API IRuleLearner {
         virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
           const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
@@ -1064,6 +1068,9 @@ class MLRLCOMMON_API IRuleLearner {
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
          * @param numLabels                           The number of labels to predict for
          * @return                                    An unique pointer to an object of type `ISparseBinaryPredictor`
          *                                            that may be used to predict sparse binary labels for the given
@@ -1072,7 +1079,8 @@ class MLRLCOMMON_API IRuleLearner {
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
           const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Returns whether the rule learner is able to predict regression scores or not.
@@ -1130,6 +1138,9 @@ class MLRLCOMMON_API IRuleLearner {
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
          * @param numLabels                           The number of labels to predict for
          * @return                                    An unique pointer to an object of type `IScorePredictor` that may
          *                                            be used to predict regression scores for the given query examples
@@ -1137,7 +1148,8 @@ class MLRLCOMMON_API IRuleLearner {
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
           const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Returns whether the rule learner is able to predict probabilities or not.
@@ -1197,6 +1209,9 @@ class MLRLCOMMON_API IRuleLearner {
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel    A reference to an object of type
+         *                                            `IJointProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of joint probabilities
          * @param numLabels                           The number of labels to predict for
          * @return                                    An unique pointer to an object of type `IProbabilityPredictor`
          *                                            that may be used to predict probability estimates for the given
@@ -1205,7 +1220,8 @@ class MLRLCOMMON_API IRuleLearner {
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
           const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 };
 
 /**
@@ -1625,7 +1641,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
           const ILabelSpaceInfo& labelSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          uint32 numLabels) const override;
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override;
@@ -1634,7 +1650,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
           const ILabelSpaceInfo& labelSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          uint32 numLabels) const override;
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix,
                               const ITrainingResult& trainingResult) const override;
@@ -1648,7 +1664,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
           const ILabelSpaceInfo& labelSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          uint32 numLabels) const override;
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
                                      const ITrainingResult& trainingResult) const override;
@@ -1662,5 +1678,5 @@ class AbstractRuleLearner : virtual public IRuleLearner {
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
           const ILabelSpaceInfo& labelSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          uint32 numLabels) const override;
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 };

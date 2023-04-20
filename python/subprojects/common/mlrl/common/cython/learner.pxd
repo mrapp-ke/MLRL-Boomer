@@ -205,26 +205,30 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[IBinaryPredictor] createBinaryPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) except +
+            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
         unique_ptr[ISparseBinaryPredictor] createSparseBinaryPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) except +
+            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
         bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
 
         unique_ptr[IScorePredictor] createScorePredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) except +
+            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
         unique_ptr[IProbabilityPredictor] createProbabilityPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const ILabelSpaceInfo& labelSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) except +
+            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
 
 cdef class TrainingResult:
@@ -238,6 +242,8 @@ cdef class TrainingResult:
     cdef readonly LabelSpaceInfo label_space_info
 
     cdef readonly MarginalProbabilityCalibrationModel marginal_probability_calibration_model
+    
+    cdef readonly JointProbabilityCalibrationModel joint_probability_calibration_model
 
 
 cdef class RuleLearnerConfig:
