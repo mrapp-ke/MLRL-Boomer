@@ -1,7 +1,7 @@
 #include "common/input/label_matrix_c_contiguous.hpp"
 
 #include "common/math/math.hpp"
-#include "common/prediction/probability_calibration.hpp"
+#include "common/prediction/probability_calibration_marginal.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/sampling/partition_sampling.hpp"
 #include "common/statistics/statistics_provider.hpp"

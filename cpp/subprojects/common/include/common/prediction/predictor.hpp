@@ -8,7 +8,7 @@
 #include "common/input/feature_matrix_row_wise.hpp"
 #include "common/model/rule_list.hpp"
 #include "common/prediction/label_vector_set.hpp"
-#include "common/prediction/probability_calibration.hpp"
+#include "common/prediction/probability_calibration_marginal.hpp"
 
 #include <memory>
 

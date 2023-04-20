@@ -6,7 +6,7 @@
 #include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
-#include "common/prediction/probability_calibration.hpp"
+#include "common/prediction/probability_calibration_marginal.hpp"
 
 /**
  * An implementation of the type `INoLabelSpaceInfo` that does not provide any information about the label space.
