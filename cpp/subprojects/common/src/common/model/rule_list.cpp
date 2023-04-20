@@ -184,21 +184,18 @@ std::unique_ptr<ISparseBinaryPredictor> RuleList::createSparseBinaryPredictor(
       factory, featureMatrix, *this, marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel, numLabels);
 }
 
-std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(
-  const IScorePredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-  const ILabelSpaceInfo& labelSpaceInfo,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
-    return labelSpaceInfo.createScorePredictor(factory, featureMatrix, *this, marginalProbabilityCalibrationModel,
-                                               jointProbabilityCalibrationModel, numLabels);
+std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePredictorFactory& factory,
+                                                                const CContiguousFeatureMatrix& featureMatrix,
+                                                                const ILabelSpaceInfo& labelSpaceInfo,
+                                                                uint32 numLabels) const {
+    return labelSpaceInfo.createScorePredictor(factory, featureMatrix, *this, numLabels);
 }
 
-std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(
-  const IScorePredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const ILabelSpaceInfo& labelSpaceInfo,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
-    return labelSpaceInfo.createScorePredictor(factory, featureMatrix, *this, marginalProbabilityCalibrationModel,
-                                               jointProbabilityCalibrationModel, numLabels);
+std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePredictorFactory& factory,
+                                                                const CsrFeatureMatrix& featureMatrix,
+                                                                const ILabelSpaceInfo& labelSpaceInfo,
+                                                                uint32 numLabels) const {
+    return labelSpaceInfo.createScorePredictor(factory, featureMatrix, *this, numLabels);
 }
 
 std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(

@@ -125,15 +125,15 @@ class LabelVectorSet final : public ILabelVectorSet {
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
-        std::unique_ptr<IScorePredictor> createScorePredictor(
-          const IScorePredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-          const RuleList& ruleList, const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
+        std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
+                                                              const CContiguousFeatureMatrix& featureMatrix,
+                                                              const RuleList& ruleList,
+                                                              uint32 numLabels) const override;
 
-        std::unique_ptr<IScorePredictor> createScorePredictor(
-          const IScorePredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& ruleList,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
+        std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
+                                                              const CsrFeatureMatrix& featureMatrix,
+                                                              const RuleList& ruleList,
+                                                              uint32 numLabels) const override;
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
