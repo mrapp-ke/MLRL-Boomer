@@ -12,6 +12,15 @@ cdef class MarginalProbabilityCalibrationModel:
         pass
 
 
+cdef class JointProbabilityCalibrationModel:
+    """
+    A model that may be used for the calibration of joint probabilities.
+    """
+
+    cdef IJointProbabilityCalibrationModel* get_joint_probability_calibration_model_ptr(self):
+        pass
+
+
 cdef class NoMarginalProbabilityCalibrationModel(MarginalProbabilityCalibrationModel):
     """
     A model for the calibration of marginal probabilities that does not make any adjustments.
@@ -25,3 +34,18 @@ cdef class NoMarginalProbabilityCalibrationModel(MarginalProbabilityCalibrationM
 
     def __setstate__(self, state):
         self.probability_calibration_model_ptr = createNoMarginalProbabilityCalibrationModel()
+
+
+cdef class NoJointProbabilityCalibrationModel(JointProbabilityCalibrationModel):
+    """
+    A model for the calibration of joint probabilities that does not make any adjustments.
+    """
+
+    cdef IJointProbabilityCalibrationModel* get_joint_probability_calibration_model_ptr(self):
+        return self.probability_calibration_model_ptr.get()
+
+    def __reduce__(self):
+        return (NoJointProbabilityCalibrationModel, (), ())
+
+    def __setstate__(self, state):
+        self.probability_calibration_model_ptr = createNoJointProbabilityCalibrationModel()
