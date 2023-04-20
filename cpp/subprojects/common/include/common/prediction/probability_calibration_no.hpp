@@ -4,7 +4,6 @@
 #pragma once
 
 #include "common/prediction/probability_calibration_joint.hpp"
-#include "common/prediction/probability_calibration_marginal.hpp"
 
 /**
  * Defines an interface for all models for the calibration of marginal probabilities that do make any adjustments.
