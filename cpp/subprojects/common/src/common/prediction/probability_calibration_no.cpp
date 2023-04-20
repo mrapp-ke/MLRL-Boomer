@@ -16,10 +16,10 @@ class NoProbabilityCalibrationModel final : public INoProbabilityCalibrationMode
 };
 
 /**
- * An implementation of the type `IProbabilityCalibrator` that does not fit a model for the calibration of
+ * An implementation of the type `IMarginalProbabilityCalibrator` that does not fit a model for the calibration of
  * probabilities.
  */
-class NoProbabilityCalibrator final : public IProbabilityCalibrator {
+class NoProbabilityCalibrator final : public IMarginalProbabilityCalibrator {
     public:
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
@@ -47,7 +47,7 @@ class NoProbabilityCalibrator final : public IProbabilityCalibrator {
         }
 };
 
-std::unique_ptr<IProbabilityCalibrator> NoProbabilityCalibratorConfig::createProbabilityCalibrator() const {
+std::unique_ptr<IMarginalProbabilityCalibrator> NoProbabilityCalibratorConfig::createProbabilityCalibrator() const {
     return std::make_unique<NoProbabilityCalibrator>();
 }
 

@@ -18,7 +18,7 @@ class IThresholdsSubset;
 class ICoverageState;
 class AbstractPrediction;
 class IMarginalProbabilityCalibrationModel;
-class IProbabilityCalibrator;
+class IMarginalProbabilityCalibrator;
 
 /**
  * Defines an interface for all classes that provide access to the indices of training examples that have been split
@@ -86,8 +86,8 @@ class IPartition {
         /**
          * Fits and returns a model for the calibration of marginal probabilities, based on the type of this partition.
          *
-         * @param probabilityCalibrator A reference to an object of type `IProbabilityCalibrator` that should be used to
-         *                              fit the calibration model
+         * @param probabilityCalibrator A reference to an object of type `IMarginalProbabilityCalibrator` that should be
+         *                              used to fit the calibration model
          * @param labelMatrix           A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise
          *                              access to the labels of the training examples
          * @param statistics            A reference to an object of type `IStatistics` that provides access to
@@ -96,6 +96,6 @@ class IPartition {
          *                              that has been fit
          */
         virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
-          const IProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
+          const IMarginalProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
           const IStatistics& statistics) const = 0;
 };

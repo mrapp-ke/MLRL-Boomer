@@ -125,11 +125,11 @@ class CsrLabelMatrix final : public BinaryCsrConstView,
                                                                   IStatistics& statistics) const override;
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
-          const IProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
+          const IMarginalProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
           const IStatistics& statistics) const override;
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
-          const IProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
+          const IMarginalProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
           const IStatistics& statistics) const override;
 };
 

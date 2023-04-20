@@ -42,10 +42,10 @@ class MLRLCOMMON_API IMarginalProbabilityCalibrationModel {
 /**
  * Defines an interface for all classes that implement a method for fitting models for the calibration of probabilities.
  */
-class IProbabilityCalibrator {
+class IMarginalProbabilityCalibrator {
     public:
 
-        virtual ~IProbabilityCalibrator() {};
+        virtual ~IMarginalProbabilityCalibrator() {};
 
         /**
          * Fits and returns a model for the calibration of probabilities.
@@ -122,9 +122,9 @@ class IProbabilityCalibratorConfig {
         virtual ~IProbabilityCalibratorConfig() {};
 
         /**
-         * Creates and returns a new object of type `IProbabilityCalibrator` according to the configuration.
+         * Creates and returns a new object of type `IMarginalProbabilityCalibrator` according to the configuration.
          *
-         * @return An unique pointer to an object of type `IProbabilityCalibrator` that has been created
+         * @return An unique pointer to an object of type `IMarginalProbabilityCalibrator` that has been created
          */
-        virtual std::unique_ptr<IProbabilityCalibrator> createProbabilityCalibrator() const = 0;
+        virtual std::unique_ptr<IMarginalProbabilityCalibrator> createProbabilityCalibrator() const = 0;
 };

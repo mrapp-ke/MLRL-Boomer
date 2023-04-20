@@ -18,7 +18,7 @@ class IInstanceSamplingFactory;
 class IStatistics;
 class SinglePartition;
 class BiPartition;
-class IProbabilityCalibrator;
+class IMarginalProbabilityCalibrator;
 class IMarginalProbabilityCalibrationModel;
 
 /**
@@ -100,8 +100,8 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          * Fits and returns a model for the calibration of marginal probabilities, based on the type of this label
          * matrix.
          *
-         * @param probabilityCalibrator A reference to an object of type `IProbabilityCalibrator` that should be used to
-         *                              fit the calibration model
+         * @param probabilityCalibrator A reference to an object of type `IMarginalProbabilityCalibrator` that should be
+         *                              used to fit the calibration model
          * @param partition             A reference to an object of type `SinglePartition` that provides access to the
          *                              indices of the training examples that are included in the training set
          * @param statistics            A reference to an object of type `IStatistics` that provides access to
@@ -110,15 +110,15 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          *                              that has been fit
          */
         virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
-          const IProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
+          const IMarginalProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
           const IStatistics& statistics) const = 0;
 
         /**
          * Fits and returns a model for the calibration of marginal probabilities, based on the type of this label
          * matrix.
          *
-         * @param probabilityCalibrator A reference to an object of type `IProbabilityCalibrator` that should be used to
-         *                              fit the calibration model
+         * @param probabilityCalibrator A reference to an object of type `IMarginalProbabilityCalibrator` that should be
+         *                              used to fit the calibration model
          * @param partition             A reference to an object of type `BiPartition` that provides access to the
          *                              indices of the training examples that are included in the training set and the
          *                              holdout set, respectively
@@ -128,6 +128,6 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          *                              that has been fit
          */
         virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
-          const IProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
+          const IMarginalProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
           const IStatistics& statistics) const = 0;
 };

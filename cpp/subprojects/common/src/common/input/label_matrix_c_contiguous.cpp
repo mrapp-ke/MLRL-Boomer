@@ -80,13 +80,13 @@ std::unique_ptr<IInstanceSampling> CContiguousLabelMatrix::createInstanceSamplin
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> CContiguousLabelMatrix::fitMarginalProbabilityCalibrationModel(
-  const IProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
+  const IMarginalProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
   const IStatistics& statistics) const {
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> CContiguousLabelMatrix::fitMarginalProbabilityCalibrationModel(
-  const IProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
+  const IMarginalProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
   const IStatistics& statistics) const {
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
 }
