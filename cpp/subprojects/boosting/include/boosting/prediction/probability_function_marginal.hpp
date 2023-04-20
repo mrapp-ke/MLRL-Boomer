@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/prediction/probability_calibration.hpp"
+#include "common/prediction/probability_calibration_marginal.hpp"
 
 namespace boosting {
 
