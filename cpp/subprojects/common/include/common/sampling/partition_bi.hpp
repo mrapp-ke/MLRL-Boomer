@@ -152,4 +152,9 @@ class BiPartition final : public IPartition {
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
           const IMarginalProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
           const IStatistics& statistics) const override;
+
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+          const IJointProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
+          const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
 };
