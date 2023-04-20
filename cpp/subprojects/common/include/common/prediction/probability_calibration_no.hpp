@@ -8,7 +8,7 @@
 /**
  * Defines an interface for all models for the calibration of probabilities that do make any adjustments.
  */
-class MLRLCOMMON_API INoProbabilityCalibrationModel : public IProbabilityCalibrationModel {
+class MLRLCOMMON_API INoProbabilityCalibrationModel : public IMarginalProbabilityCalibrationModel {
     public:
 
         virtual ~INoProbabilityCalibrationModel() override {};

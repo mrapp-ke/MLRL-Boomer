@@ -4,13 +4,13 @@ from libcpp.memory cimport unique_ptr
 
 cdef extern from "common/prediction/probability_calibration.hpp" nogil:
 
-    cdef cppclass IProbabilityCalibrationModel:
+    cdef cppclass IMarginalProbabilityCalibrationModel:
         pass
 
 
 cdef extern from "common/prediction/probability_calibration_no.hpp" nogil:
 
-    cdef cppclass INoProbabilityCalibrationModel(IProbabilityCalibrationModel):
+    cdef cppclass INoProbabilityCalibrationModel(IMarginalProbabilityCalibrationModel):
         pass
 
 
@@ -20,22 +20,22 @@ cdef extern from "common/prediction/probability_calibration_no.hpp" nogil:
 ctypedef INoProbabilityCalibrationModel* NoProbabilityCalibrationModelPtr
 
 
-cdef class ProbabilityCalibrationModel:
+cdef class MarginalProbabilityCalibrationModel:
 
     # Functions:
 
-    cdef IProbabilityCalibrationModel* get_probability_calibration_model_ptr(self)
+    cdef IMarginalProbabilityCalibrationModel* get_marginal_probability_calibration_model_ptr(self)
 
 
-cdef class NoProbabilityCalibrationModel(ProbabilityCalibrationModel):
+cdef class NoProbabilityCalibrationModel(MarginalProbabilityCalibrationModel):
 
     # Attributes:
 
     cdef unique_ptr[INoProbabilityCalibrationModel] probability_calibration_model_ptr
 
 
-cdef inline ProbabilityCalibrationModel create_probability_calibration_model(unique_ptr[IProbabilityCalibrationModel] probability_calibration_model_ptr):
-    cdef IProbabilityCalibrationModel* ptr = probability_calibration_model_ptr.release()
+cdef inline MarginalProbabilityCalibrationModel create_marginal_probability_calibration_model(unique_ptr[IMarginalProbabilityCalibrationModel] marginal_probability_calibration_model_ptr):
+    cdef IMarginalProbabilityCalibrationModel* ptr = marginal_probability_calibration_model_ptr.release()
     cdef INoProbabilityCalibrationModel* no_probability_calibration_model_ptr = dynamic_cast[NoProbabilityCalibrationModelPtr](ptr)
     cdef NoProbabilityCalibrationModel no_probability_calibration_model
 
@@ -45,4 +45,4 @@ cdef inline ProbabilityCalibrationModel create_probability_calibration_model(uni
         return no_probability_calibration_model
     else:
         del ptr
-        raise RuntimeError('Encountered unsupported IProbabilityCalibrationModel object')
+        raise RuntimeError('Encountered unsupported IMarginalProbabilityCalibrationModel object')

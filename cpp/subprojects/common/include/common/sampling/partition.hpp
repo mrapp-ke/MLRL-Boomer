@@ -17,7 +17,7 @@ class IStatistics;
 class IThresholdsSubset;
 class ICoverageState;
 class AbstractPrediction;
-class IProbabilityCalibrationModel;
+class IMarginalProbabilityCalibrationModel;
 class IProbabilityCalibrator;
 
 /**
@@ -92,10 +92,10 @@ class IPartition {
          *                              access to the labels of the training examples
          * @param statistics            A reference to an object of type `IStatistics` that provides access to
          *                              statistics about the labels of the training examples
-         * @return                      An unique pointer to an object of type `IProbabilityCalibrationModel` that has
-         *                              been fit
+         * @return                      An unique pointer to an object of type `IMarginalProbabilityCalibrationModel`
+         *                              that has been fit
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
+        virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
           const IProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
           const IStatistics& statistics) const = 0;
 };

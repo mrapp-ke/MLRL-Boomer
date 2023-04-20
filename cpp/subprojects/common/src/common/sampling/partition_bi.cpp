@@ -107,7 +107,7 @@ void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubse
     coverageState.recalculatePrediction(thresholdsSubset, *this, head);
 }
 
-std::unique_ptr<IProbabilityCalibrationModel> BiPartition::fitMarginalProbabilityCalibrationModel(
+std::unique_ptr<IMarginalProbabilityCalibrationModel> BiPartition::fitMarginalProbabilityCalibrationModel(
   const IProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
   const IStatistics& statistics) const {
     return labelMatrix.fitMarginalProbabilityCalibrationModel(probabilityCalibrator, *this, statistics);

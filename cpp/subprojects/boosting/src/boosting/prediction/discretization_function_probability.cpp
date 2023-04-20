@@ -34,9 +34,9 @@ namespace boosting {
         : marginalProbabilityFunctionFactoryPtr_(std::move(marginalProbabilityFunctionFactoryPtr)) {}
 
     std::unique_ptr<IDiscretizationFunction> ProbabilityDiscretizationFunctionFactory::create(
-      const IProbabilityCalibrationModel& probabilityCalibrationModel) const {
+      const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
         std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr =
-          marginalProbabilityFunctionFactoryPtr_->create(probabilityCalibrationModel);
+          marginalProbabilityFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel);
         return std::make_unique<ProbabilityDiscretizationFunction>(std::move(marginalProbabilityFunctionPtr));
     }
 

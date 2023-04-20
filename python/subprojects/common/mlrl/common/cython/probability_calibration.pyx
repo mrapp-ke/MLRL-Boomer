@@ -3,21 +3,21 @@
 """
 
 
-cdef class ProbabilityCalibrationModel:
+cdef class MarginalProbabilityCalibrationModel:
     """
-    A model that may be used for the calibration of probabilities.
+    A model that may be used for the calibration of marginal probabilities.
     """
 
-    cdef IProbabilityCalibrationModel* get_probability_calibration_model_ptr(self):
+    cdef IMarginalProbabilityCalibrationModel* get_marginal_probability_calibration_model_ptr(self):
         pass
 
 
-cdef class NoProbabilityCalibrationModel(ProbabilityCalibrationModel):
+cdef class NoProbabilityCalibrationModel(MarginalProbabilityCalibrationModel):
     """
-    Does not provide any information about the label space.
+    A model for the calibration of probabilities that does not make any adjustments.
     """
 
-    cdef IProbabilityCalibrationModel* get_probability_calibration_model_ptr(self):
+    cdef IMarginalProbabilityCalibrationModel* get_marginal_probability_calibration_model_ptr(self):
         return self.probability_calibration_model_ptr.get()
 
     def __reduce__(self):

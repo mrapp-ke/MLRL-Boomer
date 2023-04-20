@@ -88,20 +88,21 @@ class MLRLCOMMON_API ITrainingResult {
         virtual const std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() const = 0;
 
         /**
-         * Returns a model that may be used for the calibration of probabilities.
+         * Returns a model that may be used for the calibration of marginal probabilities.
          *
-         * @return An unique pointer to an object of type `IProbabilityCalibrationModel` that may be used for the
-         *         calibration of probabilities
+         * @return An unique pointer to an object of type `IMarginalProbabilityCalibrationModel` that may be used for
+         *         the calibration of marginal probabilities
          */
-        virtual std::unique_ptr<IProbabilityCalibrationModel>& getProbabilityCalibrationModel() = 0;
+        virtual std::unique_ptr<IMarginalProbabilityCalibrationModel>& getMarginalProbabilityCalibrationModel() = 0;
 
         /**
-         * Returns a model that may be used for the calibration of probabilities.
+         * Returns a model that may be used for the calibration of marginal probabilities.
          *
-         * @return An unique pointer to an object of type `IProbabilityCalibrationModel` that may be used for the
-         *         calibration of probabilities
+         * @return An unique pointer to an object of type `IMarginalProbabilityCalibrationModel` that may be used for
+         *         the calibration of marginal probabilities
          */
-        virtual const std::unique_ptr<IProbabilityCalibrationModel>& getProbabilityCalibrationModel() const = 0;
+        virtual const std::unique_ptr<IMarginalProbabilityCalibrationModel>& getMarginalProbabilityCalibrationModel()
+          const = 0;
 };
 
 /**
@@ -971,25 +972,27 @@ class MLRLCOMMON_API IRuleLearner {
          * Creates and returns a predictor that may be used to predict binary labels for given query examples. If the
          * prediction of binary labels is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception       The exception that is thrown if the prediction of binary labels is not
-         *                                      supported by the rule learner
-         * @param featureMatrix                 A reference to an object of type `IRowWiseFeatureMatrix` that provides
-         *                                      row-wise access to the feature values of the query examples
-         * @param ruleModel                     A reference to an object of type `IRuleModel` that should be used to
-         *                                      obtain predictions
-         * @param labelSpaceInfo                A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                      information about the label space that may be used as a basis for
-         *                                      obtaining predictions
-         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
-         *                                      be used for the calibration of probabilities
-         * @param numLabels                     The number of labels to predict for
-         * @return                              An unique pointer to an object of type `IBinaryPredictor` that may be
-         *                                      used to predict binary labels for the given query examples
+         * @throws std::runtime_exception             The exception that is thrown if the prediction of binary labels is
+         *                                            not supported by the rule learner
+         * @param featureMatrix                       A reference to an object of type `IRowWiseFeatureMatrix` that
+         *                                            provides row-wise access to the feature values of the query
+         *                                            examples
+         * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
+         *                                            to obtain predictions
+         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
+         *                                            information about the label space that may be used as a basis for
+         *                                            obtaining predictions
+         * @param marginalProbabilityCalibrationModel A reference to an object of type
+         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of marginal probabilities
+         * @param numLabels                           The number of labels to predict for
+         * @return                                    An unique pointer to an object of type `IBinaryPredictor` that may
+         *                                            be used to predict binary labels for the given query examples
          */
         virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
-          uint32 numLabels) const = 0;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
@@ -1014,25 +1017,28 @@ class MLRLCOMMON_API IRuleLearner {
          * the prediction of sparse binary labels is not supported by the rule learner, a `std::runtime_error` is
          * thrown.
          *
-         * @throws std::runtime_exception       The exception that is thrown if the prediction of sparse binary labels
-         *                                      is not supported by the rule learner
-         * @param featureMatrix                 A reference to an object of type `IRowWiseFeatureMatrix` that provides
-         *                                      row-wise access to the feature values of the query examples
-         * @param ruleModel                     A reference to an object of type `IRuleModel` that should be used to
-         *                                      obtain predictions
-         * @param labelSpaceInfo                A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                      information about the label space that may be used as a basis for
-         *                                      obtaining predictions
-         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
-         *                                      be used for the calibration of probabilities
-         * @param numLabels                     The number of labels to predict for
-         * @return                              An unique pointer to an object of type `ISparseBinaryPredictor` that may
-         *                                      be used to predict sparse binary labels for the given query examples
+         * @throws std::runtime_exception             The exception that is thrown if the prediction of sparse binary
+         *                                            labels is not supported by the rule learner
+         * @param featureMatrix                       A reference to an object of type `IRowWiseFeatureMatrix` that
+         *                                            provides row-wise access to the feature values of the query
+         *                                            examples
+         * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
+         *                                            to obtain predictions
+         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
+         *                                            information about the label space that may be used as a basis for
+         *                                            obtaining predictions
+         * @param marginalProbabilityCalibrationModel A reference to an object of type
+         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of marginal probabilities
+         * @param numLabels                           The number of labels to predict for
+         * @return                                    An unique pointer to an object of type `ISparseBinaryPredictor`
+         *                                            that may be used to predict sparse binary labels for the given
+         *                                            query examples
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
-          uint32 numLabels) const = 0;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Returns whether the rule learner is able to predict regression scores or not.
@@ -1077,25 +1083,27 @@ class MLRLCOMMON_API IRuleLearner {
          * Creates and returns a predictor that may be used to predict regression scores for given query examples. If
          * the prediction of regression scores is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception       The exception that is thrown if the prediction of regression scores is
-         *                                      not supported by the rule learner
-         * @param featureMatrix                 A reference to an object of type `IRowWiseFeatureMatrix` that provides
-         *                                      row-wise access to the feature values of the query examples
-         * @param ruleModel                     A reference to an object of type `IRuleModel` that should be used to
-         *                                      obtain predictions
-         * @param labelSpaceInfo                A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                      information about the label space that may be used as a basis for
-         *                                      obtaining predictions
-         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
-         *                                      be used for the calibration of probabilities
-         * @param numLabels                     The number of labels to predict for
-         * @return                              An unique pointer to an object of type `IScorePredictor` that may be
-         *                                      used to predict regression scores for the given query examples
+         * @throws std::runtime_exception             The exception that is thrown if the prediction of regression
+         *                                            scores is not supported by the rule learner
+         * @param featureMatrix                       A reference to an object of type `IRowWiseFeatureMatrix` that
+         *                                            provides row-wise access to the feature values of the query
+         *                                            examples
+         * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
+         *                                            to obtain predictions
+         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
+         *                                            information about the label space that may be used as a basis for
+         *                                            obtaining predictions
+         * @param marginalProbabilityCalibrationModel A reference to an object of type
+         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of marginal probabilities
+         * @param numLabels                           The number of labels to predict for
+         * @return                                    An unique pointer to an object of type `IScorePredictor` that may
+         *                                            be used to predict regression scores for the given query examples
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
-          uint32 numLabels) const = 0;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
          * Returns whether the rule learner is able to predict probabilities or not.
@@ -1142,25 +1150,28 @@ class MLRLCOMMON_API IRuleLearner {
          * If the prediction of probability estimates is not supported by the rule learner, a `std::runtime_error` is
          * thrown.
          *
-         * @throws std::runtime_exception       The exception that is thrown if the prediction of probability estimates
-         *                                      is not supported by the rule learner
-         * @param featureMatrix                 A reference to an object of type `IRowWiseFeatureMatrix` that provides
-         *                                      row-wise access to the feature values of the query examples
-         * @param ruleModel                     A reference to an object of type `IRuleModel` that should be used to
-         *                                      obtain predictions
-         * @param labelSpaceInfo                A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                      information about the label space that may be used as a basis for
-         *                                      obtaining predictions
-         * @param probabilityCalibrationModel   A reference to an object of type `IProbabilityCalibrationModel` that may
-         *                                      be used for the calibration of probabilities
-         * @param numLabels                     The number of labels to predict for
-         * @return                              An unique pointer to an object of type `IProbabilityPredictor` that may
-         *                                      be used to predict probability estimates for the given query examples
+         * @throws std::runtime_exception             The exception that is thrown if the prediction of probability
+         *                                            estimates is not supported by the rule learner
+         * @param featureMatrix                       A reference to an object of type `IRowWiseFeatureMatrix` that
+         *                                            provides row-wise access to the feature values of the query
+         *                                            examples
+         * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
+         *                                            to obtain predictions
+         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
+         *                                            information about the label space that may be used as a basis for
+         *                                            obtaining predictions
+         * @param marginalProbabilityCalibrationModel A reference to an object of type
+         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of marginal probabilities
+         * @param numLabels                           The number of labels to predict for
+         * @return                                    An unique pointer to an object of type `IProbabilityPredictor`
+         *                                            that may be used to predict probability estimates for the given
+         *                                            query examples
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
-          uint32 numLabels) const = 0;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel, uint32 numLabels) const = 0;
 };
 
 /**
@@ -1564,7 +1575,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
@@ -1572,7 +1584,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           uint32 numLabels) const override;
 
         bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix,
@@ -1585,7 +1598,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IScorePredictor> createScorePredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           uint32 numLabels) const override;
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
@@ -1598,6 +1612,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo, const IProbabilityCalibrationModel& probabilityCalibrationModel,
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           uint32 numLabels) const override;
 };
