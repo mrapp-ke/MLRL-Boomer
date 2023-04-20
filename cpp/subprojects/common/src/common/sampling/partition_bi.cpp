@@ -1,6 +1,6 @@
 #include "common/sampling/partition_bi.hpp"
 
-#include "common/prediction/probability_calibration_marginal.hpp"
+#include "common/prediction/probability_calibration_joint.hpp"
 #include "common/rule_refinement/prediction.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/stopping/stopping_criterion.hpp"
@@ -111,4 +111,12 @@ std::unique_ptr<IMarginalProbabilityCalibrationModel> BiPartition::fitMarginalPr
   const IMarginalProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
   const IStatistics& statistics) const {
     return labelMatrix.fitMarginalProbabilityCalibrationModel(probabilityCalibrator, *this, statistics);
+}
+
+std::unique_ptr<IJointProbabilityCalibrationModel> BiPartition::fitJointProbabilityCalibrationModel(
+  const IJointProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
+  const IStatistics& statistics,
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
+    return labelMatrix.fitJointProbabilityCalibrationModel(probabilityCalibrator, *this, statistics,
+                                                           marginalProbabilityCalibrationModel);
 }
