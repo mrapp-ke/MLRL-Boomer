@@ -441,9 +441,9 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoSequentialPostOptimization() = 0;
 
                 /**
-                 * Configures the rule learner to not use probability calibration.
+                 * Configures the rule learner to not calibrate marginal probabilities.
                  */
-                virtual void useNoProbabilityCalibration() = 0;
+                virtual void useNoMarginalProbabilityCalibration() = 0;
         };
 
         /**
@@ -1409,7 +1409,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 void useNoSequentialPostOptimization() override;
 
-                void useNoProbabilityCalibration() override;
+                void useNoMarginalProbabilityCalibration() override;
         };
 
     private:

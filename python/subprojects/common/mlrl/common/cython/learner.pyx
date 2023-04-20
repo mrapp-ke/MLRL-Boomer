@@ -178,12 +178,12 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoSequentialPostOptimization()
 
-    def use_no_probability_calibration(self):
+    def use_no_marginal_probability_calibration(self):
         """
-        Configures the rule learner to not use probability calibration.
+        Configures the rule learner to not calibrate marginal probabilities.
         """
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoProbabilityCalibration()
+        rule_learner_config_ptr.useNoMarginalProbabilityCalibration()
 
 
 cdef class RuleLearner:
