@@ -6,7 +6,6 @@
 #include "common/input/label_matrix_c_contiguous.hpp"
 #include "common/input/label_matrix_csr.hpp"
 #include "common/macros.hpp"
-#include "common/prediction/probability_calibration.hpp"
 #include "common/sampling/partition_bi.hpp"
 #include "common/sampling/partition_single.hpp"
 #include "common/statistics/statistics.hpp"
@@ -115,8 +114,17 @@ class IMarginalProbabilityCalibrator {
  * Defines an interface for all classes that allow to configure a method for fitting a model for the calibration of
  * marginal probabilities.
  */
-class IMarginalProbabilityCalibratorConfig : public IProbabilityCalibratorConfig<IMarginalProbabilityCalibrator> {
+class IMarginalProbabilityCalibratorConfig {
     public:
 
-        virtual ~IMarginalProbabilityCalibratorConfig() override {};
+        virtual ~IMarginalProbabilityCalibratorConfig() {};
+
+        /**
+         * Creates and returns a new object of template type `IMarginalProbabilityCalibrator` according to the
+         * configuration.
+         *
+         * @return An unique pointer to an object of template type `IMarginalProbabilityCalibrator` that has been
+         *         created
+         */
+        virtual std::unique_ptr<IMarginalProbabilityCalibrator> createMarginalProbabilityCalibrator() const = 0;
 };

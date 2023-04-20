@@ -100,8 +100,16 @@ class IJointProbabilityCalibrator {
  * Defines an interface for all classes that allow to configure a method for fitting a model for the calibration of
  * joint probabilities.
  */
-class IJointProbabilityCalibratorConfig : public IProbabilityCalibratorConfig<IJointProbabilityCalibrator> {
+class IJointProbabilityCalibratorConfig {
     public:
 
-        virtual ~IJointProbabilityCalibratorConfig() override {};
+        virtual ~IJointProbabilityCalibratorConfig() {};
+
+        /**
+         * Creates and returns a new object of template type `IJointProbabilityCalibrator` according to the
+         * configuration.
+         *
+         * @return An unique pointer to an object of template type `IJointProbabilityCalibrator` that has been created
+         */
+        virtual std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator() const = 0;
 };

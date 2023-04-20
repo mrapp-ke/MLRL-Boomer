@@ -356,11 +356,11 @@ std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createUnused
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrator> AbstractRuleLearner::createMarginalProbabilityCalibrator() const {
-    return config_.getMarginalProbabilityCalibratorConfigPtr()->createProbabilityCalibrator();
+    return config_.getMarginalProbabilityCalibratorConfigPtr()->createMarginalProbabilityCalibrator();
 }
 
 std::unique_ptr<IJointProbabilityCalibrator> AbstractRuleLearner::createJointProbabilityCalibrator() const {
-    return config_.getJointProbabilityCalibratorConfigPtr()->createProbabilityCalibrator();
+    return config_.getJointProbabilityCalibratorConfigPtr()->createJointProbabilityCalibrator();
 }
 
 void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
