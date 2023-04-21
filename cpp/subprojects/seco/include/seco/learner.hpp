@@ -136,7 +136,7 @@ namespace seco {
             class ICoverageStoppingCriterionMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~ICoverageStoppingCriterionMixin() {};
+                    virtual ~ICoverageStoppingCriterionMixin() override {};
 
                     /**
                      * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon
@@ -163,7 +163,7 @@ namespace seco {
             class IPartialHeadMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IPartialHeadMixin() {};
+                    virtual ~IPartialHeadMixin() override {};
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a subset of the
@@ -214,7 +214,7 @@ namespace seco {
             class IAccuracyMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAccuracyMixin() {};
+                    virtual ~IAccuracyMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
@@ -241,7 +241,7 @@ namespace seco {
             class IFMeasureMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IFMeasureMixin() {};
+                    virtual ~IFMeasureMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for learning rules.
@@ -280,7 +280,7 @@ namespace seco {
             class IMEstimateMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IMEstimateMixin() {};
+                    virtual ~IMEstimateMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
@@ -319,7 +319,7 @@ namespace seco {
             class ILaplaceMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILaplaceMixin() {};
+                    virtual ~ILaplaceMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for learning rules.
@@ -346,7 +346,7 @@ namespace seco {
             class IRecallMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IRecallMixin() {};
+                    virtual ~IRecallMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for learning rules.
@@ -373,7 +373,7 @@ namespace seco {
             class IWraMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IWraMixin() {};
+                    virtual ~IWraMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
