@@ -22,6 +22,9 @@ class MLRLBOOSTING_API IIsotonicMarginalProbabilityCalibrationModel : public IMa
 class IsotonicMarginalProbabilityCalibratorConfig final : public IMarginalProbabilityCalibratorConfig {
     public:
 
+        /**
+         * @see `IMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibrator`
+         */
         std::unique_ptr<IMarginalProbabilityCalibrator> createMarginalProbabilityCalibrator() const override;
 };
 
