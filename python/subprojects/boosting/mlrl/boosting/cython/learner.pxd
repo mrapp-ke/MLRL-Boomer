@@ -128,6 +128,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useIsotonicMarginalProbabilityCalibration()
 
 
+    cdef cppclass IIsotonicJointProbabilityCalibrationMixin"boosting::IBoostingRuleLearner::IIsotonicJointProbabilityCalibrationMixin":
+
+        # Functions:
+
+        void useIsotonicJointProbabilityCalibration()
+
+
     cdef cppclass IExampleWiseBinaryPredictorMixin"boosting::IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin":
 
         # Functions:
