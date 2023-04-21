@@ -9,3 +9,12 @@ float64 IsotonicMarginalProbabilityCalibrationModel::calibrateMarginalProbabilit
 std::unique_ptr<IIsotonicMarginalProbabilityCalibrationModel> createIsotonicMarginalProbabilityCalibrationModel() {
     return std::make_unique<IsotonicMarginalProbabilityCalibrationModel>();
 }
+
+float64 IsotonicJointProbabilityCalibrationModel::calibrateJointProbability(float64 jointProbability) const {
+    // TODO Implement
+    return jointProbability;
+}
+
+std::unique_ptr<IIsotonicJointProbabilityCalibrationModel> createIsotonicJointProbabilityCalibrationModel() {
+    return std::make_unique<IsotonicJointProbabilityCalibrationModel>();
+}

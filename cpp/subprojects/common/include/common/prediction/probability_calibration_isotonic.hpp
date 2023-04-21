@@ -30,3 +30,29 @@ class IsotonicMarginalProbabilityCalibrationModel final : public IIsotonicMargin
  */
 MLRLCOMMON_API std::unique_ptr<IIsotonicMarginalProbabilityCalibrationModel>
   createIsotonicMarginalProbabilityCalibrationModel();
+
+/**
+ * Defines an interface for all model for the calibration of joint probabilities via isotonic regression.
+ */
+class MLRLCOMMON_API IIsotonicJointProbabilityCalibrationModel : public IJointProbabilityCalibrationModel {
+    public:
+
+        virtual ~IIsotonicJointProbabilityCalibrationModel() override {};
+};
+
+/**
+ * A model for the calibration of joint probabilities via isotonic regression.
+ */
+class IsotonicJointProbabilityCalibrationModel final : public IIsotonicJointProbabilityCalibrationModel {
+    public:
+
+        float64 calibrateJointProbability(float64 jointProbability) const override;
+};
+
+/**
+ * Creates and returns a new object of the type `IIsotonicJointProbabilityCalibrationModel`.
+ *
+ * @return An unique pointer to an object of type `IIsotonicJointProbabilityCalibrationModel` that has been created
+ */
+MLRLCOMMON_API std::unique_ptr<IIsotonicJointProbabilityCalibrationModel>
+  createIsotonicJointProbabilityCalibrationModel();
