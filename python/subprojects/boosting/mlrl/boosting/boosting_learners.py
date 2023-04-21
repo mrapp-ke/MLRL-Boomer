@@ -27,8 +27,8 @@ from mlrl.boosting.config import configure_post_processor, configure_l1_regulari
     configure_default_rule, configure_head_type, configure_statistics, configure_label_wise_squared_error_loss, \
     configure_label_wise_squared_hinge_loss, configure_label_wise_logistic_loss, configure_example_wise_logistic_loss, \
     configure_example_wise_squared_error_loss, configure_example_wise_squared_hinge_loss, configure_label_binning, \
-    configure_isotonic_marginal_probability_calibration, configure_label_wise_binary_predictor, \
-    configure_example_wise_binary_predictor, configure_gfm_binary_predictor, \
+    configure_isotonic_marginal_probability_calibration, configure_isotonic_joint_probability_calibration, \
+    configure_label_wise_binary_predictor, configure_example_wise_binary_predictor, configure_gfm_binary_predictor, \
     configure_label_wise_probability_predictor, configure_marginalized_probability_predictor
 
 FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {**common_config.FEATURE_BINNING_VALUES, **{AUTOMATIC: {}}}
@@ -51,6 +51,8 @@ LOSS_VALUES: Set[str] = {
 }
 
 MARGINAL_PROBABILITY_CALIBRATION_VALUES: Set[str] = {PROBABILITY_CALIBRATION_ISOTONIC, NONE}
+
+JOINT_PROBABILITY_CALIBRATION_VALUES: Set[str] = {PROBABILITY_CALIBRATION_ISOTONIC, NONE}
 
 BINARY_PREDICTOR_VALUES: Dict[str, Set[str]] = {
     BINARY_PREDICTOR_LABEL_WISE: {ARGUMENT_BASED_ON_PROBABILITIES},
@@ -85,6 +87,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                  head_type: Optional[str] = None,
                  loss: Optional[str] = None,
                  marginal_probability_calibration: Optional[str] = None,
+                 joint_probability_calibration: Optional[str] = None,
                  binary_predictor: Optional[str] = None,
                  probability_predictor: Optional[str] = None,
                  label_sampling: Optional[str] = None,
@@ -132,6 +135,9 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         :param marginal_probability_calibration:    The method that should be used for the calibration of marginal
                                                     probabilities. Must be 'isotonic' or 'none', if no probability
                                                     calibration should be used.
+        :param joint_probability_calibration:       The method that should be used for the calibration of joint
+                                                    probabilities. Must be 'isotonic' or 'none', if no probability
+                                                    calibration should be used
         :param binary_predictor:                    The strategy that should be used for predicting binary labels. Must
                                                     be 'label-wise', 'example-wise', 'gfm' or 'auto', if the most
                                                     suitable strategy should be chosen automatically, depending on the
@@ -201,6 +207,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         self.head_type = head_type
         self.loss = loss
         self.marginal_probability_calibration = marginal_probability_calibration
+        self.joint_probability_calibration = joint_probability_calibration
         self.binary_predictor = binary_predictor
         self.probability_predictor = probability_predictor
         self.label_sampling = label_sampling
@@ -240,6 +247,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         self.__configure_loss(config)
         self.__configure_label_binning(config)
         self.__configure_marginal_probability_calibration(config)
+        self.__configure_joint_probability_calibration(config)
         self.__configure_binary_predictor(config)
         self.__configure_probability_predictor(config)
         self.__configure_parallel_rule_refinement(config)
@@ -329,6 +337,14 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
             value = parse_param('marginal_probability_calibration', marginal_probability_calibration,
                                 MARGINAL_PROBABILITY_CALIBRATION_VALUES)
             configure_isotonic_marginal_probability_calibration(config, value)
+
+    def __configure_joint_probability_calibration(self, config: BoomerConfig):
+        joint_probability_calibration = get_string(self.joint_probability_calibration)
+
+        if joint_probability_calibration is not None:
+            value = parse_param('joint_probability_calibration', joint_probability_calibration,
+                                JOINT_PROBABILITY_CALIBRATION_VALUES)
+            configure_isotonic_joint_probability_calibration(config, value)
 
     def __configure_binary_predictor(self, config: BoomerConfig):
         binary_predictor = get_string(self.binary_predictor)
