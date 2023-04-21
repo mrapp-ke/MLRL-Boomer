@@ -20,4 +20,17 @@ namespace boosting {
             std::unique_ptr<IMarginalProbabilityCalibrator> createMarginalProbabilityCalibrator() const override;
     };
 
+    /**
+     * Allows to configure a calibrator that fits a model for the calibration of joint probabilities via isotonic
+     * regression.
+     */
+    class IsotonicJointProbabilityCalibratorConfig final : public IJointProbabilityCalibratorConfig {
+        public:
+
+            /**
+             * @see `IJointProbabilityCalibratorConfig::createJointProbabilityCalibrator`
+             */
+            std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator() const override;
+    };
+
 }
