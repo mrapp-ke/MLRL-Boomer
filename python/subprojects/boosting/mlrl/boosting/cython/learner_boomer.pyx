@@ -524,6 +524,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_isotonic_marginal_probability_calibration(self):
+        """
+        Configures the rule learner to calibrate marginal probabilities via isotonic regression.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useIsotonicMarginalProbabilityCalibration()
+
     def use_example_wise_binary_predictor(self) -> ExampleWiseBinaryPredictorConfig:
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
