@@ -181,7 +181,12 @@ def configure_example_wise_squared_hinge_loss(config: BoostingRuleLearnerConfig,
 
 def configure_isotonic_marginal_probability_calibration(config: BoostingRuleLearnerConfig, value: str):
     if value == PROBABILITY_CALIBRATION_ISOTONIC:
-        c = config.use_isotonic_marginal_probability_calibration()
+        config.use_isotonic_marginal_probability_calibration()
+
+
+def configure_isotonic_joint_probability_calibration(config: BoostingRuleLearnerConfig, value: str):
+    if value == PROBABILITY_CALIBRATION_ISOTONIC:
+        config.use_isotonic_joint_probability_calibration()
 
 
 def configure_label_wise_binary_predictor(config: BoostingRuleLearnerConfig, value: str, options: Options):
