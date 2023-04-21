@@ -19,6 +19,10 @@ PARAM_LABEL_BINNING = '--label-binning'
 
 PARAM_LOSS = '--loss'
 
+PARAM_MARGINAL_PROBABILITY_CALIBRATION = '--marginal-probability-calibration'
+
+PARAM_JOINT_PROBABILITY_CALIBRATION = '--joint-probability-calibration'
+
 PARAM_BINARY_PREDICTOR = '--binary-predictor'
 
 PARAM_PROBABILITY_PREDICTOR = '--probability-predictor'

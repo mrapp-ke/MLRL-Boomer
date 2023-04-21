@@ -42,6 +42,8 @@ LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
 
 LOSS_SQUARED_HINGE_EXAMPLE_WISE = 'squared-hinge-example-wise'
 
+PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
+
 BINARY_PREDICTOR_LABEL_WISE = 'label-wise'
 
 BINARY_PREDICTOR_EXAMPLE_WISE = 'example-wise'
@@ -175,6 +177,16 @@ def configure_example_wise_squared_error_loss(config: BoostingRuleLearnerConfig,
 def configure_example_wise_squared_hinge_loss(config: BoostingRuleLearnerConfig, value: str):
     if value == LOSS_SQUARED_HINGE_EXAMPLE_WISE:
         config.use_example_wise_squared_hinge_loss()
+
+
+def configure_isotonic_marginal_probability_calibration(config: BoostingRuleLearnerConfig, value: str):
+    if value == PROBABILITY_CALIBRATION_ISOTONIC:
+        config.use_isotonic_marginal_probability_calibration()
+
+
+def configure_isotonic_joint_probability_calibration(config: BoostingRuleLearnerConfig, value: str):
+    if value == PROBABILITY_CALIBRATION_ISOTONIC:
+        config.use_isotonic_joint_probability_calibration()
 
 
 def configure_label_wise_binary_predictor(config: BoostingRuleLearnerConfig, value: str, options: Options):
