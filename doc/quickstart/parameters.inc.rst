@@ -233,6 +233,11 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'none'`` Marginal probabilities are not calibrated.
   * ``'isotonic'`` Marginal probabilities are calibrated via isotonic regression.
 
+* ``joint_probability_calibration`` (Default value = ``'none'``)
+
+  * ``'none'`` Joint probabilities are not calibrated.
+  * ``'isotonic'`` Joint probabilities are calibrated via isotonic regression.
+
 * ``binary_predictor`` (Default value = ``'auto'``)
 
   * ``'auto'`` The most suitable strategy for predicting binary labels is chosen automatically, depending on the loss function.
