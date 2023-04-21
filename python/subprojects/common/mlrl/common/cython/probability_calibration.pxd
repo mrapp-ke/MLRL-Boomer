@@ -40,8 +40,16 @@ cdef extern from "common/prediction/probability_calibration_isotonic.hpp" nogil:
 
     unique_ptr[IIsotonicMarginalProbabilityCalibrationModel] createIsotonicMarginalProbabilityCalibrationModel()
 
+    cdef cppclass IIsotonicJointProbabilityCalibrationModel(IJointProbabilityCalibrationModel):
+        pass
+
+    unique_ptr[IIsotonicJointProbabilityCalibrationModel] createIsotonicJointProbabilityCalibrationModel()
+
 
 ctypedef IIsotonicMarginalProbabilityCalibrationModel* IsotonicMarginalProbabilityCalibrationModelPtr
+
+
+ctypedef IIsotonicJointProbabilityCalibrationModel* IsotonicJointProbabilityCalibrationModelPtr
 
 
 cdef class MarginalProbabilityCalibrationModel:
@@ -77,6 +85,13 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
     # Attributes:
 
     cdef unique_ptr[IIsotonicMarginalProbabilityCalibrationModel] probability_calibration_model_ptr
+
+
+cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationModel):
+
+    # Attributes:
+
+    cdef unique_ptr[IIsotonicJointProbabilityCalibrationModel] probability_calibration_model_ptr
 
 
 cdef inline MarginalProbabilityCalibrationModel create_marginal_probability_calibration_model(
@@ -116,6 +131,8 @@ cdef inline JointProbabilityCalibrationModel create_joint_probability_calibratio
     cdef INoJointProbabilityCalibrationModel* no_joint_probability_calibration_model_ptr = \
         dynamic_cast[NoJointProbabilityCalibrationModelPtr](ptr)
     cdef NoJointProbabilityCalibrationModel no_joint_probability_calibration_model
+    cdef IIsotonicJointProbabilityCalibrationModel* isotonic_joint_probability_calibration_model_ptr
+    cdef IsotonicJointProbabilityCalibrationModel isotonic_joint_probability_calibration_model
 
     if no_joint_probability_calibration_model_ptr != NULL:
         no_joint_probability_calibration_model = \
@@ -124,5 +141,15 @@ cdef inline JointProbabilityCalibrationModel create_joint_probability_calibratio
             unique_ptr[INoJointProbabilityCalibrationModel](no_joint_probability_calibration_model_ptr)
         return no_joint_probability_calibration_model
     else:
-        del ptr
-        raise RuntimeError('Encountered unsupported IJointProbabilityCalibrationModel object')
+        isotonic_joint_probability_calibration_model_ptr = \
+            dynamic_cast[IsotonicJointProbabilityCalibrationModelPtr](ptr)
+
+        if isotonic_joint_probability_calibration_model_ptr != NULL:
+            isotonic_joint_probability_calibration_model = \
+                IsotonicJointProbabilityCalibrationModel.__new__(IsotonicJointProbabilityCalibrationModel)
+            isotonic_joint_probability_calibration_model.probability_calibration_model_ptr = \
+                unique_ptr[IIsotonicJointProbabilityCalibrationModel](isotonic_joint_probability_calibration_model_ptr)
+            return isotonic_joint_probability_calibration_model
+        else:
+            del ptr
+            raise RuntimeError('Encountered unsupported IJointProbabilityCalibrationModel object')
