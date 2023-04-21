@@ -42,7 +42,7 @@ LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
 
 LOSS_SQUARED_HINGE_EXAMPLE_WISE = 'squared-hinge-example-wise'
 
-MARGINAL_PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
+PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 
 BINARY_PREDICTOR_LABEL_WISE = 'label-wise'
 
@@ -180,7 +180,7 @@ def configure_example_wise_squared_hinge_loss(config: BoostingRuleLearnerConfig,
 
 
 def configure_isotonic_marginal_probability_calibration(config: BoostingRuleLearnerConfig, value: str):
-    if value == MARGINAL_PROBABILITY_CALIBRATION_ISOTONIC:
+    if value == PROBABILITY_CALIBRATION_ISOTONIC:
         c = config.use_isotonic_marginal_probability_calibration()
 
 
