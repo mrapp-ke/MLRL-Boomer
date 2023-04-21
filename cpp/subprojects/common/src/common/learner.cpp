@@ -625,16 +625,14 @@ bool AbstractRuleLearner::canPredictScores(const IRowWiseFeatureMatrix& featureM
 
 std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(
   const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
-    return this->createScorePredictor(
-      featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getLabelSpaceInfo(),
-      *trainingResult.getMarginalProbabilityCalibrationModel(), *trainingResult.getJointProbabilityCalibrationModel(),
-      trainingResult.getNumLabels());
+    return this->createScorePredictor(featureMatrix, *trainingResult.getRuleModel(),
+                                      *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
 }
 
-std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(
-  const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                           const IRuleModel& ruleModel,
+                                                                           const ILabelSpaceInfo& labelSpaceInfo,
+                                                                           uint32 numLabels) const {
     std::unique_ptr<IScorePredictorFactory> predictorFactoryPtr =
       this->createScorePredictorFactory(featureMatrix, numLabels);
 

@@ -139,12 +139,8 @@ def create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, label
 
 
 def create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
-                           marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
-                           joint_probability_calibration_model: JointProbabilityCalibrationModel, num_labels: int,
-                           feature_matrix: RowWiseFeatureMatrix):
-    return learner.create_score_predictor(feature_matrix, model, label_space_info,
-                                          marginal_probability_calibration_model, joint_probability_calibration_model,
-                                          num_labels)
+                           num_labels: int, feature_matrix: RowWiseFeatureMatrix):
+    return learner.create_score_predictor(feature_matrix, model, label_space_info, num_labels)
 
 
 def create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
@@ -396,9 +392,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         if learner.can_predict_scores(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted regression scores')
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
-            return create_score_predictor(learner, self.model_, self.label_space_info_,
-                                          self.marginal_probability_calibration_model_,
-                                          self.joint_probability_calibration_model_, num_labels,
+            return create_score_predictor(learner, self.model_, self.label_space_info_, num_labels,
                                           feature_matrix).predict(max_rules)
         else:
             return super()._predict_scores(x, **kwargs)
@@ -415,9 +409,7 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         if learner.can_predict_scores(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted regression scores')
             model = self.model_
-            predictor = create_score_predictor(learner, model, self.label_space_info_,
-                                               self.marginal_probability_calibration_model_,
-                                               self.joint_probability_calibration_model_, num_labels, feature_matrix)
+            predictor = create_score_predictor(learner, model, self.label_space_info_, num_labels, feature_matrix)
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():

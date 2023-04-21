@@ -332,33 +332,24 @@ cdef class RuleLearner:
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
 
     def create_score_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                               LabelSpaceInfo label_space_info not None,
-                               MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
-                               JointProbabilityCalibrationModel joint_probability_calibration_model not None,
-                               uint32 num_labels) -> ScorePredictor:
+                               LabelSpaceInfo label_space_info not None, uint32 num_labels) -> ScorePredictor:
         """
         Creates and returns a predictor that may be used to predict regression scores for given query examples. If the
         prediction of regression scores is not supported by the rule learner, a `RuntimeError` is thrown.
 
-        :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
-                                                        feature values of the query examples
-        :param rule_model:                              The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:                        The `LabelSpaceInfo` that provides information about the label
-                                                        space that may be used as a basis for obtaining predictions
-        :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
-                                                        the  calibration of marginal probabilities
-        :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
-                                                        calibration of joint probabilities    
-        :param num_labels:                              The number of labels to predict for
-        :return:                                        A `ScorePredictor` that may be used to predict regression scores
-                                                        for the given query examples
+        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
+                                    query examples
+        :param rule_model:          The `RuleModel` that should be used to obtain predictions
+        :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
+                                    used as a basis for obtaining predictions
+        :param num_labels:          The number of labels to predict for
+        :return:                    A `ScorePredictor` that may be used to predict regression scores for the given query
+                                    examples
         """
         cdef unique_ptr[IScorePredictor] predictor_ptr = move(self.get_rule_learner_ptr().createScorePredictor(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
             dereference(rule_model.get_rule_model_ptr()),
             dereference(label_space_info.get_label_space_info_ptr()),
-            dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
-            dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
             num_labels))
         cdef ScorePredictor score_predictor = ScorePredictor.__new__(ScorePredictor)
         score_predictor.predictor_ptr = move(predictor_ptr)
