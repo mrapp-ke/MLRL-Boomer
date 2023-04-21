@@ -463,6 +463,26 @@ namespace boosting {
             };
 
             /**
+             * Defines an interface for all classes that allow to configure a rule learner to calibrate joint
+             * probabilities via isotonic regression.
+             */
+            class IIsotonicJointProbabilityCalibrationMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IIsotonicJointProbabilityCalibrationMixin() {};
+
+                    /**
+                     * Configures the rule learner to calibrate joint probabilities via isotonic regression.
+                     */
+                    virtual void useIsotonicJointProbabilityCalibration() {
+                        std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr =
+                          this->getJointProbabilityCalibratorConfigPtr();
+                        jointProbabilityCalibratorConfigPtr =
+                          std::make_unique<IsotonicJointProbabilityCalibratorConfig>();
+                    }
+            };
+
+            /**
              * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
              * predicting whether individual labels are relevant or irrelevant by summing up the scores that are
              * provided by an existing rule-based model and comparing the aggregated score vector to the known label
