@@ -449,7 +449,7 @@ namespace boosting {
             class IIsotonicMarginalProbabilityCalibrationMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IIsotonicMarginalProbabilityCalibrationMixin() {};
+                    virtual ~IIsotonicMarginalProbabilityCalibrationMixin() override {};
 
                     /**
                      * Configures the rule learner to calibrate marginal probabilities via isotonic regression.
@@ -469,7 +469,7 @@ namespace boosting {
             class IIsotonicJointProbabilityCalibrationMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IIsotonicJointProbabilityCalibrationMixin() {};
+                    virtual ~IIsotonicJointProbabilityCalibrationMixin() override {};
 
                     /**
                      * Configures the rule learner to calibrate joint probabilities via isotonic regression.
