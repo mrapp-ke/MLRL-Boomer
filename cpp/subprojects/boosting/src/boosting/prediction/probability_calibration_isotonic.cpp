@@ -1,21 +1,6 @@
 #include "boosting/prediction/probability_calibration_isotonic.hpp"
 
 /**
- * A model for the calibration of marginal probabilities via isotonic regression.
- */
-class IsotonicMarginalProbabilityCalibrationModel final : public IIsotonicMarginalProbabilityCalibrationModel {
-    public:
-
-        /**
-         * @see `IMarginalProbabilityCalibrationModel::calibrateMarginalProbability`
-         */
-        float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const override {
-            // TODO Implement
-            return marginalProbability;
-        }
-};
-
-/**
  * An implementation of the type `IMarginalProbabilityCalibrator` that does fit a model for the calibration of marginal
  * probabilities via isotonic regression.
  */
@@ -62,8 +47,4 @@ class IsotonicMarginalProbabilityCalibrator final : public IMarginalProbabilityC
 std::unique_ptr<IMarginalProbabilityCalibrator>
   IsotonicMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibrator() const {
     return std::make_unique<IsotonicMarginalProbabilityCalibrator>();
-}
-
-std::unique_ptr<IIsotonicMarginalProbabilityCalibrationModel> createIsotonicMarginalProbabilityCalibrationModel() {
-    return std::make_unique<IsotonicMarginalProbabilityCalibrationModel>();
 }
