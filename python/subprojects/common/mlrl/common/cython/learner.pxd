@@ -218,9 +218,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         unique_ptr[IScorePredictor] createScorePredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
+            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) except +
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 

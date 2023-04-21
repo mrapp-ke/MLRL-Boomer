@@ -1125,31 +1125,22 @@ class MLRLCOMMON_API IRuleLearner {
          * Creates and returns a predictor that may be used to predict regression scores for given query examples. If
          * the prediction of regression scores is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception             The exception that is thrown if the prediction of regression
-         *                                            scores is not supported by the rule learner
-         * @param featureMatrix                       A reference to an object of type `IRowWiseFeatureMatrix` that
-         *                                            provides row-wise access to the feature values of the query
-         *                                            examples
-         * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
-         *                                            to obtain predictions
-         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                            information about the label space that may be used as a basis for
-         *                                            obtaining predictions
-         * @param marginalProbabilityCalibrationModel A reference to an object of type
-         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
-         *                                            calibration of marginal probabilities
-         * @param jointProbabilityCalibrationModel    A reference to an object of type
-         *                                            `IJointProbabilityCalibrationModel` that may be used for the
-         *                                            calibration of joint probabilities
-         * @param numLabels                           The number of labels to predict for
-         * @return                                    An unique pointer to an object of type `IScorePredictor` that may
-         *                                            be used to predict regression scores for the given query examples
+         * @throws std::runtime_exception The exception that is thrown if the prediction of regression scores is not
+         *                                supported by the rule learner
+         * @param featureMatrix           A reference to an object of type `IRowWiseFeatureMatrix` that provides
+         *                                row-wise access to the feature values of the query examples
+         * @param ruleModel               A reference to an object of type `IRuleModel` that should be used to obtain
+         *                                predictions
+         * @param labelSpaceInfo          A reference to an object of type `ILabelSpaceInfo` that provides information
+         *                                about the label space that may be used as a basis for obtaining predictions
+         * @param numLabels               The number of labels to predict for
+         * @return                        An unique pointer to an object of type `IScorePredictor` that may be used to
+         *                                predict regression scores for the given query examples
          */
-        virtual std::unique_ptr<IScorePredictor> createScorePredictor(
-          const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
+        virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                      const IRuleModel& ruleModel,
+                                                                      const ILabelSpaceInfo& labelSpaceInfo,
+                                                                      uint32 numLabels) const = 0;
 
         /**
          * Returns whether the rule learner is able to predict probabilities or not.
@@ -1660,11 +1651,10 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                               const ITrainingResult& trainingResult) const override;
 
-        std::unique_ptr<IScorePredictor> createScorePredictor(
-          const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
+        std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                              const IRuleModel& ruleModel,
+                                                              const ILabelSpaceInfo& labelSpaceInfo,
+                                                              uint32 numLabels) const override;
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
                                      const ITrainingResult& trainingResult) const override;
