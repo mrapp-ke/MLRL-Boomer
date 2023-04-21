@@ -121,6 +121,20 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
 
 
+    cdef cppclass IIsotonicMarginalProbabilityCalibrationMixin"boosting::IBoostingRuleLearner::IIsotonicMarginalProbabilityCalibrationMixin":
+
+        # Functions:
+
+        void useIsotonicMarginalProbabilityCalibration()
+
+
+    cdef cppclass IIsotonicJointProbabilityCalibrationMixin"boosting::IBoostingRuleLearner::IIsotonicJointProbabilityCalibrationMixin":
+
+        # Functions:
+
+        void useIsotonicJointProbabilityCalibration()
+
+
     cdef cppclass IExampleWiseBinaryPredictorMixin"boosting::IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin":
 
         # Functions:

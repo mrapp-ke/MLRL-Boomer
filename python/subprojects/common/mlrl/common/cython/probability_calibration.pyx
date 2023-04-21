@@ -49,3 +49,33 @@ cdef class NoJointProbabilityCalibrationModel(JointProbabilityCalibrationModel):
 
     def __setstate__(self, state):
         self.probability_calibration_model_ptr = createNoJointProbabilityCalibrationModel()
+
+
+cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibrationModel):
+    """
+    A model for the calibration of marginal probabilities via isotonic regression.
+    """
+
+    cdef IMarginalProbabilityCalibrationModel* get_marginal_probability_calibration_model_ptr(self):
+        return self.probability_calibration_model_ptr.get()
+    
+    def __reduce(self):
+        return (IsotonicMarginalProbabilityCalibrationModel, (), ())
+
+    def __setstate(self, state):
+        self.probability_calibration_model_ptr = createIsotonicMarginalProbabilityCalibrationModel()
+
+
+cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationModel):
+    """
+    A model for the calibration of joint probabilities via isotonic regression.
+    """
+
+    cdef IJointProbabilityCalibrationModel* get_joint_probability_calibration_model_ptr(self):
+        return self.probability_calibration_model_ptr.get()
+    
+    def __reduce(self):
+        return (IsotonicJointProbabilityCalibrationModel, (), ())
+
+    def __setstate(self, state):
+        self.probability_calibration_model_ptr = createIsotonicJointProbabilityCalibrationModel()

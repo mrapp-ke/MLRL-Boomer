@@ -21,6 +21,7 @@
 #include "boosting/prediction/predictor_binary_gfm.hpp"
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
+#include "boosting/prediction/probability_calibration_isotonic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
@@ -437,6 +438,47 @@ namespace boosting {
                         IEqualWidthLabelBinningConfig& ref = *ptr;
                         labelBinningConfigPtr = std::move(ptr);
                         return ref;
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to calibrate marginal
+             * probabilities via isotonic regression.
+             *
+             */
+            class IIsotonicMarginalProbabilityCalibrationMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IIsotonicMarginalProbabilityCalibrationMixin() {};
+
+                    /**
+                     * Configures the rule learner to calibrate marginal probabilities via isotonic regression.
+                     */
+                    virtual void useIsotonicMarginalProbabilityCalibration() {
+                        std::unique_ptr<IMarginalProbabilityCalibratorConfig>& marginalProbabilityCalibratorConfigPtr =
+                          this->getMarginalProbabilityCalibratorConfigPtr();
+                        marginalProbabilityCalibratorConfigPtr =
+                          std::make_unique<IsotonicMarginalProbabilityCalibratorConfig>();
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to calibrate joint
+             * probabilities via isotonic regression.
+             */
+            class IIsotonicJointProbabilityCalibrationMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IIsotonicJointProbabilityCalibrationMixin() {};
+
+                    /**
+                     * Configures the rule learner to calibrate joint probabilities via isotonic regression.
+                     */
+                    virtual void useIsotonicJointProbabilityCalibration() {
+                        std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr =
+                          this->getJointProbabilityCalibratorConfigPtr();
+                        jointProbabilityCalibratorConfigPtr =
+                          std::make_unique<IsotonicJointProbabilityCalibratorConfig>();
                     }
             };
 

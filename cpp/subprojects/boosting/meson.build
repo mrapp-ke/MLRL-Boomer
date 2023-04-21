@@ -38,6 +38,7 @@ source_files = [
     'src/boosting/prediction/predictor_probability_label_wise.cpp',
     'src/boosting/prediction/predictor_probability_marginalized.cpp',
     'src/boosting/prediction/predictor_score_label_wise.cpp',
+    'src/boosting/prediction/probability_calibration_isotonic.cpp',
     'src/boosting/prediction/probability_function_chain_rule.cpp',
     'src/boosting/prediction/probability_function_logistic.cpp',
     'src/boosting/prediction/transformation_binary_example_wise.cpp',
