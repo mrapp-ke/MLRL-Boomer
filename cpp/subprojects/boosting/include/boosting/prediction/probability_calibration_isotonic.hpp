@@ -7,7 +7,7 @@
 #include "common/prediction/probability_calibration_marginal.hpp"
 
 /**
- * Defines an interface for all models for the calibration of marginal probabilities based on isotonic regression.
+ * Defines an interface for all models for the calibration of marginal probabilities via isotonic regression.
  */
 class MLRLBOOSTING_API IIsotonicMarginalProbabilityCalibrationModel : public IMarginalProbabilityCalibrationModel {
     public:
@@ -16,7 +16,7 @@ class MLRLBOOSTING_API IIsotonicMarginalProbabilityCalibrationModel : public IMa
 };
 
 /**
- * Allows to configure a calibrator that fits a model for the calibration of marginal probabilities based on isotonic
+ * Allows to configure a calibrator that fits a model for the calibration of marginal probabilities via isotonic
  * regression.
  */
 class IsotonicMarginalProbabilityCalibratorConfig final : public IMarginalProbabilityCalibratorConfig {

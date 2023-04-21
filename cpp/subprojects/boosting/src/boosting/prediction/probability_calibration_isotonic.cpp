@@ -1,7 +1,7 @@
 #include "boosting/prediction/probability_calibration_isotonic.hpp"
 
 /**
- * A model for the calibration of marginal probabilities based on isotonic regression.
+ * A model for the calibration of marginal probabilities via isotonic regression.
  */
 class IsotonicMarginalProbabilityCalibrationModel final : public IIsotonicMarginalProbabilityCalibrationModel {
     public:
@@ -14,7 +14,7 @@ class IsotonicMarginalProbabilityCalibrationModel final : public IIsotonicMargin
 
 /**
  * An implementation of the type `IMarginalProbabilityCalibrator` that does fit a model for the calibration of marginal
- * probabilities based on isotonic regression.
+ * probabilities via isotonic regression.
  */
 class IsotonicMarginalProbabilityCalibrator final : public IMarginalProbabilityCalibrator {
     public:
