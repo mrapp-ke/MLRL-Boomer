@@ -22,7 +22,7 @@ namespace boosting {
              * Defines the interface for configuring the BOOMER algorithm.
              */
             class IConfig : virtual public IBoostingRuleLearner::IConfig,
-                            virtual public IBoostingRuleLearner::IShrinkageMixin,
+                            virtual public IBoostingRuleLearner::IConstantShrinkageMixin,
                             virtual public IBoostingRuleLearner::IL1RegularizationMixin,
                             virtual public IBoostingRuleLearner::IL2RegularizationMixin,
                             virtual public IBoostingRuleLearner::INoDefaultRuleMixin,

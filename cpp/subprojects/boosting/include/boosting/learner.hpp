@@ -158,12 +158,12 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a post processor that
-             * shrinks the weights fo rules by a "shrinkage" parameter.
+             * shrinks the weights fo rules by a constant "shrinkage" parameter.
              */
-            class IShrinkageMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IConstantShrinkageMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IShrinkageMixin() override {};
+                    virtual ~IConstantShrinkageMixin() override {};
 
                     /**
                      * Configures the rule learner to use a post processor that shrinks the weights of rules by a
