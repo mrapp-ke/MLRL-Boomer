@@ -1,6 +1,5 @@
 #include "common/learner.hpp"
 
-#include "common/multi_threading/multi_threading_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
 #include "common/prediction/label_space_info_no.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
@@ -62,7 +61,6 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
     this->useGreedyTopDownRuleInduction();
     this->useNoRulePruning();
     this->useNoPostProcessor();
-    this->useNoParallelRuleRefinement();
     this->useNoParallelStatisticUpdate();
     this->useNoParallelPrediction();
     this->useNoSizeStoppingCriterion();
@@ -178,10 +176,6 @@ void AbstractRuleLearner::Config::useNoRulePruning() {
 
 void AbstractRuleLearner::Config::useNoPostProcessor() {
     postProcessorConfigPtr_ = std::make_unique<NoPostProcessorConfig>();
-}
-
-void AbstractRuleLearner::Config::useNoParallelRuleRefinement() {
-    parallelRuleRefinementConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
 }
 
 void AbstractRuleLearner::Config::useNoParallelStatisticUpdate() {
