@@ -47,11 +47,11 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
     cdef cppclass IKlnLiftFunctionMixin"seco::ISeCoRuleLearner::IKlnLiftFunctionMixin":
 
         # Functions:
-        
+
         IKlnLiftFunctionConfig& useKlnLiftFunction()
 
 
-    cdef cppclass IAccuracyMixin"seco::ISeCoRuleLearner::IAccuracyMixin":
+    cdef cppclass IAccuracyHeuristicMixin"seco::ISeCoRuleLearner::IAccuracyHeuristicMixin":
 
         # Functions:
 
@@ -60,7 +60,7 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         void useAccuracyPruningHeuristic()
 
 
-    cdef cppclass IFMeasureMixin"seco::ISeCoRuleLearner::IFMeasureMixin":
+    cdef cppclass IFMeasureHeuristicMixin"seco::ISeCoRuleLearner::IFMeasureHeuristicMixin":
 
         # Functions:
 
@@ -69,7 +69,7 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         IFMeasureConfig& useFMeasurePruningHeuristic()
 
 
-    cdef cppclass IMEstimateMixin"seco::ISeCoRuleLearner::IMEstimateMixin":
+    cdef cppclass IMEstimateHeuristicMixin"seco::ISeCoRuleLearner::IMEstimateHeuristicMixin":
 
         # Functions:
 
@@ -78,7 +78,7 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         IMEstimateConfig& useMEstimatePruningHeuristic()
 
 
-    cdef cppclass ILaplaceMixin"seco::ISeCoRuleLearner::ILaplaceMixin":
+    cdef cppclass ILaplaceHeuristicMixin"seco::ISeCoRuleLearner::ILaplaceHeuristicMixin":
 
         # Functions:
 
@@ -87,7 +87,7 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         void useLaplacePruningHeuristic()
 
 
-    cdef cppclass IRecallMixin"seco::ISeCoRuleLearner::IRecallMixin":
+    cdef cppclass IRecallHeuristicMixin"seco::ISeCoRuleLearner::IRecallHeuristicMixin":
 
         # Functions:
 
@@ -96,7 +96,7 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         void useRecallPruningHeuristic()
 
 
-    cdef cppclass IWraMixin"seco::ISeCoRuleLearner::IWraMixin":
+    cdef cppclass IWraHeuristicMixin"seco::ISeCoRuleLearner::IWraHeuristicMixin":
 
         void useWraHeuristic()
 
