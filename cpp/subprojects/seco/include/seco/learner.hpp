@@ -366,7 +366,7 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "Laplace"
-             * heuristic for learning or pruning rules.
+             * heuristic for learning rules.
              */
             class ILaplaceHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
@@ -380,6 +380,16 @@ namespace seco {
                         std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
                         heuristicConfigPtr = std::make_unique<LaplaceConfig>();
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Laplace"
+             * heuristic for pruning rules.
+             */
+            class ILaplacePruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~ILaplacePruningHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for pruning rules.
