@@ -85,6 +85,11 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         IMEstimateConfig& useMEstimateHeuristic()
 
+
+    cdef cppclass IMEstimatePruningHeuristicMixin"seco::ISeCoRuleLearner::IMEstimatePruningHeuristicMixin":
+
+        # Functions:
+
         IMEstimateConfig& useMEstimatePruningHeuristic()
 
 

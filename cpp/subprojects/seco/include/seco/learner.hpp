@@ -317,7 +317,7 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "M-Estimate"
-             * heuristic for learning or pruning rules.
+             * heuristic for learning rules.
              */
             class IMEstimateHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
@@ -337,6 +337,16 @@ namespace seco {
                         heuristicConfigPtr = std::move(ptr);
                         return ref;
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "M-Estimate"
+             * heuristic for pruning rules.
+             */
+            class IMEstimatePruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IMEstimatePruningHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
