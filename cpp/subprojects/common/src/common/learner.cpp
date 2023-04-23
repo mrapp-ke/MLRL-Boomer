@@ -5,7 +5,6 @@
 #include "common/prediction/label_space_info_no.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 #include "common/rule_pruning/rule_pruning_no.hpp"
-#include "common/sampling/partition_sampling_no.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/util/validation.hpp"
 
@@ -61,7 +60,6 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
       ruleCompareFunction_(ruleCompareFunction) {
     this->useSequentialRuleModelAssemblage();
     this->useGreedyTopDownRuleInduction();
-    this->useNoPartitionSampling();
     this->useNoRulePruning();
     this->useNoPostProcessor();
     this->useNoParallelRuleRefinement();
@@ -172,10 +170,6 @@ IGreedyTopDownRuleInductionConfig& AbstractRuleLearner::Config::useGreedyTopDown
     IGreedyTopDownRuleInductionConfig& ref = *ptr;
     ruleInductionConfigPtr_ = std::move(ptr);
     return ref;
-}
-
-void AbstractRuleLearner::Config::useNoPartitionSampling() {
-    partitionSamplingConfigPtr_ = std::make_unique<NoPartitionSamplingConfig>();
 }
 
 void AbstractRuleLearner::Config::useNoRulePruning() {

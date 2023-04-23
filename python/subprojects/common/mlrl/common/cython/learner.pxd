@@ -45,8 +45,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction()
 
-        void useNoPartitionSampling()
-
         void useNoRulePruning()
 
         void useNoPostProcessor()
@@ -156,12 +154,19 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoFeatureSampling()
 
-        
+
     cdef cppclass IFeatureSamplingWithoutReplacementMixin"IRuleLearner::IFeatureSamplingWithoutReplacementMixin":
 
         # Functions:
 
         IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement()
+
+
+    cdef cppclass INoPartitionSamplingMixin"IRuleLearner::INoPartitionSamplingMixin":
+
+        # Functions:
+
+        void useNoPartitionSampling()
 
 
     cdef cppclass IRandomBiPartitionSamplingMixin"IRuleLearner::IRandomBiPartitionSamplingMixin":

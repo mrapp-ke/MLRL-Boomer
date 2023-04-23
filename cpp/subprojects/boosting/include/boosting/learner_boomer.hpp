@@ -53,6 +53,7 @@ namespace boosting {
                             virtual public IRuleLearner::IExampleWiseStratifiedInstanceSamplingMixin,
                             virtual public IRuleLearner::INoFeatureSamplingMixin,
                             virtual public IRuleLearner::IFeatureSamplingWithoutReplacementMixin,
+                            virtual public IRuleLearner::INoPartitionSamplingMixin,
                             virtual public IRuleLearner::IRandomBiPartitionSamplingMixin,
                             virtual public IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin,
                             virtual public IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin,
