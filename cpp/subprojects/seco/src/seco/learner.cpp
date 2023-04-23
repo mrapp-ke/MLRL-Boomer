@@ -39,12 +39,6 @@ namespace seco {
         return liftFunctionConfigPtr_;
     }
 
-    IGreedyTopDownRuleInductionConfig& AbstractSeCoRuleLearner::Config::useGreedyTopDownRuleInduction() {
-        IGreedyTopDownRuleInductionConfig& config = AbstractRuleLearner::Config::useGreedyTopDownRuleInduction();
-        config.setRecalculatePredictions(false);
-        return config;
-    }
-
     void AbstractSeCoRuleLearner::Config::useNoCoverageStoppingCriterion() {
         coverageStoppingCriterionConfigPtr_ = nullptr;
     }

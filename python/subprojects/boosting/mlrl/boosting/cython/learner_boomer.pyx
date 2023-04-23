@@ -23,8 +23,8 @@ from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiParti
     ExampleWiseStratifiedBiPartitionSamplingConfig, ILabelWiseStratifiedBiPartitionSamplingConfig, \
     LabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig, SequentialPostOptimizationConfig
-from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, \
-    BeamSearchTopDownRuleInductionConfig
+from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, GreedyTopDownRuleInductionConfig, \
+    IBeamSearchTopDownRuleInductionConfig, BeamSearchTopDownRuleInductionConfig
 from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, SizeStoppingCriterionConfig, \
     ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig, IPrePruningConfig, PrePruningConfig, \
     IPostPruningConfig, PostPruningConfig
@@ -63,6 +63,19 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useDefaultRule()
+
+    def use_greedy_top_down_rule_induction(self) -> GreedyTopDownRuleInductionConfig:
+        """
+        Configures the algorithm to use a greedy top-down search for the induction of individual rules.
+
+        :return: A `GreedyTopDownRuleInductionConfig` that allows further configuration of the algorithm for the
+                 induction of individual rules
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        cdef IGreedyTopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useGreedyTopDownRuleInduction()
+        cdef GreedyTopDownRuleInductionConfig config = GreedyTopDownRuleInductionConfig.__new__(GreedyTopDownRuleInductionConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_beam_search_top_down_rule_induction(self) -> BeamSearchTopDownRuleInductionConfig:
         """

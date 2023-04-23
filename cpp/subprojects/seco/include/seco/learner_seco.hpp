@@ -46,6 +46,7 @@ namespace seco {
                             virtual public ISeCoRuleLearner::IWraPruningHeuristicMixin,
                             virtual public IRuleLearner::ISequentialRuleModelAssemblageMixin,
                             virtual public IRuleLearner::IDefaultRuleMixin,
+                            virtual public IRuleLearner::IGreedyTopDownRuleInductionMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
                             virtual public IRuleLearner::INoFeatureBinningMixin,
                             virtual public IRuleLearner::INoLabelSamplingMixin,
@@ -100,7 +101,7 @@ namespace seco {
                     Config();
 
                     /**
-                     * @see `IRuleLearner::IConfig::useGreedyTopDownRuleInduction`
+                     * @see `IRuleLearner::IGreedyTopDownRuleInductionMixin::useGreedyTopDownRuleInduction`
                      */
                     IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 

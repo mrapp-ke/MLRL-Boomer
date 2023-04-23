@@ -537,11 +537,6 @@ namespace seco {
 
                     Config();
 
-                    /**
-                     * @see `IRuleLearner::IConfig::useGreedyTopDownRuleInduction`
-                     */
-                    IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
-
                     void useNoCoverageStoppingCriterion() override;
 
                     void useSingleLabelHeads() override;

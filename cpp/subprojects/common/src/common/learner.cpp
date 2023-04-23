@@ -55,7 +55,6 @@ class TrainingResult final : public ITrainingResult {
 AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
     : unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()),
       ruleCompareFunction_(ruleCompareFunction) {
-    this->useGreedyTopDownRuleInduction();
     this->useNoPostProcessor();
     this->useNoSequentialPostOptimization();
 }
@@ -147,14 +146,6 @@ std::unique_ptr<IScorePredictorConfig>& AbstractRuleLearner::Config::getScorePre
 
 std::unique_ptr<IProbabilityPredictorConfig>& AbstractRuleLearner::Config::getProbabilityPredictorConfigPtr() {
     return probabilityPredictorConfigPtr_;
-}
-
-IGreedyTopDownRuleInductionConfig& AbstractRuleLearner::Config::useGreedyTopDownRuleInduction() {
-    std::unique_ptr<GreedyTopDownRuleInductionConfig> ptr =
-      std::make_unique<GreedyTopDownRuleInductionConfig>(ruleCompareFunction_, parallelRuleRefinementConfigPtr_);
-    IGreedyTopDownRuleInductionConfig& ref = *ptr;
-    ruleInductionConfigPtr_ = std::move(ptr);
-    return ref;
 }
 
 void AbstractRuleLearner::Config::useNoPostProcessor() {
