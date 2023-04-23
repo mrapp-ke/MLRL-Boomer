@@ -4,7 +4,7 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTo
 from mlrl.seco.cython.learner cimport ISeCoRuleLearnerConfig, SeCoRuleLearnerConfig, ICoverageStoppingCriterionMixin, \
     IPartialHeadMixin, IPeakLiftFunctionMixin, IKlnLiftFunctionMixin, IAccuracyHeuristicMixin, \
     IAccuracyPruningHeuristicMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, IMEstimateHeuristicMixin, \
-    ILaplaceHeuristicMixin, IRecallHeuristicMixin, IWraHeuristicMixin
+    IMEstimatePruningHeuristicMixin, ILaplaceHeuristicMixin, IRecallHeuristicMixin, IWraHeuristicMixin
 
 from libcpp.memory cimport unique_ptr
 
@@ -22,6 +22,7 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
             IFMeasureHeuristicMixin,
             IFMeasurePruningHeuristicMixin,
             IMEstimateHeuristicMixin,
+            IMEstimatePruningHeuristicMixin,
             ILaplaceHeuristicMixin,
             IRecallHeuristicMixin,
             IWraHeuristicMixin,
