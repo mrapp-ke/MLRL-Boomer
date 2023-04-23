@@ -41,8 +41,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         # Functions:
 
-        IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction()
-
         void useNoPostProcessor()
 
         void useNoSequentialPostOptimization()
@@ -62,6 +60,13 @@ cdef extern from "common/learner.hpp" nogil:
         void useDefaultRule()
 
 
+    cdef cppclass IGreedyTopDownRuleInductionMixin"IRuleLearner::IGreedyTopDownRuleInductionMixin":
+
+        # Functions:
+
+        IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction()
+
+        
     cdef cppclass IBeamSearchTopDownMixin"IRuleLearner::IBeamSearchTopDownMixin":
 
         # Functions:

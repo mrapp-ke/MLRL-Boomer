@@ -321,14 +321,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual ~IConfig() {};
 
                 /**
-                 * Configures the rule learner to use a greedy top-down search for the induction of individual rules.
-                 *
-                 * @return A reference to an object of type `IGreedyTopDownRuleInductionConfig` that allows further
-                 *         configuration of the algorithm for the induction of individual rules
-                 */
-                virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() = 0;
-
-                /**
                  * Configures the rule learner to not use any post processor.
                  */
                 virtual void useNoPostProcessor() = 0;
@@ -376,6 +368,32 @@ class MLRLCOMMON_API IRuleLearner {
                     std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr = this->getDefaultRuleConfigPtr();
                     defaultRuleConfigPtr = std::make_unique<DefaultRuleConfig>(true);
                 };
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use a greedy top-down search
+         * for the induction of individual rules.
+         */
+        class IGreedyTopDownRuleInductionMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IGreedyTopDownRuleInductionMixin() override {};
+
+                /**
+                 * Configures the rule learner to use a greedy top-down search for the induction of individual rules.
+                 *
+                 * @return A reference to an object of type `IGreedyTopDownRuleInductionConfig` that allows further
+                 *         configuration of the algorithm for the induction of individual rules
+                 */
+                virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() {
+                    std::unique_ptr<IRuleInductionConfig>& ruleInductionConfigPtr = this->getRuleInductionConfigPtr();
+                    std::unique_ptr<GreedyTopDownRuleInductionConfig> ptr =
+                      std::make_unique<GreedyTopDownRuleInductionConfig>(this->getRuleCompareFunction(),
+                                                                         this->getParallelRuleRefinementConfigPtr());
+                    IGreedyTopDownRuleInductionConfig& ref = *ptr;
+                    ruleInductionConfigPtr = std::move(ptr);
+                    return ref;
+                }
         };
 
         /**
@@ -1586,8 +1604,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  *                            should be used for comparing the quality of different rules
                  */
                 Config(RuleCompareFunction ruleCompareFunction);
-
-                IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
                 void useNoPostProcessor() override;
 

@@ -15,6 +15,7 @@ namespace boosting {
 
     Boomer::Config::Config() {
         this->useSequentialRuleModelAssemblage();
+        this->useGreedyTopDownRuleInduction();
         this->useDefaultRule();
         this->useNoLabelSampling();
         this->useNoInstanceSampling();

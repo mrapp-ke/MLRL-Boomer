@@ -4,6 +4,7 @@ namespace seco {
 
     MultiLabelSeCoRuleLearner::Config::Config() {
         this->useSequentialRuleModelAssemblage();
+        this->useGreedyTopDownRuleInduction();
         this->useDefaultRule();
         this->useNoFeatureBinning();
         this->useNoLabelSampling();
@@ -26,7 +27,7 @@ namespace seco {
     }
 
     IGreedyTopDownRuleInductionConfig& MultiLabelSeCoRuleLearner::Config::useGreedyTopDownRuleInduction() {
-        IGreedyTopDownRuleInductionConfig& ref = AbstractRuleLearner::Config::useGreedyTopDownRuleInduction();
+        IGreedyTopDownRuleInductionConfig& ref = IGreedyTopDownRuleInductionMixin::useGreedyTopDownRuleInduction();
         ref.setRecalculatePredictions(false);
         return ref;
     }
