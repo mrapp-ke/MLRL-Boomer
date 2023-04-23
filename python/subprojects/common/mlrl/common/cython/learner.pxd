@@ -41,8 +41,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         # Functions:
 
-        void useNoPostProcessor()
-
         void useNoSequentialPostOptimization()
 
 
@@ -74,6 +72,13 @@ cdef extern from "common/learner.hpp" nogil:
         IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction()
 
 
+    cdef cppclass INoPostProcessorMixin"IRuleLearner::INoPostProcessorMixin":
+
+        # Functions:
+
+        void useNoPostProcessor()
+
+        
     cdef cppclass INoFeatureBinningMixin"IRuleLearner::INoFeatureBinningMixin":
 
         # Functions:

@@ -1,6 +1,6 @@
 from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, ISequentialRuleModelAssemblageMixin, \
-    IDefaultRuleMixin, IGreedyTopDownRuleInductionMixin, IBeamSearchTopDownRuleInductionMixin, INoFeatureBinningMixin, \
-    INoLabelSamplingMixin, ILabelSamplingWithoutReplacementMixin, INoInstanceSamplingMixin, \
+    IDefaultRuleMixin, IGreedyTopDownRuleInductionMixin, IBeamSearchTopDownRuleInductionMixin, INoPostProcessorMixin, \
+    INoFeatureBinningMixin, INoLabelSamplingMixin, ILabelSamplingWithoutReplacementMixin, INoInstanceSamplingMixin, \
     IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, \
     ILabelWiseStratifiedInstanceSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, INoFeatureSamplingMixin, \
     IFeatureSamplingWithoutReplacementMixin, INoPartitionSamplingMixin, IRandomBiPartitionSamplingMixin, \
@@ -42,6 +42,7 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
             IDefaultRuleMixin,
             IGreedyTopDownRuleInductionMixin,
             IBeamSearchTopDownRuleInductionMixin,
+            INoPostProcessorMixin,
             INoFeatureBinningMixin,
             INoLabelSamplingMixin,
             ILabelSamplingWithoutReplacementMixin,
