@@ -15,6 +15,7 @@
 #include "common/post_optimization/post_optimization_phase_list.hpp"
 #include "common/post_optimization/post_optimization_sequential.hpp"
 #include "common/post_optimization/post_optimization_unused_rule_removal.hpp"
+#include "common/post_processing/post_processor_no.hpp"
 #include "common/prediction/label_space_info.hpp"
 #include "common/prediction/prediction_matrix_dense.hpp"
 #include "common/prediction/prediction_matrix_sparse_binary.hpp"
@@ -321,11 +322,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual ~IConfig() {};
 
                 /**
-                 * Configures the rule learner to not use any post processor.
-                 */
-                virtual void useNoPostProcessor() = 0;
-
-                /**
                  * Configures the rule learner to not use a post-optimization method that optimizes each rule in a model
                  * by relearning it in the context of the other rules.
                  */
@@ -418,6 +414,23 @@ class MLRLCOMMON_API IRuleLearner {
                     IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
                     ruleInductionConfigPtr = std::move(ptr);
                     return ref;
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use any post processor.
+         */
+        class INoPostProcessorMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoPostProcessorMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use any post processor.
+                 */
+                virtual void useNoPostProcessor() {
+                    std::unique_ptr<IPostProcessorConfig>& postProcessorConfigPtr = this->getPostProcessorConfigPtr();
+                    postProcessorConfigPtr = std::make_unique<NoPostProcessorConfig>();
                 }
         };
 
@@ -1604,8 +1617,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  *                            should be used for comparing the quality of different rules
                  */
                 Config(RuleCompareFunction ruleCompareFunction);
-
-                void useNoPostProcessor() override;
 
                 void useNoSequentialPostOptimization() override;
         };

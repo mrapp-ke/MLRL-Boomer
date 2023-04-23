@@ -90,6 +90,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_post_processor(self):
+        """
+        Configures the rule learner to not use any post-processor.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoPostProcessor()
+
     def use_no_feature_binning(self):
         """
         Configures the rule learner to not use any method for the assignment of numerical feature values to bins.

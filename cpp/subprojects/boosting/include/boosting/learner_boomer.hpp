@@ -43,6 +43,7 @@ namespace boosting {
                             virtual public IRuleLearner::IDefaultRuleMixin,
                             virtual public IRuleLearner::IGreedyTopDownRuleInductionMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownRuleInductionMixin,
+                            virtual public IRuleLearner::INoPostProcessorMixin,
                             virtual public IRuleLearner::INoFeatureBinningMixin,
                             virtual public IRuleLearner::IEqualWidthFeatureBinningMixin,
                             virtual public IRuleLearner::IEqualFrequencyFeatureBinningMixin,

@@ -6,6 +6,7 @@ namespace seco {
         this->useSequentialRuleModelAssemblage();
         this->useGreedyTopDownRuleInduction();
         this->useDefaultRule();
+        this->useNoPostProcessor();
         this->useNoFeatureBinning();
         this->useNoLabelSampling();
         this->useNoInstanceSampling();
