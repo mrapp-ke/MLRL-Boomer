@@ -441,6 +441,14 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_sequential_post_optimization(self):
+        """
+        Configures the rule learner to not use a post-optimization method that optimizes each rule in a model by
+        relearning it in the context of the other rules.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoSequentialPostOptimization()
+
     def use_sequential_post_optimization(self) -> SequentialPostOptimizationConfig:
         """
         Configures the rule learner to use a post-optimization method that optimizes each rule in a model by relearning

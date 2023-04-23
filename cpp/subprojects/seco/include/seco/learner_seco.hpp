@@ -76,6 +76,7 @@ namespace seco {
                             virtual public IRuleLearner::INoTimeStoppingCriterionMixin,
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
                             virtual public IRuleLearner::INoGlobalPruningMixin,
+                            virtual public IRuleLearner::INoSequentialPostOptimizationMixin,
                             virtual public IRuleLearner::ISequentialPostOptimizationMixin {
                 public:
 

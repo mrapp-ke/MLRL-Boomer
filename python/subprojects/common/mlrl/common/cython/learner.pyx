@@ -39,14 +39,6 @@ cdef class RuleLearnerConfig:
     cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
         pass
 
-    def use_no_sequential_post_optimization(self):
-        """
-        Configures the rule learner to not use a post-optimization method that optimizes each rule in a model by
-        relearning it in the context of the other rules.
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoSequentialPostOptimization()
-
 
 cdef class RuleLearner:
     """

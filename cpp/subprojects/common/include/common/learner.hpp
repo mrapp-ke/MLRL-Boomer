@@ -320,12 +320,6 @@ class MLRLCOMMON_API IRuleLearner {
             public:
 
                 virtual ~IConfig() {};
-
-                /**
-                 * Configures the rule learner to not use a post-optimization method that optimizes each rule in a model
-                 * by relearning it in the context of the other rules.
-                 */
-                virtual void useNoSequentialPostOptimization() = 0;
         };
 
         /**
@@ -1160,6 +1154,26 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use a post-optimization
+         * method that optimizes each rule in a model by relearning it in the context of the other rules.
+         */
+        class INoSequentialPostOptimizationMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoSequentialPostOptimizationMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use a post-optimization method that optimizes each rule in a model
+                 * by relearning it in the context of the other rules.
+                 */
+                virtual void useNoSequentialPostOptimization() {
+                    std::unique_ptr<SequentialPostOptimizationConfig>& sequentialPostOptimizationConfigPtr =
+                      this->getSequentialPostOptimizationConfigPtr();
+                    sequentialPostOptimizationConfigPtr = nullptr;
+                }
+        };
+
+        /**
          * Defines an interface for all classes that allow to configure a rule learner to use a post-optimization method
          * that optimizes each rule in a model by relearning it in the context of the other rules.
          */
@@ -1617,8 +1631,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  *                            should be used for comparing the quality of different rules
                  */
                 Config(RuleCompareFunction ruleCompareFunction);
-
-                void useNoSequentialPostOptimization() override;
         };
 
     private:
