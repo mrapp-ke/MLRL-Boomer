@@ -83,11 +83,16 @@ cdef extern from "common/learner.hpp" nogil:
         IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction()
 
 
-    cdef cppclass IFeatureBinningMixin"IRuleLearner::IFeatureBinningMixin":
+    cdef cppclass IEqualWidthFeatureBinningMixin"IRuleLearner::IEqualWidthFeatureBinningMixin":
 
         # Functions:
 
         IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning()
+
+
+    cdef cppclass IEqualFrequencyFeatureBinningMixin"IRuleLearner::IEqualFrequencyFeatureBinningMixin":
+
+        # Functions:
 
         IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning()
 
