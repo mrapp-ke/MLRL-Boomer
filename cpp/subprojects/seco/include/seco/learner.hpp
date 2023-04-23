@@ -233,10 +233,10 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to use the "Accuracy"
              * heuristic for learning or pruning rules.
              */
-            class IAccuracyMixin : virtual public ISeCoRuleLearner::IConfig {
+            class IAccuracyHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAccuracyMixin() override {};
+                    virtual ~IAccuracyHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
@@ -260,10 +260,10 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to use the "F-Measure"
              * heuristic for learning or pruning rules.
              */
-            class IFMeasureMixin : virtual public ISeCoRuleLearner::IConfig {
+            class IFMeasureHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IFMeasureMixin() override {};
+                    virtual ~IFMeasureHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for learning rules.
@@ -299,10 +299,10 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to use the "M-Estimate"
              * heuristic for learning or pruning rules.
              */
-            class IMEstimateMixin : virtual public ISeCoRuleLearner::IConfig {
+            class IMEstimateHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IMEstimateMixin() override {};
+                    virtual ~IMEstimateHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
@@ -338,10 +338,10 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to use the "Laplace"
              * heuristic for learning or pruning rules.
              */
-            class ILaplaceMixin : virtual public ISeCoRuleLearner::IConfig {
+            class ILaplaceHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILaplaceMixin() override {};
+                    virtual ~ILaplaceHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for learning rules.
@@ -365,10 +365,10 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to use the "Recall" heuristic
              * for learning or pruning rules.
              */
-            class IRecallMixin : virtual public ISeCoRuleLearner::IConfig {
+            class IRecallHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IRecallMixin() override {};
+                    virtual ~IRecallHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for learning rules.
@@ -392,10 +392,10 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner to use the "Weighted Relative
              * Accuracy" heuristic for learning or pruning rules.
              */
-            class IWraMixin : virtual public ISeCoRuleLearner::IConfig {
+            class IWraHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IWraMixin() override {};
+                    virtual ~IWraHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
