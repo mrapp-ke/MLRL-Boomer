@@ -655,12 +655,14 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use partition sampling.
+         * Defines an interface for all classes that allow to configure a rule learner to partition the available
+         * training example into a training set and a holdout set by randomly splitting the training examples into two
+         * mutually exclusive sets.
          */
-        class IPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
+        class IRandomBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IPartitionSamplingMixin() override {};
+                virtual ~IRandomBiPartitionSamplingMixin() override {};
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
@@ -679,6 +681,17 @@ class MLRLCOMMON_API IRuleLearner {
                     partitionSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to partition the available
+         * training examples into a training set and a holdout set using stratification, such that for each label the
+         * proportion of relevant and irrelevant examples is maintained.
+         */
+        class ILabelWiseStratifiedBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~ILabelWiseStratifiedBiPartitionSamplingMixin() override {};
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
@@ -698,6 +711,17 @@ class MLRLCOMMON_API IRuleLearner {
                     partitionSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to partition the available
+         * training examples into a training set and a holdout set using stratification, where distinct label vectors
+         * are treated as individual classes.
+         */
+        class IExampleWiseStratifiedBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IExampleWiseStratifiedBiPartitionSamplingMixin() override {};
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a

@@ -139,15 +139,25 @@ cdef extern from "common/learner.hpp" nogil:
         IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement()
 
 
-    cdef cppclass IPartitionSamplingMixin"IRuleLearner::IPartitionSamplingMixin":
+    cdef cppclass IRandomBiPartitionSamplingMixin"IRuleLearner::IRandomBiPartitionSamplingMixin":
+
+        # Functions:
+
+        IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
+
+
+    cdef cppclass ILabelWiseStratifiedBiPartitionSamplingMixin"IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin":
+
+        # Functions:
+
+        ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling()
+
+
+    cdef cppclass IExampleWiseStratifiedBiPartitionSamplingMixin"IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin":
 
         # Functions:
 
         IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling()
-
-        ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling()
-
-        IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
 
 
     cdef cppclass IRulePruningMixin"IRuleLearner::IRulePruningMixin":
