@@ -61,7 +61,7 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
     cdef cppclass IAccuracyPruningHeuristicMixin"seco::ISeCoRuleLearner::IAccuracyPruningHeuristicMixin":
 
         # Functions:
-        
+
         void useAccuracyPruningHeuristic()
 
 
@@ -70,6 +70,11 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         # Functions:
 
         IFMeasureConfig& useFMeasureHeuristic()
+
+
+    cdef cppclass IFMeasurePruningHeuristicMixin"seco::ISeCoRuleLearner::IFMeasurePruningHeuristicMixin":
+
+        # Functions
 
         IFMeasureConfig& useFMeasurePruningHeuristic()
 
