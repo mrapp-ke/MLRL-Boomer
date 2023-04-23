@@ -1,9 +1,10 @@
 
 from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTopDownMixin, \
     IEqualWidthFeatureBinningMixin, IEqualFrequencyFeatureBinningMixin, ILabelSamplingWithoutReplacementMixin, \
-    IInstanceSamplingMixin, IFeatureSamplingMixin, IPartitionSamplingMixin, IRulePruningMixin, IMultiThreadingMixin, \
-    ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IPrePruningMixin, IPostPruningMixin, \
-    ISequentialPostOptimizationMixin
+    IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, \
+    ILabelWiseStratifiedInstanceSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, IFeatureSamplingMixin, \
+    IPartitionSamplingMixin, IRulePruningMixin, IMultiThreadingMixin, ISizeStoppingCriterionMixin, \
+    ITimeStoppingCriterionMixin, IPrePruningMixin, IPostPruningMixin, ISequentialPostOptimizationMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, IShrinkageMixin, \
     IL1RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, IDynamicPartialHeadMixin, \
     IFixedPartialHeadMixin, ISingleLabelHeadMixin, ISparseStatisticsMixin, IExampleWiseLogisticLossMixin, \
@@ -38,7 +39,10 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IEqualWidthFeatureBinningMixin,
                                                             IEqualFrequencyFeatureBinningMixin,
                                                             ILabelSamplingWithoutReplacementMixin,
-                                                            IInstanceSamplingMixin,
+                                                            IInstanceSamplingWithoutReplacementMixin,
+                                                            IInstanceSamplingWithReplacementMixin,
+                                                            ILabelWiseStratifiedInstanceSamplingMixin,
+                                                            IExampleWiseStratifiedInstanceSamplingMixin,
                                                             IFeatureSamplingMixin,
                                                             IPartitionSamplingMixin,
                                                             IRulePruningMixin,
