@@ -49,8 +49,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoPostProcessor()
 
-        void useNoParallelRuleRefinement()
-
         void useNoParallelStatisticUpdate()
 
         void useNoParallelPrediction()
@@ -195,6 +193,13 @@ cdef extern from "common/learner.hpp" nogil:
         # Functions:
 
         void useIrepRulePruning()
+
+
+    cdef cppclass INoParallelRuleRefinementMixin"IRuleLearner::INoParallelRuleRefinementMixin":
+
+        # Functions:
+
+        void useNoParallelRuleRefinement()
 
 
     cdef cppclass IParallelRuleRefinementMixin"IRuleLearner::IParallelRuleRefinementMixin":

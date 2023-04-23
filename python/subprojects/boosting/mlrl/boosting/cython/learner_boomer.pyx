@@ -276,6 +276,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useIrepRulePruning()
 
+    def use_no_parallel_rule_refinement(self):
+        """
+        Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoParallelRuleRefinement()
+        
     def use_parallel_rule_refinement(self) -> ManualMultiThreadingConfig:
         """
         Configures the rule learner to use multi-threading for the parallel refinement of rules.

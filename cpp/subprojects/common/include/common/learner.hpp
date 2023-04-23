@@ -11,6 +11,7 @@
 #include "common/input/feature_matrix_row_wise.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/multi_threading/multi_threading_manual.hpp"
+#include "common/multi_threading/multi_threading_no.hpp"
 #include "common/post_optimization/post_optimization_phase_list.hpp"
 #include "common/post_optimization/post_optimization_sequential.hpp"
 #include "common/post_optimization/post_optimization_unused_rule_removal.hpp"
@@ -340,11 +341,6 @@ class MLRLCOMMON_API IRuleLearner {
                  * Configures the rule learner to not use any post processor.
                  */
                 virtual void useNoPostProcessor() = 0;
-
-                /**
-                 * Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
-                 */
-                virtual void useNoParallelRuleRefinement() = 0;
 
                 /**
                  * Configures the rule learner to not use any multi-threading for the parallel update of statistics.
@@ -835,6 +831,25 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useIrepRulePruning() {
                     std::unique_ptr<IRulePruningConfig>& rulePruningConfigPtr = this->getRulePruningConfigPtr();
                     rulePruningConfigPtr = std::make_unique<IrepConfig>(this->getRuleCompareFunction());
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use any multi-threading
+         * for the parallel refinement of rules.
+         */
+        class INoParallelRuleRefinementMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoParallelRuleRefinementMixin() override {}
+
+                /**
+                 * Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
+                 */
+                virtual void useNoParallelRuleRefinement() {
+                    std::unique_ptr<IMultiThreadingConfig>& parallelRuleRefinementConfigPtr =
+                      this->getParallelRuleRefinementConfigPtr();
+                    parallelRuleRefinementConfigPtr = std::make_unique<NoMultiThreadingConfig>();
                 }
         };
 
@@ -1482,8 +1497,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoRulePruning() override;
 
                 void useNoPostProcessor() override;
-
-                void useNoParallelRuleRefinement() override;
 
                 void useNoParallelStatisticUpdate() override;
 
