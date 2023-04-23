@@ -45,8 +45,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction()
 
-        void useNoRulePruning()
-
         void useNoPostProcessor()
 
         void useNoSizeStoppingCriterion()
@@ -184,6 +182,13 @@ cdef extern from "common/learner.hpp" nogil:
         IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling()
 
 
+    cdef cppclass INoRulePruningMixin"IRuleLearner::INoRulePruningMixin":
+
+        # Functions:
+
+        void useNoRulePruning()
+
+        
     cdef cppclass IIrepRulePruningMixin"IRuleLearner::IIrepRulePruningMixin":
 
         # Functions:

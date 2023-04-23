@@ -3,7 +3,7 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IDefaultRuleM
     IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, \
     ILabelWiseStratifiedInstanceSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, INoFeatureSamplingMixin, \
     IFeatureSamplingWithoutReplacementMixin, INoPartitionSamplingMixin, IRandomBiPartitionSamplingMixin, \
-    ILabelWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedBiPartitionSamplingMixin, \
+    ILabelWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedBiPartitionSamplingMixin, INoRulePruningMixin, \
     IIrepRulePruningMixin, INoParallelRuleRefinementMixin, IParallelRuleRefinementMixin, \
     INoParallelStatisticUpdateMixin, IParallelStatisticUpdateMixin, INoParallelPredictionMixin, \
     IParallelPredictionMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, ISequentialPostOptimizationMixin
@@ -52,6 +52,7 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
             IRandomBiPartitionSamplingMixin,
             ILabelWiseStratifiedBiPartitionSamplingMixin,
             IExampleWiseStratifiedBiPartitionSamplingMixin,
+            INoRulePruningMixin,
             IIrepRulePruningMixin,
             INoParallelRuleRefinementMixin,
             IParallelRuleRefinementMixin,

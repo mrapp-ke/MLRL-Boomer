@@ -26,6 +26,7 @@
 #include "common/rule_model_assemblage/default_rule.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage.hpp"
 #include "common/rule_pruning/rule_pruning_irep.hpp"
+#include "common/rule_pruning/rule_pruning_no.hpp"
 #include "common/sampling/feature_sampling_no.hpp"
 #include "common/sampling/feature_sampling_without_replacement.hpp"
 #include "common/sampling/instance_sampling_no.hpp"
@@ -331,11 +332,6 @@ class MLRLCOMMON_API IRuleLearner {
                  *         configuration of the algorithm for the induction of individual rules
                  */
                 virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() = 0;
-
-                /**
-                 * Configures the rule learner to not prune individual rules.
-                 */
-                virtual void useNoRulePruning() = 0;
 
                 /**
                  * Configures the rule learner to not use any post processor.
@@ -802,6 +798,23 @@ class MLRLCOMMON_API IRuleLearner {
                     IExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
                     partitionSamplingConfigPtr = std::move(ptr);
                     return ref;
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not prune individual rules.
+         */
+        class INoRulePruningMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoRulePruningMixin() override {};
+
+                /**
+                 * Configures the rule learner to not prune individual rules.
+                 */
+                virtual void useNoRulePruning() {
+                    std::unique_ptr<IRulePruningConfig>& rulePruningConfigPtr = this->getRulePruningConfigPtr();
+                    rulePruningConfigPtr = std::make_unique<NoRulePruningConfig>();
                 }
         };
 
@@ -1522,8 +1535,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useSequentialRuleModelAssemblage() override;
 
                 IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
-
-                void useNoRulePruning() override;
 
                 void useNoPostProcessor() override;
 
