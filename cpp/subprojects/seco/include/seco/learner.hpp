@@ -403,7 +403,7 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "Recall" heuristic
-             * for learning or pruning rules.
+             * for pruning rules.
              */
             class IRecallHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
@@ -417,6 +417,16 @@ namespace seco {
                         std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
                         heuristicConfigPtr = std::make_unique<RecallConfig>();
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Recall" heuristic
+             * for pruning rules.
+             */
+            class IRecallPruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IRecallPruningHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for pruning rules.
