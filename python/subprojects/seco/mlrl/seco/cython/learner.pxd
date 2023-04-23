@@ -57,6 +57,11 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         void useAccuracyHeuristic()
 
+
+    cdef cppclass IAccuracyPruningHeuristicMixin"seco::ISeCoRuleLearner::IAccuracyPruningHeuristicMixin":
+
+        # Functions:
+        
         void useAccuracyPruningHeuristic()
 
 
