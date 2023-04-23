@@ -3,7 +3,7 @@
 """
 
 
-cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
+cdef class SeCoRuleLearnerConfig:
     """
     Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
     """

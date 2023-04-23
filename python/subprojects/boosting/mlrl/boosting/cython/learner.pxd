@@ -1,4 +1,3 @@
-from mlrl.common.cython.learner cimport  IRuleLearnerConfig, RuleLearnerConfig
 from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
@@ -14,7 +13,7 @@ ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* ld
 
 cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
-    cdef cppclass IBoostingRuleLearnerConfig"boosting::IBoostingRuleLearner::IConfig"(IRuleLearnerConfig):
+    cdef cppclass IBoostingRuleLearnerConfig"boosting::IBoostingRuleLearner::IConfig":
 
         # Functions:
 
@@ -156,7 +155,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useMarginalizedProbabilityPredictor()
 
 
-cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
+cdef class BoostingRuleLearnerConfig:
 
     # Functions:
 

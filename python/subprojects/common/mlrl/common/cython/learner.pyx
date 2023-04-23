@@ -31,15 +31,6 @@ cdef class TrainingResult:
         self.label_space_info = label_space_info
 
 
-cdef class RuleLearnerConfig:
-    """
-    Allows to configure a rule learner.
-    """
-
-    cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
-        pass
-
-
 cdef class RuleLearner:
     """
     A rule learner.

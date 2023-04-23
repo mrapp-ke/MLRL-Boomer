@@ -1,4 +1,3 @@
-from mlrl.common.cython.learner cimport IRuleLearnerConfig, RuleLearnerConfig
 from mlrl.seco.cython.heuristic cimport IFMeasureConfig, IMEstimateConfig
 from mlrl.seco.cython.lift_function cimport IPeakLiftFunctionConfig, IKlnLiftFunctionConfig
 from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfig
@@ -6,7 +5,7 @@ from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfi
 
 cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
-    cdef cppclass ISeCoRuleLearnerConfig"seco::ISeCoRuleLearner::IConfig"(IRuleLearnerConfig):
+    cdef cppclass ISeCoRuleLearnerConfig"seco::ISeCoRuleLearner::IConfig":
 
         # Functions:
 
@@ -135,7 +134,7 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         void useWraPruningHeuristic()
 
 
-cdef class SeCoRuleLearnerConfig(RuleLearnerConfig):
+cdef class SeCoRuleLearnerConfig:
 
     # Functions:
 

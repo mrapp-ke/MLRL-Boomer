@@ -3,7 +3,7 @@
 """
 
 
-cdef class BoostingRuleLearnerConfig(RuleLearnerConfig):
+cdef class BoostingRuleLearnerConfig:
     """
     Allows to configure a rule learner that makes use of gradient boosting.
     """
