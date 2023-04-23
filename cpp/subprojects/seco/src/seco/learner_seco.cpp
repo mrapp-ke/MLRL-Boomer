@@ -18,6 +18,7 @@ namespace seco {
         this->useAccuracyPruningHeuristic();
         this->usePeakLiftFunction();
         this->useParallelRuleRefinement();
+        this->useNoParallelStatisticUpdate();
         this->useParallelPrediction();
     }
 

@@ -6,9 +6,9 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IDefaultRuleM
     IExampleWiseStratifiedInstanceSamplingMixin, INoFeatureSamplingMixin, IFeatureSamplingWithoutReplacementMixin, \
     INoPartitionSamplingMixin, IRandomBiPartitionSamplingMixin, ILabelWiseStratifiedBiPartitionSamplingMixin, \
     IExampleWiseStratifiedBiPartitionSamplingMixin, IRulePruningMixin, INoParallelRuleRefinementMixin, \
-    IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, IParallelPredictionMixin, \
-    ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IPrePruningMixin, IPostPruningMixin, \
-    ISequentialPostOptimizationMixin
+    IParallelRuleRefinementMixin, INoParallelStatisticUpdateMixin, IParallelStatisticUpdateMixin, \
+    IParallelPredictionMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IPrePruningMixin, \
+    IPostPruningMixin, ISequentialPostOptimizationMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, \
     IConstantShrinkageMixin, IL1RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, \
     IDynamicPartialHeadMixin, IFixedPartialHeadMixin, ISingleLabelHeadMixin, ISparseStatisticsMixin, \
@@ -61,6 +61,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IRulePruningMixin,
                                                             INoParallelRuleRefinementMixin,
                                                             IParallelRuleRefinementMixin,
+                                                            INoParallelStatisticUpdateMixin,
                                                             IParallelStatisticUpdateMixin,
                                                             IParallelPredictionMixin,
                                                             ISizeStoppingCriterionMixin,
