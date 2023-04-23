@@ -1,11 +1,11 @@
 from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IDefaultRuleMixin, IBeamSearchTopDownMixin, \
-    INoFeatureBinningMixin, ILabelSamplingWithoutReplacementMixin, IInstanceSamplingWithoutReplacementMixin, \
-    IInstanceSamplingWithReplacementMixin, ILabelWiseStratifiedInstanceSamplingMixin, \
-    IExampleWiseStratifiedInstanceSamplingMixin, IFeatureSamplingWithoutReplacementMixin, \
-    IRandomBiPartitionSamplingMixin, ILabelWiseStratifiedBiPartitionSamplingMixin, \
-    IExampleWiseStratifiedBiPartitionSamplingMixin, IRulePruningMixin, IParallelRuleRefinementMixin, \
-    IParallelStatisticUpdateMixin, IParallelPredictionMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, \
-    ISequentialPostOptimizationMixin
+    INoFeatureBinningMixin, INoLabelSamplingMixin, ILabelSamplingWithoutReplacementMixin, \
+    IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, \
+    ILabelWiseStratifiedInstanceSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, \
+    IFeatureSamplingWithoutReplacementMixin, IRandomBiPartitionSamplingMixin, \
+    ILabelWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedBiPartitionSamplingMixin, IRulePruningMixin, \
+    IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, IParallelPredictionMixin, ISizeStoppingCriterionMixin, \
+    ITimeStoppingCriterionMixin, ISequentialPostOptimizationMixin
 from mlrl.seco.cython.learner cimport ISeCoRuleLearnerConfig, SeCoRuleLearnerConfig, ICoverageStoppingCriterionMixin, \
     IPartialHeadMixin, IPeakLiftFunctionMixin, IKlnLiftFunctionMixin, IAccuracyHeuristicMixin, \
     IAccuracyPruningHeuristicMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, IMEstimateHeuristicMixin, \
@@ -38,6 +38,7 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
             IDefaultRuleMixin,
             IBeamSearchTopDownMixin,
             INoFeatureBinningMixin,
+            INoLabelSamplingMixin,
             ILabelSamplingWithoutReplacementMixin,
             IInstanceSamplingWithReplacementMixin,
             IInstanceSamplingWithoutReplacementMixin,

@@ -15,6 +15,7 @@ namespace boosting {
 
     Boomer::Config::Config() {
         this->useDefaultRule();
+        this->useNoLabelSampling();
         this->useParallelPrediction();
         this->useAutomaticDefaultRule();
         this->useAutomaticPartitionSampling();
