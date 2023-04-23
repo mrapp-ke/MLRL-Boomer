@@ -99,6 +99,11 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         void useLaplaceHeuristic()
 
+
+    cdef cppclass ILaplacePruningHeuristicMixin"seco::ISeCoRuleLearner::ILaplacePruningHeuristicMixin":
+
+        # Functions:
+        
         void useLaplacePruningHeuristic()
 
 
