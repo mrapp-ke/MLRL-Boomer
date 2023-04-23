@@ -167,13 +167,23 @@ cdef extern from "common/learner.hpp" nogil:
         void useIrepRulePruning()
 
 
-    cdef cppclass IMultiThreadingMixin"IRuleLearner::IMultiThreadingMixin":
+    cdef cppclass IParallelRuleRefinementMixin"IRuleLearner::IParallelRuleRefinementMixin":
 
         # Functions:
 
         IManualMultiThreadingConfig& useParallelRuleRefinement()
 
+    
+    cdef cppclass IParallelStatisticUpdateMixin"IRuleLearner::IParallelStatisticUpdateMixin":
+
+        # Functions:
+
         IManualMultiThreadingConfig& useParallelStatisticUpdate()
+
+
+    cdef cppclass IParallelPredictionMixin"IRuleLearner::IParallelPredictionMixin":
+
+        # Functions:
 
         IManualMultiThreadingConfig& useParallelPrediction()
 

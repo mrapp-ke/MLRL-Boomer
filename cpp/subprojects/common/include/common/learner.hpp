@@ -761,12 +761,13 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use multi-threading.
+         * Defines an interface for all classes that allow to configure a rule learner to use multi-threading for the
+         * parallel refinement of rules.
          */
-        class IMultiThreadingMixin : virtual public IRuleLearner::IConfig {
+        class IParallelRuleRefinementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IMultiThreadingMixin() override {};
+                virtual ~IParallelRuleRefinementMixin() override {};
 
                 /**
                  * Configures the rule learner to use multi-threading for the parallel refinement of rules.
@@ -782,6 +783,16 @@ class MLRLCOMMON_API IRuleLearner {
                     parallelRuleRefinementConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use multi-threading for the
+         * parallel update of statistics.
+         */
+        class IParallelStatisticUpdateMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IParallelStatisticUpdateMixin() override {};
 
                 /**
                  * Configures the rule learner to use multi-threading for the parallel update of statistics.
@@ -797,6 +808,16 @@ class MLRLCOMMON_API IRuleLearner {
                     parallelStatisticUpdateConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use multi-threading to predict
+         * for several examples in parallel.
+         */
+        class IParallelPredictionMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IParallelPredictionMixin() override {};
 
                 /**
                  * Configures the rule learner to use multi-threading to predict for several query examples in parallel.
