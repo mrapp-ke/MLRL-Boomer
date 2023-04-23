@@ -132,7 +132,7 @@ cdef extern from "common/learner.hpp" nogil:
         IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling()
 
 
-    cdef cppclass IFeatureSamplingMixin"IRuleLearner::IFeatureSamplingMixin":
+    cdef cppclass IFeatureSamplingWithoutReplacementMixin"IRuleLearner::IFeatureSamplingWithoutReplacementMixin":
 
         # Functions:
 
