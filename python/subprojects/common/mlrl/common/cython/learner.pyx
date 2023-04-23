@@ -75,13 +75,6 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoPostProcessor()
 
-    def use_no_parallel_statistic_update(self):
-        """
-        Configures the rule learner to not use any multi-threading for the parallel update of statistics.
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoParallelStatisticUpdate()
-
     def use_no_parallel_prediction(self):
         """
         Configures the rule learner to not use any multi-threading to predict for several query examples in parallel.

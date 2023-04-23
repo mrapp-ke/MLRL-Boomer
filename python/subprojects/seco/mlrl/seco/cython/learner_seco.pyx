@@ -404,6 +404,13 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_parallel_statistic_update(self):
+        """
+        Configures the rule learner to not use any multi-threading for the parallel update of statistics.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoParallelStatisticUpdate()
+
     def use_parallel_statistic_update(self) -> ManualMultiThreadingConfig:
         """
         Configures the rule learner to use multi-threading for the parallel update of statistics.

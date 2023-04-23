@@ -343,11 +343,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoPostProcessor() = 0;
 
                 /**
-                 * Configures the rule learner to not use any multi-threading for the parallel update of statistics.
-                 */
-                virtual void useNoParallelStatisticUpdate() = 0;
-
-                /**
                  * Configures the rule learner to not use any multi-threading to predict for several query examples in
                  * parallel.
                  */
@@ -875,6 +870,25 @@ class MLRLCOMMON_API IRuleLearner {
                     IManualMultiThreadingConfig& ref = *ptr;
                     parallelRuleRefinementConfigPtr = std::move(ptr);
                     return ref;
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use any multi-threading
+         * for the parallel update of statistics.
+         */
+        class INoParallelStatisticUpdateMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoParallelStatisticUpdateMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use any multi-threading for the parallel update of statistics.
+                 */
+                virtual void useNoParallelStatisticUpdate() {
+                    std::unique_ptr<IMultiThreadingConfig>& parallelStatisticUpdateConfigPtr =
+                      this->getParallelStatisticUpdateConfigPtr();
+                    parallelStatisticUpdateConfigPtr = std::make_unique<NoMultiThreadingConfig>();
                 }
         };
 
@@ -1497,8 +1511,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoRulePruning() override;
 
                 void useNoPostProcessor() override;
-
-                void useNoParallelStatisticUpdate() override;
 
                 void useNoParallelPrediction() override;
 
