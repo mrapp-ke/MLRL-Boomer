@@ -440,7 +440,7 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "Weighted Relative
-             * Accuracy" heuristic for learning or pruning rules.
+             * Accuracy" (WRA) heuristic for learning rules.
              */
             class IWraHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
@@ -448,15 +448,27 @@ namespace seco {
                     virtual ~IWraHeuristicMixin() override {};
 
                     /**
-                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
+                     * Configures the rule learner to use the "Weighted Relative Accuracy" (WRA) heuristic for learning
+                     * rules.
                      */
                     virtual void useWraHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
                         heuristicConfigPtr = std::make_unique<WraConfig>();
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Weighted Relative
+             * Accuracy" (WRA) heuristic for pruning rules.
+             */
+            class IWraPruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IWraPruningHeuristicMixin() override {};
 
                     /**
-                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
+                     * Configures the rule learner to use the "Weighted Relative Accuracy" (WRA) heuristic for pruning
+                     * rules.
                      */
                     virtual void useWraPruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
