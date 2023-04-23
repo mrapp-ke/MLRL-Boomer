@@ -17,11 +17,11 @@ namespace boosting {
         this->useDefaultRule();
         this->useNoLabelSampling();
         this->useNoInstanceSampling();
+        this->useFeatureSamplingWithoutReplacement();
         this->useParallelPrediction();
         this->useAutomaticDefaultRule();
         this->useAutomaticPartitionSampling();
         this->useAutomaticFeatureBinning();
-        this->useFeatureSamplingWithoutReplacement();
         this->useSizeStoppingCriterion();
         this->useConstantShrinkagePostProcessor();
         this->useAutomaticParallelRuleRefinement();

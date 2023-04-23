@@ -3,7 +3,7 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IDefaultRuleM
     INoFeatureBinningMixin, IEqualWidthFeatureBinningMixin, IEqualFrequencyFeatureBinningMixin, INoLabelSamplingMixin, \
     ILabelSamplingWithoutReplacementMixin, INoInstanceSamplingMixin, IInstanceSamplingWithoutReplacementMixin, \
     IInstanceSamplingWithReplacementMixin, ILabelWiseStratifiedInstanceSamplingMixin, \
-    IExampleWiseStratifiedInstanceSamplingMixin, IFeatureSamplingWithoutReplacementMixin, \
+    IExampleWiseStratifiedInstanceSamplingMixin, INoFeatureSamplingMixin, IFeatureSamplingWithoutReplacementMixin, \
     IRandomBiPartitionSamplingMixin, ILabelWiseStratifiedBiPartitionSamplingMixin, \
     IExampleWiseStratifiedBiPartitionSamplingMixin, IRulePruningMixin, IParallelRuleRefinementMixin, \
     IParallelStatisticUpdateMixin, IParallelPredictionMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, \
@@ -51,6 +51,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IInstanceSamplingWithReplacementMixin,
                                                             ILabelWiseStratifiedInstanceSamplingMixin,
                                                             IExampleWiseStratifiedInstanceSamplingMixin,
+                                                            INoFeatureSamplingMixin,
                                                             IFeatureSamplingWithoutReplacementMixin,
                                                             IRandomBiPartitionSamplingMixin,
                                                             ILabelWiseStratifiedBiPartitionSamplingMixin,

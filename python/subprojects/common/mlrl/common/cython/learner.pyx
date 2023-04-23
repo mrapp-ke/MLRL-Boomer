@@ -61,13 +61,6 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
-    def use_no_feature_sampling(self):
-        """
-        Configures the rule learner to not sample from the available features whenever a rule should be refined.
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoFeatureSampling()
-
     def use_no_partition_sampling(self):
         """
         Configures the rule learner to not partition the available training examples into a training set and a holdout
