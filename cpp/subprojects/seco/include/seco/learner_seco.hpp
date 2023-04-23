@@ -30,6 +30,8 @@ namespace seco {
             class IConfig : virtual public ISeCoRuleLearner::IConfig,
                             virtual public ISeCoRuleLearner::ICoverageStoppingCriterionMixin,
                             virtual public ISeCoRuleLearner::IPartialHeadMixin,
+                            virtual public ISeCoRuleLearner::IPeakLiftFunctionMixin,
+                            virtual public ISeCoRuleLearner::IKlnLiftFunctionMixin,
                             virtual public ISeCoRuleLearner::IAccuracyMixin,
                             virtual public ISeCoRuleLearner::IFMeasureMixin,
                             virtual public ISeCoRuleLearner::IMEstimateMixin,
