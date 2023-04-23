@@ -57,6 +57,7 @@ namespace seco {
                             virtual public IRuleLearner::INoFeatureSamplingMixin,
                             virtual public IRuleLearner::IFeatureSamplingWithoutReplacementMixin,
                             virtual public IRuleLearner::IRandomBiPartitionSamplingMixin,
+                            virtual public IRuleLearner::INoPartitionSamplingMixin,
                             virtual public IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin,
                             virtual public IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin,
                             virtual public IRuleLearner::IRulePruningMixin,

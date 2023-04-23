@@ -61,14 +61,6 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
-    def use_no_partition_sampling(self):
-        """
-        Configures the rule learner to not partition the available training examples into a training set and a holdout
-        set.
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoPartitionSampling()
-
     def use_no_rule_pruning(self):
         """
         Configures the rule learner to not prune individual rules.

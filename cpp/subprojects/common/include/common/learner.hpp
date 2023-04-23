@@ -37,6 +37,7 @@
 #include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
+#include "common/sampling/partition_sampling_no.hpp"
 #include "common/stopping/global_pruning_post.hpp"
 #include "common/stopping/global_pruning_pre.hpp"
 #include "common/stopping/stopping_criterion_list.hpp"
@@ -329,12 +330,6 @@ class MLRLCOMMON_API IRuleLearner {
                  *         configuration of the algorithm for the induction of individual rules
                  */
                 virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() = 0;
-
-                /**
-                 * Configures the rule learner to not partition the available training examples into a training set and
-                 * a holdout set.
-                 */
-                virtual void useNoPartitionSampling() = 0;
 
                 /**
                  * Configures the rule learner to not prune individual rules.
@@ -714,6 +709,26 @@ class MLRLCOMMON_API IRuleLearner {
                     IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
                     featureSamplingConfigPtr = std::move(ptr);
                     return ref;
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not partition the available
+         * training examples into a training set and a holdout set.
+         */
+        class INoPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoPartitionSamplingMixin() override {};
+
+                /**
+                 * Configures the rule learner to not partition the available training examples into a training set and
+                 * a holdout set.
+                 */
+                virtual void useNoPartitionSampling() {
+                    std::unique_ptr<IPartitionSamplingConfig>& partitionSamplingConfigPtr =
+                      this->getPartitionSamplingConfigPtr();
+                    partitionSamplingConfigPtr = std::make_unique<NoPartitionSamplingConfig>();
                 }
         };
 
@@ -1463,8 +1478,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useSequentialRuleModelAssemblage() override;
 
                 IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
-
-                void useNoPartitionSampling() override;
 
                 void useNoRulePruning() override;
 

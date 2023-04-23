@@ -327,6 +327,14 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_partition_sampling(self):
+        """
+        Configures the rule learner to not partition the available training examples into a training set and a holdout
+        set.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoPartitionSampling()
+    
     def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
         """
         Configures the rule learner to partition the available training examples into a training set and a holdout set
