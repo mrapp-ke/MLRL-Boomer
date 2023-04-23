@@ -47,8 +47,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoPostProcessor()
 
-        void useNoSizeStoppingCriterion()
-
         void useNoTimeStoppingCriterion()
 
         void useNoSequentialPostOptimization()
@@ -236,6 +234,13 @@ cdef extern from "common/learner.hpp" nogil:
         IManualMultiThreadingConfig& useParallelPrediction()
 
 
+    cdef cppclass INoSizeStoppingCriterionMixin"IRuleLearner::INoSizeStoppingCriterionMixin":
+
+        # Functions:
+
+        void useNoSizeStoppingCriterion()
+
+        
     cdef cppclass ISizeStoppingCriterionMixin"IRuleLearner::ISizeStoppingCriterionMixin":
 
         # Functions:
