@@ -65,6 +65,7 @@ namespace seco {
                             virtual public IRuleLearner::IParallelRuleRefinementMixin,
                             virtual public IRuleLearner::INoParallelStatisticUpdateMixin,
                             virtual public IRuleLearner::IParallelStatisticUpdateMixin,
+                            virtual public IRuleLearner::INoParallelPredictionMixin,
                             virtual public IRuleLearner::IParallelPredictionMixin,
                             virtual public IRuleLearner::ISizeStoppingCriterionMixin,
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
