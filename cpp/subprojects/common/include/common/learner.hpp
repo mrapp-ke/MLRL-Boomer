@@ -313,11 +313,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual ~IConfig() {};
 
                 /**
-                 * Configures the rule learner to induce a default rule.
-                 */
-                virtual void useDefaultRule() = 0;
-
-                /**
                  * Configures the rule learner to use an algorithm that sequentially induces several rules, optionally
                  * starting with a default rule, that are added to a rule-based model.
                  */
@@ -410,6 +405,23 @@ class MLRLCOMMON_API IRuleLearner {
                  * by relearning it in the context of the other rules.
                  */
                 virtual void useNoSequentialPostOptimization() = 0;
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to induce a default rule.
+         */
+        class IDefaultRuleMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IDefaultRuleMixin() override {};
+
+                /**
+                 * Configures the rule learner to induce a default rule.
+                 */
+                virtual void useDefaultRule() {
+                    std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr = this->getDefaultRuleConfigPtr();
+                    defaultRuleConfigPtr = std::make_unique<DefaultRuleConfig>(true);
+                };
         };
 
         /**
@@ -1396,8 +1408,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  *                            should be used for comparing the quality of different rules
                  */
                 Config(RuleCompareFunction ruleCompareFunction);
-
-                void useDefaultRule() override;
 
                 void useSequentialRuleModelAssemblage() override;
 

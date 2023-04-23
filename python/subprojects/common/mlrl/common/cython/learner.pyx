@@ -40,13 +40,6 @@ cdef class RuleLearnerConfig:
     cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
         pass
 
-    def use_default_rule(self):
-        """
-        Configures the rule learner to induce a default rule.
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useDefaultRule()
-
     def use_sequential_rule_model_assemblage(self):
         """
         Configures the rule learner to use an algorithm that sequentially induces several rules, optionally starting

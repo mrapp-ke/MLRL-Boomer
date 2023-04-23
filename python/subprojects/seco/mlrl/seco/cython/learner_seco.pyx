@@ -42,6 +42,13 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
     cdef ISeCoRuleLearnerConfig* get_seco_rule_learner_config_ptr(self):
         return self.rule_learner_config_ptr.get()
 
+    def use_default_rule(self):
+        """
+        Configures the rule learner to induce a default rule.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useDefaultRule()
+
     def use_coverage_stopping_criterion(self) -> CoverageStoppingCriterionConfig:
         """
         Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as the sum of

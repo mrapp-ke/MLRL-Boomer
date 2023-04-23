@@ -49,6 +49,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
     cdef IBoostingRuleLearnerConfig* get_boosting_rule_learner_config_ptr(self):
         return self.rule_learner_config_ptr.get()
 
+    def use_default_rule(self):
+        """
+        Configures the rule learner to induce a default rule.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useDefaultRule()
+
     def use_beam_search_top_down_rule_induction(self) -> BeamSearchTopDownRuleInductionConfig:
         """
         Configures the algorithm to use a top-down beam search for the induction of individual rules.
