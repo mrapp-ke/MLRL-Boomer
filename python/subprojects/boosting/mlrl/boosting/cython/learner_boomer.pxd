@@ -1,9 +1,16 @@
-from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTopDownMixin, IFeatureBinningMixin, \
-    ILabelSamplingMixin, IInstanceSamplingMixin, IFeatureSamplingMixin, IPartitionSamplingMixin, IRulePruningMixin, \
-    IMultiThreadingMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IPrePruningMixin, \
-    IPostPruningMixin, ISequentialPostOptimizationMixin
-from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, IShrinkageMixin, \
-    IRegularizationMixin, INoDefaultRuleMixin, IPartialHeadMixin, ISparseStatisticsMixin, \
+
+from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTopDownMixin, \
+    IEqualWidthFeatureBinningMixin, IEqualFrequencyFeatureBinningMixin, ILabelSamplingWithoutReplacementMixin, \
+    IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, \
+    ILabelWiseStratifiedInstanceSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, \
+    IFeatureSamplingWithoutReplacementMixin, IRandomBiPartitionSamplingMixin, \
+    ILabelWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedBiPartitionSamplingMixin, IRulePruningMixin, \
+    IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, IParallelPredictionMixin, \
+    ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IPrePruningMixin, IPostPruningMixin, \
+    ISequentialPostOptimizationMixin
+from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, \
+    IConstantShrinkageMixin, IL1RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, \
+    IDynamicPartialHeadMixin, IFixedPartialHeadMixin, ISingleLabelHeadMixin, ISparseStatisticsMixin, \
     IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, IExampleWiseSquaredHingeLossMixin, \
     ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, ILabelBinningMixin, \
     IIsotonicMarginalProbabilityCalibrationMixin, IIsotonicJointProbabilityCalibrationMixin, \
@@ -16,10 +23,13 @@ from libcpp.memory cimport unique_ptr
 cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
 
     cdef cppclass IBoomerConfig"boosting::IBoomer::IConfig"(IBoostingRuleLearnerConfig,
-                                                            IShrinkageMixin,
-                                                            IRegularizationMixin,
+                                                            IConstantShrinkageMixin,
+                                                            IL1RegularizationMixin,
+                                                            IL2RegularizationMixin,
                                                             INoDefaultRuleMixin,
-                                                            IPartialHeadMixin,
+                                                            IDynamicPartialHeadMixin,
+                                                            IFixedPartialHeadMixin,
+                                                            ISingleLabelHeadMixin,
                                                             ISparseStatisticsMixin,
                                                             IExampleWiseLogisticLossMixin,
                                                             IExampleWiseSquaredErrorLossMixin,
@@ -33,13 +43,21 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IGfmBinaryPredictorMixin,
                                                             IMarginalizedProbabilityPredictorMixin,
                                                             IBeamSearchTopDownMixin,
-                                                            IFeatureBinningMixin,
-                                                            ILabelSamplingMixin,
-                                                            IInstanceSamplingMixin,
-                                                            IFeatureSamplingMixin,
-                                                            IPartitionSamplingMixin,
+                                                            IEqualWidthFeatureBinningMixin,
+                                                            IEqualFrequencyFeatureBinningMixin,
+                                                            ILabelSamplingWithoutReplacementMixin,
+                                                            IInstanceSamplingWithoutReplacementMixin,
+                                                            IInstanceSamplingWithReplacementMixin,
+                                                            ILabelWiseStratifiedInstanceSamplingMixin,
+                                                            IExampleWiseStratifiedInstanceSamplingMixin,
+                                                            IFeatureSamplingWithoutReplacementMixin,
+                                                            IRandomBiPartitionSamplingMixin,
+                                                            ILabelWiseStratifiedBiPartitionSamplingMixin,
+                                                            IExampleWiseStratifiedBiPartitionSamplingMixin,
                                                             IRulePruningMixin,
-                                                            IMultiThreadingMixin,
+                                                            IParallelRuleRefinementMixin,
+                                                            IParallelStatisticUpdateMixin,
+                                                            IParallelPredictionMixin,
                                                             ISizeStoppingCriterionMixin,
                                                             ITimeStoppingCriterionMixin,
                                                             IPrePruningMixin,
