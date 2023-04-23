@@ -67,7 +67,7 @@ cdef extern from "common/learner.hpp" nogil:
         IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction()
 
         
-    cdef cppclass IBeamSearchTopDownMixin"IRuleLearner::IBeamSearchTopDownMixin":
+    cdef cppclass IBeamSearchTopDownRuleInductionMixin"IRuleLearner::IBeamSearchTopDownRuleInductionMixin":
 
         # Functions:
 
