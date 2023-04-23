@@ -268,7 +268,7 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "F-Measure"
-             * heuristic for learning or pruning rules.
+             * heuristic for learning rules.
              */
             class IFMeasureHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
@@ -288,6 +288,16 @@ namespace seco {
                         heuristicConfigPtr = std::move(ptr);
                         return ref;
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "F-Measure"
+             * heuristic for pruning rules.
+             */
+            class IFMeasurePruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IFMeasurePruningHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
