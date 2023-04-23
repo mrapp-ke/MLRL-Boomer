@@ -65,14 +65,24 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useNoDefaultRule()
 
 
-    cdef cppclass IPartialHeadMixin"boosting::IBoostingRuleLearner::IPartialHeadMixin":
+    cdef cppclass IFixedPartialHeadMixin"boosting::IBoostingRuleLearner::IFixedPartialHeadMixin":
 
         # Functions:
 
         IFixedPartialHeadConfig& useFixedPartialHeads()
 
+
+    cdef cppclass IDynamicPartialHeadMixin"boosting::IBoostingRuleLearner::IDynamicPartialHeadMixin":
+
+        # Functions:
+
         IDynamicPartialHeadConfig& useDynamicPartialHeads()
 
+
+    cdef cppclass ISingleLabelHeadMixin"boosting::IBoostingRuleLearner::ISingleLabelHeadMixin":
+
+        # Functions:
+        
         void useSingleLabelHeads()
 
 

@@ -251,12 +251,12 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
-             * heads.
+             * heads that predict for a predefined number of labels.
              */
-            class IPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IFixedPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IPartialHeadMixin() override {};
+                    virtual ~IFixedPartialHeadMixin() override {};
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a predefined
@@ -273,6 +273,16 @@ namespace boosting {
                         headConfigPtr = std::move(ptr);
                         return ref;
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
+             * heads that predict for a subset of the available labels that is determined dynamically.
+             */
+            class IDynamicPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IDynamicPartialHeadMixin() override {};
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a subset of the
@@ -290,6 +300,16 @@ namespace boosting {
                         headConfigPtr = std::move(ptr);
                         return ref;
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to induce rules with
+             * single-label heads that predict for a single label.
+             */
+            class ISingleLabelHeadMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~ISingleLabelHeadMixin() override {};
 
                     /**
                      * Configures the rule learner to induce rules with single-label heads that predict for a single

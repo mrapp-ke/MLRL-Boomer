@@ -4,11 +4,11 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTo
     IMultiThreadingMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IPrePruningMixin, \
     IPostPruningMixin, ISequentialPostOptimizationMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, IShrinkageMixin, \
-    IL1RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, IPartialHeadMixin, ISparseStatisticsMixin, \
-    IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, IExampleWiseSquaredHingeLossMixin, \
-    ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, ILabelBinningMixin, \
-    IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, IMarginalizedProbabilityPredictorMixin, DdotFunction, \
-    DspmvFunction, DsysvFunction
+    IL1RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, IDynamicPartialHeadMixin, \
+    IFixedPartialHeadMixin, ISingleLabelHeadMixin, ISparseStatisticsMixin, IExampleWiseLogisticLossMixin, \
+    IExampleWiseSquaredErrorLossMixin, IExampleWiseSquaredHingeLossMixin, ILabelWiseSquaredErrorLossMixin, \
+    ILabelWiseSquaredHingeLossMixin, ILabelBinningMixin, IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, \
+    IMarginalizedProbabilityPredictorMixin, DdotFunction, DspmvFunction, DsysvFunction
 
 from libcpp.memory cimport unique_ptr
 
@@ -20,7 +20,9 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IL1RegularizationMixin,
                                                             IL2RegularizationMixin,
                                                             INoDefaultRuleMixin,
-                                                            IPartialHeadMixin,
+                                                            IDynamicPartialHeadMixin,
+                                                            IFixedPartialHeadMixin,
+                                                            ISingleLabelHeadMixin,
                                                             ISparseStatisticsMixin,
                                                             IExampleWiseLogisticLossMixin,
                                                             IExampleWiseSquaredErrorLossMixin,
