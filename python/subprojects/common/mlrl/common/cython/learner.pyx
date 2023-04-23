@@ -68,14 +68,6 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoPostProcessor()
 
-    def use_no_size_stopping_criterion(self):
-        """
-        Configures the rule learner to not use a stopping criterion that ensures that the number of induced rules does
-        not exceed a certain maximum.
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoSizeStoppingCriterion()
-
     def use_no_time_stopping_criterion(self):
         """
         Configures the rule learner to not use a stopping criterion that ensures that are certain time limit is not

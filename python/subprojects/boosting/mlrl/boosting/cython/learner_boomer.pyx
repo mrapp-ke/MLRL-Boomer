@@ -340,6 +340,14 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_size_stopping_criterion(self):
+        """
+        Configures the rule learner to not use a stopping criterion that ensures that the number of induced rules does
+        not exceed a certain maximum.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoSizeStoppingCriterion()
+
     def use_size_stopping_criterion(self) -> SizeStoppingCriterionConfig:
         """
         Configures the rule learner to use a stopping criterion that ensures that the number of induced rules does not

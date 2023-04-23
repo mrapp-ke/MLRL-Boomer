@@ -339,12 +339,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoPostProcessor() = 0;
 
                 /**
-                 * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
-                 * rules does not exceed a certain maximum.
-                 */
-                virtual void useNoSizeStoppingCriterion() = 0;
-
-                /**
                  * Configures the rule learner to not use a stopping criterion that ensures that are certain time limit
                  * is not exceeded.
                  */
@@ -965,6 +959,26 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use a stopping criterion
+         * that ensures that the number of induced rules does not exceed a certain maximum.
+         */
+        class INoSizeStoppingCriterionMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoSizeStoppingCriterionMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
+                 * rules does not exceed a certain maximum.
+                 */
+                virtual void useNoSizeStoppingCriterion() {
+                    std::unique_ptr<SizeStoppingCriterionConfig>& sizeStoppingCriterionConfigPtr =
+                      this->getSizeStoppingCriterionConfigPtr();
+                    sizeStoppingCriterionConfigPtr = nullptr;
+                }
+        };
+
+        /**
          * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
          * ensures that the number of induced rules does not exceed a certain maximum.
          */
@@ -1548,8 +1562,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
                 void useNoPostProcessor() override;
-
-                void useNoSizeStoppingCriterion() override;
 
                 void useNoTimeStoppingCriterion() override;
 
