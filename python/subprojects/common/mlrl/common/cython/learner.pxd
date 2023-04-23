@@ -93,51 +93,81 @@ cdef extern from "common/learner.hpp" nogil:
         IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction()
 
 
-    cdef cppclass IFeatureBinningMixin"IRuleLearner::IFeatureBinningMixin":
+    cdef cppclass IEqualWidthFeatureBinningMixin"IRuleLearner::IEqualWidthFeatureBinningMixin":
 
         # Functions:
 
         IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning()
 
+
+    cdef cppclass IEqualFrequencyFeatureBinningMixin"IRuleLearner::IEqualFrequencyFeatureBinningMixin":
+
+        # Functions:
+
         IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning()
 
 
-    cdef cppclass ILabelSamplingMixin"IRuleLearner::ILabelSamplingMixin":
+    cdef cppclass ILabelSamplingWithoutReplacementMixin"IRuleLearner::ILabelSamplingWithoutReplacementMixin":
 
         # Functions:
 
         ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement()
 
 
-    cdef cppclass IInstanceSamplingMixin"IRuleLearner::IInstanceSamplingMixin":
+    cdef cppclass IInstanceSamplingWithoutReplacementMixin"IRuleLearner::IInstanceSamplingWithoutReplacementMixin":
+
+        # Functions:
+
+        IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement()
+
+
+    cdef cppclass IInstanceSamplingWithReplacementMixin"IRuleLearner::IInstanceSamplingWithReplacementMixin":
+
+        # Functions:
+
+        IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement()
+
+
+    cdef cppclass ILabelWiseStratifiedInstanceSamplingMixin"IRuleLearner::ILabelWiseStratifiedInstanceSamplingMixin":
+
+        # Functions:
+
+        ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling()
+
+
+    cdef cppclass IExampleWiseStratifiedInstanceSamplingMixin"IRuleLearner::IExampleWiseStratifiedInstanceSamplingMixin":
 
         # Functions:
 
         IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling()
 
-        ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling()
 
-        IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement()
-
-        IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement()
-
-
-    cdef cppclass IFeatureSamplingMixin"IRuleLearner::IFeatureSamplingMixin":
+    cdef cppclass IFeatureSamplingWithoutReplacementMixin"IRuleLearner::IFeatureSamplingWithoutReplacementMixin":
 
         # Functions:
 
         IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement()
 
 
-    cdef cppclass IPartitionSamplingMixin"IRuleLearner::IPartitionSamplingMixin":
+    cdef cppclass IRandomBiPartitionSamplingMixin"IRuleLearner::IRandomBiPartitionSamplingMixin":
+
+        # Functions:
+
+        IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
+
+
+    cdef cppclass ILabelWiseStratifiedBiPartitionSamplingMixin"IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin":
+
+        # Functions:
+
+        ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling()
+
+
+    cdef cppclass IExampleWiseStratifiedBiPartitionSamplingMixin"IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin":
 
         # Functions:
 
         IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling()
-
-        ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling()
-
-        IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
 
 
     cdef cppclass IRulePruningMixin"IRuleLearner::IRulePruningMixin":
@@ -147,13 +177,23 @@ cdef extern from "common/learner.hpp" nogil:
         void useIrepRulePruning()
 
 
-    cdef cppclass IMultiThreadingMixin"IRuleLearner::IMultiThreadingMixin":
+    cdef cppclass IParallelRuleRefinementMixin"IRuleLearner::IParallelRuleRefinementMixin":
 
         # Functions:
 
         IManualMultiThreadingConfig& useParallelRuleRefinement()
 
+    
+    cdef cppclass IParallelStatisticUpdateMixin"IRuleLearner::IParallelStatisticUpdateMixin":
+
+        # Functions:
+
         IManualMultiThreadingConfig& useParallelStatisticUpdate()
+
+
+    cdef cppclass IParallelPredictionMixin"IRuleLearner::IParallelPredictionMixin":
+
+        # Functions:
 
         IManualMultiThreadingConfig& useParallelPrediction()
 

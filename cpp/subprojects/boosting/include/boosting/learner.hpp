@@ -163,12 +163,12 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a post processor that
-             * shrinks the weights fo rules by a "shrinkage" parameter.
+             * shrinks the weights fo rules by a constant "shrinkage" parameter.
              */
-            class IShrinkageMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IConstantShrinkageMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IShrinkageMixin() override {};
+                    virtual ~IConstantShrinkageMixin() override {};
 
                     /**
                      * Configures the rule learner to use a post processor that shrinks the weights of rules by a
@@ -188,12 +188,12 @@ namespace boosting {
             };
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use regularization.
+             * Defines an interface for all classes that allow to configure a rule learner to use L1 regularization.
              */
-            class IRegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IL1RegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IRegularizationMixin() override {};
+                    virtual ~IL1RegularizationMixin() override {};
 
                     /**
                      * Configures the rule learner to use L1 regularization.
@@ -210,6 +210,15 @@ namespace boosting {
                         l1RegularizationConfigPtr = std::move(ptr);
                         return ref;
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use L2 regularization.
+             */
+            class IL2RegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IL2RegularizationMixin() override {};
 
                     /**
                      * Configures the rule learner to use L2 regularization.
@@ -247,12 +256,12 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
-             * heads.
+             * heads that predict for a predefined number of labels.
              */
-            class IPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IFixedPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IPartialHeadMixin() override {};
+                    virtual ~IFixedPartialHeadMixin() override {};
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a predefined
@@ -269,6 +278,16 @@ namespace boosting {
                         headConfigPtr = std::move(ptr);
                         return ref;
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
+             * heads that predict for a subset of the available labels that is determined dynamically.
+             */
+            class IDynamicPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IDynamicPartialHeadMixin() override {};
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a subset of the
@@ -286,6 +305,16 @@ namespace boosting {
                         headConfigPtr = std::move(ptr);
                         return ref;
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to induce rules with
+             * single-label heads that predict for a single label.
+             */
+            class ISingleLabelHeadMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~ISingleLabelHeadMixin() override {};
 
                     /**
                      * Configures the rule learner to induce rules with single-label heads that predict for a single

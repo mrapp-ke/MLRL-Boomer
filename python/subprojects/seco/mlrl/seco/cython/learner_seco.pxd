@@ -1,8 +1,16 @@
-from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTopDownMixin, ILabelSamplingMixin, \
-    IInstanceSamplingMixin, IFeatureSamplingMixin, IPartitionSamplingMixin, IRulePruningMixin, IMultiThreadingMixin, \
-    ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, ISequentialPostOptimizationMixin
+from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTopDownMixin, \
+    ILabelSamplingWithoutReplacementMixin, IInstanceSamplingWithoutReplacementMixin, \
+    IInstanceSamplingWithReplacementMixin, ILabelWiseStratifiedInstanceSamplingMixin, \
+    IExampleWiseStratifiedInstanceSamplingMixin, IFeatureSamplingWithoutReplacementMixin, \
+    IRandomBiPartitionSamplingMixin, ILabelWiseStratifiedBiPartitionSamplingMixin, \
+    IExampleWiseStratifiedBiPartitionSamplingMixin, IRulePruningMixin, IParallelRuleRefinementMixin, \
+    IParallelStatisticUpdateMixin, IParallelPredictionMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, \
+    ISequentialPostOptimizationMixin
 from mlrl.seco.cython.learner cimport ISeCoRuleLearnerConfig, SeCoRuleLearnerConfig, ICoverageStoppingCriterionMixin, \
-    IPartialHeadMixin, IAccuracyMixin, IFMeasureMixin, IMEstimateMixin, ILaplaceMixin, IRecallMixin, IWraMixin
+    IPartialHeadMixin, IPeakLiftFunctionMixin, IKlnLiftFunctionMixin, IAccuracyHeuristicMixin, \
+    IAccuracyPruningHeuristicMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, IMEstimateHeuristicMixin, \
+    IMEstimatePruningHeuristicMixin, ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, IRecallHeuristicMixin, \
+    IRecallPruningHeuristicMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
 
 from libcpp.memory cimport unique_ptr
 
@@ -13,19 +21,34 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
             ISeCoRuleLearnerConfig,
             ICoverageStoppingCriterionMixin,
             IPartialHeadMixin,
-            IAccuracyMixin,
-            IFMeasureMixin,
-            IMEstimateMixin,
-            ILaplaceMixin,
-            IRecallMixin,
-            IWraMixin,
+            IPeakLiftFunctionMixin,
+            IKlnLiftFunctionMixin,
+            IAccuracyHeuristicMixin,
+            IAccuracyPruningHeuristicMixin,
+            IFMeasureHeuristicMixin,
+            IFMeasurePruningHeuristicMixin,
+            IMEstimateHeuristicMixin,
+            IMEstimatePruningHeuristicMixin,
+            ILaplaceHeuristicMixin,
+            ILaplacePruningHeuristicMixin,
+            IRecallHeuristicMixin,
+            IRecallPruningHeuristicMixin,
+            IWraHeuristicMixin,
+            IWraPruningHeuristicMixin,
             IBeamSearchTopDownMixin,
-            ILabelSamplingMixin,
-            IInstanceSamplingMixin,
-            IFeatureSamplingMixin,
-            IPartitionSamplingMixin,
+            ILabelSamplingWithoutReplacementMixin,
+            IInstanceSamplingWithReplacementMixin,
+            IInstanceSamplingWithoutReplacementMixin,
+            ILabelWiseStratifiedInstanceSamplingMixin,
+            IExampleWiseStratifiedInstanceSamplingMixin,
+            IFeatureSamplingWithoutReplacementMixin,
+            IRandomBiPartitionSamplingMixin,
+            ILabelWiseStratifiedBiPartitionSamplingMixin,
+            IExampleWiseStratifiedBiPartitionSamplingMixin,
             IRulePruningMixin,
-            IMultiThreadingMixin,
+            IParallelRuleRefinementMixin,
+            IParallelStatisticUpdateMixin,
+            IParallelPredictionMixin,
             ISizeStoppingCriterionMixin,
             ITimeStoppingCriterionMixin,
             ISequentialPostOptimizationMixin):

@@ -505,12 +505,13 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use feature binning.
+         * Defines an interface for all classes that allow to configure a rule learner to use equal-width feature
+         * binning.
          */
-        class IFeatureBinningMixin : virtual public IRuleLearner::IConfig {
+        class IEqualWidthFeatureBinningMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IFeatureBinningMixin() override {};
+                virtual ~IEqualWidthFeatureBinningMixin() override {};
 
                 /**
                  * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
@@ -528,6 +529,16 @@ class MLRLCOMMON_API IRuleLearner {
                     featureBinningConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use equal-frequency feature
+         * binning.
+         */
+        class IEqualFrequencyFeatureBinningMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IEqualFrequencyFeatureBinningMixin() override {};
 
                 /**
                  * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
@@ -548,12 +559,13 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use label sampling.
+         * Defines an interface for all classes that allow to configure a rule learner to use label sampling without
+         * replacement.
          */
-        class ILabelSamplingMixin : virtual public IRuleLearner::IConfig {
+        class ILabelSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ILabelSamplingMixin() override {};
+                virtual ~ILabelSamplingWithoutReplacementMixin() override {};
 
                 /**
                  * Configures the rule learner to sample from the available labels with replacement whenever a new rule
@@ -573,12 +585,13 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use instance sampling.
+         * Defines an interface for all classes that allow to configure a rule learner to use instance sampling with
+         * replacement.
          */
-        class IInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
+        class IInstanceSamplingWithReplacementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IInstanceSamplingMixin() override {};
+                virtual ~IInstanceSamplingWithReplacementMixin() override {};
 
                 /**
                  * Configures the rule learner to sample from the available training examples with replacement whenever
@@ -596,6 +609,16 @@ class MLRLCOMMON_API IRuleLearner {
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use instance sampling without
+         * replacement.
+         */
+        class IInstanceSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IInstanceSamplingWithoutReplacementMixin() override {};
 
                 /**
                  * Configures the rule learner to sample from the available training examples without replacement
@@ -613,6 +636,16 @@ class MLRLCOMMON_API IRuleLearner {
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use label-wise stratified
+         * instance sampling.
+         */
+        class ILabelWiseStratifiedInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~ILabelWiseStratifiedInstanceSamplingMixin() override {};
 
                 /**
                  * Configures the rule learner to sample from the available training examples using stratification, such
@@ -631,6 +664,16 @@ class MLRLCOMMON_API IRuleLearner {
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use example-wise stratified
+         * instance sampling.
+         */
+        class IExampleWiseStratifiedInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IExampleWiseStratifiedInstanceSamplingMixin() override {};
 
                 /**
                  * Configures the rule learner to sample from the available training examples using stratification,
@@ -652,12 +695,13 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use feature sampling.
+         * Defines an interface for all classes that allow to configure a rule learner to use feature sampling without
+         * replacement.
          */
-        class IFeatureSamplingMixin : virtual public IRuleLearner::IConfig {
+        class IFeatureSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IFeatureSamplingMixin() override {};
+                virtual ~IFeatureSamplingWithoutReplacementMixin() override {};
 
                 /**
                  * Configures the rule learner to sample from the available features with replacement whenever a rule
@@ -678,12 +722,14 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use partition sampling.
+         * Defines an interface for all classes that allow to configure a rule learner to partition the available
+         * training example into a training set and a holdout set by randomly splitting the training examples into two
+         * mutually exclusive sets.
          */
-        class IPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
+        class IRandomBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IPartitionSamplingMixin() override {};
+                virtual ~IRandomBiPartitionSamplingMixin() override {};
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
@@ -702,6 +748,17 @@ class MLRLCOMMON_API IRuleLearner {
                     partitionSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to partition the available
+         * training examples into a training set and a holdout set using stratification, such that for each label the
+         * proportion of relevant and irrelevant examples is maintained.
+         */
+        class ILabelWiseStratifiedBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~ILabelWiseStratifiedBiPartitionSamplingMixin() override {};
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
@@ -721,6 +778,17 @@ class MLRLCOMMON_API IRuleLearner {
                     partitionSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to partition the available
+         * training examples into a training set and a holdout set using stratification, where distinct label vectors
+         * are treated as individual classes.
+         */
+        class IExampleWiseStratifiedBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IExampleWiseStratifiedBiPartitionSamplingMixin() override {};
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
@@ -760,12 +828,13 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use multi-threading.
+         * Defines an interface for all classes that allow to configure a rule learner to use multi-threading for the
+         * parallel refinement of rules.
          */
-        class IMultiThreadingMixin : virtual public IRuleLearner::IConfig {
+        class IParallelRuleRefinementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IMultiThreadingMixin() override {};
+                virtual ~IParallelRuleRefinementMixin() override {};
 
                 /**
                  * Configures the rule learner to use multi-threading for the parallel refinement of rules.
@@ -781,6 +850,16 @@ class MLRLCOMMON_API IRuleLearner {
                     parallelRuleRefinementConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use multi-threading for the
+         * parallel update of statistics.
+         */
+        class IParallelStatisticUpdateMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IParallelStatisticUpdateMixin() override {};
 
                 /**
                  * Configures the rule learner to use multi-threading for the parallel update of statistics.
@@ -796,6 +875,16 @@ class MLRLCOMMON_API IRuleLearner {
                     parallelStatisticUpdateConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use multi-threading to predict
+         * for several examples in parallel.
+         */
+        class IParallelPredictionMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IParallelPredictionMixin() override {};
 
                 /**
                  * Configures the rule learner to use multi-threading to predict for several query examples in parallel.
