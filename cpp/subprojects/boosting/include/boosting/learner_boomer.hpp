@@ -46,6 +46,7 @@ namespace boosting {
                             virtual public IRuleLearner::IEqualFrequencyFeatureBinningMixin,
                             virtual public IRuleLearner::INoLabelSamplingMixin,
                             virtual public IRuleLearner::ILabelSamplingWithoutReplacementMixin,
+                            virtual public IRuleLearner::INoInstanceSamplingMixin,
                             virtual public IRuleLearner::IInstanceSamplingWithoutReplacementMixin,
                             virtual public IRuleLearner::IInstanceSamplingWithReplacementMixin,
                             virtual public IRuleLearner::ILabelWiseStratifiedInstanceSamplingMixin,

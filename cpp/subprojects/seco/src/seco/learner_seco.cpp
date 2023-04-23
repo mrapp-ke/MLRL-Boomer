@@ -6,6 +6,7 @@ namespace seco {
         this->useDefaultRule();
         this->useNoFeatureBinning();
         this->useNoLabelSampling();
+        this->useNoInstanceSampling();
         this->useGreedyTopDownRuleInduction();
         this->useCoverageStoppingCriterion();
         this->useSizeStoppingCriterion();

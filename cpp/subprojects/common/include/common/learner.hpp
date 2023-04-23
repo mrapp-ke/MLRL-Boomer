@@ -26,6 +26,7 @@
 #include "common/rule_model_assemblage/rule_model_assemblage.hpp"
 #include "common/rule_pruning/rule_pruning_irep.hpp"
 #include "common/sampling/feature_sampling_without_replacement.hpp"
+#include "common/sampling/instance_sampling_no.hpp"
 #include "common/sampling/instance_sampling_stratified_example_wise.hpp"
 #include "common/sampling/instance_sampling_stratified_label_wise.hpp"
 #include "common/sampling/instance_sampling_with_replacement.hpp"
@@ -329,12 +330,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() = 0;
 
                 /**
-                 * Configures the rule learner to not sample from the available training examples whenever a new rule
-                 * should be learned.
-                 */
-                virtual void useNoInstanceSampling() = 0;
-
-                /**
                  * Configures the rule learner to not sample from the available features whenever a rule should be
                  * refined.
                  */
@@ -553,6 +548,25 @@ class MLRLCOMMON_API IRuleLearner {
                     labelSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use instance sampling.
+         */
+        class INoInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoInstanceSamplingMixin() override {};
+
+                /**
+                 * Configures the rule learner to not sample from the available training examples whenever a new rule
+                 * should be learned.
+                 */
+                virtual void useNoInstanceSampling() {
+                    std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr =
+                      this->getInstanceSamplingConfigPtr();
+                    instanceSamplingConfigPtr = std::make_unique<NoInstanceSamplingConfig>();
+                };
         };
 
         /**
@@ -1438,8 +1452,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useSequentialRuleModelAssemblage() override;
 
                 IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
-
-                void useNoInstanceSampling() override;
 
                 void useNoFeatureSampling() override;
 
