@@ -12,6 +12,7 @@ namespace seco {
         this->useGreedyTopDownRuleInduction();
         this->useCoverageStoppingCriterion();
         this->useSizeStoppingCriterion();
+        this->useNoTimeStoppingCriterion();
         this->useLabelWiseStratifiedInstanceSampling();
         this->useIrepRulePruning();
         this->useNoGlobalPruning();

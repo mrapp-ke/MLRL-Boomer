@@ -339,12 +339,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoPostProcessor() = 0;
 
                 /**
-                 * Configures the rule learner to not use a stopping criterion that ensures that are certain time limit
-                 * is not exceeded.
-                 */
-                virtual void useNoTimeStoppingCriterion() = 0;
-
-                /**
                  * Configures the rule learner to not use a post-optimization method that optimizes each rule in a model
                  * by relearning it in the context of the other rules.
                  */
@@ -1005,6 +999,26 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use a stopping criterion
+         * that ensures that a certain time limit is not exceeded.
+         */
+        class INoTimeStoppingCriterionMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoTimeStoppingCriterionMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use a stopping criterion that ensures that a certain time limit is
+                 * not exceeded.
+                 */
+                virtual void useNoTimeStoppingCriterion() {
+                    std::unique_ptr<TimeStoppingCriterionConfig>& timeStoppingCriterionConfigPtr =
+                      this->getTimeStoppingCriterionConfigPtr();
+                    timeStoppingCriterionConfigPtr = nullptr;
+                }
+        };
+
+        /**
          * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
          * ensures that a certain time limit is not exceeded.
          */
@@ -1562,8 +1576,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
                 void useNoPostProcessor() override;
-
-                void useNoTimeStoppingCriterion() override;
 
                 void useNoSequentialPostOptimization() override;
         };

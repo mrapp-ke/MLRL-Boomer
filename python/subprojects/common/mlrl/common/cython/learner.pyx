@@ -68,14 +68,6 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoPostProcessor()
 
-    def use_no_time_stopping_criterion(self):
-        """
-        Configures the rule learner to not use a stopping criterion that ensures that are certain time limit is not
-        exceeded.
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoTimeStoppingCriterion()
-
     def use_no_sequential_post_optimization(self):
         """
         Configures the rule learner to not use a post-optimization method that optimizes each rule in a model by
