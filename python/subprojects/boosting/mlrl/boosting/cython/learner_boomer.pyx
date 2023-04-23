@@ -17,7 +17,6 @@ from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstance
     InstanceSamplingWithoutReplacementConfig
 from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig, \
     LabelSamplingWithoutReplacementConfig
-from mlrl.common.cython.learner cimport IRuleLearnerConfig
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig, ManualMultiThreadingConfig
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ExampleWiseStratifiedBiPartitionSamplingConfig, ILabelWiseStratifiedBiPartitionSamplingConfig, \
@@ -42,9 +41,6 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
 
     def __cinit__(self):
         self.rule_learner_config_ptr = createBoomerConfig()
-
-    cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
-        return self.rule_learner_config_ptr.get()
 
     cdef IBoostingRuleLearnerConfig* get_boosting_rule_learner_config_ptr(self):
         return self.rule_learner_config_ptr.get()

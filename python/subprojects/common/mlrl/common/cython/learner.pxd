@@ -37,10 +37,6 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[ILabelSpaceInfo]& getLabelSpaceInfo()
 
 
-    cdef cppclass IRuleLearnerConfig"IRuleLearner::IConfig":
-        pass
-
-
     cdef cppclass ISequentialRuleModelAssemblageMixin"IRuleLearner::ISequentialRuleModelAssemblageMixin":
 
         # Functions:
@@ -350,13 +346,6 @@ cdef class TrainingResult:
     cdef readonly RuleModel rule_model
 
     cdef readonly LabelSpaceInfo label_space_info
-
-
-cdef class RuleLearnerConfig:
-
-    # Functions:
-
-    cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self)
 
 
 cdef class RuleLearner:
