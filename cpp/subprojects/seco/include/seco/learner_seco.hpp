@@ -55,7 +55,9 @@ namespace seco {
                             virtual public IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin,
                             virtual public IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin,
                             virtual public IRuleLearner::IRulePruningMixin,
-                            virtual public IRuleLearner::IMultiThreadingMixin,
+                            virtual public IRuleLearner::IParallelRuleRefinementMixin,
+                            virtual public IRuleLearner::IParallelStatisticUpdateMixin,
+                            virtual public IRuleLearner::IParallelPredictionMixin,
                             virtual public IRuleLearner::ISizeStoppingCriterionMixin,
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
                             virtual public IRuleLearner::ISequentialPostOptimizationMixin {
