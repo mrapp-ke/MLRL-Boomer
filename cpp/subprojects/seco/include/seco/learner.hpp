@@ -175,6 +175,17 @@ namespace seco {
                                                                             this->getPruningHeuristicConfigPtr(),
                                                                             this->getLiftFunctionConfigPtr());
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a lift function that
+             * monotonously increases until a certain number of labels, where the maximum lift is reached, and
+             * monotonously decreases afterwards.
+             */
+            class IPeakLiftFunctionMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IPeakLiftFunctionMixin() override {};
 
                     /**
                      * Configures the rule learner to use a lift function that monotonously increases until a certain
@@ -190,6 +201,17 @@ namespace seco {
                         liftFunctionConfigPtr = std::move(ptr);
                         return ref;
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a lift function that
+             * monotonously increases according to the natural logarithm of the number of labels for which a rule
+             * predicts.
+             */
+            class IKlnLiftFunctionMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IKlnLiftFunctionMixin() override {};
 
                     /**
                      * Configures the rule learner to use a lift function that monotonously increases according to the
@@ -209,12 +231,12 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "Accuracy"
-             * heuristic for learning or pruning rules.
+             * heuristic for learning rules.
              */
-            class IAccuracyMixin : virtual public ISeCoRuleLearner::IConfig {
+            class IAccuracyHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAccuracyMixin() override {};
+                    virtual ~IAccuracyHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
@@ -223,6 +245,16 @@ namespace seco {
                         std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
                         heuristicConfigPtr = std::make_unique<AccuracyConfig>();
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Accuracy"
+             * heuristic for pruning rules.
+             */
+            class IAccuracyPruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAccuracyPruningHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
@@ -236,12 +268,12 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "F-Measure"
-             * heuristic for learning or pruning rules.
+             * heuristic for learning rules.
              */
-            class IFMeasureMixin : virtual public ISeCoRuleLearner::IConfig {
+            class IFMeasureHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IFMeasureMixin() override {};
+                    virtual ~IFMeasureHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for learning rules.
@@ -256,6 +288,16 @@ namespace seco {
                         heuristicConfigPtr = std::move(ptr);
                         return ref;
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "F-Measure"
+             * heuristic for pruning rules.
+             */
+            class IFMeasurePruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IFMeasurePruningHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
@@ -275,12 +317,12 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "M-Estimate"
-             * heuristic for learning or pruning rules.
+             * heuristic for learning rules.
              */
-            class IMEstimateMixin : virtual public ISeCoRuleLearner::IConfig {
+            class IMEstimateHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IMEstimateMixin() override {};
+                    virtual ~IMEstimateHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
@@ -295,6 +337,16 @@ namespace seco {
                         heuristicConfigPtr = std::move(ptr);
                         return ref;
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "M-Estimate"
+             * heuristic for pruning rules.
+             */
+            class IMEstimatePruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IMEstimatePruningHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
@@ -314,12 +366,12 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "Laplace"
-             * heuristic for learning or pruning rules.
+             * heuristic for learning rules.
              */
-            class ILaplaceMixin : virtual public ISeCoRuleLearner::IConfig {
+            class ILaplaceHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILaplaceMixin() override {};
+                    virtual ~ILaplaceHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for learning rules.
@@ -328,6 +380,16 @@ namespace seco {
                         std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
                         heuristicConfigPtr = std::make_unique<LaplaceConfig>();
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Laplace"
+             * heuristic for pruning rules.
+             */
+            class ILaplacePruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~ILaplacePruningHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for pruning rules.
@@ -341,12 +403,12 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "Recall" heuristic
-             * for learning or pruning rules.
+             * for pruning rules.
              */
-            class IRecallMixin : virtual public ISeCoRuleLearner::IConfig {
+            class IRecallHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IRecallMixin() override {};
+                    virtual ~IRecallHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for learning rules.
@@ -355,6 +417,16 @@ namespace seco {
                         std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
                         heuristicConfigPtr = std::make_unique<RecallConfig>();
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Recall" heuristic
+             * for pruning rules.
+             */
+            class IRecallPruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IRecallPruningHeuristicMixin() override {};
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for pruning rules.
@@ -368,23 +440,35 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "Weighted Relative
-             * Accuracy" heuristic for learning or pruning rules.
+             * Accuracy" (WRA) heuristic for learning rules.
              */
-            class IWraMixin : virtual public ISeCoRuleLearner::IConfig {
+            class IWraHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IWraMixin() override {};
+                    virtual ~IWraHeuristicMixin() override {};
 
                     /**
-                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
+                     * Configures the rule learner to use the "Weighted Relative Accuracy" (WRA) heuristic for learning
+                     * rules.
                      */
                     virtual void useWraHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
                         heuristicConfigPtr = std::make_unique<WraConfig>();
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Weighted Relative
+             * Accuracy" (WRA) heuristic for pruning rules.
+             */
+            class IWraPruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IWraPruningHeuristicMixin() override {};
 
                     /**
-                     * Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
+                     * Configures the rule learner to use the "Weighted Relative Accuracy" (WRA) heuristic for pruning
+                     * rules.
                      */
                     virtual void useWraPruningHeuristic() {
                         std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =

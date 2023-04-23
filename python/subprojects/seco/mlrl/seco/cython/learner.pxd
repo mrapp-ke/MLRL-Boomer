@@ -36,59 +36,101 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         void usePartialHeads()
 
+
+    cdef cppclass IPeakLiftFunctionMixin"seco::ISeCoRuleLearner::IPeakLiftFunctionMixin":
+
+        # Functions:
+
         IPeakLiftFunctionConfig& usePeakLiftFunction()
+
+
+    cdef cppclass IKlnLiftFunctionMixin"seco::ISeCoRuleLearner::IKlnLiftFunctionMixin":
+
+        # Functions:
 
         IKlnLiftFunctionConfig& useKlnLiftFunction()
 
 
-    cdef cppclass IAccuracyMixin"seco::ISeCoRuleLearner::IAccuracyMixin":
+    cdef cppclass IAccuracyHeuristicMixin"seco::ISeCoRuleLearner::IAccuracyHeuristicMixin":
 
         # Functions:
 
         void useAccuracyHeuristic()
 
+
+    cdef cppclass IAccuracyPruningHeuristicMixin"seco::ISeCoRuleLearner::IAccuracyPruningHeuristicMixin":
+
+        # Functions:
+
         void useAccuracyPruningHeuristic()
 
 
-    cdef cppclass IFMeasureMixin"seco::ISeCoRuleLearner::IFMeasureMixin":
+    cdef cppclass IFMeasureHeuristicMixin"seco::ISeCoRuleLearner::IFMeasureHeuristicMixin":
 
         # Functions:
 
         IFMeasureConfig& useFMeasureHeuristic()
 
+
+    cdef cppclass IFMeasurePruningHeuristicMixin"seco::ISeCoRuleLearner::IFMeasurePruningHeuristicMixin":
+
+        # Functions
+
         IFMeasureConfig& useFMeasurePruningHeuristic()
 
 
-    cdef cppclass IMEstimateMixin"seco::ISeCoRuleLearner::IMEstimateMixin":
+    cdef cppclass IMEstimateHeuristicMixin"seco::ISeCoRuleLearner::IMEstimateHeuristicMixin":
 
         # Functions:
 
         IMEstimateConfig& useMEstimateHeuristic()
 
+
+    cdef cppclass IMEstimatePruningHeuristicMixin"seco::ISeCoRuleLearner::IMEstimatePruningHeuristicMixin":
+
+        # Functions:
+
         IMEstimateConfig& useMEstimatePruningHeuristic()
 
 
-    cdef cppclass ILaplaceMixin"seco::ISeCoRuleLearner::ILaplaceMixin":
+    cdef cppclass ILaplaceHeuristicMixin"seco::ISeCoRuleLearner::ILaplaceHeuristicMixin":
 
         # Functions:
 
         void useLaplaceHeuristic()
 
+
+    cdef cppclass ILaplacePruningHeuristicMixin"seco::ISeCoRuleLearner::ILaplacePruningHeuristicMixin":
+
+        # Functions:
+
         void useLaplacePruningHeuristic()
 
 
-    cdef cppclass IRecallMixin"seco::ISeCoRuleLearner::IRecallMixin":
+    cdef cppclass IRecallHeuristicMixin"seco::ISeCoRuleLearner::IRecallHeuristicMixin":
 
         # Functions:
 
         void useRecallHeuristic()
 
+
+    cdef cppclass IRecallPruningHeuristicMixin"seco::ISeCoRuleLearner::IRecallPruningHeuristicMixin":
+
+        # Functions:
+
         void useRecallPruningHeuristic()
 
 
-    cdef cppclass IWraMixin"seco::ISeCoRuleLearner::IWraMixin":
+    cdef cppclass IWraHeuristicMixin"seco::ISeCoRuleLearner::IWraHeuristicMixin":
+
+        # Functions:
 
         void useWraHeuristic()
+
+
+    cdef cppclass IWraPruningHeuristicMixin"seco::ISeCoRuleLearner::IWraPruningHeuristicMixin":
+
+        # Functions:
 
         void useWraPruningHeuristic()
 

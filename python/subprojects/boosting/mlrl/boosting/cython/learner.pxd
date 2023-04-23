@@ -37,18 +37,23 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useLabelWiseProbabilityPredictor()
 
 
-    cdef cppclass IShrinkageMixin"boosting::IBoostingRuleLearner::IShrinkageMixin":
+    cdef cppclass IConstantShrinkageMixin"boosting::IBoostingRuleLearner::IConstantShrinkageMixin":
 
         # Functions:
 
         IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
 
 
-    cdef cppclass IRegularizationMixin"boosting::IBoostingRuleLearner::IRegularizationMixin":
+    cdef cppclass IL1RegularizationMixin"boosting::IBoostingRuleLearner::IL1RegularizationMixin":
 
         # Functions:
 
         IManualRegularizationConfig& useL1Regularization()
+
+
+    cdef cppclass IL2RegularizationMixin"boosting::IBoostingRuleLearner::IL2RegularizationMixin":
+
+        # Functions:
 
         IManualRegularizationConfig& useL2Regularization()
 
@@ -60,14 +65,24 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useNoDefaultRule()
 
 
-    cdef cppclass IPartialHeadMixin"boosting::IBoostingRuleLearner::IPartialHeadMixin":
+    cdef cppclass IFixedPartialHeadMixin"boosting::IBoostingRuleLearner::IFixedPartialHeadMixin":
 
         # Functions:
 
         IFixedPartialHeadConfig& useFixedPartialHeads()
 
+
+    cdef cppclass IDynamicPartialHeadMixin"boosting::IBoostingRuleLearner::IDynamicPartialHeadMixin":
+
+        # Functions:
+
         IDynamicPartialHeadConfig& useDynamicPartialHeads()
 
+
+    cdef cppclass ISingleLabelHeadMixin"boosting::IBoostingRuleLearner::ISingleLabelHeadMixin":
+
+        # Functions:
+        
         void useSingleLabelHeads()
 
 
