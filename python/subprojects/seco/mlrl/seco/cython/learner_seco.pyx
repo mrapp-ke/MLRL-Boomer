@@ -241,6 +241,14 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_instance_sampling(self):
+        """
+        Configures the rule learner to not sample from the available training examples whenever a new rule should be
+        learned.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoInstanceSampling()
+
     def use_instance_sampling_with_replacement(self) -> InstanceSamplingWithReplacementConfig:
         """
         Configures the rule learner to sample from the available training examples with replacement whenever a new rule
