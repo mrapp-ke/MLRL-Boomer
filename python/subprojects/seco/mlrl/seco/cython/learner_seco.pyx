@@ -49,6 +49,13 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useDefaultRule()
 
+    def use_no_feature_binning(self):
+        """
+        Configures the rule learner to not use any method for the assignment of numerical feature values to bins.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoFeatureBinning()
+
     def use_coverage_stopping_criterion(self) -> CoverageStoppingCriterionConfig:
         """
         Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as the sum of

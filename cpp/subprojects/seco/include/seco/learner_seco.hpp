@@ -46,6 +46,7 @@ namespace seco {
                             virtual public ISeCoRuleLearner::IWraPruningHeuristicMixin,
                             virtual public IRuleLearner::IDefaultRuleMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
+                            virtual public IRuleLearner::INoFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingWithoutReplacementMixin,
                             virtual public IRuleLearner::IInstanceSamplingWithoutReplacementMixin,
                             virtual public IRuleLearner::IInstanceSamplingWithReplacementMixin,

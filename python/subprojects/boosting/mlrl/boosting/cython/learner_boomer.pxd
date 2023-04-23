@@ -1,13 +1,13 @@
 
 from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IDefaultRuleMixin, IBeamSearchTopDownMixin, \
-    IEqualWidthFeatureBinningMixin, IEqualFrequencyFeatureBinningMixin, ILabelSamplingWithoutReplacementMixin, \
-    IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, \
-    ILabelWiseStratifiedInstanceSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, \
-    IFeatureSamplingWithoutReplacementMixin, IRandomBiPartitionSamplingMixin, \
-    ILabelWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedBiPartitionSamplingMixin, IRulePruningMixin, \
-    IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, IParallelPredictionMixin, \
-    ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IPrePruningMixin, IPostPruningMixin, \
-    ISequentialPostOptimizationMixin
+    INoFeatureBinningMixin, IEqualWidthFeatureBinningMixin, IEqualFrequencyFeatureBinningMixin, \
+    ILabelSamplingWithoutReplacementMixin, IInstanceSamplingWithoutReplacementMixin, \
+    IInstanceSamplingWithReplacementMixin, ILabelWiseStratifiedInstanceSamplingMixin, \
+    IExampleWiseStratifiedInstanceSamplingMixin, IFeatureSamplingWithoutReplacementMixin, \
+    IRandomBiPartitionSamplingMixin, ILabelWiseStratifiedBiPartitionSamplingMixin, \
+    IExampleWiseStratifiedBiPartitionSamplingMixin, IRulePruningMixin, IParallelRuleRefinementMixin, \
+    IParallelStatisticUpdateMixin, IParallelPredictionMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, \
+    IPrePruningMixin, IPostPruningMixin, ISequentialPostOptimizationMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, \
     IConstantShrinkageMixin, IL1RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, \
     IDynamicPartialHeadMixin, IFixedPartialHeadMixin, ISingleLabelHeadMixin, ISparseStatisticsMixin, \
@@ -41,6 +41,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IDefaultRuleMixin,
                                                             IMarginalizedProbabilityPredictorMixin,
                                                             IBeamSearchTopDownMixin,
+                                                            INoFeatureBinningMixin,
                                                             IEqualWidthFeatureBinningMixin,
                                                             IEqualFrequencyFeatureBinningMixin,
                                                             ILabelSamplingWithoutReplacementMixin,

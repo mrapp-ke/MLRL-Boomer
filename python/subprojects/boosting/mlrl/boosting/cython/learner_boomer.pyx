@@ -69,6 +69,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_feature_binning(self):
+        """
+        Configures the rule learner to not use any method for the assignment of numerical feature values to bins.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoFeatureBinning()
+
     def use_equal_width_feature_binning(self) -> EqualWidthFeatureBinningConfig:
         """
         Configures the rule learner to use a method for the assignment of numerical feature values to bins, such that
