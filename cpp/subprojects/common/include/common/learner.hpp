@@ -492,12 +492,13 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use label sampling.
+         * Defines an interface for all classes that allow to configure a rule learner to use label sampling without
+         * replacement.
          */
-        class ILabelSamplingMixin : virtual public IRuleLearner::IConfig {
+        class ILabelSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ILabelSamplingMixin() override {};
+                virtual ~ILabelSamplingWithoutReplacementMixin() override {};
 
                 /**
                  * Configures the rule learner to sample from the available labels with replacement whenever a new rule

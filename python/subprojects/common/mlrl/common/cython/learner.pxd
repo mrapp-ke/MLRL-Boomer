@@ -97,7 +97,7 @@ cdef extern from "common/learner.hpp" nogil:
         IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning()
 
 
-    cdef cppclass ILabelSamplingMixin"IRuleLearner::ILabelSamplingMixin":
+    cdef cppclass ILabelSamplingWithoutReplacementMixin"IRuleLearner::ILabelSamplingWithoutReplacementMixin":
 
         # Functions:
 
