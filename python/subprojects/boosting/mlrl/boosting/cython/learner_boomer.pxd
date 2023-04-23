@@ -8,12 +8,13 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTo
     IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, IParallelPredictionMixin, \
     ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IPrePruningMixin, IPostPruningMixin, \
     ISequentialPostOptimizationMixin
-from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, IShrinkageMixin, \
-    IL1RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, IDynamicPartialHeadMixin, \
-    IFixedPartialHeadMixin, ISingleLabelHeadMixin, ISparseStatisticsMixin, IExampleWiseLogisticLossMixin, \
-    IExampleWiseSquaredErrorLossMixin, IExampleWiseSquaredHingeLossMixin, ILabelWiseSquaredErrorLossMixin, \
-    ILabelWiseSquaredHingeLossMixin, ILabelBinningMixin, IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, \
-    IMarginalizedProbabilityPredictorMixin, DdotFunction, DspmvFunction, DsysvFunction
+from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, \
+    IConstantShrinkageMixin, IL1RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, \
+    IDynamicPartialHeadMixin, IFixedPartialHeadMixin, ISingleLabelHeadMixin, ISparseStatisticsMixin, \
+    IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, IExampleWiseSquaredHingeLossMixin, \
+    ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, ILabelBinningMixin, \
+    IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, IMarginalizedProbabilityPredictorMixin, DdotFunction, \
+    DspmvFunction, DsysvFunction
 
 from libcpp.memory cimport unique_ptr
 
@@ -21,7 +22,7 @@ from libcpp.memory cimport unique_ptr
 cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
 
     cdef cppclass IBoomerConfig"boosting::IBoomer::IConfig"(IBoostingRuleLearnerConfig,
-                                                            IShrinkageMixin,
+                                                            IConstantShrinkageMixin,
                                                             IL1RegularizationMixin,
                                                             IL2RegularizationMixin,
                                                             INoDefaultRuleMixin,

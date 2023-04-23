@@ -37,7 +37,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useLabelWiseProbabilityPredictor()
 
 
-    cdef cppclass IShrinkageMixin"boosting::IBoostingRuleLearner::IShrinkageMixin":
+    cdef cppclass IConstantShrinkageMixin"boosting::IBoostingRuleLearner::IConstantShrinkageMixin":
 
         # Functions:
 
