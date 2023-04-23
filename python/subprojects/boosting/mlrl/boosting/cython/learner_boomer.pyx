@@ -379,6 +379,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_global_pruning(self):
+        """
+        Configures the rule learner to not use global pruning.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoGlobalPruning()
+
     def use_global_post_pruning(self) -> PostPruningConfig:
         """
         Configures the rule learner to use a stopping criterion that keeps track of the number of rules in a model that

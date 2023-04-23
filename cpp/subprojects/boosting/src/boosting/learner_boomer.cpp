@@ -24,6 +24,7 @@ namespace boosting {
         this->useAutomaticFeatureBinning();
         this->useSizeStoppingCriterion();
         this->useNoRulePruning();
+        this->useNoGlobalPruning();
         this->useConstantShrinkagePostProcessor();
         this->useAutomaticParallelRuleRefinement();
         this->useAutomaticParallelStatisticUpdate();
