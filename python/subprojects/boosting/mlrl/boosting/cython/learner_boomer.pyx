@@ -268,6 +268,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_rule_pruning(self):
+        """
+        Configures the rule learner to not prune individual rules.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoRulePruning()
+
     def use_irep_rule_pruning(self):
         """
         Configures the rule learner to prune individual rules by following the principles of "incremental reduced error

@@ -5,10 +5,10 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IDefaultRuleM
     IInstanceSamplingWithReplacementMixin, ILabelWiseStratifiedInstanceSamplingMixin, \
     IExampleWiseStratifiedInstanceSamplingMixin, INoFeatureSamplingMixin, IFeatureSamplingWithoutReplacementMixin, \
     INoPartitionSamplingMixin, IRandomBiPartitionSamplingMixin, ILabelWiseStratifiedBiPartitionSamplingMixin, \
-    IExampleWiseStratifiedBiPartitionSamplingMixin, IIrepRulePruningMixin, INoParallelRuleRefinementMixin, \
-    IParallelRuleRefinementMixin, INoParallelStatisticUpdateMixin, IParallelStatisticUpdateMixin, \
-    INoParallelPredictionMixin, IParallelPredictionMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, \
-    IPrePruningMixin, IPostPruningMixin, ISequentialPostOptimizationMixin
+    IExampleWiseStratifiedBiPartitionSamplingMixin, INoRulePruningMixin, IIrepRulePruningMixin, \
+    INoParallelRuleRefinementMixin, IParallelRuleRefinementMixin, INoParallelStatisticUpdateMixin, \
+    IParallelStatisticUpdateMixin, INoParallelPredictionMixin, IParallelPredictionMixin, ISizeStoppingCriterionMixin, \
+    ITimeStoppingCriterionMixin, IPrePruningMixin, IPostPruningMixin, ISequentialPostOptimizationMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, \
     IConstantShrinkageMixin, IL1RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, \
     IDynamicPartialHeadMixin, IFixedPartialHeadMixin, ISingleLabelHeadMixin, ISparseStatisticsMixin, \
@@ -58,6 +58,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IRandomBiPartitionSamplingMixin,
                                                             ILabelWiseStratifiedBiPartitionSamplingMixin,
                                                             IExampleWiseStratifiedBiPartitionSamplingMixin,
+                                                            INoRulePruningMixin,
                                                             IIrepRulePruningMixin,
                                                             INoParallelRuleRefinementMixin,
                                                             IParallelRuleRefinementMixin,
