@@ -61,13 +61,6 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
-    def use_no_label_sampling(self):
-        """
-        Configures the rule learner to not sample from the available labels whenever a new rule should be learned.
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoLabelSampling()
-
     def use_no_instance_sampling(self):
         """
         Configures the rule learner to not sample from the available training examples whenever a new rule should be

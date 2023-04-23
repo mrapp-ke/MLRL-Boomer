@@ -30,6 +30,7 @@
 #include "common/sampling/instance_sampling_stratified_label_wise.hpp"
 #include "common/sampling/instance_sampling_with_replacement.hpp"
 #include "common/sampling/instance_sampling_without_replacement.hpp"
+#include "common/sampling/label_sampling_no.hpp"
 #include "common/sampling/label_sampling_without_replacement.hpp"
 #include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
@@ -328,12 +329,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() = 0;
 
                 /**
-                 * Configures the rule learner to not sample from the available labels whenever a new rule should be
-                 * learned.
-                 */
-                virtual void useNoLabelSampling() = 0;
-
-                /**
                  * Configures the rule learner to not sample from the available training examples whenever a new rule
                  * should be learned.
                  */
@@ -516,6 +511,21 @@ class MLRLCOMMON_API IRuleLearner {
                     IEqualFrequencyFeatureBinningConfig& ref = *ptr;
                     featureBinningConfigPtr = std::move(ptr);
                     return ref;
+                }
+        };
+
+        class INoLabelSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoLabelSamplingMixin() override {};
+
+                /**
+                 * Configures the rule learner to not sample from the available labels whenever a new rule should be
+                 * learned.
+                 */
+                virtual void useNoLabelSampling() {
+                    std::unique_ptr<ILabelSamplingConfig>& labelSamplingConfigPtr = this->getLabelSamplingConfigPtr();
+                    labelSamplingConfigPtr = std::make_unique<NoLabelSamplingConfig>();
                 }
         };
 
@@ -1428,8 +1438,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useSequentialRuleModelAssemblage() override;
 
                 IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
-
-                void useNoLabelSampling() override;
 
                 void useNoInstanceSampling() override;
 

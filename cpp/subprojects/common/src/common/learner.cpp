@@ -7,7 +7,6 @@
 #include "common/rule_pruning/rule_pruning_no.hpp"
 #include "common/sampling/feature_sampling_no.hpp"
 #include "common/sampling/instance_sampling_no.hpp"
-#include "common/sampling/label_sampling_no.hpp"
 #include "common/sampling/partition_sampling_no.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/util/validation.hpp"
@@ -64,7 +63,6 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
       ruleCompareFunction_(ruleCompareFunction) {
     this->useSequentialRuleModelAssemblage();
     this->useGreedyTopDownRuleInduction();
-    this->useNoLabelSampling();
     this->useNoInstanceSampling();
     this->useNoFeatureSampling();
     this->useNoPartitionSampling();
@@ -178,10 +176,6 @@ IGreedyTopDownRuleInductionConfig& AbstractRuleLearner::Config::useGreedyTopDown
     IGreedyTopDownRuleInductionConfig& ref = *ptr;
     ruleInductionConfigPtr_ = std::move(ptr);
     return ref;
-}
-
-void AbstractRuleLearner::Config::useNoLabelSampling() {
-    labelSamplingConfigPtr_ = std::make_unique<NoLabelSamplingConfig>();
 }
 
 void AbstractRuleLearner::Config::useNoInstanceSampling() {
