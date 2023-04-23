@@ -28,6 +28,7 @@ namespace boosting {
         this->useNoTimeStoppingCriterion();
         this->useNoRulePruning();
         this->useNoGlobalPruning();
+        this->useNoSequentialPostOptimization();
         this->useConstantShrinkagePostProcessor();
         this->useAutomaticParallelRuleRefinement();
         this->useAutomaticParallelStatisticUpdate();

@@ -38,10 +38,7 @@ cdef extern from "common/learner.hpp" nogil:
 
 
     cdef cppclass IRuleLearnerConfig"IRuleLearner::IConfig":
-
-        # Functions:
-
-        void useNoSequentialPostOptimization()
+        pass
 
 
     cdef cppclass ISequentialRuleModelAssemblageMixin"IRuleLearner::ISequentialRuleModelAssemblageMixin":
@@ -78,7 +75,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoPostProcessor()
 
-        
+
     cdef cppclass INoFeatureBinningMixin"IRuleLearner::INoFeatureBinningMixin":
 
         # Functions:
@@ -294,6 +291,13 @@ cdef extern from "common/learner.hpp" nogil:
         # Functions:
 
         IPostPruningConfig& useGlobalPostPruning()
+
+
+    cdef cppclass INoSequentialPostOptimizationMixin"IRuleLearner::INoSequentialPostOptimizationMixin":
+
+        # Functions:
+
+        void useNoSequentialPostOptimization()
 
 
     cdef cppclass ISequentialPostOptimizationMixin"IRuleLearner::ISequentialPostOptimizationMixin":

@@ -19,6 +19,7 @@ namespace seco {
         this->useLabelWiseStratifiedInstanceSampling();
         this->useIrepRulePruning();
         this->useNoGlobalPruning();
+        this->useNoSequentialPostOptimization();
         this->useFMeasureHeuristic();
         this->useAccuracyPruningHeuristic();
         this->usePeakLiftFunction();
