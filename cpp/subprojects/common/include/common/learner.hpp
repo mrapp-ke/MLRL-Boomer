@@ -518,12 +518,13 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use instance sampling.
+         * Defines an interface for all classes that allow to configure a rule learner to use instance sampling with
+         * replacement.
          */
-        class IInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
+        class IInstanceSamplingWithReplacementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IInstanceSamplingMixin() override {};
+                virtual ~IInstanceSamplingWithReplacementMixin() override {};
 
                 /**
                  * Configures the rule learner to sample from the available training examples with replacement whenever
@@ -541,6 +542,16 @@ class MLRLCOMMON_API IRuleLearner {
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use instance sampling without
+         * replacement.
+         */
+        class IInstanceSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IInstanceSamplingWithoutReplacementMixin() override {};
 
                 /**
                  * Configures the rule learner to sample from the available training examples without replacement
@@ -558,6 +569,16 @@ class MLRLCOMMON_API IRuleLearner {
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use label-wise stratified
+         * instance sampling.
+         */
+        class ILabelWiseStratifiedInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~ILabelWiseStratifiedInstanceSamplingMixin() override {};
 
                 /**
                  * Configures the rule learner to sample from the available training examples using stratification, such
@@ -576,6 +597,16 @@ class MLRLCOMMON_API IRuleLearner {
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use example-wise stratified
+         * instance sampling.
+         */
+        class IExampleWiseStratifiedInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IExampleWiseStratifiedInstanceSamplingMixin() override {};
 
                 /**
                  * Configures the rule learner to sample from the available training examples using stratification,

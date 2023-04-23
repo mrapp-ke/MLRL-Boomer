@@ -104,17 +104,32 @@ cdef extern from "common/learner.hpp" nogil:
         ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement()
 
 
-    cdef cppclass IInstanceSamplingMixin"IRuleLearner::IInstanceSamplingMixin":
+    cdef cppclass IInstanceSamplingWithoutReplacementMixin"IRuleLearner::IInstanceSamplingWithoutReplacementMixin":
+
+        # Functions:
+
+        IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement()
+
+
+    cdef cppclass IInstanceSamplingWithReplacementMixin"IRuleLearner::IInstanceSamplingWithReplacementMixin":
+
+        # Functions:
+
+        IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement()
+
+
+    cdef cppclass ILabelWiseStratifiedInstanceSamplingMixin"IRuleLearner::ILabelWiseStratifiedInstanceSamplingMixin":
+
+        # Functions:
+
+        ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling()
+
+
+    cdef cppclass IExampleWiseStratifiedInstanceSamplingMixin"IRuleLearner::IExampleWiseStratifiedInstanceSamplingMixin":
 
         # Functions:
 
         IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling()
-
-        ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling()
-
-        IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement()
-
-        IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement()
 
 
     cdef cppclass IFeatureSamplingMixin"IRuleLearner::IFeatureSamplingMixin":
