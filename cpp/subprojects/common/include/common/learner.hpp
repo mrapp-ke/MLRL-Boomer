@@ -806,12 +806,13 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use pruning.
+         * Defines an interface for all classes that allow to configure a rule learner to prune individual rules by
+         * following the principles of "incremental reduced error pruning" (IREP).
          */
-        class IRulePruningMixin : virtual public IRuleLearner::IConfig {
+        class IIrepRulePruningMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IRulePruningMixin() override {};
+                virtual ~IIrepRulePruningMixin() override {};
 
                 /**
                  * Configures the rule learner to prune individual rules by following the principles of "incremental

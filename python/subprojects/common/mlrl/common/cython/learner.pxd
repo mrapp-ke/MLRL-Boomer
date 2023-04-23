@@ -184,7 +184,7 @@ cdef extern from "common/learner.hpp" nogil:
         IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling()
 
 
-    cdef cppclass IRulePruningMixin"IRuleLearner::IRulePruningMixin":
+    cdef cppclass IIrepRulePruningMixin"IRuleLearner::IIrepRulePruningMixin":
 
         # Functions:
 
