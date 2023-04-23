@@ -306,6 +306,13 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_feature_sampling(self):
+        """
+        Configures the rule learner to not sample from the available features whenever a rule should be refined.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoFeatureSampling()
+
     def use_feature_sampling_without_replacement(self) -> FeatureSamplingWithoutReplacementConfig:
         """
         Configures the rule learner to sample from the available features with replacement whenever a rule should be
