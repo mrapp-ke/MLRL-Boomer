@@ -438,12 +438,13 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use feature binning.
+         * Defines an interface for all classes that allow to configure a rule learner to use equal-width feature
+         * binning.
          */
-        class IFeatureBinningMixin : virtual public IRuleLearner::IConfig {
+        class IEqualWidthFeatureBinningMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IFeatureBinningMixin() override {};
+                virtual ~IEqualWidthFeatureBinningMixin() override {};
 
                 /**
                  * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
@@ -461,6 +462,16 @@ class MLRLCOMMON_API IRuleLearner {
                     featureBinningConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use equal-frequency feature
+         * binning.
+         */
+        class IEqualFrequencyFeatureBinningMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IEqualFrequencyFeatureBinningMixin() override {};
 
                 /**
                  * Configures the rule learner to use a method for the assignment of numerical feature values to bins,

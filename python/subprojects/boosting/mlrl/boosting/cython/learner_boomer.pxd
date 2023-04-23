@@ -1,8 +1,9 @@
 
-from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTopDownMixin, IFeatureBinningMixin, \
-    ILabelSamplingMixin, IInstanceSamplingMixin, IFeatureSamplingMixin, IPartitionSamplingMixin, IRulePruningMixin, \
-    IMultiThreadingMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IPrePruningMixin, \
-    IPostPruningMixin, ISequentialPostOptimizationMixin
+from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTopDownMixin, \
+    IEqualWidthFeatureBinningMixin, IEqualFrequencyFeatureBinningMixin, ILabelSamplingMixin, IInstanceSamplingMixin, \
+    IFeatureSamplingMixin, IPartitionSamplingMixin, IRulePruningMixin, IMultiThreadingMixin, \
+    ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IPrePruningMixin, IPostPruningMixin, \
+    ISequentialPostOptimizationMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, IShrinkageMixin, \
     IL1RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, IDynamicPartialHeadMixin, \
     IFixedPartialHeadMixin, ISingleLabelHeadMixin, ISparseStatisticsMixin, IExampleWiseLogisticLossMixin, \
@@ -34,7 +35,8 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IGfmBinaryPredictorMixin,
                                                             IMarginalizedProbabilityPredictorMixin,
                                                             IBeamSearchTopDownMixin,
-                                                            IFeatureBinningMixin,
+                                                            IEqualWidthFeatureBinningMixin,
+                                                            IEqualFrequencyFeatureBinningMixin,
                                                             ILabelSamplingMixin,
                                                             IInstanceSamplingMixin,
                                                             IFeatureSamplingMixin,
