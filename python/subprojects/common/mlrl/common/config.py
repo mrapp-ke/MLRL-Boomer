@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility function for configuring rule learning algorithms.
 """
-from mlrl.common.cython.learner import RuleLearnerConfig
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption, parse_param, parse_param_and_options
 from typing import Dict, Set, Optional
@@ -157,7 +156,7 @@ PARALLEL_VALUES: Dict[str, Set[str]] = {
 }
 
 
-def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional[str]):
+def configure_rule_induction(config, rule_induction: Optional[str]):
     if rule_induction is not None:
         value, options = parse_param_and_options('rule_induction', rule_induction, RULE_INDUCTION_VALUES)
 
@@ -181,7 +180,7 @@ def configure_rule_induction(config: RuleLearnerConfig, rule_induction: Optional
                 options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS, c.are_predictions_recalculated()))
 
 
-def configure_feature_binning(config: RuleLearnerConfig, feature_binning: Optional[str]):
+def configure_feature_binning(config, feature_binning: Optional[str]):
     if feature_binning is not None:
         value, options = parse_param_and_options('feature_binning', feature_binning, FEATURE_BINNING_VALUES)
 
@@ -199,7 +198,7 @@ def configure_feature_binning(config: RuleLearnerConfig, feature_binning: Option
             c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
 
 
-def configure_label_sampling(config: RuleLearnerConfig, label_sampling: Optional[str]):
+def configure_label_sampling(config, label_sampling: Optional[str]):
     if label_sampling is not None:
         value, options = parse_param_and_options('label_sampling', label_sampling, LABEL_SAMPLING_VALUES)
 
@@ -210,7 +209,7 @@ def configure_label_sampling(config: RuleLearnerConfig, label_sampling: Optional
             c.set_num_samples(options.get_int(ARGUMENT_NUM_SAMPLES, c.get_num_samples()))
 
 
-def configure_instance_sampling(config: RuleLearnerConfig, instance_sampling: Optional[str]):
+def configure_instance_sampling(config, instance_sampling: Optional[str]):
     if instance_sampling is not None:
         value, options = parse_param_and_options('instance_sampling', instance_sampling, INSTANCE_SAMPLING_VALUES)
 
@@ -230,7 +229,7 @@ def configure_instance_sampling(config: RuleLearnerConfig, instance_sampling: Op
             c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
 
 
-def configure_feature_sampling(config: RuleLearnerConfig, feature_sampling: Optional[str]):
+def configure_feature_sampling(config, feature_sampling: Optional[str]):
     if feature_sampling is not None:
         value, options = parse_param_and_options('feature_sampling', feature_sampling, FEATURE_SAMPLING_VALUES)
 
@@ -241,7 +240,7 @@ def configure_feature_sampling(config: RuleLearnerConfig, feature_sampling: Opti
             c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
 
 
-def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: Optional[str]):
+def configure_partition_sampling(config, partition_sampling: Optional[str]):
     if partition_sampling is not None:
         value, options = parse_param_and_options('holdout', partition_sampling, PARTITION_SAMPLING_VALUES)
 
@@ -258,7 +257,7 @@ def configure_partition_sampling(config: RuleLearnerConfig, partition_sampling: 
             c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
 
 
-def configure_global_pruning(config: RuleLearnerConfig, global_pruning: Optional[str]):
+def configure_global_pruning(config, global_pruning: Optional[str]):
     if global_pruning is not None:
         value, options = parse_param_and_options('global_pruning', global_pruning, GLOBAL_PRUNING_VALUES)
 
@@ -286,7 +285,7 @@ def configure_global_pruning(config: RuleLearnerConfig, global_pruning: Optional
             c.set_min_improvement(options.get_float(ARGUMENT_MIN_IMPROVEMENT, c.get_min_improvement()))
 
 
-def configure_rule_pruning(config: RuleLearnerConfig, rule_pruning: Optional[str]):
+def configure_rule_pruning(config, rule_pruning: Optional[str]):
     if rule_pruning is not None:
         value = parse_param('rule_pruning', rule_pruning, RULE_PRUNING_VALUES)
 
@@ -296,7 +295,7 @@ def configure_rule_pruning(config: RuleLearnerConfig, rule_pruning: Optional[str
             config.use_irep_rule_pruning()
 
 
-def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_refinement: Optional[str]):
+def configure_parallel_rule_refinement(config, parallel_rule_refinement: Optional[str]):
     if parallel_rule_refinement is not None:
         value, options = parse_param_and_options('parallel_rule_refinement', parallel_rule_refinement, PARALLEL_VALUES)
 
@@ -307,7 +306,7 @@ def configure_parallel_rule_refinement(config: RuleLearnerConfig, parallel_rule_
             c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
 
 
-def configure_parallel_statistic_update(config: RuleLearnerConfig, parallel_statistic_update: Optional[str]):
+def configure_parallel_statistic_update(config, parallel_statistic_update: Optional[str]):
     if parallel_statistic_update is not None:
         value, options = parse_param_and_options('parallel_statistic_update', parallel_statistic_update,
                                                  PARALLEL_VALUES)
@@ -319,7 +318,7 @@ def configure_parallel_statistic_update(config: RuleLearnerConfig, parallel_stat
             c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
 
 
-def configure_parallel_prediction(config: RuleLearnerConfig, parallel_prediction: Optional[str]):
+def configure_parallel_prediction(config, parallel_prediction: Optional[str]):
     if parallel_prediction is not None:
         value, options = parse_param_and_options('parallel_prediction', parallel_prediction, PARALLEL_VALUES)
 
@@ -330,7 +329,7 @@ def configure_parallel_prediction(config: RuleLearnerConfig, parallel_prediction
             config.use_no_parallel_prediction()
 
 
-def configure_size_stopping_criterion(config: RuleLearnerConfig, max_rules: Optional[int]):
+def configure_size_stopping_criterion(config, max_rules: Optional[int]):
     if max_rules is not None:
         if max_rules == 0:
             config.use_no_size_stopping_criterion()
@@ -338,7 +337,7 @@ def configure_size_stopping_criterion(config: RuleLearnerConfig, max_rules: Opti
             config.use_size_stopping_criterion().set_max_rules(max_rules)
 
 
-def configure_time_stopping_criterion(config: RuleLearnerConfig, time_limit: Optional[int]):
+def configure_time_stopping_criterion(config, time_limit: Optional[int]):
     if time_limit is not None:
         if time_limit == 0:
             config.use_no_time_stopping_criterion()
@@ -358,7 +357,7 @@ def __create_aggregation_function(aggregation_function: str) -> AggregationFunct
         return AggregationFunction.ARITHMETIC_MEAN
 
 
-def configure_sequential_post_optimization(config: RuleLearnerConfig, sequential_post_optimization: Optional[str]):
+def configure_sequential_post_optimization(config, sequential_post_optimization: Optional[str]):
     if sequential_post_optimization is not None:
         value, options = parse_param_and_options('sequential_post_optimization', sequential_post_optimization,
                                                  SEQUENTIAL_POST_OPTIMIZATION_VALUES)
