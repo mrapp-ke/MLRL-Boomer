@@ -44,11 +44,16 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
 
 
-    cdef cppclass IRegularizationMixin"boosting::IBoostingRuleLearner::IRegularizationMixin":
+    cdef cppclass IL1RegularizationMixin"boosting::IBoostingRuleLearner::IL1RegularizationMixin":
 
         # Functions:
 
         IManualRegularizationConfig& useL1Regularization()
+
+
+    cdef cppclass IL2RegularizationMixin"boosting::IBoostingRuleLearner::IL2RegularizationMixin":
+
+        # Functions:
 
         IManualRegularizationConfig& useL2Regularization()
 
