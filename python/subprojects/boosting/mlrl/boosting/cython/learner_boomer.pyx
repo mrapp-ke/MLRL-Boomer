@@ -361,6 +361,14 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_time_stopping_criterion(self):
+        """
+        Configures the rule learner to not use a stopping criterion that ensures that a certain time limit is not
+        exceeded.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoTimeStoppingCriterion()
+
     def use_time_stopping_criterion(self) -> TimeStoppingCriterionConfig:
         """
         Configures the rule learner to use a stopping criterion that ensures that a certain time limit is not exceeded.

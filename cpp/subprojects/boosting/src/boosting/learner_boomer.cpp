@@ -23,6 +23,7 @@ namespace boosting {
         this->useAutomaticPartitionSampling();
         this->useAutomaticFeatureBinning();
         this->useSizeStoppingCriterion();
+        this->useNoTimeStoppingCriterion();
         this->useNoRulePruning();
         this->useNoGlobalPruning();
         this->useConstantShrinkagePostProcessor();

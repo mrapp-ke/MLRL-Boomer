@@ -67,6 +67,7 @@ namespace boosting {
                             virtual public IRuleLearner::IParallelPredictionMixin,
                             virtual public IRuleLearner::INoSizeStoppingCriterionMixin,
                             virtual public IRuleLearner::ISizeStoppingCriterionMixin,
+                            virtual public IRuleLearner::INoTimeStoppingCriterionMixin,
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
                             virtual public IRuleLearner::IPrePruningMixin,
                             virtual public IRuleLearner::INoGlobalPruningMixin,
