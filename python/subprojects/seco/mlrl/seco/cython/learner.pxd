@@ -36,8 +36,18 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         void usePartialHeads()
 
+
+    cdef cppclass IPeakLiftFunctionMixin"seco::ISeCoRuleLearner::IPeakLiftFunctionMixin":
+
+        # Functions:
+
         IPeakLiftFunctionConfig& usePeakLiftFunction()
 
+
+    cdef cppclass IKlnLiftFunctionMixin"seco::ISeCoRuleLearner::IKlnLiftFunctionMixin":
+
+        # Functions:
+        
         IKlnLiftFunctionConfig& useKlnLiftFunction()
 
 

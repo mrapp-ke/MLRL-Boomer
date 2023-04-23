@@ -175,6 +175,17 @@ namespace seco {
                                                                             this->getPruningHeuristicConfigPtr(),
                                                                             this->getLiftFunctionConfigPtr());
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a lift function that
+             * monotonously increases until a certain number of labels, where the maximum lift is reached, and
+             * monotonously decreases afterwards.
+             */
+            class IPeakLiftFunctionMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IPeakLiftFunctionMixin() override {};
 
                     /**
                      * Configures the rule learner to use a lift function that monotonously increases until a certain
@@ -190,6 +201,17 @@ namespace seco {
                         liftFunctionConfigPtr = std::move(ptr);
                         return ref;
                     }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a lift function that
+             * monotonously increases according to the natural logarithm of the number of labels for which a rule
+             * predicts.
+             */
+            class IKlnLiftFunctionMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IKlnLiftFunctionMixin() override {};
 
                     /**
                      * Configures the rule learner to use a lift function that monotonously increases according to the
