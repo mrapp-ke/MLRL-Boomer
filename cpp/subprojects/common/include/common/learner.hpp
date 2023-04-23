@@ -628,12 +628,13 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use feature sampling.
+         * Defines an interface for all classes that allow to configure a rule learner to use feature sampling without
+         * replacement.
          */
-        class IFeatureSamplingMixin : virtual public IRuleLearner::IConfig {
+        class IFeatureSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IFeatureSamplingMixin() override {};
+                virtual ~IFeatureSamplingWithoutReplacementMixin() override {};
 
                 /**
                  * Configures the rule learner to sample from the available features with replacement whenever a rule
