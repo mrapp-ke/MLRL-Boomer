@@ -1,7 +1,7 @@
 
 from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IBeamSearchTopDownMixin, \
-    IEqualWidthFeatureBinningMixin, IEqualFrequencyFeatureBinningMixin, ILabelSamplingMixin, IInstanceSamplingMixin, \
-    IFeatureSamplingMixin, IPartitionSamplingMixin, IRulePruningMixin, IMultiThreadingMixin, \
+    IEqualWidthFeatureBinningMixin, IEqualFrequencyFeatureBinningMixin, ILabelSamplingWithoutReplacementMixin, \
+    IInstanceSamplingMixin, IFeatureSamplingMixin, IPartitionSamplingMixin, IRulePruningMixin, IMultiThreadingMixin, \
     ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, IPrePruningMixin, IPostPruningMixin, \
     ISequentialPostOptimizationMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, IShrinkageMixin, \
@@ -37,7 +37,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IBeamSearchTopDownMixin,
                                                             IEqualWidthFeatureBinningMixin,
                                                             IEqualFrequencyFeatureBinningMixin,
-                                                            ILabelSamplingMixin,
+                                                            ILabelSamplingWithoutReplacementMixin,
                                                             IInstanceSamplingMixin,
                                                             IFeatureSamplingMixin,
                                                             IPartitionSamplingMixin,
