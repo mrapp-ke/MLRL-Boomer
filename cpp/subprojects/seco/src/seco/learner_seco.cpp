@@ -3,6 +3,7 @@
 namespace seco {
 
     MultiLabelSeCoRuleLearner::Config::Config() {
+        this->useSequentialRuleModelAssemblage();
         this->useDefaultRule();
         this->useNoFeatureBinning();
         this->useNoLabelSampling();

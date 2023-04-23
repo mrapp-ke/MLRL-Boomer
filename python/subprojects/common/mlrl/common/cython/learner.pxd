@@ -41,13 +41,18 @@ cdef extern from "common/learner.hpp" nogil:
 
         # Functions:
 
-        void useSequentialRuleModelAssemblage()
-
         IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction()
 
         void useNoPostProcessor()
 
         void useNoSequentialPostOptimization()
+
+
+    cdef cppclass ISequentialRuleModelAssemblageMixin"IRuleLearner::ISequentialRuleModelAssemblageMixin":
+
+        # Functions:
+
+        void useSequentialRuleModelAssemblage()
 
 
     cdef cppclass IDefaultRuleMixin"IRuleLearner::IDefaultRuleMixin":

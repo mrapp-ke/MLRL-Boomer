@@ -2,7 +2,6 @@
 
 #include "common/post_processing/post_processor_no.hpp"
 #include "common/prediction/label_space_info_no.hpp"
-#include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/util/validation.hpp"
 
@@ -56,7 +55,6 @@ class TrainingResult final : public ITrainingResult {
 AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
     : unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()),
       ruleCompareFunction_(ruleCompareFunction) {
-    this->useSequentialRuleModelAssemblage();
     this->useGreedyTopDownRuleInduction();
     this->useNoPostProcessor();
     this->useNoSequentialPostOptimization();
@@ -149,10 +147,6 @@ std::unique_ptr<IScorePredictorConfig>& AbstractRuleLearner::Config::getScorePre
 
 std::unique_ptr<IProbabilityPredictorConfig>& AbstractRuleLearner::Config::getProbabilityPredictorConfigPtr() {
     return probabilityPredictorConfigPtr_;
-}
-
-void AbstractRuleLearner::Config::useSequentialRuleModelAssemblage() {
-    ruleModelAssemblageConfigPtr_ = std::make_unique<SequentialRuleModelAssemblageConfig>(defaultRuleConfigPtr_);
 }
 
 IGreedyTopDownRuleInductionConfig& AbstractRuleLearner::Config::useGreedyTopDownRuleInduction() {

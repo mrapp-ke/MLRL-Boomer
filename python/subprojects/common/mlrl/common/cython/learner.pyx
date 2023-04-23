@@ -40,14 +40,6 @@ cdef class RuleLearnerConfig:
     cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self):
         pass
 
-    def use_sequential_rule_model_assemblage(self):
-        """
-        Configures the rule learner to use an algorithm that sequentially induces several rules, optionally starting
-        with a default rule, that are added to a rule-based model.
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useSequentialRuleModelAssemblage()
-
     def use_greedy_top_down_rule_induction(self) -> GreedyTopDownRuleInductionConfig:
         """
         Configures the algorithm to use a greedy top-down search for the induction of individual rules.
