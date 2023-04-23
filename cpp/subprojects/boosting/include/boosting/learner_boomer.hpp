@@ -41,6 +41,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin,
                             virtual public IRuleLearner::IDefaultRuleMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownMixin,
+                            virtual public IRuleLearner::INoFeatureBinningMixin,
                             virtual public IRuleLearner::IEqualWidthFeatureBinningMixin,
                             virtual public IRuleLearner::IEqualFrequencyFeatureBinningMixin,
                             virtual public IRuleLearner::ILabelSamplingWithoutReplacementMixin,

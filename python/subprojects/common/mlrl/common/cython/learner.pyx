@@ -61,13 +61,6 @@ cdef class RuleLearnerConfig:
         config.config_ptr = config_ptr
         return config
 
-    def use_no_feature_binning(self):
-        """
-        Configures the rule learner to not use any method for the assignment of numerical feature values to bins.
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoFeatureBinning()
-
     def use_no_label_sampling(self):
         """
         Configures the rule learner to not sample from the available labels whenever a new rule should be learned.

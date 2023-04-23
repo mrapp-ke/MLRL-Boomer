@@ -5,6 +5,7 @@
 
 #include "common/binning/feature_binning_equal_frequency.hpp"
 #include "common/binning/feature_binning_equal_width.hpp"
+#include "common/binning/feature_binning_no.hpp"
 #include "common/input/feature_info.hpp"
 #include "common/input/feature_matrix_column_wise.hpp"
 #include "common/input/feature_matrix_row_wise.hpp"
@@ -327,12 +328,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() = 0;
 
                 /**
-                 * Configures the rule learner to not use any method for the assignment of numerical feature values to
-                 * bins.
-                 */
-                virtual void useNoFeatureBinning() = 0;
-
-                /**
                  * Configures the rule learner to not sample from the available labels whenever a new rule should be
                  * learned.
                  */
@@ -446,6 +441,27 @@ class MLRLCOMMON_API IRuleLearner {
                     IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
                     ruleInductionConfigPtr = std::move(ptr);
                     return ref;
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use any method for the
+         * assignment of numerical features values to bins.
+         */
+        class INoFeatureBinningMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoFeatureBinningMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use any method for the assignment of numerical feature values to
+                 * bins.
+                 */
+                virtual void useNoFeatureBinning() {
+                    std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
+                      this->getFeatureBinningConfigPtr();
+                    featureBinningConfigPtr =
+                      std::make_unique<NoFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
                 }
         };
 
@@ -1412,8 +1428,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useSequentialRuleModelAssemblage() override;
 
                 IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
-
-                void useNoFeatureBinning() override;
 
                 void useNoLabelSampling() override;
 

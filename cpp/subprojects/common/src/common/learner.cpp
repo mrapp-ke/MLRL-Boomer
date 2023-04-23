@@ -1,6 +1,5 @@
 #include "common/learner.hpp"
 
-#include "common/binning/feature_binning_no.hpp"
 #include "common/multi_threading/multi_threading_no.hpp"
 #include "common/post_processing/post_processor_no.hpp"
 #include "common/prediction/label_space_info_no.hpp"
@@ -65,7 +64,6 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
       ruleCompareFunction_(ruleCompareFunction) {
     this->useSequentialRuleModelAssemblage();
     this->useGreedyTopDownRuleInduction();
-    this->useNoFeatureBinning();
     this->useNoLabelSampling();
     this->useNoInstanceSampling();
     this->useNoFeatureSampling();
@@ -180,10 +178,6 @@ IGreedyTopDownRuleInductionConfig& AbstractRuleLearner::Config::useGreedyTopDown
     IGreedyTopDownRuleInductionConfig& ref = *ptr;
     ruleInductionConfigPtr_ = std::move(ptr);
     return ref;
-}
-
-void AbstractRuleLearner::Config::useNoFeatureBinning() {
-    featureBinningConfigPtr_ = std::make_unique<NoFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
 }
 
 void AbstractRuleLearner::Config::useNoLabelSampling() {

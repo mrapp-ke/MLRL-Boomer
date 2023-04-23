@@ -3,6 +3,7 @@
 namespace seco {
 
     MultiLabelSeCoRuleLearner::Config::Config() {
+        this->useNoFeatureBinning();
         this->useDefaultRule();
         this->useGreedyTopDownRuleInduction();
         this->useCoverageStoppingCriterion();
