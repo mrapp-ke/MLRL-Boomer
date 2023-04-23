@@ -399,10 +399,10 @@ class MLRLCOMMON_API IRuleLearner {
         /**
          * Defines an interface for all classes that allow to configure a rule learner to use a top-down beam search.
          */
-        class IBeamSearchTopDownMixin : virtual public IRuleLearner::IConfig {
+        class IBeamSearchTopDownRuleInductionMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IBeamSearchTopDownMixin() override {};
+                virtual ~IBeamSearchTopDownRuleInductionMixin() override {};
 
                 /**
                  * Configures the rule learner to use a top-down beam search for the induction of individual rules.

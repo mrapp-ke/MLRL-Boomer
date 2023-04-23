@@ -33,7 +33,8 @@ namespace seco {
     }
 
     IBeamSearchTopDownRuleInductionConfig& MultiLabelSeCoRuleLearner::Config::useBeamSearchTopDownRuleInduction() {
-        IBeamSearchTopDownRuleInductionConfig& ref = IBeamSearchTopDownMixin::useBeamSearchTopDownRuleInduction();
+        IBeamSearchTopDownRuleInductionConfig& ref =
+          IBeamSearchTopDownRuleInductionMixin::useBeamSearchTopDownRuleInduction();
         ref.setRecalculatePredictions(false);
         return ref;
     }

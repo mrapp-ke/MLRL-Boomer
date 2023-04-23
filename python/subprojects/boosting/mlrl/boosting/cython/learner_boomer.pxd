@@ -1,6 +1,6 @@
 
 from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, ISequentialRuleModelAssemblageMixin, \
-    IDefaultRuleMixin, IGreedyTopDownRuleInductionMixin, IBeamSearchTopDownMixin, INoFeatureBinningMixin, \
+    IDefaultRuleMixin, IGreedyTopDownRuleInductionMixin, IBeamSearchTopDownRuleInductionMixin, INoFeatureBinningMixin, \
     IEqualWidthFeatureBinningMixin, IEqualFrequencyFeatureBinningMixin, INoLabelSamplingMixin, \
     ILabelSamplingWithoutReplacementMixin, INoInstanceSamplingMixin, IInstanceSamplingWithoutReplacementMixin, \
     IInstanceSamplingWithReplacementMixin, ILabelWiseStratifiedInstanceSamplingMixin, \
@@ -46,7 +46,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IDefaultRuleMixin,
                                                             IMarginalizedProbabilityPredictorMixin,
                                                             IGreedyTopDownRuleInductionMixin,
-                                                            IBeamSearchTopDownMixin,
+                                                            IBeamSearchTopDownRuleInductionMixin,
                                                             INoFeatureBinningMixin,
                                                             IEqualWidthFeatureBinningMixin,
                                                             IEqualFrequencyFeatureBinningMixin,
