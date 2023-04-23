@@ -61,7 +61,6 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
     this->useGreedyTopDownRuleInduction();
     this->useNoRulePruning();
     this->useNoPostProcessor();
-    this->useNoParallelPrediction();
     this->useNoSizeStoppingCriterion();
     this->useNoTimeStoppingCriterion();
     this->useNoGlobalPruning();
@@ -175,10 +174,6 @@ void AbstractRuleLearner::Config::useNoRulePruning() {
 
 void AbstractRuleLearner::Config::useNoPostProcessor() {
     postProcessorConfigPtr_ = std::make_unique<NoPostProcessorConfig>();
-}
-
-void AbstractRuleLearner::Config::useNoParallelPrediction() {
-    parallelPredictionConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
 }
 
 void AbstractRuleLearner::Config::useNoSizeStoppingCriterion() {

@@ -314,6 +314,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_parallel_prediction(self):
+        """
+        Configures the rule learner to not use any multi-threading to predict for several query examples in parallel.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoParallelPrediction()
+
     def use_parallel_prediction(self) -> ManualMultiThreadingConfig:
         """
         Configures the rule learner to use multi-threading to predict for several query examples in parallel.
