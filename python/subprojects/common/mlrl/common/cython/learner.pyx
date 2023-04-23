@@ -84,14 +84,6 @@ cdef class RuleLearnerConfig:
         cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoTimeStoppingCriterion()
 
-    def use_no_global_pruning(self):
-        """
-        Configures the rule learner to not use a stopping criterion that allows to decide how many rules should be
-        included in a model, such that its performance is optimized globally.
-        """
-        cdef IRuleLearnerConfig* rule_learner_config_ptr = self.get_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoGlobalPruning()
-
     def use_no_sequential_post_optimization(self):
         """
         Configures the rule learner to not use a post-optimization method that optimizes each rule in a model by

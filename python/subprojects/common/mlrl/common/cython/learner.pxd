@@ -51,8 +51,6 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoTimeStoppingCriterion()
 
-        void useNoGlobalPruning()
-
         void useNoSequentialPostOptimization()
 
 
@@ -188,7 +186,7 @@ cdef extern from "common/learner.hpp" nogil:
 
         void useNoRulePruning()
 
-        
+
     cdef cppclass IIrepRulePruningMixin"IRuleLearner::IIrepRulePruningMixin":
 
         # Functions:
@@ -257,6 +255,13 @@ cdef extern from "common/learner.hpp" nogil:
         # Functions:
 
         IPrePruningConfig& useGlobalPrePruning()
+
+
+    cdef cppclass INoGlobalPruningMixin"IRuleLearner::INoGlobalPruningMixin":
+
+        # Functions:
+
+        void useNoGlobalPruning()
 
 
     cdef cppclass IPostPruningMixin"IRuleLearner::IPostPruningMixin":

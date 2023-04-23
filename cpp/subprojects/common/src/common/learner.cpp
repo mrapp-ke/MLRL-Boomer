@@ -61,7 +61,6 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
     this->useNoPostProcessor();
     this->useNoSizeStoppingCriterion();
     this->useNoTimeStoppingCriterion();
-    this->useNoGlobalPruning();
     this->useNoSequentialPostOptimization();
 }
 
@@ -176,10 +175,6 @@ void AbstractRuleLearner::Config::useNoSizeStoppingCriterion() {
 
 void AbstractRuleLearner::Config::useNoTimeStoppingCriterion() {
     timeStoppingCriterionConfigPtr_ = nullptr;
-}
-
-void AbstractRuleLearner::Config::useNoGlobalPruning() {
-    globalPruningConfigPtr_ = nullptr;
 }
 
 void AbstractRuleLearner::Config::useNoSequentialPostOptimization() {

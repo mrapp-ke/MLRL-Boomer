@@ -474,6 +474,13 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_global_pruning(self):
+        """
+        Configures the rule learner to not use global pruning.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoGlobalPruning()
+
     def use_sequential_post_optimization(self) -> SequentialPostOptimizationConfig:
         """
         Configures the rule learner to use a post-optimization method that optimizes each rule in a model by relearning

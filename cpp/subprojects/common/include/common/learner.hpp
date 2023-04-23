@@ -351,12 +351,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoTimeStoppingCriterion() = 0;
 
                 /**
-                 * Configures the rule learner to not use a stopping criterion that allows to decide how many rules
-                 * should be included in a model, such that its performance is optimized globally.
-                 */
-                virtual void useNoGlobalPruning() = 0;
-
-                /**
                  * Configures the rule learner to not use a post-optimization method that optimizes each rule in a model
                  * by relearning it in the context of the other rules.
                  */
@@ -1050,6 +1044,23 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use global pruning.
+         */
+        class INoGlobalPruningMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoGlobalPruningMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use global pruning.
+                 */
+                virtual void useNoGlobalPruning() {
+                    std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = this->getGlobalPruningConfigPtr();
+                    globalPruningConfigPtr = nullptr;
+                }
+        };
+
+        /**
          * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
          * keeps track of the number of rules in a model that perform best with respect to the examples in the training
          * or holdout set according to a certain measure.
@@ -1541,8 +1552,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 void useNoSizeStoppingCriterion() override;
 
                 void useNoTimeStoppingCriterion() override;
-
-                void useNoGlobalPruning() override;
 
                 void useNoSequentialPostOptimization() override;
         };

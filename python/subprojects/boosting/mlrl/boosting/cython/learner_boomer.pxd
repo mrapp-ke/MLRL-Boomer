@@ -8,7 +8,8 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, IDefaultRuleM
     IExampleWiseStratifiedBiPartitionSamplingMixin, INoRulePruningMixin, IIrepRulePruningMixin, \
     INoParallelRuleRefinementMixin, IParallelRuleRefinementMixin, INoParallelStatisticUpdateMixin, \
     IParallelStatisticUpdateMixin, INoParallelPredictionMixin, IParallelPredictionMixin, ISizeStoppingCriterionMixin, \
-    ITimeStoppingCriterionMixin, IPrePruningMixin, IPostPruningMixin, ISequentialPostOptimizationMixin
+    ITimeStoppingCriterionMixin, IPrePruningMixin, INoGlobalPruningMixin, IPostPruningMixin, \
+    ISequentialPostOptimizationMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, \
     IConstantShrinkageMixin, IL1RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, \
     IDynamicPartialHeadMixin, IFixedPartialHeadMixin, ISingleLabelHeadMixin, ISparseStatisticsMixin, \
@@ -69,6 +70,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             ISizeStoppingCriterionMixin,
                                                             ITimeStoppingCriterionMixin,
                                                             IPrePruningMixin,
+                                                            INoGlobalPruningMixin,
                                                             IPostPruningMixin,
                                                             ISequentialPostOptimizationMixin):
 
