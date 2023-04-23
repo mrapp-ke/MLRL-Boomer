@@ -42,6 +42,14 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
     cdef ISeCoRuleLearnerConfig* get_seco_rule_learner_config_ptr(self):
         return self.rule_learner_config_ptr.get()
 
+    def use_sequential_rule_model_assemblage(self):
+        """
+        Configures the rule learner to use an algorithm that sequentially induces several rules, optionally starting
+        with a default rule, that are added to a rule-based model.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useSequentialRuleModelAssemblage()
+
     def use_default_rule(self):
         """
         Configures the rule learner to induce a default rule.

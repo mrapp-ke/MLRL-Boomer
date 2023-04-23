@@ -25,6 +25,7 @@
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage.hpp"
+#include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 #include "common/rule_pruning/rule_pruning_irep.hpp"
 #include "common/rule_pruning/rule_pruning_no.hpp"
 #include "common/sampling/feature_sampling_no.hpp"
@@ -320,12 +321,6 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual ~IConfig() {};
 
                 /**
-                 * Configures the rule learner to use an algorithm that sequentially induces several rules, optionally
-                 * starting with a default rule, that are added to a rule-based model.
-                 */
-                virtual void useSequentialRuleModelAssemblage() = 0;
-
-                /**
                  * Configures the rule learner to use a greedy top-down search for the induction of individual rules.
                  *
                  * @return A reference to an object of type `IGreedyTopDownRuleInductionConfig` that allows further
@@ -343,6 +338,27 @@ class MLRLCOMMON_API IRuleLearner {
                  * by relearning it in the context of the other rules.
                  */
                 virtual void useNoSequentialPostOptimization() = 0;
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use an algorithm that
+         * sequentially induces several rules.
+         */
+        class ISequentialRuleModelAssemblageMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~ISequentialRuleModelAssemblageMixin() override {};
+
+                /**
+                 * Configures the rule learner to use an algorithm that sequentially induces several rules, optionally
+                 * starting with a default rule, that are added to a rule-based model.
+                 */
+                virtual void useSequentialRuleModelAssemblage() {
+                    std::unique_ptr<IRuleModelAssemblageConfig>& ruleModelAssemblageConfigPtr =
+                      this->getRuleModelAssemblageConfigPtr();
+                    ruleModelAssemblageConfigPtr =
+                      std::make_unique<SequentialRuleModelAssemblageConfig>(this->getDefaultRuleConfigPtr());
+                }
         };
 
         /**
@@ -1570,8 +1586,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  *                            should be used for comparing the quality of different rules
                  */
                 Config(RuleCompareFunction ruleCompareFunction);
-
-                void useSequentialRuleModelAssemblage() override;
 
                 IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
