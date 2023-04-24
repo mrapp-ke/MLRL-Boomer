@@ -7,7 +7,6 @@
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
 #include "boosting/prediction/predictor_score_label_wise.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
-#include "boosting/rule_evaluation/regularization_no.hpp"
 #include "boosting/rule_evaluation/rule_compare_function.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
 
@@ -16,7 +15,6 @@ namespace boosting {
     AbstractBoostingRuleLearner::Config::Config() : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION) {
         this->useCompleteHeads();
         this->useDenseStatistics();
-        this->useNoL1Regularization();
         this->useNoL2Regularization();
         this->useLabelWiseLogisticLoss();
         this->useNoLabelBinning();
@@ -56,10 +54,6 @@ namespace boosting {
 
     void AbstractBoostingRuleLearner::Config::useDenseStatistics() {
         statisticsConfigPtr_ = std::make_unique<DenseStatisticsConfig>(lossConfigPtr_);
-    }
-
-    void AbstractBoostingRuleLearner::Config::useNoL1Regularization() {
-        l1RegularizationConfigPtr_ = std::make_unique<NoRegularizationConfig>();
     }
 
     void AbstractBoostingRuleLearner::Config::useNoL2Regularization() {

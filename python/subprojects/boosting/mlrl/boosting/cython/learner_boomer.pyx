@@ -564,6 +564,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useSparseStatistics()
 
+    def use_no_l1_regularization(self):
+        """
+        Configures the rule learner to not use L1 regularization.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoL1Regularization()
+
     def use_l1_regularization(self) -> ManualRegularizationConfig:
         """
         Configures the rule learner to use L1 regularization.

@@ -34,6 +34,7 @@ namespace boosting {
         this->useAutomaticParallelStatisticUpdate();
         this->useAutomaticHeads();
         this->useAutomaticStatistics();
+        this->useNoL1Regularization();
         this->useL2Regularization();
         this->useAutomaticLabelBinning();
         this->useAutomaticBinaryPredictor();

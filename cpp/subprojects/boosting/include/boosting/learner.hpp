@@ -24,6 +24,7 @@
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_manual.hpp"
+#include "boosting/rule_evaluation/regularization_no.hpp"
 #include "boosting/statistics/statistic_format.hpp"
 #include "boosting/statistics/statistic_format_sparse.hpp"
 #include "common/learner.hpp"
@@ -112,11 +113,6 @@ namespace boosting {
                     virtual void useDenseStatistics() = 0;
 
                     /**
-                     * Configures the rule learner to not use L1 regularization.
-                     */
-                    virtual void useNoL1Regularization() = 0;
-
-                    /**
                      * Configures the rule learner to not use L2 regularization.
                      */
                     virtual void useNoL2Regularization() = 0;
@@ -179,6 +175,24 @@ namespace boosting {
                         IConstantShrinkageConfig& ref = *ptr;
                         postProcessorConfigPtr = std::move(ptr);
                         return ref;
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to not use L1 regularization.
+             */
+            class INoL1RegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~INoL1RegularizationMixin() override {};
+
+                    /**
+                     * Configures the rule learner to not use L1 regularization.
+                     */
+                    virtual void useNoL1Regularization() {
+                        std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr =
+                          this->getL1RegularizationConfigPtr();
+                        l1RegularizationConfigPtr = std::make_unique<NoRegularizationConfig>();
                     }
             };
 
@@ -612,8 +626,6 @@ namespace boosting {
                     void useCompleteHeads() override;
 
                     void useDenseStatistics() override;
-
-                    void useNoL1Regularization() override;
 
                     void useNoL2Regularization() override;
 
