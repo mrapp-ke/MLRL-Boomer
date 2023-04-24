@@ -12,6 +12,7 @@
 #include "boosting/losses/loss_example_wise_logistic.hpp"
 #include "boosting/losses/loss_example_wise_squared_error.hpp"
 #include "boosting/losses/loss_example_wise_squared_hinge.hpp"
+#include "boosting/losses/loss_label_wise_logistic.hpp"
 #include "boosting/losses/loss_label_wise_squared_error.hpp"
 #include "boosting/losses/loss_label_wise_squared_hinge.hpp"
 #include "boosting/math/blas.hpp"
@@ -102,12 +103,6 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * logistic loss that is applied label-wise.
-                     */
-                    virtual void useLabelWiseLogisticLoss() = 0;
 
                     /**
                      * Configures the rule learner to not use any method for the assignment of labels to bins.
@@ -458,6 +453,25 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
+             * implements a multi-label variant of the logistic loss that is applied label-wise.
+             */
+            class ILabelWiseLogisticLossMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~ILabelWiseLogisticLossMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
+                     * logistic loss that is applied label-wise.
+                     */
+                    virtual void useLabelWiseLogisticLoss() {
+                        std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
+                        lossConfigPtr = std::make_unique<LabelWiseLogisticLossConfig>(this->getHeadConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
              * implements a multi-label variant of the squared error loss that is applied label-wise.
              */
             class ILabelWiseSquaredErrorLossMixin : public virtual IBoostingRuleLearner::IConfig {
@@ -665,8 +679,6 @@ namespace boosting {
                 public:
 
                     Config();
-
-                    void useLabelWiseLogisticLoss() override;
 
                     void useNoLabelBinning() override;
 

@@ -17,8 +17,6 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useLabelWiseLogisticLoss()
-
         void useNoLabelBinning()
 
         void useLabelWiseBinaryPredictor()
@@ -104,7 +102,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useDenseStatistics()
 
-        
+
     cdef cppclass ISparseStatisticsMixin"boosting::IBoostingRuleLearner::ISparseStatisticsMixin":
 
         # Functions:
@@ -133,6 +131,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useExampleWiseSquaredHingeLoss()
 
 
+    cdef cppclass ILabelWiseLogisticLossMixin"boosting::IBoostingRuleLearner::ILabelWiseLogisticLossMixin":
+
+        # Functions:
+
+        void useLabelWiseLogisticLoss()
+
+        
     cdef cppclass ILabelWiseSquaredErrorLossMixin"boosting::IBoostingRuleLearner::ILabelWiseSquaredErrorLossMixin":
 
         # Functions:
