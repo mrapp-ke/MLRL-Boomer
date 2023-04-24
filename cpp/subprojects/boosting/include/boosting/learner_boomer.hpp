@@ -28,6 +28,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::INoL2RegularizationMixin,
                             virtual public IBoostingRuleLearner::IL2RegularizationMixin,
                             virtual public IBoostingRuleLearner::INoDefaultRuleMixin,
+                            virtual public IBoostingRuleLearner::ICompleteHeadMixin,
                             virtual public IBoostingRuleLearner::IDynamicPartialHeadMixin,
                             virtual public IBoostingRuleLearner::IFixedPartialHeadMixin,
                             virtual public IBoostingRuleLearner::ISingleLabelHeadMixin,

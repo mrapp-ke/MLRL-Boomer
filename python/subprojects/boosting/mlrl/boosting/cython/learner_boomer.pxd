@@ -14,7 +14,7 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, ISequentialRu
     INoSequentialPostOptimizationMixin, ISequentialPostOptimizationMixin
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, \
     IConstantShrinkageMixin, INoL1RegularizationMixin, IL1RegularizationMixin, INoL2RegularizationMixin, \
-    IL2RegularizationMixin, INoDefaultRuleMixin, IDynamicPartialHeadMixin, IFixedPartialHeadMixin, \
+    IL2RegularizationMixin, INoDefaultRuleMixin, ICompleteHeadMixin, IDynamicPartialHeadMixin, IFixedPartialHeadMixin, \
     ISingleLabelHeadMixin, ISparseStatisticsMixin, IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, \
     IExampleWiseSquaredHingeLossMixin, ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, \
     ILabelBinningMixin, IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, \
@@ -32,6 +32,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             INoL2RegularizationMixin,
                                                             IL2RegularizationMixin,
                                                             INoDefaultRuleMixin,
+                                                            ICompleteHeadMixin,
                                                             IDynamicPartialHeadMixin,
                                                             IFixedPartialHeadMixin,
                                                             ISingleLabelHeadMixin,

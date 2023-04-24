@@ -17,8 +17,6 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useCompleteHeads()
-
         void useDenseStatistics()
 
         void useLabelWiseLogisticLoss()
@@ -59,7 +57,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useNoL2Regularization()
 
-        
+
     cdef cppclass IL2RegularizationMixin"boosting::IBoostingRuleLearner::IL2RegularizationMixin":
 
         # Functions:
@@ -74,6 +72,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useNoDefaultRule()
 
 
+    cdef cppclass ICompleteHeadMixin"boosting::IBoostingRuleLearner::ICompleteHeadMixin":
+
+        # Functions:
+
+        void useCompleteHeads()
+
+        
     cdef cppclass IFixedPartialHeadMixin"boosting::IBoostingRuleLearner::IFixedPartialHeadMixin":
 
         # Functions:

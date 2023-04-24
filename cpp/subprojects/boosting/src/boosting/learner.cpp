@@ -6,14 +6,12 @@
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
 #include "boosting/prediction/predictor_score_label_wise.hpp"
-#include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/rule_compare_function.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
 
 namespace boosting {
 
     AbstractBoostingRuleLearner::Config::Config() : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION) {
-        this->useCompleteHeads();
         this->useDenseStatistics();
         this->useLabelWiseLogisticLoss();
         this->useNoLabelBinning();
@@ -44,11 +42,6 @@ namespace boosting {
 
     std::unique_ptr<ILabelBinningConfig>& AbstractBoostingRuleLearner::Config::getLabelBinningConfigPtr() {
         return labelBinningConfigPtr_;
-    }
-
-    void AbstractBoostingRuleLearner::Config::useCompleteHeads() {
-        headConfigPtr_ = std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_,
-                                                              l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
     void AbstractBoostingRuleLearner::Config::useDenseStatistics() {
