@@ -23,6 +23,7 @@ namespace boosting {
              */
             class IConfig : virtual public IBoostingRuleLearner::IConfig,
                             virtual public IBoostingRuleLearner::IConstantShrinkageMixin,
+                            virtual public IBoostingRuleLearner::INoL1RegularizationMixin,
                             virtual public IBoostingRuleLearner::IL1RegularizationMixin,
                             virtual public IBoostingRuleLearner::IL2RegularizationMixin,
                             virtual public IBoostingRuleLearner::INoDefaultRuleMixin,
