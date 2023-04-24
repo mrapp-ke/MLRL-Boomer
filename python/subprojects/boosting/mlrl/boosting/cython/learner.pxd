@@ -21,8 +21,6 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useDenseStatistics()
 
-        void useNoL2Regularization()
-
         void useLabelWiseLogisticLoss()
 
         void useNoLabelBinning()
@@ -47,7 +45,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useNoL1Regularization()
 
-        
+
     cdef cppclass IL1RegularizationMixin"boosting::IBoostingRuleLearner::IL1RegularizationMixin":
 
         # Functions:
@@ -55,6 +53,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         IManualRegularizationConfig& useL1Regularization()
 
 
+    cdef cppclass INoL2RegularizationMixin"boosting::IBoostingRuleLearner::INoL2RegularizationMixin":
+
+        # Functions:
+
+        void useNoL2Regularization()
+
+        
     cdef cppclass IL2RegularizationMixin"boosting::IBoostingRuleLearner::IL2RegularizationMixin":
 
         # Functions:

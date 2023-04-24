@@ -25,13 +25,6 @@ cdef class BoostingRuleLearnerConfig:
         cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.get_boosting_rule_learner_config_ptr()
         rule_learner_config_ptr.useDenseStatistics()
 
-    def use_no_l2_regularization(self):
-        """
-        Configures the rule learner to not use L2 regularization.
-        """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.get_boosting_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoL2Regularization()
-
     def use_label_wise_logistic_loss(self):
         """
         Configures the rule learner to use a loss function that implements a multi-label variant of the logistic loss

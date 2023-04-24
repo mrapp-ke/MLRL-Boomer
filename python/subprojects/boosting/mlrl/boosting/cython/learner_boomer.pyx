@@ -583,6 +583,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_no_l2_regularization(self):
+        """
+        Configures the rule learner to not use L2 regularization.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoL2Regularization()
+
     def use_l2_regularization(self) -> ManualRegularizationConfig:
         """
         Configures the rule learner to use L2 regularization.
