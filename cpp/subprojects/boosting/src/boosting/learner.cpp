@@ -15,7 +15,6 @@ namespace boosting {
     AbstractBoostingRuleLearner::Config::Config() : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION) {
         this->useCompleteHeads();
         this->useDenseStatistics();
-        this->useNoL2Regularization();
         this->useLabelWiseLogisticLoss();
         this->useNoLabelBinning();
         this->useLabelWiseBinaryPredictor();
@@ -54,10 +53,6 @@ namespace boosting {
 
     void AbstractBoostingRuleLearner::Config::useDenseStatistics() {
         statisticsConfigPtr_ = std::make_unique<DenseStatisticsConfig>(lossConfigPtr_);
-    }
-
-    void AbstractBoostingRuleLearner::Config::useNoL2Regularization() {
-        l2RegularizationConfigPtr_ = std::make_unique<NoRegularizationConfig>();
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseLogisticLoss() {

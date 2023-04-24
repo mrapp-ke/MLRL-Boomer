@@ -113,11 +113,6 @@ namespace boosting {
                     virtual void useDenseStatistics() = 0;
 
                     /**
-                     * Configures the rule learner to not use L2 regularization.
-                     */
-                    virtual void useNoL2Regularization() = 0;
-
-                    /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
                      * logistic loss that is applied label-wise.
                      */
@@ -218,6 +213,24 @@ namespace boosting {
                         IManualRegularizationConfig& ref = *ptr;
                         l1RegularizationConfigPtr = std::move(ptr);
                         return ref;
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to not use L2 regularization.
+             */
+            class INoL2RegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~INoL2RegularizationMixin() override {};
+
+                    /**
+                     * Configures the rule learner to not use L2 regularization.
+                     */
+                    virtual void useNoL2Regularization() {
+                        std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr =
+                          this->getL2RegularizationConfigPtr();
+                        l2RegularizationConfigPtr = std::make_unique<NoRegularizationConfig>();
                     }
             };
 
@@ -626,8 +639,6 @@ namespace boosting {
                     void useCompleteHeads() override;
 
                     void useDenseStatistics() override;
-
-                    void useNoL2Regularization() override;
 
                     void useLabelWiseLogisticLoss() override;
 
