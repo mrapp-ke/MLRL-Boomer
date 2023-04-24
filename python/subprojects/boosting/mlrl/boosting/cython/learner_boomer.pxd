@@ -15,9 +15,9 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, ISequentialRu
 from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, \
     IConstantShrinkageMixin, INoL1RegularizationMixin, IL1RegularizationMixin, INoL2RegularizationMixin, \
     IL2RegularizationMixin, INoDefaultRuleMixin, ICompleteHeadMixin, IDynamicPartialHeadMixin, IFixedPartialHeadMixin, \
-    ISingleLabelHeadMixin, ISparseStatisticsMixin, IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, \
-    IExampleWiseSquaredHingeLossMixin, ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, \
-    ILabelBinningMixin, IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, \
+    ISingleLabelHeadMixin, IDenseStatisticsMixin, ISparseStatisticsMixin, IExampleWiseLogisticLossMixin, \
+    IExampleWiseSquaredErrorLossMixin, IExampleWiseSquaredHingeLossMixin, ILabelWiseSquaredErrorLossMixin, \
+    ILabelWiseSquaredHingeLossMixin, ILabelBinningMixin, IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, \
     IMarginalizedProbabilityPredictorMixin, DdotFunction, DspmvFunction, DsysvFunction
 
 from libcpp.memory cimport unique_ptr
@@ -36,6 +36,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IDynamicPartialHeadMixin,
                                                             IFixedPartialHeadMixin,
                                                             ISingleLabelHeadMixin,
+                                                            IDenseStatisticsMixin,
                                                             ISparseStatisticsMixin,
                                                             IExampleWiseLogisticLossMixin,
                                                             IExampleWiseSquaredErrorLossMixin,

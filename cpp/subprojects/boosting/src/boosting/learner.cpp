@@ -7,12 +7,10 @@
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
 #include "boosting/prediction/predictor_score_label_wise.hpp"
 #include "boosting/rule_evaluation/rule_compare_function.hpp"
-#include "boosting/statistics/statistic_format_dense.hpp"
 
 namespace boosting {
 
     AbstractBoostingRuleLearner::Config::Config() : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION) {
-        this->useDenseStatistics();
         this->useLabelWiseLogisticLoss();
         this->useNoLabelBinning();
         this->useLabelWiseBinaryPredictor();
@@ -42,10 +40,6 @@ namespace boosting {
 
     std::unique_ptr<ILabelBinningConfig>& AbstractBoostingRuleLearner::Config::getLabelBinningConfigPtr() {
         return labelBinningConfigPtr_;
-    }
-
-    void AbstractBoostingRuleLearner::Config::useDenseStatistics() {
-        statisticsConfigPtr_ = std::make_unique<DenseStatisticsConfig>(lossConfigPtr_);
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseLogisticLoss() {

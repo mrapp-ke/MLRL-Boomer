@@ -11,13 +11,6 @@ cdef class BoostingRuleLearnerConfig:
     cdef IBoostingRuleLearnerConfig* get_boosting_rule_learner_config_ptr(self):
         pass
 
-    def use_dense_statistics(self):
-        """
-        Configures the rule learner to use a dense representation of gradients and Hessians.
-        """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.get_boosting_rule_learner_config_ptr()
-        rule_learner_config_ptr.useDenseStatistics()
-
     def use_label_wise_logistic_loss(self):
         """
         Configures the rule learner to use a loss function that implements a multi-label variant of the logistic loss
