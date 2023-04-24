@@ -11,14 +11,6 @@ cdef class BoostingRuleLearnerConfig:
     cdef IBoostingRuleLearnerConfig* get_boosting_rule_learner_config_ptr(self):
         pass
 
-    def use_label_wise_logistic_loss(self):
-        """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the logistic loss
-        that is applied label-wise.
-        """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.get_boosting_rule_learner_config_ptr()
-        rule_learner_config_ptr.useLabelWiseLogisticLoss()
-
     def use_no_label_binning(self):
         """
         Configures the rule learner to not use any method for the assignment of labels to bins.
