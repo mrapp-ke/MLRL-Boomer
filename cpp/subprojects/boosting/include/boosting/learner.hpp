@@ -27,6 +27,7 @@
 #include "boosting/rule_evaluation/regularization_manual.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
 #include "boosting/statistics/statistic_format.hpp"
+#include "boosting/statistics/statistic_format_dense.hpp"
 #include "boosting/statistics/statistic_format_sparse.hpp"
 #include "common/learner.hpp"
 
@@ -101,11 +102,6 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to use a dense representation of gradients and Hessians.
-                     */
-                    virtual void useDenseStatistics() = 0;
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -363,6 +359,24 @@ namespace boosting {
                         headConfigPtr = std::make_unique<SingleLabelHeadConfig>(
                           this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
                           this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a dense representation
+             * of gradients and Hessians.
+             */
+            class IDenseStatisticsMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IDenseStatisticsMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use a dense representation of gradients and Hessians.
+                     */
+                    virtual void useDenseStatistics() {
+                        std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr = this->getStatisticsConfigPtr();
+                        statisticsConfigPtr = std::make_unique<DenseStatisticsConfig>(this->getLossConfigPtr());
                     }
             };
 
@@ -651,8 +665,6 @@ namespace boosting {
                 public:
 
                     Config();
-
-                    void useDenseStatistics() override;
 
                     void useLabelWiseLogisticLoss() override;
 

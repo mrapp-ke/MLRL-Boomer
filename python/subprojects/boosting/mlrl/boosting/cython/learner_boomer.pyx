@@ -564,6 +564,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useAutomaticStatistics()
 
+    def use_dense_statistics(self):
+        """
+        Configures the rule learner to use a dense representation of gradients and Hessians.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useDenseStatistics()
+
     def use_sparse_statistics(self):
         """
         Configures the rule learner to use a sparse representation of gradients and Hessians, if possible.
