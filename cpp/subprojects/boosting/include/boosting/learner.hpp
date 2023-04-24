@@ -20,6 +20,7 @@
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 #include "boosting/prediction/predictor_binary_gfm.hpp"
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
+#include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
@@ -100,12 +101,6 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to induce rules with complete heads that predict for all available
-                     * labels.
-                     */
-                    virtual void useCompleteHeads() = 0;
 
                     /**
                      * Configures the rule learner to use a dense representation of gradients and Hessians.
@@ -273,6 +268,27 @@ namespace boosting {
                     virtual void useNoDefaultRule() {
                         std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr = this->getDefaultRuleConfigPtr();
                         defaultRuleConfigPtr = std::make_unique<DefaultRuleConfig>(false);
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to induce rules with complete
+             * heads that predict for all available labels.
+             */
+            class ICompleteHeadMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~ICompleteHeadMixin() override {};
+
+                    /**
+                     * Configures the rule learner to induce rules with complete heads that predict for all available
+                     * labels.
+                     */
+                    virtual void useCompleteHeads() {
+                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                        headConfigPtr = std::make_unique<CompleteHeadConfig>(
+                          this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
+                          this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
                     }
             };
 
@@ -635,8 +651,6 @@ namespace boosting {
                 public:
 
                     Config();
-
-                    void useCompleteHeads() override;
 
                     void useDenseStatistics() override;
 

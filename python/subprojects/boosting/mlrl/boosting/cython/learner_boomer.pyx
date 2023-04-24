@@ -516,6 +516,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useAutomaticHeads()
 
+    def use_complete_heads(self):
+        """
+        Configures the rule learner to induce rules with complete heads that predict for all available labels.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useCompleteHeads()
+
     def use_fixed_partial_heads(self) -> FixedPartialHeadConfig:
         """
         Configures the rule learner to induce rules with partial heads that predict for a predefined number of labels.

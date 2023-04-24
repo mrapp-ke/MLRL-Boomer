@@ -11,13 +11,6 @@ cdef class BoostingRuleLearnerConfig:
     cdef IBoostingRuleLearnerConfig* get_boosting_rule_learner_config_ptr(self):
         pass
 
-    def use_complete_heads(self):
-        """
-        Configures the rule learner to induce rules with complete heads that predict for all available labels.
-        """
-        cdef IBoostingRuleLearnerConfig* rule_learner_config_ptr = self.get_boosting_rule_learner_config_ptr()
-        rule_learner_config_ptr.useCompleteHeads()
-
     def use_dense_statistics(self):
         """
         Configures the rule learner to use a dense representation of gradients and Hessians.
