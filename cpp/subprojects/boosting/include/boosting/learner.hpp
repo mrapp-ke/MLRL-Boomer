@@ -774,8 +774,8 @@ namespace boosting {
                         std::unique_ptr<LabelWiseBinaryPredictorConfig> ptr =
                           std::make_unique<LabelWiseBinaryPredictorConfig>(this->getLossConfigPtr(),
                                                                            this->getParallelPredictionConfigPtr());
-                        binaryPredictorConfigPtr = std::move(ptr);
                         ILabelWiseBinaryPredictorConfig& ref = *ptr;
+                        binaryPredictorConfigPtr = std::move(ptr);
                         return ref;
                     }
             };
