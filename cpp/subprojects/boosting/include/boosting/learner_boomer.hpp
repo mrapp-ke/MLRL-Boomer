@@ -49,6 +49,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::ILabelWiseSquaredHingeLossMixin,
                             virtual public IBoostingRuleLearner::INoLabelBinningMixin,
                             virtual public IBoostingRuleLearner::IEqualWidthLabelBinningMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticLabelBinningMixin,
                             virtual public IBoostingRuleLearner::ILabelWiseBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IGfmBinaryPredictorMixin,
@@ -98,12 +99,6 @@ namespace boosting {
                     virtual ~IConfig() override {};
 
                     /**
-                     * Configures the rule learner to automatically decide whether a method for the assignment of labels
-                     * to bins should be used or not.
-                     */
-                    virtual void useAutomaticLabelBinning() = 0;
-
-                    /**
                      * Configures the rule learner to automatically decide for a predictor for predicting whether
                      * individual labels are relevant or irrelevant.
                      */
@@ -139,8 +134,6 @@ namespace boosting {
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                    void useAutomaticLabelBinning() override;
 
                     void useAutomaticBinaryPredictor() override;
 

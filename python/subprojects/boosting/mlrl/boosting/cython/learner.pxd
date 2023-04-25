@@ -202,6 +202,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
 
 
+    cdef cppclass IAutomaticLabelBinningMixin"boosting::IBoostingRuleLearner::IAutomaticLabelBinningMixin":
+
+        # Functions:
+
+        void useAutomaticLabelBinning()
+
+
     cdef cppclass ILabelWiseBinaryPredictorMixin"boosting::IBoostingRuleLearner::ILabelWiseBinaryPredictorMixin":
 
         # Functions:
