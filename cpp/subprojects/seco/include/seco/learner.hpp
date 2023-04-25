@@ -93,11 +93,6 @@ namespace seco {
                     virtual ~IConfig() override {};
 
                     /**
-                     * Configures the rule learner to use the "Precision" heuristic for pruning rules.
-                     */
-                    virtual void usePrecisionPruningHeuristic() = 0;
-
-                    /**
                      * Configures the rule learner to use predictor for predicting whether individual labels of given
                      * query examples are relevant or irrelevant by processing rules of an existing rule-based model in
                      * the order they have been learned. If a rule covers an example, its prediction is applied to each
@@ -459,6 +454,25 @@ namespace seco {
             };
 
             /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Precision"
+             * heuristic for pruning rules.
+             */
+            class IPrecisionPruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IPrecisionPruningHeuristicMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use the "Precision" heuristic for pruning rules.
+                     */
+                    virtual void usePrecisionPruningHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
+                          this->getPruningHeuristicConfigPtr();
+                        pruningHeuristicConfigPtr = std::make_unique<PrecisionConfig>();
+                    }
+            };
+
+            /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "Recall" heuristic
              * for pruning rules.
              */
@@ -593,8 +607,6 @@ namespace seco {
                 public:
 
                     Config();
-
-                    void usePrecisionPruningHeuristic() override;
 
                     void useLabelWiseBinaryPredictor() override;
             };

@@ -7,7 +7,6 @@
 namespace seco {
 
     AbstractSeCoRuleLearner::Config::Config() : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION) {
-        this->usePrecisionPruningHeuristic();
         this->useLabelWiseBinaryPredictor();
     }
 
@@ -30,10 +29,6 @@ namespace seco {
 
     std::unique_ptr<ILiftFunctionConfig>& AbstractSeCoRuleLearner::Config::getLiftFunctionConfigPtr() {
         return liftFunctionConfigPtr_;
-    }
-
-    void AbstractSeCoRuleLearner::Config::usePrecisionPruningHeuristic() {
-        pruningHeuristicConfigPtr_ = std::make_unique<PrecisionConfig>();
     }
 
     void AbstractSeCoRuleLearner::Config::useLabelWiseBinaryPredictor() {
