@@ -8,23 +8,41 @@
     #pragma warning(disable : 4250)
 #endif
 
+#include "boosting/binning/feature_binning_auto.hpp"
+#include "boosting/binning/label_binning_auto.hpp"
 #include "boosting/binning/label_binning_equal_width.hpp"
+#include "boosting/binning/label_binning_no.hpp"
 #include "boosting/losses/loss_example_wise_logistic.hpp"
 #include "boosting/losses/loss_example_wise_squared_error.hpp"
 #include "boosting/losses/loss_example_wise_squared_hinge.hpp"
+#include "boosting/losses/loss_label_wise_logistic.hpp"
 #include "boosting/losses/loss_label_wise_squared_error.hpp"
 #include "boosting/losses/loss_label_wise_squared_hinge.hpp"
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
+#include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
+#include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
+#include "boosting/prediction/predictor_binary_auto.hpp"
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 #include "boosting/prediction/predictor_binary_gfm.hpp"
+#include "boosting/prediction/predictor_binary_label_wise.hpp"
+#include "boosting/prediction/predictor_probability_auto.hpp"
+#include "boosting/prediction/predictor_probability_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
+#include "boosting/prediction/predictor_score_label_wise.hpp"
+#include "boosting/rule_evaluation/head_type_auto.hpp"
+#include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_manual.hpp"
+#include "boosting/rule_evaluation/regularization_no.hpp"
+#include "boosting/rule_model_assemblage/default_rule_auto.hpp"
+#include "boosting/sampling/partition_sampling_auto.hpp"
 #include "boosting/statistics/statistic_format.hpp"
+#include "boosting/statistics/statistic_format_auto.hpp"
+#include "boosting/statistics/statistic_format_dense.hpp"
 #include "boosting/statistics/statistic_format_sparse.hpp"
 #include "common/learner.hpp"
 
@@ -99,61 +117,89 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override {};
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
+             * whether a holdout set should be used or not.
+             */
+            class IAutomaticPartitionSamplingMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticPartitionSamplingMixin() override {};
 
                     /**
-                     * Configures the rule learner to induce rules with complete heads that predict for all available
-                     * labels.
+                     * Configures the rule learner to automatically decide whether a holdout set should be used or not.
                      */
-                    virtual void useCompleteHeads() = 0;
+                    virtual void useAutomaticPartitionSampling() {
+                        std::unique_ptr<IPartitionSamplingConfig>& partitionSamplingConfigPtr =
+                          this->getPartitionSamplingConfigPtr();
+                        partitionSamplingConfigPtr = std::make_unique<AutomaticPartitionSamplingConfig>(
+                          this->getGlobalPruningConfigPtr(), this->getLossConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
+             * whether a method for the assignment of numerical feature values to bins should be used or not.
+             */
+            class IAutomaticFeatureBinningMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticFeatureBinningMixin() override {};
 
                     /**
-                     * Configures the rule learner to use a dense representation of gradients and Hessians.
+                     * Configures the rule learner to automatically decide whether a method for the assignment of
+                     * numerical feature values to bins should be used or not.
                      */
-                    virtual void useDenseStatistics() = 0;
+                    virtual void useAutomaticFeatureBinning() {
+                        std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
+                          this->getFeatureBinningConfigPtr();
+                        featureBinningConfigPtr =
+                          std::make_unique<AutomaticFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
+             * whether multi-threading should be used for the parallel refinement of rules or not.
+             */
+            class IAutomaticParallelRuleRefinementMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticParallelRuleRefinementMixin() override {};
 
                     /**
-                     * Configures the rule learner to not use L1 regularization.
+                     * Configures the rule learner to automatically decide whether multi-threading should be used for
+                     * the parallel refinement of rules or not.
                      */
-                    virtual void useNoL1Regularization() = 0;
+                    virtual void useAutomaticParallelRuleRefinement() {
+                        std::unique_ptr<IMultiThreadingConfig>& parallelRuleRefinementConfigPtr =
+                          this->getParallelRuleRefinementConfigPtr();
+                        parallelRuleRefinementConfigPtr = std::make_unique<AutoParallelRuleRefinementConfig>(
+                          this->getLossConfigPtr(), this->getHeadConfigPtr(), this->getFeatureSamplingConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
+             * whether multi-threading should be used for the parallel update of statistics or not.
+             */
+            class IAutomaticParallelStatisticUpdateMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticParallelStatisticUpdateMixin() override {};
 
                     /**
-                     * Configures the rule learner to not use L2 regularization.
+                     * Configures the rule learner to automatically decide whether multi-threading should be used for
+                     * the parallel update of statistics or not.
                      */
-                    virtual void useNoL2Regularization() = 0;
-
-                    /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * logistic loss that is applied label-wise.
-                     */
-                    virtual void useLabelWiseLogisticLoss() = 0;
-
-                    /**
-                     * Configures the rule learner to not use any method for the assignment of labels to bins.
-                     */
-                    virtual void useNoLabelBinning() = 0;
-
-                    /**
-                     * Configures the rule learner to use a predictor for predicting whether individual labels are
-                     * relevant or irrelevant by summing up the scores that are provided by the individual rules of an
-                     * existing rule-based model and transforming them into binary values according to a certain
-                     * threshold that is applied to each label individually.
-                     */
-                    virtual void useLabelWiseBinaryPredictor() = 0;
-
-                    /**
-                     * Configures the rule learner to use a predictor for predicting regression scores by summing up the
-                     * scores that are provided by the individual rules of an existing rule-based model for each label
-                     * individually.
-                     */
-                    virtual void useLabelWiseScorePredictor() = 0;
-
-                    /**
-                     * Configures the rule learner to use a predictor for predicting probability estimates by summing up
-                     * the scores that are provided by individual rules of an existing rule-based model and transforming
-                     * the aggregated scores into probabilities according to a certain transformation function that is
-                     * applied to each label individually.
-                     */
-                    virtual void useLabelWiseProbabilityPredictor() = 0;
+                    virtual void useAutomaticParallelStatisticUpdate() {
+                        std::unique_ptr<IMultiThreadingConfig>& parallelStatisticUpdateConfigPtr =
+                          this->getParallelStatisticUpdateConfigPtr();
+                        parallelStatisticUpdateConfigPtr =
+                          std::make_unique<AutoParallelStatisticUpdateConfig>(this->getLossConfigPtr());
+                    }
             };
 
             /**
@@ -183,6 +229,24 @@ namespace boosting {
             };
 
             /**
+             * Defines an interface for all classes that allow to configure a rule learner to not use L1 regularization.
+             */
+            class INoL1RegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~INoL1RegularizationMixin() override {};
+
+                    /**
+                     * Configures the rule learner to not use L1 regularization.
+                     */
+                    virtual void useNoL1Regularization() {
+                        std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr =
+                          this->getL1RegularizationConfigPtr();
+                        l1RegularizationConfigPtr = std::make_unique<NoRegularizationConfig>();
+                    }
+            };
+
+            /**
              * Defines an interface for all classes that allow to configure a rule learner to use L1 regularization.
              */
             class IL1RegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
@@ -204,6 +268,24 @@ namespace boosting {
                         IManualRegularizationConfig& ref = *ptr;
                         l1RegularizationConfigPtr = std::move(ptr);
                         return ref;
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to not use L2 regularization.
+             */
+            class INoL2RegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~INoL2RegularizationMixin() override {};
+
+                    /**
+                     * Configures the rule learner to not use L2 regularization.
+                     */
+                    virtual void useNoL2Regularization() {
+                        std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr =
+                          this->getL2RegularizationConfigPtr();
+                        l2RegularizationConfigPtr = std::make_unique<NoRegularizationConfig>();
                     }
             };
 
@@ -246,6 +328,47 @@ namespace boosting {
                     virtual void useNoDefaultRule() {
                         std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr = this->getDefaultRuleConfigPtr();
                         defaultRuleConfigPtr = std::make_unique<DefaultRuleConfig>(false);
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
+             * whether a default rule should be induced or not.
+             */
+            class IAutomaticDefaultRuleMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticDefaultRuleMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide whether a default rule should be induced or
+                     * not.
+                     */
+                    virtual void useAutomaticDefaultRule() {
+                        std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr = this->getDefaultRuleConfigPtr();
+                        defaultRuleConfigPtr = std::make_unique<AutomaticDefaultRuleConfig>(
+                          this->getStatisticsConfigPtr(), this->getLossConfigPtr(), this->getHeadConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to induce rules with complete
+             * heads that predict for all available labels.
+             */
+            class ICompleteHeadMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~ICompleteHeadMixin() override {};
+
+                    /**
+                     * Configures the rule learner to induce rules with complete heads that predict for all available
+                     * labels.
+                     */
+                    virtual void useCompleteHeads() {
+                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                        headConfigPtr = std::make_unique<CompleteHeadConfig>(
+                          this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
+                          this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
                     }
             };
 
@@ -324,6 +447,46 @@ namespace boosting {
             };
 
             /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide for
+             * the type of rule heads that should be used.
+             */
+            class IAutomaticHeadMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticHeadMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide for the type of rule heads that should be
+                     * used.
+                     */
+                    virtual void useAutomaticHeads() {
+                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                        headConfigPtr = std::make_unique<AutomaticHeadConfig>(
+                          this->getLossConfigPtr(), this->getLabelBinningConfigPtr(),
+                          this->getParallelStatisticUpdateConfigPtr(), this->getL1RegularizationConfigPtr(),
+                          this->getL2RegularizationConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a dense representation
+             * of gradients and Hessians.
+             */
+            class IDenseStatisticsMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IDenseStatisticsMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use a dense representation of gradients and Hessians.
+                     */
+                    virtual void useDenseStatistics() {
+                        std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr = this->getStatisticsConfigPtr();
+                        statisticsConfigPtr = std::make_unique<DenseStatisticsConfig>(this->getLossConfigPtr());
+                    }
+            };
+
+            /**
              * Defines an interface for all classes that allow to configure a rule learner to use a sparse
              * representation of gradients and Hessians, if possible.
              */
@@ -339,6 +502,26 @@ namespace boosting {
                     virtual void useSparseStatistics() {
                         std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr = this->getStatisticsConfigPtr();
                         statisticsConfigPtr = std::make_unique<SparseStatisticsConfig>(this->getLossConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
+             * whether a dense or sparse representation of gradients and Hessians should be used.
+             */
+            class IAutomaticStatisticsMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticStatisticsMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide whether a dense or sparse representation of
+                     * gradients and Hessians should be used.
+                     */
+                    virtual void useAutomaticStatistics() {
+                        std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr = this->getStatisticsConfigPtr();
+                        statisticsConfigPtr = std::make_unique<AutomaticStatisticsConfig>(
+                          this->getLossConfigPtr(), this->getHeadConfigPtr(), this->getDefaultRuleConfigPtr());
                     }
             };
 
@@ -401,6 +584,25 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
+             * implements a multi-label variant of the logistic loss that is applied label-wise.
+             */
+            class ILabelWiseLogisticLossMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~ILabelWiseLogisticLossMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
+                     * logistic loss that is applied label-wise.
+                     */
+                    virtual void useLabelWiseLogisticLoss() {
+                        std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
+                        lossConfigPtr = std::make_unique<LabelWiseLogisticLossConfig>(this->getHeadConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
              * implements a multi-label variant of the squared error loss that is applied label-wise.
              */
             class ILabelWiseSquaredErrorLossMixin : public virtual IBoostingRuleLearner::IConfig {
@@ -438,13 +640,32 @@ namespace boosting {
             };
 
             /**
+             * Defines an interface for all classes that allow to configure a rule learner to not use any method for the
+             * assignment of labels to bins.
+             */
+            class INoLabelBinningMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~INoLabelBinningMixin() override {};
+
+                    /**
+                     * Configures the rule learner to not use any method for the assignment of labels to bins.
+                     */
+                    virtual void useNoLabelBinning() {
+                        std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr = this->getLabelBinningConfigPtr();
+                        labelBinningConfigPtr = std::make_unique<NoLabelBinningConfig>(
+                          this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
+                    }
+            };
+
+            /**
              * Defines an interface for all classes that allow to configure a rule learner to use a method for the
              * assignment of labels to bins.
              */
-            class ILabelBinningMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IEqualWidthLabelBinningMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelBinningMixin() override {};
+                    virtual ~IEqualWidthLabelBinningMixin() override {};
 
                     /**
                      * Configures the rule learner to use a method for the assignment of labels to bins in a way such
@@ -462,6 +683,51 @@ namespace boosting {
                         IEqualWidthLabelBinningConfig& ref = *ptr;
                         labelBinningConfigPtr = std::move(ptr);
                         return ref;
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
+             * whether a method for the assignment of labels to bins should be used or not.
+             */
+            class IAutomaticLabelBinningMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticLabelBinningMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide whether a method for the assignment of labels
+                     * to bins should be used or not.
+                     */
+                    virtual void useAutomaticLabelBinning() {
+                        std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr = this->getLabelBinningConfigPtr();
+                        labelBinningConfigPtr = std::make_unique<AutomaticLabelBinningConfig>(
+                          this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
+             * predicting whether individual labels are relevant or irrelevant by summing up the scores that are
+             * provided by the individual rules of an existing rule-based model and transforming them into binary values
+             * according to a certain threshold that is applied to each label individually.
+             */
+            class ILabelWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~ILabelWiseBinaryPredictorMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting whether individual labels are
+                     * relevant or irrelevant by summing up the scores that are provided by the individual rules of an
+                     * existing rule-based model and transforming them into binary values according to a certain
+                     * threshold that is applied to each label individually.
+                     */
+                    virtual void useLabelWiseBinaryPredictor() {
+                        std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
+                          this->getBinaryPredictorConfigPtr();
+                        binaryPredictorConfigPtr = std::make_unique<LabelWiseBinaryPredictorConfig>(
+                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
             };
 
@@ -517,6 +783,75 @@ namespace boosting {
             };
 
             /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide for a
+             * predictor for predicting whether individual labels are relevant or irrelevant.
+             */
+            class IAutomaticBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticBinaryPredictorMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide for a predictor for predicting whether
+                     * individual labels are relevant or irrelevant.
+                     */
+                    virtual void useAutomaticBinaryPredictor() {
+                        std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
+                          this->getBinaryPredictorConfigPtr();
+                        binaryPredictorConfigPtr = std::make_unique<AutomaticBinaryPredictorConfig>(
+                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
+             * predicting regression scores by summing up the scores that are provided by the individual rules of an
+             * existing rule-based model for each label individually.
+             */
+            class ILabelWiseScorePredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~ILabelWiseScorePredictorMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting regression scores by summing up the
+                     * scores that are provided by the individual rules of an existing rule-based model for each label
+                     * individually.
+                     */
+                    virtual void useLabelWiseScorePredictor() {
+                        std::unique_ptr<IScorePredictorConfig>& scorePredictorConfigPtr =
+                          this->getScorePredictorConfigPtr();
+                        scorePredictorConfigPtr =
+                          std::make_unique<LabelWiseScorePredictorConfig>(this->getParallelPredictionConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
+             * predicting probability estimates by summing up the scores that are provided by individual rules of an
+             * existing rule-based model and transforming the aggregated scores into probabilities according to a
+             * certain transformation function that is applied to each label individually.
+             */
+            class ILabelWiseProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~ILabelWiseProbabilityPredictorMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting probability estimates by summing up
+                     * the scores that are provided by individual rules of an existing rule-based model and transforming
+                     * the aggregated scores into probabilities according to a certain transformation function that is
+                     * applied to each label individually.
+                     */
+                    virtual void useLabelWiseProbabilityPredictor() {
+                        std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
+                          this->getProbabilityPredictorConfigPtr();
+                        probabilityPredictorConfigPtr = std::make_unique<LabelWiseProbabilityPredictorConfig>(
+                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                    }
+            };
+
+            /**
              * Defines an interface for all classes that allow to configure a rule learner to use predictor for
              * predicting probability estimates by summing up the scores that are provided by individual rules of an
              * existing rule-based model and comparing the aggregated score vector to the known label vectors according
@@ -539,6 +874,27 @@ namespace boosting {
                         std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
                           this->getProbabilityPredictorConfigPtr();
                         probabilityPredictorConfigPtr = std::make_unique<MarginalizedProbabilityPredictorConfig>(
+                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide for a
+             * predictor for predicting probability estimates.
+             */
+            class IAutomaticProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticProbabilityPredictorMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide for a predictor for predicting probability
+                     * estimates.
+                     */
+                    virtual void useAutomaticProbabilityPredictor() {
+                        std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
+                          this->getProbabilityPredictorConfigPtr();
+                        probabilityPredictorConfigPtr = std::make_unique<AutomaticProbabilityPredictorConfig>(
                           this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
             };
@@ -608,24 +964,6 @@ namespace boosting {
                 public:
 
                     Config();
-
-                    void useCompleteHeads() override;
-
-                    void useDenseStatistics() override;
-
-                    void useNoL1Regularization() override;
-
-                    void useNoL2Regularization() override;
-
-                    void useLabelWiseLogisticLoss() override;
-
-                    void useNoLabelBinning() override;
-
-                    void useLabelWiseBinaryPredictor() override;
-
-                    void useLabelWiseScorePredictor() override;
-
-                    void useLabelWiseProbabilityPredictor() override;
             };
 
         private:

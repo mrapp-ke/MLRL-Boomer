@@ -22,106 +22,83 @@ namespace boosting {
              * Defines the interface for configuring the BOOMER algorithm.
              */
             class IConfig : virtual public IBoostingRuleLearner::IConfig,
+                            virtual public IBoostingRuleLearner::IAutomaticPartitionSamplingMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticFeatureBinningMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticParallelRuleRefinementMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticParallelStatisticUpdateMixin,
                             virtual public IBoostingRuleLearner::IConstantShrinkageMixin,
+                            virtual public IBoostingRuleLearner::INoL1RegularizationMixin,
                             virtual public IBoostingRuleLearner::IL1RegularizationMixin,
+                            virtual public IBoostingRuleLearner::INoL2RegularizationMixin,
                             virtual public IBoostingRuleLearner::IL2RegularizationMixin,
                             virtual public IBoostingRuleLearner::INoDefaultRuleMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticDefaultRuleMixin,
+                            virtual public IBoostingRuleLearner::ICompleteHeadMixin,
                             virtual public IBoostingRuleLearner::IDynamicPartialHeadMixin,
                             virtual public IBoostingRuleLearner::IFixedPartialHeadMixin,
                             virtual public IBoostingRuleLearner::ISingleLabelHeadMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticHeadMixin,
+                            virtual public IBoostingRuleLearner::IDenseStatisticsMixin,
                             virtual public IBoostingRuleLearner::ISparseStatisticsMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticStatisticsMixin,
                             virtual public IBoostingRuleLearner::IExampleWiseLogisticLossMixin,
                             virtual public IBoostingRuleLearner::IExampleWiseSquaredErrorLossMixin,
                             virtual public IBoostingRuleLearner::IExampleWiseSquaredHingeLossMixin,
+                            virtual public IBoostingRuleLearner::ILabelWiseLogisticLossMixin,
                             virtual public IBoostingRuleLearner::ILabelWiseSquaredErrorLossMixin,
                             virtual public IBoostingRuleLearner::ILabelWiseSquaredHingeLossMixin,
-                            virtual public IBoostingRuleLearner::ILabelBinningMixin,
+                            virtual public IBoostingRuleLearner::INoLabelBinningMixin,
+                            virtual public IBoostingRuleLearner::IEqualWidthLabelBinningMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticLabelBinningMixin,
+                            virtual public IBoostingRuleLearner::ILabelWiseBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IGfmBinaryPredictorMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticBinaryPredictorMixin,
+                            virtual public IBoostingRuleLearner::ILabelWiseScorePredictorMixin,
+                            virtual public IBoostingRuleLearner::ILabelWiseProbabilityPredictorMixin,
                             virtual public IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin,
-                            virtual public IRuleLearner::IBeamSearchTopDownMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticProbabilityPredictorMixin,
+                            virtual public IRuleLearner::ISequentialRuleModelAssemblageMixin,
+                            virtual public IRuleLearner::IDefaultRuleMixin,
+                            virtual public IRuleLearner::IGreedyTopDownRuleInductionMixin,
+                            virtual public IRuleLearner::IBeamSearchTopDownRuleInductionMixin,
+                            virtual public IRuleLearner::INoPostProcessorMixin,
+                            virtual public IRuleLearner::INoFeatureBinningMixin,
                             virtual public IRuleLearner::IEqualWidthFeatureBinningMixin,
                             virtual public IRuleLearner::IEqualFrequencyFeatureBinningMixin,
+                            virtual public IRuleLearner::INoLabelSamplingMixin,
                             virtual public IRuleLearner::ILabelSamplingWithoutReplacementMixin,
+                            virtual public IRuleLearner::INoInstanceSamplingMixin,
                             virtual public IRuleLearner::IInstanceSamplingWithoutReplacementMixin,
                             virtual public IRuleLearner::IInstanceSamplingWithReplacementMixin,
                             virtual public IRuleLearner::ILabelWiseStratifiedInstanceSamplingMixin,
                             virtual public IRuleLearner::IExampleWiseStratifiedInstanceSamplingMixin,
+                            virtual public IRuleLearner::INoFeatureSamplingMixin,
                             virtual public IRuleLearner::IFeatureSamplingWithoutReplacementMixin,
+                            virtual public IRuleLearner::INoPartitionSamplingMixin,
                             virtual public IRuleLearner::IRandomBiPartitionSamplingMixin,
                             virtual public IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin,
                             virtual public IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin,
-                            virtual public IRuleLearner::IRulePruningMixin,
+                            virtual public IRuleLearner::INoRulePruningMixin,
+                            virtual public IRuleLearner::IIrepRulePruningMixin,
+                            virtual public IRuleLearner::INoParallelRuleRefinementMixin,
                             virtual public IRuleLearner::IParallelRuleRefinementMixin,
+                            virtual public IRuleLearner::INoParallelStatisticUpdateMixin,
                             virtual public IRuleLearner::IParallelStatisticUpdateMixin,
+                            virtual public IRuleLearner::INoParallelPredictionMixin,
                             virtual public IRuleLearner::IParallelPredictionMixin,
+                            virtual public IRuleLearner::INoSizeStoppingCriterionMixin,
                             virtual public IRuleLearner::ISizeStoppingCriterionMixin,
+                            virtual public IRuleLearner::INoTimeStoppingCriterionMixin,
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
                             virtual public IRuleLearner::IPrePruningMixin,
+                            virtual public IRuleLearner::INoGlobalPruningMixin,
                             virtual public IRuleLearner::IPostPruningMixin,
+                            virtual public IRuleLearner::INoSequentialPostOptimizationMixin,
                             virtual public IRuleLearner::ISequentialPostOptimizationMixin {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to automatically decide whether a default rule should be induced or
-                     * not.
-                     */
-                    virtual void useAutomaticDefaultRule() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether a holdout set should be used or not.
-                     */
-                    virtual void useAutomaticPartitionSampling() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether a method for the assignment of
-                     * numerical feature values to bins should be used or not.
-                     */
-                    virtual void useAutomaticFeatureBinning() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether multi-threading should be used for
-                     * the parallel refinement of rules or not.
-                     */
-                    virtual void useAutomaticParallelRuleRefinement() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether multi-threading should be used for
-                     * the parallel update of statistics or not.
-                     */
-                    virtual void useAutomaticParallelStatisticUpdate() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide for the type of rule heads that should be
-                     * used.
-                     */
-                    virtual void useAutomaticHeads() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether a dense or sparse representation of
-                     * gradients and Hessians should be used.
-                     */
-                    virtual void useAutomaticStatistics() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether a method for the assignment of labels
-                     * to bins should be used or not.
-                     */
-                    virtual void useAutomaticLabelBinning() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide for a predictor for predicting whether
-                     * individual labels are relevant or irrelevant.
-                     */
-                    virtual void useAutomaticBinaryPredictor() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide for a predictor for predicting probability
-                     * estimates.
-                     */
-                    virtual void useAutomaticProbabilityPredictor() = 0;
             };
 
             virtual ~IBoomer() override {};
@@ -147,26 +124,6 @@ namespace boosting {
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                    void useAutomaticDefaultRule() override;
-
-                    void useAutomaticPartitionSampling() override;
-
-                    void useAutomaticFeatureBinning() override;
-
-                    void useAutomaticParallelRuleRefinement() override;
-
-                    void useAutomaticParallelStatisticUpdate() override;
-
-                    void useAutomaticHeads() override;
-
-                    void useAutomaticStatistics() override;
-
-                    void useAutomaticLabelBinning() override;
-
-                    void useAutomaticBinaryPredictor() override;
-
-                    void useAutomaticProbabilityPredictor() override;
             };
 
         private:

@@ -5,14 +5,17 @@
 
 #include "common/binning/feature_binning_equal_frequency.hpp"
 #include "common/binning/feature_binning_equal_width.hpp"
+#include "common/binning/feature_binning_no.hpp"
 #include "common/input/feature_info.hpp"
 #include "common/input/feature_matrix_column_wise.hpp"
 #include "common/input/feature_matrix_row_wise.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/multi_threading/multi_threading_manual.hpp"
+#include "common/multi_threading/multi_threading_no.hpp"
 #include "common/post_optimization/post_optimization_phase_list.hpp"
 #include "common/post_optimization/post_optimization_sequential.hpp"
 #include "common/post_optimization/post_optimization_unused_rule_removal.hpp"
+#include "common/post_processing/post_processor_no.hpp"
 #include "common/prediction/label_space_info.hpp"
 #include "common/prediction/prediction_matrix_dense.hpp"
 #include "common/prediction/prediction_matrix_sparse_binary.hpp"
@@ -23,16 +26,22 @@
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
 #include "common/rule_model_assemblage/rule_model_assemblage.hpp"
+#include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 #include "common/rule_pruning/rule_pruning_irep.hpp"
+#include "common/rule_pruning/rule_pruning_no.hpp"
+#include "common/sampling/feature_sampling_no.hpp"
 #include "common/sampling/feature_sampling_without_replacement.hpp"
+#include "common/sampling/instance_sampling_no.hpp"
 #include "common/sampling/instance_sampling_stratified_example_wise.hpp"
 #include "common/sampling/instance_sampling_stratified_label_wise.hpp"
 #include "common/sampling/instance_sampling_with_replacement.hpp"
 #include "common/sampling/instance_sampling_without_replacement.hpp"
+#include "common/sampling/label_sampling_no.hpp"
 #include "common/sampling/label_sampling_without_replacement.hpp"
 #include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
+#include "common/sampling/partition_sampling_no.hpp"
 #include "common/stopping/global_pruning_post.hpp"
 #include "common/stopping/global_pruning_pre.hpp"
 #include "common/stopping/stopping_criterion_list.hpp"
@@ -311,17 +320,54 @@ class MLRLCOMMON_API IRuleLearner {
             public:
 
                 virtual ~IConfig() {};
+        };
 
-                /**
-                 * Configures the rule learner to induce a default rule.
-                 */
-                virtual void useDefaultRule() = 0;
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use an algorithm that
+         * sequentially induces several rules.
+         */
+        class ISequentialRuleModelAssemblageMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~ISequentialRuleModelAssemblageMixin() override {};
 
                 /**
                  * Configures the rule learner to use an algorithm that sequentially induces several rules, optionally
                  * starting with a default rule, that are added to a rule-based model.
                  */
-                virtual void useSequentialRuleModelAssemblage() = 0;
+                virtual void useSequentialRuleModelAssemblage() {
+                    std::unique_ptr<IRuleModelAssemblageConfig>& ruleModelAssemblageConfigPtr =
+                      this->getRuleModelAssemblageConfigPtr();
+                    ruleModelAssemblageConfigPtr =
+                      std::make_unique<SequentialRuleModelAssemblageConfig>(this->getDefaultRuleConfigPtr());
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to induce a default rule.
+         */
+        class IDefaultRuleMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IDefaultRuleMixin() override {};
+
+                /**
+                 * Configures the rule learner to induce a default rule.
+                 */
+                virtual void useDefaultRule() {
+                    std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr = this->getDefaultRuleConfigPtr();
+                    defaultRuleConfigPtr = std::make_unique<DefaultRuleConfig>(true);
+                };
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to use a greedy top-down search
+         * for the induction of individual rules.
+         */
+        class IGreedyTopDownRuleInductionMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IGreedyTopDownRuleInductionMixin() override {};
 
                 /**
                  * Configures the rule learner to use a greedy top-down search for the induction of individual rules.
@@ -329,96 +375,24 @@ class MLRLCOMMON_API IRuleLearner {
                  * @return A reference to an object of type `IGreedyTopDownRuleInductionConfig` that allows further
                  *         configuration of the algorithm for the induction of individual rules
                  */
-                virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() = 0;
-
-                /**
-                 * Configures the rule learner to not use any method for the assignment of numerical feature values to
-                 * bins.
-                 */
-                virtual void useNoFeatureBinning() = 0;
-
-                /**
-                 * Configures the rule learner to not sample from the available labels whenever a new rule should be
-                 * learned.
-                 */
-                virtual void useNoLabelSampling() = 0;
-
-                /**
-                 * Configures the rule learner to not sample from the available training examples whenever a new rule
-                 * should be learned.
-                 */
-                virtual void useNoInstanceSampling() = 0;
-
-                /**
-                 * Configures the rule learner to not sample from the available features whenever a rule should be
-                 * refined.
-                 */
-                virtual void useNoFeatureSampling() = 0;
-
-                /**
-                 * Configures the rule learner to not partition the available training examples into a training set and
-                 * a holdout set.
-                 */
-                virtual void useNoPartitionSampling() = 0;
-
-                /**
-                 * Configures the rule learner to not prune individual rules.
-                 */
-                virtual void useNoRulePruning() = 0;
-
-                /**
-                 * Configures the rule learner to not use any post processor.
-                 */
-                virtual void useNoPostProcessor() = 0;
-
-                /**
-                 * Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
-                 */
-                virtual void useNoParallelRuleRefinement() = 0;
-
-                /**
-                 * Configures the rule learner to not use any multi-threading for the parallel update of statistics.
-                 */
-                virtual void useNoParallelStatisticUpdate() = 0;
-
-                /**
-                 * Configures the rule learner to not use any multi-threading to predict for several query examples in
-                 * parallel.
-                 */
-                virtual void useNoParallelPrediction() = 0;
-
-                /**
-                 * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
-                 * rules does not exceed a certain maximum.
-                 */
-                virtual void useNoSizeStoppingCriterion() = 0;
-
-                /**
-                 * Configures the rule learner to not use a stopping criterion that ensures that are certain time limit
-                 * is not exceeded.
-                 */
-                virtual void useNoTimeStoppingCriterion() = 0;
-
-                /**
-                 * Configures the rule learner to not use a stopping criterion that allows to decide how many rules
-                 * should be included in a model, such that its performance is optimized globally.
-                 */
-                virtual void useNoGlobalPruning() = 0;
-
-                /**
-                 * Configures the rule learner to not use a post-optimization method that optimizes each rule in a model
-                 * by relearning it in the context of the other rules.
-                 */
-                virtual void useNoSequentialPostOptimization() = 0;
+                virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() {
+                    std::unique_ptr<IRuleInductionConfig>& ruleInductionConfigPtr = this->getRuleInductionConfigPtr();
+                    std::unique_ptr<GreedyTopDownRuleInductionConfig> ptr =
+                      std::make_unique<GreedyTopDownRuleInductionConfig>(this->getRuleCompareFunction(),
+                                                                         this->getParallelRuleRefinementConfigPtr());
+                    IGreedyTopDownRuleInductionConfig& ref = *ptr;
+                    ruleInductionConfigPtr = std::move(ptr);
+                    return ref;
+                }
         };
 
         /**
          * Defines an interface for all classes that allow to configure a rule learner to use a top-down beam search.
          */
-        class IBeamSearchTopDownMixin : virtual public IRuleLearner::IConfig {
+        class IBeamSearchTopDownRuleInductionMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IBeamSearchTopDownMixin() override {};
+                virtual ~IBeamSearchTopDownRuleInductionMixin() override {};
 
                 /**
                  * Configures the rule learner to use a top-down beam search for the induction of individual rules.
@@ -434,6 +408,44 @@ class MLRLCOMMON_API IRuleLearner {
                     IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
                     ruleInductionConfigPtr = std::move(ptr);
                     return ref;
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use any post processor.
+         */
+        class INoPostProcessorMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoPostProcessorMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use any post processor.
+                 */
+                virtual void useNoPostProcessor() {
+                    std::unique_ptr<IPostProcessorConfig>& postProcessorConfigPtr = this->getPostProcessorConfigPtr();
+                    postProcessorConfigPtr = std::make_unique<NoPostProcessorConfig>();
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use any method for the
+         * assignment of numerical features values to bins.
+         */
+        class INoFeatureBinningMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoFeatureBinningMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use any method for the assignment of numerical feature values to
+                 * bins.
+                 */
+                virtual void useNoFeatureBinning() {
+                    std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
+                      this->getFeatureBinningConfigPtr();
+                    featureBinningConfigPtr =
+                      std::make_unique<NoFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
                 }
         };
 
@@ -492,6 +504,24 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use label sampling.
+         */
+        class INoLabelSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoLabelSamplingMixin() override {};
+
+                /**
+                 * Configures the rule learner to not sample from the available labels whenever a new rule should be
+                 * learned.
+                 */
+                virtual void useNoLabelSampling() {
+                    std::unique_ptr<ILabelSamplingConfig>& labelSamplingConfigPtr = this->getLabelSamplingConfigPtr();
+                    labelSamplingConfigPtr = std::make_unique<NoLabelSamplingConfig>();
+                }
+        };
+
+        /**
          * Defines an interface for all classes that allow to configure a rule learner to use label sampling without
          * replacement.
          */
@@ -515,6 +545,25 @@ class MLRLCOMMON_API IRuleLearner {
                     labelSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use instance sampling.
+         */
+        class INoInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoInstanceSamplingMixin() override {};
+
+                /**
+                 * Configures the rule learner to not sample from the available training examples whenever a new rule
+                 * should be learned.
+                 */
+                virtual void useNoInstanceSampling() {
+                    std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr =
+                      this->getInstanceSamplingConfigPtr();
+                    instanceSamplingConfigPtr = std::make_unique<NoInstanceSamplingConfig>();
+                };
         };
 
         /**
@@ -628,6 +677,25 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use feature sampling.
+         */
+        class INoFeatureSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoFeatureSamplingMixin() override {};
+
+                /**
+                 * Configures the rule learner to not sample from the available features whenever a rule should be
+                 * refined.
+                 */
+                virtual void useNoFeatureSampling() {
+                    std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr =
+                      this->getFeatureSamplingConfigPtr();
+                    featureSamplingConfigPtr = std::make_unique<NoFeatureSamplingConfig>();
+                }
+        };
+
+        /**
          * Defines an interface for all classes that allow to configure a rule learner to use feature sampling without
          * replacement.
          */
@@ -651,6 +719,26 @@ class MLRLCOMMON_API IRuleLearner {
                     IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
                     featureSamplingConfigPtr = std::move(ptr);
                     return ref;
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not partition the available
+         * training examples into a training set and a holdout set.
+         */
+        class INoPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoPartitionSamplingMixin() override {};
+
+                /**
+                 * Configures the rule learner to not partition the available training examples into a training set and
+                 * a holdout set.
+                 */
+                virtual void useNoPartitionSampling() {
+                    std::unique_ptr<IPartitionSamplingConfig>& partitionSamplingConfigPtr =
+                      this->getPartitionSamplingConfigPtr();
+                    partitionSamplingConfigPtr = std::make_unique<NoPartitionSamplingConfig>();
                 }
         };
 
@@ -743,12 +831,30 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use pruning.
+         * Defines an interface for all classes that allow to configure a rule learner to not prune individual rules.
          */
-        class IRulePruningMixin : virtual public IRuleLearner::IConfig {
+        class INoRulePruningMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IRulePruningMixin() override {};
+                virtual ~INoRulePruningMixin() override {};
+
+                /**
+                 * Configures the rule learner to not prune individual rules.
+                 */
+                virtual void useNoRulePruning() {
+                    std::unique_ptr<IRulePruningConfig>& rulePruningConfigPtr = this->getRulePruningConfigPtr();
+                    rulePruningConfigPtr = std::make_unique<NoRulePruningConfig>();
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to prune individual rules by
+         * following the principles of "incremental reduced error pruning" (IREP).
+         */
+        class IIrepRulePruningMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IIrepRulePruningMixin() override {};
 
                 /**
                  * Configures the rule learner to prune individual rules by following the principles of "incremental
@@ -757,6 +863,25 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useIrepRulePruning() {
                     std::unique_ptr<IRulePruningConfig>& rulePruningConfigPtr = this->getRulePruningConfigPtr();
                     rulePruningConfigPtr = std::make_unique<IrepConfig>(this->getRuleCompareFunction());
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use any multi-threading
+         * for the parallel refinement of rules.
+         */
+        class INoParallelRuleRefinementMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoParallelRuleRefinementMixin() override {}
+
+                /**
+                 * Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
+                 */
+                virtual void useNoParallelRuleRefinement() {
+                    std::unique_ptr<IMultiThreadingConfig>& parallelRuleRefinementConfigPtr =
+                      this->getParallelRuleRefinementConfigPtr();
+                    parallelRuleRefinementConfigPtr = std::make_unique<NoMultiThreadingConfig>();
                 }
         };
 
@@ -786,6 +911,25 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use any multi-threading
+         * for the parallel update of statistics.
+         */
+        class INoParallelStatisticUpdateMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoParallelStatisticUpdateMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use any multi-threading for the parallel update of statistics.
+                 */
+                virtual void useNoParallelStatisticUpdate() {
+                    std::unique_ptr<IMultiThreadingConfig>& parallelStatisticUpdateConfigPtr =
+                      this->getParallelStatisticUpdateConfigPtr();
+                    parallelStatisticUpdateConfigPtr = std::make_unique<NoMultiThreadingConfig>();
+                }
+        };
+
+        /**
          * Defines an interface for all classes that allow to configure a rule learner to use multi-threading for the
          * parallel update of statistics.
          */
@@ -807,6 +951,26 @@ class MLRLCOMMON_API IRuleLearner {
                     IManualMultiThreadingConfig& ref = *ptr;
                     parallelStatisticUpdateConfigPtr = std::move(ptr);
                     return ref;
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use any multi-threading
+         * for prediction.
+         */
+        class INoParallelPredictionMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoParallelPredictionMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use any multi-threading to predict for several query examples in
+                 * parallel.
+                 */
+                virtual void useNoParallelPrediction() {
+                    std::unique_ptr<IMultiThreadingConfig>& parallelPredictionConfigPtr =
+                      this->getParallelPredictionConfigPtr();
+                    parallelPredictionConfigPtr = std::make_unique<NoMultiThreadingConfig>();
                 }
         };
 
@@ -836,6 +1000,26 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use a stopping criterion
+         * that ensures that the number of induced rules does not exceed a certain maximum.
+         */
+        class INoSizeStoppingCriterionMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoSizeStoppingCriterionMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
+                 * rules does not exceed a certain maximum.
+                 */
+                virtual void useNoSizeStoppingCriterion() {
+                    std::unique_ptr<SizeStoppingCriterionConfig>& sizeStoppingCriterionConfigPtr =
+                      this->getSizeStoppingCriterionConfigPtr();
+                    sizeStoppingCriterionConfigPtr = nullptr;
+                }
+        };
+
+        /**
          * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
          * ensures that the number of induced rules does not exceed a certain maximum.
          */
@@ -858,6 +1042,26 @@ class MLRLCOMMON_API IRuleLearner {
                     ISizeStoppingCriterionConfig& ref = *ptr;
                     sizeStoppingCriterionConfigPtr = std::move(ptr);
                     return ref;
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use a stopping criterion
+         * that ensures that a certain time limit is not exceeded.
+         */
+        class INoTimeStoppingCriterionMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoTimeStoppingCriterionMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use a stopping criterion that ensures that a certain time limit is
+                 * not exceeded.
+                 */
+                virtual void useNoTimeStoppingCriterion() {
+                    std::unique_ptr<TimeStoppingCriterionConfig>& timeStoppingCriterionConfigPtr =
+                      this->getTimeStoppingCriterionConfigPtr();
+                    timeStoppingCriterionConfigPtr = nullptr;
                 }
         };
 
@@ -915,6 +1119,23 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use global pruning.
+         */
+        class INoGlobalPruningMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoGlobalPruningMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use global pruning.
+                 */
+                virtual void useNoGlobalPruning() {
+                    std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = this->getGlobalPruningConfigPtr();
+                    globalPruningConfigPtr = nullptr;
+                }
+        };
+
+        /**
          * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion that
          * keeps track of the number of rules in a model that perform best with respect to the examples in the training
          * or holdout set according to a certain measure.
@@ -935,6 +1156,26 @@ class MLRLCOMMON_API IRuleLearner {
                     IPostPruningConfig& ref = *ptr;
                     globalPruningConfigPtr = std::move(ptr);
                     return ref;
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use a post-optimization
+         * method that optimizes each rule in a model by relearning it in the context of the other rules.
+         */
+        class INoSequentialPostOptimizationMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~INoSequentialPostOptimizationMixin() override {};
+
+                /**
+                 * Configures the rule learner to not use a post-optimization method that optimizes each rule in a model
+                 * by relearning it in the context of the other rules.
+                 */
+                virtual void useNoSequentialPostOptimization() {
+                    std::unique_ptr<SequentialPostOptimizationConfig>& sequentialPostOptimizationConfigPtr =
+                      this->getSequentialPostOptimizationConfigPtr();
+                    sequentialPostOptimizationConfigPtr = nullptr;
                 }
         };
 
@@ -1216,6 +1457,10 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * Allows to configure a rule learner.
          */
         class Config : virtual public IRuleLearner::IConfig {
+            private:
+
+                const RuleCompareFunction ruleCompareFunction_;
+
             protected:
 
                 /**
@@ -1342,8 +1587,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
             private:
 
-                const RuleCompareFunction ruleCompareFunction_;
-
                 RuleCompareFunction getRuleCompareFunction() const override final;
 
                 std::unique_ptr<IDefaultRuleConfig>& getDefaultRuleConfigPtr() override final;
@@ -1396,40 +1639,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  *                            should be used for comparing the quality of different rules
                  */
                 Config(RuleCompareFunction ruleCompareFunction);
-
-                void useDefaultRule() override;
-
-                void useSequentialRuleModelAssemblage() override;
-
-                IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
-
-                void useNoFeatureBinning() override;
-
-                void useNoLabelSampling() override;
-
-                void useNoInstanceSampling() override;
-
-                void useNoFeatureSampling() override;
-
-                void useNoPartitionSampling() override;
-
-                void useNoRulePruning() override;
-
-                void useNoPostProcessor() override;
-
-                void useNoParallelRuleRefinement() override;
-
-                void useNoParallelStatisticUpdate() override;
-
-                void useNoParallelPrediction() override;
-
-                void useNoSizeStoppingCriterion() override;
-
-                void useNoTimeStoppingCriterion() override;
-
-                void useNoGlobalPruning() override;
-
-                void useNoSequentialPostOptimization() override;
         };
 
     private:
