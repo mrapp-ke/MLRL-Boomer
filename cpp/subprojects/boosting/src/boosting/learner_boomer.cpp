@@ -1,7 +1,6 @@
 #include "boosting/learner_boomer.hpp"
 
 #include "boosting/binning/label_binning_auto.hpp"
-#include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
 #include "boosting/prediction/predictor_binary_auto.hpp"
 #include "boosting/prediction/predictor_probability_auto.hpp"
 #include "boosting/rule_evaluation/head_type_auto.hpp"
@@ -43,10 +42,6 @@ namespace boosting {
         ISizeStoppingCriterionConfig& ref = ISizeStoppingCriterionMixin::useSizeStoppingCriterion();
         ref.setMaxRules(1000);
         return ref;
-    }
-
-    void Boomer::Config::useAutomaticParallelStatisticUpdate() {
-        parallelStatisticUpdateConfigPtr_ = std::make_unique<AutoParallelStatisticUpdateConfig>(lossConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticHeads() {

@@ -20,6 +20,7 @@
 #include "boosting/math/blas.hpp"
 #include "boosting/math/lapack.hpp"
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
+#include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 #include "boosting/prediction/predictor_binary_gfm.hpp"
@@ -172,6 +173,27 @@ namespace boosting {
                           this->getParallelRuleRefinementConfigPtr();
                         parallelRuleRefinementConfigPtr = std::make_unique<AutoParallelRuleRefinementConfig>(
                           this->getLossConfigPtr(), this->getHeadConfigPtr(), this->getFeatureSamplingConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
+             * whether multi-threading should be used for the parallel update of statistics or not.
+             */
+            class IAutomaticParallelStatisticUpdateMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticParallelStatisticUpdateMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide whether multi-threading should be used for
+                     * the parallel update of statistics or not.
+                     */
+                    virtual void useAutomaticParallelStatisticUpdate() {
+                        std::unique_ptr<IMultiThreadingConfig>& parallelStatisticUpdateConfigPtr =
+                          this->getParallelStatisticUpdateConfigPtr();
+                        parallelStatisticUpdateConfigPtr =
+                          std::make_unique<AutoParallelStatisticUpdateConfig>(this->getLossConfigPtr());
                     }
             };
 
