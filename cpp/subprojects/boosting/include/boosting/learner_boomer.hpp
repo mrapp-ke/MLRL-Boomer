@@ -22,6 +22,7 @@ namespace boosting {
              * Defines the interface for configuring the BOOMER algorithm.
              */
             class IConfig : virtual public IBoostingRuleLearner::IConfig,
+                            virtual public IBoostingRuleLearner::IAutomaticPartitionSamplingMixin,
                             virtual public IBoostingRuleLearner::IConstantShrinkageMixin,
                             virtual public IBoostingRuleLearner::INoL1RegularizationMixin,
                             virtual public IBoostingRuleLearner::IL1RegularizationMixin,
@@ -90,11 +91,6 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to automatically decide whether a holdout set should be used or not.
-                     */
-                    virtual void useAutomaticPartitionSampling() = 0;
 
                     /**
                      * Configures the rule learner to automatically decide whether a method for the assignment of
@@ -168,8 +164,6 @@ namespace boosting {
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                    void useAutomaticPartitionSampling() override;
 
                     void useAutomaticFeatureBinning() override;
 

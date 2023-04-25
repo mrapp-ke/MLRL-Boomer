@@ -7,7 +7,6 @@
 #include "boosting/prediction/predictor_binary_auto.hpp"
 #include "boosting/prediction/predictor_probability_auto.hpp"
 #include "boosting/rule_evaluation/head_type_auto.hpp"
-#include "boosting/sampling/partition_sampling_auto.hpp"
 #include "boosting/statistics/statistic_format_auto.hpp"
 
 namespace boosting {
@@ -46,11 +45,6 @@ namespace boosting {
         ISizeStoppingCriterionConfig& ref = ISizeStoppingCriterionMixin::useSizeStoppingCriterion();
         ref.setMaxRules(1000);
         return ref;
-    }
-
-    void Boomer::Config::useAutomaticPartitionSampling() {
-        partitionSamplingConfigPtr_ =
-          std::make_unique<AutomaticPartitionSamplingConfig>(globalPruningConfigPtr_, lossConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticFeatureBinning() {

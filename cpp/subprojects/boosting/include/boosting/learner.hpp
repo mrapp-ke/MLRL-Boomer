@@ -32,6 +32,7 @@
 #include "boosting/rule_evaluation/regularization_manual.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
 #include "boosting/rule_model_assemblage/default_rule_auto.hpp"
+#include "boosting/sampling/partition_sampling_auto.hpp"
 #include "boosting/statistics/statistic_format.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
 #include "boosting/statistics/statistic_format_sparse.hpp"
@@ -108,6 +109,26 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override {};
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
+             * whether a holdout set should be used or not.
+             */
+            class IAutomaticPartitionSamplingMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticPartitionSamplingMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide whether a holdout set should be used or not.
+                     */
+                    virtual void useAutomaticPartitionSampling() {
+                        std::unique_ptr<IPartitionSamplingConfig>& partitionSamplingConfigPtr =
+                          this->getPartitionSamplingConfigPtr();
+                        partitionSamplingConfigPtr = std::make_unique<AutomaticPartitionSamplingConfig>(
+                          this->getGlobalPruningConfigPtr(), this->getLossConfigPtr());
+                    }
             };
 
             /**
