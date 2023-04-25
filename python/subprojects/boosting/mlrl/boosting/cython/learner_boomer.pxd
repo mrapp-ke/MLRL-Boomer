@@ -19,8 +19,8 @@ from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRu
     IExampleWiseSquaredErrorLossMixin, IExampleWiseSquaredHingeLossMixin, ILabelWiseLogisticLossMixin, \
     ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, INoLabelBinningMixin, \
     IEqualWidthLabelBinningMixin, ILabelWiseBinaryPredictorMixin, IExampleWiseBinaryPredictorMixin, \
-    IGfmBinaryPredictorMixin, ILabelWiseScorePredictorMixin, IMarginalizedProbabilityPredictorMixin, DdotFunction, \
-    DspmvFunction, DsysvFunction
+    IGfmBinaryPredictorMixin, ILabelWiseScorePredictorMixin, ILabelWiseProbabilityPredictorMixin, \
+    IMarginalizedProbabilityPredictorMixin, DdotFunction, DspmvFunction, DsysvFunction
 
 from libcpp.memory cimport unique_ptr
 
@@ -52,6 +52,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IExampleWiseBinaryPredictorMixin,
                                                             IGfmBinaryPredictorMixin,
                                                             ILabelWiseScorePredictorMixin,
+                                                            ILabelWiseProbabilityPredictorMixin,
                                                             IMarginalizedProbabilityPredictorMixin,
                                                             ISequentialRuleModelAssemblageMixin,
                                                             IDefaultRuleMixin,
