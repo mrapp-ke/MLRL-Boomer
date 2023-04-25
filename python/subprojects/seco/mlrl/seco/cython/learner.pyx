@@ -11,13 +11,6 @@ cdef class SeCoRuleLearnerConfig:
     cdef ISeCoRuleLearnerConfig* get_seco_rule_learner_config_ptr(self):
         pass
 
-    def use_precision_heuristic(self):
-        """
-        Configures the rule learner to use the "Precision" heuristic for learning rules.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.get_seco_rule_learner_config_ptr()
-        rule_learner_config_ptr.usePrecisionHeuristic()
-
     def use_precision_pruning_heuristic(self):
         """
         Configures the rule learner to use the "Precision" heuristic for pruning rules.

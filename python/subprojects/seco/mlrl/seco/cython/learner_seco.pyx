@@ -212,6 +212,13 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useLaplacePruningHeuristic()
 
+    def use_precision_heuristic(self):
+        """
+        Configures the rule learner to use the "Precision" heuristic for learning rules.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.usePrecisionHeuristic()
+
     def use_recall_heuristic(self):
         """
         Configures the rule learner to use the "Recall" heuristic for learning rules.

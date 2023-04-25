@@ -9,8 +9,6 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         # Functions:
 
-        void usePrecisionHeuristic()
-
         void usePrecisionPruningHeuristic()
 
         void useLabelWiseBinaryPredictor()
@@ -121,6 +119,13 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         void useLaplacePruningHeuristic()
 
 
+    cdef cppclass IPrecisionHeuristicMixin"seco::ISeCoRuleLearner::IPrecisionHeuristicMixin":
+
+        # Functions:
+
+        void usePrecisionHeuristic()
+
+        
     cdef cppclass IRecallHeuristicMixin"seco::ISeCoRuleLearner::IRecallHeuristicMixin":
 
         # Functions:

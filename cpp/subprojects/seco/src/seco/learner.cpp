@@ -1,6 +1,5 @@
 #include "seco/learner.hpp"
 
-#include "seco/heuristics/heuristic_precision.hpp"
 #include "seco/model/decision_list_builder.hpp"
 #include "seco/prediction/predictor_binary_label_wise.hpp"
 #include "seco/rule_evaluation/rule_compare_function.hpp"
@@ -8,7 +7,6 @@
 namespace seco {
 
     AbstractSeCoRuleLearner::Config::Config() : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION) {
-        this->usePrecisionHeuristic();
         this->usePrecisionPruningHeuristic();
         this->useLabelWiseBinaryPredictor();
     }
@@ -32,10 +30,6 @@ namespace seco {
 
     std::unique_ptr<ILiftFunctionConfig>& AbstractSeCoRuleLearner::Config::getLiftFunctionConfigPtr() {
         return liftFunctionConfigPtr_;
-    }
-
-    void AbstractSeCoRuleLearner::Config::usePrecisionHeuristic() {
-        heuristicConfigPtr_ = std::make_unique<PrecisionConfig>();
     }
 
     void AbstractSeCoRuleLearner::Config::usePrecisionPruningHeuristic() {
