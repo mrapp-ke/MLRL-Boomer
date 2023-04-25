@@ -38,6 +38,7 @@
 #include "boosting/rule_model_assemblage/default_rule_auto.hpp"
 #include "boosting/sampling/partition_sampling_auto.hpp"
 #include "boosting/statistics/statistic_format.hpp"
+#include "boosting/statistics/statistic_format_auto.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
 #include "boosting/statistics/statistic_format_sparse.hpp"
 #include "common/learner.hpp"
@@ -498,6 +499,26 @@ namespace boosting {
                     virtual void useSparseStatistics() {
                         std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr = this->getStatisticsConfigPtr();
                         statisticsConfigPtr = std::make_unique<SparseStatisticsConfig>(this->getLossConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
+             * whether a dense or sparse representation of gradients and Hessians should be used.
+             */
+            class IAutomaticStatisticsMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticStatisticsMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide whether a dense or sparse representation of
+                     * gradients and Hessians should be used.
+                     */
+                    virtual void useAutomaticStatistics() {
+                        std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr = this->getStatisticsConfigPtr();
+                        statisticsConfigPtr = std::make_unique<AutomaticStatisticsConfig>(
+                          this->getLossConfigPtr(), this->getHeadConfigPtr(), this->getDefaultRuleConfigPtr());
                     }
             };
 
