@@ -54,8 +54,6 @@ namespace seco {
                             virtual public IRuleLearner::IDefaultRuleMixin,
                             virtual public IRuleLearner::IGreedyTopDownRuleInductionMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownRuleInductionMixin,
-                            virtual public IRuleLearner::INoPostProcessorMixin,
-                            virtual public IRuleLearner::INoFeatureBinningMixin,
                             virtual public IRuleLearner::INoLabelSamplingMixin,
                             virtual public IRuleLearner::ILabelSamplingWithoutReplacementMixin,
                             virtual public IRuleLearner::INoInstanceSamplingMixin,
@@ -81,7 +79,6 @@ namespace seco {
                             virtual public IRuleLearner::ISizeStoppingCriterionMixin,
                             virtual public IRuleLearner::INoTimeStoppingCriterionMixin,
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
-                            virtual public IRuleLearner::INoGlobalPruningMixin,
                             virtual public IRuleLearner::INoSequentialPostOptimizationMixin,
                             virtual public IRuleLearner::ISequentialPostOptimizationMixin {
                 public:
