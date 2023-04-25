@@ -31,6 +31,7 @@
 #include "boosting/rule_evaluation/head_type_single.hpp"
 #include "boosting/rule_evaluation/regularization_manual.hpp"
 #include "boosting/rule_evaluation/regularization_no.hpp"
+#include "boosting/rule_model_assemblage/default_rule_auto.hpp"
 #include "boosting/statistics/statistic_format.hpp"
 #include "boosting/statistics/statistic_format_dense.hpp"
 #include "boosting/statistics/statistic_format_sparse.hpp"
@@ -235,6 +236,26 @@ namespace boosting {
                     virtual void useNoDefaultRule() {
                         std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr = this->getDefaultRuleConfigPtr();
                         defaultRuleConfigPtr = std::make_unique<DefaultRuleConfig>(false);
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
+             * whether a default rule should be induced or not.
+             */
+            class IAutomaticDefaultRuleMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticDefaultRuleMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide whether a default rule should be induced or
+                     * not.
+                     */
+                    virtual void useAutomaticDefaultRule() {
+                        std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr = this->getDefaultRuleConfigPtr();
+                        defaultRuleConfigPtr = std::make_unique<AutomaticDefaultRuleConfig>(
+                          this->getStatisticsConfigPtr(), this->getLossConfigPtr(), this->getHeadConfigPtr());
                     }
             };
 

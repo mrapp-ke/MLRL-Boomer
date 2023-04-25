@@ -28,6 +28,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::INoL2RegularizationMixin,
                             virtual public IBoostingRuleLearner::IL2RegularizationMixin,
                             virtual public IBoostingRuleLearner::INoDefaultRuleMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticDefaultRuleMixin,
                             virtual public IBoostingRuleLearner::ICompleteHeadMixin,
                             virtual public IBoostingRuleLearner::IDynamicPartialHeadMixin,
                             virtual public IBoostingRuleLearner::IFixedPartialHeadMixin,
@@ -89,12 +90,6 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to automatically decide whether a default rule should be induced or
-                     * not.
-                     */
-                    virtual void useAutomaticDefaultRule() = 0;
 
                     /**
                      * Configures the rule learner to automatically decide whether a holdout set should be used or not.
@@ -173,8 +168,6 @@ namespace boosting {
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                    void useAutomaticDefaultRule() override;
 
                     void useAutomaticPartitionSampling() override;
 
