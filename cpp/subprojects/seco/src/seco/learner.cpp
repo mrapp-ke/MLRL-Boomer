@@ -3,14 +3,12 @@
 #include "seco/heuristics/heuristic_precision.hpp"
 #include "seco/model/decision_list_builder.hpp"
 #include "seco/prediction/predictor_binary_label_wise.hpp"
-#include "seco/rule_evaluation/head_type_single.hpp"
 #include "seco/rule_evaluation/rule_compare_function.hpp"
 
 namespace seco {
 
     AbstractSeCoRuleLearner::Config::Config() : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION) {
         this->useNoCoverageStoppingCriterion();
-        this->useSingleLabelHeads();
         this->usePrecisionHeuristic();
         this->usePrecisionPruningHeuristic();
         this->useLabelWiseBinaryPredictor();
@@ -39,10 +37,6 @@ namespace seco {
 
     void AbstractSeCoRuleLearner::Config::useNoCoverageStoppingCriterion() {
         coverageStoppingCriterionConfigPtr_ = nullptr;
-    }
-
-    void AbstractSeCoRuleLearner::Config::useSingleLabelHeads() {
-        headConfigPtr_ = std::make_unique<SingleLabelHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_);
     }
 
     void AbstractSeCoRuleLearner::Config::usePrecisionHeuristic() {

@@ -11,8 +11,6 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         void useNoCoverageStoppingCriterion()
 
-        void useSingleLabelHeads()
-
         void usePrecisionHeuristic()
 
         void usePrecisionPruningHeuristic()
@@ -25,6 +23,13 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         # Functions:
 
         ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion()
+
+
+    cdef cppclass ISingleLabelHeadMixin"seco::ISeCoRuleLearner::ISingleLabelHeadMixin":
+
+        # Functions:
+
+        void useSingleLabelHeads()
 
 
     cdef cppclass IPartialHeadMixin"seco::ISeCoRuleLearner::IPartialHeadMixin":
@@ -40,7 +45,7 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         void useNoLiftFunction()
 
-        
+
     cdef cppclass IPeakLiftFunctionMixin"seco::ISeCoRuleLearner::IPeakLiftFunctionMixin":
 
         # Functions:

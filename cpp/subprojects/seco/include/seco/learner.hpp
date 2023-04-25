@@ -19,6 +19,7 @@
 #include "seco/lift_functions/lift_function_no.hpp"
 #include "seco/lift_functions/lift_function_peak.hpp"
 #include "seco/rule_evaluation/head_type_partial.hpp"
+#include "seco/rule_evaluation/head_type_single.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
 
 namespace seco {
@@ -98,12 +99,6 @@ namespace seco {
                     virtual void useNoCoverageStoppingCriterion() = 0;
 
                     /**
-                     * Configures the rule learner to induce rules with single-label heads that predict for a single
-                     * label.
-                     */
-                    virtual void useSingleLabelHeads() = 0;
-
-                    /**
                      * Configures the rule learner to use the "Precision" heuristic for learning rules.
                      */
                     virtual void usePrecisionHeuristic() = 0;
@@ -149,6 +144,26 @@ namespace seco {
                         ICoverageStoppingCriterionConfig& ref = *ptr;
                         coverageStoppingCriterionConfigPtr = std::move(ptr);
                         return ref;
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to induce rules with
+             * single-label heads that predict for a single label.
+             */
+            class ISingleLabelHeadMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~ISingleLabelHeadMixin() override {};
+
+                    /**
+                     * Configures the rule learner to induce rules with single-label heads that predict for a single
+                     * label.
+                     */
+                    virtual void useSingleLabelHeads() {
+                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                        headConfigPtr = std::make_unique<SingleLabelHeadConfig>(this->getHeuristicConfigPtr(),
+                                                                                this->getPruningHeuristicConfigPtr());
                     }
             };
 
@@ -551,8 +566,6 @@ namespace seco {
                     Config();
 
                     void useNoCoverageStoppingCriterion() override;
-
-                    void useSingleLabelHeads() override;
 
                     void usePrecisionHeuristic() override;
 

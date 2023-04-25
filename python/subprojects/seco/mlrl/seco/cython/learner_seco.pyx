@@ -80,6 +80,13 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_single_label_heads(self):
+        """
+        Configures the rule learner to induce rules with single-label heads that predict for a single label.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useSingleLabelHeads()
+
     def use_partial_heads(self):
         """
         Configures the rule learner to induce rules with partial heads that predict for a subset of the available
