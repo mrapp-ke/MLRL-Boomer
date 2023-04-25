@@ -14,10 +14,7 @@ ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* ld
 cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
     cdef cppclass IBoostingRuleLearnerConfig"boosting::IBoostingRuleLearner::IConfig":
-
-        # Functions:
-
-        void useLabelWiseProbabilityPredictor()
+        pass
 
 
     cdef cppclass IConstantShrinkageMixin"boosting::IBoostingRuleLearner::IConstantShrinkageMixin":
@@ -187,7 +184,14 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useLabelWiseScorePredictor()
 
-        
+
+    cdef cppclass ILabelWiseProbabilityPredictorMixin"boosting::IBoostingRuleLearner::ILabelWiseProbabilityPredictorMixin":
+
+        # Functions:
+
+        void useLabelWiseProbabilityPredictor()
+
+
     cdef cppclass IMarginalizedProbabilityPredictorMixin"boosting::IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin":
 
         # Functions:

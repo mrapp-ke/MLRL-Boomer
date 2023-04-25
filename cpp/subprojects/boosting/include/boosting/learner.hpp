@@ -22,6 +22,7 @@
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 #include "boosting/prediction/predictor_binary_gfm.hpp"
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
+#include "boosting/prediction/predictor_probability_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
 #include "boosting/prediction/predictor_score_label_wise.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
@@ -106,14 +107,6 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to use a predictor for predicting probability estimates by summing up
-                     * the scores that are provided by individual rules of an existing rule-based model and transforming
-                     * the aggregated scores into probabilities according to a certain transformation function that is
-                     * applied to each label individually.
-                     */
-                    virtual void useLabelWiseProbabilityPredictor() = 0;
             };
 
             /**
@@ -638,6 +631,31 @@ namespace boosting {
             };
 
             /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
+             * predicting probability estimates by summing up the scores that are provided by individual rules of an
+             * existing rule-based model and transforming the aggregated scores into probabilities according to a
+             * certain transformation function that is applied to each label individually.
+             */
+            class ILabelWiseProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~ILabelWiseProbabilityPredictorMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting probability estimates by summing up
+                     * the scores that are provided by individual rules of an existing rule-based model and transforming
+                     * the aggregated scores into probabilities according to a certain transformation function that is
+                     * applied to each label individually.
+                     */
+                    virtual void useLabelWiseProbabilityPredictor() {
+                        std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
+                          this->getProbabilityPredictorConfigPtr();
+                        probabilityPredictorConfigPtr = std::make_unique<LabelWiseProbabilityPredictorConfig>(
+                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                    }
+            };
+
+            /**
              * Defines an interface for all classes that allow to configure a rule learner to use predictor for
              * predicting probability estimates by summing up the scores that are provided by individual rules of an
              * existing rule-based model and comparing the aggregated score vector to the known label vectors according
@@ -729,8 +747,6 @@ namespace boosting {
                 public:
 
                     Config();
-
-                    void useLabelWiseProbabilityPredictor() override;
             };
 
         private:
