@@ -503,6 +503,9 @@ class MLRLCOMMON_API IRuleLearner {
                 }
         };
 
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use label sampling.
+         */
         class INoLabelSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
@@ -673,6 +676,9 @@ class MLRLCOMMON_API IRuleLearner {
                 }
         };
 
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to not use feature sampling.
+         */
         class INoFeatureSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
@@ -1451,6 +1457,10 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * Allows to configure a rule learner.
          */
         class Config : virtual public IRuleLearner::IConfig {
+            private:
+
+                const RuleCompareFunction ruleCompareFunction_;
+
             protected:
 
                 /**
@@ -1576,8 +1586,6 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
 
             private:
-
-                const RuleCompareFunction ruleCompareFunction_;
 
                 RuleCompareFunction getRuleCompareFunction() const override final;
 
