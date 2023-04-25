@@ -92,13 +92,6 @@ namespace seco {
                     virtual ~IConfig() override {};
 
                     /**
-                     * Configures the rule learner to not use any stopping criterion that stops the induction of rules
-                     * as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain
-                     * threshold.
-                     */
-                    virtual void useNoCoverageStoppingCriterion() = 0;
-
-                    /**
                      * Configures the rule learner to use the "Precision" heuristic for learning rules.
                      */
                     virtual void usePrecisionHeuristic() = 0;
@@ -118,6 +111,28 @@ namespace seco {
             };
 
             virtual ~ISeCoRuleLearner() override {};
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to not use any stopping
+             * criterion that stops the induction of rules as soon as the sum of the weights of the uncovered labels is
+             * smaller or equal to a certain threshold.
+             */
+            class INoCoverageStoppingCriterionMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~INoCoverageStoppingCriterionMixin() override {};
+
+                    /**
+                     * Configures the rule learner to not use any stopping criterion that stops the induction of rules
+                     * as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain
+                     * threshold.
+                     */
+                    virtual void useNoCoverageStoppingCriterion() {
+                        std::unique_ptr<CoverageStoppingCriterionConfig>& coverageStoppingCriterionConfigPtr =
+                          this->getCoverageStoppingCriterionConfigPtr();
+                        coverageStoppingCriterionConfigPtr = nullptr;
+                    }
+            };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion
@@ -564,8 +579,6 @@ namespace seco {
                 public:
 
                     Config();
-
-                    void useNoCoverageStoppingCriterion() override;
 
                     void usePrecisionHeuristic() override;
 

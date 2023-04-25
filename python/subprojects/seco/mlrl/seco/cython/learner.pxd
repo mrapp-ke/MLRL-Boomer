@@ -9,13 +9,18 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         # Functions:
 
-        void useNoCoverageStoppingCriterion()
-
         void usePrecisionHeuristic()
 
         void usePrecisionPruningHeuristic()
 
         void useLabelWiseBinaryPredictor()
+
+
+    cdef cppclass INoCoverageStoppingCriterionMixin"seco::ISeCoRuleLearner::INoCoverageStoppingCriterionMixin":
+
+        # Functions:
+
+        void useNoCoverageStoppingCriterion()
 
 
     cdef cppclass ICoverageStoppingCriterionMixin"seco::ISeCoRuleLearner::ICoverageStoppingCriterionMixin":
