@@ -664,6 +664,13 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useLabelWiseSquaredHingeLoss()
 
+    def use_no_label_binning(self):
+        """
+        Configures the rule learner to not use any method for the assignment of labels to bins.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoLabelBinning()
+
     def use_automatic_label_binning(self):
         """
         Configures the rule learner to automatically decide whether a method for the assignment of labels to bins should
