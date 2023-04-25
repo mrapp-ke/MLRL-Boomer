@@ -21,6 +21,7 @@
 #include "boosting/post_processing/shrinkage_constant.hpp"
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 #include "boosting/prediction/predictor_binary_gfm.hpp"
+#include "boosting/prediction/predictor_binary_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
@@ -104,14 +105,6 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to use a predictor for predicting whether individual labels are
-                     * relevant or irrelevant by summing up the scores that are provided by the individual rules of an
-                     * existing rule-based model and transforming them into binary values according to a certain
-                     * threshold that is applied to each label individually.
-                     */
-                    virtual void useLabelWiseBinaryPredictor() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting regression scores by summing up the
@@ -554,6 +547,31 @@ namespace boosting {
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
              * predicting whether individual labels are relevant or irrelevant by summing up the scores that are
+             * provided by the individual rules of an existing rule-based model and transforming them into binary values
+             * according to a certain threshold that is applied to each label individually.
+             */
+            class ILabelWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~ILabelWiseBinaryPredictorMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting whether individual labels are
+                     * relevant or irrelevant by summing up the scores that are provided by the individual rules of an
+                     * existing rule-based model and transforming them into binary values according to a certain
+                     * threshold that is applied to each label individually.
+                     */
+                    virtual void useLabelWiseBinaryPredictor() {
+                        std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
+                          this->getBinaryPredictorConfigPtr();
+                        binaryPredictorConfigPtr = std::make_unique<LabelWiseBinaryPredictorConfig>(
+                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
+             * predicting whether individual labels are relevant or irrelevant by summing up the scores that are
              * provided by an existing rule-based model and comparing the aggregated score vector to the known label
              * vectors according to a certain distance measure.
              */
@@ -694,8 +712,6 @@ namespace boosting {
                 public:
 
                     Config();
-
-                    void useLabelWiseBinaryPredictor() override;
 
                     void useLabelWiseScorePredictor() override;
 
