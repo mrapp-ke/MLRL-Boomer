@@ -13,11 +13,15 @@
 #include "seco/heuristics/heuristic_f_measure.hpp"
 #include "seco/heuristics/heuristic_laplace.hpp"
 #include "seco/heuristics/heuristic_m_estimate.hpp"
+#include "seco/heuristics/heuristic_precision.hpp"
 #include "seco/heuristics/heuristic_recall.hpp"
 #include "seco/heuristics/heuristic_wra.hpp"
 #include "seco/lift_functions/lift_function_kln.hpp"
+#include "seco/lift_functions/lift_function_no.hpp"
 #include "seco/lift_functions/lift_function_peak.hpp"
+#include "seco/prediction/predictor_binary_label_wise.hpp"
 #include "seco/rule_evaluation/head_type_partial.hpp"
+#include "seco/rule_evaluation/head_type_single.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
 
 namespace seco {
@@ -88,45 +92,31 @@ namespace seco {
                 public:
 
                     virtual ~IConfig() override {};
+            };
+
+            virtual ~ISeCoRuleLearner() override {};
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to not use any stopping
+             * criterion that stops the induction of rules as soon as the sum of the weights of the uncovered labels is
+             * smaller or equal to a certain threshold.
+             */
+            class INoCoverageStoppingCriterionMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~INoCoverageStoppingCriterionMixin() override {};
 
                     /**
                      * Configures the rule learner to not use any stopping criterion that stops the induction of rules
                      * as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain
                      * threshold.
                      */
-                    virtual void useNoCoverageStoppingCriterion() = 0;
-
-                    /**
-                     * Configures the rule learner to induce rules with single-label heads that predict for a single
-                     * label.
-                     */
-                    virtual void useSingleLabelHeads() = 0;
-
-                    /**
-                     * Configures the rule learner to not use a lift function.
-                     */
-                    virtual void useNoLiftFunction() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Precision" heuristic for learning rules.
-                     */
-                    virtual void usePrecisionHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use the "Precision" heuristic for pruning rules.
-                     */
-                    virtual void usePrecisionPruningHeuristic() = 0;
-
-                    /**
-                     * Configures the rule learner to use predictor for predicting whether individual labels of given
-                     * query examples are relevant or irrelevant by processing rules of an existing rule-based model in
-                     * the order they have been learned. If a rule covers an example, its prediction is applied to each
-                     * label individually.
-                     */
-                    virtual void useLabelWiseBinaryPredictor() = 0;
+                    virtual void useNoCoverageStoppingCriterion() {
+                        std::unique_ptr<CoverageStoppingCriterionConfig>& coverageStoppingCriterionConfigPtr =
+                          this->getCoverageStoppingCriterionConfigPtr();
+                        coverageStoppingCriterionConfigPtr = nullptr;
+                    }
             };
-
-            virtual ~ISeCoRuleLearner() override {};
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a stopping criterion
@@ -157,6 +147,26 @@ namespace seco {
             };
 
             /**
+             * Defines an interface for all classes that allow to configure a rule learner to induce rules with
+             * single-label heads that predict for a single label.
+             */
+            class ISingleLabelHeadMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~ISingleLabelHeadMixin() override {};
+
+                    /**
+                     * Configures the rule learner to induce rules with single-label heads that predict for a single
+                     * label.
+                     */
+                    virtual void useSingleLabelHeads() {
+                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                        headConfigPtr = std::make_unique<SingleLabelHeadConfig>(this->getHeuristicConfigPtr(),
+                                                                                this->getPruningHeuristicConfigPtr());
+                    }
+            };
+
+            /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
              * heads.
              */
@@ -174,6 +184,23 @@ namespace seco {
                         headConfigPtr = std::make_unique<PartialHeadConfig>(this->getHeuristicConfigPtr(),
                                                                             this->getPruningHeuristicConfigPtr(),
                                                                             this->getLiftFunctionConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to not use a lift function.
+             */
+            class INoLiftFunctionMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~INoLiftFunctionMixin() override {};
+
+                    /**
+                     * Configures the rule learner to not use a lift function.
+                     */
+                    virtual void useNoLiftFunction() {
+                        std::unique_ptr<ILiftFunctionConfig>& liftFunctionConfigPtr = this->getLiftFunctionConfigPtr();
+                        liftFunctionConfigPtr = std::make_unique<NoLiftFunctionConfig>();
                     }
             };
 
@@ -402,6 +429,43 @@ namespace seco {
             };
 
             /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Precision"
+             * heuristic for learning rules.
+             */
+            class IPrecisionHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IPrecisionHeuristicMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use the "Precision" heuristic for learning rules.
+                     */
+                    virtual void usePrecisionHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
+                        heuristicConfigPtr = std::make_unique<PrecisionConfig>();
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Precision"
+             * heuristic for pruning rules.
+             */
+            class IPrecisionPruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IPrecisionPruningHeuristicMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use the "Precision" heuristic for pruning rules.
+                     */
+                    virtual void usePrecisionPruningHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr =
+                          this->getPruningHeuristicConfigPtr();
+                        pruningHeuristicConfigPtr = std::make_unique<PrecisionConfig>();
+                    }
+            };
+
+            /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "Recall" heuristic
              * for pruning rules.
              */
@@ -476,6 +540,31 @@ namespace seco {
                         pruningHeuristicConfigPtr = std::make_unique<WraConfig>();
                     }
             };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
+             * predicting whether individual labels of given query examples are relevant or irrelevant by processing
+             * rules of an existing rule-based model in the order they have been learned. If a rule covers an example,
+             * its prediction is applied to each label individually.
+             */
+            class ILabelWiseBinaryPredictionMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~ILabelWiseBinaryPredictionMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting whether individual labels of given
+                     * query examples are relevant or irrelevant by processing rules of an existing rule-based model in
+                     * the order they have been learned. If a rule covers an example, its prediction is applied to each
+                     * label individually.
+                     */
+                    virtual void useLabelWiseBinaryPredictor() {
+                        std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
+                          this->getBinaryPredictorConfigPtr();
+                        binaryPredictorConfigPtr =
+                          std::make_unique<LabelWiseBinaryPredictorConfig>(this->getParallelPredictionConfigPtr());
+                    }
+            };
     };
 
     /**
@@ -536,23 +625,6 @@ namespace seco {
                 public:
 
                     Config();
-
-                    /**
-                     * @see `IRuleLearner::IConfig::useGreedyTopDownRuleInduction`
-                     */
-                    IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
-
-                    void useNoCoverageStoppingCriterion() override;
-
-                    void useSingleLabelHeads() override;
-
-                    void useNoLiftFunction() override;
-
-                    void usePrecisionHeuristic() override;
-
-                    void usePrecisionPruningHeuristic() override;
-
-                    void useLabelWiseBinaryPredictor() override;
             };
 
         private:

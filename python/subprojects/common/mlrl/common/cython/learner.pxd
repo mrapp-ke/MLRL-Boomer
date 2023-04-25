@@ -43,55 +43,47 @@ cdef extern from "common/learner.hpp" nogil:
         unique_ptr[IJointProbabilityCalibrationModel]& getJointProbabilityCalibrationModel()
 
 
-    cdef cppclass IRuleLearnerConfig"IRuleLearner::IConfig":
+    cdef cppclass ISequentialRuleModelAssemblageMixin"IRuleLearner::ISequentialRuleModelAssemblageMixin":
+
+        # Functions:
+
+        void useSequentialRuleModelAssemblage()
+
+
+    cdef cppclass IDefaultRuleMixin"IRuleLearner::IDefaultRuleMixin":
 
         # Functions:
 
         void useDefaultRule()
 
-        void useSequentialRuleModelAssemblage()
+
+    cdef cppclass IGreedyTopDownRuleInductionMixin"IRuleLearner::IGreedyTopDownRuleInductionMixin":
+
+        # Functions:
 
         IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction()
 
-        void useNoFeatureBinning()
-
-        void useNoLabelSampling()
-
-        void useNoInstanceSampling()
-
-        void useNoFeatureSampling()
-
-        void useNoPartitionSampling()
-
-        void useNoRulePruning()
-
-        void useNoPostProcessor()
-
-        void useNoParallelRuleRefinement()
-
-        void useNoParallelStatisticUpdate()
-
-        void useNoParallelPrediction()
-
-        void useNoSizeStoppingCriterion()
-
-        void useNoTimeStoppingCriterion()
-
-        void useNoGlobalPruning()
-
-        void useNoSequentialPostOptimization()
-
-        void useNoMarginalProbabilityCalibration()
-
-        void useNoJointProbabilityCalibration()
-
-
-    cdef cppclass IBeamSearchTopDownMixin"IRuleLearner::IBeamSearchTopDownMixin":
+        
+    cdef cppclass IBeamSearchTopDownRuleInductionMixin"IRuleLearner::IBeamSearchTopDownRuleInductionMixin":
 
         # Functions:
 
         IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction()
 
+
+    cdef cppclass INoPostProcessorMixin"IRuleLearner::INoPostProcessorMixin":
+
+        # Functions:
+
+        void useNoPostProcessor()
+
+
+    cdef cppclass INoFeatureBinningMixin"IRuleLearner::INoFeatureBinningMixin":
+
+        # Functions:
+
+        void useNoFeatureBinning()
+        
 
     cdef cppclass IEqualWidthFeatureBinningMixin"IRuleLearner::IEqualWidthFeatureBinningMixin":
 
@@ -107,11 +99,25 @@ cdef extern from "common/learner.hpp" nogil:
         IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning()
 
 
+    cdef cppclass INoLabelSamplingMixin"IRuleLearner::INoLabelSamplingMixin":
+
+        # Functions:
+
+        void useNoLabelSampling()
+
+
     cdef cppclass ILabelSamplingWithoutReplacementMixin"IRuleLearner::ILabelSamplingWithoutReplacementMixin":
 
         # Functions:
 
         ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement()
+
+
+    cdef cppclass INoInstanceSamplingMixin"IRuleLearner::INoInstanceSamplingMixin":
+
+        # Functions:
+
+        void useNoInstanceSampling()
 
 
     cdef cppclass IInstanceSamplingWithoutReplacementMixin"IRuleLearner::IInstanceSamplingWithoutReplacementMixin":
@@ -142,11 +148,25 @@ cdef extern from "common/learner.hpp" nogil:
         IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling()
 
 
+    cdef cppclass INoFeatureSamplingMixin"IRuleLearner::INoFeatureSamplingMixin":
+
+        # Functions:
+
+        void useNoFeatureSampling()
+
+
     cdef cppclass IFeatureSamplingWithoutReplacementMixin"IRuleLearner::IFeatureSamplingWithoutReplacementMixin":
 
         # Functions:
 
         IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement()
+
+
+    cdef cppclass INoPartitionSamplingMixin"IRuleLearner::INoPartitionSamplingMixin":
+
+        # Functions:
+
+        void useNoPartitionSampling()
 
 
     cdef cppclass IRandomBiPartitionSamplingMixin"IRuleLearner::IRandomBiPartitionSamplingMixin":
@@ -170,11 +190,25 @@ cdef extern from "common/learner.hpp" nogil:
         IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling()
 
 
-    cdef cppclass IRulePruningMixin"IRuleLearner::IRulePruningMixin":
+    cdef cppclass INoRulePruningMixin"IRuleLearner::INoRulePruningMixin":
+
+        # Functions:
+
+        void useNoRulePruning()
+
+
+    cdef cppclass IIrepRulePruningMixin"IRuleLearner::IIrepRulePruningMixin":
 
         # Functions:
 
         void useIrepRulePruning()
+
+
+    cdef cppclass INoParallelRuleRefinementMixin"IRuleLearner::INoParallelRuleRefinementMixin":
+
+        # Functions:
+
+        void useNoParallelRuleRefinement()
 
 
     cdef cppclass IParallelRuleRefinementMixin"IRuleLearner::IParallelRuleRefinementMixin":
@@ -184,6 +218,13 @@ cdef extern from "common/learner.hpp" nogil:
         IManualMultiThreadingConfig& useParallelRuleRefinement()
 
     
+    cdef cppclass INoParallelStatisticUpdateMixin"IRuleLearner::INoParallelStatisticUpdateMixin":
+
+        # Functions:
+
+        void useNoParallelStatisticUpdate()
+
+
     cdef cppclass IParallelStatisticUpdateMixin"IRuleLearner::IParallelStatisticUpdateMixin":
 
         # Functions:
@@ -191,6 +232,13 @@ cdef extern from "common/learner.hpp" nogil:
         IManualMultiThreadingConfig& useParallelStatisticUpdate()
 
 
+    cdef cppclass INoParallelPredictionMixin"IRuleLearner::INoParallelPredictionMixin":
+
+        # Functions:
+
+        void useNoParallelPrediction()
+
+        
     cdef cppclass IParallelPredictionMixin"IRuleLearner::IParallelPredictionMixin":
 
         # Functions:
@@ -198,11 +246,25 @@ cdef extern from "common/learner.hpp" nogil:
         IManualMultiThreadingConfig& useParallelPrediction()
 
 
+    cdef cppclass INoSizeStoppingCriterionMixin"IRuleLearner::INoSizeStoppingCriterionMixin":
+
+        # Functions:
+
+        void useNoSizeStoppingCriterion()
+
+
     cdef cppclass ISizeStoppingCriterionMixin"IRuleLearner::ISizeStoppingCriterionMixin":
 
         # Functions:
 
         ISizeStoppingCriterionConfig& useSizeStoppingCriterion()
+
+
+    cdef cppclass INoTimeStoppingCriterionMixin"IRuleLearner::INoTimeStoppingCriterionMixin":
+
+        # Functions:
+
+        void useNoTimeStoppingCriterion()
 
 
     cdef cppclass ITimeStoppingCriterionMixin"IRuleLearner::ITimeStoppingCriterionMixin":
@@ -219,11 +281,25 @@ cdef extern from "common/learner.hpp" nogil:
         IPrePruningConfig& useGlobalPrePruning()
 
 
+    cdef cppclass INoGlobalPruningMixin"IRuleLearner::INoGlobalPruningMixin":
+
+        # Functions:
+
+        void useNoGlobalPruning()
+
+
     cdef cppclass IPostPruningMixin"IRuleLearner::IPostPruningMixin":
 
         # Functions:
 
         IPostPruningConfig& useGlobalPostPruning()
+
+
+    cdef cppclass INoSequentialPostOptimizationMixin"IRuleLearner::INoSequentialPostOptimizationMixin":
+
+        # Functions:
+
+        void useNoSequentialPostOptimization()
 
 
     cdef cppclass ISequentialPostOptimizationMixin"IRuleLearner::ISequentialPostOptimizationMixin":
@@ -282,13 +358,6 @@ cdef class TrainingResult:
     cdef readonly MarginalProbabilityCalibrationModel marginal_probability_calibration_model
     
     cdef readonly JointProbabilityCalibrationModel joint_probability_calibration_model
-
-
-cdef class RuleLearnerConfig:
-
-    # Functions:
-
-    cdef IRuleLearnerConfig* get_rule_learner_config_ptr(self)
 
 
 cdef class RuleLearner:

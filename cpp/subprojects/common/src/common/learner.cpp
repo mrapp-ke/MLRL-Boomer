@@ -1,16 +1,6 @@
 #include "common/learner.hpp"
 
-#include "common/binning/feature_binning_no.hpp"
-#include "common/multi_threading/multi_threading_no.hpp"
-#include "common/post_processing/post_processor_no.hpp"
 #include "common/prediction/label_space_info_no.hpp"
-#include "common/prediction/probability_calibration_no.hpp"
-#include "common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
-#include "common/rule_pruning/rule_pruning_no.hpp"
-#include "common/sampling/feature_sampling_no.hpp"
-#include "common/sampling/instance_sampling_no.hpp"
-#include "common/sampling/label_sampling_no.hpp"
-#include "common/sampling/partition_sampling_no.hpp"
 #include "common/stopping/stopping_criterion_size.hpp"
 #include "common/util/validation.hpp"
 
@@ -94,28 +84,21 @@ class TrainingResult final : public ITrainingResult {
 };
 
 AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
-    : unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()),
-      ruleCompareFunction_(ruleCompareFunction) {
-    this->useDefaultRule();
-    this->useSequentialRuleModelAssemblage();
-    this->useGreedyTopDownRuleInduction();
-    this->useNoFeatureBinning();
-    this->useNoLabelSampling();
-    this->useNoInstanceSampling();
-    this->useNoFeatureSampling();
-    this->useNoPartitionSampling();
-    this->useNoRulePruning();
-    this->useNoPostProcessor();
-    this->useNoParallelRuleRefinement();
-    this->useNoParallelStatisticUpdate();
-    this->useNoParallelPrediction();
-    this->useNoSizeStoppingCriterion();
-    this->useNoTimeStoppingCriterion();
-    this->useNoGlobalPruning();
-    this->useNoSequentialPostOptimization();
-    this->useNoMarginalProbabilityCalibration();
-    this->useNoJointProbabilityCalibration();
-}
+    : ruleCompareFunction_(ruleCompareFunction), defaultRuleConfigPtr_(std::make_unique<DefaultRuleConfig>(true)),
+      ruleModelAssemblageConfigPtr_(std::make_unique<SequentialRuleModelAssemblageConfig>(defaultRuleConfigPtr_)),
+      ruleInductionConfigPtr_(
+        std::make_unique<GreedyTopDownRuleInductionConfig>(ruleCompareFunction_, parallelRuleRefinementConfigPtr_)),
+      featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_)),
+      labelSamplingConfigPtr_(std::make_unique<NoLabelSamplingConfig>()),
+      instanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
+      featureSamplingConfigPtr_(std::make_unique<NoFeatureSamplingConfig>()),
+      partitionSamplingConfigPtr_(std::make_unique<NoPartitionSamplingConfig>()),
+      rulePruningConfigPtr_(std::make_unique<NoRulePruningConfig>()),
+      postProcessorConfigPtr_(std::make_unique<NoPostProcessorConfig>()),
+      parallelRuleRefinementConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
+      parallelStatisticUpdateConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
+      parallelPredictionConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
+      unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()) {}
 
 RuleCompareFunction AbstractRuleLearner::Config::getRuleCompareFunction() const {
     return ruleCompareFunction_;
@@ -214,86 +197,6 @@ std::unique_ptr<IScorePredictorConfig>& AbstractRuleLearner::Config::getScorePre
 
 std::unique_ptr<IProbabilityPredictorConfig>& AbstractRuleLearner::Config::getProbabilityPredictorConfigPtr() {
     return probabilityPredictorConfigPtr_;
-}
-
-void AbstractRuleLearner::Config::useDefaultRule() {
-    defaultRuleConfigPtr_ = std::make_unique<DefaultRuleConfig>(true);
-}
-
-void AbstractRuleLearner::Config::useSequentialRuleModelAssemblage() {
-    ruleModelAssemblageConfigPtr_ = std::make_unique<SequentialRuleModelAssemblageConfig>(defaultRuleConfigPtr_);
-}
-
-IGreedyTopDownRuleInductionConfig& AbstractRuleLearner::Config::useGreedyTopDownRuleInduction() {
-    std::unique_ptr<GreedyTopDownRuleInductionConfig> ptr =
-      std::make_unique<GreedyTopDownRuleInductionConfig>(ruleCompareFunction_, parallelRuleRefinementConfigPtr_);
-    IGreedyTopDownRuleInductionConfig& ref = *ptr;
-    ruleInductionConfigPtr_ = std::move(ptr);
-    return ref;
-}
-
-void AbstractRuleLearner::Config::useNoFeatureBinning() {
-    featureBinningConfigPtr_ = std::make_unique<NoFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_);
-}
-
-void AbstractRuleLearner::Config::useNoLabelSampling() {
-    labelSamplingConfigPtr_ = std::make_unique<NoLabelSamplingConfig>();
-}
-
-void AbstractRuleLearner::Config::useNoInstanceSampling() {
-    instanceSamplingConfigPtr_ = std::make_unique<NoInstanceSamplingConfig>();
-}
-
-void AbstractRuleLearner::Config::useNoFeatureSampling() {
-    featureSamplingConfigPtr_ = std::make_unique<NoFeatureSamplingConfig>();
-}
-
-void AbstractRuleLearner::Config::useNoPartitionSampling() {
-    partitionSamplingConfigPtr_ = std::make_unique<NoPartitionSamplingConfig>();
-}
-
-void AbstractRuleLearner::Config::useNoRulePruning() {
-    rulePruningConfigPtr_ = std::make_unique<NoRulePruningConfig>();
-}
-
-void AbstractRuleLearner::Config::useNoPostProcessor() {
-    postProcessorConfigPtr_ = std::make_unique<NoPostProcessorConfig>();
-}
-
-void AbstractRuleLearner::Config::useNoParallelRuleRefinement() {
-    parallelRuleRefinementConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
-}
-
-void AbstractRuleLearner::Config::useNoParallelStatisticUpdate() {
-    parallelStatisticUpdateConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
-}
-
-void AbstractRuleLearner::Config::useNoParallelPrediction() {
-    parallelPredictionConfigPtr_ = std::make_unique<NoMultiThreadingConfig>();
-}
-
-void AbstractRuleLearner::Config::useNoSizeStoppingCriterion() {
-    sizeStoppingCriterionConfigPtr_ = nullptr;
-}
-
-void AbstractRuleLearner::Config::useNoTimeStoppingCriterion() {
-    timeStoppingCriterionConfigPtr_ = nullptr;
-}
-
-void AbstractRuleLearner::Config::useNoGlobalPruning() {
-    globalPruningConfigPtr_ = nullptr;
-}
-
-void AbstractRuleLearner::Config::useNoSequentialPostOptimization() {
-    sequentialPostOptimizationConfigPtr_ = nullptr;
-}
-
-void AbstractRuleLearner::Config::useNoMarginalProbabilityCalibration() {
-    marginalProbabilityCalibratorConfigPtr_ = std::make_unique<NoMarginalProbabilityCalibratorConfig>();
-}
-
-void AbstractRuleLearner::Config::useNoJointProbabilityCalibration() {
-    jointProbabilityCalibratorConfigPtr_ = std::make_unique<NoJointProbabilityCalibratorConfig>();
 }
 
 AbstractRuleLearner::AbstractRuleLearner(IRuleLearner::IConfig& config) : config_(config) {}

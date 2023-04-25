@@ -1,22 +1,16 @@
 #include "seco/learner.hpp"
 
-#include "seco/heuristics/heuristic_precision.hpp"
-#include "seco/lift_functions/lift_function_no.hpp"
 #include "seco/model/decision_list_builder.hpp"
-#include "seco/prediction/predictor_binary_label_wise.hpp"
-#include "seco/rule_evaluation/head_type_single.hpp"
 #include "seco/rule_evaluation/rule_compare_function.hpp"
 
 namespace seco {
 
-    AbstractSeCoRuleLearner::Config::Config() : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION) {
-        this->useNoCoverageStoppingCriterion();
-        this->useSingleLabelHeads();
-        this->useNoLiftFunction();
-        this->usePrecisionHeuristic();
-        this->usePrecisionPruningHeuristic();
-        this->useLabelWiseBinaryPredictor();
-    }
+    AbstractSeCoRuleLearner::Config::Config()
+        : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION),
+          headConfigPtr_(std::make_unique<SingleLabelHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_)),
+          heuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
+          pruningHeuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
+          liftFunctionConfigPtr_(std::make_unique<NoLiftFunctionConfig>()) {}
 
     std::unique_ptr<CoverageStoppingCriterionConfig>&
       AbstractSeCoRuleLearner::Config::getCoverageStoppingCriterionConfigPtr() {
@@ -37,36 +31,6 @@ namespace seco {
 
     std::unique_ptr<ILiftFunctionConfig>& AbstractSeCoRuleLearner::Config::getLiftFunctionConfigPtr() {
         return liftFunctionConfigPtr_;
-    }
-
-    IGreedyTopDownRuleInductionConfig& AbstractSeCoRuleLearner::Config::useGreedyTopDownRuleInduction() {
-        IGreedyTopDownRuleInductionConfig& config = AbstractRuleLearner::Config::useGreedyTopDownRuleInduction();
-        config.setRecalculatePredictions(false);
-        return config;
-    }
-
-    void AbstractSeCoRuleLearner::Config::useNoCoverageStoppingCriterion() {
-        coverageStoppingCriterionConfigPtr_ = nullptr;
-    }
-
-    void AbstractSeCoRuleLearner::Config::useSingleLabelHeads() {
-        headConfigPtr_ = std::make_unique<SingleLabelHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_);
-    }
-
-    void AbstractSeCoRuleLearner::Config::useNoLiftFunction() {
-        liftFunctionConfigPtr_ = std::make_unique<NoLiftFunctionConfig>();
-    }
-
-    void AbstractSeCoRuleLearner::Config::usePrecisionHeuristic() {
-        heuristicConfigPtr_ = std::make_unique<PrecisionConfig>();
-    }
-
-    void AbstractSeCoRuleLearner::Config::usePrecisionPruningHeuristic() {
-        pruningHeuristicConfigPtr_ = std::make_unique<PrecisionConfig>();
-    }
-
-    void AbstractSeCoRuleLearner::Config::useLabelWiseBinaryPredictor() {
-        binaryPredictorConfigPtr_ = std::make_unique<LabelWiseBinaryPredictorConfig>(parallelPredictionConfigPtr_);
     }
 
     AbstractSeCoRuleLearner::AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config)
