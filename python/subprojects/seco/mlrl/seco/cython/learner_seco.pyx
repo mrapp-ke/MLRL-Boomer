@@ -578,6 +578,15 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_label_wise_binary_predictor(self):
+        """
+        Configures the rule learner to use predictor for predicting whether individual labels of given query examples
+        are relevant or irrelevant by processing rules of an existing rule-based model in the order they have been
+        learned. If a rule covers an example, its prediction is applied to each label individually.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useLabelWiseBinaryPredictor()
+
 
 cdef class MultiLabelSeCoRuleLearner(RuleLearner):
     """

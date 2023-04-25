@@ -1,14 +1,11 @@
 #include "seco/learner.hpp"
 
 #include "seco/model/decision_list_builder.hpp"
-#include "seco/prediction/predictor_binary_label_wise.hpp"
 #include "seco/rule_evaluation/rule_compare_function.hpp"
 
 namespace seco {
 
-    AbstractSeCoRuleLearner::Config::Config() : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION) {
-        this->useLabelWiseBinaryPredictor();
-    }
+    AbstractSeCoRuleLearner::Config::Config() : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION) {}
 
     std::unique_ptr<CoverageStoppingCriterionConfig>&
       AbstractSeCoRuleLearner::Config::getCoverageStoppingCriterionConfigPtr() {
@@ -29,10 +26,6 @@ namespace seco {
 
     std::unique_ptr<ILiftFunctionConfig>& AbstractSeCoRuleLearner::Config::getLiftFunctionConfigPtr() {
         return liftFunctionConfigPtr_;
-    }
-
-    void AbstractSeCoRuleLearner::Config::useLabelWiseBinaryPredictor() {
-        binaryPredictorConfigPtr_ = std::make_unique<LabelWiseBinaryPredictorConfig>(parallelPredictionConfigPtr_);
     }
 
     AbstractSeCoRuleLearner::AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config)

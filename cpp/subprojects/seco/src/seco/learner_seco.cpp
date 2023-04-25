@@ -27,6 +27,7 @@ namespace seco {
         this->useParallelRuleRefinement();
         this->useNoParallelStatisticUpdate();
         this->useParallelPrediction();
+        this->useLabelWiseBinaryPredictor();
     }
 
     IGreedyTopDownRuleInductionConfig& MultiLabelSeCoRuleLearner::Config::useGreedyTopDownRuleInduction() {

@@ -19,6 +19,7 @@
 #include "seco/lift_functions/lift_function_kln.hpp"
 #include "seco/lift_functions/lift_function_no.hpp"
 #include "seco/lift_functions/lift_function_peak.hpp"
+#include "seco/prediction/predictor_binary_label_wise.hpp"
 #include "seco/rule_evaluation/head_type_partial.hpp"
 #include "seco/rule_evaluation/head_type_single.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
@@ -91,14 +92,6 @@ namespace seco {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to use predictor for predicting whether individual labels of given
-                     * query examples are relevant or irrelevant by processing rules of an existing rule-based model in
-                     * the order they have been learned. If a rule covers an example, its prediction is applied to each
-                     * label individually.
-                     */
-                    virtual void useLabelWiseBinaryPredictor() = 0;
             };
 
             virtual ~ISeCoRuleLearner() override {};
@@ -547,6 +540,31 @@ namespace seco {
                         pruningHeuristicConfigPtr = std::make_unique<WraConfig>();
                     }
             };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
+             * predicting whether individual labels of given query examples are relevant or irrelevant by processing
+             * rules of an existing rule-based model in the order they have been learned. If a rule covers an example,
+             * its prediction is applied to each label individually.
+             */
+            class ILabelWiseBinaryPredictionMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~ILabelWiseBinaryPredictionMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting whether individual labels of given
+                     * query examples are relevant or irrelevant by processing rules of an existing rule-based model in
+                     * the order they have been learned. If a rule covers an example, its prediction is applied to each
+                     * label individually.
+                     */
+                    virtual void useLabelWiseBinaryPredictor() {
+                        std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
+                          this->getBinaryPredictorConfigPtr();
+                        binaryPredictorConfigPtr =
+                          std::make_unique<LabelWiseBinaryPredictorConfig>(this->getParallelPredictionConfigPtr());
+                    }
+            };
     };
 
     /**
@@ -607,8 +625,6 @@ namespace seco {
                 public:
 
                     Config();
-
-                    void useLabelWiseBinaryPredictor() override;
             };
 
         private:

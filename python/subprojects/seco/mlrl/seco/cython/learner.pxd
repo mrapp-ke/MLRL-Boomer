@@ -6,10 +6,7 @@ from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfi
 cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
     cdef cppclass ISeCoRuleLearnerConfig"seco::ISeCoRuleLearner::IConfig":
-
-        # Functions:
-
-        void useLabelWiseBinaryPredictor()
+        pass
 
 
     cdef cppclass INoCoverageStoppingCriterionMixin"seco::ISeCoRuleLearner::INoCoverageStoppingCriterionMixin":
@@ -130,7 +127,7 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         void usePrecisionPruningHeuristic()
 
-        
+
     cdef cppclass IRecallHeuristicMixin"seco::ISeCoRuleLearner::IRecallHeuristicMixin":
 
         # Functions:
@@ -157,6 +154,13 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         # Functions:
 
         void useWraPruningHeuristic()
+
+
+    cdef cppclass ILabelWiseBinaryPredictorMixin"seco::ISeCoRuleLearner::ILabelWiseBinaryPredictorMixin":
+
+        # Functions:
+
+        void useLabelWiseBinaryPredictor()
 
 
 cdef class SeCoRuleLearnerConfig:
