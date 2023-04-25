@@ -6,8 +6,6 @@ namespace seco {
         this->useSequentialRuleModelAssemblage();
         this->useGreedyTopDownRuleInduction();
         this->useDefaultRule();
-        this->useNoPostProcessor();
-        this->useNoFeatureBinning();
         this->useNoLabelSampling();
         this->useNoInstanceSampling();
         this->useNoFeatureSampling();
@@ -19,7 +17,6 @@ namespace seco {
         this->useLabelWiseStratifiedInstanceSampling();
         this->useSingleLabelHeads();
         this->useIrepRulePruning();
-        this->useNoGlobalPruning();
         this->useNoSequentialPostOptimization();
         this->useFMeasureHeuristic();
         this->useAccuracyPruningHeuristic();
