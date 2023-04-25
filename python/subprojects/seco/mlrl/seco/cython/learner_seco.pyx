@@ -218,6 +218,13 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.usePrecisionHeuristic()
+    
+    def use_precision_pruning_heuristic(self):
+        """
+        Configures the rule learner to use the "Precision" heuristic for pruning rules.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.usePrecisionPruningHeuristic()
 
     def use_recall_heuristic(self):
         """
