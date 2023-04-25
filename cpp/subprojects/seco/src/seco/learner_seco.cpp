@@ -17,6 +17,7 @@ namespace seco {
         this->useSizeStoppingCriterion();
         this->useNoTimeStoppingCriterion();
         this->useLabelWiseStratifiedInstanceSampling();
+        this->useSingleLabelHeads();
         this->useIrepRulePruning();
         this->useNoGlobalPruning();
         this->useNoSequentialPostOptimization();

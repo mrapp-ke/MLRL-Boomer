@@ -11,10 +11,10 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, ISequentialRu
     INoTimeStoppingCriterionMixin, ITimeStoppingCriterionMixin, INoGlobalPruningMixin, \
     INoSequentialPostOptimizationMixin, ISequentialPostOptimizationMixin
 from mlrl.seco.cython.learner cimport ISeCoRuleLearnerConfig, SeCoRuleLearnerConfig, ICoverageStoppingCriterionMixin, \
-    IPartialHeadMixin, INoLiftFunctionMixin, IPeakLiftFunctionMixin, IKlnLiftFunctionMixin, IAccuracyHeuristicMixin, \
-    IAccuracyPruningHeuristicMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, IMEstimateHeuristicMixin, \
-    IMEstimatePruningHeuristicMixin, ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, IRecallHeuristicMixin, \
-    IRecallPruningHeuristicMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
+    ISingleLabelHeadMixin, IPartialHeadMixin, INoLiftFunctionMixin, IPeakLiftFunctionMixin, IKlnLiftFunctionMixin, \
+    IAccuracyHeuristicMixin, IAccuracyPruningHeuristicMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, \
+    IMEstimateHeuristicMixin, IMEstimatePruningHeuristicMixin, ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, \
+    IRecallHeuristicMixin, IRecallPruningHeuristicMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
 
 from libcpp.memory cimport unique_ptr
 
@@ -24,6 +24,7 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
     cdef cppclass IMultiLabelSeCoRuleLearnerConfig"seco::IMultiLabelSeCoRuleLearner::IConfig"(
             ISeCoRuleLearnerConfig,
             ICoverageStoppingCriterionMixin,
+            ISingleLabelHeadMixin,
             IPartialHeadMixin,
             INoLiftFunctionMixin,
             IPeakLiftFunctionMixin,

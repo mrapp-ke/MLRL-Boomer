@@ -19,13 +19,6 @@ cdef class SeCoRuleLearnerConfig:
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.get_seco_rule_learner_config_ptr()
         rule_learner_config_ptr.useNoCoverageStoppingCriterion()
 
-    def use_single_label_heads(self):
-        """
-        Configures the rule learner to induce rules with single-label heads that predict for a single label.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.get_seco_rule_learner_config_ptr()
-        rule_learner_config_ptr.useSingleLabelHeads()
-
     def use_precision_heuristic(self):
         """
         Configures the rule learner to use the "Precision" heuristic for learning rules.
