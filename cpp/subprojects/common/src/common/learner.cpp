@@ -52,8 +52,21 @@ class TrainingResult final : public ITrainingResult {
 };
 
 AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
-    : unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()),
-      ruleCompareFunction_(ruleCompareFunction) {}
+    : ruleCompareFunction_(ruleCompareFunction), defaultRuleConfigPtr_(std::make_unique<DefaultRuleConfig>(true)),
+      ruleModelAssemblageConfigPtr_(std::make_unique<SequentialRuleModelAssemblageConfig>(defaultRuleConfigPtr_)),
+      ruleInductionConfigPtr_(
+        std::make_unique<GreedyTopDownRuleInductionConfig>(ruleCompareFunction_, parallelRuleRefinementConfigPtr_)),
+      featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_)),
+      labelSamplingConfigPtr_(std::make_unique<NoLabelSamplingConfig>()),
+      instanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
+      featureSamplingConfigPtr_(std::make_unique<NoFeatureSamplingConfig>()),
+      partitionSamplingConfigPtr_(std::make_unique<NoPartitionSamplingConfig>()),
+      rulePruningConfigPtr_(std::make_unique<NoRulePruningConfig>()),
+      postProcessorConfigPtr_(std::make_unique<NoPostProcessorConfig>()),
+      parallelRuleRefinementConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
+      parallelStatisticUpdateConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
+      parallelPredictionConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
+      unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()) {}
 
 RuleCompareFunction AbstractRuleLearner::Config::getRuleCompareFunction() const {
     return ruleCompareFunction_;

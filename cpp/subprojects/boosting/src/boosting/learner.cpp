@@ -5,7 +5,16 @@
 
 namespace boosting {
 
-    AbstractBoostingRuleLearner::Config::Config() : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION) {}
+    AbstractBoostingRuleLearner::Config::Config()
+        : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION),
+          headConfigPtr_(std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_,
+                                                              l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)),
+          statisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(lossConfigPtr_)),
+          lossConfigPtr_(std::make_unique<LabelWiseLogisticLossConfig>(headConfigPtr_)),
+          l1RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
+          l2RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
+          labelBinningConfigPtr_(
+            std::make_unique<NoLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)) {}
 
     std::unique_ptr<IHeadConfig>& AbstractBoostingRuleLearner::Config::getHeadConfigPtr() {
         return headConfigPtr_;

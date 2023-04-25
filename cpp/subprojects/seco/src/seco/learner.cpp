@@ -5,7 +5,12 @@
 
 namespace seco {
 
-    AbstractSeCoRuleLearner::Config::Config() : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION) {}
+    AbstractSeCoRuleLearner::Config::Config()
+        : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION),
+          headConfigPtr_(std::make_unique<SingleLabelHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_)),
+          heuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
+          pruningHeuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
+          liftFunctionConfigPtr_(std::make_unique<NoLiftFunctionConfig>()) {}
 
     std::unique_ptr<CoverageStoppingCriterionConfig>&
       AbstractSeCoRuleLearner::Config::getCoverageStoppingCriterionConfigPtr() {
