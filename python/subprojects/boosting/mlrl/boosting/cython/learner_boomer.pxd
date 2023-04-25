@@ -17,12 +17,12 @@ from mlrl.boosting.cython.learner cimport IAutomaticPartitionSamplingMixin, IAut
     INoL1RegularizationMixin, IL1RegularizationMixin, INoL2RegularizationMixin, IL2RegularizationMixin, \
     INoDefaultRuleMixin, IAutomaticDefaultRuleMixin, ICompleteHeadMixin, IDynamicPartialHeadMixin, \
     IFixedPartialHeadMixin, ISingleLabelHeadMixin, IAutomaticHeadMixin, IDenseStatisticsMixin, ISparseStatisticsMixin, \
-    IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, IExampleWiseSquaredHingeLossMixin, \
-    ILabelWiseLogisticLossMixin, ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, \
-    INoLabelBinningMixin, IEqualWidthLabelBinningMixin, ILabelWiseBinaryPredictorMixin, \
-    IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, ILabelWiseScorePredictorMixin, \
-    ILabelWiseProbabilityPredictorMixin, IMarginalizedProbabilityPredictorMixin, DdotFunction, DspmvFunction, \
-    DsysvFunction
+    IAutomaticStatisticsMixin, IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, \
+    IExampleWiseSquaredHingeLossMixin, ILabelWiseLogisticLossMixin, ILabelWiseSquaredErrorLossMixin, \
+    ILabelWiseSquaredHingeLossMixin, INoLabelBinningMixin, IEqualWidthLabelBinningMixin, \
+    ILabelWiseBinaryPredictorMixin, IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, \
+    ILabelWiseScorePredictorMixin, ILabelWiseProbabilityPredictorMixin, IMarginalizedProbabilityPredictorMixin, \
+    DdotFunction, DspmvFunction, DsysvFunction
 
 from libcpp.memory cimport unique_ptr
 
@@ -47,6 +47,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IAutomaticHeadMixin,
                                                             IDenseStatisticsMixin,
                                                             ISparseStatisticsMixin,
+                                                            IAutomaticStatisticsMixin,
                                                             IExampleWiseLogisticLossMixin,
                                                             IExampleWiseSquaredErrorLossMixin,
                                                             IExampleWiseSquaredHingeLossMixin,
@@ -101,8 +102,6 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             ISequentialPostOptimizationMixin):
 
         # Functions:
-
-        void useAutomaticStatistics()
 
         void useAutomaticLabelBinning()
 

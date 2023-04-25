@@ -139,6 +139,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useSparseStatistics()
 
 
+    cdef cppclass IAutomaticStatisticsMixin"boosting::IBoostingRuleLearner::IAutomaticStatisticsMixin":
+
+        # Functions:
+
+        void useAutomaticStatistics()
+
+
     cdef cppclass IExampleWiseLogisticLossMixin"boosting::IBoostingRuleLearner::IExampleWiseLogisticLossMixin":
 
         # Functions:

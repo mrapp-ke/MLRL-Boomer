@@ -3,7 +3,6 @@
 #include "boosting/binning/label_binning_auto.hpp"
 #include "boosting/prediction/predictor_binary_auto.hpp"
 #include "boosting/prediction/predictor_probability_auto.hpp"
-#include "boosting/statistics/statistic_format_auto.hpp"
 
 namespace boosting {
 
@@ -41,11 +40,6 @@ namespace boosting {
         ISizeStoppingCriterionConfig& ref = ISizeStoppingCriterionMixin::useSizeStoppingCriterion();
         ref.setMaxRules(1000);
         return ref;
-    }
-
-    void Boomer::Config::useAutomaticStatistics() {
-        statisticsConfigPtr_ =
-          std::make_unique<AutomaticStatisticsConfig>(lossConfigPtr_, headConfigPtr_, defaultRuleConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticLabelBinning() {
