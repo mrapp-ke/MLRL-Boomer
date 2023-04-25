@@ -24,6 +24,7 @@ namespace boosting {
             class IConfig : virtual public IBoostingRuleLearner::IConfig,
                             virtual public IBoostingRuleLearner::IAutomaticPartitionSamplingMixin,
                             virtual public IBoostingRuleLearner::IAutomaticFeatureBinningMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticParallelRuleRefinementMixin,
                             virtual public IBoostingRuleLearner::IConstantShrinkageMixin,
                             virtual public IBoostingRuleLearner::INoL1RegularizationMixin,
                             virtual public IBoostingRuleLearner::IL1RegularizationMixin,
@@ -95,12 +96,6 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to automatically decide whether multi-threading should be used for
-                     * the parallel refinement of rules or not.
-                     */
-                    virtual void useAutomaticParallelRuleRefinement() = 0;
-
-                    /**
-                     * Configures the rule learner to automatically decide whether multi-threading should be used for
                      * the parallel update of statistics or not.
                      */
                     virtual void useAutomaticParallelStatisticUpdate() = 0;
@@ -159,8 +154,6 @@ namespace boosting {
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                    void useAutomaticParallelRuleRefinement() override;
 
                     void useAutomaticParallelStatisticUpdate() override;
 
