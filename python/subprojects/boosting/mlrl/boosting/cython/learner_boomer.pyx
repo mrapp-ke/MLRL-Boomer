@@ -693,6 +693,16 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         config.config_ptr = config_ptr
         return config
 
+    def use_label_wise_binary_predictor(self):
+        """
+        Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
+        irrelevant by summing up the scores that are provided by the individual rules of an existing rule-based model
+        and transforming them into binary values according to a certain threshold that is applied to each label
+        individually.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useLabelWiseBinaryPredictor()
+
     def use_example_wise_binary_predictor(self):
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
