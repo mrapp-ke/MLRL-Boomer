@@ -27,16 +27,13 @@ from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfi
 from libcpp.utility cimport move
 
 
-cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
+cdef class MultiLabelSeCoRuleLearnerConfig:
     """
     Allows to configure the multi-label SeCo algorithm.
     """
 
     def __cinit__(self):
         self.rule_learner_config_ptr = createMultiLabelSeCoRuleLearnerConfig()
-
-    cdef ISeCoRuleLearnerConfig* get_seco_rule_learner_config_ptr(self):
-        return self.rule_learner_config_ptr.get()
 
     def use_sequential_rule_model_assemblage(self):
         """

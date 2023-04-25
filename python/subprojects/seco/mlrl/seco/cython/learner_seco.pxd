@@ -10,13 +10,12 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, ISequentialRu
     IParallelPredictionMixin, INoSizeStoppingCriterionMixin, ISizeStoppingCriterionMixin, \
     INoTimeStoppingCriterionMixin, ITimeStoppingCriterionMixin, INoGlobalPruningMixin, \
     INoSequentialPostOptimizationMixin, ISequentialPostOptimizationMixin
-from mlrl.seco.cython.learner cimport ISeCoRuleLearnerConfig, SeCoRuleLearnerConfig, \
-    INoCoverageStoppingCriterionMixin, ICoverageStoppingCriterionMixin, ISingleLabelHeadMixin, IPartialHeadMixin, \
-    INoLiftFunctionMixin, IPeakLiftFunctionMixin, IKlnLiftFunctionMixin, IAccuracyHeuristicMixin, \
-    IAccuracyPruningHeuristicMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, IMEstimateHeuristicMixin, \
-    IMEstimatePruningHeuristicMixin, ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, IPrecisionHeuristicMixin, \
-    IPrecisionPruningHeuristicMixin, IRecallHeuristicMixin, IRecallPruningHeuristicMixin, IWraHeuristicMixin, \
-    IWraPruningHeuristicMixin, ILabelWiseBinaryPredictorMixin
+from mlrl.seco.cython.learner cimport INoCoverageStoppingCriterionMixin, ICoverageStoppingCriterionMixin, \
+    ISingleLabelHeadMixin, IPartialHeadMixin, INoLiftFunctionMixin, IPeakLiftFunctionMixin, IKlnLiftFunctionMixin, \
+    IAccuracyHeuristicMixin, IAccuracyPruningHeuristicMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, \
+    IMEstimateHeuristicMixin, IMEstimatePruningHeuristicMixin, ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, \
+    IPrecisionHeuristicMixin, IPrecisionPruningHeuristicMixin, IRecallHeuristicMixin, IRecallPruningHeuristicMixin, \
+    IWraHeuristicMixin, IWraPruningHeuristicMixin, ILabelWiseBinaryPredictorMixin
 
 from libcpp.memory cimport unique_ptr
 
@@ -24,7 +23,6 @@ from libcpp.memory cimport unique_ptr
 cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
 
     cdef cppclass IMultiLabelSeCoRuleLearnerConfig"seco::IMultiLabelSeCoRuleLearner::IConfig"(
-            ISeCoRuleLearnerConfig,
             INoCoverageStoppingCriterionMixin,
             ICoverageStoppingCriterionMixin,
             ISingleLabelHeadMixin,
@@ -95,7 +93,7 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
         unique_ptr[IMultiLabelSeCoRuleLearnerConfig] configPtr)
 
 
-cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
+cdef class MultiLabelSeCoRuleLearnerConfig:
 
     # Attributes:
 
