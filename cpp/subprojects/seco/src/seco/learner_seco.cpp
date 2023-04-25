@@ -3,26 +3,42 @@
 namespace seco {
 
     MultiLabelSeCoRuleLearner::Config::Config() {
+        this->useSequentialRuleModelAssemblage();
+        this->useGreedyTopDownRuleInduction();
+        this->useDefaultRule();
+        this->useNoPostProcessor();
+        this->useNoFeatureBinning();
+        this->useNoLabelSampling();
+        this->useNoInstanceSampling();
+        this->useNoFeatureSampling();
+        this->useNoPartitionSampling();
         this->useGreedyTopDownRuleInduction();
         this->useCoverageStoppingCriterion();
         this->useSizeStoppingCriterion();
+        this->useNoTimeStoppingCriterion();
         this->useLabelWiseStratifiedInstanceSampling();
+        this->useSingleLabelHeads();
         this->useIrepRulePruning();
+        this->useNoGlobalPruning();
+        this->useNoSequentialPostOptimization();
         this->useFMeasureHeuristic();
         this->useAccuracyPruningHeuristic();
         this->usePeakLiftFunction();
         this->useParallelRuleRefinement();
+        this->useNoParallelStatisticUpdate();
         this->useParallelPrediction();
+        this->useLabelWiseBinaryPredictor();
     }
 
     IGreedyTopDownRuleInductionConfig& MultiLabelSeCoRuleLearner::Config::useGreedyTopDownRuleInduction() {
-        IGreedyTopDownRuleInductionConfig& ref = AbstractRuleLearner::Config::useGreedyTopDownRuleInduction();
+        IGreedyTopDownRuleInductionConfig& ref = IGreedyTopDownRuleInductionMixin::useGreedyTopDownRuleInduction();
         ref.setRecalculatePredictions(false);
         return ref;
     }
 
     IBeamSearchTopDownRuleInductionConfig& MultiLabelSeCoRuleLearner::Config::useBeamSearchTopDownRuleInduction() {
-        IBeamSearchTopDownRuleInductionConfig& ref = IBeamSearchTopDownMixin::useBeamSearchTopDownRuleInduction();
+        IBeamSearchTopDownRuleInductionConfig& ref =
+          IBeamSearchTopDownRuleInductionMixin::useBeamSearchTopDownRuleInduction();
         ref.setRecalculatePredictions(false);
         return ref;
     }

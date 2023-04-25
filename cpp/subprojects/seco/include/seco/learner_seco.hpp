@@ -28,8 +28,11 @@ namespace seco {
              * Defines an interface for all classes that allow to configure the multi-label SeCo algorithm.
              */
             class IConfig : virtual public ISeCoRuleLearner::IConfig,
+                            virtual public ISeCoRuleLearner::INoCoverageStoppingCriterionMixin,
                             virtual public ISeCoRuleLearner::ICoverageStoppingCriterionMixin,
+                            virtual public ISeCoRuleLearner::ISingleLabelHeadMixin,
                             virtual public ISeCoRuleLearner::IPartialHeadMixin,
+                            virtual public ISeCoRuleLearner::INoLiftFunctionMixin,
                             virtual public ISeCoRuleLearner::IPeakLiftFunctionMixin,
                             virtual public ISeCoRuleLearner::IKlnLiftFunctionMixin,
                             virtual public ISeCoRuleLearner::IAccuracyHeuristicMixin,
@@ -40,26 +43,46 @@ namespace seco {
                             virtual public ISeCoRuleLearner::IMEstimatePruningHeuristicMixin,
                             virtual public ISeCoRuleLearner::ILaplaceHeuristicMixin,
                             virtual public ISeCoRuleLearner::ILaplacePruningHeuristicMixin,
+                            virtual public ISeCoRuleLearner::IPrecisionHeuristicMixin,
+                            virtual public ISeCoRuleLearner::IPrecisionPruningHeuristicMixin,
                             virtual public ISeCoRuleLearner::IRecallHeuristicMixin,
                             virtual public ISeCoRuleLearner::IRecallPruningHeuristicMixin,
                             virtual public ISeCoRuleLearner::IWraHeuristicMixin,
                             virtual public ISeCoRuleLearner::IWraPruningHeuristicMixin,
-                            virtual public IRuleLearner::IBeamSearchTopDownMixin,
+                            virtual public ISeCoRuleLearner::ILabelWiseBinaryPredictionMixin,
+                            virtual public IRuleLearner::ISequentialRuleModelAssemblageMixin,
+                            virtual public IRuleLearner::IDefaultRuleMixin,
+                            virtual public IRuleLearner::IGreedyTopDownRuleInductionMixin,
+                            virtual public IRuleLearner::IBeamSearchTopDownRuleInductionMixin,
+                            virtual public IRuleLearner::INoPostProcessorMixin,
+                            virtual public IRuleLearner::INoFeatureBinningMixin,
+                            virtual public IRuleLearner::INoLabelSamplingMixin,
                             virtual public IRuleLearner::ILabelSamplingWithoutReplacementMixin,
+                            virtual public IRuleLearner::INoInstanceSamplingMixin,
                             virtual public IRuleLearner::IInstanceSamplingWithoutReplacementMixin,
                             virtual public IRuleLearner::IInstanceSamplingWithReplacementMixin,
                             virtual public IRuleLearner::ILabelWiseStratifiedInstanceSamplingMixin,
                             virtual public IRuleLearner::IExampleWiseStratifiedInstanceSamplingMixin,
+                            virtual public IRuleLearner::INoFeatureSamplingMixin,
                             virtual public IRuleLearner::IFeatureSamplingWithoutReplacementMixin,
                             virtual public IRuleLearner::IRandomBiPartitionSamplingMixin,
+                            virtual public IRuleLearner::INoPartitionSamplingMixin,
                             virtual public IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin,
                             virtual public IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin,
-                            virtual public IRuleLearner::IRulePruningMixin,
+                            virtual public IRuleLearner::INoRulePruningMixin,
+                            virtual public IRuleLearner::IIrepRulePruningMixin,
+                            virtual public IRuleLearner::INoParallelRuleRefinementMixin,
                             virtual public IRuleLearner::IParallelRuleRefinementMixin,
+                            virtual public IRuleLearner::INoParallelStatisticUpdateMixin,
                             virtual public IRuleLearner::IParallelStatisticUpdateMixin,
+                            virtual public IRuleLearner::INoParallelPredictionMixin,
                             virtual public IRuleLearner::IParallelPredictionMixin,
+                            virtual public IRuleLearner::INoSizeStoppingCriterionMixin,
                             virtual public IRuleLearner::ISizeStoppingCriterionMixin,
+                            virtual public IRuleLearner::INoTimeStoppingCriterionMixin,
                             virtual public IRuleLearner::ITimeStoppingCriterionMixin,
+                            virtual public IRuleLearner::INoGlobalPruningMixin,
+                            virtual public IRuleLearner::INoSequentialPostOptimizationMixin,
                             virtual public IRuleLearner::ISequentialPostOptimizationMixin {
                 public:
 
@@ -86,12 +109,12 @@ namespace seco {
                     Config();
 
                     /**
-                     * @see `IRuleLearner::IConfig::useGreedyTopDownRuleInduction`
+                     * @see `IRuleLearner::IGreedyTopDownRuleInductionMixin::useGreedyTopDownRuleInduction`
                      */
                     IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
 
                     /**
-                     * @see `IRuleLearner::IBeamSearchTopDownMixin::useBeamSearchTopDownRuleInduction`
+                     * @see `IRuleLearner::IBeamSearchTopDownRuleInductionMixin::useBeamSearchTopDownRuleInduction`
                      */
                     IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
 
