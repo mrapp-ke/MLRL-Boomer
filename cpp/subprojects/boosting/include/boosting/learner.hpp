@@ -28,6 +28,7 @@
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
 #include "boosting/prediction/predictor_score_label_wise.hpp"
+#include "boosting/rule_evaluation/head_type_auto.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
@@ -438,6 +439,28 @@ namespace boosting {
                         headConfigPtr = std::make_unique<SingleLabelHeadConfig>(
                           this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
                           this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide for
+             * the type of rule heads that should be used.
+             */
+            class IAutomaticHeadMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticHeadMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide for the type of rule heads that should be
+                     * used.
+                     */
+                    virtual void useAutomaticHeads() {
+                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                        headConfigPtr = std::make_unique<AutomaticHeadConfig>(
+                          this->getLossConfigPtr(), this->getLabelBinningConfigPtr(),
+                          this->getParallelStatisticUpdateConfigPtr(), this->getL1RegularizationConfigPtr(),
+                          this->getL2RegularizationConfigPtr());
                     }
             };
 

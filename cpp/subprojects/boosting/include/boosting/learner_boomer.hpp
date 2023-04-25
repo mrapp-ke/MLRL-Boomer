@@ -37,6 +37,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::IDynamicPartialHeadMixin,
                             virtual public IBoostingRuleLearner::IFixedPartialHeadMixin,
                             virtual public IBoostingRuleLearner::ISingleLabelHeadMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticHeadMixin,
                             virtual public IBoostingRuleLearner::IDenseStatisticsMixin,
                             virtual public IBoostingRuleLearner::ISparseStatisticsMixin,
                             virtual public IBoostingRuleLearner::IExampleWiseLogisticLossMixin,
@@ -96,12 +97,6 @@ namespace boosting {
                     virtual ~IConfig() override {};
 
                     /**
-                     * Configures the rule learner to automatically decide for the type of rule heads that should be
-                     * used.
-                     */
-                    virtual void useAutomaticHeads() = 0;
-
-                    /**
                      * Configures the rule learner to automatically decide whether a dense or sparse representation of
                      * gradients and Hessians should be used.
                      */
@@ -149,8 +144,6 @@ namespace boosting {
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                    void useAutomaticHeads() override;
 
                     void useAutomaticStatistics() override;
 

@@ -16,7 +16,7 @@ from mlrl.boosting.cython.learner cimport IAutomaticPartitionSamplingMixin, IAut
     IAutomaticParallelRuleRefinementMixin, IAutomaticParallelStatisticUpdateMixin, IConstantShrinkageMixin, \
     INoL1RegularizationMixin, IL1RegularizationMixin, INoL2RegularizationMixin, IL2RegularizationMixin, \
     INoDefaultRuleMixin, IAutomaticDefaultRuleMixin, ICompleteHeadMixin, IDynamicPartialHeadMixin, \
-    IFixedPartialHeadMixin, ISingleLabelHeadMixin, IDenseStatisticsMixin, ISparseStatisticsMixin, \
+    IFixedPartialHeadMixin, ISingleLabelHeadMixin, IAutomaticHeadMixin, IDenseStatisticsMixin, ISparseStatisticsMixin, \
     IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, IExampleWiseSquaredHingeLossMixin, \
     ILabelWiseLogisticLossMixin, ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, \
     INoLabelBinningMixin, IEqualWidthLabelBinningMixin, ILabelWiseBinaryPredictorMixin, \
@@ -44,6 +44,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IDynamicPartialHeadMixin,
                                                             IFixedPartialHeadMixin,
                                                             ISingleLabelHeadMixin,
+                                                            IAutomaticHeadMixin,
                                                             IDenseStatisticsMixin,
                                                             ISparseStatisticsMixin,
                                                             IExampleWiseLogisticLossMixin,
@@ -100,8 +101,6 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             ISequentialPostOptimizationMixin):
 
         # Functions:
-
-        void useAutomaticHeads()
 
         void useAutomaticStatistics()
 

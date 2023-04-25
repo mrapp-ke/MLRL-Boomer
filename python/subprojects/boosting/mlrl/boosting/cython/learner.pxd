@@ -118,6 +118,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useSingleLabelHeads()
 
 
+    cdef cppclass IAutomaticHeadMixin"boosting::IBoostingRuleLearner::IAutomaticHeadMixin":
+
+        # Functions:
+
+        void useAutomaticHeads()
+
+
     cdef cppclass IDenseStatisticsMixin"boosting::IBoostingRuleLearner::IDenseStatisticsMixin":
 
         # Functions:
