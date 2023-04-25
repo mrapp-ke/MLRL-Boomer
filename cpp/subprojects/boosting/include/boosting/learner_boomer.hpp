@@ -23,6 +23,7 @@ namespace boosting {
              */
             class IConfig : virtual public IBoostingRuleLearner::IConfig,
                             virtual public IBoostingRuleLearner::IAutomaticPartitionSamplingMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticFeatureBinningMixin,
                             virtual public IBoostingRuleLearner::IConstantShrinkageMixin,
                             virtual public IBoostingRuleLearner::INoL1RegularizationMixin,
                             virtual public IBoostingRuleLearner::IL1RegularizationMixin,
@@ -93,12 +94,6 @@ namespace boosting {
                     virtual ~IConfig() override {};
 
                     /**
-                     * Configures the rule learner to automatically decide whether a method for the assignment of
-                     * numerical feature values to bins should be used or not.
-                     */
-                    virtual void useAutomaticFeatureBinning() = 0;
-
-                    /**
                      * Configures the rule learner to automatically decide whether multi-threading should be used for
                      * the parallel refinement of rules or not.
                      */
@@ -164,8 +159,6 @@ namespace boosting {
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                    void useAutomaticFeatureBinning() override;
 
                     void useAutomaticParallelRuleRefinement() override;
 
