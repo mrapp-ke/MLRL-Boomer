@@ -55,6 +55,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useNoDefaultRule()
 
 
+    cdef cppclass IAutomaticDefaultRuleMixin"boosting::IBoostingRuleLearner::IAutomaticDefaultRuleMixin":
+
+        # Functions:
+
+        void useAutomaticDefaultRule()
+
+
     cdef cppclass ICompleteHeadMixin"boosting::IBoostingRuleLearner::ICompleteHeadMixin":
 
         # Functions:

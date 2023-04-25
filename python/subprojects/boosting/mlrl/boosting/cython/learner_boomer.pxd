@@ -13,9 +13,9 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, ISequentialRu
     ITimeStoppingCriterionMixin, IPrePruningMixin, INoGlobalPruningMixin, IPostPruningMixin, \
     INoSequentialPostOptimizationMixin, ISequentialPostOptimizationMixin
 from mlrl.boosting.cython.learner cimport IConstantShrinkageMixin, INoL1RegularizationMixin, IL1RegularizationMixin, \
-    INoL2RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, ICompleteHeadMixin, \
-    IDynamicPartialHeadMixin, IFixedPartialHeadMixin, ISingleLabelHeadMixin, IDenseStatisticsMixin, \
-    ISparseStatisticsMixin, IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, \
+    INoL2RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, IAutomaticDefaultRuleMixin, \
+    ICompleteHeadMixin, IDynamicPartialHeadMixin, IFixedPartialHeadMixin, ISingleLabelHeadMixin, \
+    IDenseStatisticsMixin, ISparseStatisticsMixin, IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, \
     IExampleWiseSquaredHingeLossMixin, ILabelWiseLogisticLossMixin, ILabelWiseSquaredErrorLossMixin, \
     ILabelWiseSquaredHingeLossMixin, INoLabelBinningMixin, IEqualWidthLabelBinningMixin, \
     ILabelWiseBinaryPredictorMixin, IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, \
@@ -33,6 +33,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             INoL2RegularizationMixin,
                                                             IL2RegularizationMixin,
                                                             INoDefaultRuleMixin,
+                                                            IAutomaticDefaultRuleMixin,
                                                             ICompleteHeadMixin,
                                                             IDynamicPartialHeadMixin,
                                                             IFixedPartialHeadMixin,
@@ -93,8 +94,6 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             ISequentialPostOptimizationMixin):
 
         # Functions:
-
-        void useAutomaticDefaultRule()
 
         void useAutomaticPartitionSampling()
 
