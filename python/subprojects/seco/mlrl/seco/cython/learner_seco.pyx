@@ -88,6 +88,13 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.usePartialHeads()
 
+    def use_no_lift_function(self):
+        """
+        Configures the rule learner to not use a lift function.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoLiftFunction()
+
     def use_peak_lift_function(self) -> PeakLiftFunctionConfig:
         """
         Configures the rule learner to use a lift function that monotonously increases until a certain number of labels,

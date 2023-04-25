@@ -16,6 +16,7 @@
 #include "seco/heuristics/heuristic_recall.hpp"
 #include "seco/heuristics/heuristic_wra.hpp"
 #include "seco/lift_functions/lift_function_kln.hpp"
+#include "seco/lift_functions/lift_function_no.hpp"
 #include "seco/lift_functions/lift_function_peak.hpp"
 #include "seco/rule_evaluation/head_type_partial.hpp"
 #include "seco/stopping/stopping_criterion_coverage.hpp"
@@ -103,11 +104,6 @@ namespace seco {
                     virtual void useSingleLabelHeads() = 0;
 
                     /**
-                     * Configures the rule learner to not use a lift function.
-                     */
-                    virtual void useNoLiftFunction() = 0;
-
-                    /**
                      * Configures the rule learner to use the "Precision" heuristic for learning rules.
                      */
                     virtual void usePrecisionHeuristic() = 0;
@@ -174,6 +170,23 @@ namespace seco {
                         headConfigPtr = std::make_unique<PartialHeadConfig>(this->getHeuristicConfigPtr(),
                                                                             this->getPruningHeuristicConfigPtr(),
                                                                             this->getLiftFunctionConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to not use a lift function.
+             */
+            class INoLiftFunctionMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~INoLiftFunctionMixin() override {};
+
+                    /**
+                     * Configures the rule learner to not use a lift function.
+                     */
+                    virtual void useNoLiftFunction() {
+                        std::unique_ptr<ILiftFunctionConfig>& liftFunctionConfigPtr = this->getLiftFunctionConfigPtr();
+                        liftFunctionConfigPtr = std::make_unique<NoLiftFunctionConfig>();
                     }
             };
 
@@ -540,8 +553,6 @@ namespace seco {
                     void useNoCoverageStoppingCriterion() override;
 
                     void useSingleLabelHeads() override;
-
-                    void useNoLiftFunction() override;
 
                     void usePrecisionHeuristic() override;
 

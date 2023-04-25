@@ -13,8 +13,6 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
         void useSingleLabelHeads()
 
-        void useNoLiftFunction()
-
         void usePrecisionHeuristic()
 
         void usePrecisionPruningHeuristic()
@@ -36,6 +34,13 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         void usePartialHeads()
 
 
+    cdef cppclass INoLiftFunctionMixin"seco::ISeCoRuleLearner::INoLiftFunctionMixin":
+
+        # Functions:
+
+        void useNoLiftFunction()
+
+        
     cdef cppclass IPeakLiftFunctionMixin"seco::ISeCoRuleLearner::IPeakLiftFunctionMixin":
 
         # Functions:

@@ -26,13 +26,6 @@ cdef class SeCoRuleLearnerConfig:
         cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.get_seco_rule_learner_config_ptr()
         rule_learner_config_ptr.useSingleLabelHeads()
 
-    def use_no_lift_function(self):
-        """
-        Configures the rule learner to not use a lift function.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.get_seco_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoLiftFunction()
-
     def use_precision_heuristic(self):
         """
         Configures the rule learner to use the "Precision" heuristic for learning rules.
