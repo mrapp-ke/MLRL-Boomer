@@ -23,6 +23,7 @@
 #include "boosting/prediction/predictor_binary_gfm.hpp"
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
+#include "boosting/prediction/predictor_score_label_wise.hpp"
 #include "boosting/rule_evaluation/head_type_complete.hpp"
 #include "boosting/rule_evaluation/head_type_partial_dynamic.hpp"
 #include "boosting/rule_evaluation/head_type_partial_fixed.hpp"
@@ -105,13 +106,6 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to use a predictor for predicting regression scores by summing up the
-                     * scores that are provided by the individual rules of an existing rule-based model for each label
-                     * individually.
-                     */
-                    virtual void useLabelWiseScorePredictor() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting probability estimates by summing up
@@ -621,6 +615,29 @@ namespace boosting {
             };
 
             /**
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
+             * predicting regression scores by summing up the scores that are provided by the individual rules of an
+             * existing rule-based model for each label individually.
+             */
+            class ILabelWiseScorePredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~ILabelWiseScorePredictorMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use a predictor for predicting regression scores by summing up the
+                     * scores that are provided by the individual rules of an existing rule-based model for each label
+                     * individually.
+                     */
+                    virtual void useLabelWiseScorePredictor() {
+                        std::unique_ptr<IScorePredictorConfig>& scorePredictorConfigPtr =
+                          this->getScorePredictorConfigPtr();
+                        scorePredictorConfigPtr =
+                          std::make_unique<LabelWiseScorePredictorConfig>(this->getParallelPredictionConfigPtr());
+                    }
+            };
+
+            /**
              * Defines an interface for all classes that allow to configure a rule learner to use predictor for
              * predicting probability estimates by summing up the scores that are provided by individual rules of an
              * existing rule-based model and comparing the aggregated score vector to the known label vectors according
@@ -712,8 +729,6 @@ namespace boosting {
                 public:
 
                     Config();
-
-                    void useLabelWiseScorePredictor() override;
 
                     void useLabelWiseProbabilityPredictor() override;
             };

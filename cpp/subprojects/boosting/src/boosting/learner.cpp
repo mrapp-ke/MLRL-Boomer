@@ -2,13 +2,11 @@
 
 #include "boosting/model/rule_list_builder.hpp"
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
-#include "boosting/prediction/predictor_score_label_wise.hpp"
 #include "boosting/rule_evaluation/rule_compare_function.hpp"
 
 namespace boosting {
 
     AbstractBoostingRuleLearner::Config::Config() : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION) {
-        this->useLabelWiseScorePredictor();
         this->useLabelWiseProbabilityPredictor();
     }
 
@@ -34,10 +32,6 @@ namespace boosting {
 
     std::unique_ptr<ILabelBinningConfig>& AbstractBoostingRuleLearner::Config::getLabelBinningConfigPtr() {
         return labelBinningConfigPtr_;
-    }
-
-    void AbstractBoostingRuleLearner::Config::useLabelWiseScorePredictor() {
-        scorePredictorConfigPtr_ = std::make_unique<LabelWiseScorePredictorConfig>(parallelPredictionConfigPtr_);
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseProbabilityPredictor() {

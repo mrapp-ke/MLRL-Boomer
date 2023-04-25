@@ -17,8 +17,6 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useLabelWiseScorePredictor()
-
         void useLabelWiseProbabilityPredictor()
 
 
@@ -168,7 +166,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useLabelWiseBinaryPredictor()
 
-        
+
     cdef cppclass IExampleWiseBinaryPredictorMixin"boosting::IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin":
 
         # Functions:
@@ -183,6 +181,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useGfmBinaryPredictor()
 
 
+    cdef cppclass ILabelWiseScorePredictorMixin"boosting::IBoostingRuleLearner::ILabelWiseScorePredictorMixin":
+
+        # Functions:
+
+        void useLabelWiseScorePredictor()
+
+        
     cdef cppclass IMarginalizedProbabilityPredictorMixin"boosting::IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin":
 
         # Functions:

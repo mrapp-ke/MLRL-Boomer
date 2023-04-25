@@ -39,6 +39,7 @@ namespace boosting {
         this->useL2Regularization();
         this->useAutomaticLabelBinning();
         this->useAutomaticBinaryPredictor();
+        this->useLabelWiseScorePredictor();
         this->useAutomaticProbabilityPredictor();
     }
 
