@@ -41,7 +41,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::ILabelWiseSquaredErrorLossMixin,
                             virtual public IBoostingRuleLearner::ILabelWiseSquaredHingeLossMixin,
                             virtual public IBoostingRuleLearner::INoLabelBinningMixin,
-                            virtual public IBoostingRuleLearner::ILabelBinningMixin,
+                            virtual public IBoostingRuleLearner::IEqualWidthLabelBinningMixin,
                             virtual public IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IGfmBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin,

@@ -157,7 +157,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useNoLabelBinning()
 
 
-    cdef cppclass ILabelBinningMixin"boosting::IBoostingRuleLearner::ILabelBinningMixin":
+    cdef cppclass IEqualWidthLabelBinningMixin"boosting::IBoostingRuleLearner::IEqualWidthLabelBinningMixin":
 
         # Functions:
 
