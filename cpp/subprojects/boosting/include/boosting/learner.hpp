@@ -9,6 +9,7 @@
 #endif
 
 #include "boosting/binning/label_binning_equal_width.hpp"
+#include "boosting/binning/label_binning_no.hpp"
 #include "boosting/losses/loss_example_wise_logistic.hpp"
 #include "boosting/losses/loss_example_wise_squared_error.hpp"
 #include "boosting/losses/loss_example_wise_squared_hinge.hpp"
@@ -103,11 +104,6 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to not use any method for the assignment of labels to bins.
-                     */
-                    virtual void useNoLabelBinning() = 0;
 
                     /**
                      * Configures the rule learner to use a predictor for predicting whether individual labels are
@@ -509,6 +505,25 @@ namespace boosting {
             };
 
             /**
+             * Defines an interface for all classes that allow to configure a rule learner to not use any method for the
+             * assignment of labels to bins.
+             */
+            class INoLabelBinningMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~INoLabelBinningMixin() override {};
+
+                    /**
+                     * Configures the rule learner to not use any method for the assignment of labels to bins.
+                     */
+                    virtual void useNoLabelBinning() {
+                        std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr = this->getLabelBinningConfigPtr();
+                        labelBinningConfigPtr = std::make_unique<NoLabelBinningConfig>(
+                          this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
+                    }
+            };
+
+            /**
              * Defines an interface for all classes that allow to configure a rule learner to use a method for the
              * assignment of labels to bins.
              */
@@ -679,8 +694,6 @@ namespace boosting {
                 public:
 
                     Config();
-
-                    void useNoLabelBinning() override;
 
                     void useLabelWiseBinaryPredictor() override;
 

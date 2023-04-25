@@ -1,6 +1,5 @@
 #include "boosting/learner.hpp"
 
-#include "boosting/binning/label_binning_no.hpp"
 #include "boosting/model/rule_list_builder.hpp"
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
@@ -10,7 +9,6 @@
 namespace boosting {
 
     AbstractBoostingRuleLearner::Config::Config() : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION) {
-        this->useNoLabelBinning();
         this->useLabelWiseBinaryPredictor();
         this->useLabelWiseScorePredictor();
         this->useLabelWiseProbabilityPredictor();
@@ -38,11 +36,6 @@ namespace boosting {
 
     std::unique_ptr<ILabelBinningConfig>& AbstractBoostingRuleLearner::Config::getLabelBinningConfigPtr() {
         return labelBinningConfigPtr_;
-    }
-
-    void AbstractBoostingRuleLearner::Config::useNoLabelBinning() {
-        labelBinningConfigPtr_ =
-          std::make_unique<NoLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
     void AbstractBoostingRuleLearner::Config::useLabelWiseBinaryPredictor() {
