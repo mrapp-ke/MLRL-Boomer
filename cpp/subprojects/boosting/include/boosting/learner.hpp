@@ -527,10 +527,10 @@ namespace boosting {
              * Defines an interface for all classes that allow to configure a rule learner to use a method for the
              * assignment of labels to bins.
              */
-            class ILabelBinningMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IEqualWidthLabelBinningMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelBinningMixin() override {};
+                    virtual ~IEqualWidthLabelBinningMixin() override {};
 
                     /**
                      * Configures the rule learner to use a method for the assignment of labels to bins in a way such
