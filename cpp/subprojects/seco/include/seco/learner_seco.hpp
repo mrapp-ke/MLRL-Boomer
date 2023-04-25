@@ -28,6 +28,7 @@ namespace seco {
              * Defines an interface for all classes that allow to configure the multi-label SeCo algorithm.
              */
             class IConfig : virtual public ISeCoRuleLearner::IConfig,
+                            virtual public ISeCoRuleLearner::INoCoverageStoppingCriterionMixin,
                             virtual public ISeCoRuleLearner::ICoverageStoppingCriterionMixin,
                             virtual public ISeCoRuleLearner::ISingleLabelHeadMixin,
                             virtual public ISeCoRuleLearner::IPartialHeadMixin,

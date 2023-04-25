@@ -67,6 +67,14 @@ cdef class MultiLabelSeCoRuleLearnerConfig(SeCoRuleLearnerConfig):
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoFeatureBinning()
 
+    def use_no_coverage_stopping_criterion(self):
+        """
+        Configures the rule learner to not use any stopping criterion that stops the induction of rules as soon as the
+        sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
+        """
+        cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoCoverageStoppingCriterion()
+
     def use_coverage_stopping_criterion(self) -> CoverageStoppingCriterionConfig:
         """
         Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as the sum of

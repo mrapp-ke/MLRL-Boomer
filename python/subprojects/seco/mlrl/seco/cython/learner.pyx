@@ -11,14 +11,6 @@ cdef class SeCoRuleLearnerConfig:
     cdef ISeCoRuleLearnerConfig* get_seco_rule_learner_config_ptr(self):
         pass
 
-    def use_no_coverage_stopping_criterion(self):
-        """
-        Configures the rule learner to not use any stopping criterion that stops the induction of rules as soon as the
-        sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
-        """
-        cdef ISeCoRuleLearnerConfig* rule_learner_config_ptr = self.get_seco_rule_learner_config_ptr()
-        rule_learner_config_ptr.useNoCoverageStoppingCriterion()
-
     def use_precision_heuristic(self):
         """
         Configures the rule learner to use the "Precision" heuristic for learning rules.

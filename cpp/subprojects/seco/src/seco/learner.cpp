@@ -8,7 +8,6 @@
 namespace seco {
 
     AbstractSeCoRuleLearner::Config::Config() : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION) {
-        this->useNoCoverageStoppingCriterion();
         this->usePrecisionHeuristic();
         this->usePrecisionPruningHeuristic();
         this->useLabelWiseBinaryPredictor();
@@ -33,10 +32,6 @@ namespace seco {
 
     std::unique_ptr<ILiftFunctionConfig>& AbstractSeCoRuleLearner::Config::getLiftFunctionConfigPtr() {
         return liftFunctionConfigPtr_;
-    }
-
-    void AbstractSeCoRuleLearner::Config::useNoCoverageStoppingCriterion() {
-        coverageStoppingCriterionConfigPtr_ = nullptr;
     }
 
     void AbstractSeCoRuleLearner::Config::usePrecisionHeuristic() {
