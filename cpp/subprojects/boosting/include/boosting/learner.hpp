@@ -764,7 +764,7 @@ namespace boosting {
                      * relevant or irrelevant by summing up the scores that are provided by the individual rules of an
                      * existing rule-based model and transforming them into binary values according to a certain
                      * threshold that is applied to each label individually.
-                     * 
+                     *
                      * @return A reference to an object of type `ILabelWiseBinaryPredictorConfig` that allows further
                      *         configuration of the predictor
                      */
