@@ -5,7 +5,8 @@ from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, FixedPartia
     IDynamicPartialHeadConfig, DynamicPartialHeadConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig, EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig, ConstantShrinkageConfig
-from mlrl.boosting.cython.prediction cimport IExampleWiseBinaryPredictorConfig, ExampleWiseBinaryPredictorConfig
+from mlrl.boosting.cython.prediction cimport IExampleWiseBinaryPredictorConfig, ExampleWiseBinaryPredictorConfig, \
+    ILabelWiseBinaryPredictorConfig, LabelWiseBinaryPredictorConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig, ManualRegularizationConfig
 from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
     IEqualFrequencyFeatureBinningConfig, EqualFrequencyFeatureBinningConfig
@@ -691,12 +692,26 @@ cdef class BoomerConfig:
         config.config_ptr = config_ptr
         return config
 
+    def use_no_marginal_probability_calibration(self):
+        """
+        Configures the rule learner to not calibrate marginal probabilities.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoMarginalProbabilityCalibration()
+
     def use_isotonic_marginal_probability_calibration(self):
         """
         Configures the rule learner to calibrate marginal probabilities via isotonic regression.
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useIsotonicMarginalProbabilityCalibration()
+
+    def use_isotonic_joint_probability_calibration(self):
+        """
+        Configures the rule learner to not calibrate joint probabilities.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useNoJointProbabilityCalibration()
 
     def use_isotonic_joint_probability_calibration(self):
         """
@@ -713,7 +728,7 @@ cdef class BoomerConfig:
         individually.
         """
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
-        cdef LabelWiseBinaryPredictorConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseBinaryPredictor()
+        cdef ILabelWiseBinaryPredictorConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseBinaryPredictor()
         cdef LabelWiseBinaryPredictorConfig config = LabelWiseBinaryPredictorConfig.__new__(LabelWiseBinaryPredictorConfig)
         config.config_ptr = config_ptr
         return config

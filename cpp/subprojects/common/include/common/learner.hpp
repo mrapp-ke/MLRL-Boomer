@@ -23,6 +23,7 @@
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 #include "common/prediction/probability_calibration_joint.hpp"
+#include "common/prediction/probability_calibration_no.hpp"
 #include "common/rule_induction/rule_induction_top_down_beam_search.hpp"
 #include "common/rule_induction/rule_induction_top_down_greedy.hpp"
 #include "common/rule_model_assemblage/default_rule.hpp"
@@ -1276,9 +1277,9 @@ class MLRLCOMMON_API IRuleLearner {
                  * Configures the rule learner to not calibrate marginal probabilities.
                  */
                 virtual void useNoMarginalProbabilityCalibration() {
-                    std::unique_ptr<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigPtr =
+                    std::unique_ptr<IMarginalProbabilityCalibratorConfig>& marginalProbabilityCalibratorConfigPtr =
                       this->getMarginalProbabilityCalibratorConfigPtr();
-                    marginalProbabilityCalibratorConfigPtr_ = std::make_unique<NoMarginalProbabilityCalibratorConfig>();
+                    marginalProbabilityCalibratorConfigPtr = std::make_unique<NoMarginalProbabilityCalibratorConfig>();
                 }
         };
 
@@ -1286,7 +1287,7 @@ class MLRLCOMMON_API IRuleLearner {
          * Defines an interface for all classes that allow to configure a rule learner to not calibrate joint
          * probabilities.
          */
-        class INoJoinProbabilityCalibrationMixin : virtual public IRuleLearner::IConfig {
+        class INoJointProbabilityCalibrationMixin : virtual public IRuleLearner::IConfig {
             public:
 
                 virtual ~INoJointProbabilityCalibrationMixin() override {};
@@ -1295,9 +1296,9 @@ class MLRLCOMMON_API IRuleLearner {
                  * Configures the rule learner to not calibrate joint probabilities.
                  */
                 virtual void useNoJointProbabilityCalibration() {
-                    std::unique_ptr<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigPtr =
+                    std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr =
                       this->getJointProbabilityCalibratorConfigPtr();
-                    jointProbabilityCalibratorConfigPtr_ = std::make_unique<NoJointProbabilityCalibratorConfig>();
+                    jointProbabilityCalibratorConfigPtr = std::make_unique<NoJointProbabilityCalibratorConfig>();
                 }
         };
 

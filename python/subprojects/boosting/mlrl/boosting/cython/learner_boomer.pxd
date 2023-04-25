@@ -11,7 +11,8 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, ISequentialRu
     IParallelStatisticUpdateMixin, INoParallelPredictionMixin, IParallelPredictionMixin, \
     INoSizeStoppingCriterionMixin, ISizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
     ITimeStoppingCriterionMixin, IPrePruningMixin, INoGlobalPruningMixin, IPostPruningMixin, \
-    INoSequentialPostOptimizationMixin, ISequentialPostOptimizationMixin
+    INoSequentialPostOptimizationMixin, ISequentialPostOptimizationMixin, INoMarginalProbabilityCalibrationMixin, \
+    INoJointProbabilityCalibrationMixin
 from mlrl.boosting.cython.learner cimport IAutomaticPartitionSamplingMixin, IAutomaticFeatureBinningMixin, \
     IAutomaticParallelRuleRefinementMixin, IAutomaticParallelStatisticUpdateMixin, IConstantShrinkageMixin, \
     INoL1RegularizationMixin, IL1RegularizationMixin, INoL2RegularizationMixin, IL2RegularizationMixin, \
@@ -106,7 +107,9 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             INoGlobalPruningMixin,
                                                             IPostPruningMixin,
                                                             INoSequentialPostOptimizationMixin,
-                                                            ISequentialPostOptimizationMixin):
+                                                            ISequentialPostOptimizationMixin,
+                                                            INoMarginalProbabilityCalibrationMixin,
+                                                            INoJointProbabilityCalibrationMixin):
         pass
 
     cdef cppclass IBoomer(IRuleLearner):
