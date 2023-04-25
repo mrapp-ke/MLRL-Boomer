@@ -34,16 +34,13 @@ from scipy.linalg.cython_blas cimport ddot, dspmv
 from scipy.linalg.cython_lapack cimport dsysv
 
 
-cdef class BoomerConfig(BoostingRuleLearnerConfig):
+cdef class BoomerConfig:
     """
     Allows to configure the BOOMER algorithm.
     """
 
     def __cinit__(self):
         self.rule_learner_config_ptr = createBoomerConfig()
-
-    cdef IBoostingRuleLearnerConfig* get_boosting_rule_learner_config_ptr(self):
-        return self.rule_learner_config_ptr.get()
 
     def use_sequential_rule_model_assemblage(self):
         """

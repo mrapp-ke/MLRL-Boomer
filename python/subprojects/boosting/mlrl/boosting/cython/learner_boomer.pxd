@@ -12,23 +12,22 @@ from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, ISequentialRu
     INoSizeStoppingCriterionMixin, ISizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
     ITimeStoppingCriterionMixin, IPrePruningMixin, INoGlobalPruningMixin, IPostPruningMixin, \
     INoSequentialPostOptimizationMixin, ISequentialPostOptimizationMixin
-from mlrl.boosting.cython.learner cimport IBoostingRuleLearnerConfig, BoostingRuleLearnerConfig, \
-    IConstantShrinkageMixin, INoL1RegularizationMixin, IL1RegularizationMixin, INoL2RegularizationMixin, \
-    IL2RegularizationMixin, INoDefaultRuleMixin, ICompleteHeadMixin, IDynamicPartialHeadMixin, IFixedPartialHeadMixin, \
-    ISingleLabelHeadMixin, IDenseStatisticsMixin, ISparseStatisticsMixin, IExampleWiseLogisticLossMixin, \
-    IExampleWiseSquaredErrorLossMixin, IExampleWiseSquaredHingeLossMixin, ILabelWiseLogisticLossMixin, \
-    ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, INoLabelBinningMixin, \
-    IEqualWidthLabelBinningMixin, ILabelWiseBinaryPredictorMixin, IExampleWiseBinaryPredictorMixin, \
-    IGfmBinaryPredictorMixin, ILabelWiseScorePredictorMixin, ILabelWiseProbabilityPredictorMixin, \
-    IMarginalizedProbabilityPredictorMixin, DdotFunction, DspmvFunction, DsysvFunction
+from mlrl.boosting.cython.learner cimport IConstantShrinkageMixin, INoL1RegularizationMixin, IL1RegularizationMixin, \
+    INoL2RegularizationMixin, IL2RegularizationMixin, INoDefaultRuleMixin, ICompleteHeadMixin, \
+    IDynamicPartialHeadMixin, IFixedPartialHeadMixin, ISingleLabelHeadMixin, IDenseStatisticsMixin, \
+    ISparseStatisticsMixin, IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, \
+    IExampleWiseSquaredHingeLossMixin, ILabelWiseLogisticLossMixin, ILabelWiseSquaredErrorLossMixin, \
+    ILabelWiseSquaredHingeLossMixin, INoLabelBinningMixin, IEqualWidthLabelBinningMixin, \
+    ILabelWiseBinaryPredictorMixin, IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, \
+    ILabelWiseScorePredictorMixin, ILabelWiseProbabilityPredictorMixin, IMarginalizedProbabilityPredictorMixin, \
+    DdotFunction, DspmvFunction, DsysvFunction
 
 from libcpp.memory cimport unique_ptr
 
 
 cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
 
-    cdef cppclass IBoomerConfig"boosting::IBoomer::IConfig"(IBoostingRuleLearnerConfig,
-                                                            IConstantShrinkageMixin,
+    cdef cppclass IBoomerConfig"boosting::IBoomer::IConfig"(IConstantShrinkageMixin,
                                                             INoL1RegularizationMixin,
                                                             IL1RegularizationMixin,
                                                             INoL2RegularizationMixin,
@@ -125,7 +124,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                      DspmvFunction dspmvFunction, DsysvFunction dsysvFunction)
 
 
-cdef class BoomerConfig(BoostingRuleLearnerConfig):
+cdef class BoomerConfig:
 
     # Attributes:
 
