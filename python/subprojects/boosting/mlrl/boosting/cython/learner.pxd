@@ -13,10 +13,6 @@ ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* ld
 
 cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
-    cdef cppclass IBoostingRuleLearnerConfig"boosting::IBoostingRuleLearner::IConfig":
-        pass
-
-
     cdef cppclass IConstantShrinkageMixin"boosting::IBoostingRuleLearner::IConstantShrinkageMixin":
 
         # Functions:
@@ -197,10 +193,3 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         # Functions:
 
         void useMarginalizedProbabilityPredictor()
-
-
-cdef class BoostingRuleLearnerConfig:
-
-    # Functions:
-
-    cdef IBoostingRuleLearnerConfig* get_boosting_rule_learner_config_ptr(self)
