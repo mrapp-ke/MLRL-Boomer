@@ -19,7 +19,7 @@ from mlrl.boosting.cython.learner cimport IAutomaticPartitionSamplingMixin, IAut
     IFixedPartialHeadMixin, ISingleLabelHeadMixin, IAutomaticHeadMixin, IDenseStatisticsMixin, ISparseStatisticsMixin, \
     IAutomaticStatisticsMixin, IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, \
     IExampleWiseSquaredHingeLossMixin, ILabelWiseLogisticLossMixin, ILabelWiseSquaredErrorLossMixin, \
-    ILabelWiseSquaredHingeLossMixin, INoLabelBinningMixin, IEqualWidthLabelBinningMixin, \
+    ILabelWiseSquaredHingeLossMixin, INoLabelBinningMixin, IEqualWidthLabelBinningMixin, IAutomaticLabelBinningMixin, \
     ILabelWiseBinaryPredictorMixin, IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, \
     ILabelWiseScorePredictorMixin, ILabelWiseProbabilityPredictorMixin, IMarginalizedProbabilityPredictorMixin, \
     DdotFunction, DspmvFunction, DsysvFunction
@@ -56,6 +56,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             ILabelWiseSquaredHingeLossMixin,
                                                             INoLabelBinningMixin,
                                                             IEqualWidthLabelBinningMixin,
+                                                            IAutomaticLabelBinningMixin,
                                                             ILabelWiseBinaryPredictorMixin,
                                                             IExampleWiseBinaryPredictorMixin,
                                                             IGfmBinaryPredictorMixin,
@@ -102,8 +103,6 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             ISequentialPostOptimizationMixin):
 
         # Functions:
-
-        void useAutomaticLabelBinning()
 
         void useAutomaticProbabilityPredictor()
 

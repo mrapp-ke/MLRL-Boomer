@@ -1,6 +1,5 @@
 #include "boosting/learner_boomer.hpp"
 
-#include "boosting/binning/label_binning_auto.hpp"
 #include "boosting/prediction/predictor_binary_auto.hpp"
 #include "boosting/prediction/predictor_probability_auto.hpp"
 
@@ -40,11 +39,6 @@ namespace boosting {
         ISizeStoppingCriterionConfig& ref = ISizeStoppingCriterionMixin::useSizeStoppingCriterion();
         ref.setMaxRules(1000);
         return ref;
-    }
-
-    void Boomer::Config::useAutomaticLabelBinning() {
-        labelBinningConfigPtr_ =
-          std::make_unique<AutomaticLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
     }
 
     void Boomer::Config::useAutomaticBinaryPredictor() {
