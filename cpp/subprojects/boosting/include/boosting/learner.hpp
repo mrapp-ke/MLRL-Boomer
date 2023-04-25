@@ -23,6 +23,7 @@
 #include "boosting/multi_threading/parallel_rule_refinement_auto.hpp"
 #include "boosting/multi_threading/parallel_statistic_update_auto.hpp"
 #include "boosting/post_processing/shrinkage_constant.hpp"
+#include "boosting/prediction/predictor_binary_auto.hpp"
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 #include "boosting/prediction/predictor_binary_gfm.hpp"
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
@@ -776,6 +777,27 @@ namespace boosting {
                         std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
                           this->getBinaryPredictorConfigPtr();
                         binaryPredictorConfigPtr = std::make_unique<GfmBinaryPredictorConfig>(
+                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide for a
+             * predictor for predicting whether individual labels are relevant or irrelevant.
+             */
+            class IAutomaticBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticBinaryPredictorMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide for a predictor for predicting whether
+                     * individual labels are relevant or irrelevant.
+                     */
+                    virtual void useAutomaticBinaryPredictor() {
+                        std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
+                          this->getBinaryPredictorConfigPtr();
+                        binaryPredictorConfigPtr = std::make_unique<AutomaticBinaryPredictorConfig>(
                           this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
             };

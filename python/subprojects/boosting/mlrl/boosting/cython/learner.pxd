@@ -230,6 +230,13 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useGfmBinaryPredictor()
 
 
+    cdef cppclass IAutomaticBinaryPredictorMixin"boosting::IBoostingRuleLearner::IAutomaticBinaryPredictorMixin":
+
+        # Functions:
+
+        void useAutomaticBinaryPredictor()
+
+
     cdef cppclass ILabelWiseScorePredictorMixin"boosting::IBoostingRuleLearner::ILabelWiseScorePredictorMixin":
 
         # Functions:

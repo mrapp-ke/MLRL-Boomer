@@ -53,6 +53,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::ILabelWiseBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IGfmBinaryPredictorMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::ILabelWiseScorePredictorMixin,
                             virtual public IBoostingRuleLearner::ILabelWiseProbabilityPredictorMixin,
                             virtual public IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin,
@@ -99,12 +100,6 @@ namespace boosting {
                     virtual ~IConfig() override {};
 
                     /**
-                     * Configures the rule learner to automatically decide for a predictor for predicting whether
-                     * individual labels are relevant or irrelevant.
-                     */
-                    virtual void useAutomaticBinaryPredictor() = 0;
-
-                    /**
                      * Configures the rule learner to automatically decide for a predictor for predicting probability
                      * estimates.
                      */
@@ -134,8 +129,6 @@ namespace boosting {
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                    void useAutomaticBinaryPredictor() override;
 
                     void useAutomaticProbabilityPredictor() override;
             };
