@@ -8,6 +8,7 @@
     #pragma warning(disable : 4250)
 #endif
 
+#include "boosting/binning/feature_binning_auto.hpp"
 #include "boosting/binning/label_binning_equal_width.hpp"
 #include "boosting/binning/label_binning_no.hpp"
 #include "boosting/losses/loss_example_wise_logistic.hpp"
@@ -128,6 +129,27 @@ namespace boosting {
                           this->getPartitionSamplingConfigPtr();
                         partitionSamplingConfigPtr = std::make_unique<AutomaticPartitionSamplingConfig>(
                           this->getGlobalPruningConfigPtr(), this->getLossConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
+             * whether a method for the assignment of numerical feature values to bins should be used or not.
+             */
+            class IAutomaticFeatureBinningMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticFeatureBinningMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide whether a method for the assignment of
+                     * numerical feature values to bins should be used or not.
+                     */
+                    virtual void useAutomaticFeatureBinning() {
+                        std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
+                          this->getFeatureBinningConfigPtr();
+                        featureBinningConfigPtr =
+                          std::make_unique<AutomaticFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
                     }
             };
 

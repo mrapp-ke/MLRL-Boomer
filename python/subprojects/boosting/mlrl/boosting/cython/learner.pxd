@@ -19,7 +19,14 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         void useAutomaticPartitionSampling()
 
-        
+
+    cdef cppclass IAutomaticFeatureBinningMixin"boosting::IBoostingRuleLearner::IAutomaticFeatureBinningMixin":
+
+        # Functions
+
+        void useAutomaticFeatureBinning()
+
+
     cdef cppclass IConstantShrinkageMixin"boosting::IBoostingRuleLearner::IConstantShrinkageMixin":
 
         # Functions:
