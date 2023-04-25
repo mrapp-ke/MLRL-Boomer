@@ -256,3 +256,10 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         # Functions:
 
         void useMarginalizedProbabilityPredictor()
+
+
+    cdef cppclass IAutomaticProbabilityPredictorMixin"boosting::IBoostingRuleLearner::IAutomaticProbabilityPredictorMixin":
+        
+        # Functions:
+
+        void useAutomaticProbabilityPredictor()
