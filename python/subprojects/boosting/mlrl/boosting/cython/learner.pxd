@@ -32,7 +32,14 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         # Functions:
 
         void useAutomaticParallelRuleRefinement()
-        
+
+
+    cdef cppclass IAutomaticParallelStatisticUpdateMixin"boosting::IBoostingRuleLearner::IAutomaticParallelStatisticUpdateMixin":
+
+        # Functions:
+
+        void useAutomaticParallelStatisticUpdate()
+
 
     cdef cppclass IConstantShrinkageMixin"boosting::IBoostingRuleLearner::IConstantShrinkageMixin":
 
