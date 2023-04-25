@@ -730,6 +730,14 @@ cdef class BoomerConfig(BoostingRuleLearnerConfig):
         cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useLabelWiseBinaryPredictor()
 
+    def use_label_wise_score_predictor(self):
+        """
+        Configures the rule learner to use a predictor for predicting regression scores by summing up the scores that
+        are provided by the individual rules of an existing rule-based model for each label individually.
+        """
+        cdef IBoomerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
+        rule_learner_config_ptr.useLabelWiseScorePredictor()
+
     def use_marginalized_probability_predictor(self):
         """
         Configures the rule learner to use a predictor for predicting probability estimates by summing up the scores
