@@ -5,10 +5,6 @@ from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfi
 
 cdef extern from "seco/learner.hpp" namespace "seco" nogil:
 
-    cdef cppclass ISeCoRuleLearnerConfig"seco::ISeCoRuleLearner::IConfig":
-        pass
-
-
     cdef cppclass INoCoverageStoppingCriterionMixin"seco::ISeCoRuleLearner::INoCoverageStoppingCriterionMixin":
 
         # Functions:
@@ -161,10 +157,3 @@ cdef extern from "seco/learner.hpp" namespace "seco" nogil:
         # Functions:
 
         void useLabelWiseBinaryPredictor()
-
-
-cdef class SeCoRuleLearnerConfig:
-
-    # Functions:
-
-    cdef ISeCoRuleLearnerConfig* get_seco_rule_learner_config_ptr(self)
