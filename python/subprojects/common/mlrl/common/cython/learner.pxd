@@ -309,6 +309,20 @@ cdef extern from "common/learner.hpp" nogil:
         ISequentialPostOptimizationConfig& useSequentialPostOptimization()
 
 
+    cdef cppclass INoMarginalProbabilityCalibrationMixin"IRuleLearner::INoMarginalProbabilityCalibrationMixin":
+
+        # Functions:
+
+        void useNoMarginalProbabilityCalibration()
+
+
+    cdef cppclass INoJointProbabilityCalibrationMixin"IRuleLearner::INoJointProbabilityCalibrationMixin":
+
+        # Functions:
+
+        void useNoJointProbabilityCalibration()
+
+
     cdef cppclass IRuleLearner:
 
         # Functions:

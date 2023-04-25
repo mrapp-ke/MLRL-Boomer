@@ -97,7 +97,9 @@ namespace boosting {
                             virtual public IRuleLearner::INoGlobalPruningMixin,
                             virtual public IRuleLearner::IPostPruningMixin,
                             virtual public IRuleLearner::INoSequentialPostOptimizationMixin,
-                            virtual public IRuleLearner::ISequentialPostOptimizationMixin {
+                            virtual public IRuleLearner::ISequentialPostOptimizationMixin,
+                            virtual public IRuleLearner::INoMarginalProbabilityCalibrationMixin,
+                            virtual public IRuleLearner::INoJointProbabilityCalibrationMixin {
                 public:
 
                     virtual ~IConfig() override {};

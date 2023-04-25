@@ -98,7 +98,9 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
       parallelRuleRefinementConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
       parallelStatisticUpdateConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
       parallelPredictionConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
-      unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()) {}
+      unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()),
+      marginalProbabilityCalibratorConfigPtr_(std::make_unique<NoMarginalProbabilityCalibratorConfig>()),
+      jointProbabilityCalibratorConfigPtr_(std::make_unique<NoJointProbabilityCalibratorConfig>()) {}
 
 RuleCompareFunction AbstractRuleLearner::Config::getRuleCompareFunction() const {
     return ruleCompareFunction_;
