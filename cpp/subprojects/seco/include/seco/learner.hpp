@@ -13,6 +13,7 @@
 #include "seco/heuristics/heuristic_f_measure.hpp"
 #include "seco/heuristics/heuristic_laplace.hpp"
 #include "seco/heuristics/heuristic_m_estimate.hpp"
+#include "seco/heuristics/heuristic_precision.hpp"
 #include "seco/heuristics/heuristic_recall.hpp"
 #include "seco/heuristics/heuristic_wra.hpp"
 #include "seco/lift_functions/lift_function_kln.hpp"
@@ -90,11 +91,6 @@ namespace seco {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to use the "Precision" heuristic for learning rules.
-                     */
-                    virtual void usePrecisionHeuristic() = 0;
 
                     /**
                      * Configures the rule learner to use the "Precision" heuristic for pruning rules.
@@ -445,6 +441,24 @@ namespace seco {
             };
 
             /**
+             * Defines an interface for all classes that allow to configure a rule learner to use the "Precision"
+             * heuristic for learning rules.
+             */
+            class IPrecisionHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
+                public:
+
+                    virtual ~IPrecisionHeuristicMixin() override {};
+
+                    /**
+                     * Configures the rule learner to use the "Precision" heuristic for learning rules.
+                     */
+                    virtual void usePrecisionHeuristic() {
+                        std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr = this->getHeuristicConfigPtr();
+                        heuristicConfigPtr = std::make_unique<PrecisionConfig>();
+                    }
+            };
+
+            /**
              * Defines an interface for all classes that allow to configure a rule learner to use the "Recall" heuristic
              * for pruning rules.
              */
@@ -579,8 +593,6 @@ namespace seco {
                 public:
 
                     Config();
-
-                    void usePrecisionHeuristic() override;
 
                     void usePrecisionPruningHeuristic() override;
 

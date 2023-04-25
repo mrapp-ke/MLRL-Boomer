@@ -43,6 +43,7 @@ namespace seco {
                             virtual public ISeCoRuleLearner::IMEstimatePruningHeuristicMixin,
                             virtual public ISeCoRuleLearner::ILaplaceHeuristicMixin,
                             virtual public ISeCoRuleLearner::ILaplacePruningHeuristicMixin,
+                            virtual public ISeCoRuleLearner::IPrecisionHeuristicMixin,
                             virtual public ISeCoRuleLearner::IRecallHeuristicMixin,
                             virtual public ISeCoRuleLearner::IRecallPruningHeuristicMixin,
                             virtual public ISeCoRuleLearner::IWraHeuristicMixin,
