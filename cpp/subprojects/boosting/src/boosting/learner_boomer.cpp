@@ -1,7 +1,5 @@
 #include "boosting/learner_boomer.hpp"
 
-#include "boosting/prediction/predictor_probability_auto.hpp"
-
 namespace boosting {
 
     Boomer::Config::Config() {
@@ -38,11 +36,6 @@ namespace boosting {
         ISizeStoppingCriterionConfig& ref = ISizeStoppingCriterionMixin::useSizeStoppingCriterion();
         ref.setMaxRules(1000);
         return ref;
-    }
-
-    void Boomer::Config::useAutomaticProbabilityPredictor() {
-        probabilityPredictorConfigPtr_ =
-          std::make_unique<AutomaticProbabilityPredictorConfig>(lossConfigPtr_, parallelPredictionConfigPtr_);
     }
 
     Boomer::Boomer(std::unique_ptr<IBoomer::IConfig> configPtr, Blas::DdotFunction ddotFunction,

@@ -57,6 +57,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::ILabelWiseScorePredictorMixin,
                             virtual public IBoostingRuleLearner::ILabelWiseProbabilityPredictorMixin,
                             virtual public IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin,
+                            virtual public IBoostingRuleLearner::IAutomaticProbabilityPredictorMixin,
                             virtual public IRuleLearner::ISequentialRuleModelAssemblageMixin,
                             virtual public IRuleLearner::IDefaultRuleMixin,
                             virtual public IRuleLearner::IGreedyTopDownRuleInductionMixin,
@@ -98,12 +99,6 @@ namespace boosting {
                 public:
 
                     virtual ~IConfig() override {};
-
-                    /**
-                     * Configures the rule learner to automatically decide for a predictor for predicting probability
-                     * estimates.
-                     */
-                    virtual void useAutomaticProbabilityPredictor() = 0;
             };
 
             virtual ~IBoomer() override {};
@@ -129,8 +124,6 @@ namespace boosting {
                      * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-
-                    void useAutomaticProbabilityPredictor() override;
             };
 
         private:

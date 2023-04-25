@@ -27,6 +27,7 @@
 #include "boosting/prediction/predictor_binary_example_wise.hpp"
 #include "boosting/prediction/predictor_binary_gfm.hpp"
 #include "boosting/prediction/predictor_binary_label_wise.hpp"
+#include "boosting/prediction/predictor_probability_auto.hpp"
 #include "boosting/prediction/predictor_probability_label_wise.hpp"
 #include "boosting/prediction/predictor_probability_marginalized.hpp"
 #include "boosting/prediction/predictor_score_label_wise.hpp"
@@ -873,6 +874,27 @@ namespace boosting {
                         std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
                           this->getProbabilityPredictorConfigPtr();
                         probabilityPredictorConfigPtr = std::make_unique<MarginalizedProbabilityPredictorConfig>(
+                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                    }
+            };
+
+            /**
+             * Defines an interface for all classes that allow to configure a rule learner to automatically decide for a
+             * predictor for predicting probability estimates.
+             */
+            class IAutomaticProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+                public:
+
+                    virtual ~IAutomaticProbabilityPredictorMixin() override {};
+
+                    /**
+                     * Configures the rule learner to automatically decide for a predictor for predicting probability
+                     * estimates.
+                     */
+                    virtual void useAutomaticProbabilityPredictor() {
+                        std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
+                          this->getProbabilityPredictorConfigPtr();
+                        probabilityPredictorConfigPtr = std::make_unique<AutomaticProbabilityPredictorConfig>(
                           this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
                     }
             };
