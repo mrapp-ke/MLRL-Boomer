@@ -37,9 +37,38 @@ from mlrl.common.cython.learner import SequentialRuleModelAssemblageMixin, Defau
     ParallelStatisticUpdateMixin, NoParallelPredictionMixin, ParallelPredictionMixin, NoSizeStoppingCriterionMixin, \
     SizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, TimeStoppingCriterionMixin, PrePruningMixin, \
     NoGlobalPruningMixin, PostPruningMixin, NoSequentialPostOptimizationMixin, SequentialPostOptimizationMixin
+from mlrl.seco.cython.learner import NoCoverageStoppingCriterionMixin, CoverageStoppingCriterionMixin, \
+    SingleLabelHeadMixin, PartialHeadMixin, NoLiftFunctionMixin, PeakLiftFunctionMixin, KlnLiftFunctionMixin, \
+    AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, FMeasureHeuristicMixin, FMeasurePruningHeuristicMixin, \
+    MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, \
+    PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, RecallPruningHeuristicMixin, \
+    WraHeuristicMixin, WraPruningHeuristicMixin, LabelWiseBinaryPredictionMixin
+
 
 
 cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig,
+                                           NoCoverageStoppingCriterionMixin,
+                                           CoverageStoppingCriterionMixin,
+                                           SingleLabelHeadMixin,
+                                           PartialHeadMixin,
+                                           NoLiftFunctionMixin,
+                                           PeakLiftFunctionMixin,
+                                           KlnLiftFunctionMixin,
+                                           AccuracyHeuristicMixin,
+                                           AccuracyPruningHeuristicMixin,
+                                           FMeasureHeuristicMixin,
+                                           FMeasurePruningHeuristicMixin,
+                                           MEstimateHeuristicMixin,
+                                           MEstimatePruningHeuristicMixin,
+                                           LaplaceHeuristicMixin,
+                                           LaplacePruningHeuristicMixin,
+                                           PrecisionHeuristicMixin,
+                                           PrecisionPruningHeuristicMixin,
+                                           RecallHeuristicMixin,
+                                           RecallPruningHeuristicMixin,
+                                           WraHeuristicMixin,
+                                           WraPruningHeuristicMixin,
+                                           LabelWiseBinaryPredictionMixin,
                                            SequentialRuleModelAssemblageMixin,
                                            DefaultRuleMixin,
                                            GreedyTopDownRuleInductionMixin,
@@ -87,169 +116,87 @@ cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig,
         self.config_ptr.get().useDefaultRule()
 
     def use_no_coverage_stopping_criterion(self):
-        """
-        Configures the rule learner to not use any stopping criterion that stops the induction of rules as soon as the
-        sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
-        """
         self.config_ptr.get().useNoCoverageStoppingCriterion()
 
     def use_coverage_stopping_criterion(self) -> CoverageStoppingCriterionConfig:
-        """
-        Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as the sum of
-        the weights of the uncovered labels is smaller or equal to a certain threshold.
-
-        :return: A `CoverageStoppingCriterionConfig` that allows further configuration of the stopping criterion
-        """
         cdef ICoverageStoppingCriterionConfig* config_ptr = &self.config_ptr.get().useCoverageStoppingCriterion()
         cdef CoverageStoppingCriterionConfig config = CoverageStoppingCriterionConfig.__new__(CoverageStoppingCriterionConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_single_label_heads(self):
-        """
-        Configures the rule learner to induce rules with single-label heads that predict for a single label.
-        """
         self.config_ptr.get().useSingleLabelHeads()
 
     def use_partial_heads(self):
-        """
-        Configures the rule learner to induce rules with partial heads that predict for a subset of the available
-        labels.
-        """
         self.config_ptr.get().usePartialHeads()
 
     def use_no_lift_function(self):
-        """
-        Configures the rule learner to not use a lift function.
-        """
         self.config_ptr.get().useNoLiftFunction()
 
     def use_peak_lift_function(self) -> PeakLiftFunctionConfig:
-        """
-        Configures the rule learner to use a lift function that monotonously increases until a certain number of labels,
-        where the maximum lift is reached, and monotonously decreases afterwards.
-
-        :return: A `PeakLiftFunctionConfig` that allows further configuration of the lift function
-        """
         cdef IPeakLiftFunctionConfig* config_ptr = &self.config_ptr.get().usePeakLiftFunction()
         cdef PeakLiftFunctionConfig config = PeakLiftFunctionConfig.__new__(PeakLiftFunctionConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_kln_lift_function(self) -> KlnLiftFunctionConfig:
-        """
-        Configures the rule learner to use a lift function that monotonously increases according to the natural
-        logarithm of the number of labels for which a rule predicts.
-
-        :return: A `KlnLiftFunctionConfig` that allows further configuration of the lift function
-        """
         cdef IKlnLiftFunctionConfig* config_ptr = &self.config_ptr.get().useKlnLiftFunction()
         cdef KlnLiftFunctionConfig config = KlnLiftFunctionConfig.__new__(KlnLiftFunctionConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_accuracy_heuristic(self):
-        """
-        Configures the rule learner to use the "Accuracy" heuristic for learning rules.
-        """
         self.config_ptr.get().useAccuracyHeuristic()
 
     def use_accuracy_pruning_heuristic(self):
-        """
-        Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
-        """
         self.config_ptr.get().useAccuracyPruningHeuristic()
 
     def use_f_measure_heuristic(self) -> FMeasureConfig:
-        """
-        Configures the rule learner to use the "F-Measure" heuristic for learning rules.
-
-        :return: A `FMeasureConfig` that allows further configuration of the heuristic
-        """
         cdef IFMeasureConfig* config_ptr = &self.config_ptr.get().useFMeasureHeuristic()
         cdef FMeasureConfig config = FMeasureConfig.__new__(FMeasureConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_f_measure_pruning_heuristic(self) -> FMeasureConfig:
-        """
-        Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
-
-        :return: A `FMeasureConfig` that allows further configuration of the heuristic
-        """
         cdef IFMeasureConfig* config_ptr = &self.config_ptr.get().useFMeasurePruningHeuristic()
         cdef FMeasureConfig config = FMeasureConfig.__new__(FMeasureConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_m_estimate_heuristic(self) -> MEstimateConfig:
-        """
-        Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
-
-        :return: A `MEstimateConfig` that allows further configuration of the heuristic
-        """
         cdef IMEstimateConfig* config_ptr = &self.config_ptr.get().useMEstimateHeuristic()
         cdef MEstimateConfig config = MEstimateConfig.__new__(MEstimateConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_m_estimate_pruning_heuristic(self) -> MEstimateConfig:
-        """
-        Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
-
-        :return: A `MEstimateConfig` that allows further configuration of the heuristic
-        """
         cdef IMEstimateConfig* config_ptr = &self.config_ptr.get().useMEstimatePruningHeuristic()
         cdef MEstimateConfig config = MEstimateConfig.__new__(MEstimateConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_laplace_heuristic(self):
-        """
-        Configures the rule learner to use the "Laplace" heuristic for learning rules.
-        """
         self.config_ptr.get().useLaplaceHeuristic()
 
     def use_laplace_pruning_heuristic(self):
-        """
-        Configures the rule learner to use the "Laplace" heuristic for pruning rules.
-        """
         self.config_ptr.get().useLaplacePruningHeuristic()
 
     def use_precision_heuristic(self):
-        """
-        Configures the rule learner to use the "Precision" heuristic for learning rules.
-        """
         self.config_ptr.get().usePrecisionHeuristic()
     
     def use_precision_pruning_heuristic(self):
-        """
-        Configures the rule learner to use the "Precision" heuristic for pruning rules.
-        """
         self.config_ptr.get().usePrecisionPruningHeuristic()
 
     def use_recall_heuristic(self):
-        """
-        Configures the rule learner to use the "Recall" heuristic for learning rules.
-        """
         self.config_ptr.get().useRecallHeuristic()
 
     def use_recall_pruning_heuristic(self):
-        """
-        Configures the rule learner to use the "Recall" heuristic for pruning rules.
-        """
         self.config_ptr.get().useRecallPruningHeuristic()
 
     def use_wra_heuristic(self):
-        """
-        Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
-        """
         self.config_ptr.get().useWraHeuristic()
 
     def use_wra_pruning_heuristic(self):
-        """
-        Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
-        """
         self.config_ptr.get().useWraPruningHeuristic()
 
     def use_greedy_top_down_rule_induction(self) -> GreedyTopDownRuleInductionConfig:
@@ -391,11 +338,6 @@ cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig,
         return config
 
     def use_label_wise_binary_predictor(self):
-        """
-        Configures the rule learner to use predictor for predicting whether individual labels of given query examples
-        are relevant or irrelevant by processing rules of an existing rule-based model in the order they have been
-        learned. If a rule covers an example, its prediction is applied to each label individually.
-        """
         self.config_ptr.get().useLabelWiseBinaryPredictor()
 
 
