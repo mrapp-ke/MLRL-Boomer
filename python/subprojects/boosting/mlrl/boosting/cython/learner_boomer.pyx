@@ -45,9 +45,55 @@ from mlrl.common.cython.learner import SequentialRuleModelAssemblageMixin, Defau
     ParallelStatisticUpdateMixin, NoParallelPredictionMixin, ParallelPredictionMixin, NoSizeStoppingCriterionMixin, \
     SizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, TimeStoppingCriterionMixin, PrePruningMixin, \
     NoGlobalPruningMixin, PostPruningMixin, NoSequentialPostOptimizationMixin, SequentialPostOptimizationMixin
-
+from mlrl.boosting.cython.learner import AutomaticPartitionSamplingMixin, AutomaticFeatureBinningMixin, \
+    AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, ConstantShrinkageMixin, \
+    NoL1RegularizationMixin, L1RegularizationMixin, NoL2RegularizationMixin, L2RegularizationMixin, \
+    NoDefaultRuleMixin, AutomaticDefaultRuleMixin, CompleteHeadMixin, FixedPartialHeadMixin, DynamicPartialHeadMixin, \
+    SingleLabelHeadMixin, AutomaticHeadMixin, DenseStatisticsMixin, SparseStatisticsMixin, AutomaticStatisticsMixin, \
+    ExampleWiseLogisticLossMixin, ExampleWiseSquaredErrorLossMixin, ExampleWiseSquaredHingeLossMixin, \
+    LabelWiseLogisticLossMixin, LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, NoLabelBinningMixin, \
+    EqualWidthLabelBinningMixin, AutomaticLabelBinningMixin, LabelWiseBinaryPredictorMixin, \
+    ExampleWiseBinaryPredictorMixin, GfmBinaryPredictorMixin, AutomaticBinaryPredictorMixin, \
+    LabelWiseScorePredictorMixin, LabelWiseProbabilityPredictorMixin, MarginalizedProbabilityPredictorMixin, \
+    AutomaticProbabilityPredictorMixin
 
 cdef class BoomerConfig(RuleLearnerConfig,
+                        AutomaticPartitionSamplingMixin,
+                        AutomaticFeatureBinningMixin,
+                        AutomaticParallelRuleRefinementMixin,
+                        AutomaticParallelStatisticUpdateMixin,
+                        ConstantShrinkageMixin,
+                        NoL1RegularizationMixin,
+                        L1RegularizationMixin,
+                        NoL2RegularizationMixin,
+                        L2RegularizationMixin,
+                        NoDefaultRuleMixin,
+                        AutomaticDefaultRuleMixin,
+                        CompleteHeadMixin,
+                        FixedPartialHeadMixin,
+                        DynamicPartialHeadMixin,
+                        SingleLabelHeadMixin,
+                        AutomaticHeadMixin,
+                        DenseStatisticsMixin,
+                        SparseStatisticsMixin,
+                        AutomaticStatisticsMixin,
+                        ExampleWiseLogisticLossMixin,
+                        ExampleWiseSquaredErrorLossMixin,
+                        ExampleWiseSquaredHingeLossMixin,
+                        LabelWiseLogisticLossMixin,
+                        LabelWiseSquaredErrorLossMixin,
+                        LabelWiseSquaredHingeLossMixin,
+                        NoLabelBinningMixin,
+                        EqualWidthLabelBinningMixin,
+                        AutomaticLabelBinningMixin,
+                        LabelWiseBinaryPredictorMixin,
+                        ExampleWiseBinaryPredictorMixin,
+                        GfmBinaryPredictorMixin,
+                        AutomaticBinaryPredictorMixin,
+                        LabelWiseScorePredictorMixin,
+                        LabelWiseProbabilityPredictorMixin,
+                        MarginalizedProbabilityPredictorMixin,
+                        AutomaticProbabilityPredictorMixin,
                         SequentialRuleModelAssemblageMixin,
                         DefaultRuleMixin,
                         GreedyTopDownRuleInductionMixin,
@@ -196,9 +242,6 @@ cdef class BoomerConfig(RuleLearnerConfig,
         return config
 
     def use_automatic_partition_sampling(self):
-        """
-        Configures the rule learner to automatically decide whether a holdout set should be used or not.
-        """
         self.config_ptr.get().useAutomaticPartitionSampling()
 
     def use_no_rule_pruning(self):
@@ -277,275 +320,126 @@ cdef class BoomerConfig(RuleLearnerConfig,
         return config
 
     def use_no_default_rule(self):
-        """
-        Configures the rule learner to not induce a default rule.
-        """
         self.config_ptr.get().useNoDefaultRule()
 
     def use_automatic_default_rule(self):
-        """
-        Configures the rule learner to automatically decide whether a default rule should be induced or not.
-        """
         self.config_ptr.get().useAutomaticDefaultRule()
 
     def use_automatic_feature_binning(self):
-        """
-        Configures the rule learning to automatically decide whether a method for the assignment of numerical feature
-        values to bins should be used or not.
-        """
         self.config_ptr.get().useAutomaticFeatureBinning()
 
     def use_constant_shrinkage_post_processor(self) -> ConstantShrinkageConfig:
-        """
-        Configures the rule learner to use a post-processor that shrinks the weights of rules by a constant "shrinkage"
-        parameter.
-
-        :return: A `ConstantShrinkageConfig` that allows further configuration of the post-processor
-        """
         cdef IConstantShrinkageConfig* config_ptr = &self.config_ptr.get().useConstantShrinkagePostProcessor()
         cdef ConstantShrinkageConfig config = ConstantShrinkageConfig.__new__(ConstantShrinkageConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_automatic_parallel_rule_refinement(self):
-        """
-        Configures the rule learner to automatically decide whether multi-threading should be used for the parallel
-        refinement of rules or not.
-        """
         self.config_ptr.get().useAutomaticParallelRuleRefinement()
 
     def use_automatic_parallel_statistic_update(self):
-        """
-        Configures the rule learner to automatically decide whether multi-threading should be used for the parallel
-        update of statistics or not.
-        """
         self.config_ptr.get().useAutomaticParallelStatisticUpdate()
 
     def use_automatic_heads(self):
-        """
-        Configures the rule learner to automatically decide for the type of rule heads to be used.
-        """
         self.config_ptr.get().useAutomaticHeads()
 
     def use_complete_heads(self):
-        """
-        Configures the rule learner to induce rules with complete heads that predict for all available labels.
-        """
         self.config_ptr.get().useCompleteHeads()
 
     def use_fixed_partial_heads(self) -> FixedPartialHeadConfig:
-        """
-        Configures the rule learner to induce rules with partial heads that predict for a predefined number of labels.
-
-        :return: A `FixedPartialHeadConfig` that allows further configuration of the rule heads
-        """
         cdef IFixedPartialHeadConfig* config_ptr = &self.config_ptr.get().useFixedPartialHeads()
         cdef FixedPartialHeadConfig config = FixedPartialHeadConfig.__new__(FixedPartialHeadConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_dynamic_partial_heads(self) -> DynamicPartialHeadConfig:
-        """
-        Configures the rule learner to induce rules with partial heads that predict for a subset of the available labels
-        that is determined dynamically. Only those labels for which the square of the predictive quality exceeds a
-        certain threshold are included in a rule head.
-
-        :return: A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
-        """
         cdef IDynamicPartialHeadConfig* config_ptr = &self.config_ptr.get().useDynamicPartialHeads()
         cdef DynamicPartialHeadConfig config = DynamicPartialHeadConfig.__new__(DynamicPartialHeadConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_single_label_heads(self):
-        """
-        Configures the rule learner to induce rules with single-label heads that predict for a single label.
-        """
         self.config_ptr.get().useSingleLabelHeads()
 
     def use_automatic_statistics(self):
-        """
-        Configures the rule learner to automatically decide whether a dense or sparse representation of gradients and
-        Hessians should be used.
-        """
         self.config_ptr.get().useAutomaticStatistics()
 
     def use_dense_statistics(self):
-        """
-        Configures the rule learner to use a dense representation of gradients and Hessians.
-        """
         self.config_ptr.get().useDenseStatistics()
 
     def use_sparse_statistics(self):
-        """
-        Configures the rule learner to use a sparse representation of gradients and Hessians, if possible.
-        """
         self.config_ptr.get().useSparseStatistics()
 
     def use_no_l1_regularization(self):
-        """
-        Configures the rule learner to not use L1 regularization.
-        """
         self.config_ptr.get().useNoL1Regularization()
 
     def use_l1_regularization(self) -> ManualRegularizationConfig:
-        """
-        Configures the rule learner to use L1 regularization.
-
-        :return: A `ManualRegularizationConfig` that allows further configuration of the regularization term
-        """
         cdef IManualRegularizationConfig* config_ptr = &self.config_ptr.get().useL1Regularization()
         cdef ManualRegularizationConfig config = ManualRegularizationConfig.__new__(ManualRegularizationConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_no_l2_regularization(self):
-        """
-        Configures the rule learner to not use L2 regularization.
-        """
         self.config_ptr.get().useNoL2Regularization()
 
     def use_l2_regularization(self) -> ManualRegularizationConfig:
-        """
-        Configures the rule learner to use L2 regularization.
-
-        :return: A `ManualRegularizationConfig` that allows further configuration of the regularization term
-        """
         cdef IManualRegularizationConfig* config_ptr = &self.config_ptr.get().useL2Regularization()
         cdef ManualRegularizationConfig config = ManualRegularizationConfig.__new__(ManualRegularizationConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_example_wise_logistic_loss(self):
-        """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the logistic loss
-        that is applied example-wise.
-        """
         self.config_ptr.get().useExampleWiseLogisticLoss()
 
     def use_example_wise_squared_error_loss(self):
-        """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the squared error
-        loss that is applied example-wise.
-        """
         self.config_ptr.get().useExampleWiseSquaredErrorLoss()
 
     def use_example_wise_squared_hinge_loss(self):
-        """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the squared hinge
-        loss that is applied example-wise.
-        """
         self.config_ptr.get().useExampleWiseSquaredHingeLoss()
 
     def use_label_wise_logistic_loss(self):
-        """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the logistic loss
-        that is applied label-wise.
-        """
         self.config_ptr.get().useLabelWiseLogisticLoss()
 
     def use_label_wise_squared_error_loss(self):
-        """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the squared error
-        loss that is applied label-wise.
-        """
         self.config_ptr.get().useLabelWiseSquaredErrorLoss()
 
     def use_label_wise_squared_hinge_loss(self):
-        """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the squared hinge
-        loss that is applied label-wise.
-        """
         self.config_ptr.get().useLabelWiseSquaredHingeLoss()
 
     def use_no_label_binning(self):
-        """
-        Configures the rule learner to not use any method for the assignment of labels to bins.
-        """
         self.config_ptr.get().useNoLabelBinning()
 
     def use_automatic_label_binning(self):
-        """
-        Configures the rule learner to automatically decide whether a method for the assignment of labels to bins should
-        be used or not.
-        """
         self.config_ptr.get().useAutomaticLabelBinning()
 
     def use_equal_width_label_binning(self) -> EqualWidthLabelBinningConfig:
-        """
-        Configures the rule learner to use a method for the assignment of labels to bins in a way such that each bin
-        contains labels for which the predicted score is expected to belong to the same value range.
-
-        :return: A `EqualWidthLabelBinningConfig` that allows further configuration of the method for the assignment of
-                 labels to bins
-        """
         cdef IEqualWidthLabelBinningConfig* config_ptr = &self.config_ptr.get().useEqualWidthLabelBinning()
         cdef EqualWidthLabelBinningConfig config = EqualWidthLabelBinningConfig.__new__(EqualWidthLabelBinningConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_label_wise_binary_predictor(self):
-        """
-        Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
-        irrelevant by summing up the scores that are provided by the individual rules of an existing rule-based model
-        and transforming them into binary values according to a certain threshold that is applied to each label
-        individually.
-        """
         self.config_ptr.get().useLabelWiseBinaryPredictor()
 
     def use_example_wise_binary_predictor(self):
-        """
-        Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
-        irrelevant by summing up the scores that are provided by an existing rule-based model and comparing the
-        aggregated score vector to the known label vectors according to a certain distance measure. The label vector
-        that is closest to the aggregated score vector is finally predicted.
-        """
         self.config_ptr.get().useExampleWiseBinaryPredictor()
 
     def use_gfm_binary_predictor(self):
-        """
-        Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
-        irrelevant by summing up the scores that are provided by the individual rules of a existing rule-based model and
-        transforming them into binary values according to the general F-measure maximizer (GFM).
-        """
         self.config_ptr.get().useGfmBinaryPredictor()
 
     def use_automatic_binary_predictor(self):
-        """
-        Configures the rule learner to automatically decide for a predictor for predicting whether individual labels are
-        relevant or irrelevant.
-        """
         self.config_ptr.get().useLabelWiseBinaryPredictor()
 
     def use_label_wise_score_predictor(self):
-        """
-        Configures the rule learner to use a predictor for predicting regression scores by summing up the scores that
-        are provided by the individual rules of an existing rule-based model for each label individually.
-        """
         self.config_ptr.get().useLabelWiseScorePredictor()
 
     def use_label_wise_probability_predictor(self):
-        """
-        Configures the rule learner to use a predictor for predicting probability estimates by summing up the scores
-        that are provided by individual rules of an existing rule-based model and transforming the aggregated scores
-        into probabilities according to a certain transformation function that is applied to each label individually.
-        """
         self.config_ptr.get().useLabelWiseProbabilityPredictor()
 
     def use_marginalized_probability_predictor(self):
-        """
-        Configures the rule learner to use a predictor for predicting probability estimates by summing up the scores
-        that are provided by individual rules of an existing rule-based model and comparing the aggregated score vector
-        to the known label vectors according to a certain distance measure. The probability for an individual label
-        calculates as the sum of the distances that have been obtained for all label vectors, where the respective label
-        is specified to be relevant, divided by the total sum of all distances.
-        """
         self.config_ptr.get().useMarginalizedProbabilityPredictor()
 
     def use_automatic_probability_predictor(self):
-        """
-        Configures the rule learner to automatically decide for a predictor for predicting probability estimates.
-        """
         self.config_ptr.get().useAutomaticProbabilityPredictor()
 
 
