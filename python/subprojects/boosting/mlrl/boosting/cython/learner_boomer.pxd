@@ -122,7 +122,7 @@ cdef class BoomerConfig(RuleLearnerConfig):
 
     # Attributes:
 
-    cdef unique_ptr[IBoomerConfig] rule_learner_config_ptr
+    cdef unique_ptr[IBoomerConfig] config_ptr
 
 
 cdef class Boomer(RuleLearner):
