@@ -6,9 +6,11 @@ from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 
 ctypedef double (*DdotFunction)(int* n, double* dx, int* incx, double* dy, int* incy)
 
-ctypedef void (*DspmvFunction)(char* uplo, int* n, double* alpha, double* ap, double* x, int* incx, double* beta, double* y, int* incy)
+ctypedef void (*DspmvFunction)(char* uplo, int* n, double* alpha, double* ap, double* x, int* incx, double* beta,
+                               double* y, int* incy)
 
-ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* lda, int* ipiv, double* b, int* ldb, double* work, int* lwork, int* info)
+ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* lda, int* ipiv, double* b, int* ldb,
+                               double* work, int* lwork, int* info)
 
 
 cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
@@ -27,14 +29,16 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useAutomaticFeatureBinning()
 
 
-    cdef cppclass IAutomaticParallelRuleRefinementMixin"boosting::IBoostingRuleLearner::IAutomaticParallelRuleRefinementMixin":
+    cdef cppclass IAutomaticParallelRuleRefinementMixin\
+        "boosting::IBoostingRuleLearner::IAutomaticParallelRuleRefinementMixin":
 
         # Functions:
 
         void useAutomaticParallelRuleRefinement()
 
 
-    cdef cppclass IAutomaticParallelStatisticUpdateMixin"boosting::IBoostingRuleLearner::IAutomaticParallelStatisticUpdateMixin":
+    cdef cppclass IAutomaticParallelStatisticUpdateMixin\
+        "boosting::IBoostingRuleLearner::IAutomaticParallelStatisticUpdateMixin":
 
         # Functions:
 
@@ -244,21 +248,24 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         void useLabelWiseScorePredictor()
 
 
-    cdef cppclass ILabelWiseProbabilityPredictorMixin"boosting::IBoostingRuleLearner::ILabelWiseProbabilityPredictorMixin":
+    cdef cppclass ILabelWiseProbabilityPredictorMixin \
+        "boosting::IBoostingRuleLearner::ILabelWiseProbabilityPredictorMixin":
 
         # Functions:
 
         void useLabelWiseProbabilityPredictor()
 
 
-    cdef cppclass IMarginalizedProbabilityPredictorMixin"boosting::IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin":
+    cdef cppclass IMarginalizedProbabilityPredictorMixin\
+        "boosting::IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin":
 
         # Functions:
 
         void useMarginalizedProbabilityPredictor()
 
 
-    cdef cppclass IAutomaticProbabilityPredictorMixin"boosting::IBoostingRuleLearner::IAutomaticProbabilityPredictorMixin":
+    cdef cppclass IAutomaticProbabilityPredictorMixin\
+        "boosting::IBoostingRuleLearner::IAutomaticProbabilityPredictorMixin":
         
         # Functions:
 
