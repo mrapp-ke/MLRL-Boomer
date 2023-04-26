@@ -94,7 +94,7 @@ cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig):
 
     # Attributes:
 
-    cdef unique_ptr[IMultiLabelSeCoRuleLearnerConfig] rule_learner_config_ptr
+    cdef unique_ptr[IMultiLabelSeCoRuleLearnerConfig] config_ptr
 
 
 cdef class MultiLabelSeCoRuleLearner(RuleLearner):
