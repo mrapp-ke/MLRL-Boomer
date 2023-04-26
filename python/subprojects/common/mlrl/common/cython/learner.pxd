@@ -348,6 +348,13 @@ cdef class TrainingResult:
     cdef readonly LabelSpaceInfo label_space_info
 
 
+cdef class RuleLearnerConfig:
+    
+    # Attributes:
+
+    cdef dict __dict__
+
+
 cdef class RuleLearner:
 
     # Functions:
