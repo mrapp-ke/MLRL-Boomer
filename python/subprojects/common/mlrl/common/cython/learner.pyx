@@ -133,11 +133,12 @@ cdef class RuleLearner:
         :return:                    A `SparseBinaryPredictor` that may be used to predict sparse binary labels for the
                                     given query examples
         """
-        cdef unique_ptr[ISparseBinaryPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createSparseBinaryPredictor(
-            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
-            dereference(rule_model.get_rule_model_ptr()),
-            dereference(label_space_info.get_label_space_info_ptr()),
-            num_labels))
+        cdef unique_ptr[ISparseBinaryPredictor] predictor_ptr = \
+            move(self.get_rule_learner_ptr().createSparseBinaryPredictor(
+                dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
+                dereference(rule_model.get_rule_model_ptr()),
+                dereference(label_space_info.get_label_space_info_ptr()),
+                num_labels))
         cdef SparseBinaryPredictor sparse_binary_predictor = SparseBinaryPredictor.__new__(SparseBinaryPredictor)
         sparse_binary_predictor.predictor_ptr = move(predictor_ptr)
         return sparse_binary_predictor
@@ -206,11 +207,12 @@ cdef class RuleLearner:
         :return:                    A `ProbabilityPredictor` that may be used to predict probability estimates for the
                                     given query examples
         """
-        cdef unique_ptr[IProbabilityPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createProbabilityPredictor(
-            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
-            dereference(rule_model.get_rule_model_ptr()),
-            dereference(label_space_info.get_label_space_info_ptr()),
-            num_labels))
+        cdef unique_ptr[IProbabilityPredictor] predictor_ptr = \
+            move(self.get_rule_learner_ptr().createProbabilityPredictor(
+                dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
+                dereference(rule_model.get_rule_model_ptr()),
+                dereference(label_space_info.get_label_space_info_ptr()),
+                num_labels))
         cdef ProbabilityPredictor probability_predictor = ProbabilityPredictor.__new__(ProbabilityPredictor)
         probability_predictor.predictor_ptr = move(predictor_ptr)
         return probability_predictor

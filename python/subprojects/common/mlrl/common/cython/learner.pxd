@@ -135,7 +135,8 @@ cdef extern from "common/learner.hpp" nogil:
         ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling()
 
 
-    cdef cppclass IExampleWiseStratifiedInstanceSamplingMixin"IRuleLearner::IExampleWiseStratifiedInstanceSamplingMixin":
+    cdef cppclass IExampleWiseStratifiedInstanceSamplingMixin \
+        "IRuleLearner::IExampleWiseStratifiedInstanceSamplingMixin":
 
         # Functions:
 
@@ -170,14 +171,16 @@ cdef extern from "common/learner.hpp" nogil:
         IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
 
 
-    cdef cppclass ILabelWiseStratifiedBiPartitionSamplingMixin"IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin":
+    cdef cppclass ILabelWiseStratifiedBiPartitionSamplingMixin\
+        "IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin":
 
         # Functions:
 
         ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling()
 
 
-    cdef cppclass IExampleWiseStratifiedBiPartitionSamplingMixin"IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin":
+    cdef cppclass IExampleWiseStratifiedBiPartitionSamplingMixin\
+        "IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin":
 
         # Functions:
 

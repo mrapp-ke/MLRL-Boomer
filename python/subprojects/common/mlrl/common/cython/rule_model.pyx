@@ -202,7 +202,8 @@ cdef class RuleList(RuleModel):
     cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body):
         cdef uint32 num_leq = body.getNumLeq()
         cdef const uint32[::1] leq_indices = <uint32[:num_leq]>body.leq_indices_cbegin() if num_leq > 0 else None
-        cdef const float32[::1] leq_thresholds = <float32[:num_leq]>body.leq_thresholds_cbegin() if num_leq > 0 else None
+        cdef const float32[::1] leq_thresholds = \
+            <float32[:num_leq]>body.leq_thresholds_cbegin() if num_leq > 0 else None
         cdef uint32 num_gr = body.getNumGr()
         cdef const uint32[::1] gr_indices = <uint32[:num_gr]>body.gr_indices_cbegin() if num_gr > 0 else None
         cdef const float32[::1] gr_thresholds = <float32[:num_gr]>body.gr_thresholds_cbegin() if num_gr > 0 else None
@@ -211,7 +212,8 @@ cdef class RuleList(RuleModel):
         cdef const float32[::1] eq_thresholds = <float32[:num_eq]>body.eq_thresholds_cbegin() if num_eq > 0 else None
         cdef uint32 num_neq = body.getNumNeq()
         cdef const uint32[::1] neq_indices = <uint32[:num_neq]>body.neq_indices_cbegin() if num_neq > 0 else None
-        cdef const float32[::1] neq_thresholds = <float32[:num_neq]>body.neq_thresholds_cbegin() if num_neq > 0 else None
+        cdef const float32[::1] neq_thresholds = \
+            <float32[:num_neq]>body.neq_thresholds_cbegin() if num_neq > 0 else None
         self.visitor.visit_conjunctive_body(ConjunctiveBody.__new__(ConjunctiveBody, leq_indices, leq_thresholds,
                                                                     gr_indices, gr_thresholds, eq_indices,
                                                                     eq_thresholds, neq_indices, neq_thresholds))

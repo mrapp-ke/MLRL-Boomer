@@ -147,13 +147,16 @@ cdef class BoomerConfig(RuleLearnerConfig,
 
     def use_greedy_top_down_rule_induction(self) -> GreedyTopDownRuleInductionConfig:
         cdef IGreedyTopDownRuleInductionConfig* config_ptr = &self.config_ptr.get().useGreedyTopDownRuleInduction()
-        cdef GreedyTopDownRuleInductionConfig config = GreedyTopDownRuleInductionConfig.__new__(GreedyTopDownRuleInductionConfig)
+        cdef GreedyTopDownRuleInductionConfig config = \
+            GreedyTopDownRuleInductionConfig.__new__(GreedyTopDownRuleInductionConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_beam_search_top_down_rule_induction(self) -> BeamSearchTopDownRuleInductionConfig:
-        cdef IBeamSearchTopDownRuleInductionConfig* config_ptr = &self.config_ptr.get().useBeamSearchTopDownRuleInduction()
-        cdef BeamSearchTopDownRuleInductionConfig config = BeamSearchTopDownRuleInductionConfig.__new__(BeamSearchTopDownRuleInductionConfig)
+        cdef IBeamSearchTopDownRuleInductionConfig* config_ptr = \
+            &self.config_ptr.get().useBeamSearchTopDownRuleInduction()
+        cdef BeamSearchTopDownRuleInductionConfig config = \
+            BeamSearchTopDownRuleInductionConfig.__new__(BeamSearchTopDownRuleInductionConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -164,14 +167,18 @@ cdef class BoomerConfig(RuleLearnerConfig,
         self.config_ptr.get().useNoFeatureBinning()
 
     def use_equal_width_feature_binning(self) -> EqualWidthFeatureBinningConfig:
-        cdef IEqualWidthFeatureBinningConfig* config_ptr = &self.config_ptr.get().useEqualWidthFeatureBinning()
-        cdef EqualWidthFeatureBinningConfig config = EqualWidthFeatureBinningConfig.__new__(EqualWidthFeatureBinningConfig)
+        cdef IEqualWidthFeatureBinningConfig* config_ptr = \
+            &self.config_ptr.get().useEqualWidthFeatureBinning()
+        cdef EqualWidthFeatureBinningConfig config = \
+            EqualWidthFeatureBinningConfig.__new__(EqualWidthFeatureBinningConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_equal_frequency_feature_binning(self) -> EqualFrequencyFeatureBinningConfig:
-        cdef IEqualFrequencyFeatureBinningConfig* config_ptr = &self.config_ptr.get().useEqualFrequencyFeatureBinning()
-        cdef EqualFrequencyFeatureBinningConfig config = EqualFrequencyFeatureBinningConfig.__new__(EqualFrequencyFeatureBinningConfig)
+        cdef IEqualFrequencyFeatureBinningConfig* config_ptr = \
+            &self.config_ptr.get().useEqualFrequencyFeatureBinning()
+        cdef EqualFrequencyFeatureBinningConfig config = \
+            EqualFrequencyFeatureBinningConfig.__new__(EqualFrequencyFeatureBinningConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -179,8 +186,10 @@ cdef class BoomerConfig(RuleLearnerConfig,
         self.config_ptr.get().useNoLabelSampling()
 
     def use_label_sampling_without_replacement(self) -> LabelSamplingWithoutReplacementConfig:
-        cdef ILabelSamplingWithoutReplacementConfig* config_ptr = &self.config_ptr.get().useLabelSamplingWithoutReplacement()
-        cdef LabelSamplingWithoutReplacementConfig config = LabelSamplingWithoutReplacementConfig.__new__(LabelSamplingWithoutReplacementConfig)
+        cdef ILabelSamplingWithoutReplacementConfig* config_ptr = \
+            &self.config_ptr.get().useLabelSamplingWithoutReplacement()
+        cdef LabelSamplingWithoutReplacementConfig config = \
+            LabelSamplingWithoutReplacementConfig.__new__(LabelSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -188,26 +197,34 @@ cdef class BoomerConfig(RuleLearnerConfig,
         self.config_ptr.get().useNoInstanceSampling()
     
     def use_instance_sampling_with_replacement(self) -> InstanceSamplingWithReplacementConfig:
-        cdef IInstanceSamplingWithReplacementConfig* config_ptr = &self.config_ptr.get().useInstanceSamplingWithReplacement()
-        cdef InstanceSamplingWithReplacementConfig config = InstanceSamplingWithReplacementConfig.__new__(InstanceSamplingWithReplacementConfig)
+        cdef IInstanceSamplingWithReplacementConfig* config_ptr = \
+            &self.config_ptr.get().useInstanceSamplingWithReplacement()
+        cdef InstanceSamplingWithReplacementConfig config = \
+            InstanceSamplingWithReplacementConfig.__new__(InstanceSamplingWithReplacementConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_instance_sampling_without_replacement(self) -> InstanceSamplingWithoutReplacementConfig:
-        cdef IInstanceSamplingWithoutReplacementConfig* config_ptr = &self.config_ptr.get().useInstanceSamplingWithoutReplacement()
-        cdef InstanceSamplingWithoutReplacementConfig config = InstanceSamplingWithoutReplacementConfig.__new__(InstanceSamplingWithoutReplacementConfig)
+        cdef IInstanceSamplingWithoutReplacementConfig* config_ptr = \
+            &self.config_ptr.get().useInstanceSamplingWithoutReplacement()
+        cdef InstanceSamplingWithoutReplacementConfig config = \
+            InstanceSamplingWithoutReplacementConfig.__new__(InstanceSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_label_wise_stratified_instance_sampling(self) -> LabelWiseStratifiedInstanceSamplingConfig:
-        cdef ILabelWiseStratifiedInstanceSamplingConfig* config_ptr = &self.config_ptr.get().useLabelWiseStratifiedInstanceSampling()
-        cdef LabelWiseStratifiedInstanceSamplingConfig config = LabelWiseStratifiedInstanceSamplingConfig.__new__(LabelWiseStratifiedInstanceSamplingConfig)
+        cdef ILabelWiseStratifiedInstanceSamplingConfig* config_ptr = \
+            &self.config_ptr.get().useLabelWiseStratifiedInstanceSampling()
+        cdef LabelWiseStratifiedInstanceSamplingConfig config = \
+            LabelWiseStratifiedInstanceSamplingConfig.__new__(LabelWiseStratifiedInstanceSamplingConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_example_wise_stratified_instance_sampling(self) -> ExampleWiseStratifiedInstanceSamplingConfig:
-        cdef IExampleWiseStratifiedInstanceSamplingConfig* config_ptr = &self.config_ptr.get().useExampleWiseStratifiedInstanceSampling()
-        cdef ExampleWiseStratifiedInstanceSamplingConfig config = ExampleWiseStratifiedInstanceSamplingConfig.__new__(ExampleWiseStratifiedInstanceSamplingConfig)
+        cdef IExampleWiseStratifiedInstanceSamplingConfig* config_ptr = \
+            &self.config_ptr.get().useExampleWiseStratifiedInstanceSampling()
+        cdef ExampleWiseStratifiedInstanceSamplingConfig config = \
+            ExampleWiseStratifiedInstanceSamplingConfig.__new__(ExampleWiseStratifiedInstanceSamplingConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -215,8 +232,10 @@ cdef class BoomerConfig(RuleLearnerConfig,
         self.config_ptr.get().useNoFeatureSampling()
 
     def use_feature_sampling_without_replacement(self) -> FeatureSamplingWithoutReplacementConfig:
-        cdef IFeatureSamplingWithoutReplacementConfig* config_ptr = &self.config_ptr.get().useFeatureSamplingWithoutReplacement()
-        cdef FeatureSamplingWithoutReplacementConfig config = FeatureSamplingWithoutReplacementConfig.__new__(FeatureSamplingWithoutReplacementConfig)
+        cdef IFeatureSamplingWithoutReplacementConfig* config_ptr = \
+            &self.config_ptr.get().useFeatureSamplingWithoutReplacement()
+        cdef FeatureSamplingWithoutReplacementConfig config = \
+            FeatureSamplingWithoutReplacementConfig.__new__(FeatureSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -224,20 +243,26 @@ cdef class BoomerConfig(RuleLearnerConfig,
         self.config_ptr.get().useNoPartitionSampling()
     
     def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
-        cdef IRandomBiPartitionSamplingConfig* config_ptr = &self.config_ptr.get().useRandomBiPartitionSampling()
-        cdef RandomBiPartitionSamplingConfig config = RandomBiPartitionSamplingConfig.__new__(RandomBiPartitionSamplingConfig)
+        cdef IRandomBiPartitionSamplingConfig* config_ptr = \
+            &self.config_ptr.get().useRandomBiPartitionSampling()
+        cdef RandomBiPartitionSamplingConfig config = \
+            RandomBiPartitionSamplingConfig.__new__(RandomBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_label_wise_stratified_bi_partition_sampling(self) -> LabelWiseStratifiedBiPartitionSamplingConfig:
-        cdef ILabelWiseStratifiedBiPartitionSamplingConfig* config_ptr = &self.config_ptr.get().useLabelWiseStratifiedBiPartitionSampling()
-        cdef LabelWiseStratifiedBiPartitionSamplingConfig config = LabelWiseStratifiedBiPartitionSamplingConfig.__new__(LabelWiseStratifiedBiPartitionSamplingConfig)
+        cdef ILabelWiseStratifiedBiPartitionSamplingConfig* config_ptr = \
+            &self.config_ptr.get().useLabelWiseStratifiedBiPartitionSampling()
+        cdef LabelWiseStratifiedBiPartitionSamplingConfig config = \
+            LabelWiseStratifiedBiPartitionSamplingConfig.__new__(LabelWiseStratifiedBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_example_wise_stratified_bi_partition_sampling(self) -> ExampleWiseStratifiedBiPartitionSamplingConfig:
-        cdef IExampleWiseStratifiedBiPartitionSamplingConfig* config_ptr = &self.config_ptr.get().useExampleWiseStratifiedBiPartitionSampling()
-        cdef ExampleWiseStratifiedBiPartitionSamplingConfig config = ExampleWiseStratifiedBiPartitionSamplingConfig.__new__(ExampleWiseStratifiedBiPartitionSamplingConfig)
+        cdef IExampleWiseStratifiedBiPartitionSamplingConfig* config_ptr = \
+            &self.config_ptr.get().useExampleWiseStratifiedBiPartitionSampling()
+        cdef ExampleWiseStratifiedBiPartitionSamplingConfig config = \
+            ExampleWiseStratifiedBiPartitionSamplingConfig.__new__(ExampleWiseStratifiedBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -315,7 +340,8 @@ cdef class BoomerConfig(RuleLearnerConfig,
 
     def use_sequential_post_optimization(self) -> SequentialPostOptimizationConfig:
         cdef ISequentialPostOptimizationConfig* config_ptr = &self.config_ptr.get().useSequentialPostOptimization()
-        cdef SequentialPostOptimizationConfig config = SequentialPostOptimizationConfig.__new__(SequentialPostOptimizationConfig)
+        cdef SequentialPostOptimizationConfig config = \
+            SequentialPostOptimizationConfig.__new__(SequentialPostOptimizationConfig)
         config.config_ptr = config_ptr
         return config
 
