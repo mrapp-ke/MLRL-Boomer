@@ -46,7 +46,8 @@ from mlrl.common.cython.learner import SequentialRuleModelAssemblageMixin, Defau
     NoParallelRuleRefinementMixin, ParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
     ParallelStatisticUpdateMixin, NoParallelPredictionMixin, ParallelPredictionMixin, NoSizeStoppingCriterionMixin, \
     SizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, TimeStoppingCriterionMixin, PrePruningMixin, \
-    NoGlobalPruningMixin, PostPruningMixin, NoSequentialPostOptimizationMixin, SequentialPostOptimizationMixin
+    NoGlobalPruningMixin, PostPruningMixin, NoSequentialPostOptimizationMixin, SequentialPostOptimizationMixin, \
+    NoMarginalProbabilityCalibrationMixin, NoJointProbabilityCalibrationMixin
 from mlrl.boosting.cython.learner import AutomaticPartitionSamplingMixin, AutomaticFeatureBinningMixin, \
     AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, ConstantShrinkageMixin, \
     NoL1RegularizationMixin, L1RegularizationMixin, NoL2RegularizationMixin, L2RegularizationMixin, \
@@ -54,10 +55,10 @@ from mlrl.boosting.cython.learner import AutomaticPartitionSamplingMixin, Automa
     SingleLabelHeadMixin, AutomaticHeadMixin, DenseStatisticsMixin, SparseStatisticsMixin, AutomaticStatisticsMixin, \
     ExampleWiseLogisticLossMixin, ExampleWiseSquaredErrorLossMixin, ExampleWiseSquaredHingeLossMixin, \
     LabelWiseLogisticLossMixin, LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, NoLabelBinningMixin, \
-    EqualWidthLabelBinningMixin, AutomaticLabelBinningMixin, LabelWiseBinaryPredictorMixin, \
-    ExampleWiseBinaryPredictorMixin, GfmBinaryPredictorMixin, AutomaticBinaryPredictorMixin, \
-    LabelWiseScorePredictorMixin, LabelWiseProbabilityPredictorMixin, MarginalizedProbabilityPredictorMixin, \
-    AutomaticProbabilityPredictorMixin
+    EqualWidthLabelBinningMixin, AutomaticLabelBinningMixin, IsotonicMarginalProbabilityCalibrationMixin, \
+    IsotonicJointProbabilityCalibrationMixin, LabelWiseBinaryPredictorMixin, ExampleWiseBinaryPredictorMixin, \
+    GfmBinaryPredictorMixin, AutomaticBinaryPredictorMixin, LabelWiseScorePredictorMixin, \
+    LabelWiseProbabilityPredictorMixin, MarginalizedProbabilityPredictorMixin, AutomaticProbabilityPredictorMixin
 
 cdef class BoomerConfig(RuleLearnerConfig,
                         AutomaticPartitionSamplingMixin,
@@ -88,6 +89,8 @@ cdef class BoomerConfig(RuleLearnerConfig,
                         NoLabelBinningMixin,
                         EqualWidthLabelBinningMixin,
                         AutomaticLabelBinningMixin,
+                        IsotonicMarginalProbabilityCalibrationMixin,
+                        IsotonicJointProbabilityCalibrationMixin,
                         LabelWiseBinaryPredictorMixin,
                         ExampleWiseBinaryPredictorMixin,
                         GfmBinaryPredictorMixin,
@@ -133,7 +136,9 @@ cdef class BoomerConfig(RuleLearnerConfig,
                         NoGlobalPruningMixin,
                         PostPruningMixin,
                         NoSequentialPostOptimizationMixin,
-                        SequentialPostOptimizationMixin):
+                        SequentialPostOptimizationMixin,
+                        NoMarginalProbabilityCalibrationMixin,
+                        NoJointProbabilityCalibrationMixin):
     """
     Allows to configure the BOOMER algorithm.
     """
@@ -447,48 +452,24 @@ cdef class BoomerConfig(RuleLearnerConfig,
         return config
 
     def use_no_marginal_probability_calibration(self):
-        """
-        Configures the rule learner to not calibrate marginal probabilities.
-        """
         self.config_ptr.get().useNoMarginalProbabilityCalibration()
 
     def use_isotonic_marginal_probability_calibration(self):
-        """
-        Configures the rule learner to calibrate marginal probabilities via isotonic regression.
-        """
         self.config_ptr.get().useIsotonicMarginalProbabilityCalibration()
 
     def use_no_joint_probability_calibration(self):
-        """
-        Configures the rule learner to not calibrate joint probabilities.
-        """
         self.config_ptr.get().useNoJointProbabilityCalibration()
 
     def use_isotonic_joint_probability_calibration(self):
-        """
-        Configures the rule learner to calibrate joint probabilities via isotonic regression.
-        """
         self.config_ptr.get().useIsotonicJointProbabilityCalibration()
 
     def use_label_wise_binary_predictor(self):
-        """
-        Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
-        irrelevant by summing up the scores that are provided by the individual rules of an existing rule-based model
-        and transforming them into binary values according to a certain threshold that is applied to each label
-        individually.
-        """
         cdef ILabelWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useLabelWiseBinaryPredictor()
         cdef LabelWiseBinaryPredictorConfig config = LabelWiseBinaryPredictorConfig.__new__(LabelWiseBinaryPredictorConfig)
         config.config_ptr = config_ptr
         return config
 
     def use_example_wise_binary_predictor(self):
-        """
-        Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
-        irrelevant by summing up the scores that are provided by an existing rule-based model and comparing the
-        aggregated score vector to the known label vectors according to a certain distance measure. The label vector
-        that is closest to the aggregated score vector is finally predicted.
-        """
         cdef IExampleWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useExampleWiseBinaryPredictor()
         cdef ExampleWiseBinaryPredictorConfig config = ExampleWiseBinaryPredictorConfig.__new__(ExampleWiseBinaryPredictorConfig)
         config.config_ptr = config_ptr
