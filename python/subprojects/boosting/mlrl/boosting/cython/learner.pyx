@@ -415,6 +415,32 @@ class AutomaticLabelBinningMixin(ABC):
         pass
             
              
+class IsotonicMarginalProbabilityCalibrationMixin(ABC):
+    """
+    Allows to configure a rule learner to calibrate marginal probabilities via isotonic regression.
+    """
+
+    @abstractmethod
+    def use_isotonic_marginal_probability_calibration(self):
+        """
+        Configures the rule learner to calibrate marginal probabilities via isotonic regression.
+        """
+        pass
+
+
+class IsotonicJointProbabilityCalibrationMixin(ABC):
+    """
+    Allows to configure a rule learner to calibrate joint probabilities via isotonic regression.
+    """
+
+    @abstractmethod
+    def use_isotonic_joint_probability_calibration(self):
+        """
+        Configures the rule learner to calibrate joint probabilities via isotonic regression.
+        """
+        pass
+
+
 class LabelWiseBinaryPredictorMixin(ABC):
     """
     Allows to configure a rule learner to use a predictor for predicting whether individual labels are relevant or

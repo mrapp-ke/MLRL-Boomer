@@ -851,3 +851,29 @@ class SequentialPostOptimizationMixin(ABC):
         :return: A `SequentialPostOptimizationConfig` that allows further configuration of the post-optimization method
         """
         pass
+
+
+class NoMarginalProbabilityCalibrationMixin(ABC):
+    """
+    Allows to configure a rule learner to not calibrate marginal probabilities.
+    """
+
+    @abstractmethod
+    def use_no_marginal_probability_calibration(self):
+        """
+        Configures the rule learner to not calibrate marginal probabilities.
+        """
+        pass
+
+
+class NoJointProbabilityCalibrationMixin(ABC):
+    """
+    Allows to configure a rule learner to not calibrate joint probabilities.
+    """
+     
+    @abstractmethod
+    def use_no_joint_probability_calibration(self):
+        """
+        Configures the rule learner to not calibrate joint probabilities.
+        """
+        pass
