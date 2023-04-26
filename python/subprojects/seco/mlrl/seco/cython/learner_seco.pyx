@@ -26,8 +26,53 @@ from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfi
 
 from libcpp.utility cimport move
 
+from mlrl.common.cython.learner import SequentialRuleModelAssemblageMixin, DefaultRuleMixin, \
+    GreedyTopDownRuleInductionMixin, BeamSearchTopDownRuleInductionMixin, EqualWidthFeatureBinningMixin, \
+    EqualFrequencyFeatureBinningMixin, NoLabelSamplingMixin, LabelSamplingWithoutReplacementMixin, \
+    NoInstanceSamplingMixin, InstanceSamplingWithReplacementMixin, InstanceSamplingWithoutReplacementMixin, \
+    LabelWiseStratifiedInstanceSamplingMixin, ExampleWiseStratifiedInstanceSamplingMixin, NoFeatureSamplingMixin, \
+    FeatureSamplingWithoutReplacementMixin, NoPartitionSamplingMixin, RandomBiPartitionSamplingMixin, \
+    LabelWiseStratifiedBiPartitionSamplingMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, NoRulePruningMixin, \
+    IrepRulePruningMixin, NoParallelRuleRefinementMixin, ParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
+    ParallelStatisticUpdateMixin, NoParallelPredictionMixin, ParallelPredictionMixin, NoSizeStoppingCriterionMixin, \
+    SizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, TimeStoppingCriterionMixin, PrePruningMixin, \
+    NoGlobalPruningMixin, PostPruningMixin, NoSequentialPostOptimizationMixin, SequentialPostOptimizationMixin
 
-cdef class MultiLabelSeCoRuleLearnerConfig:
+
+cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig,
+                                           SequentialRuleModelAssemblageMixin,
+                                           DefaultRuleMixin,
+                                           GreedyTopDownRuleInductionMixin,
+                                           BeamSearchTopDownRuleInductionMixin,
+                                           EqualWidthFeatureBinningMixin,
+                                           EqualFrequencyFeatureBinningMixin,
+                                           NoLabelSamplingMixin,
+                                           LabelSamplingWithoutReplacementMixin,
+                                           NoInstanceSamplingMixin,
+                                           InstanceSamplingWithReplacementMixin,
+                                           InstanceSamplingWithoutReplacementMixin,
+                                           LabelWiseStratifiedInstanceSamplingMixin,
+                                           ExampleWiseStratifiedInstanceSamplingMixin,
+                                           NoFeatureSamplingMixin,
+                                           FeatureSamplingWithoutReplacementMixin,
+                                           NoPartitionSamplingMixin,
+                                           RandomBiPartitionSamplingMixin,
+                                           LabelWiseStratifiedBiPartitionSamplingMixin,
+                                           ExampleWiseStratifiedBiPartitionSamplingMixin,
+                                           NoRulePruningMixin,
+                                           IrepRulePruningMixin,
+                                           NoParallelRuleRefinementMixin,
+                                           ParallelRuleRefinementMixin,
+                                           NoParallelStatisticUpdateMixin,
+                                           ParallelStatisticUpdateMixin,
+                                           NoParallelPredictionMixin,
+                                           ParallelPredictionMixin,
+                                           NoSizeStoppingCriterionMixin,
+                                           SizeStoppingCriterionMixin,
+                                           NoTimeStoppingCriterionMixin,
+                                           TimeStoppingCriterionMixin,
+                                           NoSequentialPostOptimizationMixin,
+                                           SequentialPostOptimizationMixin):
     """
     Allows to configure the multi-label SeCo algorithm.
     """
@@ -36,17 +81,10 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         self.rule_learner_config_ptr = createMultiLabelSeCoRuleLearnerConfig()
 
     def use_sequential_rule_model_assemblage(self):
-        """
-        Configures the rule learner to use an algorithm that sequentially induces several rules, optionally starting
-        with a default rule, that are added to a rule-based model.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useSequentialRuleModelAssemblage()
 
     def use_default_rule(self):
-        """
-        Configures the rule learner to induce a default rule.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useDefaultRule()
 
@@ -238,12 +276,6 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         rule_learner_config_ptr.useWraPruningHeuristic()
 
     def use_greedy_top_down_rule_induction(self) -> GreedyTopDownRuleInductionConfig:
-        """
-        Configures the algorithm to use a greedy top-down search for the induction of individual rules.
-
-        :return: A `GreedyTopDownRuleInductionConfig` that allows further configuration of the algorithm for the
-                 induction of individual rules
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IGreedyTopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useGreedyTopDownRuleInduction()
         cdef GreedyTopDownRuleInductionConfig config = GreedyTopDownRuleInductionConfig.__new__(GreedyTopDownRuleInductionConfig)
@@ -251,12 +283,6 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_beam_search_top_down_rule_induction(self) -> BeamSearchTopDownRuleInductionConfig:
-        """
-        Configures the algorithm to use a top-down beam search for the induction of individual rules.
-
-        :return: A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of the algorithm for the
-                 induction of individual rules
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IBeamSearchTopDownRuleInductionConfig* config_ptr = &rule_learner_config_ptr.useBeamSearchTopDownRuleInduction()
         cdef BeamSearchTopDownRuleInductionConfig config = BeamSearchTopDownRuleInductionConfig.__new__(BeamSearchTopDownRuleInductionConfig)
@@ -264,20 +290,10 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_no_label_sampling(self):
-        """
-        Configures the rule learner to not sample from the available labels whenever a new rule should be learned.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoLabelSampling()
 
     def use_label_sampling_without_replacement(self) -> LabelSamplingWithoutReplacementConfig:
-        """
-        Configures the rule learner to sample from the available labels with replacement whenever a new rule should be
-        learned.
-
-        :return: A `LabelSamplingWithoutReplacementConfig` that allows further configuration of the method for sampling
-                 labels
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ILabelSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useLabelSamplingWithoutReplacement()
         cdef LabelSamplingWithoutReplacementConfig config = LabelSamplingWithoutReplacementConfig.__new__(LabelSamplingWithoutReplacementConfig)
@@ -285,21 +301,10 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_no_instance_sampling(self):
-        """
-        Configures the rule learner to not sample from the available training examples whenever a new rule should be
-        learned.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoInstanceSampling()
 
     def use_instance_sampling_with_replacement(self) -> InstanceSamplingWithReplacementConfig:
-        """
-        Configures the rule learner to sample from the available training examples with replacement whenever a new rule
-        should be learned.
-
-        :return: An `InstanceSamplingWithReplacementConfig` that allows further configuration of the method for sampling
-                 instances
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IInstanceSamplingWithReplacementConfig* config_ptr = &rule_learner_config_ptr.useInstanceSamplingWithReplacement()
         cdef InstanceSamplingWithReplacementConfig config = InstanceSamplingWithReplacementConfig.__new__(InstanceSamplingWithReplacementConfig)
@@ -307,13 +312,6 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_instance_sampling_without_replacement(self) -> InstanceSamplingWithoutReplacementConfig:
-        """
-        Configures the rule learner to sample from the available training examples without replacement whenever a new
-        rule should be learned.
-
-        :return: An `InstanceSamplingWithoutReplacementConfig` that allows further configuration of the method for
-                 sampling instances
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IInstanceSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useInstanceSamplingWithoutReplacement()
         cdef InstanceSamplingWithoutReplacementConfig config = InstanceSamplingWithoutReplacementConfig.__new__(InstanceSamplingWithoutReplacementConfig)
@@ -321,14 +319,6 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_label_wise_stratified_instance_sampling(self) -> LabelWiseStratifiedInstanceSamplingConfig:
-        """
-        Configures the rule learner to sample from the available training examples using stratification, such that for
-        each label the proportion of relevant and irrelevant examples is maintained, whenever a new rule should be
-        learned.
-
-        :return: A `LabelWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
-                 sampling instances
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ILabelWiseStratifiedInstanceSamplingConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedInstanceSampling()
         cdef LabelWiseStratifiedInstanceSamplingConfig config = LabelWiseStratifiedInstanceSamplingConfig.__new__(LabelWiseStratifiedInstanceSamplingConfig)
@@ -336,13 +326,6 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_example_wise_stratified_instance_sampling(self) -> ExampleWiseStratifiedInstanceSamplingConfig:
-        """
-        Configures the rule learner to sample from the available training examples using stratification, where distinct
-        label vectors are treated as individual classes, whenever a new rule should be learned.
-
-        :return: An `ExampleWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
-                 sampling instances
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IExampleWiseStratifiedInstanceSamplingConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedInstanceSampling()
         cdef ExampleWiseStratifiedInstanceSamplingConfig config = ExampleWiseStratifiedInstanceSamplingConfig.__new__(ExampleWiseStratifiedInstanceSamplingConfig)
@@ -350,20 +333,10 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_no_feature_sampling(self):
-        """
-        Configures the rule learner to not sample from the available features whenever a rule should be refined.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoFeatureSampling()
 
     def use_feature_sampling_without_replacement(self) -> FeatureSamplingWithoutReplacementConfig:
-        """
-        Configures the rule learner to sample from the available features with replacement whenever a rule should be
-        refined.
-
-        :return: A `FeatureSamplingWithoutReplacementConfig` that allows further configuration of the method for
-                 sampling features
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IFeatureSamplingWithoutReplacementConfig* config_ptr = &rule_learner_config_ptr.useFeatureSamplingWithoutReplacement()
         cdef FeatureSamplingWithoutReplacementConfig config = FeatureSamplingWithoutReplacementConfig.__new__(FeatureSamplingWithoutReplacementConfig)
@@ -371,21 +344,10 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_no_partition_sampling(self):
-        """
-        Configures the rule learner to not partition the available training examples into a training set and a holdout
-        set.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoPartitionSampling()
     
     def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
-        """
-        Configures the rule learner to partition the available training examples into a training set and a holdout set
-        by randomly splitting the training examples into two mutually exclusive sets.
-
-        :return: A `RandomBiPartitionSamplingConfig` that allows further configuration of the method for partitioning
-                 the available training examples into a training set and a holdout set
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IRandomBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useRandomBiPartitionSampling()
         cdef RandomBiPartitionSamplingConfig config = RandomBiPartitionSamplingConfig.__new__(RandomBiPartitionSamplingConfig)
@@ -393,13 +355,6 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_label_wise_stratified_bi_partition_sampling(self) -> LabelWiseStratifiedBiPartitionSamplingConfig:
-        """
-        Configures the rule learner to partition the available training examples into a training set and a holdout set
-        using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
-
-        :return: A `LabelWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
-                 partitioning the available training examples into a training and a holdout set
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ILabelWiseStratifiedBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useLabelWiseStratifiedBiPartitionSampling()
         cdef LabelWiseStratifiedBiPartitionSamplingConfig config = LabelWiseStratifiedBiPartitionSamplingConfig.__new__(LabelWiseStratifiedBiPartitionSamplingConfig)
@@ -407,13 +362,6 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_example_wise_stratified_bi_partition_sampling(self) -> ExampleWiseStratifiedBiPartitionSamplingConfig:
-        """
-        Configures the rule learner to partition the available training examples into a training set and a holdout set
-        using stratification, where distinct label vectors are treated as individual classes
-
-        :return: An `ExampleWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
-                 partitioning the available training examples into a training and a holdout set
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IExampleWiseStratifiedBiPartitionSamplingConfig* config_ptr = &rule_learner_config_ptr.useExampleWiseStratifiedBiPartitionSampling()
         cdef ExampleWiseStratifiedBiPartitionSamplingConfig config = ExampleWiseStratifiedBiPartitionSamplingConfig.__new__(ExampleWiseStratifiedBiPartitionSamplingConfig)
@@ -421,33 +369,18 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_no_rule_pruning(self):
-        """
-        Configures the rule learner to not prune individual rules.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoRulePruning()
 
     def use_irep_rule_pruning(self):
-        """
-        Configures the rule learner to prune individual rules by following the principles of "incremental reduced error
-        pruning" (IREP).
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useIrepRulePruning()
 
     def use_no_parallel_rule_refinement(self):
-        """
-        Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoParallelRuleRefinement()
 
     def use_parallel_rule_refinement(self) -> ManualMultiThreadingConfig:
-        """
-        Configures the rule learner to use multi-threading for the parallel refinement of rules.
-
-        :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelRuleRefinement()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
@@ -455,18 +388,10 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_no_parallel_statistic_update(self):
-        """
-        Configures the rule learner to not use any multi-threading for the parallel update of statistics.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoParallelStatisticUpdate()
 
     def use_parallel_statistic_update(self) -> ManualMultiThreadingConfig:
-        """
-        Configures the rule learner to use multi-threading for the parallel update of statistics.
-
-        :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelStatisticUpdate()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
@@ -474,18 +399,10 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_no_parallel_prediction(self):
-        """
-        Configures the rule learner to not use any multi-threading to predict for several query examples in parallel.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoParallelPrediction()
 
     def use_parallel_prediction(self) -> ManualMultiThreadingConfig:
-        """
-        Configures the rule learner to use multi-threading to predict for several query examples in parallel.
-
-        :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef IManualMultiThreadingConfig* config_ptr = &rule_learner_config_ptr.useParallelPrediction()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
@@ -493,20 +410,10 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_no_size_stopping_criterion(self):
-        """
-        Configures the rule learner to not use a stopping criterion that ensures that the number of induced rules does
-        not exceed a certain maximum.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoSizeStoppingCriterion()
 
     def use_size_stopping_criterion(self) -> SizeStoppingCriterionConfig:
-        """
-        Configures the rule learner to use a stopping criterion that ensures that the number of induced rules does not
-        exceed a certain maximum.
-
-        :return: A `SizeStoppingCriterionConfig` that allows further configuration of the stopping criterion
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ISizeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useSizeStoppingCriterion()
         cdef SizeStoppingCriterionConfig config = SizeStoppingCriterionConfig.__new__(SizeStoppingCriterionConfig)
@@ -514,19 +421,10 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_no_time_stopping_criterion(self):
-        """
-        Configures the rule learner to not use a stopping criterion that ensures that a certain time limit is not
-        exceeded.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoTimeStoppingCriterion()
 
     def use_time_stopping_criterion(self) -> TimeStoppingCriterionConfig:
-        """
-        Configures the rule learner to use a stopping criterion that ensures that a certain time limit is not exceeded.
-
-        :return: A `TimeStoppingCriterionConfig` that allows further configuration of the stopping criterion
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ITimeStoppingCriterionConfig* config_ptr = &rule_learner_config_ptr.useTimeStoppingCriterion()
         cdef TimeStoppingCriterionConfig config = TimeStoppingCriterionConfig.__new__(TimeStoppingCriterionConfig)
@@ -534,20 +432,10 @@ cdef class MultiLabelSeCoRuleLearnerConfig:
         return config
 
     def use_no_sequential_post_optimization(self):
-        """
-        Configures the rule learner to not use a post-optimization method that optimizes each rule in a model by
-        relearning it in the context of the other rules.
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         rule_learner_config_ptr.useNoSequentialPostOptimization()
 
     def use_sequential_post_optimization(self) -> SequentialPostOptimizationConfig:
-        """
-        Configures the rule learner to use a post-optimization method that optimizes each rule in a model by relearning
-        it in the context of the other rules.
-
-        :return: A `SequentialPostOptimizationConfig` that allows further configuration of the post-optimization method
-        """
         cdef IMultiLabelSeCoRuleLearnerConfig* rule_learner_config_ptr = self.rule_learner_config_ptr.get()
         cdef ISequentialPostOptimizationConfig* config_ptr = &rule_learner_config_ptr.useSequentialPostOptimization()
         cdef SequentialPostOptimizationConfig config = SequentialPostOptimizationConfig.__new__(SequentialPostOptimizationConfig)

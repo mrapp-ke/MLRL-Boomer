@@ -1,14 +1,15 @@
-from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, ISequentialRuleModelAssemblageMixin, \
-    IDefaultRuleMixin, IGreedyTopDownRuleInductionMixin, IBeamSearchTopDownRuleInductionMixin, INoLabelSamplingMixin, \
-    ILabelSamplingWithoutReplacementMixin, INoInstanceSamplingMixin, IInstanceSamplingWithoutReplacementMixin, \
-    IInstanceSamplingWithReplacementMixin, ILabelWiseStratifiedInstanceSamplingMixin, \
-    IExampleWiseStratifiedInstanceSamplingMixin, INoFeatureSamplingMixin, IFeatureSamplingWithoutReplacementMixin, \
-    INoPartitionSamplingMixin, IRandomBiPartitionSamplingMixin, ILabelWiseStratifiedBiPartitionSamplingMixin, \
-    IExampleWiseStratifiedBiPartitionSamplingMixin, INoRulePruningMixin, IIrepRulePruningMixin, \
-    INoParallelRuleRefinementMixin, IParallelRuleRefinementMixin, INoParallelStatisticUpdateMixin, \
-    IParallelStatisticUpdateMixin, INoParallelPredictionMixin, IParallelPredictionMixin, \
-    INoSizeStoppingCriterionMixin, ISizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
-    ITimeStoppingCriterionMixin, INoSequentialPostOptimizationMixin, ISequentialPostOptimizationMixin
+from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, RuleLearnerConfig, \
+    ISequentialRuleModelAssemblageMixin, IDefaultRuleMixin, IGreedyTopDownRuleInductionMixin, \
+    IBeamSearchTopDownRuleInductionMixin, INoLabelSamplingMixin, ILabelSamplingWithoutReplacementMixin, \
+    INoInstanceSamplingMixin, IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, \
+    ILabelWiseStratifiedInstanceSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, INoFeatureSamplingMixin, \
+    IFeatureSamplingWithoutReplacementMixin, INoPartitionSamplingMixin, IRandomBiPartitionSamplingMixin, \
+    ILabelWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedBiPartitionSamplingMixin, INoRulePruningMixin, \
+    IIrepRulePruningMixin, INoParallelRuleRefinementMixin, IParallelRuleRefinementMixin, \
+    INoParallelStatisticUpdateMixin, IParallelStatisticUpdateMixin, INoParallelPredictionMixin, \
+    IParallelPredictionMixin, INoSizeStoppingCriterionMixin, ISizeStoppingCriterionMixin, \
+    INoTimeStoppingCriterionMixin, ITimeStoppingCriterionMixin, INoSequentialPostOptimizationMixin, \
+    ISequentialPostOptimizationMixin
 from mlrl.seco.cython.learner cimport INoCoverageStoppingCriterionMixin, ICoverageStoppingCriterionMixin, \
     ISingleLabelHeadMixin, IPartialHeadMixin, INoLiftFunctionMixin, IPeakLiftFunctionMixin, IKlnLiftFunctionMixin, \
     IAccuracyHeuristicMixin, IAccuracyPruningHeuristicMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, \
@@ -89,7 +90,7 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
         unique_ptr[IMultiLabelSeCoRuleLearnerConfig] configPtr)
 
 
-cdef class MultiLabelSeCoRuleLearnerConfig:
+cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig):
 
     # Attributes:
 

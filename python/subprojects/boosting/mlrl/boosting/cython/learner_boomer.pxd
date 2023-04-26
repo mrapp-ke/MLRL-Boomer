@@ -1,7 +1,8 @@
 
-from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, ISequentialRuleModelAssemblageMixin, \
-    IDefaultRuleMixin, IGreedyTopDownRuleInductionMixin, IBeamSearchTopDownRuleInductionMixin, INoPostProcessorMixin, \
-    INoFeatureBinningMixin, IEqualWidthFeatureBinningMixin, IEqualFrequencyFeatureBinningMixin, INoLabelSamplingMixin, \
+from mlrl.common.cython.learner cimport IRuleLearner, RuleLearner, RuleLearnerConfig, \
+    ISequentialRuleModelAssemblageMixin, IDefaultRuleMixin, IGreedyTopDownRuleInductionMixin, \
+    IBeamSearchTopDownRuleInductionMixin, INoPostProcessorMixin, INoFeatureBinningMixin, \
+    IEqualWidthFeatureBinningMixin, IEqualFrequencyFeatureBinningMixin, INoLabelSamplingMixin, \
     ILabelSamplingWithoutReplacementMixin, INoInstanceSamplingMixin, IInstanceSamplingWithoutReplacementMixin, \
     IInstanceSamplingWithReplacementMixin, ILabelWiseStratifiedInstanceSamplingMixin, \
     IExampleWiseStratifiedInstanceSamplingMixin, INoFeatureSamplingMixin, IFeatureSamplingWithoutReplacementMixin, \
@@ -117,7 +118,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                      DspmvFunction dspmvFunction, DsysvFunction dsysvFunction)
 
 
-cdef class BoomerConfig:
+cdef class BoomerConfig(RuleLearnerConfig):
 
     # Attributes:
 
