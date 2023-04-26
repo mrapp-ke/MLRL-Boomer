@@ -141,7 +141,8 @@ cdef extern from "common/learner.hpp" nogil:
         ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling()
 
 
-    cdef cppclass IExampleWiseStratifiedInstanceSamplingMixin"IRuleLearner::IExampleWiseStratifiedInstanceSamplingMixin":
+    cdef cppclass IExampleWiseStratifiedInstanceSamplingMixin \
+        "IRuleLearner::IExampleWiseStratifiedInstanceSamplingMixin":
 
         # Functions:
 
@@ -176,14 +177,16 @@ cdef extern from "common/learner.hpp" nogil:
         IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
 
 
-    cdef cppclass ILabelWiseStratifiedBiPartitionSamplingMixin"IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin":
+    cdef cppclass ILabelWiseStratifiedBiPartitionSamplingMixin\
+        "IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin":
 
         # Functions:
 
         ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling()
 
 
-    cdef cppclass IExampleWiseStratifiedBiPartitionSamplingMixin"IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin":
+    cdef cppclass IExampleWiseStratifiedBiPartitionSamplingMixin\
+        "IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin":
 
         # Functions:
 
@@ -372,6 +375,13 @@ cdef class TrainingResult:
     cdef readonly MarginalProbabilityCalibrationModel marginal_probability_calibration_model
     
     cdef readonly JointProbabilityCalibrationModel joint_probability_calibration_model
+
+
+cdef class RuleLearnerConfig:
+    
+    # Attributes:
+
+    cdef dict __dict__
 
 
 cdef class RuleLearner:

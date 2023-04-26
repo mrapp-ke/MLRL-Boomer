@@ -64,7 +64,8 @@ cdef class BinaryPredictor:
         :return:            A `numpy.ndarray` of type `uint8`, shape `(num_examples, num_labels)`, that stores the
                             predictions
         """
-        cdef unique_ptr[DensePredictionMatrix[uint8]] prediction_matrix_ptr = self.predictor_ptr.get().predict(max_rules)
+        cdef unique_ptr[DensePredictionMatrix[uint8]] prediction_matrix_ptr = \
+            self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef uint8* array = prediction_matrix_ptr.get().release()
@@ -151,7 +152,8 @@ cdef class SparseBinaryPredictor:
         :return:            A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that stores
                             the predictions
         """
-        cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = self.predictor_ptr.get().predict(max_rules)
+        cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = \
+            self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef uint32 num_non_zero_elements = prediction_matrix_ptr.get().getNumNonZeroElements()
@@ -181,7 +183,8 @@ cdef class SparseBinaryPredictor:
         """
         if max_rules != 0:
             assert_greater_or_equal('max_rules', max_rules, 1)
-        cdef IncrementalSparseBinaryPredictor predictor = IncrementalSparseBinaryPredictor.__new__(IncrementalSparseBinaryPredictor)
+        cdef IncrementalSparseBinaryPredictor predictor = \
+            IncrementalSparseBinaryPredictor.__new__(IncrementalSparseBinaryPredictor)
         predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(max_rules))
         return predictor
 
@@ -237,7 +240,8 @@ cdef class ScorePredictor:
         :return:            A `numpy.ndarray` of type `float64`, shape `(num_examples, num_labels)`, that stores the
                             predictions
         """
-        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.predictor_ptr.get().predict(max_rules)
+        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = \
+            self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef float64* array = prediction_matrix_ptr.get().release()
@@ -320,7 +324,8 @@ cdef class ProbabilityPredictor:
         :return:            A `numpy.ndarray` of type `float64`, shape `(num_examples, num_labels)`, that stores the
                             predictions
         """
-        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = self.predictor_ptr.get().predict(max_rules)
+        cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = \
+            self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef float64* array = prediction_matrix_ptr.get().release()
@@ -346,6 +351,7 @@ cdef class ProbabilityPredictor:
         """
         if max_rules != 0:
             assert_greater_or_equal('max_rules', max_rules, 1)
-        cdef IncrementalProbabilityPredictor predictor = IncrementalProbabilityPredictor.__new__(IncrementalProbabilityPredictor)
+        cdef IncrementalProbabilityPredictor predictor = \
+            IncrementalProbabilityPredictor.__new__(IncrementalProbabilityPredictor)
         predictor.predictor_ptr = move(self.predictor_ptr.get().createIncrementalPredictor(max_rules))
         return predictor
