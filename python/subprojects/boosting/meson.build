@@ -6,6 +6,7 @@ cython_module_names = [
     'head_type',
     'label_binning',
     'learner_boomer',
+    'learner',
     'post_processor',
     'prediction',
     'regularization'

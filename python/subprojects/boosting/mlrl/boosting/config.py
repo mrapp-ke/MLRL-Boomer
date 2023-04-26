@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility function for configuring boosting algorithms.
 """
-from mlrl.boosting.cython.learner import BoostingRuleLearnerConfig
 from mlrl.common.config import NONE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, BINNING_EQUAL_WIDTH
 from mlrl.common.options import Options, BooleanOption, parse_param, parse_param_and_options
 from typing import Dict, Set, Optional
@@ -73,7 +72,7 @@ LABEL_BINNING_VALUES: Dict[str, Set[str]] = {
 }
 
 
-def configure_post_processor(config: BoostingRuleLearnerConfig, shrinkage: Optional[float]):
+def configure_post_processor(config, shrinkage: Optional[float]):
     if shrinkage is not None:
         if shrinkage == 1:
             config.use_no_post_processor()
@@ -81,7 +80,7 @@ def configure_post_processor(config: BoostingRuleLearnerConfig, shrinkage: Optio
             config.use_constant_shrinkage_post_processor().set_shrinkage(shrinkage)
 
 
-def configure_l1_regularization(config: BoostingRuleLearnerConfig, l1_regularization_weight: Optional[float]):
+def configure_l1_regularization(config, l1_regularization_weight: Optional[float]):
     if l1_regularization_weight is not None:
         if l1_regularization_weight == 0:
             config.use_no_l1_regularization()
@@ -89,7 +88,7 @@ def configure_l1_regularization(config: BoostingRuleLearnerConfig, l1_regulariza
             config.use_l1_regularization().set_regularization_weight(l1_regularization_weight)
 
 
-def configure_l2_regularization(config: BoostingRuleLearnerConfig, l2_regularization_weight: Optional[float]):
+def configure_l2_regularization(config, l2_regularization_weight: Optional[float]):
     if l2_regularization_weight is not None:
         if l2_regularization_weight == 0:
             config.use_no_l2_regularization()
@@ -97,7 +96,7 @@ def configure_l2_regularization(config: BoostingRuleLearnerConfig, l2_regulariza
             config.use_l2_regularization().set_regularization_weight(l2_regularization_weight)
 
 
-def configure_default_rule(config: BoostingRuleLearnerConfig, default_rule: Optional[str]):
+def configure_default_rule(config, default_rule: Optional[str]):
     if default_rule is not None:
         value = parse_param('default_rule', default_rule, DEFAULT_RULE_VALUES)
 
@@ -107,7 +106,7 @@ def configure_default_rule(config: BoostingRuleLearnerConfig, default_rule: Opti
             config.use_no_default_rule()
 
 
-def configure_head_type(config: BoostingRuleLearnerConfig, head_type: Optional[str]):
+def configure_head_type(config, head_type: Optional[str]):
     if head_type is not None:
         value, options = parse_param_and_options("head_type", head_type, HEAD_TYPE_VALUES)
 
@@ -126,7 +125,7 @@ def configure_head_type(config: BoostingRuleLearnerConfig, head_type: Optional[s
             config.use_complete_heads()
 
 
-def configure_statistics(config: BoostingRuleLearnerConfig, statistic_format: Optional[str]):
+def configure_statistics(config, statistic_format: Optional[str]):
     if statistic_format is not None:
         value = parse_param("statistic_format", statistic_format, STATISTIC_FORMAT_VALUES)
 
@@ -136,7 +135,7 @@ def configure_statistics(config: BoostingRuleLearnerConfig, statistic_format: Op
             config.use_sparse_statistics()
 
 
-def configure_label_binning(config: BoostingRuleLearnerConfig, label_binning: Optional[str]):
+def configure_label_binning(config, label_binning: Optional[str]):
     if label_binning is not None:
         value, options = parse_param_and_options('label_binning', label_binning, LABEL_BINNING_VALUES)
 
@@ -149,68 +148,68 @@ def configure_label_binning(config: BoostingRuleLearnerConfig, label_binning: Op
             c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
 
 
-def configure_label_wise_squared_error_loss(config: BoostingRuleLearnerConfig, value: str):
+def configure_label_wise_squared_error_loss(config, value: str):
     if value == LOSS_SQUARED_ERROR_LABEL_WISE:
         config.use_label_wise_squared_error_loss()
 
 
-def configure_label_wise_squared_hinge_loss(config: BoostingRuleLearnerConfig, value: str):
+def configure_label_wise_squared_hinge_loss(config, value: str):
     if value == LOSS_SQUARED_HINGE_LABEL_WISE:
         config.use_label_wise_squared_hinge_loss()
 
 
-def configure_label_wise_logistic_loss(config: BoostingRuleLearnerConfig, value: str):
+def configure_label_wise_logistic_loss(config, value: str):
     if value == LOSS_LOGISTIC_LABEL_WISE:
         config.use_label_wise_logistic_loss()
 
 
-def configure_example_wise_logistic_loss(config: BoostingRuleLearnerConfig, value: str):
+def configure_example_wise_logistic_loss(config, value: str):
     if value == LOSS_LOGISTIC_EXAMPLE_WISE:
         config.use_example_wise_logistic_loss()
 
 
-def configure_example_wise_squared_error_loss(config: BoostingRuleLearnerConfig, value: str):
+def configure_example_wise_squared_error_loss(config, value: str):
     if value == LOSS_SQUARED_ERROR_EXAMPLE_WISE:
         config.use_example_wise_squared_error_loss()
 
 
-def configure_example_wise_squared_hinge_loss(config: BoostingRuleLearnerConfig, value: str):
+def configure_example_wise_squared_hinge_loss(config, value: str):
     if value == LOSS_SQUARED_HINGE_EXAMPLE_WISE:
         config.use_example_wise_squared_hinge_loss()
 
 
-def configure_isotonic_marginal_probability_calibration(config: BoostingRuleLearnerConfig, value: str):
+def configure_isotonic_marginal_probability_calibration(config, value: str):
     if value == PROBABILITY_CALIBRATION_ISOTONIC:
         config.use_isotonic_marginal_probability_calibration()
 
 
-def configure_isotonic_joint_probability_calibration(config: BoostingRuleLearnerConfig, value: str):
+def configure_isotonic_joint_probability_calibration(config, value: str):
     if value == PROBABILITY_CALIBRATION_ISOTONIC:
         config.use_isotonic_joint_probability_calibration()
 
 
-def configure_label_wise_binary_predictor(config: BoostingRuleLearnerConfig, value: str, options: Options):
+def configure_label_wise_binary_predictor(config, value: str, options: Options):
     if value == BINARY_PREDICTOR_LABEL_WISE:
         c = config.use_label_wise_binary_predictor()
         c.set_based_on_probabilities(options.get_bool(ARGUMENT_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
 
 
-def configure_example_wise_binary_predictor(config: BoostingRuleLearnerConfig, value: str, options: Options):
+def configure_example_wise_binary_predictor(config, value: str, options: Options):
     if value == BINARY_PREDICTOR_EXAMPLE_WISE:
         c = config.use_example_wise_binary_predictor()
         c.set_based_on_probabilities(options.get_bool(ARGUMENT_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
 
 
-def configure_gfm_binary_predictor(config: BoostingRuleLearnerConfig, value: str):
+def configure_gfm_binary_predictor(config, value: str):
     if value == BINARY_PREDICTOR_GFM:
         config.use_gfm_binary_predictor()
 
 
-def configure_label_wise_probability_predictor(config: BoostingRuleLearnerConfig, value: str):
+def configure_label_wise_probability_predictor(config, value: str):
     if value == PROBABILITY_PREDICTOR_LABEL_WISE:
         config.use_label_wise_probability_predictor()
 
 
-def configure_marginalized_probability_predictor(config: BoostingRuleLearnerConfig, value: str):
+def configure_marginalized_probability_predictor(config, value: str):
     if value == PROBABILITY_PREDICTOR_MARGINALIZED:
         config.use_marginalized_probability_predictor()
