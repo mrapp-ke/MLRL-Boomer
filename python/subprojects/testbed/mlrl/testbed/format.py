@@ -98,13 +98,13 @@ class Formattable:
     Allows to create textual representations of values.
     """
 
-    def __init__(self, argument: str, name: str, percentage: bool = False):
+    def __init__(self, option: str, name: str, percentage: bool = False):
         """
-        :param argument:    The name of the argument that can be used for filtering
+        :param option:      The name of the option that can be used for filtering
         :param name:        A name that describes the type of values
         :param percentage:  True, if the values can be formatted as a percentage, False otherwise
         """
-        self.argument = argument
+        self.option = option
         self.name = name
         self.percentage = percentage
 
@@ -143,7 +143,7 @@ def filter_formattables(formattables: List[Formattable], options: List[Options])
     filtered: List[Formattable] = []
 
     for formattable in formattables:
-        if reduce(lambda a, b: a | b.get_bool(formattable.argument, True), options, False):
+        if reduce(lambda a, b: a | b.get_bool(formattable.option, True), options, False):
             filtered.append(formattable)
 
     return filtered
