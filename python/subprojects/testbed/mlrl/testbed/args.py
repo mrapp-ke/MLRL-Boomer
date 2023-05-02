@@ -223,28 +223,27 @@ class LogLevel(Enum):
     FATAL = 'fatal'
     NOTSET = 'notset'
 
-
-def log_level(s):
-    s = s.lower()
-    if s == LogLevel.DEBUG.value:
-        return log.DEBUG
-    elif s == LogLevel.INFO.value:
-        return log.INFO
-    elif s == LogLevel.WARN.value or s == LogLevel.WARNING.value:
-        return log.WARN
-    elif s == LogLevel.ERROR.value:
-        return log.ERROR
-    elif s == LogLevel.CRITICAL.value or s == LogLevel.FATAL.value:
-        return log.CRITICAL
-    elif s == LogLevel.NOTSET.value:
-        return log.NOTSET
-    raise ValueError('Invalid value given for parameter "' + PARAM_LOG_LEVEL + '". Must be one of '
-                     + format_enum_values(LogLevel) + ', but is "' + str(s) + '".')
+    def parse(s):
+        s = s.lower()
+        if s == LogLevel.DEBUG.value:
+            return log.DEBUG
+        elif s == LogLevel.INFO.value:
+            return log.INFO
+        elif s == LogLevel.WARN.value or s == LogLevel.WARNING.value:
+            return log.WARN
+        elif s == LogLevel.ERROR.value:
+            return log.ERROR
+        elif s == LogLevel.CRITICAL.value or s == LogLevel.FATAL.value:
+            return log.CRITICAL
+        elif s == LogLevel.NOTSET.value:
+            return log.NOTSET
+        raise ValueError('Invalid value given for parameter "' + PARAM_LOG_LEVEL + '". Must be one of '
+                         + format_enum_values(LogLevel) + ', but is "' + str(s) + '".')
 
 
 def add_log_level_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_LOG_LEVEL,
-                        type=log_level,
+                        type=LogLevel.parse,
                         default=LogLevel.INFO.value,
                         help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
 
