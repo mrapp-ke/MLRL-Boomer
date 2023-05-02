@@ -18,15 +18,15 @@ from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.io import open_writable_txt_file
 from typing import List, Optional
 
-ARGUMENT_PRINT_FEATURE_NAMES = 'print_feature_names'
+OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
 
-ARGUMENT_PRINT_LABEL_NAMES = 'print_label_names'
+OPTION_PRINT_LABEL_NAMES = 'print_label_names'
 
-ARGUMENT_PRINT_NOMINAL_VALUES = 'print_nominal_values'
+OPTION_PRINT_NOMINAL_VALUES = 'print_nominal_values'
 
-ARGUMENT_PRINT_BODIES = 'print_bodies'
+OPTION_PRINT_BODIES = 'print_bodies'
 
-ARGUMENT_PRINT_HEADS = 'print_heads'
+OPTION_PRINT_HEADS = 'print_heads'
 
 
 class RuleModelFormatter(RuleModelVisitor):
@@ -40,11 +40,11 @@ class RuleModelFormatter(RuleModelVisitor):
         :param meta_data:   The meta-data of the training data set
         """
 
-        self.print_feature_names = options.get_bool(ARGUMENT_PRINT_FEATURE_NAMES, True)
-        self.print_label_names = options.get_bool(ARGUMENT_PRINT_LABEL_NAMES, True)
-        self.print_nominal_values = options.get_bool(ARGUMENT_PRINT_NOMINAL_VALUES, True)
-        self.print_bodies = options.get_bool(ARGUMENT_PRINT_BODIES, True)
-        self.print_heads = options.get_bool(ARGUMENT_PRINT_HEADS, True)
+        self.print_feature_names = options.get_bool(OPTION_PRINT_FEATURE_NAMES, True)
+        self.print_label_names = options.get_bool(OPTION_PRINT_LABEL_NAMES, True)
+        self.print_nominal_values = options.get_bool(OPTION_PRINT_NOMINAL_VALUES, True)
+        self.print_bodies = options.get_bool(OPTION_PRINT_BODIES, True)
+        self.print_heads = options.get_bool(OPTION_PRINT_HEADS, True)
         self.attributes = meta_data.attributes
         self.labels = meta_data.labels
         self.text = StringIO()

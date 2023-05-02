@@ -16,7 +16,7 @@ from mlrl.testbed.io import write_xml_file
 from scipy.sparse import coo_matrix, lil_matrix, csc_matrix, issparse, dok_matrix
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
-from typing import List, Set, Optional
+from typing import List, Set, Optional, Tuple
 
 
 class AttributeType(Enum):
@@ -87,7 +87,7 @@ def load_data_set_and_meta_data(data_dir: str,
                                 arff_file_name: str,
                                 xml_file_name: str,
                                 feature_dtype=DTYPE_FLOAT32,
-                                label_dtype=DTYPE_UINT8) -> (lil_matrix, lil_matrix, MetaData):
+                                label_dtype=DTYPE_UINT8) -> Tuple[lil_matrix, lil_matrix, MetaData]:
     """
     Loads a multi-label data set from an ARFF file and the corresponding Mulan XML file.
 
@@ -128,7 +128,7 @@ def load_data_set(data_dir: str,
                   arff_file_name: str,
                   meta_data: MetaData,
                   feature_dtype=DTYPE_FLOAT32,
-                  label_dtype=DTYPE_UINT8) -> (lil_matrix, lil_matrix):
+                  label_dtype=DTYPE_UINT8) -> Tuple[lil_matrix, lil_matrix]:
     """
     Loads a multi-label data set from an ARFF file given its meta-data.
 
@@ -316,7 +316,8 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
         return x, None, meta_data
 
 
-def __create_feature_and_label_matrix(matrix: csc_matrix, meta_data: MetaData, label_dtype) -> (lil_matrix, lil_matrix):
+def __create_feature_and_label_matrix(matrix: csc_matrix, meta_data: MetaData,
+                                      label_dtype) -> Tuple[lil_matrix, lil_matrix]:
     """
     Creates and returns the feature and label matrix from a single matrix, representing the values in an ARFF file.
 
@@ -342,7 +343,7 @@ def __create_feature_and_label_matrix(matrix: csc_matrix, meta_data: MetaData, l
     return x, y
 
 
-def __load_arff(arff_file: str, feature_dtype) -> (csc_matrix, list, str):
+def __load_arff(arff_file: str, feature_dtype) -> Tuple[csc_matrix, list, str]:
     """
     Loads the content of an ARFF file.
 

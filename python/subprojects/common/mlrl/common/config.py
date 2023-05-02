@@ -15,19 +15,19 @@ RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
 
 RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
 
-ARGUMENT_BEAM_WIDTH = 'beam_width'
+OPTION_BEAM_WIDTH = 'beam_width'
 
-ARGUMENT_RESAMPLE_FEATURES = 'resample_features'
+OPTION_RESAMPLE_FEATURES = 'resample_features'
 
-ARGUMENT_MIN_COVERAGE = 'min_coverage'
+OPTION_MIN_COVERAGE = 'min_coverage'
 
-ARGUMENT_MIN_SUPPORT = 'min_support'
+OPTION_MIN_SUPPORT = 'min_support'
 
-ARGUMENT_MAX_CONDITIONS = 'max_conditions'
+OPTION_MAX_CONDITIONS = 'max_conditions'
 
-ARGUMENT_MAX_HEAD_REFINEMENTS = 'max_head_refinements'
+OPTION_MAX_HEAD_REFINEMENTS = 'max_head_refinements'
 
-ARGUMENT_RECALCULATE_PREDICTIONS = 'recalculate_predictions'
+OPTION_RECALCULATE_PREDICTIONS = 'recalculate_predictions'
 
 SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
@@ -37,13 +37,13 @@ SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 
 SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
-ARGUMENT_SAMPLE_SIZE = 'sample_size'
+OPTION_SAMPLE_SIZE = 'sample_size'
 
-ARGUMENT_NUM_SAMPLES = 'num_samples'
+OPTION_NUM_SAMPLES = 'num_samples'
 
 PARTITION_SAMPLING_RANDOM = 'random'
 
-ARGUMENT_HOLDOUT_SET_SIZE = 'holdout_set_size'
+OPTION_HOLDOUT_SET_SIZE = 'holdout_set_size'
 
 GLOBAL_PRUNING_POST = 'post-pruning'
 
@@ -55,103 +55,100 @@ AGGREGATION_FUNCTION_MAX = 'max'
 
 AGGREGATION_FUNCTION_ARITHMETIC_MEAN = 'avg'
 
-ARGUMENT_NUM_ITERATIONS = 'num_iterations'
+OPTION_NUM_ITERATIONS = 'num_iterations'
 
-ARGUMENT_REFINE_HEADS = 'refine_heads'
+OPTION_REFINE_HEADS = 'refine_heads'
 
-ARGUMENT_USE_HOLDOUT_SET = 'use_holdout_set'
+OPTION_USE_HOLDOUT_SET = 'use_holdout_set'
 
-ARGUMENT_REMOVE_UNUSED_RULES = 'remove_unused_rules'
+OPTION_REMOVE_UNUSED_RULES = 'remove_unused_rules'
 
-ARGUMENT_MIN_RULES = 'min_rules'
+OPTION_MIN_RULES = 'min_rules'
 
-ARGUMENT_INTERVAL = 'interval'
+OPTION_INTERVAL = 'interval'
 
-ARGUMENT_UPDATE_INTERVAL = 'update_interval'
+OPTION_UPDATE_INTERVAL = 'update_interval'
 
-ARGUMENT_STOP_INTERVAL = 'stop_interval'
+OPTION_STOP_INTERVAL = 'stop_interval'
 
-ARGUMENT_NUM_PAST = 'num_past'
+OPTION_NUM_PAST = 'num_past'
 
-ARGUMENT_NUM_RECENT = 'num_recent'
+OPTION_NUM_RECENT = 'num_recent'
 
-ARGUMENT_MIN_IMPROVEMENT = 'min_improvement'
+OPTION_MIN_IMPROVEMENT = 'min_improvement'
 
-ARGUMENT_AGGREGATION_FUNCTION = 'aggregation'
+OPTION_AGGREGATION_FUNCTION = 'aggregation'
 
 BINNING_EQUAL_FREQUENCY = 'equal-frequency'
 
 BINNING_EQUAL_WIDTH = 'equal-width'
 
-ARGUMENT_BIN_RATIO = 'bin_ratio'
+OPTION_BIN_RATIO = 'bin_ratio'
 
-ARGUMENT_MIN_BINS = 'min_bins'
+OPTION_MIN_BINS = 'min_bins'
 
-ARGUMENT_MAX_BINS = 'max_bins'
+OPTION_MAX_BINS = 'max_bins'
 
 RULE_PRUNING_IREP = 'irep'
 
-ARGUMENT_NUM_THREADS = 'num_threads'
+OPTION_NUM_THREADS = 'num_threads'
 
 RULE_INDUCTION_VALUES: Dict[str, Set[str]] = {
     RULE_INDUCTION_TOP_DOWN_GREEDY: {
-        ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT, ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS,
-        ARGUMENT_RECALCULATE_PREDICTIONS
+        OPTION_MIN_COVERAGE, OPTION_MIN_SUPPORT, OPTION_MAX_CONDITIONS, OPTION_MAX_HEAD_REFINEMENTS,
+        OPTION_RECALCULATE_PREDICTIONS
     },
     RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH: {
-        ARGUMENT_BEAM_WIDTH, ARGUMENT_RESAMPLE_FEATURES, ARGUMENT_MIN_COVERAGE, ARGUMENT_MIN_SUPPORT,
-        ARGUMENT_MAX_CONDITIONS, ARGUMENT_MAX_HEAD_REFINEMENTS, ARGUMENT_RECALCULATE_PREDICTIONS
+        OPTION_BEAM_WIDTH, OPTION_RESAMPLE_FEATURES, OPTION_MIN_COVERAGE, OPTION_MIN_SUPPORT, OPTION_MAX_CONDITIONS,
+        OPTION_MAX_HEAD_REFINEMENTS, OPTION_RECALCULATE_PREDICTIONS
     }
 }
 
-LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {NONE: {}, SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}}
+LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {NONE: {}, SAMPLING_WITHOUT_REPLACEMENT: {OPTION_NUM_SAMPLES}}
 
-LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {NONE: {}, SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_NUM_SAMPLES}}
+LABEL_SAMPLING_VALUES: Dict[str, Set[str]] = {NONE: {}, SAMPLING_WITHOUT_REPLACEMENT: {OPTION_NUM_SAMPLES}}
 
-FEATURE_SAMPLING_VALUES: Dict[str, Set[str]] = {NONE: {}, SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE}}
+FEATURE_SAMPLING_VALUES: Dict[str, Set[str]] = {NONE: {}, SAMPLING_WITHOUT_REPLACEMENT: {OPTION_SAMPLE_SIZE}}
 
 INSTANCE_SAMPLING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
-    SAMPLING_WITH_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
-    SAMPLING_WITHOUT_REPLACEMENT: {ARGUMENT_SAMPLE_SIZE},
-    SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_SAMPLE_SIZE},
-    SAMPLING_STRATIFIED_EXAMPLE_WISE: {ARGUMENT_SAMPLE_SIZE}
+    SAMPLING_WITH_REPLACEMENT: {OPTION_SAMPLE_SIZE},
+    SAMPLING_WITHOUT_REPLACEMENT: {OPTION_SAMPLE_SIZE},
+    SAMPLING_STRATIFIED_LABEL_WISE: {OPTION_SAMPLE_SIZE},
+    SAMPLING_STRATIFIED_EXAMPLE_WISE: {OPTION_SAMPLE_SIZE}
 }
 
 PARTITION_SAMPLING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
-    PARTITION_SAMPLING_RANDOM: {ARGUMENT_HOLDOUT_SET_SIZE},
-    SAMPLING_STRATIFIED_LABEL_WISE: {ARGUMENT_HOLDOUT_SET_SIZE},
-    SAMPLING_STRATIFIED_EXAMPLE_WISE: {ARGUMENT_HOLDOUT_SET_SIZE}
+    PARTITION_SAMPLING_RANDOM: {OPTION_HOLDOUT_SET_SIZE},
+    SAMPLING_STRATIFIED_LABEL_WISE: {OPTION_HOLDOUT_SET_SIZE},
+    SAMPLING_STRATIFIED_EXAMPLE_WISE: {OPTION_HOLDOUT_SET_SIZE}
 }
 
 SEQUENTIAL_POST_OPTIMIZATION_VALUES: Dict[str, Set[str]] = {
-    str(BooleanOption.TRUE.value): {ARGUMENT_NUM_ITERATIONS, ARGUMENT_REFINE_HEADS, ARGUMENT_RESAMPLE_FEATURES},
+    str(BooleanOption.TRUE.value): {OPTION_NUM_ITERATIONS, OPTION_REFINE_HEADS, OPTION_RESAMPLE_FEATURES},
     str(BooleanOption.FALSE.value): {}
 }
 
 FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
-    BINNING_EQUAL_FREQUENCY: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS},
-    BINNING_EQUAL_WIDTH: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS}
+    BINNING_EQUAL_FREQUENCY: {OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS},
+    BINNING_EQUAL_WIDTH: {OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS}
 }
 
 GLOBAL_PRUNING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
-    GLOBAL_PRUNING_POST: {
-        ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES, ARGUMENT_MIN_RULES, ARGUMENT_INTERVAL
-    },
+    GLOBAL_PRUNING_POST: {OPTION_USE_HOLDOUT_SET, OPTION_REMOVE_UNUSED_RULES, OPTION_MIN_RULES, OPTION_INTERVAL},
     GLOBAL_PRUNING_PRE: {
-        ARGUMENT_AGGREGATION_FUNCTION, ARGUMENT_USE_HOLDOUT_SET, ARGUMENT_REMOVE_UNUSED_RULES, ARGUMENT_MIN_RULES,
-        ARGUMENT_UPDATE_INTERVAL, ARGUMENT_STOP_INTERVAL, ARGUMENT_NUM_PAST, ARGUMENT_NUM_RECENT,
-        ARGUMENT_MIN_IMPROVEMENT
+        OPTION_AGGREGATION_FUNCTION, OPTION_USE_HOLDOUT_SET, OPTION_REMOVE_UNUSED_RULES, OPTION_MIN_RULES,
+        OPTION_UPDATE_INTERVAL, OPTION_STOP_INTERVAL, OPTION_NUM_PAST, OPTION_NUM_RECENT, OPTION_MIN_IMPROVEMENT
     }
 }
 
 RULE_PRUNING_VALUES: Set[str] = {NONE, RULE_PRUNING_IREP}
 
 PARALLEL_VALUES: Dict[str, Set[str]] = {
-    str(BooleanOption.TRUE.value): {ARGUMENT_NUM_THREADS},
+    str(BooleanOption.TRUE.value): {OPTION_NUM_THREADS},
     str(BooleanOption.FALSE.value): {}
 }
 
@@ -162,22 +159,22 @@ def configure_rule_induction(config, rule_induction: Optional[str]):
 
         if value == RULE_INDUCTION_TOP_DOWN_GREEDY:
             c = config.use_greedy_top_down_rule_induction()
-            c.set_min_coverage(options.get_int(ARGUMENT_MIN_COVERAGE, c.get_min_coverage()))
-            c.set_min_support(options.get_float(ARGUMENT_MIN_SUPPORT, c.get_min_support()))
-            c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
-            c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
+            c.set_min_coverage(options.get_int(OPTION_MIN_COVERAGE, c.get_min_coverage()))
+            c.set_min_support(options.get_float(OPTION_MIN_SUPPORT, c.get_min_support()))
+            c.set_max_conditions(options.get_int(OPTION_MAX_CONDITIONS, c.get_max_conditions()))
+            c.set_max_head_refinements(options.get_int(OPTION_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
             c.set_recalculate_predictions(
-                options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS, c.are_predictions_recalculated()))
+                options.get_bool(OPTION_RECALCULATE_PREDICTIONS, c.are_predictions_recalculated()))
         elif value == RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH:
             c = config.use_beam_search_top_down_rule_induction()
-            c.set_beam_width(options.get_int(ARGUMENT_BEAM_WIDTH, c.get_beam_width()))
-            c.set_resample_features(options.get_bool(ARGUMENT_RESAMPLE_FEATURES, c.are_features_resampled()))
-            c.set_min_coverage(options.get_int(ARGUMENT_MIN_COVERAGE, c.get_min_coverage()))
-            c.set_min_support(options.get_float(ARGUMENT_MIN_SUPPORT, c.get_min_support()))
-            c.set_max_conditions(options.get_int(ARGUMENT_MAX_CONDITIONS, c.get_max_conditions()))
-            c.set_max_head_refinements(options.get_int(ARGUMENT_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
+            c.set_beam_width(options.get_int(OPTION_BEAM_WIDTH, c.get_beam_width()))
+            c.set_resample_features(options.get_bool(OPTION_RESAMPLE_FEATURES, c.are_features_resampled()))
+            c.set_min_coverage(options.get_int(OPTION_MIN_COVERAGE, c.get_min_coverage()))
+            c.set_min_support(options.get_float(OPTION_MIN_SUPPORT, c.get_min_support()))
+            c.set_max_conditions(options.get_int(OPTION_MAX_CONDITIONS, c.get_max_conditions()))
+            c.set_max_head_refinements(options.get_int(OPTION_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
             c.set_recalculate_predictions(
-                options.get_bool(ARGUMENT_RECALCULATE_PREDICTIONS, c.are_predictions_recalculated()))
+                options.get_bool(OPTION_RECALCULATE_PREDICTIONS, c.are_predictions_recalculated()))
 
 
 def configure_feature_binning(config, feature_binning: Optional[str]):
@@ -188,14 +185,14 @@ def configure_feature_binning(config, feature_binning: Optional[str]):
             config.use_no_feature_binning()
         elif value == BINNING_EQUAL_FREQUENCY:
             c = config.use_equal_frequency_feature_binning()
-            c.set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, c.get_bin_ratio()))
-            c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
-            c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
+            c.set_bin_ratio(options.get_float(OPTION_BIN_RATIO, c.get_bin_ratio()))
+            c.set_min_bins(options.get_int(OPTION_MIN_BINS, c.get_min_bins()))
+            c.set_max_bins(options.get_int(OPTION_MAX_BINS, c.get_max_bins()))
         elif value == BINNING_EQUAL_WIDTH:
             c = config.use_equal_width_feature_binning()
-            c.set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, c.get_bin_ratio()))
-            c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
-            c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
+            c.set_bin_ratio(options.get_float(OPTION_BIN_RATIO, c.get_bin_ratio()))
+            c.set_min_bins(options.get_int(OPTION_MIN_BINS, c.get_min_bins()))
+            c.set_max_bins(options.get_int(OPTION_MAX_BINS, c.get_max_bins()))
 
 
 def configure_label_sampling(config, label_sampling: Optional[str]):
@@ -206,7 +203,7 @@ def configure_label_sampling(config, label_sampling: Optional[str]):
             config.use_no_label_sampling()
         if value == SAMPLING_WITHOUT_REPLACEMENT:
             c = config.use_label_sampling_without_replacement()
-            c.set_num_samples(options.get_int(ARGUMENT_NUM_SAMPLES, c.get_num_samples()))
+            c.set_num_samples(options.get_int(OPTION_NUM_SAMPLES, c.get_num_samples()))
 
 
 def configure_instance_sampling(config, instance_sampling: Optional[str]):
@@ -217,16 +214,16 @@ def configure_instance_sampling(config, instance_sampling: Optional[str]):
             config.use_no_instance_sampling()
         elif value == SAMPLING_WITH_REPLACEMENT:
             c = config.use_instance_sampling_with_replacement()
-            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
+            c.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, c.get_sample_size()))
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
             c = config.use_instance_sampling_without_replacement()
-            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
+            c.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, c.get_sample_size()))
         elif value == SAMPLING_STRATIFIED_LABEL_WISE:
             c = config.use_label_wise_stratified_instance_sampling()
-            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
+            c.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, c.get_sample_size()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
             c = config.use_example_wise_stratified_instance_sampling()
-            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
+            c.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, c.get_sample_size()))
 
 
 def configure_feature_sampling(config, feature_sampling: Optional[str]):
@@ -237,7 +234,7 @@ def configure_feature_sampling(config, feature_sampling: Optional[str]):
             config.use_no_feature_sampling()
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
             c = config.use_feature_sampling_without_replacement()
-            c.set_sample_size(options.get_float(ARGUMENT_SAMPLE_SIZE, c.get_sample_size()))
+            c.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, c.get_sample_size()))
 
 
 def configure_partition_sampling(config, partition_sampling: Optional[str]):
@@ -248,13 +245,13 @@ def configure_partition_sampling(config, partition_sampling: Optional[str]):
             config.use_no_partition_sampling()
         elif value == PARTITION_SAMPLING_RANDOM:
             c = config.use_random_bi_partition_sampling()
-            c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
+            c.set_holdout_set_size(options.get_float(OPTION_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
         elif value == SAMPLING_STRATIFIED_LABEL_WISE:
             c = config.use_label_wise_stratified_bi_partition_sampling()
-            c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
+            c.set_holdout_set_size(options.get_float(OPTION_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
             c = config.use_example_wise_stratified_bi_partition_sampling()
-            c.set_holdout_set_size(options.get_float(ARGUMENT_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
+            c.set_holdout_set_size(options.get_float(OPTION_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
 
 
 def configure_global_pruning(config, global_pruning: Optional[str]):
@@ -265,24 +262,24 @@ def configure_global_pruning(config, global_pruning: Optional[str]):
             config.use_no_global_pruning()
         elif value == GLOBAL_PRUNING_POST:
             c = config.use_global_post_pruning()
-            c.set_use_holdout_set(options.get_bool(ARGUMENT_USE_HOLDOUT_SET, c.is_holdout_set_used()))
-            c.set_remove_unused_rules(options.get_bool(ARGUMENT_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
-            c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
-            c.set_interval(options.get_int(ARGUMENT_INTERVAL, c.get_interval()))
+            c.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
+            c.set_remove_unused_rules(options.get_bool(OPTION_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
+            c.set_min_rules(options.get_int(OPTION_MIN_RULES, c.get_min_rules()))
+            c.set_interval(options.get_int(OPTION_INTERVAL, c.get_interval()))
         elif value == GLOBAL_PRUNING_PRE:
             c = config.use_global_pre_pruning()
-            aggregation_function = options.get_string(ARGUMENT_AGGREGATION_FUNCTION, None)
+            aggregation_function = options.get_string(OPTION_AGGREGATION_FUNCTION, None)
             c.set_aggregation_function(
                 __create_aggregation_function(aggregation_function) if aggregation_function is not None else c
                 .get_aggregation_function())
-            c.set_use_holdout_set(options.get_bool(ARGUMENT_USE_HOLDOUT_SET, c.is_holdout_set_used()))
-            c.set_remove_unused_rules(options.get_bool(ARGUMENT_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
-            c.set_min_rules(options.get_int(ARGUMENT_MIN_RULES, c.get_min_rules()))
-            c.set_update_interval(options.get_int(ARGUMENT_UPDATE_INTERVAL, c.get_update_interval()))
-            c.set_stop_interval(options.get_int(ARGUMENT_STOP_INTERVAL, c.get_stop_interval()))
-            c.set_num_past(options.get_int(ARGUMENT_NUM_PAST, c.get_num_past()))
-            c.set_num_current(options.get_int(ARGUMENT_NUM_RECENT, c.get_num_current()))
-            c.set_min_improvement(options.get_float(ARGUMENT_MIN_IMPROVEMENT, c.get_min_improvement()))
+            c.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
+            c.set_remove_unused_rules(options.get_bool(OPTION_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
+            c.set_min_rules(options.get_int(OPTION_MIN_RULES, c.get_min_rules()))
+            c.set_update_interval(options.get_int(OPTION_UPDATE_INTERVAL, c.get_update_interval()))
+            c.set_stop_interval(options.get_int(OPTION_STOP_INTERVAL, c.get_stop_interval()))
+            c.set_num_past(options.get_int(OPTION_NUM_PAST, c.get_num_past()))
+            c.set_num_current(options.get_int(OPTION_NUM_RECENT, c.get_num_current()))
+            c.set_min_improvement(options.get_float(OPTION_MIN_IMPROVEMENT, c.get_min_improvement()))
 
 
 def configure_rule_pruning(config, rule_pruning: Optional[str]):
@@ -303,7 +300,7 @@ def configure_parallel_rule_refinement(config, parallel_rule_refinement: Optiona
             config.use_no_parallel_rule_refinement()
         else:
             c = config.use_parallel_rule_refinement()
-            c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
+            c.set_num_threads(options.get_int(OPTION_NUM_THREADS, c.get_num_threads()))
 
 
 def configure_parallel_statistic_update(config, parallel_statistic_update: Optional[str]):
@@ -315,7 +312,7 @@ def configure_parallel_statistic_update(config, parallel_statistic_update: Optio
             config.use_no_parallel_statistic_update()
         else:
             c = config.use_parallel_statistic_update()
-            c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
+            c.set_num_threads(options.get_int(OPTION_NUM_THREADS, c.get_num_threads()))
 
 
 def configure_parallel_prediction(config, parallel_prediction: Optional[str]):
@@ -324,7 +321,7 @@ def configure_parallel_prediction(config, parallel_prediction: Optional[str]):
 
         if value == BooleanOption.TRUE.value:
             c = config.use_parallel_prediction()
-            c.set_num_threads(options.get_int(ARGUMENT_NUM_THREADS, c.get_num_threads()))
+            c.set_num_threads(options.get_int(OPTION_NUM_THREADS, c.get_num_threads()))
         else:
             config.use_no_parallel_prediction()
 
@@ -346,7 +343,7 @@ def configure_time_stopping_criterion(config, time_limit: Optional[int]):
 
 
 def __create_aggregation_function(aggregation_function: str) -> AggregationFunction:
-    value = parse_param(ARGUMENT_AGGREGATION_FUNCTION, aggregation_function,
+    value = parse_param(OPTION_AGGREGATION_FUNCTION, aggregation_function,
                         {AGGREGATION_FUNCTION_MIN, AGGREGATION_FUNCTION_MAX, AGGREGATION_FUNCTION_ARITHMETIC_MEAN})
 
     if value == AGGREGATION_FUNCTION_MIN:
@@ -366,6 +363,6 @@ def configure_sequential_post_optimization(config, sequential_post_optimization:
             config.use_no_sequential_post_optimization()
         elif value == BooleanOption.TRUE.value:
             c = config.use_sequential_post_optimization()
-            c.set_num_iterations(options.get_int(ARGUMENT_NUM_ITERATIONS, c.get_num_iterations()))
-            c.set_refine_heads(options.get_bool(ARGUMENT_REFINE_HEADS, c.are_heads_refined()))
-            c.set_resample_features(options.get_bool(ARGUMENT_RESAMPLE_FEATURES, c.are_features_resampled()))
+            c.set_num_iterations(options.get_int(OPTION_NUM_ITERATIONS, c.get_num_iterations()))
+            c.set_refine_heads(options.get_bool(OPTION_REFINE_HEADS, c.are_heads_refined()))
+            c.set_resample_features(options.get_bool(OPTION_RESAMPLE_FEATURES, c.are_features_resampled()))

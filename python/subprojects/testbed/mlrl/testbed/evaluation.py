@@ -13,79 +13,79 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.common.options import Options
 from mlrl.testbed.data_splitting import DataSplit, DataType
-from mlrl.testbed.format import Formattable, filter_formattables, format_table, ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE
+from mlrl.testbed.format import Formattable, filter_formattables, format_table, OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from mlrl.testbed.predictions import PredictionScope
 from sklearn.utils.multiclass import is_multilabel
-from typing import List, Dict, Set, Optional
+from typing import List, Dict, Set, Optional, Tuple
 
-ARGUMENT_ENABLE_ALL = 'enable_all'
+OPTION_ENABLE_ALL = 'enable_all'
 
-ARGUMENT_HAMMING_LOSS = 'hamming_loss'
+OPTION_HAMMING_LOSS = 'hamming_loss'
 
-ARGUMENT_HAMMING_ACCURACY = 'hamming_accuracy'
+OPTION_HAMMING_ACCURACY = 'hamming_accuracy'
 
-ARGUMENT_SUBSET_ZERO_ONE_LOSS = 'subset_zero_one_loss'
+OPTION_SUBSET_ZERO_ONE_LOSS = 'subset_zero_one_loss'
 
-ARGUMENT_SUBSET_ACCURACY = 'subset_accuracy'
+OPTION_SUBSET_ACCURACY = 'subset_accuracy'
 
-ARGUMENT_MICRO_PRECISION = 'micro_precision'
+OPTION_MICRO_PRECISION = 'micro_precision'
 
-ARGUMENT_MICRO_RECALL = 'micro_recall'
+OPTION_MICRO_RECALL = 'micro_recall'
 
-ARGUMENT_MICRO_F1 = 'micro_f1'
+OPTION_MICRO_F1 = 'micro_f1'
 
-ARGUMENT_MICRO_JACCARD = 'micro_jaccard'
+OPTION_MICRO_JACCARD = 'micro_jaccard'
 
-ARGUMENT_MACRO_PRECISION = 'macro_precision'
+OPTION_MACRO_PRECISION = 'macro_precision'
 
-ARGUMENT_MACRO_RECALL = 'macro_recall'
+OPTION_MACRO_RECALL = 'macro_recall'
 
-ARGUMENT_MACRO_F1 = 'macro_f1'
+OPTION_MACRO_F1 = 'macro_f1'
 
-ARGUMENT_MACRO_JACCARD = 'macro_jaccard'
+OPTION_MACRO_JACCARD = 'macro_jaccard'
 
-ARGUMENT_EXAMPLE_WISE_PRECISION = 'example_wise_precision'
+OPTION_EXAMPLE_WISE_PRECISION = 'example_wise_precision'
 
-ARGUMENT_EXAMPLE_WISE_RECALL = 'example_wise_recall'
+OPTION_EXAMPLE_WISE_RECALL = 'example_wise_recall'
 
-ARGUMENT_EXAMPLE_WISE_F1 = 'example_wise_f1'
+OPTION_EXAMPLE_WISE_F1 = 'example_wise_f1'
 
-ARGUMENT_EXAMPLE_WISE_JACCARD = 'example_wise_jaccard'
+OPTION_EXAMPLE_WISE_JACCARD = 'example_wise_jaccard'
 
-ARGUMENT_ACCURACY = 'accuracy'
+OPTION_ACCURACY = 'accuracy'
 
-ARGUMENT_ZERO_ONE_LOSS = 'zero_one_loss'
+OPTION_ZERO_ONE_LOSS = 'zero_one_loss'
 
-ARGUMENT_PRECISION = 'precision'
+OPTION_PRECISION = 'precision'
 
-ARGUMENT_RECALL = 'recall'
+OPTION_RECALL = 'recall'
 
-ARGUMENT_F1 = 'f1'
+OPTION_F1 = 'f1'
 
-ARGUMENT_JACCARD = 'jaccard'
+OPTION_JACCARD = 'jaccard'
 
-ARGUMENT_MEAN_ABSOLUTE_ERROR = 'mean_absolute_error'
+OPTION_MEAN_ABSOLUTE_ERROR = 'mean_absolute_error'
 
-ARGUMENT_MEAN_SQUARED_ERROR = 'mean_squared_error'
+OPTION_MEAN_SQUARED_ERROR = 'mean_squared_error'
 
-ARGUMENT_MEDIAN_ABSOLUTE_ERROR = 'mean_absolute_error'
+OPTION_MEDIAN_ABSOLUTE_ERROR = 'mean_absolute_error'
 
-ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR = 'mean_absolute_percentage_error'
+OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR = 'mean_absolute_percentage_error'
 
-ARGUMENT_RANK_LOSS = 'rank_loss'
+OPTION_RANK_LOSS = 'rank_loss'
 
-ARGUMENT_COVERAGE_ERROR = 'coverage_error'
+OPTION_COVERAGE_ERROR = 'coverage_error'
 
-ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION = 'lrap'
+OPTION_LABEL_RANKING_AVERAGE_PRECISION = 'lrap'
 
-ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN = 'dcg'
+OPTION_DISCOUNTED_CUMULATIVE_GAIN = 'dcg'
 
-ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN = 'ndcg'
+OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN = 'ndcg'
 
-ARGUMENT_TRAINING_TIME = 'training_time'
+OPTION_TRAINING_TIME = 'training_time'
 
-ARGUMENT_PREDICTION_TIME = 'prediction_time'
+OPTION_PREDICTION_TIME = 'prediction_time'
 
 
 class EvaluationFunction(Formattable):
@@ -93,11 +93,11 @@ class EvaluationFunction(Formattable):
     An evaluation function.
     """
 
-    def __init__(self, argument: str, name: str, evaluation_function, percentage: bool = True, **kwargs):
+    def __init__(self, option: str, name: str, evaluation_function, percentage: bool = True, **kwargs):
         """
         :param evaluation_function: The function that should be invoked for evaluation
         """
-        super().__init__(argument, name, percentage)
+        super().__init__(option, name, percentage)
         self.evaluation_function = evaluation_function
         self.kwargs = kwargs
 
@@ -120,55 +120,52 @@ ARGS_MACRO = {'average': 'macro', 'zero_division': 1}
 
 ARGS_EXAMPLE_WISE = {'average': 'samples', 'zero_division': 1}
 
-EVALUATION_MEASURE_TRAINING_TIME = Formattable(ARGUMENT_TRAINING_TIME, 'Training Time')
+EVALUATION_MEASURE_TRAINING_TIME = Formattable(OPTION_TRAINING_TIME, 'Training Time')
 
-EVALUATION_MEASURE_PREDICTION_TIME = Formattable(ARGUMENT_PREDICTION_TIME, 'Prediction Time')
+EVALUATION_MEASURE_PREDICTION_TIME = Formattable(OPTION_PREDICTION_TIME, 'Prediction Time')
 
 MULTI_LABEL_EVALUATION_MEASURES: List[Formattable] = [
-    EvaluationFunction(ARGUMENT_HAMMING_ACCURACY, 'Hamming Accuracy', lambda a, b: 1 - metrics.hamming_loss(a, b)),
-    EvaluationFunction(ARGUMENT_HAMMING_LOSS, 'Hamming Loss', metrics.hamming_loss),
-    EvaluationFunction(ARGUMENT_SUBSET_ACCURACY, 'Subset Accuracy', metrics.accuracy_score),
-    EvaluationFunction(ARGUMENT_SUBSET_ZERO_ONE_LOSS, 'Subset 0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
-    EvaluationFunction(ARGUMENT_MICRO_PRECISION, 'Micro Precision', metrics.precision_score, **ARGS_MICRO),
-    EvaluationFunction(ARGUMENT_MICRO_RECALL, 'Micro Recall', metrics.recall_score, **ARGS_MICRO),
-    EvaluationFunction(ARGUMENT_MICRO_F1, 'Micro F1', metrics.f1_score, **ARGS_MICRO),
-    EvaluationFunction(ARGUMENT_MICRO_JACCARD, 'Micro Jaccard', metrics.jaccard_score, **ARGS_MICRO),
-    EvaluationFunction(ARGUMENT_MACRO_PRECISION, 'Macro Precision', metrics.precision_score, **ARGS_MACRO),
-    EvaluationFunction(ARGUMENT_MACRO_RECALL, 'Macro Recall', metrics.recall_score, **ARGS_MACRO),
-    EvaluationFunction(ARGUMENT_MACRO_F1, 'Macro F1', metrics.f1_score, **ARGS_MACRO),
-    EvaluationFunction(ARGUMENT_MACRO_JACCARD, 'Macro Jaccard', metrics.jaccard_score, **ARGS_MACRO),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_PRECISION, 'Example-wise Precision', metrics.precision_score,
+    EvaluationFunction(OPTION_HAMMING_ACCURACY, 'Hamming Accuracy', lambda a, b: 1 - metrics.hamming_loss(a, b)),
+    EvaluationFunction(OPTION_HAMMING_LOSS, 'Hamming Loss', metrics.hamming_loss),
+    EvaluationFunction(OPTION_SUBSET_ACCURACY, 'Subset Accuracy', metrics.accuracy_score),
+    EvaluationFunction(OPTION_SUBSET_ZERO_ONE_LOSS, 'Subset 0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
+    EvaluationFunction(OPTION_MICRO_PRECISION, 'Micro Precision', metrics.precision_score, **ARGS_MICRO),
+    EvaluationFunction(OPTION_MICRO_RECALL, 'Micro Recall', metrics.recall_score, **ARGS_MICRO),
+    EvaluationFunction(OPTION_MICRO_F1, 'Micro F1', metrics.f1_score, **ARGS_MICRO),
+    EvaluationFunction(OPTION_MICRO_JACCARD, 'Micro Jaccard', metrics.jaccard_score, **ARGS_MICRO),
+    EvaluationFunction(OPTION_MACRO_PRECISION, 'Macro Precision', metrics.precision_score, **ARGS_MACRO),
+    EvaluationFunction(OPTION_MACRO_RECALL, 'Macro Recall', metrics.recall_score, **ARGS_MACRO),
+    EvaluationFunction(OPTION_MACRO_F1, 'Macro F1', metrics.f1_score, **ARGS_MACRO),
+    EvaluationFunction(OPTION_MACRO_JACCARD, 'Macro Jaccard', metrics.jaccard_score, **ARGS_MACRO),
+    EvaluationFunction(OPTION_EXAMPLE_WISE_PRECISION, 'Example-wise Precision', metrics.precision_score,
                        **ARGS_EXAMPLE_WISE),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_RECALL, 'Example-wise Recall', metrics.recall_score, **ARGS_EXAMPLE_WISE),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_F1, 'Example-wise F1', metrics.f1_score, **ARGS_EXAMPLE_WISE),
-    EvaluationFunction(ARGUMENT_EXAMPLE_WISE_JACCARD, 'Example-wise Jaccard', metrics.jaccard_score,
-                       **ARGS_EXAMPLE_WISE),
+    EvaluationFunction(OPTION_EXAMPLE_WISE_RECALL, 'Example-wise Recall', metrics.recall_score, **ARGS_EXAMPLE_WISE),
+    EvaluationFunction(OPTION_EXAMPLE_WISE_F1, 'Example-wise F1', metrics.f1_score, **ARGS_EXAMPLE_WISE),
+    EvaluationFunction(OPTION_EXAMPLE_WISE_JACCARD, 'Example-wise Jaccard', metrics.jaccard_score, **ARGS_EXAMPLE_WISE),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME,
 ]
 
 SINGLE_LABEL_EVALUATION_MEASURES: List[Formattable] = [
-    EvaluationFunction(ARGUMENT_ACCURACY, 'Accuracy', metrics.accuracy_score),
-    EvaluationFunction(ARGUMENT_ZERO_ONE_LOSS, '0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
-    EvaluationFunction(ARGUMENT_PRECISION, 'Precision', metrics.precision_score, **ARGS_SINGLE_LABEL),
-    EvaluationFunction(ARGUMENT_RECALL, 'Recall', metrics.recall_score, **ARGS_SINGLE_LABEL),
-    EvaluationFunction(ARGUMENT_F1, 'F1', metrics.f1_score, **ARGS_SINGLE_LABEL),
-    EvaluationFunction(ARGUMENT_JACCARD, 'Jaccard', metrics.jaccard_score, **ARGS_SINGLE_LABEL),
+    EvaluationFunction(OPTION_ACCURACY, 'Accuracy', metrics.accuracy_score),
+    EvaluationFunction(OPTION_ZERO_ONE_LOSS, '0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
+    EvaluationFunction(OPTION_PRECISION, 'Precision', metrics.precision_score, **ARGS_SINGLE_LABEL),
+    EvaluationFunction(OPTION_RECALL, 'Recall', metrics.recall_score, **ARGS_SINGLE_LABEL),
+    EvaluationFunction(OPTION_F1, 'F1', metrics.f1_score, **ARGS_SINGLE_LABEL),
+    EvaluationFunction(OPTION_JACCARD, 'Jaccard', metrics.jaccard_score, **ARGS_SINGLE_LABEL),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME,
 ]
 
 REGRESSION_EVALUATION_MEASURES: List[Formattable] = [
-    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_ERROR,
-                       'Mean Absolute Error',
-                       metrics.mean_absolute_error,
+    EvaluationFunction(OPTION_MEAN_ABSOLUTE_ERROR, 'Mean Absolute Error', metrics.mean_absolute_error,
                        percentage=False),
-    EvaluationFunction(ARGUMENT_MEAN_SQUARED_ERROR, 'Mean Squared Error', metrics.mean_squared_error, percentage=False),
-    EvaluationFunction(ARGUMENT_MEDIAN_ABSOLUTE_ERROR,
+    EvaluationFunction(OPTION_MEAN_SQUARED_ERROR, 'Mean Squared Error', metrics.mean_squared_error, percentage=False),
+    EvaluationFunction(OPTION_MEDIAN_ABSOLUTE_ERROR,
                        'Median Absolute Error',
                        metrics.median_absolute_error,
                        percentage=False),
-    EvaluationFunction(ARGUMENT_MEAN_ABSOLUTE_PERCENTAGE_ERROR,
+    EvaluationFunction(OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR,
                        'Mean Absolute Percentage Error',
                        metrics.mean_absolute_percentage_error,
                        percentage=False),
@@ -177,17 +174,17 @@ REGRESSION_EVALUATION_MEASURES: List[Formattable] = [
 ]
 
 RANKING_EVALUATION_MEASURES: List[Formattable] = [
-    EvaluationFunction(ARGUMENT_RANK_LOSS, 'Ranking Loss', metrics.label_ranking_loss, percentage=False),
-    EvaluationFunction(ARGUMENT_COVERAGE_ERROR, 'Coverage Error', metrics.coverage_error, percentage=False),
-    EvaluationFunction(ARGUMENT_LABEL_RANKING_AVERAGE_PRECISION,
+    EvaluationFunction(OPTION_RANK_LOSS, 'Ranking Loss', metrics.label_ranking_loss, percentage=False),
+    EvaluationFunction(OPTION_COVERAGE_ERROR, 'Coverage Error', metrics.coverage_error, percentage=False),
+    EvaluationFunction(OPTION_LABEL_RANKING_AVERAGE_PRECISION,
                        'Label Ranking Average Precision',
                        metrics.label_ranking_average_precision_score,
                        percentage=False),
-    EvaluationFunction(ARGUMENT_DISCOUNTED_CUMULATIVE_GAIN,
+    EvaluationFunction(OPTION_DISCOUNTED_CUMULATIVE_GAIN,
                        'Discounted Cumulative Gain',
                        metrics.dcg_score,
                        percentage=False),
-    EvaluationFunction(ARGUMENT_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, 'NDCG', metrics.ndcg_score),
+    EvaluationFunction(OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, 'NDCG', metrics.ndcg_score),
     EVALUATION_MEASURE_TRAINING_TIME,
     EVALUATION_MEASURE_PREDICTION_TIME,
 ]
@@ -252,7 +249,7 @@ class EvaluationResult:
 
         return results
 
-    def avg(self, measure: Formattable, **kwargs) -> (str, str):
+    def avg(self, measure: Formattable, **kwargs) -> Tuple[str, str]:
         """
         Returns the score and standard deviation according to a specific measure averaged over all available folds.
 
@@ -283,7 +280,7 @@ class EvaluationResult:
         for measure in self.measures:
             score, std_dev = self.avg(measure, **kwargs)
             result[measure] = score
-            result[Formattable(measure.argument, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
+            result[Formattable(measure.option, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
 
         return result
 
@@ -336,17 +333,17 @@ class EvaluationLogOutput(EvaluationOutput):
 
     def __init__(self, options: Options):
         super().__init__(options)
-        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
-        self.decimals = options.get_int(ARGUMENT_DECIMALS, 2)
+        self.percentage = options.get_bool(OPTION_PERCENTAGE, True)
+        self.decimals = options.get_int(OPTION_DECIMALS, 2)
 
     def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                  evaluation_result: EvaluationResult, fold: Optional[int]):
         options = self.options
         rows = []
-        enable_all = options.get_bool(ARGUMENT_ENABLE_ALL, True)
+        enable_all = options.get_bool(OPTION_ENABLE_ALL, True)
 
         for measure in sorted(evaluation_result.measures):
-            if options.get_bool(measure.argument, enable_all) and measure != EVALUATION_MEASURE_TRAINING_TIME \
+            if options.get_bool(measure.option, enable_all) and measure != EVALUATION_MEASURE_TRAINING_TIME \
                     and measure != EVALUATION_MEASURE_PREDICTION_TIME:
                 score = evaluation_result.get(measure, fold, percentage=self.percentage, decimals=self.decimals)
                 rows.append([str(measure), score])
@@ -360,10 +357,10 @@ class EvaluationLogOutput(EvaluationOutput):
                                          evaluation_result: EvaluationResult, num_folds: int):
         options = self.options
         rows = []
-        enable_all = options.get_bool(ARGUMENT_ENABLE_ALL, True)
+        enable_all = options.get_bool(OPTION_ENABLE_ALL, True)
 
         for measure in sorted(evaluation_result.measures):
-            if options.get_bool(measure.argument, enable_all) and measure != EVALUATION_MEASURE_TRAINING_TIME \
+            if options.get_bool(measure.option, enable_all) and measure != EVALUATION_MEASURE_TRAINING_TIME \
                     and measure != EVALUATION_MEASURE_PREDICTION_TIME:
                 score, std_dev = evaluation_result.avg(measure, percentage=self.percentage, decimals=self.decimals)
                 row = [str(measure), score]
@@ -391,18 +388,18 @@ class EvaluationCsvOutput(EvaluationOutput):
         """
         super().__init__(options)
         self.output_dir = output_dir
-        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
-        self.decimals = options.get_int(ARGUMENT_DECIMALS, 0)
+        self.percentage = options.get_bool(OPTION_PERCENTAGE, True)
+        self.decimals = options.get_int(OPTION_DECIMALS, 0)
 
     def write_evaluation_results(self, data_type: DataType, prediction_scope: PredictionScope,
                                  evaluation_result: EvaluationResult, fold: Optional[int]):
         columns: Dict = evaluation_result.dict(fold, percentage=self.percentage, decimals=self.decimals)
         header = list(columns.keys())
         options = self.options
-        enable_all = options.get_bool(ARGUMENT_ENABLE_ALL, True)
+        enable_all = options.get_bool(OPTION_ENABLE_ALL, True)
 
         for formattable in header:
-            if not options.get_bool(formattable.argument, enable_all):
+            if not options.get_bool(formattable.option, enable_all):
                 del columns[formattable]
 
         header = sorted(columns.keys())
@@ -425,10 +422,10 @@ class EvaluationCsvOutput(EvaluationOutput):
             if num_folds > 1 else evaluation_result.dict(0, percentage=self.percentage, decimals=self.decimals)
         header = list(columns.keys())
         options = self.options
-        enable_all = options.get_bool(ARGUMENT_ENABLE_ALL, True)
+        enable_all = options.get_bool(OPTION_ENABLE_ALL, True)
 
         for formattable in header:
-            if not options.get_bool(formattable.argument, enable_all):
+            if not options.get_bool(formattable.option, enable_all):
                 del columns[formattable]
 
         header = sorted(columns.keys())

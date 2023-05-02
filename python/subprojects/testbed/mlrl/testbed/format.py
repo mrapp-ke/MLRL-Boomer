@@ -9,9 +9,9 @@ from mlrl.common.options import Options
 from tabulate import tabulate
 from typing import List
 
-ARGUMENT_DECIMALS = 'decimals'
+OPTION_DECIMALS = 'decimals'
 
-ARGUMENT_PERCENTAGE = 'percentage'
+OPTION_PERCENTAGE = 'percentage'
 
 
 def format_duration(duration: float) -> str:
@@ -98,13 +98,13 @@ class Formattable:
     Allows to create textual representations of values.
     """
 
-    def __init__(self, argument: str, name: str, percentage: bool = False):
+    def __init__(self, option: str, name: str, percentage: bool = False):
         """
-        :param argument:    The name of the argument that can be used for filtering
+        :param option:      The name of the option that can be used for filtering
         :param name:        A name that describes the type of values
         :param percentage:  True, if the values can be formatted as a percentage, False otherwise
         """
-        self.argument = argument
+        self.option = option
         self.name = name
         self.percentage = percentage
 
@@ -124,9 +124,9 @@ class Formattable:
         :param value:   The value
         :return:        The textual representation that has been created
         """
-        decimals = kwargs.get(ARGUMENT_DECIMALS, 0)
+        decimals = kwargs.get(OPTION_DECIMALS, 0)
 
-        if self.percentage and kwargs.get(ARGUMENT_PERCENTAGE, False):
+        if self.percentage and kwargs.get(OPTION_PERCENTAGE, False):
             value = value * 100
 
         return format_float(value, decimals=decimals)
@@ -143,7 +143,7 @@ def filter_formattables(formattables: List[Formattable], options: List[Options])
     filtered: List[Formattable] = []
 
     for formattable in formattables:
-        if reduce(lambda a, b: a | b.get_bool(formattable.argument, True), options, False):
+        if reduce(lambda a, b: a | b.get_bool(formattable.option, True), options, False):
             filtered.append(formattable)
 
     return filtered

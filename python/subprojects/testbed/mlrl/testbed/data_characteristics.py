@@ -12,21 +12,21 @@ from mlrl.common.options import Options
 from mlrl.testbed.characteristics import LabelCharacteristics, density, Characteristic, LABEL_CHARACTERISTICS
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_splitting import DataSplit
-from mlrl.testbed.format import filter_formattables, format_table, ARGUMENT_DECIMALS, ARGUMENT_PERCENTAGE
+from mlrl.testbed.format import filter_formattables, format_table, OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from typing import List
 
-ARGUMENT_EXAMPLES = 'examples'
+OPTION_EXAMPLES = 'examples'
 
-ARGUMENT_FEATURES = 'features'
+OPTION_FEATURES = 'features'
 
-ARGUMENT_NUMERICAL_FEATURES = 'numerical_features'
+OPTION_NUMERICAL_FEATURES = 'numerical_features'
 
-ARGUMENT_NOMINAL_FEATURES = 'nominal_features'
+OPTION_NOMINAL_FEATURES = 'nominal_features'
 
-ARGUMENT_FEATURE_DENSITY = 'feature_density'
+OPTION_FEATURE_DENSITY = 'feature_density'
 
-ARGUMENT_FEATURE_SPARSITY = 'feature_sparsity'
+OPTION_FEATURE_SPARSITY = 'feature_sparsity'
 
 
 class FeatureCharacteristics:
@@ -71,12 +71,12 @@ class FeatureCharacteristics:
 
 
 FEATURE_CHARACTERISTICS: List[Characteristic] = [
-    Characteristic(ARGUMENT_EXAMPLES, 'Examples', lambda x: x.num_examples),
-    Characteristic(ARGUMENT_FEATURES, 'Features', lambda x: x.num_features),
-    Characteristic(ARGUMENT_NUMERICAL_FEATURES, 'Numerical Features', lambda x: x.num_nominal_features),
-    Characteristic(ARGUMENT_NOMINAL_FEATURES, 'Nominal Features', lambda x: x.num_numerical_features),
-    Characteristic(ARGUMENT_FEATURE_DENSITY, 'Feature Density', lambda x: x.feature_density, percentage=True),
-    Characteristic(ARGUMENT_FEATURE_SPARSITY, 'Feature Sparsity', lambda x: x.feature_sparsity, percentage=True),
+    Characteristic(OPTION_EXAMPLES, 'Examples', lambda x: x.num_examples),
+    Characteristic(OPTION_FEATURES, 'Features', lambda x: x.num_features),
+    Characteristic(OPTION_NUMERICAL_FEATURES, 'Numerical Features', lambda x: x.num_nominal_features),
+    Characteristic(OPTION_NOMINAL_FEATURES, 'Nominal Features', lambda x: x.num_numerical_features),
+    Characteristic(OPTION_FEATURE_DENSITY, 'Feature Density', lambda x: x.feature_density, percentage=True),
+    Characteristic(OPTION_FEATURE_SPARSITY, 'Feature Sparsity', lambda x: x.feature_sparsity, percentage=True),
 ]
 
 
@@ -110,8 +110,8 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
         """
         self.feature_characteristic_formattables = filter_formattables(FEATURE_CHARACTERISTICS, [options])
         self.label_characteristic_formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
-        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
-        self.decimals = options.get_int(ARGUMENT_DECIMALS, 2)
+        self.percentage = options.get_bool(OPTION_PERCENTAGE, True)
+        self.decimals = options.get_int(OPTION_DECIMALS, 2)
 
     def write_data_characteristics(self, data_split: DataSplit, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
@@ -151,8 +151,8 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
         self.output_dir = output_dir
         self.feature_characteristic_formattables = filter_formattables(FEATURE_CHARACTERISTICS, [options])
         self.label_characteristic_formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
-        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
-        self.decimals = options.get_int(ARGUMENT_DECIMALS, 0)
+        self.percentage = options.get_bool(OPTION_PERCENTAGE, True)
+        self.decimals = options.get_int(OPTION_DECIMALS, 0)
 
     def write_data_characteristics(self, data_split: DataSplit, feature_characteristics: FeatureCharacteristics,
                                    label_characteristics: LabelCharacteristics):
