@@ -36,7 +36,7 @@ from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter, \
     PredictionCharacteristicsLogOutput, PredictionCharacteristicsCsvOutput
 from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, PredictionArffOutput
-from typing import Optional
+from typing import Optional, Tuple
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
@@ -225,7 +225,7 @@ class LearnerRunnable(Runnable, ABC):
         return PredictionCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
 
     @staticmethod
-    def __create_data_characteristics_printer(args) -> (Optional[DataCharacteristicsPrinter], bool):
+    def __create_data_characteristics_printer(args) -> Tuple[Optional[DataCharacteristicsPrinter], bool]:
         outputs = []
 
         value, options = parse_param_and_options(PARAM_PRINT_DATA_CHARACTERISTICS, args.print_data_characteristics,
