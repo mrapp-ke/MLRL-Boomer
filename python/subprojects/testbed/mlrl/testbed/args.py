@@ -242,10 +242,6 @@ def log_level(s):
                      + format_enum_values(LogLevel) + ', but is "' + str(s) + '".')
 
 
-def boolean_string(s):
-    return BooleanOption.parse(s)
-
-
 def add_log_level_argument(parser: ArgumentParser):
     parser.add_argument(PARAM_LOG_LEVEL,
                         type=log_level,
@@ -283,7 +279,7 @@ def add_learner_arguments(parser: ArgumentParser):
                         + 'parameter ' + PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
                         + 'documentation.')
     parser.add_argument(PARAM_EVALUATE_TRAINING_DATA,
-                        type=boolean_string,
+                        type=BooleanOption.parse,
                         default=False,
                         help='Whether the models should not only be evaluated on the test data, but also on the '
                         + 'training data. Must be one of ' + format_enum_values(BooleanOption) + '.')
@@ -315,7 +311,7 @@ def add_learner_arguments(parser: ArgumentParser):
                         + 'have an effect if the parameter ' + PARAM_OUTPUT_DIR + ' is specified. For additional '
                         + 'options refer to the documentation')
     parser.add_argument(PARAM_ONE_HOT_ENCODING,
-                        type=boolean_string,
+                        type=BooleanOption.parse,
                         default=False,
                         help='Whether one-hot-encoding should be used to encode nominal attributes or not. Must be one '
                         + 'of ' + format_enum_values(BooleanOption) + '.')
@@ -328,23 +324,23 @@ def add_learner_arguments(parser: ArgumentParser):
                         type=str,
                         help='The path of the directory where experimental results should be saved.')
     parser.add_argument(PARAM_PRINT_PARAMETERS,
-                        type=boolean_string,
+                        type=BooleanOption.parse,
                         default=False,
                         help='Whether the parameter setting should be printed on the console or not. Must be one of '
                         + format_enum_values(BooleanOption) + '.')
     parser.add_argument(PARAM_STORE_PARAMETERS,
-                        type=boolean_string,
+                        type=BooleanOption.parse,
                         default=False,
                         help='Whether the parameter setting should be written into output files or not. Must be one of '
                         + format_enum_values(BooleanOption) + '. Does only have an effect, if the parameter '
                         + PARAM_OUTPUT_DIR + ' is specified.')
     parser.add_argument(PARAM_PRINT_PREDICTIONS,
-                        type=boolean_string,
+                        type=BooleanOption.parse,
                         default=False,
                         help='Whether the predictions for individual examples and labels should be printed on the '
                         + 'console or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
     parser.add_argument(PARAM_STORE_PREDICTIONS,
-                        type=boolean_string,
+                        type=BooleanOption.parse,
                         default=False,
                         help='Whether the predictions for individual examples and labels should be written into output '
                         + 'files or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an '
@@ -364,12 +360,12 @@ def add_rule_learner_arguments(parser: ArgumentParser):
                         + 'with increasing size, or not. Must be one of ' + format_enum_values(BooleanOption) + '. For '
                         + 'additional options refer to the documentation.')
     parser.add_argument(PARAM_PRINT_MODEL_CHARACTERISTICS,
-                        type=boolean_string,
+                        type=BooleanOption.parse,
                         default=False,
                         help='Whether the characteristics of models should be printed on the console or not. Must be '
                         + 'one of ' + format_enum_values(BooleanOption) + '.')
     parser.add_argument(PARAM_STORE_MODEL_CHARACTERISTICS,
-                        type=boolean_string,
+                        type=BooleanOption.parse,
                         default=False,
                         help='Whether the characteristics of models should be written into output files or not. Must '
                         + 'be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if the '
