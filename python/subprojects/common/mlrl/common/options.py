@@ -58,34 +58,34 @@ class Options:
             string = string[1:-1]
 
             if len(string) > 0:
-                for argument_index, argument in enumerate(string.split(',')):
-                    if len(argument) > 0:
-                        parts = argument.split('=')
+                for option_index, option in enumerate(string.split(',')):
+                    if len(option) > 0:
+                        parts = option.split('=')
 
                         if len(parts) != 2:
                             raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
-                                             + Options.ERROR_MESSAGE_INVALID_OPTION + ', but got element "' + argument
-                                             + '" at index ' + str(argument_index))
+                                             + Options.ERROR_MESSAGE_INVALID_OPTION + ', but got element "' + option
+                                             + '" at index ' + str(option_index))
 
                         key = parts[0]
 
                         if len(key) == 0:
                             raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
                                              + Options.ERROR_MESSAGE_INVALID_OPTION
-                                             + ', but key is missing from element "' + argument + '" at index '
-                                             + str(argument_index))
+                                             + ', but key is missing from element "' + option + '" at index '
+                                             + str(option_index))
 
                         if key not in allowed_keys:
                             raise ValueError('Key must be one of ' + format_string_set(allowed_keys) + ', but got key "'
-                                             + key + '" at index ' + str(argument_index))
+                                             + key + '" at index ' + str(option_index))
 
                         value = parts[1]
 
                         if len(value) == 0:
                             raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. '
                                              + Options.ERROR_MESSAGE_INVALID_OPTION
-                                             + ', but value is missing from element "' + argument + '" at index '
-                                             + str(argument_index))
+                                             + ', but value is missing from element "' + option + '" at index '
+                                             + str(option_index))
 
                         options.dict[key] = value
 
