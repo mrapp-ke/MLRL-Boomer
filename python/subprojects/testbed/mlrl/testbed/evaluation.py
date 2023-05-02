@@ -93,11 +93,11 @@ class EvaluationFunction(Formattable):
     An evaluation function.
     """
 
-    def __init__(self, argument: str, name: str, evaluation_function, percentage: bool = True, **kwargs):
+    def __init__(self, option: str, name: str, evaluation_function, percentage: bool = True, **kwargs):
         """
         :param evaluation_function: The function that should be invoked for evaluation
         """
-        super().__init__(argument, name, percentage)
+        super().__init__(option, name, percentage)
         self.evaluation_function = evaluation_function
         self.kwargs = kwargs
 
@@ -280,7 +280,7 @@ class EvaluationResult:
         for measure in self.measures:
             score, std_dev = self.avg(measure, **kwargs)
             result[measure] = score
-            result[Formattable(measure.argument, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
+            result[Formattable(measure.option, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
 
         return result
 
@@ -343,7 +343,7 @@ class EvaluationLogOutput(EvaluationOutput):
         enable_all = options.get_bool(OPTION_ENABLE_ALL, True)
 
         for measure in sorted(evaluation_result.measures):
-            if options.get_bool(measure.argument, enable_all) and measure != EVALUATION_MEASURE_TRAINING_TIME \
+            if options.get_bool(measure.option, enable_all) and measure != EVALUATION_MEASURE_TRAINING_TIME \
                     and measure != EVALUATION_MEASURE_PREDICTION_TIME:
                 score = evaluation_result.get(measure, fold, percentage=self.percentage, decimals=self.decimals)
                 rows.append([str(measure), score])
@@ -360,7 +360,7 @@ class EvaluationLogOutput(EvaluationOutput):
         enable_all = options.get_bool(OPTION_ENABLE_ALL, True)
 
         for measure in sorted(evaluation_result.measures):
-            if options.get_bool(measure.argument, enable_all) and measure != EVALUATION_MEASURE_TRAINING_TIME \
+            if options.get_bool(measure.option, enable_all) and measure != EVALUATION_MEASURE_TRAINING_TIME \
                     and measure != EVALUATION_MEASURE_PREDICTION_TIME:
                 score, std_dev = evaluation_result.avg(measure, percentage=self.percentage, decimals=self.decimals)
                 row = [str(measure), score]
@@ -399,7 +399,7 @@ class EvaluationCsvOutput(EvaluationOutput):
         enable_all = options.get_bool(OPTION_ENABLE_ALL, True)
 
         for formattable in header:
-            if not options.get_bool(formattable.argument, enable_all):
+            if not options.get_bool(formattable.option, enable_all):
                 del columns[formattable]
 
         header = sorted(columns.keys())
@@ -425,7 +425,7 @@ class EvaluationCsvOutput(EvaluationOutput):
         enable_all = options.get_bool(OPTION_ENABLE_ALL, True)
 
         for formattable in header:
-            if not options.get_bool(formattable.argument, enable_all):
+            if not options.get_bool(formattable.option, enable_all):
                 del columns[formattable]
 
         header = sorted(columns.keys())

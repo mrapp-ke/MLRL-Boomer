@@ -143,11 +143,11 @@ class Characteristic(Formattable):
     Allows to create textual representations of characteristics.
     """
 
-    def __init__(self, argument: str, name: str, getter_function, percentage: bool = False):
+    def __init__(self, option: str, name: str, getter_function, percentage: bool = False):
         """
         :param getter_function: The getter function that should be used to retrieve the characteristic
         """
-        super().__init__(argument, name, percentage)
+        super().__init__(option, name, percentage)
         self.getter_function = getter_function
 
     def format(self, value, **kwargs) -> str:
