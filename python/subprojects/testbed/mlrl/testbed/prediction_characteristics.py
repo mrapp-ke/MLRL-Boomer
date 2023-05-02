@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from mlrl.common.options import Options
 from mlrl.testbed.characteristics import LabelCharacteristics, LABEL_CHARACTERISTICS
 from mlrl.testbed.data_splitting import DataSplit, DataType
-from mlrl.testbed.format import filter_formattables, format_table, ARGUMENT_PERCENTAGE, ARGUMENT_DECIMALS
+from mlrl.testbed.format import filter_formattables, format_table, OPTION_PERCENTAGE, OPTION_DECIMALS
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from mlrl.testbed.predictions import PredictionScope
 from typing import List
@@ -46,8 +46,8 @@ class PredictionCharacteristicsLogOutput(PredictionCharacteristicsOutput):
         :param options: The options that should be used for writing the characteristics of predictions to the output
         """
         self.formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
-        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
-        self.decimals = options.get_int(ARGUMENT_DECIMALS, 2)
+        self.percentage = options.get_bool(OPTION_PERCENTAGE, True)
+        self.decimals = options.get_int(OPTION_DECIMALS, 2)
 
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
                                          prediction_scope: PredictionScope, characteristics: LabelCharacteristics):
@@ -85,8 +85,8 @@ class PredictionCharacteristicsCsvOutput(PredictionCharacteristicsOutput):
         """
         self.output_dir = output_dir
         self.formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
-        self.percentage = options.get_bool(ARGUMENT_PERCENTAGE, True)
-        self.decimals = options.get_int(ARGUMENT_DECIMALS, 0)
+        self.percentage = options.get_bool(OPTION_PERCENTAGE, True)
+        self.decimals = options.get_int(OPTION_DECIMALS, 0)
 
     def write_prediction_characteristics(self, data_split: DataSplit, data_type: DataType,
                                          prediction_scope: PredictionScope, characteristics: LabelCharacteristics):

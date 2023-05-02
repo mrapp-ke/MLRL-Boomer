@@ -12,7 +12,7 @@ from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.options import parse_param_and_options
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int
 from mlrl.seco.config import HEURISTIC_ACCURACY, HEURISTIC_PRECISION, HEURISTIC_RECALL, HEURISTIC_LAPLACE, \
-    HEURISTIC_WRA, HEURISTIC_F_MEASURE, HEURISTIC_M_ESTIMATE, ARGUMENT_M, ARGUMENT_BETA
+    HEURISTIC_WRA, HEURISTIC_F_MEASURE, HEURISTIC_M_ESTIMATE, OPTION_M, OPTION_BETA
 from mlrl.seco.config import configure_head_type, configure_lift_function, configure_accuracy_heuristic, \
     configure_precision_heuristic, configure_recall_heuristic, configure_laplace_heuristic, configure_wra_heuristic, \
     configure_f_measure_heuristic, configure_m_estimate_heuristic, configure_accuracy_pruning_heuristic, \
@@ -29,8 +29,8 @@ HEURISTIC_VALUES: Dict[str, Set[str]] = {
     HEURISTIC_RECALL: {},
     HEURISTIC_LAPLACE: {},
     HEURISTIC_WRA: {},
-    HEURISTIC_F_MEASURE: {ARGUMENT_BETA},
-    HEURISTIC_M_ESTIMATE: {ARGUMENT_M}
+    HEURISTIC_F_MEASURE: {OPTION_BETA},
+    HEURISTIC_M_ESTIMATE: {OPTION_M}
 }
 
 

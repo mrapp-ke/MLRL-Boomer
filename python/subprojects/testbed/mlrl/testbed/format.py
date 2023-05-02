@@ -9,9 +9,9 @@ from mlrl.common.options import Options
 from tabulate import tabulate
 from typing import List
 
-ARGUMENT_DECIMALS = 'decimals'
+OPTION_DECIMALS = 'decimals'
 
-ARGUMENT_PERCENTAGE = 'percentage'
+OPTION_PERCENTAGE = 'percentage'
 
 
 def format_duration(duration: float) -> str:
@@ -124,9 +124,9 @@ class Formattable:
         :param value:   The value
         :return:        The textual representation that has been created
         """
-        decimals = kwargs.get(ARGUMENT_DECIMALS, 0)
+        decimals = kwargs.get(OPTION_DECIMALS, 0)
 
-        if self.percentage and kwargs.get(ARGUMENT_PERCENTAGE, False):
+        if self.percentage and kwargs.get(OPTION_PERCENTAGE, False):
             value = value * 100
 
         return format_float(value, decimals=decimals)

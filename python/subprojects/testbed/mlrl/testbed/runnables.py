@@ -14,11 +14,11 @@ from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.testbed.args import PARAM_DATA_SPLIT, PARAM_PREDICTION_TYPE, PARAM_PRINT_EVALUATION, PARAM_STORE_EVALUATION, \
     PARAM_PRINT_DATA_CHARACTERISTICS, PARAM_STORE_DATA_CHARACTERISTICS, PARAM_PRINT_PREDICTION_CHARACTERISTICS, \
     PARAM_STORE_PREDICTION_CHARACTERISTICS, PARAM_PRINT_RULES, PARAM_STORE_RULES, PARAM_INCREMENTAL_EVALUATION, \
-    DATA_SPLIT_VALUES, DATA_SPLIT_CROSS_VALIDATION, DATA_SPLIT_TRAIN_TEST, ARGUMENT_NUM_FOLDS, ARGUMENT_CURRENT_FOLD, \
-    ARGUMENT_TEST_SIZE, PRINT_EVALUATION_VALUES, STORE_EVALUATION_VALUES, PRINT_DATA_CHARACTERISTICS_VALUES, \
+    DATA_SPLIT_VALUES, DATA_SPLIT_CROSS_VALIDATION, DATA_SPLIT_TRAIN_TEST, OPTION_NUM_FOLDS, OPTION_CURRENT_FOLD, \
+    OPTION_TEST_SIZE, PRINT_EVALUATION_VALUES, STORE_EVALUATION_VALUES, PRINT_DATA_CHARACTERISTICS_VALUES, \
     STORE_DATA_CHARACTERISTICS_VALUES, PRINT_PREDICTION_CHARACTERISTICS_VALUES, \
     STORE_PREDICTION_CHARACTERISTICS_VALUES, PRINT_RULES_VALUES, STORE_RULES_VALUES, INCREMENTAL_EVALUATION_VALUES, \
-    ARGUMENT_MIN_SIZE, ARGUMENT_MAX_SIZE, ARGUMENT_STEP_SIZE
+    OPTION_MIN_SIZE, OPTION_MAX_SIZE, OPTION_STEP_SIZE
 from mlrl.testbed.args import add_log_level_argument, add_learner_arguments, add_rule_learner_arguments
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
@@ -123,20 +123,20 @@ class LearnerRunnable(Runnable, ABC):
         value, options = parse_param_and_options(PARAM_DATA_SPLIT, args.data_split, DATA_SPLIT_VALUES)
 
         if value == DATA_SPLIT_CROSS_VALIDATION:
-            num_folds = options.get_int(ARGUMENT_NUM_FOLDS, 10)
-            assert_greater_or_equal(ARGUMENT_NUM_FOLDS, num_folds, 2)
-            current_fold = options.get_int(ARGUMENT_CURRENT_FOLD, 0)
+            num_folds = options.get_int(OPTION_NUM_FOLDS, 10)
+            assert_greater_or_equal(OPTION_NUM_FOLDS, num_folds, 2)
+            current_fold = options.get_int(OPTION_CURRENT_FOLD, 0)
             if current_fold != 0:
-                assert_greater_or_equal(ARGUMENT_CURRENT_FOLD, current_fold, 1)
-                assert_less_or_equal(ARGUMENT_CURRENT_FOLD, current_fold, num_folds)
+                assert_greater_or_equal(OPTION_CURRENT_FOLD, current_fold, 1)
+                assert_less_or_equal(OPTION_CURRENT_FOLD, current_fold, num_folds)
             return CrossValidationSplitter(data_set,
                                            num_folds=num_folds,
                                            current_fold=current_fold - 1,
                                            random_state=args.random_state)
         elif value == DATA_SPLIT_TRAIN_TEST:
-            test_size = options.get_float(ARGUMENT_TEST_SIZE, 0.33)
-            assert_greater(ARGUMENT_TEST_SIZE, test_size, 0)
-            assert_less(ARGUMENT_TEST_SIZE, test_size, 1)
+            test_size = options.get_float(OPTION_TEST_SIZE, 0.33)
+            assert_greater(OPTION_TEST_SIZE, test_size, 0)
+            assert_less(OPTION_TEST_SIZE, test_size, 1)
             return TrainTestSplitter(data_set, test_size=test_size, random_state=args.random_state)
         else:
             return NoSplitter(data_set)
@@ -366,13 +366,13 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
                                                  INCREMENTAL_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            min_size = options.get_int(ARGUMENT_MIN_SIZE, 0)
-            assert_greater_or_equal(ARGUMENT_MIN_SIZE, min_size, 0)
-            max_size = options.get_int(ARGUMENT_MAX_SIZE, 0)
+            min_size = options.get_int(OPTION_MIN_SIZE, 0)
+            assert_greater_or_equal(OPTION_MIN_SIZE, min_size, 0)
+            max_size = options.get_int(OPTION_MAX_SIZE, 0)
             if max_size != 0:
-                assert_greater(ARGUMENT_MAX_SIZE, max_size, min_size)
-            step_size = options.get_int(ARGUMENT_STEP_SIZE, 1)
-            assert_greater_or_equal(ARGUMENT_STEP_SIZE, step_size, 1)
+                assert_greater(OPTION_MAX_SIZE, max_size, min_size)
+            step_size = options.get_int(OPTION_STEP_SIZE, 1)
+            assert_greater_or_equal(OPTION_STEP_SIZE, step_size, 1)
 
             if evaluation_printer is not None or prediction_printer is not None \
                     or prediction_characteristics_printer is not None:
