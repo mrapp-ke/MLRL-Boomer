@@ -8,6 +8,7 @@ import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 from enum import Enum
+from typing import Optional, Tuple, Dict, Set
 
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.format import format_enum_values, format_dict_keys
@@ -46,7 +47,6 @@ from mlrl.testbed.data_characteristics import OPTION_EXAMPLES, OPTION_FEATURES, 
     OPTION_NOMINAL_FEATURES, OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY
 from mlrl.testbed.models import OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, \
     OPTION_PRINT_BODIES, OPTION_PRINT_HEADS
-from typing import Optional, Tuple, Dict, Set
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
