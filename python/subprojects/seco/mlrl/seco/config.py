@@ -27,26 +27,26 @@ HEURISTIC_M_ESTIMATE = 'm-estimate'
 
 LIFT_FUNCTION_PEAK = 'peak'
 
-ARGUMENT_PEAK_LABEL = 'peak_label'
+OPTION_PEAK_LABEL = 'peak_label'
 
 LIFT_FUNCTION_KLN = 'kln'
 
-ARGUMENT_K = 'k'
+OPTION_K = 'k'
 
-ARGUMENT_MAX_LIFT = 'max_lift'
+OPTION_MAX_LIFT = 'max_lift'
 
-ARGUMENT_CURVATURE = 'curvature'
+OPTION_CURVATURE = 'curvature'
 
-ARGUMENT_BETA = 'beta'
+OPTION_BETA = 'beta'
 
-ARGUMENT_M = 'm'
+OPTION_M = 'm'
 
 HEAD_TYPE_VALUES: Set[str] = {HEAD_TYPE_SINGLE, HEAD_TYPE_PARTIAL}
 
 LIFT_FUNCTION_VALUES: Dict[str, Set[str]] = {
     NONE: {},
-    LIFT_FUNCTION_PEAK: {ARGUMENT_PEAK_LABEL, ARGUMENT_MAX_LIFT, ARGUMENT_CURVATURE},
-    LIFT_FUNCTION_KLN: {ARGUMENT_K}
+    LIFT_FUNCTION_PEAK: {OPTION_PEAK_LABEL, OPTION_MAX_LIFT, OPTION_CURVATURE},
+    LIFT_FUNCTION_KLN: {OPTION_K}
 }
 
 
@@ -68,12 +68,12 @@ def configure_lift_function(config, lift_function: Optional[str]):
             config.use_no_lift_function()
         elif value == LIFT_FUNCTION_PEAK:
             c = config.use_peak_lift_function()
-            c.set_peak_label(options.get_int(ARGUMENT_PEAK_LABEL, c.get_peak_label()))
-            c.set_max_lift(options.get_float(ARGUMENT_MAX_LIFT, c.get_max_lift()))
-            c.set_curvature(options.get_float(ARGUMENT_CURVATURE, c.get_curvature()))
+            c.set_peak_label(options.get_int(OPTION_PEAK_LABEL, c.get_peak_label()))
+            c.set_max_lift(options.get_float(OPTION_MAX_LIFT, c.get_max_lift()))
+            c.set_curvature(options.get_float(OPTION_CURVATURE, c.get_curvature()))
         elif value == LIFT_FUNCTION_KLN:
             c = config.use_kln_lift_function()
-            c.set_k(options.get_float(ARGUMENT_K, c.get_k()))
+            c.set_k(options.get_float(OPTION_K, c.get_k()))
 
 
 def configure_precision_heuristic(config, value: str):
@@ -129,22 +129,22 @@ def configure_wra_pruning_heuristic(config, value: str):
 def configure_f_measure_heuristic(config, value: str, options: Options):
     if value == HEURISTIC_F_MEASURE:
         c = config.use_f_measure_heuristic()
-        c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
+        c.set_beta(options.get_float(OPTION_BETA, c.get_beta()))
 
 
 def configure_f_measure_pruning_heuristic(config, value: str, options: Options):
     if value == HEURISTIC_F_MEASURE:
         c = config.use_f_measure_pruning_heuristic()
-        c.set_beta(options.get_float(ARGUMENT_BETA, c.get_beta()))
+        c.set_beta(options.get_float(OPTION_BETA, c.get_beta()))
 
 
 def configure_m_estimate_heuristic(config, value: str, options: Options):
     if value == HEURISTIC_M_ESTIMATE:
         c = config.use_m_estimate_heuristic()
-        c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
+        c.set_m(options.get_float(OPTION_M, c.get_m()))
 
 
 def configure_m_estimate_pruning_heuristic(config, value: str, options: Options):
     if value == HEURISTIC_M_ESTIMATE:
         c = config.use_m_estimate_pruning_heuristic()
-        c.set_m(options.get_float(ARGUMENT_M, c.get_m()))
+        c.set_m(options.get_float(OPTION_M, c.get_m()))

@@ -7,19 +7,13 @@ import logging as log
 import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
+from enum import Enum
+from typing import Optional, Tuple, Dict, Set
 
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
-from mlrl.common.format import format_enum_values
+from mlrl.common.format import format_enum_values, format_dict_keys
+from mlrl.common.config import NONE
 from mlrl.common.options import BooleanOption, parse_param_and_options
-from mlrl.testbed.args import PARAM_DATA_SPLIT, PARAM_PREDICTION_TYPE, PARAM_PRINT_EVALUATION, PARAM_STORE_EVALUATION, \
-    PARAM_PRINT_DATA_CHARACTERISTICS, PARAM_STORE_DATA_CHARACTERISTICS, PARAM_PRINT_PREDICTION_CHARACTERISTICS, \
-    PARAM_STORE_PREDICTION_CHARACTERISTICS, PARAM_PRINT_RULES, PARAM_STORE_RULES, PARAM_INCREMENTAL_EVALUATION, \
-    DATA_SPLIT_VALUES, DATA_SPLIT_CROSS_VALIDATION, DATA_SPLIT_TRAIN_TEST, ARGUMENT_NUM_FOLDS, ARGUMENT_CURRENT_FOLD, \
-    ARGUMENT_TEST_SIZE, PRINT_EVALUATION_VALUES, STORE_EVALUATION_VALUES, PRINT_DATA_CHARACTERISTICS_VALUES, \
-    STORE_DATA_CHARACTERISTICS_VALUES, PRINT_PREDICTION_CHARACTERISTICS_VALUES, \
-    STORE_PREDICTION_CHARACTERISTICS_VALUES, PRINT_RULES_VALUES, STORE_RULES_VALUES, INCREMENTAL_EVALUATION_VALUES, \
-    ARGUMENT_MIN_SIZE, ARGUMENT_MAX_SIZE, ARGUMENT_STEP_SIZE
-from mlrl.testbed.args import add_log_level_argument, add_learner_arguments, add_rule_learner_arguments
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
 from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, NoSplitter, DataSet
@@ -32,13 +26,57 @@ from mlrl.testbed.model_characteristics import ModelCharacteristicsPrinter, Rule
 from mlrl.testbed.models import ModelPrinter, RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
 from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterPrinter, ParameterLogOutput, \
     ParameterCsvOutput
+from mlrl.common.rule_learners import SparsePolicy
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter, \
     PredictionCharacteristicsLogOutput, PredictionCharacteristicsCsvOutput
 from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, PredictionArffOutput
-from typing import Optional
+from mlrl.testbed.evaluation import OPTION_ENABLE_ALL, OPTION_HAMMING_LOSS, OPTION_HAMMING_ACCURACY, \
+    OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_SUBSET_ACCURACY, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, OPTION_MICRO_F1, \
+    OPTION_MICRO_JACCARD, OPTION_MACRO_PRECISION, OPTION_MACRO_RECALL, OPTION_MACRO_F1, OPTION_MACRO_JACCARD, \
+    OPTION_EXAMPLE_WISE_PRECISION, OPTION_EXAMPLE_WISE_RECALL, OPTION_EXAMPLE_WISE_F1, OPTION_EXAMPLE_WISE_JACCARD, \
+    OPTION_ACCURACY, OPTION_ZERO_ONE_LOSS, OPTION_PRECISION, OPTION_RECALL, OPTION_F1, OPTION_JACCARD, \
+    OPTION_MEAN_ABSOLUTE_ERROR, OPTION_MEAN_SQUARED_ERROR, OPTION_MEDIAN_ABSOLUTE_ERROR, \
+    OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, OPTION_RANK_LOSS, OPTION_COVERAGE_ERROR, \
+    OPTION_LABEL_RANKING_AVERAGE_PRECISION, OPTION_DISCOUNTED_CUMULATIVE_GAIN, \
+    OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_PREDICTION_TIME, OPTION_TRAINING_TIME
+from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE
+from mlrl.testbed.characteristics import OPTION_LABELS, OPTION_LABEL_DENSITY, OPTION_LABEL_SPARSITY, \
+    OPTION_LABEL_IMBALANCE_RATIO, OPTION_LABEL_CARDINALITY, OPTION_DISTINCT_LABEL_VECTORS
+from mlrl.testbed.data_characteristics import OPTION_EXAMPLES, OPTION_FEATURES, OPTION_NUMERICAL_FEATURES, \
+    OPTION_NOMINAL_FEATURES, OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY
+from mlrl.testbed.models import OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, \
+    OPTION_PRINT_BODIES, OPTION_PRINT_HEADS
 
 LOG_FORMAT = '%(levelname)s %(message)s'
+
+
+class LogLevel(Enum):
+    DEBUG = 'debug'
+    INFO = 'info'
+    WARN = 'warn'
+    WARNING = 'warning'
+    ERROR = 'error'
+    CRITICAL = 'critical'
+    FATAL = 'fatal'
+    NOTSET = 'notset'
+
+    def parse(s):
+        s = s.lower()
+        if s == LogLevel.DEBUG.value:
+            return log.DEBUG
+        elif s == LogLevel.INFO.value:
+            return log.INFO
+        elif s == LogLevel.WARN.value or s == LogLevel.WARNING.value:
+            return log.WARN
+        elif s == LogLevel.ERROR.value:
+            return log.ERROR
+        elif s == LogLevel.CRITICAL.value or s == LogLevel.FATAL.value:
+            return log.CRITICAL
+        elif s == LogLevel.NOTSET.value:
+            return log.NOTSET
+        raise ValueError('Invalid log level given. Must be one of ' + format_enum_values(LogLevel) + ', but is "'
+                         + str(s) + '".')
 
 
 class Runnable(ABC):
@@ -74,7 +112,10 @@ class Runnable(ABC):
 
         :param parser:  An `ArgumentParser` that is used for parsing command line arguments
         """
-        add_log_level_argument(parser)
+        parser.add_argument('--log-level',
+                            type=LogLevel.parse,
+                            default=LogLevel.INFO.value,
+                            help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
 
     @abstractmethod
     def _run(self, args):
@@ -91,9 +132,6 @@ class LearnerRunnable(Runnable, ABC):
     A base class for all programs that perform an experiment that involves training and evaluation of a learner.
     """
 
-    def __init__(self, description: str):
-        super().__init__(description)
-
     class ClearOutputDirHook(Experiment.ExecutionHook):
         """
         Deletes all files from the output directory before an experiment starts.
@@ -105,38 +143,126 @@ class LearnerRunnable(Runnable, ABC):
         def execute(self):
             clear_directory(self.output_dir)
 
-    @staticmethod
-    def __create_prediction_type(args) -> PredictionType:
+    PARAM_DATA_SPLIT = '--data-split'
+
+    DATA_SPLIT_TRAIN_TEST = 'train-test'
+
+    OPTION_TEST_SIZE = 'test_size'
+
+    DATA_SPLIT_CROSS_VALIDATION = 'cross-validation'
+
+    OPTION_NUM_FOLDS = 'num_folds'
+
+    OPTION_CURRENT_FOLD = 'current_fold'
+
+    DATA_SPLIT_VALUES: Dict[str, Set[str]] = {
+        NONE: {},
+        DATA_SPLIT_TRAIN_TEST: {OPTION_TEST_SIZE},
+        DATA_SPLIT_CROSS_VALIDATION: {OPTION_NUM_FOLDS, OPTION_CURRENT_FOLD}
+    }
+
+    PARAM_PRINT_EVALUATION = '--print-evaluation'
+
+    PRINT_EVALUATION_VALUES: Dict[str, Set[str]] = {
+        BooleanOption.TRUE.value: {
+            OPTION_ENABLE_ALL, OPTION_HAMMING_LOSS, OPTION_HAMMING_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS,
+            OPTION_SUBSET_ACCURACY, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, OPTION_MICRO_F1, OPTION_MICRO_JACCARD,
+            OPTION_MACRO_PRECISION, OPTION_MACRO_RECALL, OPTION_MACRO_F1, OPTION_MACRO_JACCARD,
+            OPTION_EXAMPLE_WISE_PRECISION, OPTION_EXAMPLE_WISE_RECALL, OPTION_EXAMPLE_WISE_F1,
+            OPTION_EXAMPLE_WISE_JACCARD, OPTION_ACCURACY, OPTION_ZERO_ONE_LOSS, OPTION_PRECISION, OPTION_RECALL,
+            OPTION_F1, OPTION_JACCARD, OPTION_MEAN_ABSOLUTE_ERROR, OPTION_MEAN_SQUARED_ERROR,
+            OPTION_MEDIAN_ABSOLUTE_ERROR, OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, OPTION_RANK_LOSS,
+            OPTION_COVERAGE_ERROR, OPTION_LABEL_RANKING_AVERAGE_PRECISION, OPTION_DISCOUNTED_CUMULATIVE_GAIN,
+            OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_DECIMALS, OPTION_PERCENTAGE
+        },
+        BooleanOption.FALSE.value: {}
+    }
+
+    PARAM_STORE_EVALUATION = '--store-evaluation'
+
+    STORE_EVALUATION_VALUES: Dict[str, Set[str]] = {
+        BooleanOption.TRUE.value: {
+            OPTION_ENABLE_ALL, OPTION_HAMMING_LOSS, OPTION_HAMMING_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS,
+            OPTION_SUBSET_ACCURACY, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, OPTION_MICRO_F1, OPTION_MICRO_JACCARD,
+            OPTION_MACRO_PRECISION, OPTION_MACRO_RECALL, OPTION_MACRO_F1, OPTION_MACRO_JACCARD,
+            OPTION_EXAMPLE_WISE_PRECISION, OPTION_EXAMPLE_WISE_RECALL, OPTION_EXAMPLE_WISE_F1,
+            OPTION_EXAMPLE_WISE_JACCARD, OPTION_ACCURACY, OPTION_ZERO_ONE_LOSS, OPTION_PRECISION, OPTION_RECALL,
+            OPTION_F1, OPTION_JACCARD, OPTION_MEAN_ABSOLUTE_ERROR, OPTION_MEAN_SQUARED_ERROR,
+            OPTION_MEDIAN_ABSOLUTE_ERROR, OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, OPTION_RANK_LOSS,
+            OPTION_COVERAGE_ERROR, OPTION_LABEL_RANKING_AVERAGE_PRECISION, OPTION_DISCOUNTED_CUMULATIVE_GAIN,
+            OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_TRAINING_TIME, OPTION_PREDICTION_TIME, OPTION_DECIMALS,
+            OPTION_PERCENTAGE
+        },
+        BooleanOption.FALSE.value: {}
+    }
+
+    PARAM_PRINT_PREDICTION_CHARACTERISTICS = '--print-prediction-characteristics'
+
+    PRINT_PREDICTION_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
+        BooleanOption.TRUE.value: {
+            OPTION_LABELS, OPTION_LABEL_DENSITY, OPTION_LABEL_SPARSITY, OPTION_LABEL_IMBALANCE_RATIO,
+            OPTION_LABEL_CARDINALITY, OPTION_DISTINCT_LABEL_VECTORS, OPTION_DECIMALS, OPTION_PERCENTAGE
+        },
+        BooleanOption.FALSE.value: {}
+    }
+
+    PARAM_STORE_PREDICTION_CHARACTERISTICS = '--store-prediction-characteristics'
+
+    STORE_PREDICTION_CHARACTERISTICS_VALUES = PRINT_PREDICTION_CHARACTERISTICS_VALUES
+
+    PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
+
+    PRINT_DATA_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
+        BooleanOption.TRUE.value: {
+            OPTION_EXAMPLES, OPTION_FEATURES, OPTION_NUMERICAL_FEATURES, OPTION_NOMINAL_FEATURES,
+            OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY, OPTION_LABELS, OPTION_LABEL_DENSITY, OPTION_LABEL_SPARSITY,
+            OPTION_LABEL_IMBALANCE_RATIO, OPTION_LABEL_CARDINALITY, OPTION_DISTINCT_LABEL_VECTORS, OPTION_DECIMALS,
+            OPTION_PERCENTAGE
+        },
+        BooleanOption.FALSE.value: {}
+    }
+
+    PARAM_STORE_DATA_CHARACTERISTICS = '--store-data-characteristics'
+
+    STORE_DATA_CHARACTERISTICS_VALUES = PRINT_DATA_CHARACTERISTICS_VALUES
+
+    PARAM_OUTPUT_DIR = '--output-dir'
+
+    PARAM_PREDICTION_TYPE = '--prediction-type'
+
+    def __init__(self, description: str):
+        super().__init__(description)
+
+    def __create_prediction_type(self, args) -> PredictionType:
         prediction_type = args.prediction_type
 
         try:
             return PredictionType(prediction_type)
         except ValueError:
-            raise ValueError('Invalid value given for parameter "' + PARAM_PREDICTION_TYPE + '": Must be one of '
+            raise ValueError('Invalid value given for parameter "' + self.PARAM_PREDICTION_TYPE + '": Must be one of '
                              + format_enum_values(PredictionType) + ', but is "' + str(prediction_type) + '"')
 
-    @staticmethod
-    def __create_data_splitter(args) -> DataSplitter:
+    def __create_data_splitter(self, args) -> DataSplitter:
         data_set = DataSet(data_dir=args.data_dir,
                            data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
-        value, options = parse_param_and_options(PARAM_DATA_SPLIT, args.data_split, DATA_SPLIT_VALUES)
+        value, options = parse_param_and_options(self.PARAM_DATA_SPLIT, args.data_split, self.DATA_SPLIT_VALUES)
 
-        if value == DATA_SPLIT_CROSS_VALIDATION:
-            num_folds = options.get_int(ARGUMENT_NUM_FOLDS, 10)
-            assert_greater_or_equal(ARGUMENT_NUM_FOLDS, num_folds, 2)
-            current_fold = options.get_int(ARGUMENT_CURRENT_FOLD, 0)
+        if value == self.DATA_SPLIT_CROSS_VALIDATION:
+            num_folds = options.get_int(self.OPTION_NUM_FOLDS, 10)
+            assert_greater_or_equal(self.OPTION_NUM_FOLDS, num_folds, 2)
+            current_fold = options.get_int(self.OPTION_CURRENT_FOLD, 0)
             if current_fold != 0:
-                assert_greater_or_equal(ARGUMENT_CURRENT_FOLD, current_fold, 1)
-                assert_less_or_equal(ARGUMENT_CURRENT_FOLD, current_fold, num_folds)
+                assert_greater_or_equal(self.OPTION_CURRENT_FOLD, current_fold, 1)
+                assert_less_or_equal(self.OPTION_CURRENT_FOLD, current_fold, num_folds)
             return CrossValidationSplitter(data_set,
                                            num_folds=num_folds,
                                            current_fold=current_fold - 1,
                                            random_state=args.random_state)
-        elif value == DATA_SPLIT_TRAIN_TEST:
-            test_size = options.get_float(ARGUMENT_TEST_SIZE, 0.33)
-            assert_greater(ARGUMENT_TEST_SIZE, test_size, 0)
-            assert_less(ARGUMENT_TEST_SIZE, test_size, 1)
+        elif value == self.DATA_SPLIT_TRAIN_TEST:
+            test_size = options.get_float(self.OPTION_TEST_SIZE, 0.33)
+            assert_greater(self.OPTION_TEST_SIZE, test_size, 0)
+            assert_less(self.OPTION_TEST_SIZE, test_size, 1)
             return TrainTestSplitter(data_set, test_size=test_size, random_state=args.random_state)
         else:
             return NoSplitter(data_set)
@@ -167,15 +293,16 @@ class LearnerRunnable(Runnable, ABC):
     def __create_persistence(args) -> Optional[ModelPersistence]:
         return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
 
-    @staticmethod
-    def __create_evaluation_printer(args, prediction_type: PredictionType) -> Optional[EvaluationPrinter]:
+    def __create_evaluation_printer(self, args, prediction_type: PredictionType) -> Optional[EvaluationPrinter]:
         outputs = []
-        value, options = parse_param_and_options(PARAM_PRINT_EVALUATION, args.print_evaluation, PRINT_EVALUATION_VALUES)
+        value, options = parse_param_and_options(self.PARAM_PRINT_EVALUATION, args.print_evaluation,
+                                                 self.PRINT_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value:
             outputs.append(EvaluationLogOutput(options))
 
-        value, options = parse_param_and_options(PARAM_STORE_EVALUATION, args.store_evaluation, STORE_EVALUATION_VALUES)
+        value, options = parse_param_and_options(self.PARAM_STORE_EVALUATION, args.store_evaluation,
+                                                 self.STORE_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             outputs.append(EvaluationCsvOutput(options, output_dir=args.output_dir))
@@ -204,38 +331,36 @@ class LearnerRunnable(Runnable, ABC):
 
         return PredictionPrinter(outputs) if len(outputs) > 0 else None
 
-    @staticmethod
-    def __create_prediction_characteristics_printer(args) -> Optional[PredictionCharacteristicsPrinter]:
+    def __create_prediction_characteristics_printer(self, args) -> Optional[PredictionCharacteristicsPrinter]:
         outputs = []
 
-        value, options = parse_param_and_options(PARAM_PRINT_PREDICTION_CHARACTERISTICS,
+        value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
                                                  args.print_prediction_characteristics,
-                                                 PRINT_PREDICTION_CHARACTERISTICS_VALUES)
+                                                 self.PRINT_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value:
             outputs.append(PredictionCharacteristicsLogOutput(options))
 
-        value, options = parse_param_and_options(PARAM_STORE_PREDICTION_CHARACTERISTICS,
+        value, options = parse_param_and_options(self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
                                                  args.store_prediction_characteristics,
-                                                 STORE_PREDICTION_CHARACTERISTICS_VALUES)
+                                                 self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             outputs.append(PredictionCharacteristicsCsvOutput(options, output_dir=args.output_dir))
 
         return PredictionCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
 
-    @staticmethod
-    def __create_data_characteristics_printer(args) -> (Optional[DataCharacteristicsPrinter], bool):
+    def __create_data_characteristics_printer(self, args) -> Tuple[Optional[DataCharacteristicsPrinter], bool]:
         outputs = []
 
-        value, options = parse_param_and_options(PARAM_PRINT_DATA_CHARACTERISTICS, args.print_data_characteristics,
-                                                 PRINT_DATA_CHARACTERISTICS_VALUES)
+        value, options = parse_param_and_options(self.PARAM_PRINT_DATA_CHARACTERISTICS, args.print_data_characteristics,
+                                                 self.PRINT_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value:
             outputs.append(DataCharacteristicsLogOutput(options))
 
-        value, options = parse_param_and_options(PARAM_STORE_DATA_CHARACTERISTICS, args.store_data_characteristics,
-                                                 STORE_DATA_CHARACTERISTICS_VALUES)
+        value, options = parse_param_and_options(self.PARAM_STORE_DATA_CHARACTERISTICS, args.store_data_characteristics,
+                                                 self.STORE_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             outputs.append(DataCharacteristicsCsvOutput(options, output_dir=args.output_dir))
@@ -244,7 +369,108 @@ class LearnerRunnable(Runnable, ABC):
 
     def _configure_arguments(self, parser: ArgumentParser):
         super()._configure_arguments(parser)
-        add_learner_arguments(parser)
+        parser.add_argument('--random-state',
+                            type=int,
+                            default=1,
+                            help='The seed to be used by random number generators. Must be at least 1.')
+        parser.add_argument('--data-dir',
+                            type=str,
+                            required=True,
+                            help='The path of the directory where the data set files are located.')
+        parser.add_argument('--dataset', type=str, required=True, help='The name of the data set files without suffix.')
+        parser.add_argument(self.PARAM_DATA_SPLIT,
+                            type=str,
+                            default=self.DATA_SPLIT_TRAIN_TEST,
+                            help='The strategy to be used for splitting the available data into training and test '
+                            + 'sets. Must be one of ' + format_dict_keys(self.DATA_SPLIT_VALUES) + '. For additional '
+                            + 'options refer to the documentation.')
+        parser.add_argument(self.PARAM_PRINT_EVALUATION,
+                            type=str,
+                            default=BooleanOption.TRUE.value,
+                            help='Whether the evaluation results should be printed on the console or not. Must be one '
+                            + 'of ' + format_dict_keys(self.PRINT_EVALUATION_VALUES) + '. For additional options refer '
+                            + 'to the documentation.')
+        parser.add_argument(self.PARAM_STORE_EVALUATION,
+                            type=str,
+                            default=BooleanOption.TRUE.value,
+                            help='Whether the evaluation results should be written into output files or not. Must be '
+                            + 'one of ' + format_dict_keys(self.STORE_EVALUATION_VALUES) + '. Does only have an effect '
+                            + 'if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options '
+                            + 'refer to the documentation.')
+        parser.add_argument('--evaluate-training-data',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether the models should not only be evaluated on the test data, but also on the '
+                            + 'training data. Must be one of ' + format_enum_values(BooleanOption) + '.')
+        parser.add_argument(self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the characteristics of binary predictions should be printed on the console '
+                            + 'or not. Must be one of ' + format_dict_keys(self.PRINT_PREDICTION_CHARACTERISTICS_VALUES)
+                            + '. Does only have an effect if the parameter ' + self.PARAM_PREDICTION_TYPE + ' is set '
+                            + 'to ' + PredictionType.BINARY.value + '. For additional options refer to the '
+                            + 'documentation.')
+        parser.add_argument(self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the characteristics of binary predictions should be written into output '
+                            + 'files or not. Must be one of '
+                            + format_dict_keys(self.STORE_PREDICTION_CHARACTERISTICS_VALUES) + '. Does only have an '
+                            + 'effect if the parameter ' + self.PARAM_PREDICTION_TYPE + ' is set to '
+                            + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
+        parser.add_argument(self.PARAM_PRINT_DATA_CHARACTERISTICS,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the characteristics of the training data should be printed on the console or '
+                            + 'not. Must be one of ' + format_dict_keys(self.PRINT_DATA_CHARACTERISTICS_VALUES) + '. '
+                            + 'For additional options refer to the documentation.')
+        parser.add_argument(self.PARAM_STORE_DATA_CHARACTERISTICS,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the characteristics of the training data should be written into output files '
+                            + 'or not. Must be one of ' + format_dict_keys(self.STORE_DATA_CHARACTERISTICS_VALUES)
+                            + '. Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. '
+                            + 'For additional options refer to the documentation')
+        parser.add_argument('--one-hot-encoding',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether one-hot-encoding should be used to encode nominal attributes or not. Must be '
+                            + 'one of ' + format_enum_values(BooleanOption) + '.')
+        parser.add_argument('--model-dir', type=str, help='The path of the directory where models should be stored.')
+        parser.add_argument('--parameter-dir',
+                            type=str,
+                            help='The path of the directory where configuration files, which specify the parameters to '
+                            + 'be used by the algorithm, are located.')
+        parser.add_argument(self.PARAM_OUTPUT_DIR,
+                            type=str,
+                            help='The path of the directory where experimental results should be saved.')
+        parser.add_argument('--print-parameters',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether the parameter setting should be printed on the console or not. Must be one '
+                            + 'of ' + format_enum_values(BooleanOption) + '.')
+        parser.add_argument('--store-parameters',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether the parameter setting should be written into output files or not. Must be '
+                            + 'one of ' + format_enum_values(BooleanOption) + '. Does only have an effect, if the '
+                            + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified.')
+        parser.add_argument('--print-predictions',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether the predictions for individual examples and labels should be printed on the '
+                            + 'console or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
+        parser.add_argument('--store-predictions',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether the predictions for individual examples and labels should be written into '
+                            + 'output files or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does '
+                            + 'only have an effect, if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified.')
+        parser.add_argument(self.PARAM_PREDICTION_TYPE,
+                            type=str,
+                            default=PredictionType.BINARY.value,
+                            help='The type of predictions that should be obtained from the learner. Must be one of '
+                            + format_enum_values(PredictionType) + '.')
 
     def _run(self, args):
         prediction_type = self.__create_prediction_type(args)
@@ -351,28 +577,99 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
     A base class for all programs that perform an experiment that involves training and evaluation of a rule learner.
     """
 
+    PARAM_INCREMENTAL_EVALUATION = '--incremental-evaluation'
+
+    OPTION_MIN_SIZE = 'min_size'
+
+    OPTION_MAX_SIZE = 'max_size'
+
+    OPTION_STEP_SIZE = 'step_size'
+
+    INCREMENTAL_EVALUATION_VALUES: Dict[str, Set[str]] = {
+        BooleanOption.TRUE.value: {OPTION_MIN_SIZE, OPTION_MAX_SIZE, OPTION_STEP_SIZE},
+        BooleanOption.FALSE.value: {}
+    }
+
+    PARAM_PRINT_RULES = '--print-rules'
+
+    PRINT_RULES_VALUES: Dict[str, Set[str]] = {
+        BooleanOption.TRUE.value: {
+            OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_BODIES,
+            OPTION_PRINT_HEADS
+        },
+        BooleanOption.FALSE.value: {}
+    }
+
+    PARAM_STORE_RULES = '--store-rules'
+
+    STORE_RULES_VALUES = PRINT_RULES_VALUES
+
     def __init__(self, description: str):
         super().__init__(description)
 
     def _configure_arguments(self, parser: ArgumentParser):
         super()._configure_arguments(parser)
-        add_rule_learner_arguments(parser)
+        parser.add_argument(self.PARAM_INCREMENTAL_EVALUATION,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether models should be evaluated repeatedly, using only a subset of the induced '
+                            + 'rules with increasing size, or not. Must be one of ' + format_enum_values(BooleanOption)
+                            + '. For additional options refer to the documentation.')
+        parser.add_argument('--print-model-characteristics',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether the characteristics of models should be printed on the console or not. Must '
+                            + 'be one of ' + format_enum_values(BooleanOption) + '.')
+        parser.add_argument('--store-model-characteristics',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether the characteristics of models should be written into output files or not. '
+                            + 'Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if '
+                            + 'the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified.')
+        parser.add_argument(self.PARAM_PRINT_RULES,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the induced rules should be printed on the console or not. Must be one of '
+                            + format_dict_keys(self.PRINT_RULES_VALUES) + '. For additional options refer to the '
+                            + 'documentation.')
+        parser.add_argument(self.PARAM_STORE_RULES,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the induced rules should be written into a text file or not. Must be one of '
+                            + format_dict_keys(self.STORE_RULES_VALUES) + '. Does only have an effect if the parameter '
+                            + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
+                            + 'documentation.')
+        parser.add_argument('--feature-format',
+                            type=str,
+                            default=SparsePolicy.AUTO.value,
+                            help='The format to be used for the representation of the feature matrix. Must be one of '
+                            + format_enum_values(SparsePolicy) + '.')
+        parser.add_argument('--label-format',
+                            type=str,
+                            default=SparsePolicy.AUTO.value,
+                            help='The format to be used for the representation of the label matrix. Must be one of '
+                            + format_enum_values(SparsePolicy) + '.')
+        parser.add_argument('--prediction-format',
+                            type=str,
+                            default=SparsePolicy.AUTO.value,
+                            help='The format to be used for the representation of predictions. Must be one of '
+                            + format_enum_values(SparsePolicy) + '.')
 
     def _create_evaluation(
             self, args, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
             prediction_printer: Optional[PredictionPrinter],
             prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter]) -> Optional[Evaluation]:
-        value, options = parse_param_and_options(PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
-                                                 INCREMENTAL_EVALUATION_VALUES)
+        value, options = parse_param_and_options(self.PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
+                                                 self.INCREMENTAL_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            min_size = options.get_int(ARGUMENT_MIN_SIZE, 0)
-            assert_greater_or_equal(ARGUMENT_MIN_SIZE, min_size, 0)
-            max_size = options.get_int(ARGUMENT_MAX_SIZE, 0)
+            min_size = options.get_int(self.OPTION_MIN_SIZE, 0)
+            assert_greater_or_equal(self.OPTION_MIN_SIZE, min_size, 0)
+            max_size = options.get_int(self.OPTION_MAX_SIZE, 0)
             if max_size != 0:
-                assert_greater(ARGUMENT_MAX_SIZE, max_size, min_size)
-            step_size = options.get_int(ARGUMENT_STEP_SIZE, 1)
-            assert_greater_or_equal(ARGUMENT_STEP_SIZE, step_size, 1)
+                assert_greater(self.OPTION_MAX_SIZE, max_size, min_size)
+            step_size = options.get_int(self.OPTION_STEP_SIZE, 1)
+            assert_greater_or_equal(self.OPTION_STEP_SIZE, step_size, 1)
 
             if evaluation_printer is not None or prediction_printer is not None \
                     or prediction_characteristics_printer is not None:
@@ -391,12 +688,12 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
 
     def _create_model_printer(self, args) -> Optional[ModelPrinter]:
         outputs = []
-        value, options = parse_param_and_options(PARAM_PRINT_RULES, args.print_rules, PRINT_RULES_VALUES)
+        value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value:
             outputs.append(ModelPrinterLogOutput(options))
 
-        value, options = parse_param_and_options(PARAM_STORE_RULES, args.store_rules, STORE_RULES_VALUES)
+        value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             outputs.append(ModelPrinterTxtOutput(options, output_dir=args.output_dir))
